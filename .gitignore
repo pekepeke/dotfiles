@@ -40,3 +40,7 @@ pm_to_blib/
 nytprof.out
 .last_cover_status
 
+# vim help
+doc/tags
+doc/tags-ja
+
