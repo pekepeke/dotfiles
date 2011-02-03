@@ -18,12 +18,14 @@ main() {
     done
   fi
   for F in .?* ;do
-    if [ $F == "." -o $F == ".." -o "setup.sh" ] ; then
+    if [ "$F" == "." -o "$F" == ".." -o "setup.sh" ] ; then
       echo skip $F
     else
       ln -s $CDIR/$F $HOME
     fi
   done
+  git submodule init
+  git submodule update
 }
 
 while getopts "h:v" opt; do
