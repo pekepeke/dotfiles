@@ -1,0 +1,237 @@
+[submodule ".vim/bundle/ack.vim"]
+	path = .vim/bundle/ack.vim
+	url = https://github.com/mileszs/ack.vim.git
+[submodule ".vim/bundle/Align.git"]
+	path = .vim/bundle/Align.git
+	url = https://github.com/vim-scripts/Align.git
+[submodule ".vim/bundle/current-func-info.vim"]
+	path = .vim/bundle/current-func-info.vim
+	url = https://github.com/tyru/current-func-info.vim.git
+[submodule ".vim/bundle/detectindent"]
+	path = .vim/bundle/detectindent
+	url = https://github.com/ciaranm/detectindent.git
+[submodule ".vim/bundle/echodoc"]
+	path = .vim/bundle/echodoc
+	url = https://github.com/Shougo/echodoc.git
+[submodule ".vim/bundle/errormarker.vim"]
+	path = .vim/bundle/errormarker.vim
+	url = https://github.com/vim-scripts/errormarker.vim.git
+[submodule ".vim/bundle/eruby.vim"]
+	path = .vim/bundle/eruby.vim
+	url = https://github.com/vim-scripts/eruby.vim.git
+[submodule ".vim/bundle/gist-vim"]
+	path = .vim/bundle/gist-vim
+	url = https://github.com/mattn/gist-vim.git
+[submodule ".vim/bundle/git-vim"]
+	path = .vim/bundle/git-vim
+	url = https://github.com/motemen/git-vim.git
+[submodule ".vim/bundle/googletranslate-vim"]
+	path = .vim/bundle/googletranslate-vim
+	url = https://github.com/mattn/googletranslate-vim.git
+[submodule ".vim/bundle/hatena-vim"]
+	path = .vim/bundle/hatena-vim
+	url = https://github.com/motemen/hatena-vim.git
+[submodule ".vim/bundle/html5.vim"]
+	path = .vim/bundle/html5.vim
+	url = https://github.com/othree/html5.vim.git
+[submodule ".vim/bundle/lingr-vim"]
+	path = .vim/bundle/lingr-vim
+	url = https://github.com/tsukkee/lingr-vim.git
+[submodule ".vim/bundle/neocomplcache"]
+	path = .vim/bundle/neocomplcache
+	url = https://github.com/Shougo/neocomplcache.git
+[submodule ".vim/bundle/nerdcommenter"]
+	path = .vim/bundle/nerdcommenter
+	url = https://github.com/scrooloose/nerdcommenter.git
+[submodule ".vim/bundle/nerdtree"]
+	path = .vim/bundle/nerdtree
+	url = https://github.com/scrooloose/nerdtree.git
+[submodule ".vim/bundle/open-browser.vim"]
+	path = .vim/bundle/open-browser.vim
+	url = https://github.com/tyru/open-browser.vim.git
+[submodule ".vim/bundle/operator-camelize.vim"]
+	path = .vim/bundle/operator-camelize.vim
+	url = https://github.com/tyru/operator-camelize.vim.git
+[submodule ".vim/bundle/operator-html-escape.vim"]
+	path = .vim/bundle/operator-html-escape.vim
+	url = https://github.com/tyru/operator-html-escape.vim.git
+[submodule ".vim/bundle/Pydiction"]
+	path = .vim/bundle/Pydiction
+	url = https://github.com/vim-scripts/Pydiction.git
+[submodule ".vim/bundle/quickrun"]
+	path = .vim/bundle/quickrun
+	url = https://github.com/ujihisa/quickrun.git
+[submodule ".vim/bundle/ref-javadoc"]
+	path = .vim/bundle/ref-javadoc
+	url = https://github.com/pekepeke/ref-javadoc.git
+[submodule ".vim/bundle/shadow.vim"]
+	path = .vim/bundle/shadow.vim
+	url = https://github.com/ujihisa/shadow.vim.git
+[submodule ".vim/bundle/textile.vim"]
+	path = .vim/bundle/textile.vim
+	url = https://github.com/timcharper/textile.vim.git
+[submodule ".vim/bundle/textobj-indent"]
+	path = .vim/bundle/textobj-indent
+	url = https://github.com/vim-scripts/textobj-indent.git
+[submodule ".vim/bundle/unite-alias"]
+	path = .vim/bundle/unite-alias
+	url = https://github.com/tacroe/unite-alias.git
+[submodule ".vim/bundle/unite-colorscheme"]
+	path = .vim/bundle/unite-colorscheme
+	url = https://github.com/ujihisa/unite-colorscheme.git
+[submodule ".vim/bundle/unite-everything"]
+	path = .vim/bundle/unite-everything
+	url = https://github.com/sgur/unite-everything.git
+[submodule ".vim/bundle/unite-fileline"]
+	path = .vim/bundle/unite-fileline
+	url = https://github.com/pekepeke/unite-fileline.git
+[submodule ".vim/bundle/unite-font"]
+	path = .vim/bundle/unite-font
+	url = https://github.com/ujihisa/unite-font.git
+[submodule ".vim/bundle/unite-gem"]
+	path = .vim/bundle/unite-gem
+	url = https://github.com/ujihisa/unite-gem.git
+[submodule ".vim/bundle/unite-git_grep"]
+	path = .vim/bundle/unite-git_grep
+	url = https://github.com/sgur/unite-git_grep.git
+[submodule ".vim/bundle/unite-grep"]
+	path = .vim/bundle/unite-grep
+	url = https://github.com/Sixeight/unite-grep.git
+[submodule ".vim/bundle/unite-help"]
+	path = .vim/bundle/unite-help
+	url = https://github.com/ujihisa/unite-help.git
+[submodule ".vim/bundle/unite-mark"]
+	path = .vim/bundle/unite-mark
+	url = https://github.com/tacroe/unite-mark.git
+[submodule ".vim/bundle/unite-outline"]
+	path = .vim/bundle/unite-outline
+	url = https://github.com/h1mesuke/unite-outline.git
+[submodule ".vim/bundle/unite-qf"]
+	path = .vim/bundle/unite-qf
+	url = https://github.com/sgur/unite-qf.git
+[submodule ".vim/bundle/unite-qflist"]
+	path = .vim/bundle/unite-qflist
+	url = https://github.com/soh335/unite-qflist.git
+[submodule ".vim/bundle/unite-rake"]
+	path = .vim/bundle/unite-rake
+	url = https://github.com/ujihisa/unite-rake.git
+[submodule ".vim/bundle/unite-remotefile"]
+	path = .vim/bundle/unite-remotefile
+	url = https://github.com/mattn/unite-remotefile.git
+[submodule ".vim/bundle/unite-script"]
+	path = .vim/bundle/unite-script
+	url = https://github.com/hakobe/unite-script.git
+[submodule ".vim/bundle/unite-tags"]
+	path = .vim/bundle/unite-tags
+	url = https://github.com/tsukkee/unite-tags.git
+[submodule ".vim/bundle/unite.vim"]
+	path = .vim/bundle/unite.vim
+	url = https://github.com/Shougo/unite.vim.git
+[submodule ".vim/bundle/vim-alignta"]
+	path = .vim/bundle/vim-alignta
+	url = https://github.com/h1mesuke/vim-alignta.git
+[submodule ".vim/bundle/vim-altercmd"]
+	path = .vim/bundle/vim-altercmd
+	url = https://github.com/tyru/vim-altercmd.git
+[submodule ".vim/bundle/vim-coffee-script"]
+	path = .vim/bundle/vim-coffee-script
+	url = https://github.com/kchmck/vim-coffee-script.git
+[submodule ".vim/bundle/vim-fakeclip"]
+	path = .vim/bundle/vim-fakeclip
+	url = https://github.com/kana/vim-fakeclip.git
+[submodule ".vim/bundle/vim-ft-diff_fold"]
+	path = .vim/bundle/vim-ft-diff_fold
+	url = https://github.com/thinca/vim-ft-diff_fold.git
+[submodule ".vim/bundle/vim-ft-markdown_fold"]
+	path = .vim/bundle/vim-ft-markdown_fold
+	url = https://github.com/thinca/vim-ft-markdown_fold.git
+[submodule ".vim/bundle/vim-operator-replace"]
+	path = .vim/bundle/vim-operator-replace
+	url = https://github.com/kana/vim-operator-replace.git
+[submodule ".vim/bundle/vim-operator-user"]
+	path = .vim/bundle/vim-operator-user
+	url = https://github.com/kana/vim-operator-user.git
+[submodule ".vim/bundle/vim-qfreplace"]
+	path = .vim/bundle/vim-qfreplace
+	url = https://github.com/thinca/vim-qfreplace.git
+[submodule ".vim/bundle/vim-rails"]
+	path = .vim/bundle/vim-rails
+	url = https://github.com/tpope/vim-rails.git
+[submodule ".vim/bundle/vim-ref"]
+	path = .vim/bundle/vim-ref
+	url = https://github.com/thinca/vim-ref.git
+[submodule ".vim/bundle/vim-ruby-debugger"]
+	path = .vim/bundle/vim-ruby-debugger
+	url = https://github.com/astashov/vim-ruby-debugger.git
+[submodule ".vim/bundle/vim-scratch"]
+	path = .vim/bundle/vim-scratch
+	url = https://github.com/kana/vim-scratch.git
+[submodule ".vim/bundle/vim-smartchr"]
+	path = .vim/bundle/vim-smartchr
+	url = https://github.com/kana/vim-smartchr.git
+[submodule ".vim/bundle/vim-submode"]
+	path = .vim/bundle/vim-submode
+	url = https://github.com/kana/vim-submode.git
+[submodule ".vim/bundle/vim-surround"]
+	path = .vim/bundle/vim-surround
+	url = https://github.com/tpope/vim-surround.git
+[submodule ".vim/bundle/vim-taglist"]
+	path = .vim/bundle/vim-taglist
+	url = https://github.com/mexpolk/vim-taglist.git
+[submodule ".vim/bundle/vim-template"]
+	path = .vim/bundle/vim-template
+	url = https://github.com/thinca/vim-template.git
+[submodule ".vim/bundle/vim-textobj-between"]
+	path = .vim/bundle/vim-textobj-between
+	url = https://github.com/thinca/vim-textobj-between.git
+[submodule ".vim/bundle/vim-textobj-comment"]
+	path = .vim/bundle/vim-textobj-comment
+	url = https://github.com/thinca/vim-textobj-comment.git
+[submodule ".vim/bundle/vim-textobj-datetime"]
+	path = .vim/bundle/vim-textobj-datetime
+	url = https://github.com/kana/vim-textobj-datetime.git
+[submodule ".vim/bundle/vim-textobj-diff"]
+	path = .vim/bundle/vim-textobj-diff
+	url = https://github.com/kana/vim-textobj-diff.git
+[submodule ".vim/bundle/vim-textobj-entire"]
+	path = .vim/bundle/vim-textobj-entire
+	url = https://github.com/kana/vim-textobj-entire.git
+[submodule ".vim/bundle/vim-textobj-fold"]
+	path = .vim/bundle/vim-textobj-fold
+	url = https://github.com/kana/vim-textobj-fold.git
+[submodule ".vim/bundle/vim-textobj-function-javascript"]
+	path = .vim/bundle/vim-textobj-function-javascript
+	url = https://github.com/thinca/vim-textobj-function-javascript.git
+[submodule ".vim/bundle/vim-textobj-function-perl"]
+	path = .vim/bundle/vim-textobj-function-perl
+	url = https://github.com/thinca/vim-textobj-function-perl.git
+[submodule ".vim/bundle/vim-textobj-function"]
+	path = .vim/bundle/vim-textobj-function
+	url = https://github.com/kana/vim-textobj-function.git
+[submodule ".vim/bundle/vim-textobj-jabraces"]
+	path = .vim/bundle/vim-textobj-jabraces
+	url = https://github.com/kana/vim-textobj-jabraces.git
+[submodule ".vim/bundle/vim-textobj-lastpat"]
+	path = .vim/bundle/vim-textobj-lastpat
+	url = https://github.com/kana/vim-textobj-lastpat.git
+[submodule ".vim/bundle/vim-textobj-syntax"]
+	path = .vim/bundle/vim-textobj-syntax
+	url = https://github.com/kana/vim-textobj-syntax.git
+[submodule ".vim/bundle/vim-textobj-user"]
+	path = .vim/bundle/vim-textobj-user
+	url = https://github.com/kana/vim-textobj-user.git
+[submodule ".vim/bundle/vim-unite-history"]
+	path = .vim/bundle/vim-unite-history
+	url = https://github.com/thinca/vim-unite-history.git
+[submodule ".vim/bundle/vimfiler"]
+	path = .vim/bundle/vimfiler
+	url = https://github.com/Shougo/vimfiler.git
+[submodule ".vim/bundle/vimproc"]
+	path = .vim/bundle/vimproc
+	url = https://github.com/Shougo/vimproc.git
+[submodule ".vim/bundle/vimshell"]
+	path = .vim/bundle/vimshell
+	url = https://github.com/Shougo/vimshell.git
+[submodule ".vim/bundle/zencoding-vim"]
+	path = .vim/bundle/zencoding-vim
+	url = https://github.com/mattn/zencoding-vim.git
