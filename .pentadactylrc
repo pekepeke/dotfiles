@@ -1,0 +1,204 @@
+
+" ==================== vimperator preferences ==================== "
+" == output level :javascript! =="
+""set verbose=9
+
+" title/browser gui/tab/activate functions/scroll "
+set titlestring="Mozilla Firefox"
+set guioptions+=mTN
+set stal=2
+set showtabline=1
+"" showtabline=2 "=always"
+set activate=homepage,quickmark,tabopen,paste
+""set focuscontent
+set scroll=5
+
+" == for completion == "
+set complete=slS
+""set suggestengines=google
+""set wildoptions=auto
+set maxitems=14
+set history=100
+""set nopreload
+
+" == for search == "
+set ic
+set hlsearch
+""set hintchars="HJKLASDFG"
+set hintkeys=HJKLASDFGYUIOPQWERTNMZXCVB
+
+" == ]] / [[ == "
+set nextpattern+="next, 次(の)?ページ,\b次.*,→\b,下一頁,Следующая,・､・隹"
+set previouspattern+="prev, 前(の)?ページ,\b前.*,\b←"
+
+" == hints == "
+set followhints=1
+set hintmatching=custom
+
+" == etc == "
+set novisualbell
+
+" ==================== keybind settings ==================== "
+noremap j 5j
+""<C-d>
+noremap k 5k
+""<C-u>
+noremap J 5j
+""<C-d>
+noremap K 5k
+""<C-u>
+noremap h gT
+noremap l gt
+noremap d D
+map H <A-Left>
+map L <A-Right>
+map <C-h> :tabmove! -1<CR>
+map <C-l> :tabmove! +1<CR>
+"" winopen いらない
+map w <Nop>
+map W <Nop>
+map u :undo<Space>
+
+map <C-r> :restart<CR>
+map s :echo<Space>
+map I :pageinfo<CR>
+map A :dialog addbookmark<CR>
+
+map ,. :source ~/
+map ! :set invum<CR>
+map ,1 :set go=<CR>:set stal=2<CR>
+map ,2 :set go=mb<CR>:set stal=2<CR>
+map ,3 :set go=mT<CR>:set stal=2<CR>
+map ,4 :set go=mTb<CR>:set stal=2<CR>
+map ,0 :set go=<CR>:set stal=2<CR>
+noremap ++ <C-a>
+""noremap -- <C-x>
+
+noremap <C-Left> gT
+noremap <C-Right> gt
+map <S-Left> :tabmove! -1<CR>
+map <S-Right> :tabmove! +1<CR>
+map <BS> <A-Left>
+map <S-BS> gu
+map <C-BS> gU
+
+map ,c :copy<Space>
+map ,e :fenc<Space>
+map ,l :toggleldrizecooperation<CR>
+map ,z :viewSBMComments<CR>
+map ,k :togglelocalkeymode<CR>
+map ,o :exopen<Space>
+map ,b :bmarks!<Space>
+""map ,p :tabopen chrome://browser/content/places/places.xul<CR>
+map ,n :nno<Space>
+map ,a :applaunch<Space>
+map ,s :tsbar 
+
+" ==================== inputarea keybind ==================== "
+imap <C-n> <Down>
+imap <C-p> <Up>
+imap <C-m> <Enter>
+
+" ==================== commandline keybind ==================== "
+cmap <C-j> <Nop>
+cnoremap <C-m> <CR>
+cnoremap <Down> <Tab>
+cnoremap <Up> <S-Tab>
+cnoremap <C-n> <Tab>
+cnoremap <C-p> <S-Tab>
+
+" == copy/cut/paste == "
+""map <C-a> <C-v><C-a>
+""map <C-c> <C-v><C-c>
+
+""inoremap <C-a> <C-v><C-a>
+""inoremap <C-c> <C-v><C-c>
+""inoremap <C-v> <S-Insert><Left><Right>
+""inoremap <C-v> <C-v><C-v>
+""inoremap <C-x> <S-Del>
+""inoremap <C-x> <C-v><C-x>
+""inoremap <C-z> <C-v><C-z>
+""inoremap <C-Space> <C-v><C-Space>
+
+""cnoremap <C-a> <C-v><C-a>
+""cnoremap <C-c> <C-v><C-c>
+""cnoremap <C-v> <S-Insert>
+""cnoremap <C-v> <C-v><C-v>
+""cnoremap <C-x> <S-Del>
+""cnoremap <C-x> <C-v><C-x>
+""cnoremap <C-z> <C-v><C-z>
+
+" ==================== plugin settings ==================== "
+" == ime_controller.js == "
+let g:ex_ime_mode = "inactive"
+let g:textarea_ime_mode = "inactive"
+
+" == localkeymode.js == "
+let g:localkeymode_enable = "true"
+map ,,k :loadkeymaps<Space>
+
+" == sbmcommentsviewer.js == "
+let g:def_sbm_format = "timestamp,id,tagsAndComment"
+
+" == direct_bookmark.js == "
+let g:direct_sbm_use_services_by_tag = "d"
+let g:direct_sbm_use_services_by_post = "d"
+let g:direct_sbm_is_normalize = "false"
+let g:direct_sbm_is_use_migemo = "true"
+map a :sbm<Space>
+
+" == ldrize_cooperation.js == "
+""let g:ldrc_captureMappings = "['t', 'h', 'l', 'j', 'k', 'p', 'o', '?']"
+let g:ldrc_captureMappings = "[ 'j', 'k', 'p', 'o', '?']"
+noremap <C-j> :m LDRize::next<CR>
+noremap <C-k> :m LDRize::prev<CR>
+let g:ldrc_enable = "false"
+let g:ldrc_hints = "false"
+let g:ldrc_intelligence_bind = "true"
+let g:ldrc_skip = "0.05"
+
+" == livedoor Reader UnRead Count == "
+let g:livedoor_id = "konno110"
+
+" == feedSomeKeys.js == "
+autocmd LocationChange .* :fmapc
+
+" == livedoor Reader == "
+autocmd LocationChange http://reader\\.livedoor\\.com/reader :fmap j k s a p v o c f <Space> <S-Space> z Z < > w r b i u g G x X T q V
+autocmd LocationChange http://reader\\.livedoor\\.com/reader :fmap o,vj J,<Space> K,<S-Space>
+""autocmd LocationChange http://(fastladder\\.com|0\\.0\\.0\\.0:3000)/reader/ :fmap j k s a p v c <Space> <S-Space> z Z < > q w
+autocmd LocationChange http://reader\\.livedoor\\.com/headline :fmap j k J K < > s a <Left> <Right> <Up> <Down> v r e S A p 1 2 3 4 o,vj O,o V
+
+" == Google Reader == "
+autocmd LocationChange https?://www\\.google\\.(com|co\\.jp)/reader :fmap -v j k n p N P X O s S v t m o <Space> <S-Space> <enter> A e gh ga gs gS gu gt gT gd r u 1 2 / a = ? z Z <C-z>
+autocmd LocationChange https?://www\\.google\\.(com|co\\.jp)/reader :fmap -v J,<Space> K,<S-Space>
+
+" == Gmail == "
+autocmd LocationChange https?://mail\\.google\\.com/(mail|a) :fmap c / q ? x s y e m ! # r a f N [ ] z . I U S gi gs gt gd ga gc gl *a *n *r *u *s *t u k j o p n T L,l
+
+" == tumblr == "
+autocmd LocationChange http://.*\\.tumblr\\.com/ :fmap i tj
+
+" == hatena bookmark == "
+autocmd LocationChange https?://b\.hatena\.ne\.jp/pekepekesamurai/ :fmap j k o,oj b v E,e
+
+" == auto_word_select_mode.js == "
+let g:auto_word_select_key = "<Leader>i"
+
+" ==================== etc ==================== "
+colorscheme sweets_snaka
+style -name simple_tabs_container chrome://* <<EOM
+  .tabs-newtab-button {display: none !important;}
+  .tabs-container> stack {display: none;}
+EOM
+""/*
+""  tab {
+""    font-size:10px !important;
+""    height:20px !important;
+""    max-height:20px !important;
+""    width: 120px !important;
+""    max-width: 120px !important;
+""  }
+""*/
+source ~/.pentadactylrc.js
+echo ".pentadactylrc sourced"
