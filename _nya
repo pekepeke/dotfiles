@@ -11,9 +11,9 @@
 alias cp cp -i
 alias rm rm -i
 alias mv mv -i
-alias bcc bcc32
-alias zipinfo unzip -l
-alias dir\w dir /w
+#alias bcc bcc32
+#alias zipinfo unzip -l
+#alias dir\w dir /w
 alias vim gvim
 
 suffix ny %nyatype% -f
@@ -47,15 +47,20 @@ option prompt [%USERNAME% $W]$G
 #alias la ls.exe -aF
 alias ll ls -l
 alias la ls -a
+
 alias cpf cp -v
+
+## for nyacus
 alias cp xcopy
 alias rmf del /f
 alias rm del
 alias mv move
+
 #alias bcc bcc32
 #alias lha lhcm
 #alias zip mzp
 #alias zipinfo unzip -l
+
 alias ex. explorer .
 alias edit notepad
 
@@ -103,7 +108,8 @@ folder Projects "%HOME%\..\Develop\Projects"
 folder Library "%HOME%\Library"
 folder WorkSpace "%HOME%\workspace"
 
-set PERSONAL=%HOME%\..\Personal
+set PERSONAL=%HOME:\HOME=%
+#set PERSONAL=%HOME%\..
 
 # ƒqƒXƒgƒŠ‚Ì•Û‘¶
 #option savehist ~/_nya_history
@@ -123,15 +129,16 @@ if %nyatype.defined% != 0 then
 endif
 #option prompt $e[31;40;1m[$p]$e[37;1m
 
-foreach bin ( "$PERSONAL\Apps\cmdbin\grep" "$PERSONAL\Apps\cmdbin\svn" )
+foreach bin ( "%PERSONAL%\Apps\cmdbin\grep" "%PERSONAL%\Apps\cmdbin\svn" )
 	if exist $bin then
 		set PATH+=$bin
 	endif
 end
 
-foreach root ($PERSONAL\Develop\Apps\lang C:\strawberry $PERSONAL\Apps\cmdbin\usr)
+foreach root (%PERSONAL%\Develop\Apps\lang C:\strawberry %PERSONAL%\Apps\cmdbin\usr)
 	if exist $root then
 		foreach name `dir /A:D /B $root 2> nul`
+		#foreach name in nyaos.dir($root)
 			if $bin == "cygwin/" then
 				;
 			else
@@ -144,20 +151,23 @@ foreach root ($PERSONAL\Develop\Apps\lang C:\strawberry $PERSONAL\Apps\cmdbin\us
 end
 
 if not exist "c:\Personal\Develop\Apps\lang" then
-	foreach lang `dir /A:D /B "$PERSONAL\Develop\Apps"`
+	foreach lang `dir /A:D /B "%PERSONAL%\Develop\Apps"`
+	#foreach lang in nyaos.dir("%PERSONAL%\Develop\Apps")
 		if $lang == "cygwin" then
 			;
 		else
-			foreach name `dir /A:D /B $PERSONAL\Develop\Apps\$lang`
-				if exist $PERSONAL\Develop\Apps\$lang\$name\bin then
+			foreach name `dir /A:D /B %PERSONAL%\Develop\Apps\$lang`
+			#foreach name in nyaos.dir("%PERSONAL%\Develop\Apps\$lang")
+				if exist %PERSONAL%\Develop\Apps\$lang\$name\bin then
 					set skip=0
-					foreach p `dir /A:D /B $PERSONAL\Develop\Apps\$lang\_* 2> nul`
+					foreach p `dir /A:D /B %PERSONAL%\Develop\Apps\$lang\_* 2> nul`
+					#foreach p in nyaos.dir("%PERSONAL%\Develop\Apps\$lang\_*")
 						if $name == $p then
 							set skip=1
 						endif
 					end
 					if $skip == 0 then
-						set PATH+=$PERSONAL\Develop\Apps\$lang\$name\bin
+						set PATH+=%PERSONAL%\Develop\Apps\$lang\$name\bin
 					endif
 				endif
 			end
@@ -165,7 +175,7 @@ if not exist "c:\Personal\Develop\Apps\lang" then
 	end
 endif
 
-foreach bin ( "C:\Program Files\ruby-1.8\bin" "$PERSONAL\Develop\Apps\Python26" "$PERSONAL\Develop\Apps\Python26\Scripts")
+foreach bin ( "C:\Program Files\ruby-1.8\bin" "%PERSONAL%\Develop\Apps\Python26" "%PERSONAL%\Develop\Apps\Python26\Scripts")
 	if exist $bin then
 		set PATH+=$bin
 	endif
