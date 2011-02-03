@@ -1289,7 +1289,7 @@ endfunction
 
 " etc functions & commands {{{1
 " tiny snippets {{{2
-let g:my_snippets_dir = "$HOME/.vim/tiny-snippets"
+let g:my_snippets_dir = "$HOME/memos/tiny-snippets"
 
 let s:unite_action_file_insert = {} " {{{3
 function! s:unite_action_file_insert.func(candicate)
