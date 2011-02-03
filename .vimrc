@@ -107,12 +107,14 @@ set viewoptions=cursor
 " http://vim-users.jp/2009/12/hack112/
 MyAutocmd BufNewFile,BufReadPost * call s:vimrc_local(expand('<afile>:p:h'))
 function! s:vimrc_local(loc)
-  let files = findfile('.vimrc.local', escape(a:loc, ' '). ';', -1)
+  let files = findfile('vimrc_local.vim', escape(a:loc, ' '). ';', -1)
   for i in reverse(filter(files, 'filereadable(v:val)'))
     source `=i`
   endfor
 endfunction
-
+if !exists('g:loaded_dot_vimrc')
+  call s:vimrc_local(getcwd())
+endif
 
 " setfiletype {{{2
 " html
