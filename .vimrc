@@ -112,7 +112,7 @@ function! s:vimrc_local(loc)
     source `=i`
   endfor
 endfunction
-if !exists('g:loaded_dot_vimrc')
+if has('vim_starting')
   call s:vimrc_local(getcwd())
 endif
 
