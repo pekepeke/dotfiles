@@ -1,0 +1,14 @@
+/* http://d.hatena.ne.jp/os0x/20081209/1228835661 */
+.autopagerize_page_separator{
+  border:none;
+}
+p.autopagerize_page_info{
+  margin:5px 15px 10px;
+  background:#aaaaaa;
+  -webkit-border-radius: 0.4em;
+  -moz-border-radius: 0.4em;
+  border-radius: 0.4em;
+  line-height:1.5;
+  font-size:140%;
+  text-align:center;
+}

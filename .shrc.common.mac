@@ -1,0 +1,10 @@
+
+for app in Safari Firefox Opera "Google Chrome"; do
+  if [ -e "/Applications/${app}.app" ]; then
+    aname=$(echo $app | tr '[A-Z] ' '[a-z]_')
+    alias $aname="open -a \"${app}\""
+  fi
+done
+
+alias mvi='mvim --remote-tab-silent'
+# vim: fdm=marker sw=2 ts=2 ft=zsh et:

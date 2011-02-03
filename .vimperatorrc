@@ -1,0 +1,203 @@
+" ==================== vimperator preferences ==================== "
+" == output level :javascript! =="
+""set verbose=9
+
+" {{{ title/browser gui/tab/activate functions/scroll "
+" {{{ basic settings
+js if (liberator.has('Win32') || liberator.has('Win64')) liberator.execute('set runtimepath+=~/.vimperator');
+set titlestring="Mozilla Firefox"
+set guioptions+=mTn
+set stal=2
+set showtabline=1
+"" showtabline=2 "=always"
+set activate=homepage,quickmark,tabopen,paste
+set focuscontent
+set scroll=5
+" }}}
+
+" {{{ == for completion == "
+set complete=slfS
+"#set wildoptions=auto
+set wildmode=list:full
+set maxitems=14
+set history=100
+""set nopreload
+" }}}
+
+" {{{ == for search == "
+set ic
+set hlsearch
+set hintchars="HJKLASDFG"
+
+" == ]] / [[ == "
+set nextpattern+="next, 次(の)?ページ,\b次.*,→\b,下一頁,Следующая,・､・隹"
+set previouspattern+="prev, 前(の)?ページ,\b前.*,\b←"
+" }}}
+
+" == for pageinfo == "
+autocmd VimperatorEnter .* :set pageinfo=gmhHc
+
+" == hints == "
+set followhints=1
+set hintmatching=custom
+
+" == etc == "
+set novisualbell
+" }}}
+
+" {{{ ==================== keybind settings ==================== "
+noremap j 5j
+""<C-d>
+noremap k 5k
+""<C-u>
+noremap J 5j
+""<C-d>
+noremap K 5k
+""<C-u>
+noremap h <C-S-Tab>
+noremap l <C-Tab>
+noremap d D
+map H <A-Left>
+map L <A-Right>
+map <C-h> :tabmove! -1<CR>
+map <C-l> :tabmove! +1<CR>
+"" winopen いらない
+map w <Nop>
+map W <Nop>
+map u :undo<Space>
+
+map <C-r> :restart<CR>
+map s :echo<Space>
+map I :pageinfo<CR>
+map A :dialog addbookmark<CR>
+
+map ,. :source ~/
+map ! :set invum<CR>
+map ,1 :set go=<CR>:set stal=2<CR>
+map ,2 :set go=mb<CR>:set stal=2<CR>
+map ,3 :set go=mT<CR>:set stal=2<CR>
+map ,4 :set go=mTb<CR>:set stal=2<CR>
+map ,0 :set go=<CR>:set stal=2<CR>
+noremap ++ <C-a>
+""noremap -- <C-x>
+
+noremap <C-Left> <C-S-Tab>
+noremap <C-Right> <C-Tab>
+map <S-Left> :tabmove! -1<CR>
+map <S-Right> :tabmove! +1<CR>
+map <BS> <A-Left>
+map <S-BS> gu
+map <C-BS> gU
+
+map ,c :copy<Space>
+map ,e :fenc<Space>
+map ,l :toggleldrizecooperation<CR>
+map ,z :viewSBMComments<CR>
+map ,k :togglelocalkeymode<CR>
+map ,o :exopen<Space>
+map ,b :bmarks!<Space>
+""map ,p :tabopen chrome://browser/content/places/places.xul<CR>
+map ,n :nno<Space>
+map ,a :applaunch<Space>
+map ,s :tsbar 
+" }}}
+
+" {{{ ==================== inputarea keybind ==================== "
+imap <C-n> <Down>
+imap <C-p> <Up>
+imap <C-m> <Enter>
+" }}}
+
+" {{{ ==================== commandline keybind ==================== "
+cmap <C-j> <Nop>
+cnoremap <C-m> <CR>
+cnoremap <C-i> <Tab>
+cnoremap <Down> <Tab>
+cnoremap <Up> <S-Tab>
+cnoremap <C-n> <Tab>
+cnoremap <C-p> <S-Tab>
+cnoremap <C-r> <Up>
+cnoremap <C-t> <Down>
+" }}}
+
+" {{{ ==================== plugin settings ==================== "
+" == ime_controller.js == "
+let g:ex_ime_mode = "inactive"
+let g:textarea_ime_mode = "inactive"
+
+" == localkeymode.js == "
+let g:localkeymode_enable = "true"
+map ,,k :loadkeymaps<Space>
+
+" == sbmcommentsviewer.js == "
+let g:def_sbm_format = "timestamp,id,tagsAndComment"
+
+" == direct_bookmark.js == "
+let g:direct_sbm_use_services_by_tag = "d"
+let g:direct_sbm_use_services_by_post = "d"
+let g:direct_sbm_is_normalize = "false"
+let g:direct_sbm_is_use_migemo = "true"
+map a :sbm<Space>
+
+" == ldrize_cooperation.js == "
+""let g:ldrc_captureMappings = "['t', 'h', 'l', 'j', 'k', 'p', 'o', '?']"
+let g:ldrc_captureMappings = "[ 'j', 'k', 'p', 'o', '?']"
+noremap <C-j> :m LDRize::next<CR>
+noremap <C-k> :m LDRize::prev<CR>
+let g:ldrc_enable = "false"
+let g:ldrc_hints = "false"
+let g:ldrc_intelligence_bind = "true"
+let g:ldrc_skip = "0.05"
+
+" {{{ == feedSomeKeys.js == "
+command! -nargs=+ lazy autocmd VimperatorEnter .* <args>
+" Livedoor Reader
+lazy fmaps -u='(fastladder|livedoor)\.com/reader' j k s a p v o c f z Z < > w r b i u g G x X T q V o,vj J,<Space> K,<S-Space>
+" Google Reader
+lazy fmaps -u='www\.google\.(co\.jp|com)/reader' -events=vkeypress j k n p m s v A r S N P X O gh ga gs gt gu u / ? J K
+" Google Reader Full Feed
+lazy fmaps -u='www\.google\.(co\.jp|com)/reader' -events=vkeyup z
+" GMail
+lazy fmaps -u='mail\.google\.com/mail' c / q ? x s y e m ! # r a f N [ ] z . I U S gi gs gt gd ga gc gl *a *n *r *u *s *t u k j o p n T L,l
+" tumblr
+lazy fmaps -u='.*\.tumblr\.com/' i tj
+" hatena
+lazy fmaps -u='b\.hatena\.ne\.jp/pekepekesamurai/' j k o,oj b v E,e
+"" }}}
+
+" == auto_word_select_mode.js == "
+let g:auto_word_select_key = "<Leader>i"
+" }}}
+
+" {{{ ==================== etc ==================== "
+js <<EOM
+if (liberator.version.indexOf('2.') != 0) {
+  liberator.execute('colorscheme sweets_ff4')
+} else {
+  [
+    'set wildoptions=auto',
+    'colorscheme sweets_ff4',
+    //'colorscheme sweets_snaka',
+  ].forEach(function(v) liberator.execute(v))
+}
+EOM
+
+style -name simple_tabs_container chrome://* <<EOM
+  .tabs-newtab-button {display: none !important;}
+  .tabs-container> stack {display: none;}
+EOM
+""/*
+""  tab {
+""    font-size:10px !important;
+""    height:20px !important;
+""    max-height:20px !important;
+""    width: 120px !important;
+""    max-width: 120px !important;
+""  }
+""*/
+" }}}
+
+source ~/.vimperatorrc.js
+echo ".vimperatorrc sourced"
+
+"" vim: set ft=vim fdm=marker sw=2 ts=2 et:

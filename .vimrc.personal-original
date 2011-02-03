@@ -1,0 +1,41 @@
+"" hatena.vim & changelog, etc "{{{
+" hatena
+let g:hatena_user                     = ''
+let g:hatena_group_name               = ''
+
+" changelog
+let g:changelog_timeformat            = "%Y-%m-%d"
+let g:changelog_username              = ""
+let g:changelog_date_end_entry_search = '^\s*$'
+
+" template
+let g:author                          = ""
+let g:email                           = ""
+let g:author                          = ""
+let g:email                           = ""
+let g:company                         = ""
+
+"" php-doc.vim
+let g:pdv_cfg_Type = "mixed"
+let g:pdv_cfg_Package = ""
+let g:pdv_cfg_Version = "$id$"
+let g:pdv_cfg_Author = ""
+let g:pdv_cfg_Copyright = ""
+let g:pdv_cfg_License = ""
+
+" lingr.vim
+let g:lingr_vim_user = ""
+let g:lingr_vim_password = ""
+
+let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
+let s:is_win = has('win16') || has('win32') || has('win64')
+
+if s:is_win
+  let g:my_chm_dir = expand("")
+elseif s:is_mac
+  let g:my_chm_dir = expand('')
+  let g:my_chm_command = 'open -a iChm'
+endif
+"}}}
+
+"" vim: set fdm=marker sw=2 ts=2 et:

@@ -1,0 +1,11 @@
+# Global snippets
+# vim: noexpandtab
+# (c) holds no legal value ;)
+snippet c)
+	`&enc[:2] == "utf" ? "©" : "(c)"` Copyright `strftime("%Y")` ${1:`g:snips_author`}. All Rights Reserved.${2}
+snippet date
+	`strftime("%Y-%m-%d")`
+snippet now
+	`strftime("%Y-%m-%d %H:%M:%S")`
+snippet vim:
+	vim:fdm=`&foldmethod` sw=2 ts=2 ft=`&filetype==''?'txt':&filetype` `&expandtab ? '':'no'`expandtab:

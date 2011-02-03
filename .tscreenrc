@@ -1,0 +1,40 @@
+escape ^z^z
+termcap kterm hs@
+terminfo kterm hs@
+#termcap  facit|vt100|xterm LP:G0
+#terminfo facit|vt100|xterm LP:G0
+vbell off
+bind w windowlist -b
+
+# [escape]+x ...
+bind -c REGION 2 split
+bind -c REGION 1 only
+bind -c REGION 0 remove
+bind -c REGION o focus
+bind -c REGION ^ resize
+bind x command -c REGION
+
+# [escape]+e ...(@status show->[escape]+i)
+bind -c ENCODING u encoding utf8
+bind -c ENCODING e encoding euc
+bind -c ENCODING s encoding sjis
+bind e command -c ENCODING
+bind v eval "split -v" focus screen
+bind s eval split focus screen
+
+defscrollback 3000
+
+#hardstatus alwayslastline I%wI
+#hardstatus alwayslastline "[%02c] %`%-w%{=b bw}%n %t%{-}%+w"
+hardstatus alwayslastline "[%02c]%{= wk} %-w%{=bu dr}%n %t%{-}%+w %= %{=b wb}%y/%m/%d %{=b wb}%c"
+#caption always "%{= wk} %-w%{=bu dr}%n %t%{-}%+w %= %{=b wb}%y/%m/%d(%D) %{=b wb}%c"
+#defhstatus I^En:^EtI
+startup_message off
+
+shell -$SHELL
+#shell -/bin/zsh
+
+# for cygwin
+#termcapinfo cygwin KJ=SJIS
+#defencoding sjis
+#autodetach on

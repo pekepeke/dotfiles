@@ -1,0 +1,214 @@
+/* http://note.openvista.jp/2008/customizing-google-with-user-css/ */
+@namespace url(http://www.w3.org/1999/xhtml);
+ 
+@-moz-document url-prefix("http://www.google.co.jp/search"),
+url-prefix("http://www.google.com/search"){
+ 
+table#mbEnd, /* Ad */
+table#sft h1,
+table#sft td.xsm{
+    display:none !important;
+}
+ 
+body {
+    margin: 0px !important;
+    padding: 7px 20px 0px 20px !important;
+}
+ 
+/* グローバルナビゲーションの枠線 */
+ 
+body > div > div#gbar{
+    padding-bottom: 15px !important;
+}
+ 
+body > div > div.gbh{
+    border: none !important;
+    padding-bottom: 10px !important; 
+}
+ 
+/* 検索ボックステーブル周りの調整 */
+ 
+table#sft{
+    width: 100% !important;
+}
+ 
+table#sft tr[valign="top"] > td + td{
+    width: 450px !important;
+}
+ 
+table#sft tr[valign="top"] > td + td,
+table#sft tr[valign="top"] > td + td table{
+    padding: 0px !important;
+    margin: 0px !important;
+}
+ 
+table#sft tr[valign="top"] > td + td{
+    padding-bottom: 6px !important;
+    position: fixed !important;
+    bottom: 0px !important;
+    right: 0px !important;
+}
+ 
+table#sft tr[valign="top"] > td + td table{
+    padding-bottom: 6px !important;
+}
+ 
+table#sft tr[valign="top"] > td + td table tr{
+    display: block !important;
+    float: left !important;
+    padding-top: 7px !important;
+}
+ 
+table#sft:hover tr[valign="top"] > td + td{
+    background-color: white !important;
+}
+ 
+table#sft tr[valign="top"] > td + td input{
+    font-size: 90% !important;
+    opacity: 0.6 !important;
+}
+ 
+table#sft tr[valign="top"] > td + td input[name="q"]{
+    display: block !important;
+    background-color: white !important;
+    border: 1px inset #666 !important;
+    float: left !important;
+    width: 350px !important;
+    padding: 4px 6px !important;
+}
+ 
+table#sft tr[valign="top"] > td + td input[name="q"]:focus{
+    border: 1px solid #94bbdf !important;
+    outline: 1px solid #b3cfe8 !important;
+}
+ 
+table#sft tr[valign="top"] > td + td input[name="q"]:focus,
+table#sft tr[valign="top"] > td + td input[name="q"]:focus + input[name="btnG"],
+table#sft tr[valign="top"] > td + td input[name="q"] + input[name="btnG"]:active{
+    opacity: 1.0 !important;
+}
+ 
+table#sft tr[valign="top"] > td + td input[name="btnG"]{
+    margin-left: 10px !important;
+    padding: 3px !important;
+}
+ 
+/* 関連ページ、メモへのリンクを削除 */
+ 
+span.a + nobr > a[href*="q=related"],
+span.a + nobr > span.bl > a.fl{
+    display: none !important;
+}
+ 
+/* 検索結果の幅 */
+ 
+div#res table{
+    width: 100% !important;
+    max-width: 40em !important;
+}
+ 
+/* 各検索結果を下げ */
+ 
+tr > td.j > div.std{
+    margin-top: 0.3em !important;
+    margin-left: 2em !important;
+}
+ 
+/* カウンタを生成 */
+ 
+div#res{
+    counter-reset: head !important;
+}
+ 
+div.g > h2.r:before{
+    counter-increment: head !important;
+    content: "#" counter(head) !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    margin-right: 5px !important;
+    padding: 0px 4px !important;
+    background: white url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAeCAMAAAAiq38CAAAAA3NCSVQICAjb4U/gAAAAYFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADu7u7v7+/w8PDx8fHy8vLz8/P09PT19fX29vb39/f4+Pj5+fn6+vr7+/v8/Pz9/f3+/v7///9uR0UGAAAAQUlEQVQYlXXGtwGAMAAEsZ8ATHIk7L+lK5+/QZX0QdYX3ge64W1Qq4PqbIE3QwneCF346QnvAe3wbpgNCtAK74IOWSsakaslG2kAAAAASUVORK5CYII=") left top !important;
+    color: #bbb !important;
+    border: 1px solid #bfbfbf !important;
+    -moz-border-radius: 3px !important;
+}
+ 
+/* 関連検索 */
+ 
+div.e,
+div#res > div:first-child{
+    border: 1px solid #ccc !important;
+    padding: 0px !important;
+}
+ 
+div.e table#brs{
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0px !important;
+}
+ 
+div#res > div:first-child td.nobr,
+div.e table#brs caption{
+    min-width: 100px !important;
+    background-color: #bbb !important;
+    color: white !important;
+    padding: 0px !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+    font-weight: bold !important;
+}
+ 
+div#res > div:first-child td,
+div.e table#brs caption{
+    padding: 10px !important;
+}
+ 
+div.e table#brs tr td{
+    border: 1px solid #ccc !important;
+    padding: 10px !important;
+}
+ 
+/* ファイルタイプ関連 */
+ 
+div.g > h2.r{
+    font-size: 110% !important;
+}
+ 
+div.g > h2.r > a.l[href*=".ac.jp/"]:before{
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAMAAADzapwJAAAAA3NCSVQICAjb4U/gAAAAYFBMVEUwMDAlTSZnaGcIoztLhlgBvEQ4qWA+uGskyWJUrXNetX0/znebnJxvu4l9wZidrqxx1ZGotLe1vL+N1qWb2q+w4r/X19u+6c7T5d7d6ejm7O3m9O7u9/b2+vj9/f3///89IAYcAAAA1ElEQVQYlWWR6Y6DMAyEXVhaoOEKR27m/d9yndBGbHb+2Bp9Go8SAnB+pP13B2UbGH70F6EM77OpxM2+Voz148h5mfa2ogklDccD1hU0zsBbVaHMdmHXJFBkny5shsw/mnMtHQWN4ELwD13QsLGJlH9p+JCmuEamLZLMhBvNEW7f1k2d8jqaaHiv5rZtmqb1Apnmcuv7He16PuLV+N7s+m1+vZ51lBLuQ8O4dej77smqx4Njrt/RUOPQd13XD6MyxK0SraVclom1LFJWpJPNEnST4JO/4bEva9NpKxAAAAAASUVORK5CYII=") !important;
+    padding: 0px 4px !important;
+}
+ 
+div.g > h2.r > a.l[href*=".go.jp/"]:before{
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAUCAMAAAC+oj0CAAAAA3NCSVQICAjb4U/gAAAAYFBMVEW8AAC2CQjNAAHsAAC7FhXIERHeCgi7KCjERkXsOjnZamrPfHvdgICvr6/gqai8vLzCwsLIyMjOzs7S1tbY29zg4OHz2tnk5ebp6enu7e3x8fHz9Pb39/f7+/v9/f3////j3z0zAAAAu0lEQVQYlbWQ3W6DMAxGoTC2FhZYSBY7/nv/t6wDVS+m3lWzIkX6dHT02Z29nO7fYxFRs/aYn7GoUsmF/FfCBngs6JBCDkuojhCdtGRAVgrTpf8Mpoh0SgCATZdh+hjH3ZhQj1hSqWJhmKaxv6nVpnGJ7Lmw1qvj/RcLI4p0xvATM4j9XodLN1eyyrVJKG7eTo3DbT58hkfv8h2Tt4S0pwRkVPncMq4Z07b6bNF5fSyv697wvzcRzG8d9g6wXC54DpXxzwAAAABJRU5ErkJggg==") !important;
+    padding: 0px 4px !important;
+}
+ 
+div.g > h2.r > a.l[href*="http://www.amazon.co.jp/"]:before{
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAATCAMAAACjpw26AAAAA3NCSVQICAjb4U/gAAAAYFBMVEUKCAYVEhEqKSc8OjlHRkVTUlFjYmJsbGt7e3qQj4+ZmZj7ji+trKz8nkL7o1O5uLj+rWP9tHHExMT8w479zJ/W1tb+1bDi4uL94Mfp6en95tH+7uLy8vL79/T9+vn///9mECSVAAAAtElEQVQYlW2RWRKEIAxEg4DgLi6AiOH+txxwprRk7K/Uo6sTEgivgqtCxD8cCfojxxi2VpaiWjO34ZBE1ycWQERbEhDPkIpLDFMBPMv261CLHIdNFlAUJMNHyp7a3B1T2Uv2ELHx4p4Qzh8bBoTSGE4q3J1L7j09TCWjrB64NFb1TcJaubSnzXhEjwGdVQnj0s37taNDKzt/W9qxGxfrnLNa9crZ5TdJtHRNUqc0ns3uMzz0AS8+JxP4ZhsWAAAAAElFTkSuQmCC") !important;
+    padding: 0px 4px !important;
+}
+ 
+div.g > h2.r > a.l[href*="wikipedia.org"]:before{
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAATCAMAAACjpw26AAAAA3NCSVQICAjb4U/gAAAAYFBMVEU/Pz9PT09aWlpnZ2dzc3N6enqCgoKKioqRkZGYmJicnJyjo6OoqKisrKywsLC2tra6urq+vr7CwsLHx8fLy8vQ0NDV1dXY2Njd3d3i4uLm5ubp6enu7u7y8vL4+Pj///9BAaonAAABB0lEQVQYlW3RSW7EIBAFUNO0zWDmYgbD/W8ZE2dahEUhHqikX2zz37U9G0V3cSVpTH55jNddrWIi6J198zWB3Ve79Dlax/f6cBz1bfEWp0/BGbvjxWPUub1exEHO0TgNBwrrdR+9FNRnrgETr7UmdDHA3aj2EMoVA4CUbF9sVZ2W0V5ct2CMUgwtTqO1nlrLJvgC2vATLy5XKqWnnE1O5L1bwd6LY66llVg6gKVSC85fi9U5Y6KYXB48WCn4vnqPFq/QsoesrVeGcYb0Z0odYoo1hCCtPfBB0BM+EJfDHQO0VVIS5L4mmAQkxqlRQvBjO3/m3c7TgbPipBjZP98ww8kpOY5DPccPrDciMXvSGh4AAAAASUVORK5CYII=") !important;
+    padding: 0px 4px !important;
+}
+ 
+div.g > h2.r > a.l[href$=".pdf"]:before{
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAA3NCSVQICAjb4U/gAAAAYFBMVEW5Gg7rBADAKBvpIwfCQSrsMB/JUDHsRi6zaWH4YB7iZEm6gXL5dDjgflq/mJDviWH9nWnUqqDAwMDGyMnwubDQ0tPrycHZ2Nfe3t7z29Xk5eXs7Ozx8fH19fX6+vv////F3ylvAAAANXRFWHRDb21tZW50AE9QVFBpWCB3ZWJEZXNpZ25lciAgaHR0cDovL3d3dy53ZWJ0ZWNoLmNvLmpwL/A4MtsAAAJKSURBVDiNdZSL1rIqEIZJBAo1JOUgh+H+7/IfrL6t5H5zUcseXmYGGFJ2QarKGaB8XpRGZB9TQCy+Vb99/CHfIP5xEvjQmn7AVOy6rtbabVfcnGvm/jnSG4oy8Rh3TbNO1443KqQUdBwfo5pnJFWJ+bD8AbSlzPj78cBhHNXkSgiXjpYWWgZSFHD+GKcJJwb/53l25GW6lWl33MGS44XjJjtWl+alFzWd53O4D0/XguzGye3Gh6F/6FHVlGTf855/k/8DBeu5rJrUpNS0S3Lea3cGQdpwlvdholpbD2dwgdgoRTFDDOEERnD1MITDE7OSsAoXGkeXWkMrrBI6+ivHE1gTiym1MTo8kCl+HhxAUzZDDgjCydHngyUe9k1Qjec+/DgieFSWdIKcsvmJ0cORhJmKkHM0r19H+M8tgWVUYYDLcgXm/LmKGTBAtiXzQjD7Zgt9yR8l5BgTbtnVgBHCFwSwUrKOv7kFWsdQIL8/SqyckLu5BKsj7JVdRb88Sfd/YCra4NFympP7YtCwgpiLcT8g7+/3nhCuEeg6BJfFuyXFNusiKenvg66r4cq4dMhxiSVk18ToViF8dBiZGRCksuQFr3ULJoglSRFrRqAowzpGg/ldONa3UgCSZawg07UOF461eySmqqWsHHnu9bp0hLKyDeuOG8g6Iiu42StHXFeoL8hwDraUFozwblyzwAAQ7HrBFF5GY6BxLAFvcIjbilemttz07ftgTuDbr9Ym7W0f+4RzxmBVX+EAQn4dhZuDjHEOu0rMnwb5Dw5GmV0/r+uEAAAAAElFTkSuQmCC") !important;
+    padding: 0px 4px !important;
+}
+ 
+div.g > h2.r > a.l[href$=".doc"]:before{
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAMAAAC7IEhfAAAAA3NCSVQICAjb4U/gAAAAYFBMVEUAR7sDYMYNcNSJYTtJdKQfgtwJkfKpcTk4kN2HiIE5pPNqmcNmq96UqLu3r4Jpxfy2t7jQwlfAv77HxsXh0mbLy8rR0NDC1ebu4mfY2Nje3t/m5ubs6+vy8vL4+Pj///+VSXRiAAAANXRFWHRDb21tZW50AE9QVFBpWCB3ZWJEZXNpZ25lciAgaHR0cDovL3d3dy53ZWJ0ZWNoLmNvLmpwL/A4MtsAAAItSURBVDiNdVSLsqowEFOkioDH2tr19P3/f3myi5e5Foy2zkjIblLYQxWULCil1C84yJ5jWpFTiiF9IW4uhPiV+FoQQohACD59IR6AYwecBWo0aY+Y67EbRqXUeB9HWcNcU95VHPA78HbGAnUONcZaNoogHnQ1+ONVjrcZiq9aY9hVPNxBPIJ4ltIvzi3tKdY6Tdh6rNuo5tvtep1uvlU8dtPUY7v151FPalT3oWfo3CpyPEp1RzUOnRqGbp4noNf+U7FMhOOLkdeCJXr9CuVDsbjsAz7kifx67nzfJzEV763W2hitXehXmJwaxUrWgGbAdhGmOsXoNIiNa09M4wVFNYzDxGHuKHpnHGs6Y8I0ztfL5TrfJ5MaIhSttayIbzydLoLraVcRPC5tKP48ns/fJ/BwKbeKwUuPGsLh5/eNh22JuUYSK5qMSz8rPIiN60CGYMY6lPYLyPvcEjMTxYxjT2yM79OUyjbHxbRjlhjj5WLZKPqVRkwFl5yllsg9MkGIvDvizfq2dF6IUtxqi+NcdOO2x8gSXh5HGSvLLKo7PTqutKTLo4rHVsklFt8qJkuo7TBMyJG0Cy+4syWGhICcE8PGOYezJ+ytIsdDMIFQ2K1jOZwRbYgcOC4ThyckSdI6xNMq4qHwS1HW5e483sMU86ZHyCBKQnM+0jpzdoj/LiGYZaJLpq1rlJaoF8b/Y7/QB/E9sotoiZI8kPxofJxMkZflDYmSEA3cxHXq/gEGTplX+MrHOQAAAABJRU5ErkJggg==") !important;
+    padding: 0px 4px !important;
+}
+ 
+/* AutoPagerize使用者向け（使っていない人は要削除）*/
+ 
+div#bsf + p,
+table#nav{
+    display: none !important;
+}
+ 
+}

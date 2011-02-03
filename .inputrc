@@ -1,0 +1,27 @@
+set editing-mode emacs
+set bell-style none
+set meta-flag on
+set input-meta on
+set convert-meta off
+set completion-query-items 100
+
+$if mysql
+  "\C-xd": "show databases;"
+  "\C-xt": "show tables;"
+  "\C-xu": "select user,host,password from mysql.user order by user,host;"
+  "\C-xb": "select user,host,db       from mysql.db   order by user,host;"
+  #"\C-xc": "show create table TN\\G"
+  "\C-xc": "SHOW VARIABLES LIKE 'char%'; SELECT * FROM information_schema.SCHEMATA; SHOW TABLE STATUS;\n"
+
+  "\C-xI": "INSERT INTO tablename (column) VALUES ('value');"
+  "\C-xU": "UPDATE tablename col = 'val' WHERE id = ;"
+  "\C-xD": "DELETE FROM tablename WHERE id = ;"
+
+  "\C-x\C-xd": "CREATE DATABASE dbname DEFAULT CHARACTER SET utf8;"
+  "\C-x\C-xt": "CREATE TABLE tablename (id SERIAL, created TIMESTAMP, modified TIMESTAMP, text TEXT);"
+  "\C-x\C-xg": "GRANT ALL PRIVILEGES ON dbname.* TO username@localhost IDENTIFIED BY 'passwd';"
+  "\C-x\C-xD": "DROP DATABASE dbname;"
+  "\C-x\C-xT": "DROP TABLE tablename;"
+  "\C-x\C-xU": "DROP USER username@localhost;"
+$endif
+

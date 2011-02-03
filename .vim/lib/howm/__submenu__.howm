@@ -1,0 +1,37 @@
+= __submenu__
+[2001-01-01 00:00]
+,c    - memo
+,m    - find mru
+,l    - find latest
+,L    - find by ts
+,a    - find all
+,s   - search memo
+,u    - quick memo
+,[Sp] - write diary
+<C-w>,- toggle qfix
+<C-w>.- goto qfix win
+
+,y    - schedule list
+,t    - TODO
+,H    - help
+
+## wiki
+<<< keyword
+[file]
+[[keyword]]
+
+,D - ins date
+,t - ins time
+,[Cnp]
+
+## todo
+@ - 予定
+! - 締切り
++ - TODO
+- - リマインダ
+. - 完了
+
+[Y-m-d]@1   term:1day
+[Y-m-d]@(7) every week
+[Y-m-d]!10  before
+

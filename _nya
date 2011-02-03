@@ -1,0 +1,203 @@
+# nya シリーズの共通設定ファイルです。
+#	実行時のカレントディレクトリか、
+#	環境変数HOMEの指すディレクトリに置くと
+#       起動時に読みこんで実行します。
+#
+# 名称などを変更したい場合は、起動時に -r オプションで
+# パスを指定してください。
+
+#print %0 reading ...
+
+alias cp cp -i
+alias rm rm -i
+alias mv mv -i
+alias bcc bcc32
+alias zipinfo unzip -l
+alias dir\w dir /w
+alias vim gvim
+
+suffix ny %nyatype% -f
+suffix pl perl
+suffix rb ruby
+suffix jar java -jar
+suffix awk awk -f
+suffix vbs cscript
+suffix js  cscript
+
+option uncompletechar ,;=
+option tilde   on
+option history on
+option backquote  4000
+option +keep_bottom_line
+# option +standalone
+if $standalone = (set) then
+    foreach i ( dir mkdir rmdir )
+		alias $i $COMSPEC /c $i
+    end
+endif
+
+bindkey CTRL_P vzlike-previous-history
+bindkey CTRL_N vzlike-next-history
+
+# customize
+option prompt [%USERNAME% $W]$G
+
+#alias ls ls.exe -F
+#alias ll ls.exe -lF
+#alias la ls.exe -aF
+alias ll ls -l
+alias la ls -a
+alias cpf cp -v
+alias cp xcopy
+alias rmf del /f
+alias rm del
+alias mv move
+#alias bcc bcc32
+#alias lha lhcm
+#alias zip mzp
+#alias zipinfo unzip -l
+alias ex. explorer .
+alias edit notepad
+
+# フォルダショートカット
+if exist "%USERPROFILE%\デスクトップ" then
+	folder Desktop "%USERPROFILE%\デスクトップ"
+	folder SendTo "%USERPROFILE%\SendTo"
+	folder StartMenu "%USERPROFILE%\スタート メニュー"
+	folder MyDocuments "%USERPROFILE%\My Documents"
+	folder Program "%USERPROFILE%\スタート メニュー\プログラム"
+	folder Favorites "%USERPROFILE%\Favorites"
+	folder Profile "%USERPROFILE%"
+	folder NetHood "%USERPROFILE%\NetHood"
+	folder PrintHood "%USERPROFILE%\PrintHood"
+	folder Recent "%USERPROFILE%\Recent"
+	folder Startup "%USERPROFILE%\スタート メニュー\プログラム\スタートアップ"
+	folder Templates "%USERPROFILE%\Templates"
+	folder AllUsersDesktop "%ALLUSERPROFILE%\デスクトップ"
+	folder AllUsersStartMenu "%ALLUSERPROFILE%\スタート メニュー"
+	folder AllUsersPrograms "%ALLUSERPROFILE%\スタート メニュー\プログラム"
+	folder AllUsersStartup "%ALLUSERPROFILE%\スタート メニュー\プログラム\スタートアップ"
+else
+	folder Desktop "%USERPROFILE%\Desktop"
+	folder SendTo "%USERPROFILE%\SendTo"
+	folder StartMenu "%USERPROFILE%\スタート メニュー"
+	folder MyDocuments "%USERPROFILE%\My Documents"
+	folder Program "%USERPROFILE%\スタート メニュー\プログラム"
+	folder Favorites "%USERPROFILE%\Favorites"
+	folder Profile "%USERPROFILE%"
+	folder NetHood "%USERPROFILE%\NetHood"
+	folder PrintHood "%USERPROFILE%\PrintHood"
+	folder Recent "%USERPROFILE%\Recent"
+	folder Startup "%USERPROFILE%\スタート メニュー\プログラム\スタートアップ"
+	folder Templates "%USERPROFILE%\Templates"
+	folder AllUsersDesktop "%ALLUSERSPROFILE%\Desktop"
+	folder AllUsersStartMenu "%ALLUSERSPROFILE%\スタート メニュー"
+	folder AllUsersPrograms "%ALLUSERSPROFILE%\スタート メニュー\プログラム"
+	folder AllUsersStartup "%ALLUSERSPROFILE%\スタート メニュー\プログラム\スタートアップ"
+endif
+folder Fonts "%SYSTEMROOT%\Fonts"
+
+folder Develop "%HOME%\..\Develop"
+folder Projects "%HOME%\..\Develop\Projects"
+
+folder Library "%HOME%\Library"
+folder WorkSpace "%HOME%\workspace"
+
+set PERSONAL=%HOME%\..\Personal
+
+# ヒストリの保存
+#option savehist ~/_nya_history
+if not exist "%USERPROFILE%\_nya_history" then
+	type nul > "%USERPROFILE%\_nya_history"
+endif
+option savehist %USERPROFILE%\_nya_history
+
+if %nyatype.defined% != 0 then
+    # NYACUS でのみ実行する部分をここに記述.
+    # option start "start """""
+    if "%HOME%" != "" then
+    	if exist "Application Data" then
+    		cd
+    	endif
+    endif
+endif
+#option prompt $e[31;40;1m[$p]$e[37;1m
+
+foreach bin ( "$PERSONAL\Apps\cmdbin\grep" "$PERSONAL\Apps\cmdbin\svn" )
+	if exist $bin then
+		set PATH+=$bin
+	endif
+end
+
+foreach root ($PERSONAL\Develop\Apps\lang C:\strawberry $PERSONAL\Apps\cmdbin\usr)
+	if exist $root then
+		foreach name `dir /A:D /B $root 2> nul`
+			if $bin == "cygwin/" then
+				;
+			else
+				if exist $root\$name\bin then
+					set PATH+=$root\$name\bin
+				endif
+			endif
+		end
+	endif
+end
+
+if not exist "c:\Personal\Develop\Apps\lang" then
+	foreach lang `dir /A:D /B "$PERSONAL\Develop\Apps"`
+		if $lang == "cygwin" then
+			;
+		else
+			foreach name `dir /A:D /B $PERSONAL\Develop\Apps\$lang`
+				if exist $PERSONAL\Develop\Apps\$lang\$name\bin then
+					set skip=0
+					foreach p `dir /A:D /B $PERSONAL\Develop\Apps\$lang\_* 2> nul`
+						if $name == $p then
+							set skip=1
+						endif
+					end
+					if $skip == 0 then
+						set PATH+=$PERSONAL\Develop\Apps\$lang\$name\bin
+					endif
+				endif
+			end
+		endif
+	end
+endif
+
+foreach bin ( "C:\Program Files\ruby-1.8\bin" "$PERSONAL\Develop\Apps\Python26" "$PERSONAL\Develop\Apps\Python26\Scripts")
+	if exist $bin then
+		set PATH+=$bin
+	endif
+end
+
+# customize end
+
+# 関数 which の定義.
+which{
+    foreach dir . ${PATH.split}
+		foreach ext .com .exe .bat .cmd
+		    if exist $dir\$1$ext then
+			print found $dir\$1$ext
+		    endif
+		end 
+    end
+}
+
+### Vzライクなキーバインドにする関数
+### 利用時には「vzbind」とだけの行を入れてください。
+vzbind{
+    bindkey CTRL_R xscript:start            xscript:pageup
+    bindkey CTRL_S backward                 xscript:backward
+    bindkey CTRL_D forward                  xscript:forward
+    bindkey CTRL_E vzlike-previous-history  xscript:previous
+    bindkey CTRL_X vzlike-next-history      xscript:next
+    bindkey CTRL_F forward-word
+    bindkey CTRL_A backward-word
+}
+# vzbind
+
+# タグジャンプ参照コマンド設定.
+set TAGJUMP=tagjump.vbs
+
+#print done

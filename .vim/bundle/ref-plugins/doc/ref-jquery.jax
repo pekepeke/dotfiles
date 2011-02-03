@@ -1,0 +1,67 @@
+
+*ref-jquery.txt*	jquery 用の ref ソース。
+
+Version: 0.2.0
+Author : hokaccha <k.hokamura@gmail.com>
+License: クリエイティブ・コモンズの表示 2.1 日本ライセンス
+         <http://creativecommons.org/licenses/by/2.1/jp/>
+
+==============================================================================
+目次						*ref-jquery-contents*
+
+概要				|ref-jquery-introduction|
+カスタマイズ			|ref-jquery-customizing|
+更新履歴			|ref-jquery-changelog|
+
+
+==============================================================================
+概要						*ref-jquery-introduction*
+
+*ref-jquery* はjQueryのオンラインAPIドキュメント (*) 用の|ref| ソースです。
+
+(*) http://api.jquery.com/
+
+要件:
+- |ref| 0.3.0 以降
+
+
+
+==============================================================================
+カスタマイズ					*ref-jquery-customizing*
+
+g:ref_jquery_cmd					*g:ref_jquery_cmd*
+			jQuery APIドキュメント を表示するためのコマンドです。
+			%s は単語を引くための url に置き換えられます。コマンド
+			とその引数を含む |List| も指定できます。
+			デフォルト値は以下の物でコマンドが実行可能なものです。
+			- 'elinks -dump -no-numbering -no-references %s'
+			- 'w3m -dump %s'
+			- 'links -dump %s'
+			- 'lynx -dump -nonumbers %s'
+
+g:ref_jquery_start_linenumber			*g:ref_jquery_start_linenumber*
+			jQuery APIドキュメントの画面表示を開始する行数です。
+			デフォルト値は 25 になっています。
+
+g:ref_jquery_encoding				*g:ref_jquery_encoding*
+			|g:ref_jquery_cmd| で指定したコマンドの出力のエンコードを
+			指定します。この変数が空の場合、出力は変換されません。
+			デフォルト値は 'termencoding' です。
+
+g:ref_jquery_use_cache				*g:ref_jquery_use_cache*
+			一度開いたページをキャッシュします。
+			デフォルト値は 0 です。
+
+
+==============================================================================
+更新履歴					*ref-jquery-changelog*
+
+0.2.0	2010-04-20
+	- |ref| 0.3.0 に対応。
+	- |g:ref_jquery_use_cache| オプションを追加。
+
+0.0.1	2010-04-10
+	- 初版。
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl

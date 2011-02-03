@@ -1,0 +1,22 @@
+snippet pre
+abbr	>|| ||<
+prev_word	'^'
+	>|${1}|
+	${2}
+	||<
+
+snippet bl
+abbr	>> <<
+prev_word	'^'
+	>${1}:title=${2}>
+	${3}
+	<<
+
+snippet		title
+abbr		*[ ]
+prev_word	'^'
+	*[${1}] ${2}
+
+snippet		twitter
+abbr		twitter:99999:detail
+	[twitter:${1}:detail]

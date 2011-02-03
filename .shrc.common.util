@@ -1,0 +1,42 @@
+#export RSYNC_PASSWORD=xxxx
+
+# MAN {{{
+LMANDIR=$HOME/.bin/apps
+if [ ! -e $HOME/.bin/apps ]; then
+  mkdir -p $HOME/.bin/apps
+fi
+# is_set_refe=0
+# for REFE in $(ls -dt $LMANDIR/ruby-refm-* 2>/dev/null ) ; do
+#   for CMD in $(ls -r $REFE/refe-* | awk '$1 !~ /\.cmd/ {print $1}') ; do
+#     alias $(basename $CMD)=$CMD
+#     if [ $is_set_refe -eq 0 ]; then
+#       alias refe=$CMD
+#     fi
+#   done
+#   break
+# done
+# unset REFE
+# unset CMD
+# unset is_set_refe
+
+export CPPREF_DOCROOT=$LMANDIR/cppref/doc/
+export JSREF_DOCROOT=$LMANDIR/jsref/doc/
+export TIMOBILEREF_DOCROOT=$LMANDIR/timobileref/doc/
+export TIDESKTOPREF_DOCROOT=$LMANDIR/tidesktopref/doc/
+# }}}
+
+# RSENSE {{{
+for RSENSE in $(ls -dt $LMANDIR/rsense* 2>/dev/null) ; do
+  export RSENSE_HOME=$RSENSE
+  break
+done
+if [ "x$RSENSE_HOME" != "x" ]; then
+  alias rsense-updaterc='ruby $RSENSE_HOME/etc/config.rb > ~/.rsense'
+fi
+unset RSENSE
+#chmod +x $RSENSE_HOME/bin/rsense
+#$RSENSE_HOME/etc/config.rb > ~/.rsense
+unset LMANDIR
+# }}}
+
+# vim: fdm=marker sw=2 ts=2 ft=zsh et:

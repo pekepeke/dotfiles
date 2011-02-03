@@ -1,0 +1,73 @@
+#!/usr/bin/perl
+
+#
+# Validate CSS filename or css text as standard input.
+#
+# 2006/06/13 Cosimo Streppone <cosimo@cpan.org>
+#
+
+use strict;
+use warnings;
+eval 'require WebService::Validator::CSS::W3C';
+if( $@ )
+{
+    print STDERR 'You don\'t seem to have installed the required', "\n",
+                 'WebService::Validator::CSS::W3C CPAN module.', "\n",
+                 'Do you want me to try and install it from CPAN? [yN]', "\n",
+                 '(you should have CPAN.pm configured and network connection up)', "\n", "\n";
+    my $ans = <STDIN>;
+    $ans = substr($ans, 0, 1);
+
+    if($ans =~ /[Yy]/)
+    {
+        eval 'use CPAN';
+        if( my $obj = CPAN::Shell->expand('Module', 'WebService::Validator::CSS::W3C') )
+        {
+            $obj->install();
+        }
+
+        # Try to reload module
+        eval 'require WebService::Validator::CSS::W3C';
+        if( $@ )
+        {
+            print "\n",
+                "Sorry. Couldn't automatically install from CPAN.\n",
+                "You should do this manually.\n";
+        }
+    }
+}
+
+my $cssf = $ARGV[0] || '-';
+my $css;
+
+open(my $fh, '<' . $cssf) or exit(255);
+while(<$fh>) { $css .= $_ }
+close $fh;
+
+my $val = WebService::Validator::CSS::W3C->new;
+my $ok = $val->validate(string => $css);
+
+if($cssf eq '-')
+{
+    $cssf = '<STDIN>';
+}
+
+if ($ok and !$val->is_valid)
+{
+
+    for( $val->errors )
+    {
+        my $errtype = $_->{errortype} eq 'parse-error' ? 'E' : 'W';
+        #printf "%s:%s:%d:%s in %s.\n", $cssf, $errtype, $_->{line}, $_->{message}, $_->{context};
+        my $l = sprintf "%s:%s:%d:%s in %s.\n", $cssf, $errtype, $_->{line}, $_->{message}, $_->{context};
+        $l =~ s/\s+|\s*[\r\n]+/ /g; print $l;
+    }
+
+    exit scalar $val->errors;
+}
+else
+{
+    # Ok, valid CSS file
+    exit 0;
+}
+

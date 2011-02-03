@@ -1,0 +1,74 @@
+/* http://nanto.asablo.jp/blog/2006/12/22/1041698 */
+/* 特殊なリンクに対するマウスカーソルを変更する */
+:-moz-any-link[target="_blank"], :-moz-any-link[target="new"] {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAVElEQVR4nGP0+f+WAR1sYRT6jyGIBpgIKaC6RhZcEv/xOJaRkRIbTRoxA2ILERrpHzgMDQ3/MQAkaPBjrKGKHKKNjQwMZ+rfMVLNqQOUchobSdcIACN5M7J0SyZ/AAAAAElFTkSuQmCC")
+    , pointer !important;
+}
+:-moz-any-link[href$=".txt"], :-moz-any-link[href$=".rtf"]{
+  cursor: url("moz-icon://.txt"), pointer !important;
+}
+:-moz-any-link[href$=".xml"] {
+  cursor: url("moz-icon://.xml"), pointer !important;
+}
+:-moz-any-link[href$=".zip"], :-moz-any-link[href$=".7z"], :-moz-any-link[href$=".bz2"],
+:-moz-any-link[href$=".cab"], :-moz-any-link[href$=".gz"], :-moz-any-link[href$=".gzip"],
+:-moz-any-link[href$=".lzh"], :-moz-any-link[href$=".rar"], :-moz-any-link[href$=".sit"],
+:-moz-any-link[href$=".tgz"] {
+  cursor: url("moz-icon://.zip"), pointer !important;
+}
+:-moz-any-link[href$=".pdf"] {
+  cursor: url("moz-icon://.pdf?16"), pointer !important;
+}
+:-moz-any-link[href$=".gif"] {
+  cursor: url("moz-icon://.gif?16"), pointer !important;
+}
+:-moz-any-link[href$=".png"] {
+  cursor: url("moz-icon://.png?16"), pointer !important;
+}
+:-moz-any-link[href$=".jpg"] {
+  cursor: url("moz-icon://.jpg?16"), pointer !important;
+}
+:-moz-any-link[href^="javascript:"], :-moz-any-link[href="#"][onclick], :-moz-any-link[href$=".js"] {
+  cursor: url("moz-icon://.js?16"), pointer !important;
+}
+:-moz-any-link[href^="mailto:"], :-moz-any-link[href^="https://mail.google.com"] {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAACfklEQVR4nGXRTW9McRTH8e+9c9vpjKmZ0acxrSoL1XgKopoQ8RQPSWNhYWfRF+EdWLDwBsRGSLqx6MpT4jFCqqigWiGoKVo1NW1m7sy993/O36IJVSc5q3M++Z3kOP22yPI6cfeM3eW34ZmV/udY89cbHXsvf9nSdgHP1pbuOcvxxTtXLXUNNOR7iCVSmEqJ8pdxnszHxwb3nBiQXGzkPzzwFJsr3WZDPk1dNo+aCNUIKwasEM5NMz3xNry04eT5Qm/nWWKETr8tcvresD3Wd4TZUsj7yXmcoERToko6XiPhBXhOBBohUcjMmwmGbdvozeP9A07hxjk7kTnF4b51f073a8LUTJVvPwOKpYCybwgCIRTLQimgx3lGoz/qeypCFx+IymnqUqsAaIjH6MinyLam8A1/O4LJZ2PsSMPXJ+WkixjWbupmdmSIWnEKtVBbCpZAWyqwt/4+zauTqCiuilKXTNLae4Afw0P8+jyOb6CyHM5M0P5ukJb1ORxXUVE8EQFr8OL1tO8/xuStIaSzRGhj1D69JGztxnoJcoXr5HZuxXEEa0LUKK4aBQRrDa4LnQePEDy/Rnp+nE2H9tHlTZEZvUL7zi1/oJUQEcFTUaw1IBESVvn++AGr+47StHkHlpBcbx/xxgQ/Xo3RvLELB7OYLLqIkQhTLTMz8phMz24aO9djCUGqaFCmMZ/DdULmPnwi05HBccxfHFUWKL5+QfP2AzQ0tfwDNaigQZn6FfWk17RQnv5FMuuiRvHUKJXCR7Ibt+HFLWZhCqsBGtWwYRWNqtioikY1XAKSWZfQZzF5zknNB48erVR5iMjiC1QUNQJqHDWKsVg1+s+8IpjfE4WUocUGAp0AAAAASUVORK5CYII=")
+    , pointer !important;;
+  /*cursor: url("moz-icon://.eml?16"), pointer !important;*/
+}
+:-moz-any-link[href$=".au"], :-moz-any-link[href$=".mid"], :-moz-any-link[href$=".mp3"], 
+:-moz-any-link[href$=".ra"], :-moz-any-link[href$=".snd"], :-moz-any-link[href$=".wav"], :-moz-any-link[href$=".wma"] {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAtUlEQVR4nI3SwQ3DMAgFUEZjFEb5o3CwOgfnTJN7D78HFxK7thohFEfKg4AslDHMQFWtNFPO32QIhaIK9hxRT2wLiCoIBCPiBlEQ6GmGnwKiCvJ9FiTJiCjg3ujelt1FFdUV6Gf39sVa71sMoPA9/+LcsJkOBRJmbnEv0BeUs7u3aYS+sNdx1nPAAAolnLsucRbI7e4gEGt8/f51QXYQiN3FG2MFh4Xt0Arm3I86r+AjPHe/xwcEjQbu0iXJdgAAAABJRU5ErkJggg")
+    ,pointer !important;
+}
+:-moz-any-link[href^="ftp:"] {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAPCAYAAADtc08vAAABDUlEQVR4nJWTsXGDQBBF32roQJGUuoRTDYrObYjIBThargxow0Su4a4NE+EKPLMOEAeHB2v0I3Zu/7u/LIi3kbWGdLX5+eQ+hQeSGTAbo4sIAmFqcF/Gqf3eBYm3kSFdLRshm6cYhkvsQg6ZFDbmk2Vz6vYnkTaa3RxcgBRkMq7kEryeF0DUsaBVRbMaqYNmWHqaDqIt0BAkF1FHqdbxnRrNIKiuUwjQ5Uq1XU7kaEKDoffbAqi//Zkz9HuAmsrrKH04ZgiuLW4EUFeazJY6b6FY3RM6APjNm30kkRqRukzwDMTiDW+jeLtvoVCqHye4dEBnsPkOXn7mw//lbUkr279xrY/0bqE/E/Vtd7xfm7Zvr5WS0wMAAAAASUVORK5CYII="), pointer !important;
+}
+:-moz-any-link[href^="skype:"] {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAByElEQVR4nEWPvWtTURxAz73v5uW9NGkVKUpIa6y1oJaKgghOHYQucZASXZ107uDc+hc4uwkOSlUQB2dXF9F+CZXSokkbkiatTfvyktt3fw6m9OznwFElaVL8PrCYz1Des8KAB4NG0XWw3pZ39WL3uTqXrNJHZ5fDhetDqjwSaiayGkGxFQkrBwkN68rqV2olXAoWTgQzldbzWaM4TIRmTxjLKB5e8QF4sdHjbcWyuy/zdwmIp+IFvWeF2AmtnjASaB4V/JMYc5d9HuQNVoT13WQewNQjvuSMTO9b4d6wRkR4+iNmJ3ZczXmkNVwMNS0rsOGXdVorBMgZxU7s8LXi5Y2AT3cyFALF+6rlZ9tRiRyqpsum46QRaEWtK7z6bVGc8qToc/usx+zXiKMEnE/FdNJu7ds+bMfCzHnDYtXycecYmwh/7w9yc8hjNNS0bEKn7WZUKWoNe0vp+lbkmM2neDZ+Ot1x8GHbMrcc03NCxlMYQmkcj9vJcNVb+VyzAExkNb6GSkd4U+kxGmocwgWl11RJmv9z1dR05o957RsKuj+iFQQarIOjnmocTsa3ToU+cqCL/mbqMQJnYlUWn2tZLWyO2Utq0G39A1tfy/jhZAAyAAAAAElFTkSuQmCC"), pointer !important;
+}
+:-moz-any-link[href$=".doc"] {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAPCAYAAADtc08vAAACW0lEQVR4nIWSzUuUURTGf3dmsC9o0cJFIERmRhCJC1OKoEV+TSFUi6JWJf0FgS1yWWGboqhVBIH0gX1R9OVGUNqELaIIxsqoJnMcR0dnnPF933vPaXFHEQp64HAP957nOc89HHNAcyzh9EhWVRVVRURQFcRp5RQEQUW5m6w1S5xE24NAAUphnHfBemwwT7YgzBUcYRCQL4dMFgu8vdFG6JTHL0eYSvZo9fM+L3JtYEL/h9WdT7VYFp0tOr3e/1oH33zUps5uPaA5EqUwzsDQPKnxDF/SBXpO1NDX/5Pek/WcvfSEXc0t3qtRMCAinDt/BYCpZI8mSoGjcUuc1DioLVFVtZZ0ZhqoZ9HFyU4MAdXcfJEC4FhXKxs21qFquHr5IrFyYZbamnUUFiJ+5Up8GMvy9cd3Hg9nyOXnONzeiitnONW5zTtRZU/DJpyCqhLLB/4+Pz0OwMNXo6SnJrnzIsVM+iNNO2o8T3ydExBRrPgZxmYqCjOzc5Ty3zh+pAOAD59HudDb7YvCHE4UAFEfVmL+rRh46WfDv5FV1bRsrwJgd0Mjh/bv9F3DkNuDfgbOKc6BdV4gMbcwDcDi+zPLCxW97WUlrF3g6L6thA5Cq1hRwsoXEvlAWZN8tlzsypnlPBbmcGEIwL2hMQDadtVhHUSuIlB7q8nUVggH77/XrvYkBlCorDRYUSIHkVNsJaLKDBIrrTpxhFYAw6PhMf6FvQ2bvYPI/C2gIiyGgFE6muu8AzU4ASfiOzuDqBK5fzgQERatMvrpF5EYrMR8N4lhxWDFEFlDJAancQD+AOqJj+MfvUvZAAAAAElFTkSuQmCC"), pointer !important;
+}
+:-moz-any-link[href$=".xls"] {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAPCAYAAADtc08vAAACg0lEQVR4nIWSW2hVRxSGv9nnFBXskyCpKBG0Wn0qCSpeIHoejJwogg9W8MEHS5AipIpglProJSLEOwgtIoilKlGhjSbYYJMaMUapoLYxlhqkUSLxlnjO3nNZy4dz0WrBH4ZhGNY3/79mmeU6TEn1XU9VVVFVRARVQYIWd0EQVJQf66aZUk166oVt6oPD24SzNsYlOZIkj01y2CSPszHeJbTuGMAG5dzFLobqturEX5oKkI3n6/VjqmoYr6N50eejQY+cbNP2q3d0bvZrXa7DpAEOdzXzx+Btnj1/QsuGS9zs7+VARxMANRW1EAwYBQMiwnc79wMwVLdV09bGrJr9FUTKvfQnZPbOoWryQlJjUww+ecSC7EKOXjJ839pXCD2+kobNjagaDjbvJm3j10yaMIlFn2UYE43jZW6E7j8vEj81NH9zjFlTZmFsxPrsF3ivnGjvY9GXU7lyawBVJZ3PjQDw28PLXBvopmbGYgAejvZwrucslRWV4FL80PpX+bdEFC+FHqbzuVcc6NjHmbZDSKwc//06a9duYvjFY270XqCzohqsYd3SmbgAp37tQxS8RCXACA2ZLTRktpRf2HN6Fy///gef83T0XAYbcaK9r3wfAvhQBCTxa95X4+rtNK7eXj7PWVHBmiUzsAGs18IqRXA2pvrbTzHBoN5gXAqsARuBi8BGGB9hAziv/NzdT6Z6Oi4UAROa7pbHcsVPt3XlshoMoFAcafCitHTep3bedAB8UFypB+9aDxKwXmjp7P9PpOz8QmHb9QdvAc58CFARYgvZ+Z+jWnSghsTB4qpp+KAEMQRVXPgfByJC7JXee//ixOAlwgdwEuHF4MXgvMGJIWgKgDeN/Is/U9nRmQAAAABJRU5ErkJggg=="), pointer !important;
+}
+:-moz-any-link[href$=".ppt"] {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAHBJREFUOE+1UksSgCAI5fBNR7NjEUqMlA/FRS4cF+8r0HESE+XvPbToPtqcOJrCHIQwD2aA7jDW6K6iyxw6VNzoFjmoqoqtHTzimxA7GAP2AR3KVcD3ap+og+fUtxvUD3PwTdAcltvR4m3s6btDmnkDueGOYn8qPh0AAAAASUVORK5CYII"), pointer !important;
+}
+:-moz-any-link[href$=".mpg"], :-moz-any-link[href$=".mpeg"], :-moz-any-link[href$=".wmv"], 
+:-moz-any-link[href$=".avi"], :-moz-any-link[href$=".asf"], :-moz-any-link[href$=".mp4"], 
+:-moz-any-link[href$=".mov"], :-moz-any-link[href$=".flv"], :-moz-any-link[href$=".rm"],
+:-moz-any-link[href$=".rmvb"] {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAPCAYAAAAyPTUwAAABUUlEQVR4nG2SQUsCURDHf+/5LFtBFy+dAiG0e8i6XToWQec9ZvQB+jDdLe2kew6sIIoi1EWCbtGhTxBGl/C9bO2wuYeeAwMD85s/w39GNJvNGX9R2jxCSpAziAXEMYyfTudtVCaTodFo0G63+Xxu8z/m/U6ng+h2u6nyxX1gwfvbYVpLgCAIcN0ia+tY6bpFgiAgl1tGSSmJhn3cYoFyxRLGLRaIhn3ieIbMOyt49S2kEJQ3sFIKgVffYmkpi8rnHUbRAIDKqq38/gGjaICTy6GySlHzfEbRgPeXgU0DNc+n//iAuLu9meUdB4CTc98Cjw8SgYk2SGO+qXkJtMiNubKeaJQx3+nOi9yAZOeJ0UhtTDKp9UI3tNbUPB+jDWo6nXJ91QOgusCN17cvrq96TH9+UAA7u3uEYUh0Gdo0yYXDMES0Wmfpb7yODy2wWmql9S8h73zooSa7lQAAAABJRU5ErkJggg=="), pointer !important;
+}
+:-moz-any-link[href$=".rdf"], :-moz-any-link[href$=".atom"], :-moz-any-link[href$=".rss"] , :-moz-any-link[href*="rss"] {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAABiklEQVR4nH2RL2wUQRjFf9ucuk+gdrATJKOvevVtBQaDQpIzJCScwZwAQxPcNcjVxWDqT+/qRSDICAwzaVBv7SJ2e+0J+pIRk/ne9/5McTHe8vXTs5EsBh7HEqA03nz4VRS/Pz4ZAQgVlCsMMAaUW0w/wE7JqRcAC7JwK0eU4evtccAAUou63bRghvNG6hLFz7eL0Qcjycg8R4CVAX/+GvMBAB02WPx2JMdenB03mSjV4dURhgZdV+jmPUhYdUUqX55YPiPO3hO4bcZtM6wPWKixfk9sKpBw9RUizJLMikm4QSgeSLEHF7C6Qec7vHrSzW4iVDtImhUfdG3NGvYrDrtqtrhFroZuj2KP+QrhHxCH6SSBM6hoaS/ro4ozUNtM91DfE5OATYe7HGDTQQKvlhR7zIfpPXdTw7J74oADNwd3gWTgBKYMQI7gOMViCVhOc4YAqcdN+VGzRmXAG6TYMlx/Zpl7AIq/rxbj8WMTeAe25L/QAFlQXIy3fHnxdFzOHT2Gu5l33/8U/wAruLLYdl/SzwAAAABJRU5ErkJggg=="), pointer !important;
+}
+:-moz-any-link[href$=".exe"] {
+  cursor: url("moz-icon://.exe?16"), pointer !important;
+}
+:-moz-any-link[href$=".msi"] {
+  cursor: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAuElEQVR4nJWS0RGEIBBDU5qlUEpKuS/ryLc1XBF2kPvQxQXRU5jMMEDeblAY40nS+upSJA1cmANQijwNZPs5oEiel9XzsrpInj5/ACQdKuVsxh2ApGNkQDYPI+SqJC3JOUI2nwB9VUkVEOuRhh0AaC7cSVILsN0AAJz0GEDSsI1tt0bMBS4BYZbUAEadGcbx2+6H+fGwQ/to+dPfApo2915eAVyjvOggIDE2UNxuzRXQP0y/15/l+QO+4Gn+sUCJ0gAAAABJRU5ErkJggg")
+    ,pointer !important;
+}

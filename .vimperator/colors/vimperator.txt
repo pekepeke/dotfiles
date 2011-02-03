@@ -1,0 +1,60 @@
+"" ==VimperatorColorSchema==
+"" name: Sweets
+"" ==/VimperatorColorSchema==
+""http://vimperator.g.hatena.ne.jp/VoQn/20081216
+
+hi Hint font-family: monospace; font-size: 15px; font-weight: normal; color: lightyellow;
+background-color: black; border-color: ButtonShadow; border-width: 0px; border-style: solid; padding: 0px 5px 0px 5px;
+
+hi HintElem background-color: pink; color: black;
+hi HintActive background-color: hotpink; color: white;
+
+hi StatusLine       color:  DeepPink;   background: #000;   font-weight: normal; font-size: 10pt;
+
+hi Normal       color:  LightYellow;    background: #333;   font-size: 10pt;
+hi InfoMsg      color:  LightYellow;    background: #333;   font-size: 10pt;
+hi ModeMsg      color:  LightYellow;    background: #333;   font-size: 10pt;
+hi MoreMsg      color:  LimeGreen; background: #333;
+hi LineNr       color:  DeepPink;   background: #333;   font-size: 10pt;
+hi Question     color: Yellow;  background:#333;    font-size: 10pt;
+hi WarningMsg       color: DeepPink;    background:#333;    font-size: 10pt;
+hi NonText      background: #333;
+
+hi CompTitle        color:  magenta; background: #222; font-weight: bold;
+hi CompItem[selected]   color: DeepPink;    background: Black;
+
+hi Title        color:  white;
+hi Indicator        color:  DodgerBlue;
+hi String       color:  Orchid;
+hi Number       color:  Orchid;
+hi Object   color: Khaki;
+hi Function     color:  SkyBlue;
+hi URL      color:  LightGreen;
+
+hi TabNumber    color: white; font-weight: bold; font-size:10pt;
+
+style -name tab chrome://* <<EOM
+#content { background-color: #ddd;} /* tabbar */
+.tabs-alltabs-button { padding: 0 !important; }
+.tabs-container { height: 20px; border-bottom: 2px solid #000; }
+.tabs-container > stack { display:none; } /* remove tab selection menu */
+.tabbrowser-tab {
+    -moz-apperance: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -moz-border-radius-topleft: 5 !important;
+    -moz-border-radius-topright: 5 !important;
+    -moz-border-radius-bottomright: 0 !important;
+    -moz-border-radius-bottomleft: 0 !important;
+    border: none !important;
+    background-image:none !important;
+    background-color: #ff69b4; !important;
+}
+.tabbrowser-tab[selected=false] { background: #999 !important; }
+.tabbrowser-tab[selected=true] > .tab-text { color: #ddd !important; }
+EOM
+
+style -name statusbar chrome://* <<EOM
+#status-bar statusbarpanel { padding: 0 1px !important; }
+statusbarpanel > * { margin: 0 !important; padding: 0 !important; }
+EOM
