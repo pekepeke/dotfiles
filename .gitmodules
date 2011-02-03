@@ -238,3 +238,6 @@
 [submodule ".vimperator/vimperator-plugins"]
 	path = .vimperator/vimperator-plugins
 	url = https://github.com/vimpr/vimperator-plugins.git
+[submodule ".zsh/auto-fu.zsh"]
+	path = .zsh/auto-fu.zsh
+	url = http://github.com/hchbaw/auto-fu.zsh.git

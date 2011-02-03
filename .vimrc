@@ -57,7 +57,8 @@ filetype plugin indent on
 
 " vim git 更新
 if executable('sh') && executable('git')
-  command! BundlesUpdate exe "!sh $HOME/.vim/bin/update_bundles.sh" | call pathogen#helptags()
+  "command! BundlesUpdate exe "!sh $HOME/.vim/bin/update_bundles.sh" | call pathogen#helptags()
+command! BundlesUpdate exe "! cd $HOME/.github-dotfiles && git submodule update" | call pathogen#helptags()
 endif
 command! BundlesHelpTagsUpdate call pathogen#helptags()
 

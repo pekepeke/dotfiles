@@ -276,7 +276,8 @@ options.resetPref('extensions.liberator.loglevel');
   // {{{ ==================== for plugin ====================
   let (gv = liberator.globalVariables) {
     // {{{ plugin-loader
-    var vimpdir = $LU.is_win() ? '~/vimperator' : '~/.vimperator';
+    //var vimpdir = $LU.is_win() ? '~/vimperator' : '~/.vimperator';
+    	var vimpdir = '~/.vimperator';
     gv.plugin_loader_roots = [
       vimpdir + '/ex-plugin/',
       vimpdir + '/vimperator-plugins/',

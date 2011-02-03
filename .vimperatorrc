@@ -4,7 +4,7 @@
 
 " {{{ title/browser gui/tab/activate functions/scroll "
 " {{{ basic settings
-js if (liberator.has('Win32') || liberator.has('Win64')) liberator.execute('set runtimepath+=~/.vimperator');
+js if (liberator.has('Win32') || liberator.has('Win64')) liberator.execute('set runtimepath+=$HOME/.vimperator');
 set titlestring="Mozilla Firefox"
 set guioptions+=mTn
 set stal=2
