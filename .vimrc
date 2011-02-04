@@ -361,7 +361,7 @@ nmap <silent> [s]r :redraw!<CR>
 " for gui
 nnoremap <M-a> ggVG
 nnoremap <M-v> P
-vnoremap <M-c> :yank<CR>
+vnoremap <M-c> y
 vnoremap <M-x> x
 
 " winmove & winsize {{{2
