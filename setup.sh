@@ -27,6 +27,18 @@ main() {
   echo please execute under commands
   echo git submodule init
   echo git submodule update
+  vp_dir=$CDIR/.vim/bundle/vimproc/
+  if [ ! -e "$vp_dir/autoload/proc.so" ]; then
+    cd $CDIR/.vim/bundle/vimproc
+    case $OSTYPE in
+      darwin*)
+        make -f make_mac.mak
+        ;;
+      *)
+        make -f make_gcc.mak
+        ;;
+    esac
+  fi
 }
 
 while getopts "h:v" opt; do
