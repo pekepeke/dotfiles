@@ -358,6 +358,12 @@ nmap <silent> [t]w :exe "normal! i" . strftime("%Y-%m-%d\T%H:%M:%S+09:00")<CR>
 " redraw map
 nmap <silent> [s]r :redraw!<CR>
 
+" for gui
+nnoremap <M-a> ggVG
+nnoremap <M-v> P
+vnoremap <M-c> :yank<CR>
+vnoremap <M-x> x
+
 " winmove & winsize {{{2
 nnoremap <silent> <C-Left>  :wincmd h<CR>
 nnoremap <silent> <C-Right> :wincmd l<CR>
