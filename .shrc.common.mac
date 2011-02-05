@@ -6,5 +6,7 @@ for app in Safari Firefox Opera "Google Chrome"; do
   fi
 done
 
+[ -e "$HOME/.php-pear/bin" ] && PATH=$HOME/.php-pear/bin:$PATH
+
 alias mvi='mvim --remote-tab-silent'
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

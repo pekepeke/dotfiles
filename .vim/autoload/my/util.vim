@@ -46,6 +46,7 @@ function! my#util#find_proj_dir() " {{{2
   let cdir = expand('%:p:h')
   let pjdir = ''
   if cdir == '' || !isdirectory(cdir) | return '' | endif
+  if stridx(cdir, '/.vim/') > 0 | return cdir | endif
   for d in ['.git', '.bzr', '.hg']
     let d = finddir(d, cdir . ';')
     if d != ''

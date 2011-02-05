@@ -49,13 +49,14 @@ command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
 
 " pathogen {{{1
 filetype off
-let g:pathogen_disabled = ['test']
+let g:pathogen_disabled = []
 for [cmd, name] in [['git', ['gist-vim', 'git-vim']], ['locate', 'unite-locate']]
   if !executable(cmd)
     let g:pathogen_disabled += type(name) == type([]) ? name : [name]
   endif
   unlet name
 endfor
+if !s:is_win | let g:pathogen_disabled += ['unite-everything'] | endif
 if !s:is_mac | let g:pathogen_disabled += ['cocoa.vim'] | endif
 call pathogen#runtime_append_all_bundles()
 
@@ -72,7 +73,8 @@ command! BundlesHelpTagsUpdate call pathogen#helptags()
 " color settings "{{{1
 "set t_Co=256
 if &t_Co == 256 || s:is_win || has('gui')
-  colorscheme mrkn256
+  colorscheme vividchalk
+  "colorscheme mrkn256
   "colorscheme lucius
 else
   colorscheme wombat
@@ -147,7 +149,7 @@ MyAutocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
       \ | endif
 
 " indent {{{2
-MyAutocmd FileType coffee,ruby,scheme,sh,zsh,vim,yaml
+MyAutocmd FileType coffee,ruby,scheme,sh,zsh,vim,yaml,xml
       \ setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
 MyAutocmd FileType html
       \ setl noexpandtab wrap tabstop=2 shiftwidth=2 textwidth=0
