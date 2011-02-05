@@ -49,7 +49,14 @@ command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
 
 " pathogen {{{1
 filetype off
-
+let g:pathogen_disabled = ['test']
+for [cmd, name] in [['git', ['gist-vim', 'git-vim']], ['locate', 'unite-locate']]
+  if !executable(cmd)
+    let g:pathogen_disabled += type(name) == type([]) ? name : [name]
+  endif
+  unlet name
+endfor
+if !s:is_mac | let g:pathogen_disabled += ['cocoa.vim'] | endif
 call pathogen#runtime_append_all_bundles()
 
 syntax enable
