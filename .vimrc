@@ -549,6 +549,8 @@ let g:template_basedir = expand('$HOME/.vim')
 let g:template_files = 'template/**'
 let g:template_free_pattern = 'template'
 
+call my#util#vars(['g:email', 'g:author', 'g:homepage_url'], '')
+
 "autocmd BufNewFile * execute 'TemplateLoad'
 MyAutocmd User plugin-template-loaded call s:template_keywords()
 
@@ -558,6 +560,7 @@ function! s:template_keywords() "{{{3
   silent! %s/<+FILENAME+>/\=expand('%:t')/g
   silent! %s/<+EMAIL+>/\=g:email/g
   silent! %s/<+AUTHOR+>/\=g:author/g
+  silent! %s/<+HOMEPAGE_URL+>/\=g:homepage_url/g
   silent! exe "normal! gg"
   "" expand eval
   %s/<%=\(.\{-}\)%>/\=eval(submatch(1))/ge
@@ -1039,6 +1042,9 @@ Alias tide Ref tidesktopref
 
 nnoremap [space]h :Ref alc <C-r>=expand("<cWORD>")<CR><CR>
 
+" echodoc {{{2
+let g:echodoc_enable_at_startup=0
+
 " neocomplcache {{{2
 " options {{{3
 let g:neocomplcache_snippets_dir                        = $HOME . '/.vim/snippets'
@@ -1149,21 +1155,23 @@ let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
 let g:vimshell_enable_smart_case = 1
 let g:vimshell_enable_auto_slash = 1
 
+function! s:setup_vimproc_dll() " {{{3
+  if s:is_win
+    let g:vimproc_dll_path = expand('~/.vim/lib/vimproc/win32/proc.dll')
+  endif
+  let path = expand('~/.vim/bundle/vimproc/autoload/proc.so')
+  if filereadable(path)
+    let g:vimproc_dll_path = path
+  endif
+endfunction " }}}
+
+call s:setup_vimproc_dll()
 if s:is_win " {{{3
   " Display user name on Windows.
   let g:vimshell_prompt = $USERNAME."% "
   let g:vimshell_use_ckw = 1
-  let g:vimproc_dll_path = expand("~/.vim/lib/vimproc/win32/proc.dll")
+  "let g:vimproc_dll_path = expand("~/.vim/lib/vimproc/win32/proc.dll")
 else " {{{3
-  if s:is_mac
-    let g:vimproc_dll_path = expand("~/.vim/lib/vimproc/mac/proc.so")
-  elseif has('unix')
-    if filereadable('/etc/redhat-release')
-      let g:vimproc_dll_path = expand('~/.vim/lib/vimproc/linux64/centos/proc.so')
-    else
-      let g:vimproc_dll_path = expand("~/.vim/lib/vimproc/linux64/proc.so")
-    end
-  end
   " Display user name
   let g:vimshell_prompt = $USER."$ "
 
