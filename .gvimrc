@@ -38,7 +38,7 @@ if s:is_win
 
   set linespace=2 " 行間隔
   "set guioptions=egmrLt
-  set guioptions=t
+  set guioptions=te
   set transparency=210
 
   if has('kaoriya')
@@ -62,7 +62,7 @@ elseif s:is_mac
 
     set imdisable " Disable IM
     set transparency=10
-    set guioptions=
+    set guioptions=e
 
     " full screen
     set fuoptions=maxvert,maxhorz

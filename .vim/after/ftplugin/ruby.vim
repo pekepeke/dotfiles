@@ -20,5 +20,8 @@ nnoremap vaM $?\%(.*#.*module\)\@!module<CR>%V%0
 
 nnoremap <buffer> <silent> <C-K> :Ref refe<CR>
 
+vnoremap <buffer> [space]X ! xmpfiler -a
+vnoremap <buffer> [space]S ! xmpfiler -s
+vnoremap <buffer> [space]M ! xmpfiler -m
 
 let &cpo = s:save_cpo
