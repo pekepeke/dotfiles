@@ -74,9 +74,9 @@ if [ -e $HOME/perl5 ]; then
 else
   export PERLBREW_ROOT=$HOME/.perlbrew
 fi
-if [ -s $PERLBREW_ROOT/perlbrew/etc/bashrc ] ;then
+if [ -s $PERLBREW_ROOT/etc/bashrc ] ;then
   PATH=$PERLBREW_ROOT/bin:$PATH
-  source $PERLBREW_ROOT/perlbrew/etc/bashrc
+  source $PERLBREW_ROOT/etc/bashrc
 fi
 
 # for Ruby
