@@ -70,7 +70,8 @@ fi
 # export PERL5LIB="${PERL5LIB}:$HOME/perl5/lib/perl5"
 # export PATH="$HOME/perl5/bin:$PATH"
 if [ -e $HOME/perl5 ]; then
-  export PERLBREW_ROOT=$HOME/perl5
+  export PERLBREW_ROOT=$HOME/perl5/perlbrew
+  PATH=$HOME/perl5/bin:$PATH
 else
   export PERLBREW_ROOT=$HOME/.perlbrew
 fi
