@@ -141,8 +141,10 @@ MyAutocmd BufRead,BufNewFile *.textile setfiletype textile
 " IO
 MyAutocmd BufNewFile,BufRead *.io set filetype=io
 " MSBuild
-MyAutocmd BufNewFile,BufRead *.proj,*.xaml setf xml
+MyAutocmd BufNewFile,BufRead *.proj,*.xaml setfiletype xml
 MyAutocmd BufNewFile,BufRead *.proj,*.cs,*.xaml compiler msbuild
+" command
+MyAutocmd BufNewFile,BufRead *.command setfiletype sh
 
 MyAutocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
       \ | exe "normal g`\""
@@ -592,7 +594,7 @@ endfunction "}}}
 
 command! -nargs=0 JunkFile call s:open_junk_file()
 let g:scratch_buffer_name='[Scratch]'
-nmap [prefix]s <Plug>(scratch-open)
+nmap [prefix]s :enew<CR>
 nmap [prefix]ss <Plug>(scratch-open)
 nnoremap [prefix]sj :<C-u>JunkFile<CR>
 
@@ -1041,11 +1043,11 @@ let g:ref_use_vimproc = 0
 LCAlias ref Ref
 for src in ['alc', 'refe', 'perldoc', 'man'
       \ , 'pydoc', 'jsref', 'jquery'
-      \ , 'cppref', 'phpmanual']
+      \ , 'cppref', ]
   silent! exe 'Alias' src 'Ref' src
 endfor
 Alias mr Ref alc
-Alias phpdoc Ref phpmanual
+Alias php[manual] Ref phpmanual
 Alias timo Ref timobileref
 Alias tide Ref tidesktopref
 
@@ -1105,8 +1107,8 @@ let g:neocomplcache_vim_completefuncs.Ref = 'ref#complete'
 if !exists('g:neocomplcache_omni_patterns')
   let g:neocomplcache_omni_patterns = {
         \ 'ruby' : '[^. *\t]\.\w*\|\h\w*::',
-        \ 'php'  : '[^. \t]->\h\w*\|\h\w*::',
         \ }
+        "\ 'php'  : '[^. \t]->\h\w*\|\h\w*::',
 endif
 " }}}
 
@@ -1358,7 +1360,8 @@ function! MyFilerecLauncher(mode, option) " {{{3
     let l:option = ''
   endif
   exe "Unite file_rec:".fnameescape(l:snippets_dir).l:option
-endfunction " }}}
+endfunction 
+" }}}
 " mapping for tiny-snippets
 nnoremap [unite]n <Nop>
 nnoremap [unite]nr :<C-u>call MyFilerecLauncher('f', 'i')<CR>
@@ -1374,19 +1377,20 @@ command! ToMacBuffer set fileformat=mac fileencoding=utf8
 command! TrimRSpace %s/ \+$//
 
 " シェル起動系 {{{2
-if s:is_mac
+if s:is_mac "{{{3
   " Utility command for Mac
   command! Here silent call system('open ' . expand('%:p:h'))
   command! This silent call system('open ' . expand('%:p'))
   command! -nargs=1 -complete=file That silent call system('open ' . shellescape(expand(<f-args>), 1))
-elseif s:is_win
+elseif s:is_win "{{{3
   " Utility command for Windows
   command! Here silent execute '!explorer' substitute(expand('%:p:h'), '/', '\', 'g')
   command! This silent execute '!start cmd /c "%"'
   command! -nargs=1 -complete=file That silent execute '!explorer' shellescape(expand(<f-args>), 1)
-else
+else "{{{3
   " TODO
 endif
+"}}}
 LCAlias Here This That
 
 " chm launcher {{{2
@@ -1414,7 +1418,8 @@ if exists('g:my_chm_dir') && (s:is_win || (!s:is_win && !empty(g:my_chm_command)
     else
       silent exe "!" g:my_chm_command l:chm_path
     endif
-  endfunction " }}}
+  endfunction
+  " }}}
   command! -nargs=1 -complete=customlist,s:my_chm_files_completes Chm call s:run_my_chm_file("<args>")
   LCAlias Chm
 endif
@@ -1491,6 +1496,8 @@ endfunction
 function! WinMaximizer.toggle() "{{{4
   if s:is_win
     simalt ~r | simalt ~x
+  elseif s:is_mac
+    silent execute 'set' (&fullscreen?'no':'').'fullscreen'
   else
     if self.is_maximize
       call self.set_max_pos()
@@ -1503,7 +1510,8 @@ function! WinMaximizer.toggle() "{{{4
       redraw!
     endif
   endif
-endfunction " }}}3
+endfunction 
+" }}}3 }}}
 nnoremap [prefix]m :call WinMaximizer.toggle()<CR>
 
 " fopen & encoding {{{2
@@ -1518,7 +1526,8 @@ function! s:encodings(A, L, P) "{{{3
   endfor
 
   return matches
-endfunction " }}}
+endfunction 
+" }}}
 command! -nargs=1 -complete=customlist,s:encodings Fenc setl fenc=<args>
 command! -nargs=1 -complete=customlist,s:encodings Freopen e ++enc=<args> %
 
@@ -1567,7 +1576,8 @@ function! MyBrowserpreview() range "{{{4
     call delete(fpath)
   endif
   redraw!
-endfunction " }}}
+endfunction 
+" }}}
 command! -range Brpreview <line1>,<line2>call MyBrowserpreview()
 
 " TSV {{{3
@@ -1713,8 +1723,8 @@ function! s:tsv_to_sqlupdate() range "{{{4
           \ )
   endfor
   call my#util#output_to_buffer('__TSV__', l:texts)
-endfunction " }}}
-
+endfunction 
+" }}}
 command! -range Tsvtosqlwhere      <line1>,<line2>call s:tsv_to_sqlwhere()
 command! -range Tsvtosqlin         <line1>,<line2>call s:tsv_to_sqlin()
 command! -range Tsvexchangematrix <line1>,<line2>call s:tsv_exchange_matrix()
@@ -1766,10 +1776,39 @@ function! PadSprintf(...) range " {{{4
     endif
   endfor
   redraw!
-endfunction " }}}
+endfunction
+" }}}
 command! -nargs=? -range PadNumber <line1>,<line2>call PadNumber(<f-args>)
 command! -nargs=? -range PadString <line1>,<line2>call PadString(<f-args>)
 command! -nargs=? -range PadSprintf <line1>,<line2>call PadSprintf(<f-args>)
+
+" buffer grep {{{3
+function! s:buf_grep(args) " {{{4
+  if !len(a:args) || strlen(a:args[0]) <= 1 | return | endif
+  let args = a:args[0]
+  let delim = args[0]
+  if delim !=# '/'
+    le v:errmsg= 'The delimiter `'.delim."` isn't available, please use `/`."
+    echo v:errmsg
+    return []
+  endif
+  let rxp ='^delim\([^delim\\]*\%(\\.[^delim\\]*\)*\)' .
+        \      '\(delim.*\)\=$'
+  let rxp=substitute(rxp, 'delim', delim, "g")
+  let re = substitute(args, rxp, '\1', "")
+
+  let s:buf = []
+  silent execute 'g/'.re.'/call add(s:buf,  getline("."))'
+  return s:buf
+endfunction
+
+function! YankBufGrep(...) " {{{4
+  let @+=join(BufGrep(a:000), "\n")
+endfunction 
+
+"}}}
+command! -nargs=? YB call YankBufGrep(<q-args>)
+
 " }}}1
 
 let g:loaded_dot_vimrc=1

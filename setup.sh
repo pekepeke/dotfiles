@@ -24,10 +24,11 @@ main() {
       ln -s $CDIR/$F $HOME
     fi
   done
-  echo please execute under commands
-  echo git submodule init
-  echo git submodule update
   vp_dir=$CDIR/.vim/bundle/vimproc/
+  if [ ! -e "$vp_dir" ]; then
+    git submodule init
+    git submodule update
+  fi
   if [ ! -e "$vp_dir/autoload/proc.so" ]; then
     cd $CDIR/.vim/bundle/vimproc
     case $OSTYPE in

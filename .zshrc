@@ -83,22 +83,27 @@ setopt no_tify
 # }}}
 
 # keybinds {{{
-#bindkey -v
-#bindkey -a 'O' push-line
-#bindkey -a 'H' run-help
-#bindkey -a '^A' vi-beginning-of-line
-#bindkey -a '^E' vi-end-of-line
-#bindkey -v '^[OH' vi-beginning-of-line
-#bindkey -v '^[OF' vi-end-of-line
+bindkey -v
+# for command mode
+bindkey -a 'O' push-line
+bindkey -a 'H' run-help
+bindkey -a '^A' vi-beginning-of-line
+bindkey -a '^E' vi-end-of-line
+## for insert mode
+bindkey -v '^[OH' vi-beginning-of-line
+bindkey -v '^[OF' vi-end-of-line
+## emacs like
+bindkey -v '^A' beginning-of-line
+bindkey -v '^E' end-of-line
+bindkey -v '^B' backward-char
+bindkey -v '^F' forward-char
+bindkey -v '^K' kill-line
+bindkey -v '^S' history-incremental-search-forward
+bindkey -v '^Y' yank
 
-bindkey -e
-bindkey ";5C" forward-word
-bindkey ";5D" backward-word
-
-bindkey "^]f" forward-word
-bindkey "^]b" backward-word
-bindkey "^]u" undo
-bindkey "^]r" redo
+# bindkey -e
+# bindkey ";5C" forward-word
+# bindkey ";5D" backward-word
 
 export WORDCHARS='*?[]~=&;!#$%^(){}<>'
 # }}}
