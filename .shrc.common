@@ -65,6 +65,10 @@ if is_exec vim ; then
 else
   export EDITOR="$(which vi)"
 fi
+
+if[ ! -e $TERMINFO -a -e /usr/share/terminfo ];then
+  export TERMINFO=/usr/share/terminfo
+fi
 # for perl
 # export PERL_CPANM_OPT="--local-lib=$HOME/perl5"
 # export PERL5LIB="${PERL5LIB}:$HOME/perl5/lib/perl5"

@@ -594,7 +594,7 @@ endfunction "}}}
 
 command! -nargs=0 JunkFile call s:open_junk_file()
 let g:scratch_buffer_name='[Scratch]'
-nmap [prefix]s :enew<CR>
+nmap [prefix]s :enew | setl buftype=nofile<CR>
 nmap [prefix]ss <Plug>(scratch-open)
 nnoremap [prefix]sj :<C-u>JunkFile<CR>
 
@@ -1802,12 +1802,19 @@ function! s:buf_grep(args) " {{{4
   return s:buf
 endfunction
 
-function! YankBufGrep(...) " {{{4
-  let @+=join(BufGrep(a:000), "\n")
-endfunction 
+function! s:buf_grep_yank(...) " {{{4
+  let @+=join(s:bufgrep(a:000), "\n")
+endfunction
+
+function! s:buf_grep_enew(...) " {{{4
+  let s=join(s:buf_grep(a:000), "\n")
+  silent execute 'enew | setl buftype=nofile'
+  silent exe 'normal i'.s
+endfunction
 
 "}}}
-command! -nargs=? YB call YankBufGrep(<q-args>)
+command! -nargs=? BGY call s:buf_grep_yank(<q-args>)
+command! -nargs=? BG call s:buf_grep_enew(<q-args>)
 
 " }}}1
 
