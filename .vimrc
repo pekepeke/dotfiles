@@ -73,6 +73,7 @@ command! BundlesHelpTagsUpdate call pathogen#helptags()
 " color settings "{{{1
 "set t_Co=256
 if &t_Co == 256 || s:is_win || has('gui')
+  " must be write .gvimrc
   colorscheme vividchalk
   "colorscheme mrkn256
   "colorscheme lucius
@@ -593,8 +594,11 @@ function! s:open_junk_file()
 endfunction "}}}
 
 command! -nargs=0 JunkFile call s:open_junk_file()
+command! -nargs=0 EnewNofile enew | setl buftype=nofile
+
 let g:scratch_buffer_name='[Scratch]'
-nmap [prefix]s :enew | setl buftype=nofile<CR>
+
+nmap [prefix]s :silent exe :<C-u>EnewNofile<CR>
 nmap [prefix]ss <Plug>(scratch-open)
 nnoremap [prefix]sj :<C-u>JunkFile<CR>
 

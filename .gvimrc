@@ -11,7 +11,8 @@ set mousehide
 "set guioptions+=a
 
 "colorscheme molokai
-colorscheme mrkn256
+"colorscheme mrkn256
+colorscheme vividchalk
 
 " autocmd BufReadPost * tab ball
 "}}}
