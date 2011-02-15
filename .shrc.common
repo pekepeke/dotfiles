@@ -66,7 +66,7 @@ else
   export EDITOR="$(which vi)"
 fi
 
-if[ ! -e $TERMINFO -a -e /usr/share/terminfo ];then
+if [ ! -e "$TERMINFO" -a -e "/usr/share/terminfo" ]; then
   export TERMINFO=/usr/share/terminfo
 fi
 # for perl
