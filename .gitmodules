@@ -241,3 +241,6 @@
 [submodule ".zsh/auto-fu.zsh"]
 	path = .zsh/auto-fu.zsh
 	url = http://github.com/hchbaw/auto-fu.zsh.git
+[submodule ".vim/bundle/unite-tag"]
+	path = .vim/bundle/unite-tag
+	url = https://github.com/tsukkee/unite-tag.git

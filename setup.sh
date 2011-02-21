@@ -20,6 +20,8 @@ main() {
   for F in .?* ;do
     if [ "$F" == "." -o "$F" == ".." -o "$F" == ".git" -o "$F" == "setup.sh" ] ; then
       echo skip $F
+    elif [ -e "$F" ]; then
+      echo skip $F
     else
       ln -s $CDIR/$F $HOME
     fi
@@ -29,17 +31,17 @@ main() {
     git submodule init
     git submodule update
   fi
-  if [ ! -e "$vp_dir/autoload/proc.so" ]; then
-    cd $CDIR/.vim/bundle/vimproc
-    case $OSTYPE in
-      darwin*)
-        make -f make_mac.mak
-        ;;
-      *)
-        make -f make_gcc.mak
-        ;;
-    esac
-  fi
+  #if [ ! -e "$vp_dir/autoload/proc.so" ]; then
+  cd $CDIR/.vim/bundle/vimproc
+  case $OSTYPE in
+    darwin*)
+      make -f make_mac.mak
+      ;;
+    *)
+      make -f make_gcc.mak
+      ;;
+  esac
+  #fi
 }
 
 while getopts "h:v" opt; do
