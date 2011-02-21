@@ -3,7 +3,7 @@ scriptencoding utf-8
 if !exists('g:loaded_php_ftplugin') " {{{1
   let g:loaded_php_ftplugin = 1
 
-  let php_folding = 1
+  "let php_folding = 1
   let php_sql_query = 1
   let php_baselib = 1
   let php_htmlInStrings = 1
@@ -20,6 +20,9 @@ if !exists('g:loaded_php_ftplugin') " {{{1
   let g:pdv_cfg_Copyright = ""
   let g:pdv_cfg_License = 'PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}'
 endif " }}}
+
+let php_folding = 0
+nnoremap <buffer> <silent> zz :EnableFastPHPFolds<CR>
 
 let s:save_cpo = &cpo
 set cpo&vim
