@@ -1028,7 +1028,8 @@ if isdirectory($HOME.'/.bin/apps/jdk-6-doc/ja')
   let g:ref_javadoc_path = $HOME.'/.bin/apps/jdk-6-doc/ja'
 endif
 if isdirectory($HOME.'/.bin/apps/jqapi-latest')
-  let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest'
+  let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest/docs'
+  "let g:ref_jquery_use_cache = 1
 endif
 
 if s:is_win
@@ -1043,7 +1044,6 @@ endif
 let g:ref_perldoc_complete_head = 1
 let g:ref_alc_use_cache = 1
 let g:ref_alc_start_linenumber = 43
-let g:ref_jquery_use_cache = 1
 let g:ref_use_vimproc = 0
 " }}}
 
