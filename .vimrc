@@ -1027,6 +1027,9 @@ endif
 if isdirectory($HOME.'/.bin/apps/jdk-6-doc/ja')
   let g:ref_javadoc_path = $HOME.'/.bin/apps/jdk-6-doc/ja'
 endif
+if isdirectory($HOME.'/.bin/apps/jqapi-latest')
+  let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest'
+endif
 
 if s:is_win
   let g:ref_refe_encoding = 'cp932'
@@ -1820,6 +1823,24 @@ endfunction
 command! -nargs=? BGY call s:buf_grep_yank(<q-args>)
 command! -nargs=? BG call s:buf_grep_enew(<q-args>)
 
+" capture {{{3
+command!
+      \ -nargs=+ -complete=command
+      \ Capture
+      \ call s:cmd_capture(<q-args>)
+
+function! s:cmd_capture(q_args) "{{{4
+  redir => output
+  silent execute a:q_args
+  redir END
+  let output = substitute(output, '^\n\+', '', '')
+
+  belowright new
+
+  silent file `=printf('[Capture: %s]', a:q_args)`
+  setlocal buftype=nofile bufhidden=unload noswapfile nobuflisted
+  call setline(1, split(output, '\n'))
+endfunction
 " }}}1
 
 let g:loaded_dot_vimrc=1
