@@ -250,3 +250,6 @@
 [submodule ".vim/bundles/dbext"]
 	path = .vim/bundles/dbext
 	url = https://github.com/zklinger/dbext.git
+[submodule ".vim/bundle/dbext"]
+	path = .vim/bundle/dbext
+	url = https://github.com/zklinger/dbext.git
