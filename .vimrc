@@ -1141,6 +1141,9 @@ smap <C-l> <Plug>(neocomplcache_snippets_expand)
 " imap <expr><C-l> (pumvisible() ? neocomplcache#close_popup():"") ."\<Plug>(neocomplcache_snippets_expand)"
 " smap <expr><C-l> (pumvisible() ? neocomplcache#close_popup():"") ."\<Plug>(neocomplcache_snippets_expand)"
 
+nnoremap [space]ne :NeoComplCacheEnable<CR>
+nnoremap [space]nd :NeoComplCacheDisable<CR>
+
 " completes {{{3
 if exists("+omnifunc") " {{{4
   MyAutocmd FileType php        setl omnifunc=phpcomplete#CompletePHP
@@ -1381,6 +1384,7 @@ nnoremap [unite]nm :execute 'new $HOME/memos'<CR>
 command! ToUnixBuffer set fileformat=unix fileencoding=utf8
 command! ToWindowsBuffer set fileformat=dos fileencoding=cp932
 command! ToMacBuffer set fileformat=mac fileencoding=utf8
+command! ToSass silent exe '!css2sass ' . expand('%:p') . ' ' . expand('%:p:h').'.sass' | exe 'new' expand('%:p:h').'.sass'
 command! TrimRSpace %s/ \+$//
 
 " シェル起動系 {{{2
