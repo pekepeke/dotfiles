@@ -247,3 +247,6 @@
 [submodule ".vim/bundle/vim-ref-jquery"]
 	path = .vim/bundle/vim-ref-jquery
 	url = https://github.com/soh335/vim-ref-jquery.git
+[submodule ".vim/bundles/dbext"]
+	path = .vim/bundles/dbext
+	url = https://github.com/zklinger/dbext.git
