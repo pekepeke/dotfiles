@@ -85,6 +85,10 @@ if [ -s $PERLBREW_ROOT/etc/bashrc ] ;then
   source $PERLBREW_ROOT/etc/bashrc
 fi
 
+# for Python
+export PYTHONBREW_ROOT=$HOME/.pythonbrew
+[ -e $PYTHONBREW_ROOT/etc/bashrc ] && source $PYTHONBREW_ROOT/etc/bashrc
+
 # for Ruby
 [ -s $HOME/.rvm/scripts/rvm ] && source $HOME/.rvm/scripts/rvm
 is_exec rails && alias r=rails
@@ -216,6 +220,37 @@ pulist() { # {{{
     ps aux | grep -E "PID|$ARG"
   fi
 } # }}}
+
+if [ -z "$SSH_CLIENT" ]; then
+  ssh_path=$(which ssh)
+  function ssh() {
+    _ssh_log_dir=$HOME/.ssh-logs
+    if [ ! -e $_ssh_log_dir ]; then
+      mkdir $_ssh_log_dir
+      mkdir $_ssh_log_dir/org
+    fi
+    #_prefix=$(echo $* | perl -ne '$_=~s/\W+/_/g; print $_;')
+    #_prefix=$(echo $* | perl -ne '$_=~s/(\d+\.\d+\.\d+\.\d+|[a-z\.-]+)/; print $1;')
+    _prefix=$(echo $* | perl -ne 'my @l;push @l,$1 while (/\s(\d+\.\d+\.\d+\.\d+|[a-z\.-]+)/g); print join("_",@l);')
+    tmp_log_path=$_ssh_log_dir/org/script_${_prefix}_$(date +'%Y%m%d_%H%M%S').log
+    log_path=$_ssh_log_dir/script_${_prefix}_$(date +'%Y%m%d_%H%M%S').log
+
+    $ssh_path $* | tee $tmp_log_path
+    if [ -s $tmp_log_path ] ; then
+      cat $tmp_log_path | perl -ne '$_ =~ s/\e(\[\d*m?(;\d*m)?|\]\d*)//g; print $_' > $log_path
+      #col -b $tmp_log_path > $log_path
+    else
+      rm -f $tmp_log_path
+    fi
+    #[ -e $tmp_log_path ] && rm -f $tmp_log_path
+  }
+# else
+  # P_PROC=`ps aux | grep $PPID | grep sshd | awk '{ print $11 }'`
+  # if [ "$P_PROC" = sshd: ]; then
+    # script ~/log/`date +%Y%m%d-%H%M%S.log`
+    # exit
+  # fi
+fi
 
 if [ -n "$ZSH_NAME" ]; then
   alias -g L='| less'

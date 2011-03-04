@@ -387,8 +387,8 @@ nnoremap <silent> <S-Right> :10wincmd <<CR>
 nnoremap <silent> <S-Up>    :10wincmd -<CR>
 nnoremap <silent> <S-Down>  :10wincmd +<CR>
 
-nnoremap [space]nh :<C-u>nohlsearch<CR>
-nnoremap [space]nw :<C-u>execute 'setl '.(&wrap?'no':'').'wrap \| echo "wrap=".&wrap'<CR>
+nnoremap [edit]h :<C-u>nohlsearch<CR>
+nnoremap [edit]w :<C-u>execute 'setl '.(&wrap?'no':'').'wrap \| echo "wrap=".&wrap'<CR>
 
 " replace & grep {{{2
 nnoremap [space]r :<C-u>%S/
@@ -724,6 +724,10 @@ command! SW w sudo:%
 let g:hatena_base_dir = $HOME . '/.tmp/vim-hatena/'
 call my#util#mkdir(g:hatena_base_dir.'/cookies')
 
+" dbext.vim
+let g:dbext_default_prompt_for_parameters=0
+let g:dbext_default_history_file = expand('~/.tmp/dbext_sql_history.txt')
+
 " zen-coding.vim {{{2
 let g:user_zen_leader_key='<C-y>'
 
@@ -810,7 +814,8 @@ nnoremap <silent> [unite][mru]      :<C-u>Unite -buffer-name=file file_mru direc
 nnoremap <silent> [unite][source]   :<C-u>Unite source<CR>
 nnoremap [unite][empty]    :<C-u>Unite<Space>
 
-nmap [unite]u                [unite][source]
+nmap [unite]u                [unite][empty]
+nmap [unite]uu               [unite][source]
 nmap <silent> [unite]<Space> [unite][buffer]
 nmap <silent> [unite]j       [unite][buffer]
 nmap <silent> [unite]l       [unite][rel_file]
@@ -820,6 +825,9 @@ nmap <silent> [unite]k       [unite][file]
 
 nnoremap <silent> [unite]a  :<C-u>Unite file_rec<CR>
 nnoremap <silent> [unite]o  :<C-u>Unite tags outline<CR>
+nnoremap <silent> [unite]gg  :<C-u>Unite grep<CR>
+nnoremap <silent> [unite]gi  :<C-u>Unite git_grep<CR>
+nnoremap <silent> [unite]q  :<C-u>Unite qf<CR>
 nnoremap <silent> [unite]c  :<C-u>Unite command history/command<CR>
 nnoremap <silent> [unite]/  :<C-u>Unite history/search history/command<CR>
 nnoremap <silent> [unite]bb :<C-u>Unite bookmark<CR>
