@@ -421,9 +421,9 @@ let MyGrepcmd_useropt = '--exclude="*\.\(svn\|git\|hg)*"'
 "nmap [space]gr :RGrep<CR>
 " nnoremap [space]gg :Grep<CR>
 " nnoremap [space]gr :REGrep<CR>
-nnoremap [space]g  :Ack<Space>''<Left>
-nnoremap [space]gg :Ack<Space>''<Left>
-nnoremap [space]gr :Ack<Space>''<Left>
+nnoremap [space]g  :Ack<Space>-i<Space>''<Left>
+nnoremap [space]gg :Ack<Space>-i<Space>''<Left>
+nnoremap [space]gr :Ack<Space>-i<Space>''<Left>
 nnoremap [space]gb :GrepBuffer<Space>
 
 " MyAutocmd QuickfixCmdPost make,grep,grepadd,vimgrep copen
@@ -772,7 +772,8 @@ nmap     f       [unite]
 nnoremap [unite]f f
 
 " unite basic settings {{{3
-let g:unite_enable_start_insert=1
+"let g:unite_enable_start_insert=1
+let g:unite_enable_start_insert=0
 let g:unite_source_file_mru_limit=200
 let g:unite_source_file_mru_time_format = ''
 "let g:unite_source_file_mru_time_format = '%Y-%m-%d %H:%M:%S'
@@ -823,10 +824,10 @@ nmap <silent> [unite]m       [unite][mru]
 nmap <silent> [unite]d       [unite][file]
 nmap <silent> [unite]k       [unite][file]
 
-nnoremap <silent> [unite]a  :<C-u>Unite file_rec<CR>
-nnoremap <silent> [unite]o  :<C-u>Unite tags outline<CR>
-nnoremap <silent> [unite]gg  :<C-u>Unite grep<CR>
-nnoremap <silent> [unite]gi  :<C-u>Unite git_grep<CR>
+nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
+nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
+nnoremap <silent> [unite]gg :<C-u>Unite grep<CR>
+nnoremap <silent> [unite]gi :<C-u>Unite git_grep<CR>
 nnoremap <silent> [unite]q  :<C-u>Unite qf<CR>
 nnoremap <silent> [unite]c  :<C-u>Unite command history/command<CR>
 nnoremap <silent> [unite]/  :<C-u>Unite history/search history/command<CR>
@@ -1075,6 +1076,7 @@ let g:echodoc_enable_at_startup=0
 " options {{{3
 let g:neocomplcache_snippets_dir                        = $HOME . '/.vim/snippets'
 let g:neocomplcache_enable_at_startup                   = 1
+let g:neocomplcache_cursor_hold_i_time                  = 500
 if exists('g:loaded_dot_vimrc') | silent exe 'NeoComplCacheEnable' | endif
 
 let g:neocomplcache_max_list = 10  " 補完候補の数
@@ -1154,14 +1156,13 @@ nnoremap [space]nd :NeoComplCacheDisable<CR>
 
 " completes {{{3
 if exists("+omnifunc") " {{{4
-  MyAutocmd FileType php        setl omnifunc=phpcomplete#CompletePHP
-  MyAutocmd FileType html       setl omnifunc=htmlcomplete#CompleteTags
-  MyAutocmd FileType markdown   setl omnifunc=htmlcomplete#CompleteTags
-  MyAutocmd FileType python     setl omnifunc=pythoncomplete#Complete
-  MyAutocmd FileType javascript setl omnifunc=javascriptcomplete#CompleteJS
-  MyAutocmd FileType xml        setl omnifunc=xmlcomplete#CompleteTags
-  MyAutocmd FileType css        setl omnifunc=csscomplete#CompleteCSS
-  MyAutocmd FileType c          setl omnifunc=ccomplete#Complete
+  MyAutocmd FileType php          setl omnifunc=phpcomplete#CompletePHP
+  MyAutocmd FileType html,mardown setl omnifunc=htmlcomplete#CompleteTags
+  MyAutocmd FileType python       setl omnifunc=pythoncomplete#Complete
+  MyAutocmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
+  MyAutocmd FileType xml          setl omnifunc=xmlcomplete#CompleteTags
+  MyAutocmd FileType css          setl omnifunc=csscomplete#CompleteCSS
+  MyAutocmd FileType c            setl omnifunc=ccomplete#Complete
   MyAutocmd FileType actionscript setl omnifunc=actionscriptcomplete#CompleteAS
   MyAutocmd FileType *
         \ if &l:omnifunc == ''
@@ -1598,6 +1599,65 @@ function! MyBrowserpreview() range "{{{4
 endfunction 
 " }}}
 command! -range Brpreview <line1>,<line2>call MyBrowserpreview()
+
+" browser {{{3
+function! s:launch_browser(appname) "{{{4
+  let path = ""
+  if a:appname == "ie"
+    if s:is_win
+      let path = ' start '.expand('$ProgramFiles/Internet Explorer/iexplore.exe')
+    endif
+  elseif a:appname == "firefox"
+    if s:is_win
+      let path = ' start '.expand('$ProgramFiles/Firefox/firefox.exe')
+      if !exists(path)
+        let path = ' start '.expand('$ProgramFiles(x86)/Firefox/firefox.exe')
+      endif
+    elseif s:is_mac
+      let path = 'open -a "Firefox"'
+    else
+      let path = 'firefox'
+    endif
+  elseif a:appname == "opera"
+    if s:is_win
+      let path = ' start '.expand('$ProgramFiles/Opera/Opera.exe')
+      if !exists(path)
+        let path = ' start '.expand('$ProgramFiles(x86)/Opera/Opera.exe')
+      endif
+    elseif s:is_mac
+      let path = 'open -a "Opera"'
+    else
+      let path = 'opera'
+    endif
+  elseif a:appname == "chrome"
+    if s:is_win
+      let path = ' start ' . expand('$LOCALAPPDATA/Google/Chrome/Application/chrome.exe')
+    elseif s:is_mac
+      let path = 'open -a "Google Chrome"'
+    else
+      let path = 'google-chrome'
+    endif
+  elseif a:appname == "safari"
+    if s:is_win
+      let path = ' start '.expand('$ProgramFiles/Safari/safari.exe')
+      if !exists(path)
+        let path = ' start '.expand('$ProgramFiles(x86)/Safari/safari.exe')
+      endif
+    elseif s:is_mac
+      let path = 'open -a "Safari"'
+    else
+    endif
+  endif
+  if len(path) > 0
+    silent execute "!" path expand("%:p")
+  endif
+endfunction "}}}
+command! Ie call s:launch_browser('ie')
+command! Firefox call s:launch_browser('firefox')
+command! Opera call s:launch_browser('opera')
+command! Chrome call s:launch_browser('chrome')
+command! Safari call s:launch_browser('safari')
+LCAlias Ie Firefox Opera Chrome Safari
 
 " TSV {{{3
 function! s:tsv_to_sqlwhere() range "{{{4
