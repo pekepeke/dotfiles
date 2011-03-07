@@ -291,7 +291,6 @@ options.resetPref('extensions.liberator.loglevel');
       cookie
       copy
       direct_bookmark
-      direct_hb
       encodingSwitcherCommand
       edit-vimperator-files
       epub-reader
