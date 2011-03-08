@@ -19,10 +19,11 @@ main() {
   fi
   for F in .?* ;do
     if [ "$F" == "." -o "$F" == ".." -o "$F" == ".git" -o "$F" == "setup.sh" ] ; then
-      echo skip $F
-    elif [ -e "$F" ]; then
+      echo skip object $F
+    elif [ -e "$HOME/$F" ]; then
       echo skip $F
     else
+      echo ln -s $CDIR/$F $HOME
       ln -s $CDIR/$F $HOME
     fi
   done
