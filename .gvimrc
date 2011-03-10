@@ -90,7 +90,7 @@ elseif s:is_mac
   endif
 else " unix setting
   "set guifont=VL\ ゴシック\ 12
-  set guifont=Inconsolata:h14
+  set guifont=Inconsolata\ 11
 endif
 " }}}
 
