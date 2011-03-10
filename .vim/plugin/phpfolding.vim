@@ -109,8 +109,8 @@ function! s:EnablePHPFolds(...) " {{{
 	let s:savedCursor = line(".")
 
 	" Initialize variables
-	set foldmethod=manual
-	set foldtext=PHPFoldText()
+	setl foldmethod=manual
+	setl foldtext=PHPFoldText()
 	let s:openFoldListItems = 0
 	let s:fileLineCount = line('$')
 
@@ -152,7 +152,7 @@ endfunction
 " }}}
 function! s:DisablePHPFolds() " {{{
 	"set foldmethod=manual
-	set foldtext=
+	setl foldtext=
 	normal zE
 	echo "php fold(s) deleted"
 endfunction

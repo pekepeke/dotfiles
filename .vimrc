@@ -1810,6 +1810,18 @@ command! -range Tsvexchangematrix <line1>,<line2>call s:tsv_exchange_matrix()
 command! -range Tsvtosqlinsert     <line1>,<line2>call s:tsv_to_sqlinsert()
 command! -range Tsvtosqlupdate     <line1>,<line2>call s:tsv_to_sqlupdate()
 
+" MySQL {{{3
+function! TMY() range " {{{4
+  for line in range(a:firstline, a:lastline)
+    let s = getline(line)
+    let s = substitute(s, '^[+\-]\+$', '', 'g')
+    let s = substitute(s, '^|\s\+\|\s\+|$', '', 'g')
+    let s = substitute(s, '\s\+|\s\+', "\t", 'g')
+    call setline(line, s)
+  endfor
+endfunction "}}}
+command! -nargs=0 -range TMY <line1>,<line2>call TMY()
+
 " padding {{{3
 function! PadNumber(...) range "{{{4
   let fmt = a:0 > 0 ? a:1 : '%d. '
