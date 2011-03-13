@@ -1459,7 +1459,15 @@ command! -nargs=1 -complete=file DiffFile vertical diffsplit <args>
 
 " rename {{{2
 "command! -nargs=1 -complete=file Rename f <args>|call delete(expand('#'))
-command! -nargs=1 -complete=file Rename f <args> | call delete(expand('#')) | w
+function! s:my_rename(path) " {{{3
+  let path = a:path
+  if stridx(path, "/") < 0 || stridx(path, "\\")
+    let path = expand("%:p:h") . path
+  endif
+  f path | call delete(expand('#')) | w
+endfunction "}}}
+"command! -nargs=1 -complete=file Rename f <args> | call delete(expand('#')) | w
+command! -nargs=1 -complete=file Rename call s:my_rename(<args>)
 Alias ren Rename
 
 function! s:relative_copy(dst) "{{{3
