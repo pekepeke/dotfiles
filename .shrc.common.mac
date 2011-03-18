@@ -10,4 +10,6 @@ done
 [ ! -e /usr/local/bin/vim -a -e /Applications/MacVim.app/Contents/MacOS/Vim ] && alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
 
 alias mvi='mvim --remote-tab-silent'
+alias date='gdate'
+
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:
