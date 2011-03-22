@@ -5,6 +5,15 @@ terminfo kterm hs@
 #terminfo facit|vt100|xterm LP:G0
 vbell off
 bind w windowlist -b
+bind s split
+bind q remove
+bind o only
+bind l next
+bind h previous
+bind j focus down
+bind k focus up
+bind J focus bottom
+bind K focus top
 
 # [escape]+x ...
 bind -c REGION 2 split
@@ -12,6 +21,8 @@ bind -c REGION 1 only
 bind -c REGION 0 remove
 bind -c REGION o focus
 bind -c REGION ^ resize
+bind -c REGION j resize +5
+bind -c REGION k resize -5
 bind x command -c REGION
 
 # [escape]+e ...(@status show->[escape]+i)
