@@ -224,6 +224,8 @@ set scrolloff=10000000         " 中央に表示
 set number                     " 行番号の表示
 set ruler
 
+set mouse=nch                  " use mouse normal/command/help
+
 set showmatch                  " 対応する括弧の表示
 set showcmd                    " 入力中のコマンドを表示
 set backspace=indent,eol,start " BSでなんでも削除
@@ -426,6 +428,26 @@ nnoremap [space]gg :Ack<Space>-i<Space>''<Left>
 nnoremap [space]gr :Ack<Space>-i<Space>''<Left>
 nnoremap [space]gb :GrepBuffer<Space>
 
+function! s:my_qf_backup()
+  let name = exists('w:quickfix_title') ? w:quickfix_title : 'quickfix_save'
+  let lines = getline(1, "$")
+  if empty(lines) || (len(lines) == 1 && empty(lines[0]))
+    echohl ErrorMsg
+    echo "Text is nothing"
+    echohl Normal
+    return
+  endif
+  enew | setl buftype=nofile noswapfile | setf qf
+  file `=name`
+  nmap <buffer> <CR> <C-w>F
+  call append(0, lines)
+endfunction
+
+function! s:my_quickfix_settings()
+  nnoremap <buffer> ss :<C-u>call <SID>my_qf_backup()<CR>
+endfunction
+
+MyAutocmd FileType qf call s:my_quickfix_settings()
 " MyAutocmd QuickfixCmdPost make,grep,grepadd,vimgrep copen
 " MyAutocmd QuickfixCmdPost l* lopen
 
@@ -619,8 +641,11 @@ function s:vim_quit(bang)
   if &buftype != 'nofile'
     bd
 endfunction
-command! -nargs=0 -bang MyQ if &buftype != 'nofile' | bd<bang>
-      \ | elseif tabpagenr('$') == 1 && winnr('$') == 1 | enew
+" command! -nargs=0 -bang MyQ if &buftype != 'nofile' | bd<bang>
+      " \ | elseif tabpagenr('$') == 1 && winnr('$') == 1 | enew
+      " \ | else | quit<bang> | endif
+command! -nargs=0 -bang MyQ
+      \ if tabpagenr('$') == 1 && winnr('$') == 1 | enew
       \ | else | quit<bang> | endif
 command! -nargs=0 -bang MyWQ write<bang> | MyQ<bang>
 
@@ -1327,6 +1352,7 @@ let QFixHowm_MenuBar=0
 let MyGrep_MenuBar=0
 
 let QFixHowm_ShowTodoOnMenu = 1
+let g:QFix_PreviewEnable = 0
 
 MyAutocmd FileType howm_memo call s:howm_memo_my_settings() " {{{3
 function! s:howm_memo_my_settings()
