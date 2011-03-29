@@ -1297,12 +1297,15 @@ let g:vimfiler_edit_command = 'new'
 MyAutocmd FileType vimfiler call s:vimfiler_my_settings()
 
 function! MyVimfilerYankPath() " {{{3
-  let l:register = '0'
+  " let l:register = v:register "'0'
+  let l:register = &clipboard == "unnamed" ? '*' : '0'
   let l:path = vimfiler#get_filename(line('.'))
   if l:path == '' || l:path == '..'
     return
   endif
-  let l:mode = input('yank - [f]ilename, [p]ath, [d]ir path, [e]xt : ', '')
+  "let l:mode = input('yank - [f]ilename, [p]ath, [d]ir path, [e]xt : ', '')
+  echo 'yank - [f]ilename, [p]ath, [d]ir path, [e]xt : '
+  let l:mode = nr2char(getchar())
   let l:copy_str = ''
   if l:mode ==# 'f'
     let l:copy_str = fnamemodify(l:path,  ':t')
