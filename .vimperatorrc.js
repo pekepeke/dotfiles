@@ -302,6 +302,7 @@ options.resetPref('extensions.liberator.loglevel');
       jscompletition
       migemo_completion
       migemo_hint
+      migemo-find
       multi_requester
       resizable_textarea
       sbmcommentsviewer
@@ -321,8 +322,8 @@ options.resetPref('extensions.liberator.loglevel');
         refcontrol
         autoproxychanger
         migemized_find
-          migratestatusbar
-          ldrize_cooperation
+        migratestatusbar
+        ldrize_cooperation
       </>.toString().split(/\s+/).forEach(function(v) gv.plugin_loader_plugins.push(v));
     }
     //}}}

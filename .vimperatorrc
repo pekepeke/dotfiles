@@ -6,9 +6,11 @@
 " {{{ basic settings
 js if (liberator.has('Win32') || liberator.has('Win64')) liberator.execute('set runtimepath+=$HOME/.vimperator');
 set titlestring="Mozilla Firefox"
-set guioptions+=mTn
-set stal=2
-set showtabline=1
+" set guioptions+=mTn
+" set stal=2
+" set showtabline=1
+set toolbars=addons,menu,navigation,tabs
+set status=input,loation,tabcount,position
 "" showtabline=2 "=always"
 set activate=homepage,quickmark,tabopen,paste
 set focuscontent
@@ -35,7 +37,8 @@ set previouspattern+="prev, 前(の)?ページ,\b前.*,\b←"
 " }}}
 
 " == for pageinfo == "
-autocmd VimperatorEnter .* :set pageinfo=gmhHc
+" autocmd VimperatorEnter .* :set pageinfo=gmhHc
+autocmd VimperatorEnter .* :set pageinfo=gmfS
 
 " == hints == "
 set followhints=1
