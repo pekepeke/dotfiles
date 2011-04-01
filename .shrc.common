@@ -38,6 +38,7 @@ is_colinux() {
 if is_win ; then
   export CYGWIN='cygwin'
   [ -e $HOME/.shrc.common.cygwin ] && source $HOME/.shrc.common.cygwin
+  [ -d $HOME/bin/windows ] && PATH=$HOME/bin/windows:$PATH
 elif is_mac ; then
   [ -e $HOME/.shrc.common.mac ] && source $HOME/.shrc.common.mac
   [ -e "/usr/local/Library/Homebrew" ] && PATH=/usr/local/bin:$PATH
@@ -45,6 +46,7 @@ elif is_mac ; then
     PATH=$PATH:$fp
   done
   [ "$LANG" = "ja_JP" ] && export LANG=ja_JP.UTF-8
+  [ -d $HOME/bin/mac ] && PATH=$HOME/bin/mac:$PATH
 fi
 
 [ -d $HOME/bin ] && PATH=$HOME/bin:$PATH

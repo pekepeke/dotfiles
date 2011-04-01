@@ -253,3 +253,6 @@
 [submodule ".vim/bundle/dbext"]
 	path = .vim/bundle/dbext
 	url = https://github.com/zklinger/dbext.git
+[submodule ".vim/bundle/neco-look"]
+	path = .vim/bundle/neco-look
+	url = https://github.com/ujihisa/neco-look.git
