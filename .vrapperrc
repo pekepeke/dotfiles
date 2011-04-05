@@ -1,3 +1,6 @@
+" http://help.eclipse.org/help33/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/texteditor/IWorkbenchActionDefinitionIds.html
+" http://help.eclipse.org/help33/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/texteditor/ITextEditorActionDefinitionIds.html
+" http://help.eclipse.org/ganymede/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/ui/actions/IJavaEditorActionDefinitionIds.html
 set smartindent
 set autoindent
 set ignorecase
@@ -29,6 +32,8 @@ nnoremap [[ :GotoPreviousMember<CR>
 " tab
 nnoremap tn gt
 nnoremap tp gT
+
+inoremap <C-h> :DeletePrevious<CR>
 
 eclipseaction SearchRef org.eclipse.jdt.ui.edit.text.java.search.references.in.project
 
