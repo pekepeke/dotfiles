@@ -221,6 +221,7 @@ set diffopt-=filler diffopt+=iwhite
 set lazyredraw
 set ttyfast
 set scrolloff=10000000         " 中央に表示
+set sidescrolloff=999
 set number                     " 行番号の表示
 set ruler
 
