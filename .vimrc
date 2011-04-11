@@ -1008,6 +1008,8 @@ MyAutocmd FileType quickrun call s:quickrun_my_settings()
 " taglist {{{2
 " basic options {{{3
 set tags+=tags;$HOME
+if filereadable($HOME."/.bin/tags/java6") | set tags+=$HOME/.bin/tags/java6 | endif
+if filereadable($HOME."/.bin/tags/android-base") | set tags+=$HOME/.bin/tags/android-base | endif
 
 let g:Tlist_Auto_Update = 1
 let g:Tlist_Show_One_File = 0
