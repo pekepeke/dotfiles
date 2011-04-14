@@ -279,7 +279,7 @@ if has("gui_running") || &t_Co==256
           \|  call s:PreviewCSSColorInLine(i)
           \|endfor
     autocmd CursorMoved *.css silent
-          \ if b:currentLine != getline('.')
+          \ if !exists('b:currentLine') || b:currentLine != getline('.')
           \|  call s:PreviewCSSColorInLine('.')
           \|  let b:currentLine = getline('.')
           \|endif

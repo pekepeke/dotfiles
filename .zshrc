@@ -30,23 +30,27 @@ setopt pushd_ignore_dups
 setopt pushd_silent
 
 # completion
-setopt auto_menu 
-unsetopt list_beep
-setopt menu_complete
-setopt always_last_prompt 
-setopt auto_name_dirs
-unsetopt cdable_vars
-setopt auto_param_keys
+setopt no_beep
+setopt no_list_beep
 
-# globing
-setopt extended_glob
-setopt list_types
-setopt magic_equal_subst
+setopt auto_name_dirs       # enable ~/$var
+setopt auto_menu            # 補完キー連打で順に補完候補を自動で補完
+setopt auto_param_slash     # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
+setopt auto_param_keys      # カッコの対応などを自動的に補完
+unsetopt cdable_vars        # not expand "~"
+setopt mark_dirs            # ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
+setopt list_types           # 補完候補一覧でファイルの種別を識別マーク表示 (訳注:ls -F の記号)
+setopt interactive_comments # コマンドラインでも                                                                         # 以降をコメントと見なす
+setopt complete_in_word     # 語の途中でもカーソル位置で補完
+setopt always_last_prompt   # カーソル位置は保持したままファイル名一覧を順次その場で表示
+setopt magic_equal_subst    # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
 
+setopt extended_glob        # 拡張グロブで補完(~とか^とか。例えばless *.txt~memo.txt ならmemo.txt 以外の *.txt にマッチ)
+setopt globdots             # 明確なドットの指定なしで.から始まるファイルをマッチ
 
 # i/o
-setopt correct 
-setopt print_eight_bit
+#setopt correct 
+setopt print_eight_bit      # 日本語ファイル名等8ビットを通す
 setopt sun_keyboard_hack
 #setopt interactive_comments
 
@@ -63,7 +67,7 @@ unsetopt beep
 autoload -U compinit
 compinit -u
 
-zstyle ':completion:*:default' menu select=1
+zstyle ':completion:*:default' menu select=2
 #zstyle ':completion:*' list-colors di=34 fi=0
 #zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
@@ -89,6 +93,8 @@ bindkey -a 'O' push-line
 bindkey -a 'H' run-help
 bindkey -a '^A' vi-beginning-of-line
 bindkey -a '^E' vi-end-of-line
+bindkey -a '^R' history-incremental-pattern-search-backward
+
 ## for insert mode
 bindkey -v '^[OH' vi-beginning-of-line
 bindkey -v '^[OF' vi-end-of-line

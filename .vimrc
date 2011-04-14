@@ -1460,7 +1460,7 @@ if exists('g:my_chm_dir') && (s:is_win || (!s:is_win && !empty(g:my_chm_command)
     endfor
     return matches
   endfunction
-  function! s:run_my_chm_file(fname) " {{{3
+  function! s:open_my_chm_file(fname) " {{{3
     let l:chm_path = g:my_chm_dir . "/" . a:fname
     if !filereadable(l:chm_path)
       let l:chm_path = a:fname
@@ -1472,9 +1472,35 @@ if exists('g:my_chm_dir') && (s:is_win || (!s:is_win && !empty(g:my_chm_command)
     endif
   endfunction
   " }}}
-  command! -nargs=1 -complete=customlist,s:my_chm_files_completes Chm call s:run_my_chm_file("<args>")
+  command! -nargs=1 -complete=customlist,s:my_chm_files_completes Chm call s:open_my_chm_file("<args>")
   LCAlias Chm
 endif
+function! s:my_cheatsheets_complete(A, L, P) "{{{3
+  let items = map(split(globpath(g:my_cheatsheets_dir, "/*"), "\n"), 'matchstr(v:val, "[^/]\\+$")')
+  let matches = []
+  for item in items
+    "if item =~? '^' . a:A
+    if item =~? a:A
+      call add(matches, item)
+    endif
+  endfor
+  return matches
+endfunction " }}}
+function! s:open_my_cheatsheet(fname) "{{{3
+  let l:path = g:my_cheatsheets_dir . "/" . a:fname
+  if !filereadable(l:path)
+    let l:path = a:fname
+  endif
+  if s:is_win
+    silent exe '! start hh' l:path
+  elseif s:is_mac
+    silent exe '! open' l:path
+  else
+    silent exe '!' l:path
+  endif
+endfunction " }}}
+command! -nargs=1 -complete=customlist,s:my_cheatsheets_complete Cheat call s:open_my_cheatsheet("<args>")
+LCAlias Cheat
 
 " tail {{{2
 if executable('tail')
@@ -1616,11 +1642,15 @@ function! MyBrowserpreview() range "{{{4
     echoerr "command not found."
     return
   endif
-  if a:firstline == a:lastline
-    let lines = getline(1, "$")
-  else
-    let lines = getline(a:firstline, a:lastline)
+  let cmd = g:my_browserpreview_cmd
+  if ! &modified
+    let fpath = expand('%:p')
+    silent execute "!" cmd fpath
+    redraw!
+    return
   endif
+  let lines = a:firstline == a:lastline 
+        \ ? getline(1, "$") : getline(a:firstline, a:lastline)
   "let lines = a:lines
   if empty(lines)
     echo "empty buffer : stop execute!!"
@@ -1629,12 +1659,10 @@ function! MyBrowserpreview() range "{{{4
 
   let fpath = tempname() . '.html'
   call writefile(lines, fpath)
-  silent execute "!".g:my_browserpreview_cmd." ".fpath
+  silent execute "!" cmd fpath
   " FIXME いい方法はないものか？
   silent execute "sleep 2"
-  if filewritable(fpath)
-    call delete(fpath)
-  endif
+  if filewritable(fpath) | call delete(fpath) | endif
   redraw!
 endfunction 
 " }}}
