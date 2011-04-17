@@ -32,9 +32,11 @@ let s:is_win = has('win16') || has('win32') || has('win64')
 
 if s:is_win
   let g:my_chm_dir = expand("")
+  let g:my_cheatsheets_dir = expand("")
 elseif s:is_mac
   let g:my_chm_dir = expand('')
   let g:my_chm_command = 'open -a iChm'
+  let g:my_cheatsheets_dir = expand("")
 endif
 "}}}
 

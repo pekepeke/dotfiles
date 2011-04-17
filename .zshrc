@@ -93,7 +93,6 @@ bindkey -a 'O' push-line
 bindkey -a 'H' run-help
 bindkey -a '^A' vi-beginning-of-line
 bindkey -a '^E' vi-end-of-line
-bindkey -a '^R' history-incremental-pattern-search-backward
 
 ## for insert mode
 bindkey -v '^[OH' vi-beginning-of-line
@@ -106,6 +105,7 @@ bindkey -v '^F' forward-char
 bindkey -v '^K' kill-line
 bindkey -v '^S' history-incremental-search-forward
 bindkey -v '^Y' yank
+bindkey -v '^R' history-incremental-pattern-search-backward
 
 # bindkey -e
 # bindkey ";5C" forward-word
