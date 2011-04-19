@@ -59,6 +59,10 @@ inoremap <C-u> <Esc>:DeleteLineToBeginning<CR>i
 
 " vmaps
 vnoremap = :Format<CR>
+" vnoremap <C-f> :SelectPageDown<CR>
+" vnoremap <C-b> :SelectPageUp<CR>
+vnoremap <C-f> 5j
+vnoremap <C-b> 5k
 
 eclipseaction SearchRef org.eclipse.jdt.ui.edit.text.java.search.references.in.project
 
