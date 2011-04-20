@@ -460,6 +460,7 @@ nnoremap <silent> [t]p :<C-u>tabprevious<CR>
 nnoremap <silent> [t]o :<C-u>tabonly<CR>
 
 " tags-and-searches {{{2
+nnoremap [t]r t
 nnoremap <silent> [t]t <C-]>
 nnoremap <silent> [t]j :<C-u>tag<CR>
 nnoremap <silent> [t]k :<C-u>pop<CR>
