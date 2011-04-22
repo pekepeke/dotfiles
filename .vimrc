@@ -1644,7 +1644,7 @@ function! MyBrowserpreview() range "{{{4
     return
   endif
   let cmd = g:my_browserpreview_cmd
-  if ! &modified
+  if ! &modified && &buftype != 'nofile'
     let fpath = expand('%:p')
     silent execute "!" cmd fpath
     redraw!
