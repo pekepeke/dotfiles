@@ -567,6 +567,8 @@ Lazy cnoremap <C-x> <C-r>=expand('%:p:h')<CR>/
 " vmaps {{{2
 vnoremap tj    :GoogleTranslate ja<CR>
 vnoremap te    :GoogleTranslate en<CR>
+vnoremap <Tab>   >gv
+vnoremap <S-Tab> <gv
 "nnoremap : q:
 
 " plugin settings {{{1
@@ -1119,7 +1121,8 @@ let g:neocomplcache_enable_smart_case                   = 1
 let g:neocomplcache_enable_camel_case_completion        = 0 " camel case off
 let g:neocomplcache_enable_underbar_completion          = 1
 " let g:neocomplcache_enable_auto_delimiter               = 1
-let g:neocomplcache_disable_caching_buffer_name_pattern = "\.log$\|_history$\|\.howm$\|\.jax$\|\.snippets$"
+" let g:neocomplcache_disable_caching_buffer_name_pattern = "\.log$\|_history$\|\.howm$\|\.jax$\|\.snippets$"
+let g:neocomplcache_disable_caching_file_path_pattern = "\.log$\|_history$\|\.howm$\|\.jax$\|\.snippets$"
 let g:neocomplcache_lock_buffer_name_pattern            = '\*ku\*'
 
 let g:neocomplcache_min_syntax_length                   = 3
