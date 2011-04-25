@@ -22,7 +22,13 @@ if !exists('g:loaded_php_ftplugin') " {{{1
 endif " }}}
 
 let php_folding = 0
-nnoremap <buffer> <silent> zz :if &foldmethod == "manual" | exe "EnableFastPHPFolds" | endif<CR>
+function! s:folding()
+  if &foldmethod == "manual" 
+    exe "EnableFastPHPFolds" 
+  endif
+  redraw!
+endfunction
+nnoremap <buffer> <silent> zz :call <SID>folding()<CR>
 
 let s:save_cpo = &cpo
 set cpo&vim
