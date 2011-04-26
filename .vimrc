@@ -658,6 +658,8 @@ Alias q MyQ
 Alias wq MyWQ
 Alias Q quit
 Alias WQ wq
+Alias ve vsplit
+Alias se split
 
 " alignta {{{2
 let g:alignta_confirm_for_retab = 0
@@ -1076,7 +1078,6 @@ if s:is_win
   let g:ref_refe_encoding = 'cp932'
 else
   let g:ref_refe_encoding = 'utf-8'
-  "  let g:ref_refe_cmd = '/opt/local/bin/refe-1_8_7'
   if exists('$RSENSE_HOME') && executable($RSENSE_HOME.'/bin/rsense')
     let g:ref_refe_rsense_cmd = $RSENSE_HOME.'/bin/rsense'
   endif
@@ -1085,10 +1086,14 @@ let g:ref_perldoc_complete_head = 1
 let g:ref_alc_use_cache = 1
 let g:ref_alc_start_linenumber = 43
 let g:ref_use_vimproc = 0
+
+if exists('*ref#register_detection')
+  call ref#register_detection('_', 'alc')
+endif
 " }}}
 
-LCAlias ref Ref
-for src in ['alc', 'refe', 'perldoc', 'man'
+LCAlias Ref
+for src in ['alc', 'refe', 'ri', 'perldoc', 'man'
       \ , 'pydoc', 'jsref', 'jquery'
       \ , 'cppref', ]
   silent! exe 'Alias' src 'Ref' src
