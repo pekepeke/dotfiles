@@ -45,15 +45,15 @@ main() {
     git submodule update
   fi
   #if [ ! -e "$vp_dir/autoload/proc.so" ]; then
-  cd $CDIR/.vim/bundle/vimproc
-  case $OSTYPE in
-    darwin*)
-      make -f make_mac.mak
-      ;;
-    *)
-      make -f make_gcc.mak
-      ;;
-  esac
+  # cd $CDIR/.vim/bundle/vimproc
+  # case $OSTYPE in
+    # darwin*)
+      # make -f make_mac.mak
+      # ;;
+    # *)
+      # make -f make_gcc.mak
+      # ;;
+  # esac
   #fi
 }
 

@@ -44,6 +44,3 @@ nytprof.out
 doc/tags
 doc/tags-ja
 
-# vim
-.vim/vundle
-

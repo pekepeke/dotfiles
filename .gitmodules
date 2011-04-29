@@ -256,3 +256,9 @@
 [submodule ".vim/bundle/neco-look"]
 	path = .vim/bundle/neco-look
 	url = https://github.com/ujihisa/neco-look.git
+[submodule ".vim/vundle"]
+	path = .vim/vundle
+	url = https://github.com/gmarik/vundle.git
+[submodule ".vim/vundle.git"]
+	path = .vim/vundle.git
+	url = https://github.com/gmarik/vundle.git

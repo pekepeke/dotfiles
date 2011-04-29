@@ -47,8 +47,116 @@ augroup END
 command! -bang -nargs=* MyAutocmd autocmd<bang> MyAuGroup <args>
 command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
 
-" pathogen {{{1
+" vundle {{{1
 filetype off
+set rtp+=~/.vim/vundle.git
+call vundle#rc(expand("$HOME/.vim/vundle"))
+if s:is_win && !exists(expand('$HOME/.vim/vundle/vimproc/autoload/vimproc.so'))
+  silent exe '! cd $HOME/.vim/vundle/vimproc && make -f '
+        \ s:is_mac ? 'make_mac.mak' : 'make_gcc.mak'
+endif
+
+Bundle 'Shougo/neocomplcache.git'
+Bundle 'Shougo/vimfiler.git'
+Bundle 'Shougo/vimproc.git'
+Bundle 'Shougo/vimshell.git'
+Bundle 'kana/vim-fakeclip.git'
+Bundle 'kana/vim-scratch.git'
+Bundle 'kana/vim-smartchr.git'
+Bundle 'kana/vim-submode.git'
+Bundle 'tyru/vim-altercmd.git'
+Bundle 'tpope/vim-surround.git'
+Bundle 'h1mesuke/vim-alignta.git'
+Bundle 'YankRing.vim'
+Bundle 'smartword'
+Bundle 'matchit.zip'
+Bundle 'ruby-matchit'
+
+Bundle 'tyru/open-browser.vim.git'
+Bundle 'mattn/googletranslate-vim.git'
+Bundle 'ujihisa/shadow.vim.git'
+Bundle 'tsukkee/lingr-vim.git'
+Bundle 'ujihisa/quickrun.git'
+Bundle 'tyru/current-func-info.vim.git'
+Bundle 'vim-scripts/errormarker.vim.git'
+Bundle 'thinca/vim-template.git'
+Bundle 'mexpolk/vim-taglist.git'
+Bundle 'mattn/zencoding-vim.git'
+Bundle 'mattn/gist-vim.git'
+Bundle 'scrooloose/nerdcommenter.git'
+Bundle 'scrooloose/nerdtree.git'
+Bundle 'thinca/vim-qfreplace.git'
+Bundle 'mileszs/ack.vim.git'
+Bundle 'motemen/git-vim.git'
+
+Bundle 'motemen/hatena-vim.git'
+Bundle 'othree/html5.vim.git'
+Bundle 'kchmck/vim-coffee-script.git'
+Bundle 'ciaranm/detectindent.git'
+Bundle 'thinca/vim-ft-diff_fold.git'
+Bundle 'thinca/vim-ft-markdown_fold.git'
+Bundle 'timcharper/textile.vim.git'
+
+Bundle 'tpope/vim-rails.git'
+Bundle 'vim-scripts/eruby.vim.git'
+Bundle 'astashov/vim-ruby-debugger.git'
+
+Bundle 'dbext.vim'
+Bundle 'SQLUtilities'
+Bundle 'php-doc'
+"Bundle 'OmniCppComplete'
+
+
+Bundle 'thinca/vim-ref.git'
+Bundle 'pekepeke/ref-javadoc.git'
+Bundle 'soh335/vim-ref-jquery.git'
+
+Bundle 'kana/vim-operator-replace.git'
+Bundle 'kana/vim-operator-user.git'
+Bundle 'tyru/operator-camelize.vim.git'
+Bundle 'tyru/operator-html-escape.vim.git'
+
+Bundle 'kana/vim-textobj-datetime.git'
+Bundle 'kana/vim-textobj-diff.git'
+Bundle 'kana/vim-textobj-entire.git'
+Bundle 'kana/vim-textobj-fold.git'
+Bundle 'kana/vim-textobj-function.git'
+Bundle 'kana/vim-textobj-jabraces.git'
+Bundle 'kana/vim-textobj-lastpat.git'
+Bundle 'kana/vim-textobj-syntax.git'
+Bundle 'kana/vim-textobj-user.git'
+Bundle 'thinca/vim-textobj-between.git'
+Bundle 'thinca/vim-textobj-comment.git'
+Bundle 'thinca/vim-textobj-function-javascript.git'
+Bundle 'thinca/vim-textobj-function-perl.git'
+Bundle 'vim-scripts/textobj-indent.git'
+
+Bundle 'Shougo/unite.vim.git'
+Bundle 'Sixeight/unite-grep.git'
+Bundle 'h1mesuke/unite-outline.git'
+Bundle 'hakobe/unite-script.git'
+Bundle 'mattn/unite-remotefile.git'
+Bundle 'pekepeke/unite-fileline.git'
+Bundle 'sgur/unite-git_grep.git'
+Bundle 'sgur/unite-qf.git'
+Bundle 'soh335/unite-qflist.git'
+Bundle 'tacroe/unite-alias.git'
+Bundle 'tacroe/unite-mark.git'
+Bundle 'thinca/vim-unite-history.git'
+Bundle 'tsukkee/unite-tag.git'
+Bundle 'ujihisa/unite-colorscheme.git'
+Bundle 'ujihisa/unite-font.git'
+Bundle 'ujihisa/unite-gem.git'
+Bundle 'ujihisa/unite-help.git'
+Bundle 'ujihisa/unite-rake.git'
+
+if s:is_win
+  Bundle 'sgur/unite-everything.git'
+else
+  Bundle 'ujihisa/neco-look.git'
+endif
+
+" pathogen {{{1
 let g:pathogen_disabled = []
 for [cmd, name] in [['git', ['gist-vim', 'git-vim']], ['locate', 'unite-locate']]
   if !executable(cmd)
@@ -66,9 +174,9 @@ filetype plugin indent on
 " vim git 更新
 if executable('sh') && executable('git')
   "command! BundlesUpdate exe "!sh $HOME/.vim/bin/update_bundles.sh" | call pathogen#helptags()
-  command! BundlesUpdate exe "! cd $HOME/.github-dotfiles && git submodule foreach 'git fetch;git checkout origin/master'" | call pathogen#helptags()
+  command! UpdateSubmodule exe "! cd $HOME/.github-dotfiles && git submodule foreach 'git fetch;git checkout origin/master'" | call pathogen#helptags()
 endif
-command! BundlesHelpTagsUpdate call pathogen#helptags()
+command! PathogenHelptags call pathogen#helptags()
 
 " color settings "{{{1
 "set t_Co=256
