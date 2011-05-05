@@ -36,7 +36,7 @@ set cpo-=C
 " Set `validate_css' path to whatever you installed it.
 " When the script is in normal paths, vim already sees it.
 "CompilerSet makeprg=validate_css\ $*\ %
-CompilerSet makeprg=$HOME/.vim/bin/validate_css\ $*\ %
+CompilerSet makeprg=perl\ $HOME/.vim/bin/validate_css\ $*\ %
 
 " Error format is very simple, because we can control it
 " via `validate_css' perl script.

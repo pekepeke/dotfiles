@@ -15,7 +15,12 @@ end
 require 'pp'              # ついでなんでpp(PrettyPrint)のライブラリをロード
 require 'irb/completion'
 
-IRB.conf[:AUTO_INDENT] = true
+IRB.conf.merge!({
+  :USE_READLINE => true,
+  :AUTO_INDENT => true,
+  :SAVE_HISTORY => 1000,
+  :PROMPT_MODE => :SIMPLE,# :VERBOSE
+})
 IRB.conf[:PROMPT][:SIMPLE] = {
   :PROMPT_I => "%03n:>> ",
   :PROMPT_N => "%03n:%i>",
@@ -23,8 +28,6 @@ IRB.conf[:PROMPT][:SIMPLE] = {
   :PROMPT_C => "%03n:>> ",
   :RETURN => "=> %s\n"
 }
-IRB.conf[:PROMPT_MODE] = :SIMPLE
-IRB.conf[:SAVE_HISTORY] = 100
 
 # --- wirble --- gem install wirble
 require 'rubygems'

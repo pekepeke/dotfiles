@@ -45,12 +45,12 @@ syn cluster cMultiGroup add=objcMessageColon,objcMessageName,objcMethodName,objc
 
 " You may want to customize this one. I couldn't find a default group to suit
 " it, but you can modify your colorscheme to make this a different color.
-hi link objcMethodName Special
+hi link objcMethodName Function
 hi link objcMethodColon objcMethodName
 
 hi link objcMethodArg Identifier
 
-hi link objcMessageName objcMethodArg
+hi link objcMessageName Normal
 hi link objcMessageColon objcMessageName
 
 hi link objcSubclass objcMethodName

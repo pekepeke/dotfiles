@@ -95,6 +95,13 @@ export PYTHONBREW_ROOT=$HOME/.pythonbrew
 [ -s $HOME/.rvm/scripts/rvm ] && source $HOME/.rvm/scripts/rvm
 is_exec rails && alias r=rails
 
+# for node.js
+[ -s $HOME/.nvm/nvm.sh ] && source $HOME/.nvm/nvm.sh
+# if [ -s $HOME/.nave/nave.sh ] ; then
+  # alias nave=$HOME/.nave/nave.sh
+  # alias npm_install='curl http://npmjs.org/install.sh | sh'
+# fi
+
 # c/c++ library path
 #export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer
 #export LD_LIBRARY_PATH=/usr/local/X11R7/lib:$QTDIR/lib:$KDEDIR/lib:/usr/local/lib:/usr/lib:/lib:$ROOTSYS/lib:/usr/local/firefox

@@ -47,14 +47,12 @@ augroup END
 command! -bang -nargs=* MyAutocmd autocmd<bang> MyAuGroup <args>
 command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
 
-" vundle {{{1
+" for runtimepath {{{1
 filetype off
+
+" vundle {{{2
 set rtp+=~/.vim/vundle.git
 call vundle#rc(expand("$HOME/.vim/vundle"))
-if s:is_win && !exists(expand('$HOME/.vim/vundle/vimproc/autoload/vimproc.so'))
-  silent exe '! cd $HOME/.vim/vundle/vimproc && make -f '
-        \ s:is_mac ? 'make_mac.mak' : 'make_gcc.mak'
-endif
 
 Bundle 'Shougo/neocomplcache.git'
 Bundle 'Shougo/vimfiler.git'
@@ -76,7 +74,7 @@ Bundle 'tyru/open-browser.vim.git'
 Bundle 'mattn/googletranslate-vim.git'
 Bundle 'ujihisa/shadow.vim.git'
 Bundle 'tsukkee/lingr-vim.git'
-Bundle 'ujihisa/quickrun.git'
+Bundle 'thinca/vim-quickrun.git'
 Bundle 'tyru/current-func-info.vim.git'
 Bundle 'vim-scripts/errormarker.vim.git'
 Bundle 'thinca/vim-template.git'
@@ -154,19 +152,16 @@ if s:is_win
   Bundle 'sgur/unite-everything.git'
 else
   Bundle 'ujihisa/neco-look.git'
+  Bundle 'ujihisa/unite-locate.git'
 endif
 
-" pathogen {{{1
+" pathogen {{{2
 let g:pathogen_disabled = []
-for [cmd, name] in [['git', ['gist-vim', 'git-vim']], ['locate', 'unite-locate']]
-  if !executable(cmd)
-    let g:pathogen_disabled += type(name) == type([]) ? name : [name]
-  endif
-  unlet name
-endfor
-if !s:is_win | let g:pathogen_disabled += ['unite-everything'] | endif
 if !s:is_mac | let g:pathogen_disabled += ['cocoa.vim'] | endif
 call pathogen#runtime_append_all_bundles()
+
+command! PathogenHelptags call pathogen#helptags()
+" }}}
 
 syntax enable
 filetype plugin indent on
@@ -176,7 +171,16 @@ if executable('sh') && executable('git')
   "command! BundlesUpdate exe "!sh $HOME/.vim/bin/update_bundles.sh" | call pathogen#helptags()
   command! UpdateSubmodule exe "! cd $HOME/.github-dotfiles && git submodule foreach 'git fetch;git checkout origin/master'" | call pathogen#helptags()
 endif
-command! PathogenHelptags call pathogen#helptags()
+if executable('sh')
+  function! s:vimproc_compile()
+    let path = expand('$HOME/.vim/vundle/vimproc')
+    let makefile = s:is_win ? 'make_cygwin.mak' :
+          \ (s:is_mac ? 'make_mac.mak' : 'make_gcc.mak')
+
+    exe printf("! cd %s && make - f%s/%s", path, path, makefile)
+  endfunction
+  command! -nargs=0 VimprocCompile call <SID>vimproc_compile()
+endif
 
 " color settings "{{{1
 "set t_Co=256
@@ -375,13 +379,54 @@ endif " }}}
 set nowrap     " 折り返しなし
 set nrformats=hex
 
-" statusline {{{2
+" sticky shift {{{2
+" http://vim-users.jp/2009/08/hack-54/
+" nnoremap <expr> ;; <SID>sticky_func()
+" nnoremap <expr> ;; <SID>sticky_func()
+" cnoremap <expr> ;  <SID>sticky_func()
+" snoremap <expr> ;  <SID>sticky_func()
+let g:sticky_shift_enable = 1
+command! -nargs=0 StickyShiftEnable let g:sticky_shift_enable=1
+command! -nargs=0 StickyShiftDisable let g:sticky_shift_enable=0
+
+inoremap <expr> ;  g:sticky_shift_enable ? <SID>sticky_func() : ";"
+
+function! s:sticky_func() "{{{3
+  " let l:sticky_table = {
+  " \',' : '<', '.' : '>', '/' : '?',
+  " \'1' : '!', '2' : '@', '3' : '#', '4' : '$', '5' : '%',
+  " \'6' : '^', '7' : '&', '8' : '*', '9' : '(', '0' : ')', '-' : '_', '=' : '+',
+  " \';' : ':', '[' : '{', ']' : '}', '`' : '~', "'" : "\"", '\' : '|',
+  " \}
+  let l:sticky_table = {
+        \',' : '<', '.' : '>', '/' : '?', '\' : '_',
+        \'1' : '!', '2' : '"', '3' : '#', '4' : '$', '5' : '%',
+        \'6' : '&', '7' : "'", '8' : '(', '9' : ')', '0' : '|', '-' : '=', '^' : '~', '¥' : '|',
+        \'@' : '`', '[' : '{', ';' : '+', ':' : '*', ']' : '}'
+        \}
+  let l:special_table = {
+        \"\<ESC>" : "\<ESC>", "\<Space>" : ';', "\<CR>" : ";\<CR>"
+        \}
+
+  let l:key = getchar()
+  if nr2char(l:key) =~ '\l'
+    return toupper(nr2char(l:key))
+  elseif has_key(l:sticky_table, nr2char(l:key))
+    return l:sticky_table[nr2char(l:key)]
+  elseif has_key(l:special_table, nr2char(l:key))
+    return l:special_table[nr2char(l:key)]
+  else
+    return ''
+  endif
+endfunction
+
 set laststatus=2  " ステータス表示用変数
 "set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'}%=%l,%c%V%8P
 let &statusline="%<%f %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'
       \ .'['.cfi#format('%s()','no func').']'
       \ }%=%l,%c%V%8P"
 
+" statusline {{{2
 " 検索周り {{{2
 set ignorecase smartcase       " 賢い検索
 set incsearch                  " インクメンタル
@@ -597,43 +642,6 @@ nnoremap <silent> [edit]<C-t> :TlistToggle<CR>
 
 " echo
 nnoremap [prefix]e :echo<Space>
-
-" sticky shift {{{2
-" http://vim-users.jp/2009/08/hack-54/
-" nnoremap <expr> ;; <SID>sticky_func()
-" nnoremap <expr> ;; <SID>sticky_func()
-" cnoremap <expr> ;  <SID>sticky_func()
-" snoremap <expr> ;  <SID>sticky_func()
-inoremap <expr> ;  <SID>sticky_func()
-
-function! s:sticky_func() "{{{3
-    " let l:sticky_table = {
-                " \',' : '<', '.' : '>', '/' : '?',
-                " \'1' : '!', '2' : '@', '3' : '#', '4' : '$', '5' : '%',
-                " \'6' : '^', '7' : '&', '8' : '*', '9' : '(', '0' : ')', '-' : '_', '=' : '+',
-                " \';' : ':', '[' : '{', ']' : '}', '`' : '~', "'" : "\"", '\' : '|',
-                " \}
-    let l:sticky_table = {
-                \',' : '<', '.' : '>', '/' : '?', '\' : '_',
-                \'1' : '!', '2' : '"', '3' : '#', '4' : '$', '5' : '%',
-                \'6' : '&', '7' : "'", '8' : '(', '9' : ')', '0' : '|', '-' : '=', '^' : '~', '¥' : '|',
-                \'@' : '`', '[' : '{', ';' : '+', ':' : '*', ']' : '}'
-                \}
-    let l:special_table = {
-                \"\<ESC>" : "\<ESC>", "\<Space>" : ';', "\<CR>" : ";\<CR>"
-                \}
-
-    let l:key = getchar()
-    if nr2char(l:key) =~ '\l'
-        return toupper(nr2char(l:key))
-    elseif has_key(l:sticky_table, nr2char(l:key))
-        return l:sticky_table[nr2char(l:key)]
-    elseif has_key(l:special_table, nr2char(l:key))
-        return l:special_table[nr2char(l:key)]
-    else
-        return ''
-    endif
-endfunction
 
 " imaps {{{2
 inoremap <C-t> <C-v><Tab>
@@ -1056,6 +1064,12 @@ else
         \ '*' : {'split': 'below'},
         \ }
 endif
+let g:quickrun_config["cat"] = {
+      \ 'command' : 'cat',
+      \ 'exec' : ['%c %s'],
+      \ }
+
+nnoremap <Leader><Leader>r :<C-u>QuickRun cat<CR>
 nnoremap [space]q :<C-u>QuickRun<Space>
 
 " for ruby {{{3
@@ -1181,6 +1195,9 @@ if isdirectory($HOME.'/.bin/apps/jqapi-latest')
   let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest/docs'
   "let g:ref_jquery_use_cache = 1
 endif
+if isdirectory($HOME."/.nvm/src/node-v0.4.7/doc")
+  let g:ref_nodejsdoc_dir = $HOME."/.nvm/src/node-v0.4.7/doc"
+endif
 
 if s:is_win
   let g:ref_refe_encoding = 'cp932'
@@ -1203,7 +1220,7 @@ endif
 LCAlias Ref
 for src in ['alc', 'refe', 'ri', 'perldoc', 'man'
       \ , 'pydoc', 'jsref', 'jquery'
-      \ , 'cppref', ]
+      \ , 'cppref', 'cheat', 'nodejs', ]
   silent! exe 'Alias' src 'Ref' src
 endfor
 Alias mr Ref alc
@@ -1334,7 +1351,7 @@ function! s:setup_vimproc_dll() " {{{3
   if s:is_win
     let g:vimproc_dll_path = expand('~/.vim/lib/vimproc/win32/proc.dll')
   endif
-  let path = expand('~/.vim/bundle/vimproc/autoload/proc.so')
+  let path = expand('~/.vim/vundle/vimproc/autoload/proc.so')
   if filereadable(path)
     let g:vimproc_dll_path = path
   endif
@@ -1564,7 +1581,7 @@ LCAlias Here This That
 
 " chm launcher {{{2
 if exists('g:my_chm_dir') && (s:is_win || (!s:is_win && !empty(g:my_chm_command)))
-  function! s:my_chm_files_completes(A, L, P) " {{{3
+  function! s:chm_complete(A, L, P) " {{{3
     let items = map(split(globpath(g:my_chm_dir, "/*.chm"), "\n"), 'matchstr(v:val, "[^/]\\+$")')
     if s:is_win
       call add(items, 'ntcmds.chm')
@@ -1577,7 +1594,7 @@ if exists('g:my_chm_dir') && (s:is_win || (!s:is_win && !empty(g:my_chm_command)
     endfor
     return matches
   endfunction
-  function! s:open_my_chm_file(fname) " {{{3
+  function! s:chm_open(fname) " {{{3
     let l:chm_path = g:my_chm_dir . "/" . a:fname
     if !filereadable(l:chm_path)
       let l:chm_path = a:fname
@@ -1589,10 +1606,10 @@ if exists('g:my_chm_dir') && (s:is_win || (!s:is_win && !empty(g:my_chm_command)
     endif
   endfunction
   " }}}
-  command! -nargs=1 -complete=customlist,s:my_chm_files_completes Chm call s:open_my_chm_file("<args>")
+  command! -nargs=1 -complete=customlist,s:chm_complete Chm call s:chm_open("<args>")
   LCAlias Chm
 endif
-function! s:my_cheatsheets_complete(A, L, P) "{{{3
+function! s:cheatsheet_complete(A, L, P) "{{{3
   let items = map(split(globpath(g:my_cheatsheets_dir, "/*"), "\n"), 'matchstr(v:val, "[^/]\\+$")')
   let matches = []
   for item in items
@@ -1603,7 +1620,7 @@ function! s:my_cheatsheets_complete(A, L, P) "{{{3
   endfor
   return matches
 endfunction " }}}
-function! s:open_my_cheatsheet(fname) "{{{3
+function! s:cheatsheet_open(fname) "{{{3
   let l:path = g:my_cheatsheets_dir . "/" . a:fname
   if !filereadable(l:path)
     let l:path = a:fname
@@ -1616,8 +1633,8 @@ function! s:open_my_cheatsheet(fname) "{{{3
     silent exe '!' l:path
   endif
 endfunction " }}}
-command! -nargs=1 -complete=customlist,s:my_cheatsheets_complete Cheat call s:open_my_cheatsheet("<args>")
-LCAlias Cheat
+command! -nargs=1 -complete=customlist,s:cheatsheet_complete CheatSheet call s:cheatsheet_open("<args>")
+LCAlias CheatSheet
 
 " tail {{{2
 if executable('tail')

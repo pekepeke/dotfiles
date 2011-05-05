@@ -168,7 +168,7 @@ command! -narg=1 RSenseCloseProject     call RSenseCloseProject('<args>')
 function! SetupRSense()
     if g:rsenseUseOmniFunc
         setlocal omnifunc=RSenseCompleteFunction
-    else
+    elseif !neocomplcache#is_enabled()
         setlocal completefunc=RSenseCompleteFunction
     endif
 endfunction
