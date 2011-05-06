@@ -177,7 +177,7 @@ if executable('sh')
     let makefile = s:is_win ? 'make_cygwin.mak' :
           \ (s:is_mac ? 'make_mac.mak' : 'make_gcc.mak')
 
-    exe printf("! cd %s && make - f%s/%s", path, path, makefile)
+    exe printf("! cd %s && make -f %s/%s", path, path, makefile)
   endfunction
   command! -nargs=0 VimprocCompile call <SID>vimproc_compile()
 endif

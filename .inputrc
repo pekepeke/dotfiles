@@ -8,6 +8,14 @@ set completion-query-items 100
 set editing-mode vi
 "\C-p": history-search-backward
 "\C-n": history-search-forward
+"\C-l": clear-screen
+"\C-k": kill-line
+"\C-w": backword-kill-word
+"\C-a": beginning-of-line
+"\C-e": end-of-line
+"\C-d": delete-char
+"\C-f": forward-char
+"\C-b": backward-char
 
 $if mysql
   "\C-xd": "show databases;"
