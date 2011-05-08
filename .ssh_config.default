@@ -1,0 +1,23 @@
+# ~/.ssh/config
+TCPKeepAlive yes
+ServerAliveInterval 20
+SerAliveCountMax 5
+Protocol 2
+
+#Host name
+#  HostName xxx.xxx.xxx.xxx
+#  Port 22
+#  User hoge
+#  IdentityFile ~/.ssh/id_rsa.hoge
+#  ForwardX11Trusted no
+
+# for proxy
+#Host host1
+#  HostName host1
+#  User user1
+
+#Host host2
+#  HostName host2
+#  User user2
+#  ProxyCommand ssh host1 nc %h %p
+

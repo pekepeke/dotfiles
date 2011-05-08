@@ -1,21 +1,26 @@
 set editing-mode emacs
 set bell-style none
+set convert-meta off
 set meta-flag on
 set input-meta on
-set convert-meta off
+set output-meta on
+set expand-tilde on
+set mark-directories on
 set completion-query-items 100
+set completion-ignore-case on
 
 set editing-mode vi
 "\C-p": history-search-backward
 "\C-n": history-search-forward
 "\C-l": clear-screen
 "\C-k": kill-line
-"\C-w": backword-kill-word
 "\C-a": beginning-of-line
 "\C-e": end-of-line
-"\C-d": delete-char
+"\C-d": delete-char-or-list
 "\C-f": forward-char
 "\C-b": backward-char
+#"\C-w": kill-word
+"\C-w": backward-kill-word
 
 $if mysql
   "\C-xd": "show databases;"

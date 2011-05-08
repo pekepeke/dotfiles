@@ -1,6 +1,5 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
 
 #[ -n $(which zsh) ] && exec zsh
 #[ -e /bin/which -a $(ps |grep zsh|grep -v grep| wc -l) -eq 0 ] && which zsh >/dev/null 2>&1 && exec zsh
@@ -8,11 +7,21 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# don't put duplicate lines in the history. See bash(1) for more options
-export HISTCONTROL=ignoredups
-# ... and ignore same sucessive entries.
-export HISTCONTROL=ignoreboth
+# disable auto logout
+set nobeep
+set -o ignoreeof
+unset autologout
 
+# save dir stack
+set savedirs
+set implicitcd=verbose
+
+set listjobs=long
+set -o notify
+
+# history
+export HISTCONTROL=ignoredups
+export HISTCONTROL=ignoreboth
 export HISTIGNORE="fg*:bg*:history*:cd*: *"
 export HISTTIMEFORMAT='%Y%m%d %T'
 
@@ -33,9 +42,6 @@ case "$TERM" in
     xterm-color) color_prompt=yes;;
 esac
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
 #force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
@@ -66,10 +72,6 @@ xterm*|rxvt*)
 esac
 
 # Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
 #if [ -f ~/.bash_aliases ]; then
 #    . ~/.bash_aliases
 #fi
@@ -86,16 +88,25 @@ if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
     #alias egrep='egrep --color=auto'
 fi
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-### 補完設定
+## for completion
+set autolist=ambiguous
+set complete=enhance
+set showdots
+set symlinks=expand
+set filec
+
+# spell check
+#set autocorrect
+#set autoexpand
+#set correct=cmd
+
 #何も入力されていないときは補完しない
 shopt -s no_empty_cmd_completion
+
 #各コマンドの補完設定
 complete -d cd
 complete -c man

@@ -68,6 +68,10 @@ else
   export EDITOR="$(which vi)"
 fi
 
+# stty
+stty stop undef
+stty werase undef
+
 if [ ! -e "$TERMINFO" -a -e "/usr/share/terminfo" ]; then
   export TERMINFO=/usr/share/terminfo
 fi
