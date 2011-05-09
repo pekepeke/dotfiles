@@ -1,3 +1,12 @@
+#!/bin/sh
+
+FP=$HOME/.ssh/config
+if [ -e $FP ] ; then
+  echo $FP is already exists.
+  exit 0
+fi
+
+cat <<EOM > $FP
 # ~/.ssh/config
 TCPKeepAlive yes
 ServerAliveInterval 20
@@ -20,4 +29,4 @@ Protocol 2
 #  HostName host2
 #  User user2
 #  ProxyCommand ssh host1 nc %h %p
-
+EOM
