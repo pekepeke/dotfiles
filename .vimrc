@@ -64,6 +64,7 @@ Bundle 'kana/vim-smartchr.git'
 Bundle 'kana/vim-submode.git'
 Bundle 'tyru/vim-altercmd.git'
 Bundle 'tpope/vim-surround.git'
+Bundle 'ujihisa/camelcasemotion.git'
 Bundle 'h1mesuke/vim-alignta.git'
 Bundle 'YankRing.vim'
 Bundle 'smartword'
@@ -103,7 +104,6 @@ Bundle 'dbext.vim'
 Bundle 'SQLUtilities'
 Bundle 'php-doc'
 "Bundle 'OmniCppComplete'
-
 
 Bundle 'thinca/vim-ref.git'
 Bundle 'pekepeke/ref-javadoc.git'
@@ -688,6 +688,22 @@ vnoremap <S-Tab> <gv
 "nnoremap : q:
 
 " plugin settings {{{1
+
+" camelcasemotion
+nmap <silent> [prefix]w <Plug>CamelCaseMotion_w
+nmap <silent> [prefix]e <Plug>CamelCaseMotion_e
+nmap <silent> [prefix]b <Plug>CamelCaseMotion_b
+vmap <silent> [prefix]w <Plug>CamelCaseMotion_w
+vmap <silent> [prefix]e <Plug>CamelCaseMotion_e
+vmap <silent> [prefix]b <Plug>CamelCaseMotion_b
+
+omap <silent> i,w <Plug>CamelCaseMotion_iw
+xmap <silent> i,w <Plug>CamelCaseMotion_iw
+omap <silent> i,b <Plug>CamelCaseMotion_ib
+xmap <silent> i,b <Plug>CamelCaseMotion_ib
+omap <silent> i,e <Plug>CamelCaseMotion_ie
+xmap <silent> i,e <Plug>CamelCaseMotion_ie
+
 " smartword {{{2
 nmap w  <Plug>(smartword-w)
 nmap b  <Plug>(smartword-b)
