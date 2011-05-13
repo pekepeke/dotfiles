@@ -47,3 +47,7 @@ doc/tags-ja
 # vim
 .vim/vundle
 
+# freemind
+.freemind/log.*
+.freemind/auto.mmfilter
+

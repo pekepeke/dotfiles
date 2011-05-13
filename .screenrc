@@ -1,6 +1,8 @@
 escape ^z^z
 termcap kterm hs@
 terminfo kterm hs@
+altscreen on
+
 #termcap  facit|vt100|xterm LP:G0
 #terminfo facit|vt100|xterm LP:G0
 vbell off
@@ -47,3 +49,5 @@ shell -$SHELL
 #termcapinfo cygwin KJ=SJIS
 #defencoding sjis
 #autodetach on
+
+termcapinfo xterm* ti@:te@

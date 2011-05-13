@@ -278,14 +278,14 @@ if is_exec tscreen; then
   alias screen=tscreen
 fi
 
-function ssh_screen(){
-  eval server=?${$#}
-  screen -t $server ssh "$@"
-}
+# function ssh_screen(){
+  # eval server=?${$#}
+  # screen -t $server ssh "$@"
+# }
 
-if [ x$TERM = xscreen ]; then
-  alias ssh=ssh_screen
-fi
+# if [ x$TERM = xscreen ]; then
+  # alias ssh=ssh_screen
+# fi
 # }}}
 
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:
