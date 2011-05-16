@@ -6,6 +6,8 @@ altscreen on
 #termcap  facit|vt100|xterm LP:G0
 #terminfo facit|vt100|xterm LP:G0
 vbell off
+
+# keybinds {{{1
 bind w windowlist -b
 bind s split
 bind q remove
@@ -33,7 +35,11 @@ bind -c ENCODING e encoding euc
 bind -c ENCODING s encoding sjis
 bind e command -c ENCODING
 
-defscrollback 3000
+# copy-mode maps
+markkeys h=^b:l=^f:$=^e:' '=v:^m=y
+# }}}
+
+defscrollback 10000
 
 #hardstatus alwayslastline I%wI
 #hardstatus alwayslastline "[%02c] %`%-w%{=b bw}%n %t%{-}%+w"

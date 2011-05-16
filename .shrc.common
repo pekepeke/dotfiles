@@ -1,5 +1,10 @@
 # source local settings
 [ -f $HOME/.shrc.common.util ] && source $HOME/.shrc.common.util
+if [ -f $HOME/.shrc.common.local ] ; then
+  source $HOME/.shrc.common.local
+else
+  touch $HOME/.shrc.common.local
+fi
 
 # util functions {{{
 is_exec() {
@@ -245,8 +250,9 @@ if [ -z "$SSH_CLIENT" ]; then
     #_prefix=$(echo $* | perl -ne '$_=~s/\W+/_/g; print $_;')
     #_prefix=$(echo $* | perl -ne '$_=~s/(\d+\.\d+\.\d+\.\d+|[a-z\.-]+)/; print $1;')
     _prefix=$(echo $* | perl -ne 'my @l;push @l,$1 while (/\s(\d+\.\d+\.\d+\.\d+|[a-z\.-]+)/g); print join("_",@l);')
-    tmp_log_path=$_ssh_log_dir/org/script_${_prefix}_$(date +'%Y%m%d_%H%M%S').log
-    log_path=$_ssh_log_dir/script_${_prefix}_$(date +'%Y%m%d_%H%M%S').log
+    [ x$_prefix = x ] && _prefix=$(echo $* | perl -ne '$_=~s/\s+$//;$_=~s/\s+/_/g;$_=~s/([^\w ])/"%".unpack("H2", $1)/eg;print')
+    tmp_log_path=$_ssh_log_dir/org/$(date +'%Y%m%d_%H%M%S')_script_${_prefix}.log
+    log_path=$_ssh_log_dir/$(date +'%Y%m%d_%H%M%S')_script_${_prefix}.log
 
     $ssh_path $* | tee $tmp_log_path
     if [ -s $tmp_log_path ] ; then
@@ -263,6 +269,14 @@ if [ -z "$SSH_CLIENT" ]; then
     # script ~/log/`date +%Y%m%d-%H%M%S.log`
     # exit
   # fi
+  function ssh_logs_archive() {
+    _ssh_log_dir=$HOME/.ssh-logs
+    for f in $(find $_ssh_log_dir -depth 1 -type f -mtime +30); do
+      target=$_ssh_log_dir/$(stat -f %Sm -t %Y%m $f)
+      [ ! -e $target ] && mkdir $target
+      mv $f $target/
+    done
+  }
 fi
 
 if [ -n "$ZSH_NAME" ]; then

@@ -8,6 +8,7 @@ fi
 
 cat <<EOM > $FP
 # ~/.ssh/config
+# vim:sw=2 ts=2 expandtab fdm=expr foldexpr=getline(v\\:lnum)=~'^\\\\s*$'&&getline(v\\:lnum+1)=~'^Host\\\\s\\\\+\\\\S'?'<1'\\:1
 TCPKeepAlive yes
 ServerAliveInterval 20
 SerAliveCountMax 5
