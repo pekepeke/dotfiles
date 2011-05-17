@@ -207,6 +207,8 @@ if [ -e ~/.zsh/completion/ ]; then
     source $completion_sh
   done
 fi
+[ -e ~/.zsh/cdf ] && source ~/.zsh/cdf
+
 # auto-fu.zsh {{{
 # とりあえず OFF る、、、文字制御が欲しい。。
 if [ -z "x" -a -f "$HOME/.zsh/auto-fu.zsh/auto-fu.zsh" -a "$OSTYPE" != "cygwin" ]; then

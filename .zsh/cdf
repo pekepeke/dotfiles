@@ -1,0 +1,34 @@
+#!/usr/bin/env zsh
+
+function cdf() {
+  if [ x$1 = x ];then
+    return
+  fi
+  cd $*
+}
+
+function _cdf() {
+reply=( \
+  `cat <<EOM | osascript | sort -u
+tell application "Finder"
+  set cnt to count of windows
+  set paths to ""
+  repeat with i from 1 to cnt
+    set pt to POSIX path of (target of window i as string)
+    if paths is "" then
+      set paths to pt
+    else
+      set paths to paths & "\n" & pt
+    end if
+  end repeat
+  get paths
+end tell
+EOM
+`\
+  )
+}
+
+if which osascript > /dev/null 2>&1 ; then
+  compctl -K _cdf cdf
+fi
+
