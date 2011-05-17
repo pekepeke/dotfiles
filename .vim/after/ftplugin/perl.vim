@@ -14,9 +14,9 @@ endif
 setl formatoptions-=ro
 setl complete=.,w,b,t,k,kspell
 
-nmap <buffer> epd i<CR>use Data::Dumper;<CR>warn Dumper <ESC>pa;<CR><ESC>
-vmap <buffer> epd yi<CR>use Data::Dumper;<CR>warn Dumper <ESC>pa;<CR><ESC>
-nmap <silent> <buffer> em :PerlUseInsertionCWord<CR>
+nmap <buffer> [t]pd i<CR>use Data::Dumper;<CR>warn Dumper <ESC>pa;<CR><ESC>
+vmap <buffer> [t]pd yi<CR>use Data::Dumper;<CR>warn Dumper <ESC>pa;<CR><ESC>
+nmap <silent> <buffer> [t]pm :PerlUseInsertionCWord<CR>
 
 nnoremap <buffer> <silent> [comment-doc] :call <SID>my_pod_header()<CR>
 

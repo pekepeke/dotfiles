@@ -36,7 +36,8 @@ bind -c ENCODING s encoding sjis
 bind e command -c ENCODING
 
 # copy-mode maps
-markkeys h=^b:l=^f:$=^e:' '=v:^m=y
+#markkeys h=^b:l=^f:$=^e:' '=v:^m=y
+markkeys $=^e:' '=v:^m=y
 # }}}
 
 defscrollback 10000
