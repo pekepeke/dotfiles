@@ -232,17 +232,18 @@ snippet param
 	${2}
 
 snippet openr
-    open my ${1:fh}, '<', ${2:path} or die "${2}: $!";
-    while (<${1}>) {
-        ${2}
-    }
-    close(${1});
+	open my ${1:$fh}, '<', ${2:path} or die "$2: $!";
+	while (<$1>) {
+		$2
+	}
+	close($1);
+
 snippet openw
-    open my ${1:fh}, '>', ${2:path} or die "${2}: $!";
-    print ${1} ${3}
-    close(${1});
+	open my ${1:$fh}, '>', ${2:path} or die "$2: $!";
+	print $1 ${3}
+	close($1);
 snippet opena
-    open my ${1:fh}, '>>', ${2:path} or die "${2}: $!";
-    print ${1} ${3}
-    close(${1});
+	open my ${1:$fh}, '>>', ${2:path} or die "$2: $!";
+	print $1 ${3}
+	close($1);
 

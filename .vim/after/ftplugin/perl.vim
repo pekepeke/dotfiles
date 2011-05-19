@@ -7,12 +7,14 @@ if !exists('g:loaded_perl_ftplugin')
   let g:perl_include_pod = 1
   let g:perl_extended_vars = 1
   let g:perl_want_scope_in_variabled = 1
-  let g:perl_fold = 1
-  let g:perl_fold_blocks = 1
+  "let g:perl_fold = 1
+  "let g:perl_fold_blocks = 1
 endif
 
+"setl fdm=syntax
 setl formatoptions-=ro
 setl complete=.,w,b,t,k,kspell
+setl iskeyword+=:
 
 nmap <buffer> [t]pd i<CR>use Data::Dumper;<CR>warn Dumper <ESC>pa;<CR><ESC>
 vmap <buffer> [t]pd yi<CR>use Data::Dumper;<CR>warn Dumper <ESC>pa;<CR><ESC>
