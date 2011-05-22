@@ -246,4 +246,33 @@ snippet opena
 	open my ${1:$fh}, '>>', ${2:path} or die "$2: $!";
 	print $1 ${3}
 	close($1);
+snippet cla
+	package ${1};
+	use base(Class::Accessor::Lite);
+	__PACKAGE__->mk_accessors(qw//);
+
+	sub new {
+		my ($class, $args) = @_;
+		my $self = {
+			${2}
+		};
+		bless $self, $class;
+	}
+snippet autoload
+	sub AUTOLOAD {
+		my ($self) = @_;
+		my $func   = $AUTOLOAD;
+		return if $func =~ /::DESTROY$/;
+
+		my ($class,$method) = $func =~ /(.+)::(.+)$/;
+		my $code   = sub {
+			my $self = shift;
+			$self->{$method} = shift if @_;
+			return $self->{$method};
+		};
+
+		no strict 'refs';
+		*{$func} = $code;
+		goto &$code;
+	}
 
