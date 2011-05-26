@@ -1,4 +1,5 @@
-#!/usr/bin/env zsh
+
+# vim:fdm=syntax sw=2 ts=2 ft=zsh expandtab:
 
 function cdf() {
   if [ x$1 = x ];then
@@ -11,17 +12,21 @@ function _cdf() {
 reply=( \
   #`cat <<EOM | osascript | sort -u | perl -ne '$_ =~ s/([0x3040-0x309f]|[0x30a0-0x30ff]|[0x4e00-9fff])/\$1/g; print;'
   #`cat <<EOM | osascript | sort -u | perl -ne '$_ =~ s/(\p{InHiragana}|\p{InKatakana})/\\$1/g; print;'
+  # `cat <<EOM | osascript | sort -u | sed 's/ /\\ /g'
+  # `cat <<EOM | osascript | sort -u | awk '{ printf("\"%s\"\n", $0) }'
   `cat <<EOM | osascript | sort -u
 tell application "Finder"
   set cnt to count of windows
   set paths to ""
   repeat with i from 1 to cnt
-    set pt to POSIX path of (target of window i as Unicode Text)
-    if paths is "" then
-      set paths to pt
-    else
-      set paths to paths & "\n" & pt
-    end if
+    try
+      set pt to POSIX path of (target of window i as Unicode Text)
+      if paths is "" then
+        set paths to pt
+      else
+        set paths to paths & "\n" & pt
+      end if
+    end try
   end repeat
   get paths
 end tell
