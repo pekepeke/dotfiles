@@ -2,6 +2,7 @@
 " http://help.eclipse.org/help33/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/texteditor/ITextEditorActionDefinitionIds.html
 " http://help.eclipse.org/ganymede/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/ui/actions/IJavaEditorActionDefinitionIds.html
 
+" 「検索」ダイアログを開く、ダイナミック・ヘルプ、コンテンツ・アシスト
 " bind C-h
 " bind S-C-h Open Search Dialog or 検索
 " bind C-h Delete Previous or 前を削除
@@ -17,7 +18,10 @@ nnoremap <space>sg :CreateGetterSetter<CR>
 nnoremap <space>sc :GenerateConstructorUsingFields<CR>
 nnoremap <space>so :OverrideMethods<CR>
 nnoremap <space>sf :Format<CR>
-nnoremap <space>sf :SearchRef<CR>
+nnoremap <space>ss :SearchRef<CR>
+
+nnoremap <space>si :AddImport<CR>
+nnoremap <space>su :AddUnimplementedContructors<CR>
 
 " リファクタリング
 nnoremap <space>rt :ChangeType<CR>
@@ -32,16 +36,22 @@ nnoremap <space>nt :OpenTypeHierarchy<CR>
 nnoremap <C-]> :OpenEditor<CR>
 nnoremap ]] :GotoNextMember<CR>
 nnoremap [[ :GotoPreviousMember<CR>
+"nnoremap <C-f> :PageDown<CR>
+"nnoremap <C-b> :PageUp<CR>
+nnoremap <C-l> :Recenter<CR>
+nnoremap K :Help<CR>
+
+nnoremap u :Undo<CR>
+nnoremap <C-r> :Redo<CR>
 
 " tab
 nnoremap tn gt
 nnoremap tp gT
 
-nnoremap \c<Space> :Comment<CR>
-vnoremap \c<Space> :Comment<CR>
+nnoremap \c<Space> :ToggleComment<CR>
+vnoremap \c<Space> :ToggleComment<CR>
 
-nmap [prefix] ,
-nnoremap [prefix]gc :AddJavaDocComment<CR>
+nnoremap ,gc :AddJavaDocComment<CR>
 
 " imaps
 inoremap <C-o> <Esc>o
@@ -53,7 +63,7 @@ inoremap <C-f> <Esc><Right>a
 inoremap <C-b> <Esc>i
 
 inoremap <C-d> <Esc><Right>xi
-
+inoremap <C-w> <Esc>:DeletePreviousWord<CR>a
 inoremap <C-k> <Esc><Right>:DeleteLineToEnd<CR>a
 inoremap <C-u> <Esc>:DeleteLineToBeginning<CR>i
 
@@ -88,7 +98,7 @@ eclipseaction CleanUp "org.eclipse.jdt.ui.edit.text.java.clean.up
 eclipseaction Comment org.eclipse.jdt.ui.edit.text.java.comment
 
 "definition ID of the edit -> content assist complete prefix action 
-eclipseaction ContentAssistCompletePrefix "org.eclipse.jdt.ui.edit.text.java.complete.prefix
+eclipseaction ContentAssistCompletePrefix org.eclipse.jdt.ui.edit.text.java.complete.prefix
 
 "definition ID of the refactor -> convert anonymous to nested action 
 eclipseaction ConvertAnonymousToNested org.eclipse.jdt.ui.edit.text.java.convert.anonymous.to.nested
@@ -641,3 +651,5 @@ eclipseaction Move org.eclipse.ui.edit.move
 "The command identifier for the "rename" action that typically appears in the file menu.
 eclipseaction Rename org.eclipse.ui.edit.rename
 
+
+eclipseaction Help org.eclipse.ui.help.dynamicHelp
