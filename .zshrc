@@ -95,9 +95,14 @@ bindkey -a '^A' vi-beginning-of-line
 bindkey -a '^E' vi-end-of-line
 
 ## for insert mode
-bindkey -v '^[OH' vi-beginning-of-line
-bindkey -v '^[OF' vi-end-of-line
+bindkey -v '^[OH' beginning-of-line
+bindkey -v '^[OF' end-of-line
+bindkey -v "\e[1~" begginning-of-line   # Home
+bindkey -v "\e[4~" end-of-line          # End
+bindkey -v "^[[3~" delete-char          # Del
+bindkey -v "\e[Z" reverse-menu-complete # S-Tab
 ## emacs like
+bindkey -v '^H' backward-delete-char
 bindkey -v '^A' beginning-of-line
 bindkey -v '^E' end-of-line
 bindkey -v '^B' backward-char
