@@ -18,7 +18,8 @@ nnoremap <space>sg :CreateGetterSetter<CR>
 nnoremap <space>sc :GenerateConstructorUsingFields<CR>
 nnoremap <space>so :OverrideMethods<CR>
 nnoremap <space>sf :Format<CR>
-nnoremap <space>ss :SearchRef<CR>
+nnoremap <space>sr :SearchRef<CR>
+nnoremap <space>ss :QuickAssist<CR>
 
 nnoremap <space>si :AddImport<CR>
 nnoremap <space>su :AddUnimplementedContructors<CR>
@@ -26,6 +27,7 @@ nnoremap <space>su :AddUnimplementedContructors<CR>
 " リファクタリング
 nnoremap <space>rt :ChangeType<CR>
 nnoremap <space>rv :PromoteLocalVariable<CR>
+nnoremap <space>rn :RenameElement<CR>i
 
 " ナビゲーション
 nnoremap <space>nc :OpenCallHierarchy<CR>
@@ -63,9 +65,10 @@ inoremap <C-f> <Esc><Right>a
 inoremap <C-b> <Esc>i
 
 inoremap <C-d> <Esc><Right>xi
-inoremap <C-w> <Esc>:DeletePreviousWord<CR>a
+inoremap <C-w> <Esc><Right>:DeletePreviousWord<CR>xa
 inoremap <C-k> <Esc><Right>:DeleteLineToEnd<CR>a
 inoremap <C-u> <Esc>:DeleteLineToBeginning<CR>i
+inoremap <C-l> <Esc>:ContentAssistProposals<CR>a
 
 " vmaps
 vnoremap = :Format<CR>
