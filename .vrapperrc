@@ -2,12 +2,15 @@
 " http://help.eclipse.org/help33/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/texteditor/ITextEditorActionDefinitionIds.html
 " http://help.eclipse.org/ganymede/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/ui/actions/IJavaEditorActionDefinitionIds.html
 
+" vim:fdm=marker sw=2 ts=2 ft=vim expandtab:
+
 " 「検索」ダイアログを開く、ダイナミック・ヘルプ、コンテンツ・アシスト
 " bind C-h
 " bind S-C-h Open Search Dialog or 検索
 " bind C-h Delete Previous or 前を削除
 set smartindent
 set autoindent
+set globalregisters
 set ignorecase
 set smartcase
 set saney
@@ -21,8 +24,11 @@ nnoremap <space>sf :Format<CR>
 nnoremap <space>sr :SearchRef<CR>
 nnoremap <space>ss :QuickAssist<CR>
 
-nnoremap <space>si :AddImport<CR>
-nnoremap <space>su :AddUnimplementedContructors<CR>
+nnoremap <space>si :OrganizeImports<CR>
+
+nnoremap <space>ac :AddJavaDocComment<CR>
+nnoremap <space>ai :AddImport<CR>
+nnoremap <space>ac :AddUnimplementedContructors<CR>
 
 " リファクタリング
 nnoremap <space>rt :ChangeType<CR>
