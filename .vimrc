@@ -130,7 +130,8 @@ Bundle 'thinca/vim-textobj-function-perl.git'
 Bundle 'vim-scripts/textobj-indent.git'
 
 Bundle 'Shougo/unite.vim.git'
-Bundle 'Sixeight/unite-grep.git'
+"Bundle 'Sixeight/unite-grep.git'
+Bundle 'Shougo/unite-grep.git'
 Bundle 'h1mesuke/unite-outline.git'
 Bundle 'hakobe/unite-script.git'
 Bundle 'mattn/unite-remotefile.git'
@@ -965,6 +966,11 @@ else
   call unite#set_substitute_pattern('file', '^;d', '\=$HOME."/Desktop/*"')
 endif
 
+" unite grep {{{3
+"let g:unite_source_grep_default_opts = '-iRHn'
+let g:unite_source_grep_command = 'ack'
+let g:unite_source_grep_default_opts = '-i'
+
 " unite mappings {{{3
 
 nnoremap <silent> [unite][buffer]   :<C-u>Unite buffer tab<CR>
@@ -975,7 +981,8 @@ nnoremap <silent> [unite][source]   :<C-u>Unite source<CR>
 nnoremap [unite][empty]    :<C-u>Unite<Space>
 
 nmap [unite]u                [unite][empty]
-nmap [unite]uu               [unite][source]
+nmap [unite]uu               [unite][empty]
+nmap [unite]us               [unite][source]
 nmap <silent> [unite]<Space> [unite][buffer]
 nmap <silent> [unite]j       [unite][buffer]
 nmap <silent> [unite]l       [unite][rel_file]
