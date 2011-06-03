@@ -6,7 +6,7 @@
 
 augroup titanium-autocmd
   au!
-  autocmd BufNewFile,BufRead *.html,*.php,*.rb,*.py,*.js call s:detect_titanium()
+  autocmd BufNewFile,BufRead *.html,*.php,*.rb,*.py,*.js,*.coffee call s:detect_titanium()
 augroup END
 
 function! s:detect_titanium()

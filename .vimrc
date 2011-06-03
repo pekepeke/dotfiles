@@ -773,10 +773,6 @@ endfunction
 command! -bar -nargs=+
       \ Alias CAlterCommand <args> | AlterCommand <cmdwin> <args>
 command! -nargs=+ LCAlias call s:alias_lc(<f-args>)
-function s:vim_quit(bang)
-  if &buftype != 'nofile'
-    bd
-endfunction
 " command! -nargs=0 -bang MyQ if &buftype != 'nofile' | bd<bang>
       " \ | elseif tabpagenr('$') == 1 && winnr('$') == 1 | enew
       " \ | else | quit<bang> | endif
