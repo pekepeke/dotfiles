@@ -1,6 +1,7 @@
 " http://help.eclipse.org/help33/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/texteditor/IWorkbenchActionDefinitionIds.html
 " http://help.eclipse.org/help33/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/texteditor/ITextEditorActionDefinitionIds.html
 " http://help.eclipse.org/ganymede/topic/org.eclipse.jdt.doc.isv/reference/api/org/eclipse/jdt/ui/actions/IJavaEditorActionDefinitionIds.html
+" http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/actions/ActionFactory.html
 
 " vim:fdm=marker sw=2 ts=2 ft=vim expandtab:
 
@@ -55,11 +56,17 @@ nnoremap <C-r> :Redo<CR>
 " tab
 nnoremap tn gt
 nnoremap tp gT
+nnoremap tw :Next<CR>
 
 nnoremap \c<Space> :ToggleComment<CR>
 vnoremap \c<Space> :ToggleComment<CR>
 
 nnoremap ,gc :AddJavaDocComment<CR>
+nnoremap ,m :ToggleMaximizeWindow<CR>
+
+" quickrun like
+nnoremap \r :RunLast<CR>
+nnoremap \d :DebugLast<CR>
 
 " imaps
 inoremap <C-o> <Esc>o
@@ -662,3 +669,16 @@ eclipseaction Rename org.eclipse.ui.edit.rename
 
 
 eclipseaction Help org.eclipse.ui.help.dynamicHelp
+eclipseaction RunLast org.eclipse.debug.ui.commands.RunLast
+eclipseaction DebugLast org.eclipse.debug.ui.commands.DebugLast
+eclipseaction ToggleMaximizeWindow org.eclipse.ui.window.maximizePart
+eclipseaction New org.eclipse.ui.newEditor
+eclipseaction NewWizard org.eclipse.ui.newWizard
+eclipseaction Next org.eclipse.ui.window.nextEditor
+eclipseaction Prev org.eclipse.ui.window.previousEditor
+
+" eclipseaction Window org.eclipse.ui.contexts.window
+" eclipseaction DialogWindow org.eclipse.ui.contexts.dialogAndWindow
+" eclipseaction LinkWithEditor org.eclipse.ui.navigate.linkWithEditor
+" eclipseaction Fold org.eclipse.mylyn.java.ui.editor.folding.auto
+
