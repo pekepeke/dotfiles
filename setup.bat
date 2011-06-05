@@ -4,13 +4,6 @@ for /f "tokens=3-4 delims=. " %%i in ('ver') do (
     if "%%i" == "XP" set is_xp=xp
 )
 
-if defined is_xp (
-    set DLINK=MOGE
-    set LINK=HOGE
-) else (
-    set DLINK=mklink /D
-    set LINK=mklink
-)
 
 cd %~dp0
 for %%i in (.vimperatorrc .vimperatorrc.js) do copy %~dp0%%i %HOME%\%%i
@@ -29,7 +22,7 @@ echo # git submodule init
 echo # git submodule update
 echo ####################################################
 
-if not exist .vim\bundle\errormarker.vim\doc mkdir .vim\bundle\errormarker.vim\doc
+if not exist .vim\vundle\errormarker.vim\doc mkdir .vim\vundle\errormarker.vim\doc
 pause
 goto :EOF
 
@@ -49,8 +42,9 @@ goto :EOF
 :F_MKLINK
 
 if defined is_xp (
+    if exist "%1" del "%1"
     if not exist "%1" (
-        fsutil hardlink create %2 %1 
+        fsutil hardlink create %1 %2
     ) else (
         echo skip %1
     )

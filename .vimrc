@@ -21,12 +21,21 @@ unlet s:configured_runtimepath
 if s:is_win
   let $HOME=substitute($HOME, '\\', '/', 'ge')
   if executable('nyacus')
-    " Use NYACUS.
-    set shell=nyacus.exe
-    set shellcmdflag=-e
-    if executable('tee') | set shellpipe=\|&\ tee | endif
-    set shellredir=>%s\ 2>&1
-    set shellxquote=\"
+    function! Nyacus()
+      " Use NYACUS.
+      set shell=nyacus.exe
+      set shellcmdflag=-e
+      if executable('tee') | set shellpipe=\|&\ tee | endif
+      set shellredir=>%s\ 2>&1
+      set shellxquote=\"
+    endfunction
+    function! Cmd()
+      set shell=$COMSPEC
+      set shellcmdflag=/c
+      set shellpipe=>%s\ 2>&1
+      set shellxquote=\"
+    endfunction
+    call Nyacus()
   endif
 endif
 

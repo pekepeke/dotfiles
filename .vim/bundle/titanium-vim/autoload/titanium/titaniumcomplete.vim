@@ -51,40 +51,15 @@ function! s:complete_titanium_methods(base) " {{{2
   if g:titanium_method_complete_disabled
     return []
   endif
-  let l:fpath = titanium#get_keywordfile_path()
-  if !filereadable(l:fpath)
-    return []
-  endif
-  let l:list = map(
-        \ filter(readfile(l:fpath), 'v:val =~ "'.a:base.'[^\\.]*($"'), 
-        \ 'substitute(v:val, "^.*\\.\\([^\\.]\\+\\)$", "\\1", "")')
-  let l:dict = {}
-  for l:v in l:list
-    let l:dict[l:v] = 1
-  endfor
-
-  return keys(l:dict)
+  let l:words = titanium#complete#words()
+  return titanium#complete#to_words(titanium#complete#find(l:words))
 endfunction
 
 function! s:convert_matches(matches) " {{{2
-  return map(a:matches, '{ "word" : v:val, "kind" : <SID>get_kind(v:val)}')
-endfunction
-
-function! s:get_kind(s) " {{{2
-  if a:s =~ '($'
-    return "m"
-  elseif a:s =~ '(^|\.)[A-Z_]\+'
-    return "p"
-  else
-    return "c"
-  endif
+  return map(a:matches, '{ "word" : v:val, "kind" : titanium#complete#get_kind(v:val)}')
 endfunction
 
 function! s:complete_titanium(base) " {{{2
-  let l:fpath = titanium#get_keywordfile_path()
-  if !filereadable(l:fpath)
-    return []
-  endif
   let l:kwd = s:get_keyword_prefix().a:base
   if l:kwd == ""
     return []
@@ -92,10 +67,10 @@ function! s:complete_titanium(base) " {{{2
   " read keywords
   let l:keyword = substitute(l:kwd, "^Ti\\.", "Titanium.", "es")
   let l:keyword = substitute(l:keyword, "\\\.", "\\.", "eg")
-  let l:list = readfile(l:fpath)
 
   " no namespace -> api full expand
   if stridx(l:keyword, ".") == -1 && g:titanium_complete_head == 0
+    let l:list = titanium#complete#words()
     let l:matches = filter(l:list, 'v:val =~ "'.l:keyword.'"')
     if g:titanium_complete_short_style
       return map(l:matches, 'substitute(v:val, "^Titanium\\.", "Ti.", "e")')
@@ -103,9 +78,8 @@ function! s:complete_titanium(base) " {{{2
     return l:matches
   endif
 
-  "let l:matches = filter(l:list, 'v:val =~ "^'.l:keyword.'\\.\\?[^\\.]\\+$"')
-  let l:matches = filter(l:list, 'v:val =~ "^'.l:keyword.'[^\\.]*$"')
-  return map(l:matches, 'substitute(v:val, "^.\\+\\.\\([^\\.]*\\)$", "\\1", "e")')
+  return titanium#complete#to_words(
+        \ titanium#complete#find(l:keyword))
 endfunction
 
 function! s:get_keyword_prefix() " {{{2
