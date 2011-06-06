@@ -5,7 +5,7 @@
 "          <http://creativecommons.org/licenses/by/2.1/jp/deed.en>
 
 function! titanium#command#unite_utilizable() " {{{2
-  if exists(':Unite') == 2 && !empty(unite#available_sources('fileline'))
+  if exists(':Unite') == 2 && !empty(unite#get_sources('fileline'))
     return 1
   endif
   return 0

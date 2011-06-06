@@ -4,6 +4,7 @@
 " License: Creative Commons Attribution 2.1 Japan License
 "          <http://creativecommons.org/licenses/by/2.1/jp/deed.en>
 
+" define source {{{1
 let s:source = {
       \ 'name': 'titanium',
       \ 'kind' : 'ftplugin',
@@ -11,6 +12,9 @@ let s:source = {
       \    'ruby': 1,
       \    'javascript': 1 , 'coffee': 1,
       \    'php': 1, 'python': 1,
+      \    'ruby.titanium': 1,
+      \    'javascript.titanium': 1 , 'coffee.titanium': 1,
+      \    'php.titanium': 1, 'python.titanium': 1,
       \   },
       \ }
 
@@ -37,6 +41,5 @@ endfunction
 
 function! neocomplcache#sources#titanium#define() " {{{2
   return s:source
-  "return {}
 endfunction
 
