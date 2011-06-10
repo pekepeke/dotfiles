@@ -78,6 +78,9 @@ options.setPref('ui.key.generalAccessKey', 9);
 // for debug vimperator
 //options.setPref('extensions.liberator.loglevel', 1);
 options.resetPref('extensions.liberator.loglevel');
+
+// bartab like
+options.setPref('browser.sessionstore.max_concurrent_tabs', 0);
 // }}}
 
 (function($LU) {

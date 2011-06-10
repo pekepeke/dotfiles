@@ -975,10 +975,10 @@ else
   call unite#set_substitute_pattern('file', '^;d', '\=$HOME."/Desktop/*"')
 endif
 
-" unite grep {{{3
-"let g:unite_source_grep_default_opts = '-iRHn'
-let g:unite_source_grep_command = 'ack'
-let g:unite_source_grep_default_opts = '-i'
+" unite-grep {{{3
+" let g:unite_source_grep_command = 'ack'
+" let g:unite_source_grep_default_opts = '-iH --nocolor --nogroup'
+let g:unite_source_grep_default_opts = '-iRHn'
 
 " unite mappings {{{3
 
@@ -1059,6 +1059,7 @@ function! s:unite_my_settings()
   nnoremap <silent><buffer><expr> <C-j> unite#do_action('split')
   inoremap <silent><buffer><expr> <C-j> unite#do_action('split')
   nmap <buffer> t <Plug>(unite_choose_action)
+  nmap <buffer> l <Plug>(unite_do_default_action)
 endfunction
 
 " git-vim {{{2
