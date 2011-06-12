@@ -21,8 +21,8 @@ fi
 
 export CPPREF_DOCROOT=$LMANDIR/cppref/doc/
 export JSREF_DOCROOT=$LMANDIR/jsref/doc/
-export TIMOBILEREF_DOCROOT=$LMANDIR/timobileref/doc/
-export TIDESKTOPREF_DOCROOT=$LMANDIR/tidesktopref/doc/
+#export TIMOBILEREF_DOCROOT=$LMANDIR/timobileref/doc/
+#export TIDESKTOPREF_DOCROOT=$LMANDIR/tidesktopref/doc/
 # }}}
 
 # RSENSE {{{

@@ -5,15 +5,26 @@
 "          <http://creativecommons.org/licenses/by/2.1/jp/deed.en>
 
 
-if exists('b:did_ftplugin_titanium')
+if exists('b:did_ftplugin_titanium') " {{{1
   finish
 endif
+
+" variables {{{2
+if !exists('g:titanium_disable_keymap')
+  let g:titanium_disable_keymap = 0
+endif
+
+" basic {{{2
 
 if &include != '' | setl include+=\| | endif
 setl include+=^\s*Ti.include\|^\s*Titanium.include\|\s*url\s*:\s*\|\s*test\s*:\s*
 "setl includeexpr=v:fname
-call titanium#titaniumcomplete#enable_omnifunc()
+if !g:titanium_disable_keymap
+  call titanium#titaniumcomplete#enable_omnifunc()
+endif
 
+
+" build commands {{{2
 if titanium#build#can()
   if titanium#build#can_multi()
     command! -nargs=* -complete=customlist,titanium#build#device_complete -buffer
@@ -24,7 +35,7 @@ if titanium#build#can()
   endif
 endif
 
-" buffer mappings
+" buffer mappings {{{2
 if titanium#command#unite_utilizable()
   nnoremap <silent><buffer> <Plug>(titanium_unite_completion)
         \ :call titanium#command#unite_completion()<CR>
@@ -38,12 +49,13 @@ if titanium#command#unite_utilizable()
 endif
 
 if titanium#command#help_utilizable()
-  if titanium#is_desktop()
-    command! -nargs=? -buffer TiDesktopHelp call titanium#command#help_open(<f-args>)
-    nnoremap <buffer> K :TiDesktopHelp<CR>
+  iftitanium#is_desktop()
+    command! -nargs=* -buffer TiDesktopHelp call titanium#command#help_open(<f-args>)
   else
-    command! -nargs=? -buffer TiMobileHelp call titanium#command#help_open(<f-args>)
-    nnoremap <buffer> K :TiMobileHelp<CR>
+    command! -nargs=* -buffer TiMobileHelp call titanium#command#help_open(<f-args>)
+  endif
+  if !g:titanium_disable_keymap
+    nnoremap <buffer><silent> K :call titanium#command#K()<CR>
   endif
 endif
 

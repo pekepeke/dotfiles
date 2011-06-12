@@ -14,11 +14,20 @@ endif
 if !exists('g:ref_timobileref_complete_head') " {{{2
   let g:ref_timobileref_complete_head = 0
 endif
+if !exists('g:ref_timobileref_docroot') " {{{2
+  if exists('$TIMOBILEREF_DOCROOT')
+    let g:ref_timobileref_docroot = $TIMOBILEREF_DOCROOT
+  elseif executable('timobileref')
+    let g:ref_timobileref_docroot = substitute(
+          \ system(g:ref_timobileref_cmd . ' -d'),
+          \ '[\r\n]', '', 'g')
+  endif
+endif
 
 let s:source = {'name': 'timobileref'} " {{{1
 
 function! s:source.available() " {{{2
-  return executable(g:ref_timobileref_cmd) && exists('$TIMOBILEREF_DOCROOT')
+  return executable(g:ref_timobileref_cmd) && exists('g:ref_timobileref_docroot')
 endfunction
 
 function! s:source.get_body(query) " {{{2
@@ -35,7 +44,7 @@ function! s:source.leave() " {{{2
 endfunction
 
 function! s:source.complete(query) " {{{2
-  let files = split(globpath($TIMOBILEREF_DOCROOT, "/**/*.html"), "\n")
+  let files = split(globpath(g:ref_timobileref_docroot, "/**/*.html"), "\n")
   call map(files, 'substitute(fnamemodify(v:val, ":t:r"), "-.\\+$", "", "e")')
   if a:query == ""
     return files

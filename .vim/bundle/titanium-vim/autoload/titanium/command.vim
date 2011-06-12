@@ -27,16 +27,25 @@ endfunction
 
 function! titanium#command#help_open(...) " {{{2
   let l:keyword = a:0 > 0 ? a:1 : s:get_keyword()
-  if l:keyword == ""
-    call titanium#warn("keyword is not found")
-  else
-    if titanium#is_desktop()
-      execute "Ref tidesktopref ".keyword
-    else
-      execute "Ref timobileref ".keyword
-    endif
-  endif
+  let source = titanium#is_desktop() ? 'tidesktopref' : 'timobileref'
+  try
+    call ref#open(source, l:keyword, {})
+  catch /^ref:/
+    call titanium#warn(v:exception)
+  endtry
 endfunction
+
+function! titanium#command#K(...) " {{{2
+  let l:keyword = a:0 > 0 ? a:1 : s:get_keyword()
+  let source = titanium#is_desktop() ? 'tidesktopref' : 'timobileref'
+  try
+    call ref#open(source, l:keyword, {})
+  catch /^ref:/
+    let mode = substitute(&ft, '\.titanium', '', '')
+    call ref#K(mode)
+  endtry
+endfunction
+
 
 function! s:get_keyword() " {{{2
   let l:isk = &l:iskeyword

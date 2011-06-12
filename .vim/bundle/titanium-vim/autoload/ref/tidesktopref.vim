@@ -14,11 +14,20 @@ endif
 if !exists('g:ref_tidesktopref_complete_head')
   let g:ref_tidesktopref_complete_head = 0
 endif
+if !exists('g:ref_tidesktopref_docroot') " {{{2
+  if exists('$TIDESKTOPREF_DOCROOT')
+    let g:ref_tidesktopref_docroot = $TIDESKTOPREF_DOCROOT
+  elseif executable('tidesktopref')
+    let g:ref_tidesktopref_docroot = substitute(
+          \ system(g:ref_tidesktopref_cmd . ' -d'),
+          \ '[\r\n]', '', 'g')
+  endif
+endif
 
 let s:source = {'name': 'tidesktopref'} " {{{1
 
 function! s:source.available() " {{{2
-  return executable(g:ref_tidesktopref_cmd) && exists('$TIDESKTOPREF_DOCROOT')
+  return executable(g:ref_tidesktopref_cmd) && exists('g:ref_tidesktopref_docroot')
 endfunction
 
 function! s:source.get_body(query) " {{{2
@@ -35,7 +44,7 @@ function! s:source.leave() " {{{2
 endfunction
 
 function! s:source.complete(query) " {{{2
-  let files = split(globpath($TIDESKTOPREF_DOCROOT, "/**/*.html"), "\n")
+  let files = split(globpath(g:ref_tidesktopref_docroot, "/**/*.html"), "\n")
   call map(files, 'substitute(fnamemodify(v:val, ":t:r"), "-.\\+$", "", "e")')
   if a:query == ""
     return files

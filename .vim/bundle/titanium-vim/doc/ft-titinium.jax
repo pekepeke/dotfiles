@@ -26,14 +26,12 @@ License: クリエイティブ・コモンズの表示 2.1 日本ライセンス
 ※以下のパッケージはなくとも動作しますが、より快適な環境にするために、
   導入をお勧めします。
 - |ref| 0.3.2 以降
-- ref-timobileref
-- ref-tidesktopref
-- timobileref
-- tidesktopref
-- unite.vim
-- unite-fileline
-- vimshell
-
+- |neocomplecache|
+- |unite.vim|
+- |unite-fileline|
+- |vimproc|
+- App::timobileref
+- App::tidesktopref
 
 ==============================================================================
 カスタマイズ					*ft-titanium-customizing*
@@ -74,12 +72,25 @@ g:titanium_sdk_root_dir				*g:titanium_sdk_root_dir*
 			指定なしの場合は、環境に応じて任意のディレクトリを
 			検索し、発見されたSDKを使用します。
 
+g:titanium_disable_keymap			*g:titanium_disable_keymap*
+			プラグイン側でのマッピング処理を実施しません。
+			このフラグが有効な場合、omnifunc の設定も
+			実施しません。
+
+==============================================================================
+TODOS						*ft-titanium-todos*
+
+	- FIXME をつぶす。
+	- 全体的なリファクタリング
+	- テストケースの作成
+	- build のバックグラウンド動作の実装
+	- 補完動作の改良
 
 ==============================================================================
 更新履歴					*ft-titanium-changelog*
 
 
-0.0.1	2011-01-16
+0.0.1	2011-06-10
 	- 初版。
 
 ==============================================================================
