@@ -56,10 +56,10 @@ augroup END
 command! -bang -nargs=* MyAutocmd autocmd<bang> MyAuGroup <args>
 command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
 
-" for runtimepath {{{1
+" preexec for runtimepath {{{1
 filetype off
 
-" vundle {{{2
+" vundle {{{1
 set rtp+=~/.vim/vundle.git
 call vundle#rc(expand("$HOME/.vim/vundle"))
 
@@ -99,6 +99,8 @@ Bundle 'motemen/git-vim.git'
 
 Bundle 'motemen/hatena-vim.git'
 Bundle 'othree/html5.vim.git'
+Bundle 'hail2u/vim-css3-syntax.git'
+Bundle 'cakebaker/scss-syntax.vim.git'
 Bundle 'kchmck/vim-coffee-script.git'
 Bundle 'ciaranm/detectindent.git'
 Bundle 'thinca/vim-ft-diff_fold.git'
@@ -165,14 +167,14 @@ else
   Bundle 'ujihisa/unite-locate.git'
 endif
 
-" pathogen {{{2
+" pathogen {{{1
 let g:pathogen_disabled = []
 if !s:is_mac | let g:pathogen_disabled += ['cocoa.vim'] | endif
 call pathogen#runtime_append_all_bundles()
 
 command! PathogenHelptags call pathogen#helptags()
-" }}}
 
+" afterexec for runtimepath {{{1
 syntax enable
 filetype plugin indent on
 
@@ -899,6 +901,9 @@ let g:dbext_default_history_file = expand('~/.tmp/dbext_sql_history.txt')
 
 " zen-coding.vim {{{2
 let g:user_zen_leader_key='<C-y>'
+
+" endtagcomment https://gist.github.com/411828 {{{2
+nmap <C-y>o <Plug>(endtagcomment)
 
 " smartchr "{{{2
 inoremap <expr>, smartchr#one_of(', ', ',')
