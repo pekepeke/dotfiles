@@ -75,7 +75,7 @@ Bundle 'tyru/vim-altercmd.git'
 Bundle 'tpope/vim-surround.git'
 Bundle 'ujihisa/camelcasemotion.git'
 Bundle 'h1mesuke/vim-alignta.git'
-Bundle 'YankRing.vim'
+Bundle 'chrismetcalf/vim-yankring.git'
 Bundle 'smartword'
 Bundle 'matchit.zip'
 Bundle 'ruby-matchit'
@@ -95,13 +95,18 @@ Bundle 'scrooloose/nerdcommenter.git'
 Bundle 'scrooloose/nerdtree.git'
 Bundle 'thinca/vim-qfreplace.git'
 Bundle 'mileszs/ack.vim.git'
-Bundle 'motemen/git-vim.git'
+"Bundle 'motemen/git-vim.git'
+Bundle 'tpope/vim-fugitive.git'
 
 Bundle 'motemen/hatena-vim.git'
+Bundle 'lukaszb/vim-web-indent.git'
 Bundle 'othree/html5.vim.git'
 Bundle 'hail2u/vim-css3-syntax.git'
 Bundle 'cakebaker/scss-syntax.vim.git'
 Bundle 'kchmck/vim-coffee-script.git'
+Bundle 'pangloss/vim-javascript.git'
+Bundle 'pekepeke/titanium-vim.git'
+Bundle 'graywh/vim-haml.git'
 Bundle 'ciaranm/detectindent.git'
 Bundle 'thinca/vim-ft-diff_fold.git'
 Bundle 'thinca/vim-ft-markdown_fold.git'
@@ -159,6 +164,8 @@ Bundle 'ujihisa/unite-font.git'
 Bundle 'ujihisa/unite-gem.git'
 Bundle 'ujihisa/unite-help.git'
 Bundle 'ujihisa/unite-rake.git'
+Bundle 'basyura/unite-rails.git'
+Bundle 'basyura/unite-yarm.git'
 
 if s:is_win
   Bundle 'sgur/unite-everything.git'
@@ -1068,17 +1075,32 @@ function! s:unite_my_settings()
 endfunction
 
 " git-vim {{{2
-let g:git_no_map_default = 1
-let g:git_command_edit = 'rightbelow vnew'
-nnoremap [space]gd :<C-u>GitDiff --cached<Enter>
-nnoremap [space]gD :<C-u>GitDiff<Enter>
-nnoremap [space]gs :<C-u>GitStatus<Enter>
-nnoremap [space]gl :<C-u>GitLog<Enter>
-nnoremap [space]gL :<C-u>GitLog -u \| head -10000<Enter>
-nnoremap [space]ga :<C-u>GitAdd<Enter>
-nnoremap [space]gA :<C-u>GitAdd <cfile><Enter>
-nnoremap [space]gc :<C-u>GitCommit<Enter>
-nnoremap [space]gC :<C-u>GitCommit --amend<Enter>
+" let g:git_no_map_default = 1
+" let g:git_command_edit = 'rightbelow vnew'
+" nnoremap [space]gd :<C-u>GitDiff --cached<Enter>
+" nnoremap [space]gD :<C-u>GitDiff<Enter>
+" nnoremap [space]gs :<C-u>GitStatus<Enter>
+" nnoremap [space]gl :<C-u>GitLog<Enter>
+" nnoremap [space]gL :<C-u>GitLog -u \| head -10000<Enter>
+" nnoremap [space]ga :<C-u>GitAdd<Enter>
+" nnoremap [space]gA :<C-u>GitAdd <cfile><Enter>
+" nnoremap [space]gc :<C-u>GitCommit<Enter>
+" nnoremap [space]gC :<C-u>GitCommit --amend<Enter>
+" nnoremap [space]gp :<C-u>Git push
+
+" fugitive.vim {{{2
+nnoremap [space]gd :<C-u>Gdiff --cached<Enter>
+nnoremap [space]gD :<C-u>Gdiff<Enter>
+nnoremap [space]gs :<C-u>Gstatus<Enter>
+nnoremap [space]gl :<C-u>Glog<Enter>
+nnoremap [space]gL :<C-u>Glog -u \| head -10000<Enter>
+nnoremap [space]ga :<C-u>Gwrite<Enter>
+nnoremap [space]gA :<C-u>Gwrite <cfile><Enter>
+nnoremap [space]gc :<C-u>Gcommit<Enter>
+nnoremap [space]gC :<C-u>Gcommit --amend<Enter>
+nnoremap [space]gr :<C-u>Ggrep<CR>
+nnoremap [space]gr :<C-u>Ggrep<CR>
+nnoremap [space]gb :<C-u>Gblame<CR>
 nnoremap [space]gp :<C-u>Git push
 
 " TOhtml {{{2
