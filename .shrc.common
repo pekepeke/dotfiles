@@ -203,11 +203,11 @@ alias sudo=' sudo -H'
 # vim
 alias vimfiler='vim -c VimFiler'
 alias vimshell='vim -c VimShell'
-alias bundleinstall='vim -c "BundleInstall" -c "BundleInstall! " -c "quitall"'
+alias vundles='vim -c "BundleInstall" -c "silent BundleInstall! " -c "silent VimprocCompile" -c "quitall"'
 updatesubmodules() {
-  pushd .
+  pushd . >/dev/null
   cd ~/.github-dotfiles && git submodule foreach 'git fetch; git checkout origin/master'
-  popd
+  popd >/dev/null
 }
 
 # lang
