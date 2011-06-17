@@ -46,7 +46,8 @@ endfunction
 
 function! s:source.complete(query)  " {{{2
   let option = []
-  return split(s:ri(option + ref#to_list(a:query)).stdout, "\n")
+  " return split(s:ri(option + ref#to_list(a:query)).stdout, "\n")
+  return filter(split(s:ri(option + ref#to_list()).stdout, "\n") , 'v:val =~? a:query')
 endfunction
 
 
@@ -72,13 +73,17 @@ endfunction
 " functions. {{{1
 function! s:filter(src)
   let lines = []
+  " TODO convert foldexpr...
   for line in split(a:src, "\n")
     if line =~ '^=\+ .*$'
+      let len = strlen(matchstr(line, '^=\+'))
       if strridx(line, ":") == len(line) - 1
-        let line .= "                               {{{2"
-      else
         let line .= "                               {{{1"
+      elseif len > 1
+        let line .= "                               {{{".len
       endif
+    elseif line =~ '^\w\+:$'
+        let line .= "                               {{{2"
     endif
     call add(lines, line)
   endfor

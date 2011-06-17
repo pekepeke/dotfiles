@@ -8,6 +8,8 @@ done
 
 [ -e "$HOME/.php-pear/bin" ] && PATH=$HOME/.php-pear/bin:$PATH
 [ ! -e /usr/local/bin/vim -a -e /Applications/MacVim.app/Contents/MacOS/Vim ] && alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+# [ -e ~/Library/Application\ Support/Cyberduck/Queue.plist ] && \
+#  find ~/Library/Application\ Support/Cyberduck/Queue.plist -mtime 1 -exec rm -f {} \; > /dev/null 2>&1
 
 alias mvi='mvim --remote-tab-silent'
 alias date='gdate'

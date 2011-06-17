@@ -77,6 +77,7 @@ Bundle 'ujihisa/camelcasemotion.git'
 Bundle 'h1mesuke/vim-alignta.git'
 Bundle 'chrismetcalf/vim-yankring.git'
 Bundle 'smartword'
+Bundle 'Lokaltog/vim-easymotion.git'
 Bundle 'matchit.zip'
 Bundle 'ruby-matchit'
 
@@ -114,7 +115,7 @@ Bundle 'timcharper/textile.vim.git'
 
 Bundle 'tpope/vim-rails.git'
 Bundle 'vim-scripts/eruby.vim.git'
-Bundle 'astashov/vim-ruby-debugger.git'
+"Bundle 'astashov/vim-ruby-debugger.git'
 
 Bundle 'dbext.vim'
 Bundle 'SQLUtilities'
@@ -659,6 +660,9 @@ endfunction "}}}
 nnoremap [edit]f :NERDTreeToggle<CR>
 nnoremap <silent> [edit]<C-t> :TlistToggle<CR>
 
+nnoremap / :<C-u>nohlsearch<CR>/
+nnoremap ? :<C-u>nohlsearch<CR>?
+
 " echo
 nnoremap [prefix]e :echo<Space>
 
@@ -708,7 +712,7 @@ vnoremap <S-Tab> <gv
 
 " plugin settings {{{1
 
-" camelcasemotion
+" camelcasemotion {{{2
 nmap <silent> [prefix]w <Plug>CamelCaseMotion_w
 nmap <silent> [prefix]e <Plug>CamelCaseMotion_e
 nmap <silent> [prefix]b <Plug>CamelCaseMotion_b
@@ -722,6 +726,9 @@ omap <silent> i,b <Plug>CamelCaseMotion_ib
 xmap <silent> i,b <Plug>CamelCaseMotion_ib
 omap <silent> i,e <Plug>CamelCaseMotion_ie
 xmap <silent> i,e <Plug>CamelCaseMotion_ie
+
+" easymotion {{{2
+let g:EasyMotion_leader_key = '[prefix]f'
 
 " smartword {{{2
 nmap w  <Plug>(smartword-w)
