@@ -1,0 +1,36 @@
+#compdef cpanm
+#autoload
+#https://gist.github.com/871500
+
+typeset -A opt_args
+local context state line
+
+_arguments -C \
+    '(-h)'{-h,--help}'[prints help]' \
+    '(-v --verobse)'{-v,--verbose}'[turn on chatty output.]' \
+    '(-q --quiet)'{-q,--quiet}'[turn off the most output.]' \
+    '(-f --force)'{-f,--force}'[force install.]' \
+    '(-n --notest)'{-n,--notest}'[do not run unit tests.]' \
+    '(-S --sudo)'{-s,--sudo}'[sudo to run install commands.]' \
+    '(-l --local-lib)'{-l,--local-lib}'[specify the install base to install modules]' \
+    '(-L --local-lib-contained)'{-L,--local-lib-contained}'[specify the install base to install all non-core modules]' \
+    '(--interactive)--interactive[turns on interactive configure.]' \
+    '(--installdeps)--installdeps[only install dependencies.]' \
+    '(--reinstall)--reinstall[reinstall the distributions even if you already have the latest version installed.]' \
+    '(--mirror)--mirror[specify the base URL for the mirror.]' \
+    '(--mirror-only)--mirror-only[use the mirrors index file instead of the CPAN Meta DB]' \
+    '(--prompt)--prompt[prompt when configure build test fails]' \
+    '(--auto-cleanup)--auto-cleanup[number of days that cpanms work directories expire in. Defaults to 7]' \
+    '1: :->cmds' \
+    '(1 *): :->args' && return 0
+
+case $state in
+  cmds)
+    local -a cmds
+    cmds=( --self-upgrade --info --look --version )
+
+    _describe -t commands 'cpanm command' cmds && ret=0
+  ;;
+esac
+
+return ret
