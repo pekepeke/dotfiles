@@ -1020,9 +1020,9 @@ nmap <silent> [unite]k       [unite][file]
 
 nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
 nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
-nnoremap <silent> [unite]gg :<C-u>Unite grep<CR>
-nnoremap <silent> [unite]gi :<C-u>Unite git_grep<CR>
-nnoremap <silent> [unite]q  :<C-u>Unite qf<CR>
+nnoremap <silent> [unite]gg :<C-u>Unite grep -buffer-name=grep<CR>
+nnoremap <silent> [unite]gi :<C-u>Unite git_grep -buffer-name=git<CR>
+nnoremap <silent> [unite]q  :<C-u>Unite qf -buffer-name=qf<CR>
 nnoremap <silent> [unite]c  :<C-u>Unite command history/command<CR>
 nnoremap <silent> [unite]/  :<C-u>Unite history/search history/command<CR>
 nnoremap <silent> [unite]bb :<C-u>Unite bookmark<CR>
@@ -1062,7 +1062,11 @@ function! s:smart_unite_ref_launch() " {{{4
         \ join(map(filter(names, 'index(ref_names, v:val)') + ['man'],
         \ '"ref/".v:val'), ' ')
 endfunction "}}}
-nnoremap <silent> [unite]r :<C-u>UniteResume<CR>
+nnoremap          [unite]rr :<C-u>UniteResume<Space>
+nnoremap <silent> [unite]re :<C-u>UniteResume<CR>
+nnoremap <silent> [unite]ri :<C-u>UniteResume git<CR>
+nnoremap <silent> [unite]rg :<C-u>UniteResume grep<CR>
+nnoremap <silent> [unite]rq :<C-u>UniteResume qf<CR>
 
 nmap <silent> [space]f       [unite][buffer]
 nmap <silent> [space]d       [unite][file]

@@ -14,6 +14,7 @@ if exists("g:loaded_javascript_flyquickfixmake") | finish | endif
 let g:loaded_javascript_flyquickfixmake=1
 if !executable('gjslint') && !executable('jsl')
   " echoerr "can't execute flyquickfixmake"
+  echohl Error | echomsg "can't execute flyquickfixmake" | echohl None
 else
   au BufWritePost *.js silent make! %
 endif

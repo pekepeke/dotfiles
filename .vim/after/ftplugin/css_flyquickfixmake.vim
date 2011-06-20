@@ -10,7 +10,7 @@ call system("perl -MWebService::Validator::Css::W3C")
 if !v:shell_error
   au BufWritePost *.css silent make! %
 else
-  echoerr '[WebService::Validator::Css::W3C] is not found'
+  echohl Error | echomsg "[WebService::Validator::Css::W3C] is not found" | echohl None
 endif
 
 let g:loaded_css_flyquickfixmake=1

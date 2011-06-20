@@ -64,6 +64,7 @@ unsetopt beep
 # }}}
 
 # autoload {{{
+[ -e ~/.zsh/functions/completion ] && fpath=($HOME/.zsh/functions/completion $fpath)
 autoload -U compinit
 compinit -u
 

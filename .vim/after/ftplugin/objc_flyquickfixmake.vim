@@ -32,7 +32,7 @@ setl makeprg=xcodebuild\ -activetarget\ -activeconfiguration
 " build command
 function! s:xcodebuild()
   if !exists('b:cocoa_proj')
-    echoerr "can't find cocoa project"
+    echohl Error | echomsg "can't find cocoa project" | echohl None
     return
   endif
   let l:proj_dir = substitute(b:cocoa_proj, '(.*)/.*', '1', '')
