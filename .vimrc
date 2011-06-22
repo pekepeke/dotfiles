@@ -112,6 +112,7 @@ Bundle 'ciaranm/detectindent.git'
 Bundle 'thinca/vim-ft-diff_fold.git'
 Bundle 'thinca/vim-ft-markdown_fold.git'
 Bundle 'timcharper/textile.vim.git'
+Bundle 'pekepeke/cocoa.vim.git'
 
 Bundle 'tpope/vim-rails.git'
 Bundle 'vim-scripts/eruby.vim.git'

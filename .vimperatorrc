@@ -145,11 +145,10 @@ map a :sbm<Space>
 " == ldrize_cooperation.js == "
 ""let g:ldrc_captureMappings = "['t', 'h', 'l', 'j', 'k', 'p', 'o', '?']"
 let g:ldrc_captureMappings = "[ 'j', 'k', 'p', 'o', '?']"
-noremap <C-j> :m LDRize::next<CR>
-noremap <C-k> :m LDRize::prev<CR>
-let g:ldrc_enable = "false"
+let g:ldrc_enable = "true"
 let g:ldrc_hints = "false"
-let g:ldrc_intelligence_bind = "true"
+"let g:ldrc_intelligence_bind = "true"
+let g:ldrc_intelligence_bind = "false"
 let g:ldrc_skip = "0.05"
 
 " {{{ == feedSomeKeys.js == "

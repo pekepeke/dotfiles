@@ -311,10 +311,10 @@ snippet unif
 snippet optp
 	require "optparse"
 
-	options = {${1:default => "args"}}
-
-	ARGV.options do |opts|
-		opts.banner = "Usage: #{File.basename($PROGRAM_NAME)}
+	ARGV.options do |opt|
+		opt.on('-${1:o}", "${2:desc}") {|v| ${3} }
+		opt.parse!
+	end
 snippet opt
 	opts.on( "-${1:o}", "--${2:long-option-name}", ${3:String},
 	         "${4:Option description.}") do |${5:opt}|

@@ -312,6 +312,7 @@ options.setPref('browser.sessionstore.max_concurrent_tabs', 0);
       scroll_div
       stella
       subscldr
+      ldrize_cooperation
       uaSwitchLite
       walk-input
       xpcom_inspector
@@ -326,7 +327,6 @@ options.setPref('browser.sessionstore.max_concurrent_tabs', 0);
         autoproxychanger
         migemized_find
         migratestatusbar
-        ldrize_cooperation
       </>.toString().split(/\s+/).forEach(function(v) gv.plugin_loader_plugins.push(v));
     }
     //}}}
