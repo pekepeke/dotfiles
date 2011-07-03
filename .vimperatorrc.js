@@ -183,7 +183,7 @@ options.setPref('browser.sessionstore.max_concurrent_tabs', 0);
         function(n,i) {return { index : i, label : n.getAttribute('label'), element : n };}
       );
 
-    commands.addUserCommand(['nno','noti[fy]'], 'push button notify message',
+    commands.addUserCommand(['nnot','noti[fy]'], 'push button notify message',
       function(args, modifiers){
         var arg = args.string || 0;
         var enable = !args.bang;

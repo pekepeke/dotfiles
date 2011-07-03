@@ -105,6 +105,7 @@ bindkey -v "\e[Z" reverse-menu-complete # S-Tab
 ## emacs like
 bindkey -v '^D' delete-char
 bindkey -v '^H' backward-delete-char
+bindkey -v '^W' backward-kill-word
 bindkey -v '^A' beginning-of-line
 bindkey -v '^E' end-of-line
 bindkey -v '^B' backward-char

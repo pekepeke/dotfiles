@@ -441,13 +441,16 @@ function! s:sticky_func() "{{{3
   endif
 endfunction
 
+" statusline {{{2
 set laststatus=2  " ステータス表示用変数
 "set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'}%=%l,%c%V%8P
 let &statusline="%<%f %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'
       \ .'['.cfi#format('%s()','no func').']'
       \ }%=%l,%c%V%8P"
 
-" statusline {{{2
+set modeline
+set modelines=10
+
 " 検索周り {{{2
 set ignorecase smartcase       " 賢い検索
 set incsearch                  " インクメンタル
@@ -471,8 +474,9 @@ call my#util#mkdir(&viewdir)
 
 " 補完 {{{2
 set wildmenu                                 " 補完候補を表示する
-set wildmode=list:longest,full               " zsh like complete
+set wildmode=list:longest,list:full          " zsh like complete
 set wildchar=<tab>
+set wildignore+=*.o,*.obj,.git,*.rbc,.class,.svn
 " set completeopt=menu,preview,longest,menuone
 " set complete=.,w,b,u,t,i,k                   " 補完候補の設定
 set completeopt=menuone,preview
@@ -690,17 +694,20 @@ cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 cnoremap <C-f> <Right>
 cnoremap <C-b> <Left>
+cnoremap <C-d> <Delete>
 cnoremap <C-]>a <Home>
 cnoremap <C-]>e <End>
 "cnoremap <C-]>f <C-f>
 cnoremap <C-]>f <S-Right>
 cnoremap <C-]>b <S-Left>
 cnoremap <C-]>d <Delete>
+cnoremap <C-]>i <C-d>
 cnoremap <C-]><C-a> <Home>
 cnoremap <C-]><C-e> <End>
 cnoremap <C-]><C-f> <S-Right>
 cnoremap <C-]><C-b> <S-Left>
 cnoremap <C-]><C-d> <Delete>
+cnoremap <C-]><C-i> <C-d>
 
 Lazy cnoremap <C-x> <C-r>=expand('%:p:h')<CR>/
 
