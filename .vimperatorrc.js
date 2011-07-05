@@ -311,6 +311,8 @@ options.setPref('browser.sessionstore.max_concurrent_tabs', 0);
       sbmcommentsviewer
       scroll_div
       stella
+      statusline-toolbar
+      statusbar_panel
       subscldr
       ldrize_cooperation
       uaSwitchLite
@@ -358,6 +360,17 @@ options.setPref('browser.sessionstore.max_concurrent_tabs', 0);
 
     // multi_requester.js
     gv.multi_requester_default_sites = 'alc,goo'
+
+    // hatena bookmark extension
+    if (typeof hBookmark != 'undefined') {
+      liberator.loadScript('chrome://hatenabookmark/content/vimperator/plugin/hatenabookmark.js', {__proto__: this});
+        liberator.globalVariables.hBookmark_shortcuts = {
+        hintsAdd     : 'c',
+        hintsComment : 'C',
+        add          : ['c'],
+        comment      : ['C'],
+      };
+    }
 
     // refcontrol.js {{{
     gv.refcontrol_enabled = true;
