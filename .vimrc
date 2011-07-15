@@ -148,8 +148,8 @@ Bundle 'thinca/vim-textobj-function-perl.git'
 Bundle 'vim-scripts/textobj-indent.git'
 
 Bundle 'Shougo/unite.vim.git'
-"Bundle 'Sixeight/unite-grep.git'
-Bundle 'Shougo/unite-grep.git'
+" Bundle 'Sixeight/unite-grep.git'
+" Bundle 'Shougo/unite-grep.git'
 Bundle 'h1mesuke/unite-outline.git'
 Bundle 'hakobe/unite-script.git'
 Bundle 'mattn/unite-remotefile.git'
@@ -1070,7 +1070,7 @@ function! s:smart_unite_ref_launch() " {{{4
         \ join(map(filter(names, 'index(ref_names, v:val)') + ['man'],
         \ '"ref/".v:val'), ' ')
 endfunction "}}}
-nnoremap          [unite]rr :<C-u>UniteResume<Space>
+nnoremap          [unite]rr :<C-u>UniteResume<Space><Tab>
 nnoremap <silent> [unite]re :<C-u>UniteResume<CR>
 nnoremap <silent> [unite]ri :<C-u>UniteResume git<CR>
 nnoremap <silent> [unite]rg :<C-u>UniteResume grep<CR>
@@ -1078,6 +1078,8 @@ nnoremap <silent> [unite]rq :<C-u>UniteResume qf<CR>
 
 nmap <silent> [space]f       [unite][buffer]
 nmap <silent> [space]d       [unite][file]
+
+inoremap <C-k> <C-o>:Unite neocomplcache -buffer-name=neco<CR>
 
 MyAutocmd FileType unite call s:unite_my_settings() "{{{3
 function! s:unite_my_settings()

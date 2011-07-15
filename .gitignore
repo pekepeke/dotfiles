@@ -50,4 +50,5 @@ doc/tags-ja
 # freemind
 .freemind/log.*
 .freemind/auto.mmfilter
+.freemind/*.mm
 
