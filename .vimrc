@@ -73,11 +73,12 @@ Bundle 'kana/vim-smartchr.git'
 Bundle 'kana/vim-submode.git'
 Bundle 'tyru/vim-altercmd.git'
 Bundle 'tpope/vim-surround.git'
+Bundle 't9md/vim-surround_custom_mapping.git'
+Bundle 't9md/vim-textmanip.git'
 Bundle 'ujihisa/camelcasemotion.git'
 Bundle 'h1mesuke/vim-alignta.git'
 Bundle 'chrismetcalf/vim-yankring.git'
 Bundle 'smartword'
-Bundle 'Lokaltog/vim-easymotion.git'
 Bundle 'matchit.zip'
 Bundle 'ruby-matchit'
 
@@ -150,6 +151,7 @@ Bundle 'vim-scripts/textobj-indent.git'
 Bundle 'Shougo/unite.vim.git'
 " Bundle 'Sixeight/unite-grep.git'
 " Bundle 'Shougo/unite-grep.git'
+Bundle 't9md/vim-unite-ack.git'
 Bundle 'h1mesuke/unite-outline.git'
 Bundle 'hakobe/unite-script.git'
 Bundle 'mattn/unite-remotefile.git'
@@ -735,8 +737,13 @@ xmap <silent> i,b <Plug>CamelCaseMotion_ib
 omap <silent> i,e <Plug>CamelCaseMotion_ie
 xmap <silent> i,e <Plug>CamelCaseMotion_ie
 
-" easymotion {{{2
-let g:EasyMotion_leader_key = '[prefix]f'
+" textmanip {{{2
+nmap [space]v <Plug>(Textmanip.duplicate_selection_n)
+vmap [space]v <Plug>(Textmanip.duplicate_selection_v)
+vmap <C-j> <Plug>(Textmanip.move_selection_down)
+vmap <C-k> <Plug>(Textmanip.move_selection_up)
+vmap <C-h> <Plug>(Textmanip.move_selection_left)
+vmap <C-l> <Plug>(Textmanip.move_selection_right)
 
 " smartword {{{2
 nmap w  <Plug>(smartword-w)
@@ -1003,9 +1010,10 @@ else
 endif
 
 " unite-grep {{{3
-" let g:unite_source_grep_command = 'ack'
-" let g:unite_source_grep_default_opts = '-iH --nocolor --nogroup'
 let g:unite_source_grep_default_opts = '-iRHn'
+
+" unite-ack {{{3
+let g:unite_source_ack_command='ack --nocolor --nogroup'
 
 " unite mappings {{{3
 
@@ -1028,7 +1036,8 @@ nmap <silent> [unite]k       [unite][file]
 
 nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
 nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
-nnoremap <silent> [unite]gg :<C-u>Unite grep -buffer-name=grep<CR>
+nnoremap <silent> [unite]gg :<C-u>Unite ack -buffer-name=grep<CR>
+nnoremap <silent> [unite]gr :<C-u>Unite grep -buffer-name=grep<CR>
 nnoremap <silent> [unite]gi :<C-u>Unite git_grep -buffer-name=git<CR>
 nnoremap <silent> [unite]q  :<C-u>Unite qf -buffer-name=qf<CR>
 nnoremap <silent> [unite]c  :<C-u>Unite command history/command<CR>
@@ -1244,8 +1253,82 @@ endfunction
 " surround.vim {{{2
 nmap [s]s <Plug>Ysurround
 
-let g:surround_{char2nr('g')} = "_('\r')"
-let g:surround_{char2nr('G')} = "_(\"\r\")"
+let g:surround_custom_mapping = {}
+let g:surround_custom_mapping._ = {
+      \ 'g':  "_('\r')",
+      \ 'G':  "_(\"\r\")",
+      \ }
+let g:surround_custom_mapping.html = {
+      \ '1':  "<h1>\r</h1>",
+      \ '2':  "<h2>\r</h2>",
+      \ '3':  "<h3>\r</h3>", 
+      \ '4':  "<h4>\r</h4>", 
+      \ '5':  "<h5>\r</h5>", 
+      \ '6':  "<h6>\r</h6>", 
+      \ 'p':  "<p>\r</p>", 
+      \ 'u':  "<ul>\r</ul>", 
+      \ 'o':  "<ol>\r</ol>", 
+      \ 'l':  "<li>\r</li>", 
+      \ 'a':  "<a href=\"\">\r</a>", 
+      \ 'A':  "<a href=\"\r\"></a>", 
+      \ 'i':  "<img src=\"\r\" alt=\"\" />", 
+      \ 'I':  "<img src=\"\" alt=\"\r\" />", 
+      \ 'd':  "<div>\r</div>", 
+      \ 'D':  "<div class=\"selection\">\r</div>", 
+      \ }
+let g:surround_custom_mapping.help = {
+      \ 'p':  "> \r <",
+      \ }
+let g:surround_custom_mapping.ruby = {
+      \ '-':  "<% \r %>",
+      \ '=':  "<%= \r %>",
+      \ '9':  "(\r)",
+      \ '5':  "%(\r)",
+      \ '%':  "%(\r)",
+      \ 'w':  "%w(\r)",
+      \ '#':  "#{\r}",
+      \ '3':  "#{\r}",
+      \ 'e':  "begin \r end",
+      \ 'E':  "<<EOS \r EOS",
+      \ 'i':  "if \1if\1 \r end",
+      \ 'u':  "unless \1unless\1 \r end",
+      \ 'c':  "class \1class\1 \r end",
+      \ 'm':  "module \1module\1 \r end",
+      \ 'd':  "def \1def\1\2args\r..*\r(&)\2 \r end",
+      \ 'p':  "\1method\1 do \2args\r..*\r|&| \2\r end",
+      \ 'P':  "\1method\1 {\2args\r..*\r|&|\2 \r }",
+      \ }
+let g:surround_custom_mapping.eruby = {
+      \ '-':  "<% \r %>",
+      \ '=':  "<%= \r %>",
+      \ '#':  "<%# \r %>",
+      \ 'h':  "<%= h \r %>",
+      \ 'e':  "<% \r %>\n<% end %>",
+      \ }
+let g:surround_custom_mapping.markdown = {
+      \ 'h': "`\r`",
+      \ }
+let g:surround_custom_mapping.php = {
+      \ '-':  "<?php \r ?>", 
+      \ '=':  "<?php echo $\r; ?>", 
+      \ 'h':  "<?php echo h( $\r ); ?>", 
+      \ '#':  "<?php # \r ?>", 
+      \ '/':  "<?php // \r ?>", 
+      \ 'f':  "<?php foreach ($\r as $val): ?>\n<?php endforeach; ?>", 
+      \ }
+let g:surround_custom_mapping.javascript = {
+      \ 'f':  "function(){ \r }"
+      \ }
+let g:surround_custom_mapping.lua = {
+      \ 'f':  "function(){ \r }"
+      \ }
+let g:surround_custom_mapping.python = {
+      \ 'p':  "print( \r)",
+      \ '[':  "[\r]",
+      \ }
+let g:surround_custom_mapping.vim= {
+      \'f':  "function! \r endfunction"
+      \ }
 
 " operator {{{2
 map _ <Plug>(operator-replace)
@@ -1396,7 +1479,7 @@ nnoremap [space]nd :NeoComplCacheDisable<CR>
 " completes {{{3
 if exists("+omnifunc") " {{{4
   MyAutocmd FileType php          setl omnifunc=phpcomplete#CompletePHP
-  MyAutocmd FileType html,mardown setl omnifunc=htmlcomplete#CompleteTags
+  MyAutocmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
   MyAutocmd FileType python       setl omnifunc=pythoncomplete#Complete
   MyAutocmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
   MyAutocmd FileType xml          setl omnifunc=xmlcomplete#CompleteTags

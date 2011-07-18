@@ -1,5 +1,6 @@
 # .zshrc
 
+# prompt {{{1
 export PROMPT="[%n@%m %3d]%(#.#.$) "
 
 if [ $OSTYPE != "cygwin" -a -z $LANG ]; then
@@ -8,7 +9,6 @@ fi
 
 setopt prompt_subst
 
-# プロンプト設定
 case "$TERM" in
   cygwin|xterm|xterm*|kterm|mterm|rxvt*)
     #PROMPT='%{[33m%}%m%B[%D %T]%b%{[m%}\$ '
@@ -22,14 +22,14 @@ case "$TERM" in
     ;;
 esac
 
-# options {{{
-# cd
+# options {{{1
+# cd {{{2
 setopt auto_cd
 setopt auto_pushd
 setopt pushd_ignore_dups
 setopt pushd_silent
 
-# completion
+# completion {{{2
 setopt no_beep
 setopt no_list_beep
 
@@ -48,22 +48,21 @@ setopt magic_equal_subst    # コマンドラインの引数で --prefix=/usr �
 setopt extended_glob        # 拡張グロブで補完(~とか^とか。例えばless *.txt~memo.txt ならmemo.txt 以外の *.txt にマッチ)
 setopt globdots             # 明確なドットの指定なしで.から始まるファイルをマッチ
 
-# i/o
+# i/o {{{2
 #setopt correct 
 setopt print_eight_bit      # 日本語ファイル名等8ビットを通す
 setopt sun_keyboard_hack
 #setopt interactive_comments
+setopt no_nomatch
 
 # prompting
-setopt prompt_subst
 
 # zle
 unsetopt beep
 
 #export WORDCHARS='*?_.[]~=&;!#$%^(){}<>'
-# }}}
 
-# autoload {{{
+# autoload {{{1
 [ -e ~/.zsh/functions/completion ] && fpath=($HOME/.zsh/functions/completion $fpath)
 autoload -U compinit
 compinit -u
@@ -85,9 +84,8 @@ setopt extended_glob
 setopt auto_cd
 setopt auto_pushd
 setopt no_tify
-# }}}
 
-# keybinds {{{
+# keybinds {{{1
 bindkey -v
 # for command mode
 bindkey -a 'O' push-line
@@ -115,14 +113,30 @@ bindkey -v '^S' history-incremental-search-forward
 bindkey -v '^Y' yank
 bindkey -v '^R' history-incremental-pattern-search-backward
 
+autoload -U modify-current-argument
+# シングルクォート用
+_quote-previous-word-in-single() {
+    modify-current-argument '${(qq)${(Q)ARG}}'
+    zle vi-forward-blank-word
+}
+zle -N _quote-previous-word-in-single
+bindkey -v '^[s' _quote-previous-word-in-single
+
+# ダブルクォート用
+_quote-previous-word-in-double() {
+    modify-current-argument '${(qqq)${(Q)ARG}}'
+    zle vi-forward-blank-word
+}
+zle -N _quote-previous-word-in-double
+bindkey -v '^[d' _quote-previous-word-in-double
+
 # bindkey -e
 # bindkey ";5C" forward-word
 # bindkey ";5D" backward-word
 
 export WORDCHARS='*?[]~=&;!#$%^(){}<>'
-# }}}
 
-# history setting {{{
+# history setting {{{1
 autoload history-search-end
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
@@ -142,7 +156,6 @@ setopt hist_ignore_dups
 setopt share_history
 setopt hist_ignore_space
 setopt hist_expand
-# }}}
 
 # make coloring {{{2
 e_normal=`echo -e "\033[0;30m"`
@@ -155,7 +168,6 @@ LANG=C command make "$@" 2>&1 | sed -e "s@[Ee]rror:.*@$e_RED&$e_normal@g" -e "s@
 function cwaf() {
 LANG=C command ./waf "$@" 2>&1 | sed -e "s@[Ee]rror:.*@$e_RED&$e_normal@g" -e "s@cannot\sfind.*@$e_RED&$e_normal@g" -e "s@[Ww]arning:.*@$e_BLUE&$e_normal@g"
 }
-# }}}
 
 if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
   preexec() {
@@ -207,9 +219,8 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
   _reg_pwd_screennum
 }
 fi
-# }}}
 
-# plugins {{{
+# plugins {{{1
 if [ -e ~/.zsh/completion/ ]; then
   for completion_sh in $(ls ~/.zsh/completion/*); do
     source $completion_sh
@@ -217,7 +228,7 @@ if [ -e ~/.zsh/completion/ ]; then
 fi
 [ -e ~/.zsh/cdf ] && source ~/.zsh/cdf
 
-# auto-fu.zsh {{{
+# auto-fu.zsh {{{2
 # とりあえず OFF る、、、文字制御が欲しい。。
 if [ -z "x" -a -f "$HOME/.zsh/auto-fu.zsh/auto-fu.zsh" -a "$OSTYPE" != "cygwin" ]; then
   unsetopt sh_word_split
@@ -262,10 +273,8 @@ if [ -z "x" -a -f "$HOME/.zsh/auto-fu.zsh/auto-fu.zsh" -a "$OSTYPE" != "cygwin" 
   afu-ad-delete-unambiguous-prefix afu+accept-line-and-down-history
   afu-ad-delete-unambiguous-prefix afu+accept-and-hold
 fi
-# }}}
-#}}}
 
-# for ruby gems {{{
+# for ruby gems {{{2
 function cdgem() {
   cd `echo $GEM_HOME/**gems/$1* | awk '{print $1}'`
 }
@@ -273,6 +282,5 @@ compctl -K _cdgem cdgem
 function _cdgem() {
   reply=(`find $GEM_HOME -type d|grep -e '/gems/[^/]*$'|xargs basename|sort -nr`)
 }
-# }}}
 
 # vim: fdm=marker sw=2 ts=2 et:

@@ -1,86 +1,91 @@
 // {{{ ==================== for firefox preferences ====================
 // for browsing speed tuneup
-//options.setPref('network.prefetch-next', true);// prefetch default true
-options.setPref('network.http.pipelining', true);
-options.setPref('network.http.pipelining.firstrequest', true);
-options.setPref('network.http.pipelining.maxrequests', 8);
-options.setPref('network.http.max-connections', 32);
-options.setPref('network.http.max-connections-per-server', 24);
-options.setPref('network.http.max-persistent-connections-per-proxy', 16);
-options.setPref('network.http.max-persistent-connections-per-server', 8);
-options.setPref('nglayout.initialpaint.delay', 500);
-options.setPref('plugin.expose_full_path', true);
-options.setPref('ui.submenuDelay', 0);
-options.setPref('content.interrupt.parsing', true);
-options.setPref('content.max.tokenizing.time', 2250000);
-options.setPref('content.notify.backoffcount', 5);
-options.setPref('content.notify.interval', 750000);
-options.setPref('content.notify.ontimer', true);
-options.setPref('content.switch.threshold', 750000);
-options.setPref('content.maxtextrun', 8191);
+let (optset = options.setPref) {
+  setTimeout(function() {
+    //optset('network.prefetch-next', true);// prefetch default true
+    optset('network.http.pipelining', true);
+    optset('network.http.pipelining.firstrequest', true);
+    optset('network.http.pipelining.maxrequests', 8);
+    optset('network.http.max-connections', 32);
+    optset('network.http.max-connections-per-server', 24);
+    optset('network.http.max-persistent-connections-per-proxy', 16);
+    optset('network.http.max-persistent-connections-per-server', 8);
+    optset('nglayout.initialpaint.delay', 500);
+    optset('plugin.expose_full_path', true);
+    optset('ui.submenuDelay', 0);
+    optset('content.interrupt.parsing', true);
+    optset('content.max.tokenizing.time', 2250000);
+    optset('content.notify.backoffcount', 5);
+    optset('content.notify.interval', 750000);
+    optset('content.notify.ontimer', true);
+    optset('content.switch.threshold', 750000);
+    optset('content.maxtextrun', 8191);
+    optset('image.animation_mode', 'once'); // gif animation
 
-options.setPref('mousewheel.withnokey.numlines', 5);// マウスのスクロール量
-options.setPref('mousewheel.withnokey.sysnumlines', false);
+    optset('mousewheel.withnokey.numlines', 5);// マウスのスクロール量
+    optset('mousewheel.withnokey.sysnumlines', false);
 
-options.setPref('browser.cache.memory.enable', true);
-options.setPref('browser.cache.memory.capacity', 32768);
-options.setPref('browser.cache.disk_cache_ssl', false);
-//options.setPref('browser.cache.disk_cache_ssl', true);
-//options.setPref('browser.cache.disk.enable', false);
-options.setPref('browser.tabs.closeButtons', 2);                        // x ボタン off
-options.setPref('browser.tabs.autoHide', false);
-options.setPref('browser.tabs.tabMaxWidth', 120);
-options.setPref('browser.tabs.tabMinWidth', 120);
-options.setPref('browser.tabs.warnOnClose', false);
-options.setPref('browser.tabs.loadDivertedInBackground', true);         // バックグラウンドでタブを開く
-options.setPref('browser.link.open_newwindow.restriction', 0);          // window.open() もタブで開く
-options.setPref('browser.display.show_image_placeholders', false);      // 代理画像アイコンoff
-options.setPref('browser.history_expire_days_min', 3);                  // 履歴(最短保持期間)
-options.setPref('browser.history_expire_days', 15);                     // 履歴(最長保持期間)
-options.setPref('browser.sessionhistory.max_total_viewers', 3);         // 高速Back/Forward
-options.setPref('browser.sessionstore.interval', 120000);               // セッションを保存する間隔。
+    optset('browser.cache.memory.enable', true);
+    optset('browser.cache.memory.capacity', 32768);
+    optset('browser.cache.disk_cache_ssl', false);
+    //optset('browser.cache.disk_cache_ssl', true);
+    //optset('browser.cache.disk.enable', false);
+    optset('browser.tabs.closeButtons', 2);                        // x ボタン off
+    optset('browser.tabs.autoHide', false);
+    optset('browser.tabs.tabMaxWidth', 120);
+    optset('browser.tabs.tabMinWidth', 120);
+    optset('browser.tabs.warnOnClose', false);
+    optset('browser.tabs.loadDivertedInBackground', true);         // バックグラウンドでタブを開く
+    optset('browser.link.open_newwindow.restriction', 0);          // window.open() もタブで開く
+    optset('browser.display.show_image_placeholders', false);      // 代理画像アイコンoff
+    optset('browser.history_expire_days_min', 3);                  // 履歴(最短保持期間)
+    optset('browser.history_expire_days', 15);                     // 履歴(最長保持期間)
+    optset('browser.sessionhistory.max_total_viewers', 3);         // 高速Back/Forward
+    optset('browser.sessionstore.interval', 120000);               // セッションを保存する間隔。
 
-options.setPref('browser.block.target_new_window', true);               // 新しいウィンドウを開かずに既存のウィンドウに新しいタブを開かせます。
-options.setPref('browser.chrome.image_icons.max_size', 0);              // タブに差胸いるを作らない
-options.setPref('browser.download.manager.showAlertOnComplete', false); // ダウンロードが終了しました off
-options.setPref('browser.download.manager.closeWhenDone', true);
-options.setPref('browser.download.manager.retention', 1);               // 完了したダウンロードとキャンセルされたダウンロードの履歴はアプリケーション終了時に削除
-options.setPref('browser.download.manager.showWhenStarting', false);    // ダウンロードマネージャにフォーカス移さない
-options.setPref('browser.download.manager.useWindow', false);           // ステータスバーに進捗状況表示
-options.setPref('browser.download.manager.scanWhenDone', false);        // Virus Scan Off
-options.setPref('browser.blink_allowed', false);                        // blinkタグ無効
-options.setPref('browser.search.openintab', true);                      // 検索結果を新しいタブで開く
-options.setPref('browser.enable_automatic_image_resizing', false);      // イメージを勝手にリサイズさせない
-options.setPref('browser.xul.error_pages.enabled', true);
-options.setPref('config.trim_on_minimize', true);                       // ウィンドウ最小化時にメモリshrink/Winのみ有効/でも、ディスクを使うことになるので、外した方がいいかも
-options.setPref('layout.spellcheckDefault', 0);                         // spellcheck off
-options.setPref('network.dns.disableIPv6', true);
-options.setPref('dom.popup_maximum',2000);                              // popup数
-options.setPref('extensions.getAddons.showPane',false);                 // おすすめアドオンいらない
-options.setPref('security.dialog_enable_delay', 0);                     // addon installer delay
-options.setPref('plugin.expose_full_path', true);
-options.setPref('signed.applets.codebase_principal_support', true);
-options.setPref('layout.spellcheckDefault', 2);
-options.setPref('browser.chrome.toolbar_tips', false);
-//options.setPref('general.useragent.locale','ja');
-options.setPref('images.dither', 'false');//画像のディザを補正する
+    optset('browser.block.target_new_window', true);               // 新しいウィンドウを開かずに既存のウィンドウに新しいタブを開かせます。
+    optset('browser.chrome.image_icons.max_size', 0);              // タブに差胸いるを作らない
+    optset('browser.download.manager.showAlertOnComplete', false); // ダウンロードが終了しました off
+    optset('browser.download.manager.closeWhenDone', true);
+    optset('browser.download.manager.retention', 1);               // 完了したダウンロードとキャンセルされたダウンロードの履歴はアプリケーション終了時に削除
+    optset('browser.download.manager.showWhenStarting', false);    // ダウンロードマネージャにフォーカス移さない
+    optset('browser.download.manager.useWindow', false);           // ステータスバーに進捗状況表示
+    optset('browser.download.manager.scanWhenDone', false);        // Virus Scan Off
+    optset('browser.blink_allowed', false);                        // blinkタグ無効
+    optset('browser.search.openintab', true);                      // 検索結果を新しいタブで開く
+    optset('browser.enable_automatic_image_resizing', false);      // イメージを勝手にリサイズさせない
+    optset('browser.xul.error_pages.enabled', true);
+    optset('config.trim_on_minimize', true);                       // ウィンドウ最小化時にメモリshrink/Winのみ有効/でも、ディスクを使うことになるので、外した方がいいかも
+    optset('layout.spellcheckDefault', 0);                         // spellcheck off
+    optset('network.dns.disableIPv6', true);
+    optset('dom.popup_maximum',2000);                              // popup数
+    optset('extensions.getAddons.showPane',false);                 // おすすめアドオンいらない
+    optset('security.dialog_enable_delay', 0);                     // addon installer delay
+    optset('plugin.expose_full_path', true);
+    optset('signed.applets.codebase_principal_support', true);
+    optset('layout.spellcheckDefault', 2);
+    optset('browser.chrome.toolbar_tips', false);
+    //optset('general.useragent.locale','ja');
+    optset('images.dither', 'false');//画像のディザを補正する
 
-//http://kano.feena.jp/?firefox
-options.setPref('layout.frames.force_resizability', true);          // フレームを常にリサイズ可能に
-options.setPref('view_source.wrap_long_lines', true);               // ソースの表示で長い行を自動的に折り返す
-options.setPref('nglayout.events.dipatchLeftClickOnly', true);      // 右クリックを禁止にさせない
-options.setPref('dom.disable_window_open_feature.location', true);  // URLバー・スクロールバーは隠すの禁止
-options.setPref('dom.disable_window_open_feature.scrollbars',true);
+    //http://kano.feena.jp/?firefox
+    optset('layout.frames.force_resizability', true);          // フレームを常にリサイズ可能に
+    optset('view_source.wrap_long_lines', true);               // ソースの表示で長い行を自動的に折り返す
+    optset('nglayout.events.dipatchLeftClickOnly', true);      // 右クリックを禁止にさせない
+    optset('dom.disable_window_open_feature.location', true);  // URLバー・スクロールバーは隠すの禁止
+    optset('dom.disable_window_open_feature.scrollbars',true);
 
-// disable accesskey
-options.setPref('ui.key.generalAccessKey', 9);
+    // disable accesskey
+    optset('ui.key.generalAccessKey', 9);
 
-// for debug vimperator
-//options.setPref('extensions.liberator.loglevel', 1);
-options.resetPref('extensions.liberator.loglevel');
+    // for debug vimperator
+    //optset('extensions.liberator.loglevel', 1);
+    options.resetPref('extensions.liberator.loglevel');
 
-// bartab like
-options.setPref('browser.sessionstore.max_concurrent_tabs', 0);
+    // bartab like
+    optset('browser.sessionstore.max_concurrent_tabs', 0);
+  }, 100);
+};
 // }}}
 
 (function($LU) {
