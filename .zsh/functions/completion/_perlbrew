@@ -1,0 +1,44 @@
+#compdef perlbrew
+
+typeset -A opt_args
+local context state line
+
+_arguments -C \
+    '(- 1 *)'{-h,--help}'[prints help]' \
+    '(-f --force)'{-f,--force}'[Force installation of a perl]' \
+    '(-q --quiet)'{-q,--quiet}'[Log output to a log file rather than STDOUT. This is the default.]' \
+    '(-v --verbose)'{-v,--verbose}'[Log output to STDOUT rather than a logfile]' \
+    '-D=-[pass through switches to the perl Configure script]' \
+    '(-as)'-as+'[Install a given perl under an alias.]:alias name' \
+    '1: :->cmds' \
+    '(1 *): :->args' && return 0
+
+case $state in
+  cmds)
+    local -a cmds
+    cmds=( init install switch list use off help mirror version )
+
+    _describe -t commands 'perlbrew command' cmds && ret=0
+  ;;
+  args)
+    case $line[1] in
+      switch | use)
+       local -a versions
+       versions=(system $(_call_program commands perlbrew list 2>/dev/null | perl -ne '!m{\*|^\s*/} && s/\n/ / && print'))
+       _wanted versions expl 'perl version' compadd $versions && ret=0 
+      ;;
+      install)
+       if ( [[ ${+_perlbrew_installs} -eq 0 ]] || _cache_invalid PERLBREW_installs ) && ! _retrieve_cache PERLBREW_installs; then
+         _perlbrew_installs=($(_call_program commands curl -L0 http://search.cpan.org/dist/perl/ 2>/dev/null |perl -ne 'm{^\s*<option value="[^"]+/(perl-[^"]+)/">} && print "$1\n"'))
+         _store_cache PERLBREW_installs _perlbrew_installs
+       fi
+       _wanted releases expl 'perl release' compadd -a _perlbrew_installs && ret=0
+      ;;
+      *)
+        (( ret )) && _message 'no more arguments'
+      ;;
+    esac
+  ;;
+esac
+
+return ret
