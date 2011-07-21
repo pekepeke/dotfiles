@@ -44,9 +44,9 @@ endfunction
 
 command! -buffer -nargs=0 Xcodebuild call s:xcodebuild()
 
-if !exists('g:objc_flyquickfixmake')
-  let g:objc_flyquickfixmake = 1
-endif
+if exists('g:objc_flyquickfixmake') | finish | endif
+let g:objc_flyquickfixmake = 1
+
 if !executable('xcodebuild')
   " echoerr "can't execute flyquickfixmake"
 else
