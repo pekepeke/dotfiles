@@ -174,8 +174,12 @@ Bundle 'basyura/unite-yarm.git'
 if s:is_win
   Bundle 'sgur/unite-everything.git'
 else
+  if s:is_mac
+    Bundle 'choplin/unite-spotlight.git'
+  else
+    Bundle 'ujihisa/unite-locate.git'
+  endif
   Bundle 'ujihisa/neco-look.git'
-  Bundle 'ujihisa/unite-locate.git'
 endif
 
 " pathogen {{{1
@@ -381,6 +385,7 @@ set noerrorbells
 
 set langmenu=none
 set helplang=ja,en
+set foldmethod=syntax
 
 " タブ文字の設定 {{{2
 set autoindent smartindent cindent  " インデント設定
@@ -504,6 +509,8 @@ vmap <Space> [space]
 
 noremap [t] <Nop>
 nmap t [t]
+nnoremap <silent> [t]e t
+
 noremap [s] <Nop>
 nmap s [s]
 
@@ -550,6 +557,7 @@ endfunction "}}}
 
 " insert timestamp
 nmap <silent> [t]w :exe "normal! i" . strftime("%Y-%m-%d\T%H:%M:%S+09:00")<CR>
+
 " redraw map
 nmap <silent> [s]r :redraw!<CR>
 

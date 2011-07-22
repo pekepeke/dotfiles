@@ -107,6 +107,12 @@ is_exec rails && alias r=rails
 
 # for node.js
 [ -s $HOME/.nvm/nvm.sh ] && source $HOME/.nvm/nvm.sh
+if [ -e $HOME/.node_modules ]; then
+  PATH=$HOME/.node_modules/bin:$PATH
+  MANPATH=$HOME/.node_modules/man:$PATH
+  NODE_PATH=$HOME/.node_modules:$PATH
+fi
+
 # if [ -s $HOME/.nave/nave.sh ] ; then
   # alias nave=$HOME/.nave/nave.sh
   # alias npm_install='curl http://npmjs.org/install.sh | sh'
