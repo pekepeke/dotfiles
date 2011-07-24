@@ -67,6 +67,7 @@ Bundle 'Shougo/neocomplcache.git'
 Bundle 'Shougo/vimfiler.git'
 Bundle 'Shougo/vimproc.git'
 Bundle 'Shougo/vimshell.git'
+Bundle 'kana/vim-altr.git'
 Bundle 'kana/vim-fakeclip.git'
 Bundle 'kana/vim-scratch.git'
 Bundle 'kana/vim-smartchr.git'
@@ -77,7 +78,8 @@ Bundle 't9md/vim-surround_custom_mapping.git'
 Bundle 't9md/vim-textmanip.git'
 Bundle 'ujihisa/camelcasemotion.git'
 Bundle 'h1mesuke/vim-alignta.git'
-Bundle 'chrismetcalf/vim-yankring.git'
+" Bundle 'chrismetcalf/vim-yankring.git'
+Bundle 'the-isz/MinYankRing.vim.git'
 Bundle 'smartword'
 Bundle 'matchit.zip'
 Bundle 'ruby-matchit'
@@ -217,8 +219,8 @@ if &t_Co == 256 || s:is_win || has('gui')
   "colorscheme mrkn256
   "colorscheme lucius
 else
-  colorscheme wombat
-  "colorscheme desert
+  " colorscheme wombat
+  colorscheme desert
 endif
 MyAutocmd BufEnter *.ehtml,*.erb :hi link erubyRubyDelim Label "Delimiter
 
@@ -672,7 +674,7 @@ function! s:toggle_quickfix_window() "{{{3
   endif
 endfunction "}}}
 
-nnoremap [edit]f :NERDTreeToggle<CR>
+nnoremap [edit]<C-f> :NERDTreeToggle<CR>
 nnoremap <silent> [edit]<C-t> :TlistToggle<CR>
 
 nnoremap / :<C-u>nohlsearch<CR>/
@@ -680,6 +682,31 @@ nnoremap ? :<C-u>nohlsearch<CR>?
 
 " echo
 nnoremap [prefix]e :echo<Space>
+
+" gf " http://labs.timedia.co.jp/2011/04/git-diff-aware-gf-commands-for-vim.html#comment-91
+" git-diff-aware version of gf commands.
+nnoremap <expr> gf  <SID>do_git_diff_aware_gf('gf')
+nnoremap <expr> gF  <SID>do_git_diff_aware_gf('gF')
+nnoremap <expr> <C-w>f  <SID>do_git_diff_aware_gf('<C-w>f')
+nnoremap <expr> <C-w><C-f>  <SID>do_git_diff_aware_gf('<C-w><C-f>')
+nnoremap <expr> <C-w>F  <SID>do_git_diff_aware_gf('<C-w>F')
+nnoremap <expr> <C-w>gf  <SID>do_git_diff_aware_gf('<C-w>gf')
+nnoremap <expr> <C-w>gF  <SID>do_git_diff_aware_gf('<C-w>gF')
+
+function! s:do_git_diff_aware_gf(command)
+  let target_path = expand('<cfile>')
+  if target_path =~# '^[ab]/'  " with a peculiar prefix of git-diff(1)?
+    if filereadable(target_path) || isdirectory(target_path)
+      return a:command
+    else
+      " BUGS: Side effect - Cursor position is changed.
+      let [_, c] = searchpos('\f\+', 'cenW')
+      return c . '|' . 'v' . (len(target_path) - 2 - 1) . 'h' . a:command
+    endif
+  else
+    return a:command
+  endif
+endfunction
 
 " imaps {{{2
 inoremap <C-t> <C-v><Tab>
@@ -698,6 +725,9 @@ inoremap <C-]><C-e> <End>
 inoremap <C-]><C-f> <S-Right>
 inoremap <C-]><C-b> <S-Left>
 inoremap <C-]><C-d> <Delete>
+
+inoremap <C-w> <C-g>u<C-w>
+inoremap <C-u> <C-g>u<C-u>
 
 " cmaps {{{2
 cnoremap <C-a> <Home>
@@ -720,6 +750,20 @@ cnoremap <C-]><C-d> <Delete>
 cnoremap <C-]><C-i> <C-d>
 
 Lazy cnoremap <C-x> <C-r>=expand('%:p:h')<CR>/
+
+" v+omap
+onoremap aa a>
+vnoremap aa a>
+onoremap ia i>
+vnoremap ia i>
+onoremap ar a]
+vnoremap ar a]
+onoremap ir i]
+vnoremap ir i]
+onoremap ak a)
+vnoremap ak a)
+onoremap ik i)
+vnoremap ik i)
 
 " vmaps {{{2
 vnoremap tj    :GoogleTranslate ja<CR>
@@ -762,6 +806,14 @@ vmap w  <Plug>(smartword-w)
 vmap b  <Plug>(smartword-b)
 vmap e  <Plug>(smartword-e)
 vmap ge <Plug>(smartword-ge)
+
+" vim-altr {{{2
+call altr#define('autoload/%.vim', 'doc/%.txt', 'plugin/%.vim')
+call altr#define('controllers/%.rb', 'models/%.rb', 'helpers/%.rb', 'views/%.erb')
+call altr#define('controllers/%.php', 'models/%.php', 'helpers/%.php', 'views/%.php')
+
+nmap [prefix]n <Plug>(altr-forward)
+nmap [prefix]p <Plug>(altr-back)
 
 " vim-template "{{{2
 let g:template_basedir = expand('$HOME/.vim')
@@ -835,8 +887,10 @@ Alias q MyQ
 Alias wq MyWQ
 Alias Q quit
 Alias WQ wq
+
 Alias ve vsplit
 Alias se split
+Alias n new
 
 " alignta {{{2
 let g:alignta_confirm_for_retab = 0
@@ -910,6 +964,8 @@ let g:NERDSpaceDelims = 1
 " NERDTree {{{2
 let g:NERDTreeHijackNetrw = 0
 let g:NERDTReeIgnore = ['\.svn', '\.git', '\~$']
+let g:NERDTreeMapOpenSplit="s"
+let g:NERDTreeMapOpenVSplit="gi"
 
 " chalice {{{2
 let g:chalice_cachedir = expand('$HOME/.tmp/chalice_cache')
@@ -1339,6 +1395,17 @@ let g:surround_custom_mapping.vim= {
       \ }
 
 " operator {{{2
+" http://labs.timedia.co.jp/2011/07/vim-excel-and-sql.html
+call operator#user#define('excelize', 'OperatorExcelize')
+function! OperatorExcelize(motion_wise)
+  let b = line("'[")
+  let e = line("']")
+  execute b ',' e 'substitute/\v(\''?)(\$?\u+\$?\d+)(\''?)/\1" \& \2 \& "\3/g'
+  execute b 'substitute/^/="/'
+  execute e 'substitute/$/"/'
+endfunction
+
+map ;e <Plug>(operator-excelize)
 map _ <Plug>(operator-replace)
 map ;h <Plug>(operator-html-escape)
 map ;H <Plug>(operator-html-unescape)
