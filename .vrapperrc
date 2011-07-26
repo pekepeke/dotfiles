@@ -53,6 +53,10 @@ nnoremap K :Help<CR>
 nnoremap u :Undo<CR>
 nnoremap <C-r> :Redo<CR>
 
+" replace.vim like
+nnoremap _iw viwPyiw
+nnoremap _aw vawPyiw
+
 " tab
 nnoremap tn gt
 nnoremap tp gT
@@ -78,7 +82,7 @@ inoremap <C-f> <Esc><Right>a
 inoremap <C-b> <Esc>i
 
 inoremap <C-d> <Esc><Right>xi
-inoremap <C-w> <Esc><Right>:DeletePreviousWord<CR>xa
+inoremap <C-w> <Esc><Right>:DeletePreviousWord<CR>a
 inoremap <C-k> <Esc><Right>:DeleteLineToEnd<CR>a
 inoremap <C-u> <Esc>:DeleteLineToBeginning<CR>i
 inoremap <C-l> <Esc>:ContentAssistProposals<CR>a
