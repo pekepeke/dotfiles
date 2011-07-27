@@ -1224,11 +1224,11 @@ nnoremap [space]q :<C-u>QuickRun<Space>
 
 " for ruby {{{3
 MyAutocmd BufWinEnter,BufNewFile *_spec.rb set filetype=ruby.rspec
-let g:quickrun_config['ruby.rspec'] = {'command' : 'rspec -l {line(".")}'}
+let g:quickrun_config['ruby.rspec'] = {'command' : 'rspec', 'exec' : '%c -l {line(".")}'}
 " html {{{3
 if s:is_mac
-  let g:quickrun_config['html'] = {'command' : 'open %s'}
-  let g:quickrun_config['xhtml'] = {'command' : 'open %s'}
+  let g:quickrun_config['html'] = {'exec' : 'open %s'}
+  let g:quickrun_config['xhtml'] = {'exec' : 'open %s'}
 else
 endif
 
@@ -1244,10 +1244,12 @@ endif
 " text markups {{{3
 if !executable('pandoc') && executable('markdown') "{{{4
   if executable('ruby') && filereadable($HOME.'/bin/mkd2html.rb')
+          " \ 'command' : 'ruby ' . $HOME . '/bin/mkd2html.rb' ,
+          " \   '%c %s',
     let g:quickrun_config['markdown'] = {
-          \ 'command' : 'ruby ' . $HOME . '/bin/mkd2html.rb' ,
+          \ 'command' : 'ruby' ,
           \ 'exec' : [
-          \   '%c %s',
+          \   '%c ' . $HOME . '/bin/mkd2html.rb' . ' %s',
           \ ],
           \ }
   else
