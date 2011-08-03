@@ -514,11 +514,12 @@ snippet array
 	Array.prototype.lastIndexOf = Array.prototype.lastIndexOf || function(searchElement,fromIndex){ var max = this.length-1; var i = fromIndex < 0 ? Math.max(max+1 + fromIndex,0): fromIndex > max ? max : max-(fromIndex||0) || max;for(;i>=0;i--) if(searchElement === this[i]) return i; return -1;};
 	Array.prototype.every = Array.prototype.every || function(callback,thisObject){ for(var i=0,len=this.length;i<len;i++) if(!callback.call(thisObject,this[i],i,this)) return false; return true;};
 	Array.prototype.some = Array.prototype.some || function(callback,thisObject){ for(var i=0,len=this.length;i<len;i++) if(callback.call(thisObject,this[i],i,this)) return true; return false;};
+	Array.prototype.reduce = Array.prototype.reduce || function(callback) { var i, l = this.length, cur; if ((l <= 0 || l === null) && arguments.length <= 1) { throw new Error("invalid arguments", arguments); } if (arguments.length <= 1) { cur = this[0]; i = 1; } else { cur = arguments[1]; } for (var i= i || 0; i < l; i++) { cur = callback.call(this, cur, this[i], i, this); } return cur; };
 	Array.prototype.shuffle = function() { var r = Array.apply(null, this); for (var i=0, l=r.length; i<l ;i++) { var j = Math.floor(Math.random() * l); if (j==i) continue; var tmp = r[j]; r[j] = r[i]; r[i] = tmp; }}
 
 snippet arrays
 	var Arrays = {
-		fromto : function(from, to) {
+		range : function(from, to) {
 			var arr = []
 			for (var i=(from<to ? from : to), l=(from < to ? to : from);i<=l;i++) arr.push(i);
 			return arr;
@@ -555,6 +556,23 @@ snippet arrays
 			}
 			return true;
 		},
+		reduce : function(items, callback) {
+			var i, l = items.length, cur;
+
+			if ((l <= 0 || l === null) && arguments.length <= 2) {
+				throw new Error("invalid arguments", arguments);
+			}
+			if (arguments.length <= 2) {
+				cur = items[0]; i = 1;
+			} else {
+				cur = arguments[2];
+			}
+
+			for (var i= i || 0; i < l; i++) {
+				cur = callback.call(items, cur, items[i], i, items);
+			}
+			return cur;
+		},
 		shuffle : function(items, callback) {
 			var r = Array.prototype.slice.call(items, 0);
 			for (var i=0, l=r.length; i<l ;i++) {
@@ -577,7 +595,13 @@ snippet extend
 snippet p
 	var p = function() {
 		if (typeof console != 'undefined')
-			console.log(Array.prototype.slice.call(artuments, 0));
+			console.log(Array.prototype.slice.call(arguments, 0));
+	}
+
+snippet log
+	var log = function() {
+		if (typeof console != 'undefined')
+			console.log(Array.prototype.slice.call(arguments, 0));
 	}
 
 snippet addEvent
