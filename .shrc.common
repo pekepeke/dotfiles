@@ -37,6 +37,13 @@ is_colinux() {
   [ "$ENV_WORKING" = 'colinux' ] && return 0
   return 1
 }
+load_sh() {
+  if [ x$1 = x ];then
+    return 1
+  fi
+  [ -e $1 ] && source $1
+  return 0
+}
 # }}}
 
 # {{{ OS settings

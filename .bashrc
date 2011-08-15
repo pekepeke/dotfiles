@@ -117,3 +117,5 @@ complete -v unset
 
 [ -s $HOME/.shrc.common ] && source $HOME/.shrc.common
 
+load_sh $HOME/.bash/cdd
+

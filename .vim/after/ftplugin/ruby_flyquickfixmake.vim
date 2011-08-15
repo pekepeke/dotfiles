@@ -8,7 +8,7 @@ endif
 if !executable('ruby')
   echoerr "can't execute flyquickfixmake"
 else
-  au BufWritePost *.rb,*.rjs silent make! %
+  au BufWritePost *.rb,Rakefile silent make! %
 endif
 
 let g:loaded_ruby_flyquickfixmake=1

@@ -347,11 +347,20 @@ set directory=~/.tmp,/var/tmp,/tmp
 if has('kaoriya') | set iminsert=0 imsearch=0 | endif
 
 "MyAutocmd BufEnter * if isdirectory(expand('%:p:h')) | execute ":lcd " . expand("%:p:h") | endif
-MyAutocmd BufEnter * call LcdCurrentOrProjDir()
+" MyAutocmd BufEnter * call LcdCurrentOrProjDir()
+" MyAutocmd BufRead,BufNewFile * call LcdCurrentOrProjDir()
+if !exists('g:my_lcd_autochdir')
+  let g:my_lcd_autochdir = 0
+endif
+
 function! LcdCurrentOrProjDir() "{{{3
-  let pdir = my#util#find_proj_dir()
-  if pdir != ''
-    execute 'lcd' fnameescape(pdir)
+  if exists('b:vimfiler')
+    let g:my_lcd_autochdir = 0
+  elseif g:my_lcd_autochdir && !exists('b:my_lcd_current_or_prj_dir')
+    let b:my_lcd_current_or_prj_dir = my#util#find_proj_dir()
+    if b:my_lcd_current_or_prj_dir != ''
+      execute 'lcd' fnameescape(b:my_lcd_current_or_prj_dir)
+    endif
   endif
 endfunction
 
@@ -1888,15 +1897,50 @@ command! -nargs=1 -complete=file DiffFile vertical diffsplit <args>
 
 " rename {{{2
 "command! -nargs=1 -complete=file Rename f <args>|call delete(expand('#'))
-function! s:my_rename(path) " {{{3
+function! s:my_rename_exec(path) " {{{3
+  if !s:my_rename_can()
+    echohl ErrorMsg
+    echomsg "Error : can't rename buffer"
+    echohl Normal
+    return
+  endif
   let path = a:path
-  if stridx(path, "/") < 0 || stridx(path, "\\")
+  if s:my_rename_is_relative(a:path)
     let path = expand("%:p:h") . "/" . path
   endif
   exe "f" path | call delete(expand('#')) | w
+endfunction
+
+function! s:my_rename_is_relative(path)
+  return stridx(a:path, "/") < 0 || stridx(a:path, "\\")
+endfunction
+
+function! s:my_rename_can()
+  return !empty(expand('%'))
+endfunction
+
+function! s:my_rename_complete(A, L, P)
+  echo "HO"
+  if !s:my_rename_can()
+    return []
+  endif
+  if !s:my_rename_is_relative(a:A)
+    return []
+  end
+  let files = split(globpath(expand("%:p:h"), "*"), "\n")
+  let items = map(files, 'matchstr(v:val, "[^/]\\+$")')
+  let matches = []
+  for item in items
+    if item =~? '^' . a:A
+      call add(matches, item)
+    endif
+  endfor
+  echoerr "UF"
+  return matches
 endfunction "}}}
+
 "command! -nargs=1 -complete=file Rename f <args> | call delete(expand('#')) | w
-command! -nargs=1 -complete=file Rename call s:my_rename(<f-args>)
+command! -nargs=1 -complete=customlist,s:my_rename_complete Rename call s:my_rename_exec("<args>")
 Alias ren Rename
 
 function! s:relative_copy(dst) "{{{3

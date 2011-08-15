@@ -13,5 +13,6 @@ done
 
 alias mvi='mvim --remote-tab-silent'
 alias date='gdate'
+alias seq='gseq'
 
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:
