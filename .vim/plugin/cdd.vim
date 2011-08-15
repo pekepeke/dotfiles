@@ -29,7 +29,7 @@ endif
 command! -nargs=1 Cdd call <SID>cdd(<f-args>)
 
 function! s:cdd(no)
-  for l:lin in readfile(expand('~').'/.zsh/cdd_pwd_list')
+  for l:lin in readfile(expand('~').'/.cdd/cddfile')
     let l:line = split(l:lin,':')
     if len(l:line) >= 2
       if l:line[0] == a:no

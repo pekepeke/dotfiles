@@ -2,7 +2,7 @@
 
 cdddir=$HOME/.cdd
 cddfile=$cdddir/cddfile
-cddtmp=$cdddir/cddtmp
+cddtmp=$cdddir/cddfile.t
 cddmax=20
 
 function cdd_init() {

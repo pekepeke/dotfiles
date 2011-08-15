@@ -40,7 +40,9 @@
 # - Yuichi Tateno
 #
 
-export CDD_PWD_FILE=$HOME/.zsh_cdd_pwd_list
+CDD_DIR=$HOME/.cdd
+export CDD_PWD_FILE=$CDD_DIR/cddfile
+[ ! -e $CDDDIR ] && mkdir -p $CDD_DIR
 
 function _reg_pwd_screennum() {
   if [ "$STY" != "" ]; then
