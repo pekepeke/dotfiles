@@ -1192,17 +1192,16 @@ endfunction
 " nnoremap [space]gp :<C-u>Git push
 
 " fugitive.vim {{{2
-nnoremap [space]gd :<C-u>Gdiff --cached<Enter>
-nnoremap [space]gD :<C-u>Gdiff<Enter>
-nnoremap [space]gs :<C-u>Gstatus<Enter>
-nnoremap [space]gl :<C-u>Glog<Enter>
-nnoremap [space]gL :<C-u>Glog -u \| head -10000<Enter>
-nnoremap [space]ga :<C-u>Gwrite<Enter>
-nnoremap [space]gA :<C-u>Gwrite <cfile><Enter>
-nnoremap [space]gc :<C-u>Gcommit<Enter>
-nnoremap [space]gC :<C-u>Gcommit --amend<Enter>
-nnoremap [space]gr :<C-u>Ggrep<CR>
-nnoremap [space]gr :<C-u>Ggrep<CR>
+nnoremap [space]gd :<C-u>Gdiff --cached<CR>
+nnoremap [space]gD :<C-u>Gdiff<CR>
+nnoremap [space]gs :<C-u>Gstatus<CR>
+nnoremap [space]gl :<C-u>Glog<CR>
+nnoremap [space]gL :<C-u>Glog -u \| head -10000<CR>
+nnoremap [space]ga :<C-u>Gwrite<CR>
+nnoremap [space]gA :<C-u>Gwrite <cfile><CR>
+nnoremap [space]gc :<C-u>Gcommit<CR>
+nnoremap [space]gC :<C-u>Gcommit --amend<CR>
+nnoremap [space]gr :<C-u>Ggrep<Space>
 nnoremap [space]gb :<C-u>Gblame<CR>
 nnoremap [space]gp :<C-u>Git push
 
