@@ -89,6 +89,7 @@ Bundle 'mattn/googletranslate-vim.git'
 Bundle 'ujihisa/shadow.vim.git'
 Bundle 'tsukkee/lingr-vim.git'
 Bundle 'thinca/vim-quickrun.git'
+Bundle 'thinca/vim-ambicmd.git'
 Bundle 'tyru/current-func-info.vim.git'
 Bundle 'vim-scripts/errormarker.vim.git'
 Bundle 'thinca/vim-template.git'
@@ -338,7 +339,8 @@ set fileencoding=utf-8
 set fileformat=unix
 
 set clipboard=unnamed
-set mouse=a
+" set mouse=a
+set mouse=nv
 
 set shellslash
 set directory=~/.tmp,/var/tmp,/tmp
@@ -783,6 +785,10 @@ vnoremap <S-Tab> <gv
 
 " plugin settings {{{1
 
+" ambicmd
+cnoremap <expr> <Space> ambicmd#expand("\<Space>")
+cnoremap <expr> <CR> ambicmd#expand("\<CR>")
+
 " camelcasemotion {{{2
 nmap <silent> [prefix]w <Plug>CamelCaseMotion_w
 nmap <silent> [prefix]e <Plug>CamelCaseMotion_e
@@ -1115,7 +1121,7 @@ nnoremap <silent> [unite]gi :<C-u>Unite git_grep -buffer-name=git<CR>
 nnoremap <silent> [unite]q  :<C-u>Unite qf -buffer-name=qf<CR>
 nnoremap <silent> [unite]c  :<C-u>Unite command history/command<CR>
 nnoremap <silent> [unite]/  :<C-u>Unite history/search history/command<CR>
-nnoremap <silent> [unite]bb :<C-u>Unite bookmark<CR>
+nnoremap <silent> [unite]bb :<C-u>Unite bookmark -default-action=open<CR>
 nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
 
 " nnoremap <silent> [unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
@@ -1152,7 +1158,7 @@ function! s:smart_unite_ref_launch() " {{{4
         \ join(map(filter(names, 'index(ref_names, v:val)') + ['man'],
         \ '"ref/".v:val'), ' ')
 endfunction "}}}
-nnoremap          [unite]rr :<C-u>UniteResume<Space><Tab>
+nnoremap          [unite]rr :<C-u>UniteResume<Space>
 nnoremap <silent> [unite]re :<C-u>UniteResume<CR>
 nnoremap <silent> [unite]ri :<C-u>UniteResume git<CR>
 nnoremap <silent> [unite]rg :<C-u>UniteResume grep<CR>
