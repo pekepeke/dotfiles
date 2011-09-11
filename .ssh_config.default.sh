@@ -33,6 +33,9 @@ Host *
 #  User user1
 
 #Host *.host
+#  ProxyCommand ssh user@host1 -W %h:%p
+
+#Host *.host
 #  ProxyCommand ssh host1 nc -w 10 %h %p
 #  ProxyCommand ssh host1 /path/to/connect %h %p
 ## wget http://www.meadowy.org/~gotoh/ssh/connect.c
