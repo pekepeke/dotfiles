@@ -90,6 +90,7 @@ Bundle 'ujihisa/shadow.vim.git'
 Bundle 'tsukkee/lingr-vim.git'
 Bundle 'thinca/vim-quickrun.git'
 Bundle 'thinca/vim-ambicmd.git'
+Bundle 'thinca/vim-logcat.git'
 Bundle 'tyru/current-func-info.vim.git'
 Bundle 'vim-scripts/errormarker.vim.git'
 Bundle 'thinca/vim-template.git'
@@ -348,9 +349,9 @@ set directory=~/.tmp,/var/tmp,/tmp
 " IME の設定 {{{2
 if has('kaoriya') | set iminsert=0 imsearch=0 | endif
 
-"MyAutocmd BufEnter * if isdirectory(expand('%:p:h')) | execute ":lcd " . expand("%:p:h") | endif
+" MyAutocmd BufEnter * if isdirectory(expand('%:p:h')) | execute ":lcd " . expand("%:p:h") | endif
 " MyAutocmd BufEnter * call LcdCurrentOrProjDir()
-" MyAutocmd BufRead,BufNewFile * call LcdCurrentOrProjDir()
+MyAutocmd BufRead,BufNewFile * call LcdCurrentOrProjDir()
 if !exists('g:my_lcd_autochdir')
   let g:my_lcd_autochdir = 0
 endif
@@ -939,7 +940,10 @@ call submode#map       ('tabwalker', 'n', '', 'H', ':execute "tabmove" tabpagenr
 call submode#map       ('tabwalker', 'n', '', 'L', ':execute "tabmove" tabpagenr()<CR>')
 
 " Change current window size {{{3
+" winmove {{{3
 call submode#enter_with('winmove', 'n', '', '[s]e', '<Nop>')
+call submode#enter_with('winmove', 'n', '', '[s]j', '<C-w>j')
+call submode#enter_with('winmove', 'n', '', '[s]k', '<C-w>k')
 call submode#leave_with('winmove', 'n', '', '<Esc>')
 call submode#map       ('winmove', 'n', '', 'j', '<C-w>j')
 call submode#map       ('winmove', 'n', '', 'k', '<C-w>k')
