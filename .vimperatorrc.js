@@ -88,7 +88,7 @@ let (optset = options.setPref) {
 };
 // }}}
 
-(function($LU) {
+(function($LU, Global) {
   // {{{ ==================== for os difference ====================
     options.store.set('editor',
       $LU.is_win() ?
@@ -367,15 +367,34 @@ let (optset = options.setPref) {
     gv.multi_requester_default_sites = 'alc,goo'
 
     // hatena bookmark extension
-    if (typeof hBookmark != 'undefined') {
-      liberator.loadScript('chrome://hatenabookmark/content/vimperator/plugin/hatenabookmark.js', {__proto__: this});
-        liberator.globalVariables.hBookmark_shortcuts = {
-        hintsAdd     : 'c',
-        hintsComment : 'C',
-        add          : ['c'],
-        comment      : ['C'],
-      };
-    }
+    autocommands.add(
+      'VimperatorEnter', '.*', 
+      function() {
+        if (typeof hBookmark != 'undefined') {
+          liberator.loadScript('chrome://hatenabookmark/content/vimperator/plugin/hatenabookmark.js', {__proto__: Global});
+          gv.hBookmark_shortcuts = {
+            hintsAdd     : 'c',
+            hintsComment : 'C',
+            add          : ['c'],
+            comment      : ['C'],
+          };
+          gv.hBookmark_commands = {
+            hbsearch             : 'hb[search]',
+            hbsearch_tab         : 'hbt[absearch]',
+            hbsearch_comment     : 'hbc[omment]',
+            hbsearch_comment_tab : 'hbtc[omment]',
+            hbsearch_url         : 'hbu[rl]',
+            hbsearch_url_tab     : 'hbtu[rl]',
+            hbsearch_title       : 'hbti[tle]',
+            hbsearch_title_tab   : 'hbtti[tle]',
+          }
+          gv.hBookmark_bangFunction = 'openNewTab';
+
+          gv.hBookmark_search_interval = 1000; // 検索時の wait(ms)
+          gv.hBookmark_search_limit = 10; // 一度に検索する limit
+          gv.hBookmark_search_max_limit = 100;; // 検索時の表示の最大件数。この件数に達するまで検索し続ける。
+        }
+      });
 
     // refcontrol.js {{{
     gv.refcontrol_enabled = true;
@@ -663,7 +682,7 @@ let (optset = options.setPref) {
       return c == '%%' ? '%' :args.shift();
     });
   }
-});
+}, this);
 /* {{{
 // {{{ ==================== for ldr ====================
 autocommands.add('DOMLoad' , 'http://reader\.livedoor\.com/reader/', function(arg){

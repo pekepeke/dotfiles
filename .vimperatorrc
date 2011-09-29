@@ -199,6 +199,30 @@ EOM
 ""*/
 " }}}
 
+" {{{ ==================== patch ==================== "
+" http://d.hatena.ne.jp/littlefolk/20110625/p1 "
+autocommands.add(
+    'VimperatorEnter', '.*',
+    function () {
+        let Cc = Components.classes['@greasemonkey.mozdev.org/greasemonkey-service;1'] ||
+                 Components.classes['@scriptish.erikvold.com/scriptish-service;1'];
+        if (Cc) {
+            Cc = Cc.getService().wrappedJSObject;
+            if (Cc.injectScripts.toSource().search('sharedWindow') == -1) {
+                Cc.injectScripts = liberator.eval(
+                    Cc.injectScripts.toSource()
+                        .replace(/(?=(?:var|let) delays|(?:firebug|fb)Console)/,
+                                'var sharedWindow = {};' +
+                                'sharedWindow.window = sharedWindow;' +
+                                'sharedWindow.__proto__ = new XPCNativeWrapper(unsafeContentWin);')
+                        .replace(/(?=sandbox\.__proto__)/, ' sandbox.window = sharedWindow;'),
+                    Cc.injectScripts);
+            };
+        };
+    });
+EOM
+" }}}
+
 source ~/.vimperatorrc.js
 echo ".vimperatorrc sourced"
 
