@@ -428,8 +428,8 @@ set nrformats=hex
 " cnoremap <expr> ;  <SID>sticky_func()
 " snoremap <expr> ;  <SID>sticky_func()
 let g:sticky_shift_enable = 1
-command! -nargs=0 StickyShiftEnable let g:sticky_shift_enable=1
-command! -nargs=0 StickyShiftDisable let g:sticky_shift_enable=0
+command! -nargs=0 StickyShift let g:sticky_shift_enable=1
+command! -nargs=0 NoStickyShift let g:sticky_shift_enable=0
 
 inoremap <expr> ;  g:sticky_shift_enable ? <SID>sticky_func() : ";"
 
