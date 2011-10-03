@@ -90,20 +90,19 @@ let (optset = options.setPref) {
 
 (function($LU, Global) {
   // {{{ ==================== for os difference ====================
-    options.store.set('editor',
-      $LU.is_win() ?
-      'C:\\\\Personal\\\\Apps\\\\Editor\\\\sakura\\\\sakura.exe'
-      : ($LU.is_mac() ? 'mvim' : 'gvim -f'));
-    if (!$LU.is_mac()) {
-      var fmt = '%snoremap <C-%s> <C-v><C-%s>';
-      'ca'.split('').forEach( function(c) liberator.execute($LU.sprintf(fmt, 'n', c, c)) );
-      'azxcv'.split('').forEach(
-        function(c) {
-          liberator.execute($LU.sprintf(fmt, 'c', c, c));
-          liberator.execute($LU.sprintf(fmt, 'i', c, c));
-        }
-      );
-    }
+  var editor = 'gvim -f';
+  if ($LU.is_win()) 'C:\\\\Personal\\\\Apps\\\\Editor\\\\sakura\\\\sakura.exe';
+  else if ($LU.is_mac()) 'mvim';
+  options.store.set('editor', editor);
+
+  if (!$LU.is_mac()) {
+    var fmt = '%snoremap <C-%s> <C-v><C-%s>';
+    'ca'.split('').forEach( function(c) liberator.execute($LU.sprintf(fmt, 'n', c, c)) );
+    'azxcv'.split('').forEach( function(c) {
+      liberator.execute($LU.sprintf(fmt, 'c', c, c));
+      liberator.execute($LU.sprintf(fmt, 'i', c, c));
+    });
+  }
   // }}}
 
   // {{{ ==================== add keybind ====================
@@ -130,6 +129,14 @@ let (optset = options.setPref) {
     [modes.NORMAL],
     [',m'], 'toggle Maximize',
     function() window.windowState == window.STATE_MAXIMIZED ? window.restore() : window.maximize()
+  );
+  mappings.addUserMap(
+    [modes.COMMAND_LINE], ['<c-x>'], 'insert current URL to command line',
+    function() {
+      var cur = ":" + commandline.getCommand();
+      if (!cur.match(/ $/)) cur += ' ';
+      commandline.open(curcmd, buffer.URL, modes.EX);
+    }
   );
 
   (function() {
