@@ -1,0 +1,7 @@
+# vim:fdm=syntax sw=2 ts=2 ft=python expandtab:
+# tab complete
+import rlcompleter
+import readline
+
+readline.parse_and_bind("tab: complete")
+
