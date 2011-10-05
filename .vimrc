@@ -61,7 +61,8 @@ filetype off
 
 " vundle {{{1
 set rtp+=~/.vim/vundle.git
-call vundle#rc(expand("$HOME/.vim/vundle"))
+let g:my_bundle_dir = expand("$HOME/.vim/vundle")
+call vundle#rc(g:my_bundle_dir)
 
 Bundle 'Shougo/neocomplcache.git'
 Bundle 'Shougo/vimfiler.git'
@@ -109,7 +110,6 @@ Bundle 'mileszs/ack.vim.git'
 Bundle 'tpope/vim-fugitive.git'
 if has('python')
   Bundle 'tsukkee/lingr-vim.git'
-  Bundle 'gregsexton/VimCalc.git'
 endif
 
 Bundle 'motemen/hatena-vim.git'
@@ -205,14 +205,10 @@ command! PathogenHelptags call pathogen#helptags()
 syntax enable
 filetype plugin indent on
 
-" vim git 更新
-if executable('sh') && executable('git')
-  "command! BundlesUpdate exe "!sh $HOME/.vim/bin/update_bundles.sh" | call pathogen#helptags()
-  command! UpdateSubmodule exe "! cd $HOME/.github-dotfiles && git submodule foreach 'git fetch;git checkout origin/master'" | call pathogen#helptags()
-endif
-if executable('sh')
+" vimproc
+if executable('sh') && executable('make')
   function! s:vimproc_compile()
-    let path = expand('$HOME/.vim/vundle/vimproc')
+    let path = expand(g:my_bundle_dir . '/vimproc')
     let makefile = s:is_win ? 'make_cygwin.mak' :
           \ (s:is_mac ? 'make_mac.mak' : 'make_gcc.mak')
 
@@ -1614,13 +1610,14 @@ function! s:setup_vimproc_dll() " {{{3
   if s:is_win
     let g:vimproc_dll_path = expand('~/.vim/lib/vimproc/win32/proc.dll')
   endif
-  let path = expand('~/.vim/vundle/vimproc/autoload/proc.so')
+  let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc.so')
   if filereadable(path)
     let g:vimproc_dll_path = path
   endif
 endfunction " }}}
 
 call s:setup_vimproc_dll()
+
 if s:is_win " {{{3
   " Display user name on Windows.
   let g:vimshell_prompt = $USERNAME."% "
@@ -1688,6 +1685,9 @@ nmap [space]vv :<C-u>VimShellTab<CR>
 nmap [space]ve :<C-u>VimShellExecute<Space>
 nmap [space]vi :<C-u>VimShellInteractive<Space>
 nmap [space]vt :<C-u>VimShellTerminal<Space>
+
+command! IRB VimShellInteractive irb
+LCAlias IRB
 
 " vimfiler {{{2
 let g:vimfiler_as_default_explorer=1
