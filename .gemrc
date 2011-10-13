@@ -1,0 +1,13 @@
+gem: --no-ri --no-rdoc
+:benchmark: false
+:update_sources: true
+:backtrace: true
+:sources:
+- http://gemcutter.org
+- http://gems.rubyforge.org
+- http://gems.github.com
+#gemhome: /opt/local/lib/ruby/gems/
+#gempath:
+#  - /opt/local/lib/ruby/gems/1.9.1
+#:bulk_threshold: 1000
+#:verbose: true

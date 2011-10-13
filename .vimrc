@@ -170,7 +170,7 @@ Bundle 'mattn/unite-remotefile.git'
 Bundle 'pekepeke/unite-fileline.git'
 Bundle 'sgur/unite-git_grep.git'
 Bundle 'sgur/unite-qf.git'
-Bundle 'soh335/unite-qflist.git'
+" Bundle 'soh335/unite-qflist.git'
 Bundle 'tacroe/unite-alias.git'
 Bundle 'tacroe/unite-mark.git'
 Bundle 'thinca/vim-unite-history.git'
@@ -357,12 +357,11 @@ if has('kaoriya') | set iminsert=0 imsearch=0 | endif
 " MyAutocmd BufEnter * call LcdCurrentOrProjDir()
 MyAutocmd BufRead,BufNewFile * call LcdCurrentOrProjDir()
 if !exists('g:my_lcd_autochdir')
-  let g:my_lcd_autochdir = 0
+  let g:my_lcd_autochdir = 1
 endif
 
 function! LcdCurrentOrProjDir() "{{{3
   if exists('b:vimfiler')
-    let g:my_lcd_autochdir = 0
   elseif g:my_lcd_autochdir && !exists('b:my_lcd_current_or_prj_dir')
     let b:my_lcd_current_or_prj_dir = my#util#find_proj_dir()
     if b:my_lcd_current_or_prj_dir != ''
@@ -1106,7 +1105,7 @@ let g:unite_source_ack_command='ack --nocolor --nogroup'
 
 nnoremap <silent> [unite][buffer]   :<C-u>Unite buffer tab<CR>
 nnoremap <silent> [unite][file]     :<C-u>Unite -buffer-name=file file<CR>
-nnoremap <silent> [unite][rel_file] :<C-u>Unite file -buffer-name=file -input=<C-r>=fnameescape(expand('%:p:h'))<CR>/<CR>
+nnoremap <silent> [unite][rel_file] :<C-u>Unite file:<C-r>=fnameescape(expand('%:p:h'))<CR>/ -buffer-name=file<CR>
 nnoremap <silent> [unite][mru]      :<C-u>Unite -buffer-name=file file_mru directory_mru bookmark -default-action=open<CR>
 nnoremap <silent> [unite][source]   :<C-u>Unite source<CR>
 nnoremap [unite][empty]    :<C-u>Unite<Space>
@@ -1123,12 +1122,13 @@ nmap <silent> [unite]k       [unite][file]
 
 nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
 nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
-nnoremap <silent> [unite]gg :<C-u>Unite ack -buffer-name=grep<CR>
-nnoremap <silent> [unite]gr :<C-u>Unite grep -buffer-name=grep<CR>
+nnoremap <silent> [unite]gg :<C-u>Unite ack -buffer-name=grep -no-quit<CR>
+nnoremap <silent> [unite]gr :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
 nnoremap <silent> [unite]gi :<C-u>Unite git_grep -buffer-name=git<CR>
-nnoremap <silent> [unite]q  :<C-u>Unite qf -buffer-name=qf<CR>
+nnoremap <silent> [unite]q  :<C-u>Unite qf -buffer-name=qfix -no-quit<CR>
 nnoremap <silent> [unite]c  :<C-u>Unite command history/command<CR>
 nnoremap <silent> [unite]/  :<C-u>Unite history/search history/command<CR>
+nnoremap <silent> [unite]p  :<C-u>Unite process<CR>
 nnoremap <silent> [unite]bb :<C-u>Unite bookmark -default-action=open<CR>
 nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
 
@@ -1144,38 +1144,44 @@ function! s:smart_unite_ref_launch() " {{{4
   let kwd = expand('<cword>')
   let &l:isk = isk
 
-  let tilang = ['timobileref', 'tidesktopref']
-  if ft == 'php'
-    let names = ['phpmanual'] + tilang
-  elseif ft == 'ruby'
-    let names = ['refe'] + tilang
-  elseif ft == 'python'
-    let names = ['pydoc'] + tilang
-  elseif ft == 'perl'
-    let names = ['perldoc']
-  elseif ft == 'javascript'
-    let names = ['jsref'] + tilang
-  elseif ft == 'java'
-    let names = ['javadoc', 'androiddoc']
-  elseif ft == 'erlang'
-    let names = ['erlang']
+  " let tilang = ['timobileref', 'tidesktopref']
+  " if ft == 'php'
+  "   let names = ['phpmanual'] + tilang
+  " elseif ft == 'ruby'
+  "   let names = ['refe'] + tilang
+  " elseif ft == 'python'
+  "   let names = ['pydoc'] + tilang
+  " elseif ft == 'perl'
+  "   let names = ['perldoc']
+  " elseif ft == 'javascript'
+  "   let names = ['jsref'] + tilang
+  " elseif ft == 'java'
+  "   let names = ['javadoc', 'androiddoc']
+  " elseif ft == 'erlang'
+  "   let names = ['erlang']
+  " endif
+  " let ref_names = ref#available_source_names()
+  " execute 'Unite'
+  "       \ '-input='.kwd
+  "       \ join(map(filter(names, 'index(ref_names, v:val)') + ['man'],
+  "       \ '"ref/".v:val'), ' ')
+  let s = ref#detect()
+  if s == ""
+    let s = "man"
   endif
-  let ref_names = ref#available_source_names()
-  execute 'Unite'
-        \ '-input='.kwd
-        \ join(map(filter(names, 'index(ref_names, v:val)') + ['man'],
-        \ '"ref/".v:val'), ' ')
+  execute 'Unite' '-input='.kwd 'ref/'.s
 endfunction "}}}
+
 nnoremap          [unite]rr :<C-u>UniteResume<Space>
 nnoremap <silent> [unite]re :<C-u>UniteResume<CR>
 nnoremap <silent> [unite]ri :<C-u>UniteResume git<CR>
 nnoremap <silent> [unite]rg :<C-u>UniteResume grep<CR>
-nnoremap <silent> [unite]rq :<C-u>UniteResume qf<CR>
+nnoremap <silent> [unite]rq :<C-u>UniteResume qfix<CR>
 
 nmap <silent> [space]f       [unite][buffer]
 nmap <silent> [space]d       [unite][file]
 
-inoremap <C-k> <C-o>:Unite neocomplcache -buffer-name=neco<CR>
+inoremap <C-k> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-insert<CR>
 
 MyAutocmd FileType unite call s:unite_my_settings() "{{{3
 function! s:unite_my_settings()
@@ -1692,43 +1698,12 @@ LCAlias IRB
 " vimfiler {{{2
 let g:vimfiler_as_default_explorer=1
 let g:vimfiler_safe_mode_by_default=0
-let g:vimfiler_edit_command = 'new'
+let g:vimfiler_edit_action = 'below'
 
 MyAutocmd FileType vimfiler call s:vimfiler_my_settings()
 
-function! MyVimfilerYankPath() " {{{3
-  " let l:register = v:register "'0'
-  let l:register = &clipboard == "unnamed" ? '*' : '0'
-  let l:path = vimfiler#get_filename(line('.'))
-  if l:path == '' || l:path == '..'
-    return
-  endif
-  "let l:mode = input('yank - [f]ilename, [p]ath, [d]ir path, [e]xt : ', '')
-  echo 'yank - [f]ilename, [p]ath, [d]ir path, [e]xt : '
-  let l:mode = nr2char(getchar())
-  let l:copy_str = ''
-  if l:mode ==# 'f'
-    let l:copy_str = fnamemodify(l:path,  ':t')
-  elseif l:mode ==# 'p'
-    let l:copy_str = l:path
-  elseif l:mode ==# 'd'
-    let l:copy_str = fnamemodify(l:path,  ':p:h')
-  elseif l:mode ==# 'e'
-    let l:copy_str = fnamemodify(l:path,  ':e')
-  endif
-
-  if l:copy_str !=# ''
-    call setreg(l:register, l:copy_str)
-    echo 'yank to ['.l:register.']:' . l:copy_str
-  else
-    echo 'yank is canceled'
-  endif
-endfunction
-
 function! s:vimfiler_my_settings() " {{{3
-  nnoremap <buffer> Y :call MyVimfilerYankPath()<CR>
-  nmap <buffer> L <Plug>(vimfiler_move_to_history_forward)
-  nmap <buffer> H <Plug>(vimfiler_move_to_history_back)
+  nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
   hi link ExrenameModified Statement
   "nnoremap <buffer> v V
 endfunction
