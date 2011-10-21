@@ -1,16 +1,23 @@
 
-compiler css
-setl errorformat=%f:%l:%m
+if executable('csslint')
+  makeprg=csslint\ --format=compact\ %
+  errorformat=%A%f:\ line\ %l\\,\ col\ %c\\,\ %m
 
-if !executable('perl') | finish | endif
+elseif executable('perl')
+  call system("perl -MWebService::Validator::Css::W3C")
 
-if exists("g:loaded_css_flyquickfixmake") | finish | endif
-
-call system("perl -MWebService::Validator::Css::W3C")
-if !v:shell_error
-  au BufWritePost *.css silent make! %
+  if !v:shell_error
+    compiler css
+    setl errorformat=%f:%l:%m
+  else
+    echohl Error | echomsg "[WebService::Validator::Css::W3C] is not found" | echohl None
+  endif
 else
-  echohl Error | echomsg "[WebService::Validator::Css::W3C] is not found" | echohl None
+  finish
+endif
+
+if exists("g:loaded_css_flyquickfixmake")
+  au BufWritePost *.css silent make! %
 endif
 
 let g:loaded_css_flyquickfixmake=1
