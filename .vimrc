@@ -402,7 +402,19 @@ set noerrorbells
 
 set langmenu=none
 set helplang=ja,en
-set foldmethod=syntax
+set foldmethod=marker
+" http://d.hatena.ne.jp/thinca/20110523/1306080318
+augroup foldmethod-expr
+  autocmd!
+  autocmd InsertEnter * if &l:foldmethod ==# 'expr'
+  \ |   let b:foldinfo = [&l:foldmethod, &l:foldexpr]
+  \ |   setlocal foldmethod=manual foldexpr=0
+  \ | endif
+  autocmd InsertLeave * if exists('b:foldinfo')
+  \ |   let [&l:foldmethod, &l:foldexpr] = b:foldinfo
+  \ |   unlet b:foldinfo
+  \ | endif
+augroup END
 
 " タブ文字の設定 {{{2
 set autoindent smartindent cindent  " インデント設定
@@ -542,6 +554,9 @@ vmap <C-e> [edit]
 
 noremap [comment-doc] <Nop>
 map     [prefix]c     [comment-doc]
+
+nnoremap q <Nop>
+nnoremap Q q
 
 " 行単位で移動 {{{2
 nnoremap j gj
@@ -790,8 +805,8 @@ vnoremap <S-Tab> <gv
 " plugin settings {{{1
 
 " ambicmd
-cnoremap <expr> <Space> ambicmd#expand("\<Space>")
-cnoremap <expr> <CR> ambicmd#expand("\<CR>")
+cnoremap <expr> <C-l> ambicmd#expand("\<Space>")
+" cnoremap <expr> <CR> ambicmd#expand("\<CR>")
 
 " camelcasemotion {{{2
 nmap <silent> [prefix]w <Plug>CamelCaseMotion_w

@@ -76,6 +76,9 @@ autoload -U zmv
 autoload -U colors
 colors
 
+autoload -U bashcompinit
+bashcompinit
+
 setopt no_flow_control
 setopt no_beep
 setopt ignore_eof
