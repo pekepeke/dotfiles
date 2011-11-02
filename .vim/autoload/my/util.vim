@@ -1,4 +1,18 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
 let s:has_plugin_cache = {} " {{{1
+
+let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
+let s:is_win = has('win16') || has('win32') || has('win64')
+
+function! my#util#is_win() " {{{2
+  return s:is_win
+endfunction
+
+function! my#util#is_mac() " {{{2
+  return s:is_mac
+endfunction
 
 function! my#util#has_plugin(name) " {{{2
   if ! has_key(s:has_plugin_cache, a:name)
@@ -142,3 +156,12 @@ function! my#util#benchmark() " {{{2
   return copy(bm)
 endfunction
 
+function! my#util#compile_vimproc(basedir)
+  let path = expand(a:basedir)
+  let makefile = s:is_win ? 'make_cygwin.mak' :
+        \ (s:is_mac ? 'make_mac.mak' : 'make_gcc.mak')
+
+  exe printf("! cd %s && make -f %s/%s", path, path, makefile)
+endfunction
+
+let &cpo = s:save_cpo

@@ -207,14 +207,7 @@ filetype plugin indent on
 
 " vimproc
 if executable('sh') && executable('make')
-  function! s:vimproc_compile()
-    let path = expand(g:my_bundle_dir . '/vimproc')
-    let makefile = s:is_win ? 'make_cygwin.mak' :
-          \ (s:is_mac ? 'make_mac.mak' : 'make_gcc.mak')
-
-    exe printf("! cd %s && make -f %s/%s", path, path, makefile)
-  endfunction
-  command! -nargs=0 VimprocCompile call <SID>vimproc_compile()
+  command! -nargs=0 VimprocCompile call my#util#compile_vimproc(g:my_bundle_dir . '/vimproc')
 endif
 
 " color settings "{{{1
@@ -580,12 +573,7 @@ cnoremap <expr> /  getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr> ?  getcmdtype() == '?' ? '\?' : '?'
 
 " indent whole buffer
-nnoremap [space]= call <SID>IndentWholeBuffer()
-function! s:IndentWholeBuffer() " {{{3
-  let l:p = getpos(".")
-  normal gg=G
-  call setpos(".", l:p)
-endfunction "}}}
+nnoremap [space]= call my#ui#indent_whole_buffer()
 
 " insert timestamp
 nmap <silent> [t]w :exe "normal! i" . strftime("%Y-%m-%d\T%H:%M:%S+09:00")<CR>
@@ -1352,8 +1340,8 @@ endif
 nnoremap <silent> [prefix]tt :<C-u>TlistToggle<CR>1<C-w>h
 nnoremap <silent> [prefix]tr :<C-u>TlistUpdate<CR>
 nnoremap          [prefix]tc :Ctags<CR>
-command! -nargs=0 Ctags call Ctags()
-function! Ctags() "{{{3
+command! -nargs=0 Ctags call s:exec_ctags()
+function! s:exec_ctags() "{{{3
   let cmdname = my#util#has_plugin('vimproc') != '' ? 'VimProcBang' : '!'
   execute cmdname 'ctags -R'
   NeoComplCacheCachingTags
@@ -1834,60 +1822,14 @@ LCAlias Here This That
 
 " chm launcher {{{2
 if exists('g:my_chm_dir') && (s:is_win || (!s:is_win && !empty(g:my_chm_command)))
-  function! s:chm_complete(A, L, P) " {{{3
-    let items = map(split(globpath(g:my_chm_dir, "/*.chm"), "\n"), 'matchstr(v:val, "[^/]\\+$")')
-    if s:is_win
-      call add(items, 'ntcmds.chm')
-    endif
-    let matches = []
-    for item in items
-      if item =~? '^' . a:A
-        call add(matches, item)
-      endif
-    endfor
-    return matches
-  endfunction
-  function! s:chm_open(fname) " {{{3
-    let l:chm_path = g:my_chm_dir . "/" . a:fname
-    if !filereadable(l:chm_path)
-      let l:chm_path = a:fname
-    endif
-    if s:is_win
-      silent exe '! start hh' l:chm_path
-    else
-      silent exe "!" g:my_chm_command l:chm_path
-    endif
-  endfunction
-  " }}}
-  command! -nargs=1 -complete=customlist,s:chm_complete Chm call s:chm_open("<args>")
+  command! -nargs=1 -complete=customlist,my#chm#complete Chm call my#chm#open("<args>")
   LCAlias Chm
 endif
-function! s:cheatsheet_complete(A, L, P) "{{{3
-  let items = map(split(globpath(g:my_cheatsheets_dir, "/*"), "\n"), 'matchstr(v:val, "[^/]\\+$")')
-  let matches = []
-  for item in items
-    "if item =~? '^' . a:A
-    if item =~? a:A
-      call add(matches, item)
-    endif
-  endfor
-  return matches
-endfunction " }}}
-function! s:cheatsheet_open(fname) "{{{3
-  let l:path = g:my_cheatsheets_dir . "/" . a:fname
-  if !filereadable(l:path)
-    let l:path = a:fname
-  endif
-  if s:is_win
-    silent exe '! start hh' l:path
-  elseif s:is_mac
-    silent exe '! open' l:path
-  else
-    silent exe '!' l:path
-  endif
-endfunction " }}}
-command! -nargs=1 -complete=customlist,s:cheatsheet_complete CheatSheet call s:cheatsheet_open("<args>")
-LCAlias CheatSheet
+
+if exists('g:my_cheatsheets_dir')
+  command! -nargs=1 -complete=customlist,my#cheatsheet#complete CheatSheet call my#cheatsheet#open("<args>")
+  LCAlias CheatSheet
+endif
 
 " tail {{{2
 if executable('tail')
@@ -1904,140 +1846,22 @@ command! -nargs=1 -complete=file DiffFile vertical diffsplit <args>
 
 " rename {{{2
 "command! -nargs=1 -complete=file Rename f <args>|call delete(expand('#'))
-function! s:my_rename_exec(path) " {{{3
-  if !s:my_rename_can()
-    echohl ErrorMsg
-    echomsg "Error : can't rename buffer"
-    echohl Normal
-    return
-  endif
-  let path = a:path
-  if s:my_rename_is_relative(a:path)
-    let path = expand("%:p:h") . "/" . path
-  endif
-  exe "f" path | call delete(expand('#')) | w
-endfunction
-
-function! s:my_rename_is_relative(path)
-  return stridx(a:path, "/") < 0 || stridx(a:path, "\\")
-endfunction
-
-function! s:my_rename_can()
-  return !empty(expand('%'))
-endfunction
-
-function! s:my_rename_complete(A, L, P)
-  echo "HO"
-  if !s:my_rename_can()
-    return []
-  endif
-  if !s:my_rename_is_relative(a:A)
-    return []
-  end
-  let files = split(globpath(expand("%:p:h"), "*"), "\n")
-  let items = map(files, 'matchstr(v:val, "[^/]\\+$")')
-  let matches = []
-  for item in items
-    if item =~? '^' . a:A
-      call add(matches, item)
-    endif
-  endfor
-  echoerr "UF"
-  return matches
-endfunction "}}}
-
 "command! -nargs=1 -complete=file Rename f <args> | call delete(expand('#')) | w
-command! -nargs=1 -complete=customlist,s:my_rename_complete Rename call s:my_rename_exec("<args>")
+command! -nargs=1 -complete=customlist,my#rename#complete Rename call my#rename#exec("<args>")
 Alias ren Rename
 
-function! s:relative_copy(dst) "{{{3
-  let fpath = expand('%')
-  if !filereadable(fpath)
-    echo 'file is cannot readable'
-    "return
-  endif
-  let dpath = stridx(a:dst, '/') < 0 ? expand('%:p:h').'/'.a:dst : a:dst
-  if filereadable(dpath)
-    let res = input('dpath is already exists. overwrite ? [y/n]:')
-    if res !=? 'y' | return | endif
-    " echo 'dpath is already exists. overwrite?[y/n]'
-    " let ch = getchar()
-    " if nr2char(ch) !=? "y" | return | endif
-  endif
-  let cmd = s:is_win ? 'copy' : 'cp'
-  execute '!' cmd fpath dpath
-endfunction "}}}
-command! -nargs=1 -complete=file Relcp call s:relative_copy(<f-args>)
+command! -nargs=1 -complete=file Relcp call my#ui#relative_copy(<f-args>)
 LCAlias Relcp
 
-" toggle window maximize {{{2
-" defun object {{{3
-let WinMaximizer = {
-      \ 'is_maximize' : 0 ,
-      \ 'max_lines' : 0,
-      \ 'max_columns' : 0,
-      \ }
-function! WinMaximizer.maximize() "{{{4
-  winpos 0 0
-  exe 'set lines=' . (self.max_lines == 0 ? 9999: self.max_lines)
-        \ . ' columns=' . (self.max_columns == 0 ? 9999 : self.max_columns)
-endfunction
-function! WinMaximizer.set_max_pos() "{{{4
-  if self.max_lines == 0
-    let self.max_lines = &lines
-    let self.max_columns = &columns
-  endif
-endfunction
-function! WinMaximizer.store() "{{{4
-  let self.winx = getwinposx()
-  let self.winy = getwinposy()
-  let self.lines = &lines
-  let self.columns = &columns
-  " let self._restore = winsaveview()
-endfunction
-function! WinMaximizer.restore() "{{{4
-  execute 'set lines=' . self.lines . ' columns=' . self.columns
-  execute 'winpos ' . self.winx . ' ' . self.winy
-  " call winrestview(self._restore)
-endfunction
-
-function! WinMaximizer.toggle() "{{{4
-  if s:is_win
-    simalt ~r | simalt ~x
-  elseif s:is_mac
-    silent execute 'set' (&fullscreen?'no':'').'fullscreen'
-  else
-    if self.is_maximize
-      call self.set_max_pos()
-      call self.restore()
-      let self.is_maximize = 0
-    else
-      call self.store()
-      call self.maximize()
-      let self.is_maximize = 1
-      redraw!
-    endif
-  endif
-endfunction 
-" }}}3 }}}
-nnoremap [prefix]m :call WinMaximizer.toggle()<CR>
+" win maximize toggle {{{3
+nnoremap [prefix]m :call my#winmaximizer#get().toggle()<CR>
+nnoremap [prefix]mm :call my#winmaximizer#get().toggle()<CR>
+nnoremap [prefix]mj :call my#winmaximizer#get().toggleDirection("v")<CR>
+nnoremap [prefix]mh :call my#winmaximizer#get().toggleDirection("h")<CR>
 
 " fopen & encoding {{{2
-function! s:encodings(A, L, P) "{{{3
-  let encodings = ['utf-8', 'sjis', 'euc-jp', 'iso-2022-jp']
-  let matches = []
-
-  for encoding in encodings
-    if encoding =~? '^' . a:A
-      call add(matches, encoding)
-    endif
-  endfor
-
-  return matches
-endfunction 
-" }}}
-command! -nargs=1 -complete=customlist,s:encodings Fenc setl fenc=<args>
-command! -nargs=1 -complete=customlist,s:encodings Freopen e ++enc=<args> %
+command! -nargs=1 -complete=customlist,my#ui#complete_encodings Fenc setl fenc=<args>
+command! -nargs=1 -complete=customlist,my#ui#complete_encodings Freopen e ++enc=<args> %
 
 command! Utf8 e ++enc=utf-8 %
 command! Euc e ++enc=euc-jp %
@@ -2048,374 +1872,55 @@ command! Mac e ++ff=mac %
 command! Unix e ++ff=unix %
 command! Ccd if isdirectory(expand('%:p:h')) | execute ":lcd " . expand("%:p:h") | endif
 LCAlias Utf8 Euc Sjis Jis Ccd
+" }}}
 
 " utility {{{2
 " 選択範囲をブラウザで起動 {{{3
 if s:is_win
-  "let g:my_browserpreview_cmd = ' start chrome.exe'
-  let g:my_browserpreview_cmd = ' start ' . expand('$LOCALAPPDATA/Google/Chrome/Application/chrome.exe')
+  "let g:my_preview_browser_cmd = ' start chrome.exe'
+  let g:my_preview_browser_cmd = ' start ' . expand('$LOCALAPPDATA/Google/Chrome/Application/chrome.exe')
 elseif s:is_mac
-  let g:my_browserpreview_cmd = 'open -a "Google Chrome"'
+  let g:my_preview_browser_cmd = 'open -a "Google Chrome"'
 else
-  let g:my_browserpreview_cmd = 'firefox'
+  let g:my_preview_browser_cmd = 'firefox'
 endif
-function! MyBrowserpreview() range "{{{4
-  if !exists('g:my_browserpreview_cmd')
-    echoerr "command not found."
-    return
-  endif
-  let cmd = g:my_browserpreview_cmd
-  if ! &modified && &buftype != 'nofile'
-    let fpath = expand('%:p')
-    silent execute "!" cmd fpath
-    redraw!
-    return
-  endif
-  let lines = a:firstline == a:lastline 
-        \ ? getline(1, "$") : getline(a:firstline, a:lastline)
-  "let lines = a:lines
-  if empty(lines)
-    echo "empty buffer : stop execute!!"
-    return
-  endif
-
-  let fpath = tempname() . '.html'
-  call writefile(lines, fpath)
-  silent execute "!" cmd fpath
-  " FIXME いい方法はないものか？
-  silent execute "sleep 2"
-  if filewritable(fpath) | call delete(fpath) | endif
-  redraw!
-endfunction 
 " }}}
-command! -range Brpreview <line1>,<line2>call MyBrowserpreview()
+command! -range Brpreview <line1>,<line2>call my#ui#preview_browser()
 
 " browser {{{3
-function! s:launch_browser(appname) "{{{4
-  let path = ""
-  if a:appname == "ie"
-    if s:is_win
-      let path = ' start '.expand('$ProgramFiles/Internet Explorer/iexplore.exe')
-    endif
-  elseif a:appname == "firefox"
-    if s:is_win
-      let path = ' start '.expand('$ProgramFiles/Firefox/firefox.exe')
-      if !exists(path)
-        let path = ' start '.expand('$ProgramFiles(x86)/Firefox/firefox.exe')
-      endif
-    elseif s:is_mac
-      let path = 'open -a "Firefox"'
-    else
-      let path = 'firefox'
-    endif
-  elseif a:appname == "opera"
-    if s:is_win
-      let path = ' start '.expand('$ProgramFiles/Opera/Opera.exe')
-      if !exists(path)
-        let path = ' start '.expand('$ProgramFiles(x86)/Opera/Opera.exe')
-      endif
-    elseif s:is_mac
-      let path = 'open -a "Opera"'
-    else
-      let path = 'opera'
-    endif
-  elseif a:appname == "chrome"
-    if s:is_win
-      let path = ' start ' . expand('$LOCALAPPDATA/Google/Chrome/Application/chrome.exe')
-    elseif s:is_mac
-      let path = 'open -a "Google Chrome"'
-    else
-      let path = 'google-chrome'
-    endif
-  elseif a:appname == "safari"
-    if s:is_win
-      let path = ' start '.expand('$ProgramFiles/Safari/safari.exe')
-      if !exists(path)
-        let path = ' start '.expand('$ProgramFiles(x86)/Safari/safari.exe')
-      endif
-    elseif s:is_mac
-      let path = 'open -a "Safari"'
-    else
-    endif
-  endif
-  if len(path) > 0
-    silent execute "!" path expand("%:p")
-  endif
-endfunction "}}}
-command! Ie call s:launch_browser('ie')
-command! Firefox call s:launch_browser('firefox')
-command! Opera call s:launch_browser('opera')
-command! Chrome call s:launch_browser('chrome')
-command! Safari call s:launch_browser('safari')
+command! Ie call my#ui#launch_browser('ie')
+command! Firefox call my#ui#launch_browser('firefox')
+command! Opera call my#ui#launch_browser('opera')
+command! Chrome call my#ui#launch_browser('chrome')
+command! Safari call my#ui#launch_browser('safari')
 LCAlias Ie Firefox Opera Chrome Safari
 
 " TSV {{{3
-function! s:tsv_to_sqlwhere() range "{{{4
-  let l:lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
-  if empty(l:lines)
-    echoer "empty buffer : stop execute!!"
-    return
-  endif
-  let l:head = split(remove(l:lines, 0), "\t", 1)
-  if empty(l:head)
-    echoerr "column name header is not found"
-    return
-  endif
-
-  let l:texts = []
-  for l:line in l:lines
-    if empty(l:line)
-      continue
-    endif
-    let l:items = split(l:line, "\t", 1)
-    let l:keywords = copy(l:head)
-    call map(l:keywords, '[v:val, get(l:items, v:key, "")]')
-    let l:where = []
-    for [l:name, l:value] in l:keywords
-      call add(l:where, l:name . " = '" . l:value . "'")
-    endfor
-    call add(l:texts, join(l:where, ' AND '))
-  endfor
-  call my#util#output_to_buffer('__TSV__', l:texts)
-endfunction
-function! s:tsv_to_sqlin() range "{{{4
-  let l:lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
-  if empty(l:lines)
-    echoer "empty buffer : stop execute!!"
-    return
-  endif
-  let l:head = split(remove(l:lines, 0), "\t", 1)
-  if empty(l:head)
-    echoerr "column name header is not found"
-    return
-  endif
-  let l:texts = []
-  let l:rows = map(copy(l:head), '[v:val]')
-  for l:line in l:lines
-    if empty(l:line)
-      continue
-    endif
-    let l:items = split(l:line, "\t", 1)
-    call map(l:rows, 'v:val + [get(l:items, v:key, "")]')
-  endfor
-  for l:row in l:rows
-    let l:name = remove(l:row, 0)
-    call add(l:texts, l:name . " IN ('" . join(l:row, "', '") ."')")
-  endfor
-  call my#util#output_to_buffer('__TSV__', l:texts)
-endfunction
-function! s:tsv_exchange_matrix() range "{{{4
-  let l:lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
-  if empty(l:lines)
-    echoer "empty buffer : stop execute!!"
-    return
-  endif
-  let l:head = split(remove(l:lines, 0), "\t", 1)
-  if empty(l:head)
-    echoerr "column name header is not found"
-    return
-  endif
-  let l:texts = []
-  let l:rows = map(copy(l:head), '[v:val]')
-  for l:line in l:lines
-    if empty(l:line)
-      continue
-    endif
-    let l:items = split(l:line, "\t", 1)
-    call map(l:rows, 'v:val + [get(l:items, v:key, "")]')
-  endfor
-  for l:row in l:rows
-    call add(l:texts, join(l:row, "\t"))
-  endfor
-  call my#util#output_to_buffer('__TSV__', l:texts)
-endfunction
-function! s:tsv_to_sqlinsert() range "{{{4
-  let l:lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
-  if empty(l:lines)
-    echoer "empty buffer : stop execute!!"
-    return
-  endif
-  let l:head = split(remove(l:lines, 0), "\t", 1)
-  if empty(l:head)
-    echoerr "column name header is not found"
-    return
-  endif
-
-  let l:texts = []
-  for l:line in l:lines
-    if empty(l:line)
-      continue
-    endif
-    let l:items = map(split(l:line, "\t", 1), "v:val == '' ? 'NULL' : \"'\".v:val.\"'\"")
-    let l:datas = map(copy(l:head), 'get(l:items, v:key, "NULL")')
-    call add(l:texts, 'INSERT INTO X ('.join(l:head, ', ').') VALUES ('.join(l:datas, ', ').');')
-  endfor
-  call my#util#output_to_buffer('__TSV__', l:texts)
-endfunction
-function! s:tsv_to_sqlupdate() range "{{{4
-  let l:lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
-  if empty(l:lines)
-    echoer "empty buffer : stop execute!!"
-    return
-  endif
-  let l:head = split(remove(l:lines, 0), "\t", 1)
-  if empty(l:head)
-    echoerr "column name header is not found"
-    return
-  endif
-
-  let l:where_ids = map(filter(copy(l:head), 'v:val =~ "^id$"'), 'v:key')
-  if empty(l:where_ids)
-    let l:where_ids = map(filter(copy(l:head), 'v:val =~ "^.id$"'), 'v:key')
-    if empty(l:where_ids)
-      let l:where_ids = map(filter(copy(l:head), 'v:val =~ ".\\+_id$"'), 'v:key')
-    endif
-  endif
-  let l:texts = []
-  for l:line in l:lines
-    if empty(l:line)
-      continue
-    endif
-    let l:items = map(split(l:line, "\t", 1), "v:val == '' ? 'NULL' : \"'\".v:val.\"'\"")
-    let l:wheres = []
-    for l:where_id in l:where_ids
-      call add(l:wheres, l:head[l:where_id] . " = " . get(l:items, l:where_id, "NULL"))
-    endfor
-    for l:where_id in l:where_ids
-      call remove(l:items, l:where_id)
-      call remove(l:head, l:where_id)
-    endfor
-    let l:datas = map(copy(l:head), 'v:val ." = ". get(l:items, v:key, "NULL")')
-    call add(l:texts, 'UPDATE X SET '
-          \ .join(l:datas, ', ')
-          \ .(empty(l:wheres) ? "" : ' WHERE '.join(l:wheres, ' AND ')).";"
-          \ )
-  endfor
-  call my#util#output_to_buffer('__TSV__', l:texts)
-endfunction 
-" }}}
-command! -range Tsvtosqlwhere      <line1>,<line2>call s:tsv_to_sqlwhere()
-command! -range Tsvtosqlin         <line1>,<line2>call s:tsv_to_sqlin()
-command! -range Tsvexchangematrix <line1>,<line2>call s:tsv_exchange_matrix()
-command! -range Tsvtosqlinsert     <line1>,<line2>call s:tsv_to_sqlinsert()
-command! -range Tsvtosqlupdate     <line1>,<line2>call s:tsv_to_sqlupdate()
+command! -range Tsvtosqlwhere      <line1>,<line2>call my#tsv#to_sqlwhere()
+command! -range Tsvtosqlin         <line1>,<line2>call my#tsv#to_sqlin()
+command! -range Tsvexchangematrix <line1>,<line2>call my#tsv#exchange_matrix()
+command! -range Tsvtosqlinsert     <line1>,<line2>call my#tsv#to_sqlinsert()
+command! -range Tsvtosqlupdate     <line1>,<line2>call my#tsv#to_sqlupdate()
 
 " MySQL {{{3
-function! TMY() range " {{{4
-  for line in range(a:firstline, a:lastline)
-    let s = getline(line)
-    let s = substitute(s, '^[+\-]\+$', '', 'g')
-    let s = substitute(s, '^|\s\+\|\s\+|$', '', 'g')
-    let s = substitute(s, '\s\+|\s\+', "\t", 'g')
-    call setline(line, s)
-  endfor
-endfunction "}}}
-command! -nargs=0 -range TMY <line1>,<line2>call TMY()
-command! -nargs=0 -range MySQLToTsv <line1>,<line2>call TMY()
+command! -nargs=0 -range TMY <line1>,<line2>call my#mysql#to_tsv()
+command! -nargs=0 -range MySQLToTsv <line1>,<line2>call my#mysql#to_tsv()
 
 " padding {{{3
-function! PadNumber(...) range "{{{4
-  let fmt = a:0 > 0 ? a:1 : '%d. '
-  " try format
-  try
-    call printf(fmt, 0)
-  catch
-    echohl ErrorMsg
-    echon v:exception . "\n"
-    echohl Normal
-    return 0
-  endtry
-  for line in range(a:firstline, a:lastline)
-    call setline(line, substitute(getline(line),
-          \ '^\(\s*\)', '\1'.printf(fmt, line - a:firstline + 1), ''))
-  endfor
-  redraw!
-endfunction
-function! PadString(...) range "{{{4
-  let str = len(a:000) > 0 ? a:000[0] : '- '
-  for line in range(a:firstline, a:lastline)
-    let s = getline(line)
-    if s != ''
-      call setline(line, substitute(s, '^\(\s*\)', '\1'.str, ''))
-    endif
-  endfor
-  redraw!
-endfunction
-function! PadSprintf(...) range " {{{4
-  let fmt = len(a:000) > 0 ? a:000[0] : '%'
-  try
-    call printf(fmt, "")
-  catch
-    echohl ErrorMsg
-    echon v:exception . "\n"
-    echohl Normal
-    return 0
-  endtry
-  for line in range(a:firstline, a:lastline)
-    let s = getline(line)
-    if s != ''
-      call setline(line, matchstr(s, '^\s*').printf(fmt, substitute(s, '^\s*', '', '')))
-    endif
-  endfor
-  redraw!
-endfunction
-" }}}
-command! -nargs=? -range PadNumber <line1>,<line2>call PadNumber(<f-args>)
-command! -nargs=? -range PadString <line1>,<line2>call PadString(<f-args>)
-command! -nargs=? -range PadSprintf <line1>,<line2>call PadSprintf(<f-args>)
+command! -nargs=? -range PadNumber <line1>,<line2>call my#padding#number(<f-args>)
+command! -nargs=? -range PadString <line1>,<line2>call my#padding#string(<f-args>)
+command! -nargs=? -range PadSprintf <line1>,<line2>call my#padding#sprintf(<f-args>)
 
 " buffer grep {{{3
-function! s:buf_grep(args) " {{{4
-  if !len(a:args) || strlen(a:args[0]) <= 1 | return | endif
-  let args = a:args[0]
-  let delim = args[0]
-  if delim !=# '/'
-    le v:errmsg= 'The delimiter `'.delim."` isn't available, please use `/`."
-    echo v:errmsg
-    return []
-  endif
-  let rxp ='^delim\([^delim\\]*\%(\\.[^delim\\]*\)*\)' .
-        \      '\(delim.*\)\=$'
-  let rxp=substitute(rxp, 'delim', delim, "g")
-  let re = substitute(args, rxp, '\1', "")
-
-  let s:buf = []
-  silent execute 'g/'.re.'/call add(s:buf,  getline("."))'
-  return s:buf
-endfunction
-
-function! s:buf_grep_yank(...) " {{{4
-  let @+=join(s:bufgrep(a:000), "\n")
-endfunction
-
-function! s:buf_grep_enew(...) " {{{4
-  let s=join(s:buf_grep(a:000), "\n")
-  silent execute 'enew | setl buftype=nofile'
-  silent exe 'normal i'.s
-endfunction
-
-"}}}
-command! -nargs=? BGY call s:buf_grep_yank(<q-args>)
-command! -nargs=? BG call s:buf_grep_enew(<q-args>)
+command! -nargs=? BGY call my#bufgrep#yank(<q-args>)
+command! -nargs=? BG call my#bufgrep#enew(<q-args>)
 
 " capture {{{3
 command!
       \ -nargs=+ -complete=command
       \ Capture
-      \ call s:cmd_capture(<q-args>)
+      \ call my#ui#cmd_capture(<q-args>)
 
-function! s:cmd_capture(q_args) "{{{4
-  redir => output
-  silent execute a:q_args
-  redir END
-  let output = substitute(output, '^\n\+', '', '')
-
-  belowright new
-
-  silent file `=printf('[Capture: %s]', a:q_args)`
-  setlocal buftype=nofile bufhidden=unload noswapfile nobuflisted
-  call setline(1, split(output, '\n'))
-endfunction
 " }}}1
 
 let g:loaded_dot_vimrc=1
