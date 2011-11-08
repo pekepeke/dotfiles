@@ -45,7 +45,7 @@ endfunction
 
 
 function! s:source.complete(query)  " {{{2
-  let option = []
+  let option = ['--list']
   " return split(s:ri(option + ref#to_list(a:query)).stdout, "\n")
   return filter(split(s:ri(option + ref#to_list()).stdout, "\n") , 'v:val =~? a:query')
 endfunction
@@ -71,20 +71,49 @@ endfunction
 
 
 " functions. {{{1
+function! s:format(src, level)
+  " let len = 100 - len(a:src)
+  " return printf("%-" . (len < 0 ? 0 : len) . "s{{{%d", a:src, a:level)
+  return printf("%-100s{{{%d", a:src, a:level)
+endfunction
+
 function! s:filter(src)
+  let fmt = "%70s{{{%d"
   let lines = []
+  let is_header_matched = 0
   " TODO convert foldexpr...
   for line in split(a:src, "\n")
-    if line =~ '^=\+ .*$'
-      let len = strlen(matchstr(line, '^=\+'))
-      if strridx(line, ":") == len(line) - 1
-        let line .= "                               {{{1"
-      elseif len > 1
-        let line .= "                               {{{".len
+    if line =~ '^(.*)$'
+      let line = s:format(line, 1)
+      let is_header_matched = 1
+    elseif is_header_matched && line =~ '^-\+$'
+      let line = s:format("= Description", 2)
+    else
+      let is_header_matched = 0
+      if line =~ '^=\+ .*$'
+        let len = strlen(matchstr(line, '^=\+'))
+        if len > 1
+          let line = s:format(line, 2)
+        elseif line =~ ':$'
+          let line = s:format(line, 2)
+        end
       endif
-    elseif line =~ '^\w\+:$'
-        let line .= "                               {{{2"
     endif
+    " if line =~ '^(.*)$'
+    "   let line .= printf(fmt, " ", 1)
+    " elseif line =~ '^-\+$'
+    "   let line .= printf(fmt, " ", 2)
+    " elseif line =~ '^=\+ .*$'
+    "   let len = strlen(matchstr(line, '^=\+'))
+    "   if strridx(line, ":") == len(line) - 1
+    "     let line .= printf(fmt, " ", 3)
+    "   elseif len > 1
+    "     " let line .= printf(fmt, " ", len)
+    "     let line .= printf(fmt, " ", 3)
+    "   endif
+    " elseif line =~ '^\w\+:$'
+    "     let line .= printf(fmt, " ", 4)
+    " endif
     call add(lines, line)
   endfor
   return join(lines, "\n")
@@ -169,7 +198,7 @@ function! s:syntax()  " {{{2
 endfunction
 
 function! s:ri(args)  " {{{2
-  let option = ['--format=rdoc', '-T']
+  let option = ['--format=rdoc', '-T', '--no-pager', '--system', '--site', '--gems']
   return ref#system(ref#to_list(g:ref_ri_cmd) + option + ref#to_list(a:args))
 endfunction
 

@@ -216,7 +216,7 @@ alias sudo=' sudo -H'
 # vim
 alias vimfiler='vim -c VimFiler'
 alias vimshell='vim -c VimShell'
-alias vundles='vim -c "BundleInstall" -c "silent BundleInstall! " -c "silent VimprocCompile" -c "quitall"'
+alias vundleinstall='vim -c "NeoBundleInstall" -c "silent NeoBundleInstall! " -c "silent VimprocCompile" -c "quitall"'
 updatesubmodules() {
   pushd . >/dev/null
   cd ~/.github-dotfiles && git submodule foreach 'git fetch; git checkout origin/master'
