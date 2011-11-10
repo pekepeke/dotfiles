@@ -1,37 +1,55 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 
-#[ -n $(which zsh) ] && exec zsh
-#[ -e /bin/which -a $(ps |grep zsh|grep -v grep| wc -l) -eq 0 ] && which zsh >/dev/null 2>&1 && exec zsh
+[ -s $HOME/.shrc.langvm ] && source $HOME/.shrc.langvm
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# disable auto logout
+#[ -n $(which zsh) ] && exec zsh
+#[ -e /bin/which -a $(ps |grep zsh|grep -v grep| wc -l) -eq 0 ] && which zsh >/dev/null 2>&1 && exec zsh
+
+[ -s $HOME/.shrc.common ] && source $HOME/.shrc.common
+
+## common settings {{{1
+# disable auto logout {{{2
+export TMOUT=0
+
 set nobeep
 set -o ignoreeof
 unset autologout
 
-# save dir stack
+# save dir stack {{{2
 set savedirs
 set implicitcd=verbose
 
 set listjobs=long
 set -o notify
 
-# history
+# history {{{2
+BLOCKSIZE=K
+#FIGNORE='~:.o:,v'
+HISTSIZE=512
+HISTFILESIZE=512
+HISTCONTROL=ignoredups
+
 export HISTCONTROL=ignoredups
 export HISTCONTROL=ignoreboth
 export HISTIGNORE="fg*:bg*:history*:cd*: *"
 export HISTTIMEFORMAT='%Y%m%d %T'
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
+export BLOCKSIZE FIGNORE \
+  HISTSIZE HISTFILESIZE HISTCONTROL HISTIGNORE HISTTIMEFORMAT
+
+# etc settings {{{1
 shopt -s checkwinsize
+
+# /etc/hosts の代わり C-x @: 候補の一覧, Esc-@: 補完実行
+# HOSTFILE=$HOME/etc/hosts
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
+## prompt {{{1
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
@@ -71,11 +89,7 @@ xterm*|rxvt*)
     ;;
 esac
 
-# Alias definitions.
-#if [ -f ~/.bash_aliases ]; then
-#    . ~/.bash_aliases
-#fi
-
+## color {{{1
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
     eval "`dircolors -b`"
@@ -88,6 +102,7 @@ if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
     #alias egrep='egrep --color=auto'
 fi
 
+## completion {{{1
 if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
@@ -114,8 +129,6 @@ complete -c which
 complete -c whatis
 complete -c sudo
 complete -v unset
-
-[ -s $HOME/.shrc.common ] && source $HOME/.shrc.common
 
 load_sh $HOME/.bash/cdd
 

@@ -1,5 +1,7 @@
 # .zshrc
 
+[ -f ~/.shrc.common ] && source ~/.shrc.common
+
 # prompt {{{1
 export PROMPT="[%n@%m %3d]%(#.#.$) "
 
@@ -212,15 +214,16 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
   }
 
   source ~/.zsh/cdd
+
   function chpwd(){
-  if [[ $TERM = screen* ]];then
-    echo -ne "k${PWD/${HOME}/~}\\"
-  else
-    echo -ne "\033]0;${PWD/${HOME}/~}\007"
-  fi
-  ls -A
-  _reg_pwd_screennum
-}
+    if [[ $TERM = screen* ]];then
+      echo -ne "k${PWD/${HOME}/~}\\"
+    else
+      echo -ne "\033]0;${PWD/${HOME}/~}\007"
+    fi
+    #ls -A
+    _reg_pwd_screennum
+  }
 fi
 
 # plugins {{{1

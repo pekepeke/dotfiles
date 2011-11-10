@@ -55,6 +55,11 @@ function! my#util#output_to_buffer(bufname, text_list) " {{{2
   silent exe 'wincmd p'
 endfunction
 
+function! my#util#newfile_with_text(path, text)
+  exe 'new' a:path
+  exe "normal" "i".a:text
+endfunction
+
 function! my#util#find_proj_dir() " {{{2
   if isdirectory(expand('%:p')) | return '' | endif
   let cdir = expand('%:p:h')

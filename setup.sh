@@ -39,11 +39,13 @@ main() {
       ln -s $CDIR/$F $HOME
     fi
   done
-  vp_dir=$CDIR/.vim/bundle/vimproc/autoload
-  if [ ! -e "$vp_dir" ]; then
-    git submodule init
-    git submodule update
-  fi
+  for prefix in bundle vundle neobundle; do
+    vp_dir=$CDIR/.vim/$prefix/vimproc/autoload
+    if [ ! -e "$vp_dir" ]; then
+      git submodule init
+      git submodule update
+    fi
+  done
   #if [ ! -e "$vp_dir/autoload/proc.so" ]; then
   # cd $CDIR/.vim/bundle/vimproc
   # case $OSTYPE in

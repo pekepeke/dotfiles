@@ -1801,8 +1801,16 @@ nnoremap [unite]nm :execute 'new $HOME/memos'<CR>
 command! ToUnixBuffer set fileformat=unix fileencoding=utf8
 command! ToWindowsBuffer set fileformat=dos fileencoding=cp932
 command! ToMacBuffer set fileformat=mac fileencoding=utf8
-command! ToSass silent exe '!css2sass ' . expand('%:p') . ' ' . expand('%:p:h').'.sass' | exe 'new' expand('%:p:h').'.sass'
 command! TrimRSpace %s/ \+$//
+command! Css2sass call my#util#newfile_with_text(expand('%:p:h').".scss",
+      \ system(printf('sass-convert -F css -T sass "%s"', expand('%:p')))
+      \ )
+command! Css2scss call my#util#newfile_with_text(expand('%:p:h').".scss",
+      \ system(printf('sass-convert -F css -T scss "%s"', expand('%:p')))
+      \ )
+command! Js2coffee call my#util#newfile_with_text(expand('%:p:h').".coffee",
+      \ system(printf('Js2coffee "%s"', expand('%:p')))
+      \ )
 
 " シェル起動系 {{{2
 if s:is_mac "{{{3

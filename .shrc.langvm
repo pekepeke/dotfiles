@@ -1,0 +1,89 @@
+[ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
+
+# for perl
+if [ -e $HOME/perl5 ]; then
+  export PERLBREW_ROOT=$HOME/perl5/perlbrew
+  PATH=$HOME/perl5/bin:$PATH
+else
+  export PERLBREW_ROOT=$HOME/.perlbrew
+fi
+if [ -s $PERLBREW_ROOT/etc/bashrc ] ;then
+  PATH=$PERLBREW_ROOT/bin:$PATH
+  source $PERLBREW_ROOT/etc/bashrc
+fi
+
+# for Python
+export PYTHONBREW_ROOT=$HOME/.pythonbrew
+[ -e $PYTHONBREW_ROOT/etc/bashrc ] && source $PYTHONBREW_ROOT/etc/bashrc
+
+# for Ruby
+[ -s $HOME/.rvm/scripts/rvm ] && source $HOME/.rvm/scripts/rvm
+is_exec rails && alias r=rails
+
+# for node.js
+if [ -s $HOME/.nvm/nvm.sh ] ; then
+  source $HOME/.nvm/nvm.sh
+  # nvm use $(nvm ls | head -1 | sed -e 's/\/.*//')
+fi
+if [ -s $HOME/.nave/nave.sh ]; then
+  alias nave='$HOME/.nave/nave.sh'
+  # if [ ${NAVELVL-0} -lt 1 ] ; then
+  #   $HOME/.nave/nave.sh use stable > /dev/null 2>&1
+  # fi
+fi
+
+# if [ -e $HOME/.node_modules ]; then
+#   PATH=$HOME/.node_modules/bin:$PATH
+#   MANPATH=$HOME/.node_modules/man:$PATH
+#   NODE_PATH=$HOME/.node_modules
+# fi
+
+# if [ -s $HOME/.nave/nave.sh ] ; then
+  # alias nave=$HOME/.nave/nave.sh
+  # alias npm_install='curl http://npmjs.org/install.sh | sh'
+# fi
+
+# c/c++ library path
+#export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer
+#export LD_LIBRARY_PATH=/usr/local/X11R7/lib:$QTDIR/lib:$KDEDIR/lib:/usr/local/lib:/usr/lib:/lib:$ROOTSYS/lib:/usr/local/firefox
+
+# java
+if is_mac ; then
+  _JAVA_OPTIONS=-Dawt.useSystemAAFontSettings=on
+else
+  _JAVA_OPTIONS=-Dawt.useSystemAAFontSettings=lcd
+fi
+if [ "$LANG" = 'ja_JP.UTF-8' ] ; then
+  _JAVA_OPTIONS="$_JAVA_OPTIONS -Dfile.encoding=UTF-8"
+fi
+export _JAVA_OPTIONS
+
+if [ -d /usr/lib/jvm/java-6-sun ];then
+  JAVA_HOME=/usr/lib/jvm/java-6-sun
+  export JAVA_HOME
+  if [ -d $JAVA_HOME/jre ];then
+    JRE_HOME=$JAVA_HOME/jre
+    export JRE_HOME
+  fi
+fi
+
+# for KDE/QT 
+#export KDEDIR=/usr/local/kde
+#export QTDIR=/usr/local/qt
+
+# Python 
+#export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
+export PYTHONPATH=~/.lib/python
+export PYTHONSTARTUP=~/.pyrc
+
+# for teTeX 
+#export TETEX_PATH=/usr/local/teTeX
+#export TEXMF=$TETEX_PATH/share/texmf
+#export TETEX_BIN_PATH=$TETEX_PATH/bin/i686-pc-linux-gnu
+
+# Mozilla Setting
+export MOZ_NO_REMOTE=true
+
+export PATH
+
+# vim: fdm=marker sw=2 ts=2 ft=zsh et:

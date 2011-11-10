@@ -1,0 +1,47 @@
+# util functions
+
+is_exec() {
+  [ x"$1" = x"" ] && return 1
+  which $1 >/dev/null 2>&1
+  return $?
+}
+is_win() {
+  case $OSTYPE in
+    cygwin*)
+      return 0;;
+  esac
+  return 1
+}
+is_mac() {
+  case $OSTYPE in
+    darwin*)
+      return 0;;
+  esac
+  return 1
+}
+is_freebsd() {
+  case $OSTYPE in
+    freebsd*)
+      return 0;;
+  esac
+  return 1
+}
+is_colinux() {
+  [ "$ENV_WORKING" = 'colinux' ] && return 0
+  return 1
+}
+load_sh() {
+  if [ x$1 = x -o ! -f "$1" ];then
+    return 1
+  fi
+  source $1
+  return 0
+}
+remove_path() {
+  for rmv in $* ; do
+    PATH=`echo $PATH| sed -e 's!'$rmv'!!' -e 's/::/:/'`
+  done
+  return 0
+}
+
+# vim: fdm=marker sw=2 ts=2 ft=zsh et:
