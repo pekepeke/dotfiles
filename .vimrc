@@ -1107,7 +1107,8 @@ let g:unite_source_ack_command='ack --nocolor --nogroup'
 
 " unite mappings {{{3
 
-nnoremap <silent> [unite][buffer]   :<C-u>Unite buffer tab<CR>
+nnoremap <silent> [unite][buffer]   :<C-u>Unite buffer_tab<CR>
+nnoremap <silent> [unite][tab]   :<C-u>Unite tab<CR>
 nnoremap <silent> [unite][file]     :<C-u>Unite -buffer-name=file file<CR>
 nnoremap <silent> [unite][rel_file] :<C-u>Unite file:<C-r>=fnameescape(expand('%:p:h'))<CR>/ -buffer-name=file<CR>
 nnoremap <silent> [unite][mru]      :<C-u>Unite -buffer-name=file file_mru directory_mru bookmark -default-action=open<CR>
@@ -1115,14 +1116,13 @@ nnoremap <silent> [unite][source]   :<C-u>Unite source<CR>
 nnoremap [unite][empty]    :<C-u>Unite<Space>
 
 nmap [unite]u                [unite][empty]
-nmap [unite]uu               [unite][empty]
-nmap [unite]us               [unite][source]
+nmap [unite]s                [unite][source]
 nmap <silent> [unite]<Space> [unite][buffer]
 nmap <silent> [unite]j       [unite][buffer]
-nmap <silent> [unite]l       [unite][rel_file]
+nmap <silent> [unite]k       [unite][tab]
+nmap <silent> [unite]l       [unite][file]
+nmap <silent> [unite];       [unite][rel_file]
 nmap <silent> [unite]m       [unite][mru]
-nmap <silent> [unite]d       [unite][file]
-nmap <silent> [unite]k       [unite][file]
 
 nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
 nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
@@ -1181,9 +1181,6 @@ nnoremap <silent> [unite]re :<C-u>UniteResume<CR>
 nnoremap <silent> [unite]ri :<C-u>UniteResume git<CR>
 nnoremap <silent> [unite]rg :<C-u>UniteResume grep<CR>
 nnoremap <silent> [unite]rq :<C-u>UniteResume qfix<CR>
-
-nmap <silent> [space]f       [unite][buffer]
-nmap <silent> [space]d       [unite][file]
 
 inoremap <C-k> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-insert<CR>
 
@@ -1802,14 +1799,14 @@ command! ToUnixBuffer set fileformat=unix fileencoding=utf8
 command! ToWindowsBuffer set fileformat=dos fileencoding=cp932
 command! ToMacBuffer set fileformat=mac fileencoding=utf8
 command! TrimRSpace %s/ \+$//
-command! Css2sass call my#util#newfile_with_text(expand('%:p:h').".scss",
+command! Tosass call my#util#newfile_with_text(expand('%:p:r').".sass",
       \ system(printf('sass-convert -F css -T sass "%s"', expand('%:p')))
       \ )
-command! Css2scss call my#util#newfile_with_text(expand('%:p:h').".scss",
+command! Toscss call my#util#newfile_with_text(expand('%:p:r').".scss",
       \ system(printf('sass-convert -F css -T scss "%s"', expand('%:p')))
       \ )
-command! Js2coffee call my#util#newfile_with_text(expand('%:p:h').".coffee",
-      \ system(printf('Js2coffee "%s"', expand('%:p')))
+command! Tocoffee call my#util#newfile_with_text(expand('%:p:r').".coffee",
+      \ system(printf('js2coffee "%s"', expand('%:p')))
       \ )
 
 " シェル起動系 {{{2

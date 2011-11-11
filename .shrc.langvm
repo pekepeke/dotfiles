@@ -1,5 +1,10 @@
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
 
+[ -f $HOME/.shrc.common.langutil ] && source $HOME/.shrc.common.langutil
+
+[ -d $HOME/bin ] && PATH=$HOME/bin:$PATH
+[ -d $HOME/.bin ] && PATH=$HOME/.bin:$PATH
+
 # for perl
 if [ -e $HOME/perl5 ]; then
   export PERLBREW_ROOT=$HOME/perl5/perlbrew
@@ -32,11 +37,13 @@ if [ -s $HOME/.nave/nave.sh ]; then
   # fi
 fi
 
-# if [ -e $HOME/.node_modules ]; then
-#   PATH=$HOME/.node_modules/bin:$PATH
-#   MANPATH=$HOME/.node_modules/man:$PATH
-#   NODE_PATH=$HOME/.node_modules
-# fi
+if [ ! -e $HOME/.node_libraries ]; then
+  mkdir -p ~/.node_libraries/bin
+  mkdir -p ~/.node_libraries/share/man
+fi
+PATH=$HOME/.node_libraries/bin:$PATH
+MANPATH=$HOME/.node_libraries/share/man:$MANPATH
+NODE_PATH=$HOME/.node_libraries:$NODE_PATH
 
 # if [ -s $HOME/.nave/nave.sh ] ; then
   # alias nave=$HOME/.nave/nave.sh
@@ -49,9 +56,9 @@ fi
 
 # java
 if is_mac ; then
-  _JAVA_OPTIONS=-Dawt.useSystemAAFontSettings=on
+  _JAVA_OPTIONS="$_JAVA_OPTIONS -Dawt.useSystemAAFontSettings=on"
 else
-  _JAVA_OPTIONS=-Dawt.useSystemAAFontSettings=lcd
+  _JAVA_OPTIONS="$_JAVA_OPTIONS -Dawt.useSystemAAFontSettings=lcd"
 fi
 if [ "$LANG" = 'ja_JP.UTF-8' ] ; then
   _JAVA_OPTIONS="$_JAVA_OPTIONS -Dfile.encoding=UTF-8"

@@ -1,7 +1,7 @@
 # source local settings
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
-
 [ -f $HOME/.shrc.common.util ] && source $HOME/.shrc.common.util
+
 if [ -f $HOME/.shrc.common.local ] ; then
   source $HOME/.shrc.common.local
 else
@@ -28,9 +28,6 @@ elif is_mac ; then
   [ "$LANG" = "ja_JP" ] && export LANG=ja_JP.UTF-8
   [ -d $HOME/bin/mac ] && PATH=$HOME/bin/mac:$PATH
 fi
-
-[ -d $HOME/bin ] && PATH=$HOME/bin:$PATH
-[ -d $HOME/.bin ] && PATH=$HOME/.bin:$PATH
 
 if is_colinux; then
   alias umount-c='sudo umount /c'
@@ -112,9 +109,33 @@ update-submodules() {
   cd ~/.github-dotfiles && git submodule foreach 'git fetch; git checkout origin/master'
   popd >/dev/null
 }
+# node
 nvm-node-versions() {
   #curl -s http://nodejs.org/dist/ | grep "v[0-9]" | sed -e 's/.*\(v[0-9][0-9\.]*\).*/\1/' -e 's/\.$//' | sort
   curl -s http://nodejs.org/dist/ | grep "v[0-9]" | sed -e 's/.*\(v[0-9][0-9\.]*\).*/\1/' -e 's/\.$//' | sort | perl -ne '$i++;chomp;printf "%-15s%s",$_,(eof || $i % 4 == 0 ? "\n" : "")' 
+}
+nvm-update() {
+  if [ ! -e ~/.nvm ] ; then
+    return 1
+  fi
+  pushd .
+  cd ~/.nvm
+  git pull
+  popd
+  return 0
+}
+nave-update() {
+  if [ ! -e ~/.nave ] ; then
+    return 1
+  fi
+  pushd .
+  cd ~/.nave
+  git pull
+  popd
+  return 0
+}
+npmglobal() {
+  npm -g $*
 }
 
 # lang
