@@ -74,30 +74,26 @@ endfunction
 function! s:format(src, level)
   " let len = 100 - len(a:src)
   " return printf("%-" . (len < 0 ? 0 : len) . "s{{{%d", a:src, a:level)
-  return printf("%-100s{{{%d", a:src, a:level)
+  return printf("%-80s{{{%d", a:src, a:level)
 endfunction
 
 function! s:filter(src)
   let fmt = "%70s{{{%d"
-  let lines = []
+  let src_lines = split(a:src, "\n")
+  let lines = remove(src_lines, 0, 1)
   let is_header_matched = 0
   " TODO convert foldexpr...
-  for line in split(a:src, "\n")
+  for line in src_lines
     if line =~ '^(.*)$'
       let line = s:format(line, 1)
       let is_header_matched = 1
     elseif is_header_matched && line =~ '^-\+$'
-      let line = s:format("= Description", 2)
+      let line = s:format("= Description", 1)
     else
-      let is_header_matched = 0
       if line =~ '^=\+ .*$'
-        let len = strlen(matchstr(line, '^=\+'))
-        if len > 1
-          let line = s:format(line, 2)
-        elseif line =~ ':$'
-          let line = s:format(line, 2)
-        end
+        let line = s:format(line, is_header_matched ? 1 : 2)
       endif
+      let is_header_matched = 0
     endif
     " if line =~ '^(.*)$'
     "   let line .= printf(fmt, " ", 1)

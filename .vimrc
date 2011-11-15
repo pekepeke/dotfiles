@@ -64,6 +64,54 @@ set rtp+=~/.vim/neobundle.vim
 let g:my_bundle_dir = expand("$HOME/.vim/neobundle")
 call neobundle#rc(g:my_bundle_dir)
 
+" lang
+NeoBundle 'thinca/vim-quickrun.git'
+
+NeoBundle 'vim-scripts/matchit.zip.git'
+NeoBundle 'vim-scripts/ruby-matchit.git'
+NeoBundle 'vim-scripts/errormarker.vim.git'
+
+NeoBundle 'motemen/hatena-vim.git'
+NeoBundle 'lukaszb/vim-web-indent.git'
+NeoBundle 'othree/html5.vim.git'
+NeoBundle 'hail2u/vim-css3-syntax.git'
+NeoBundle 'cakebaker/scss-syntax.vim.git'
+NeoBundle 'groenewege/vim-less.git'
+NeoBundle 'kchmck/vim-coffee-script.git'
+NeoBundle 'pangloss/vim-javascript.git'
+NeoBundle 'pekepeke/titanium-vim.git'
+NeoBundle 'tpope/vim-haml.git'
+NeoBundle 'ciaranm/detectindent.git'
+NeoBundle 'thinca/vim-logcat.git'
+NeoBundle 'thinca/vim-ft-diff_fold.git'
+NeoBundle 'thinca/vim-ft-markdown_fold.git'
+NeoBundle 'timcharper/textile.vim.git'
+NeoBundle 'pekepeke/cocoa.vim.git'
+NeoBundle 'tpope/vim-rails.git'
+NeoBundle 'vim-scripts/eruby.vim.git'
+"NeoBundle 'astashov/vim-ruby-debugger.git'
+NeoBundle 'vim-scripts/dbext.vim.git'
+NeoBundle 'vim-scripts/SQLUtilities.git'
+NeoBundle 'justinrainbow/php-doc.vim.git'
+"NeoBundle 'OmniCppComplete'
+
+NeoBundle 'tyru/current-func-info.vim.git'
+NeoBundle 'mattn/zencoding-vim.git'
+" NeoBundle 'mexpolk/vim-taglist.git'
+NeoBundle 'vim-scripts/taglist.vim.git'
+NeoBundle 'tomtom/tcomment_vim.git'
+" NeoBundle 'scrooloose/nerdcommenter.git'
+NeoBundle 'thinca/vim-template.git'
+NeoBundle 'ujihisa/shadow.vim.git'
+"NeoBundle 'motemen/git-vim.git'
+NeoBundle 'tpope/vim-fugitive.git'
+
+" help
+NeoBundle 'thinca/vim-ref.git'
+NeoBundle 'pekepeke/ref-javadoc.git'
+NeoBundle 'soh335/vim-ref-jquery.git'
+
+" common
 NeoBundle 'Shougo/neocomplcache.git'
 NeoBundle 'Shougo/vimfiler.git'
 NeoBundle 'Shougo/vimproc.git'
@@ -86,66 +134,28 @@ NeoBundle 'h1mesuke/vim-alignta.git'
 NeoBundle 'the-isz/MinYankRing.vim.git'
 NeoBundle 'sjl/gundo.vim.git'
 NeoBundle 'kana/vim-smartword.git'
-NeoBundle 'vim-scripts/matchit.zip.git'
-NeoBundle 'vim-scripts/ruby-matchit.git'
-
-NeoBundle 'tyru/open-browser.vim.git'
-NeoBundle 'mattn/googletranslate-vim.git'
-NeoBundle 'ujihisa/shadow.vim.git'
-NeoBundle 'thinca/vim-quickrun.git'
-NeoBundle 'thinca/vim-ambicmd.git'
-NeoBundle 'thinca/vim-logcat.git'
-NeoBundle 'tyru/current-func-info.vim.git'
-NeoBundle 'vim-scripts/errormarker.vim.git'
-NeoBundle 'thinca/vim-template.git'
-" NeoBundle 'mexpolk/vim-taglist.git'
-NeoBundle 'vim-scripts/taglist.vim.git'
-NeoBundle 'mattn/zencoding-vim.git'
-NeoBundle 'mattn/gist-vim.git'
-NeoBundle 'tomtom/tcomment_vim.git'
-" NeoBundle 'scrooloose/nerdcommenter.git'
+NeoBundle 'roman/golden-ratio.git'
 NeoBundle 'scrooloose/nerdtree.git'
 NeoBundle 'thinca/vim-qfreplace.git'
 NeoBundle 'mileszs/ack.vim.git'
-"NeoBundle 'motemen/git-vim.git'
-NeoBundle 'tpope/vim-fugitive.git'
+
+" web
+NeoBundle 'tyru/open-browser.vim.git'
+NeoBundle 'mattn/googletranslate-vim.git'
+NeoBundle 'thinca/vim-ambicmd.git'
+NeoBundle 'mattn/gist-vim.git'
+
 if has('python')
   NeoBundle 'tsukkee/lingr-vim.git'
 endif
 
-NeoBundle 'motemen/hatena-vim.git'
-NeoBundle 'lukaszb/vim-web-indent.git'
-NeoBundle 'othree/html5.vim.git'
-NeoBundle 'hail2u/vim-css3-syntax.git'
-NeoBundle 'cakebaker/scss-syntax.vim.git'
-NeoBundle 'kchmck/vim-coffee-script.git'
-NeoBundle 'pangloss/vim-javascript.git'
-NeoBundle 'pekepeke/titanium-vim.git'
-NeoBundle 'tpope/vim-haml.git'
-NeoBundle 'ciaranm/detectindent.git'
-NeoBundle 'thinca/vim-ft-diff_fold.git'
-NeoBundle 'thinca/vim-ft-markdown_fold.git'
-NeoBundle 'timcharper/textile.vim.git'
-NeoBundle 'pekepeke/cocoa.vim.git'
-
-NeoBundle 'tpope/vim-rails.git'
-NeoBundle 'vim-scripts/eruby.vim.git'
-"NeoBundle 'astashov/vim-ruby-debugger.git'
-
-NeoBundle 'vim-scripts/dbext.vim.git'
-NeoBundle 'vim-scripts/SQLUtilities.git'
-NeoBundle 'justinrainbow/php-doc.vim.git'
-"NeoBundle 'OmniCppComplete'
-
-NeoBundle 'thinca/vim-ref.git'
-NeoBundle 'pekepeke/ref-javadoc.git'
-NeoBundle 'soh335/vim-ref-jquery.git'
-
+" operator
 NeoBundle 'kana/vim-operator-replace.git'
 NeoBundle 'kana/vim-operator-user.git'
 NeoBundle 'tyru/operator-camelize.vim.git'
 NeoBundle 'tyru/operator-html-escape.vim.git'
 
+" textobj
 NeoBundle 'kana/vim-textobj-datetime.git'
 NeoBundle 'kana/vim-textobj-diff.git'
 NeoBundle 'kana/vim-textobj-entire.git'
@@ -161,6 +171,7 @@ NeoBundle 'thinca/vim-textobj-function-javascript.git'
 NeoBundle 'thinca/vim-textobj-function-perl.git'
 NeoBundle 'vim-scripts/textobj-indent.git'
 
+" unite.vim
 NeoBundle 'Shougo/unite.vim.git'
 " NeoBundle 'Sixeight/unite-grep.git'
 " NeoBundle 'Shougo/unite-grep.git'
@@ -213,6 +224,7 @@ endif
 
 " color settings "{{{1
 "set t_Co=256
+set background=dark
 if &t_Co == 256 || s:is_win || has('gui')
   " must be write .gvimrc
   colorscheme vividchalk
@@ -599,8 +611,8 @@ nnoremap <silent> <S-Right> :10wincmd <<CR>
 nnoremap <silent> <S-Up>    :10wincmd -<CR>
 nnoremap <silent> <S-Down>  :10wincmd +<CR>
 
-nnoremap [edit]h :<C-u>nohlsearch<CR>
-nnoremap [edit]w :<C-u>execute 'setl '.(&wrap?'no':'').'wrap \| echo "wrap=".&wrap'<CR>
+nnoremap [space]k :<C-u>nohlsearch<CR>
+nnoremap [space]w :<C-u>execute 'setl '.(&wrap?'no':'').'wrap \| echo "wrap=".&wrap'<CR>
 
 " replace & grep {{{2
 nnoremap [space]r :<C-u>%S/
@@ -635,8 +647,6 @@ let MyGrepcmd_useropt = '--exclude="*\.\(svn\|git\|hg)*"'
 " nnoremap [space]gr :REGrep<CR>
 nnoremap [space]g  :Ack<Space>-i<Space>''<Left>
 nnoremap [space]gg :Ack<Space>-i<Space>''<Left>
-nnoremap [space]gr :Ack<Space>-i<Space>''<Left>
-nnoremap [space]gb :GrepBuffer<Space>
 
 function! s:my_qf_backup()
   let name = exists('w:quickfix_title') ? w:quickfix_title : 'quickfix_save'
@@ -676,15 +686,10 @@ nnoremap <silent> [t]k :<C-u>pop<CR>
 nnoremap <silent> [t]l :<C-u>tags<CR>
 
 " etc {{{2
-nnoremap [edit]. :source ~/.vimrc<CR>
-
-nnoremap [edit]<C-a> ggvG$
-nnoremap [edit]a ggvG$
-nnoremap [edit]v "+P
-vnoremap [edit]c "+y
+nnoremap [space]. :source ~/.vimrc<CR>
 
 "nnoremap [edit]<C-o> :copen<CR><C-w><C-w>
-nnoremap [edit]<C-o> :<C-u>call <SID>toggle_quickfix_window()<CR>
+nnoremap [space]q :<C-u>call <SID>toggle_quickfix_window()<CR>
 function! s:toggle_quickfix_window() "{{{3
   let n = winnr('$')
   cclose
@@ -693,8 +698,8 @@ function! s:toggle_quickfix_window() "{{{3
   endif
 endfunction "}}}
 
-nnoremap [edit]<C-f> :NERDTreeToggle<CR>
-nnoremap <silent> [edit]<C-t> :TlistToggle<CR>
+nnoremap [space]f :NERDTreeToggle<CR>
+nnoremap <silent> [space]t :TlistToggle<CR>
 
 nnoremap / :<C-u>nohlsearch<CR>/
 nnoremap ? :<C-u>nohlsearch<CR>?
@@ -792,6 +797,9 @@ vnoremap <S-Tab> <gv
 "nnoremap : q:
 
 " plugin settings {{{1
+
+" golden-ratio
+nmap [space]s <Plug>(golden_ratio_toggle)
 
 " ambicmd
 cnoremap <expr> <C-l> ambicmd#expand("\<Space>")
@@ -1249,7 +1257,6 @@ let g:quickrun_config["cat"] = {
       \ }
 
 nnoremap <Leader><Leader>r :<C-u>QuickRun cat<CR>
-nnoremap [space]q :<C-u>QuickRun<Space>
 
 " for ruby {{{3
 MyAutocmd BufWinEnter,BufNewFile *_spec.rb set filetype=ruby.rspec
