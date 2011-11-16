@@ -203,12 +203,14 @@ EOM
 
 " {{{ ==================== patch ==================== "
 " http://d.hatena.ne.jp/littlefolk/20110625/p1 "
+js <<EOM
 autocommands.add(
     'VimperatorEnter', '.*',
     function () {
         let Cc = Components.classes['@greasemonkey.mozdev.org/greasemonkey-service;1'] ||
                  Components.classes['@scriptish.erikvold.com/scriptish-service;1'];
         if (Cc) {
+          try {
             Cc = Cc.getService().wrappedJSObject;
             if (Cc.injectScripts.toSource().search('sharedWindow') == -1) {
                 Cc.injectScripts = liberator.eval(
@@ -220,6 +222,9 @@ autocommands.add(
                         .replace(/(?=sandbox\.__proto__)/, ' sandbox.window = sharedWindow;'),
                     Cc.injectScripts);
             };
+          } catch (e) {
+            liberator.log(e);
+          }
         };
     });
 EOM

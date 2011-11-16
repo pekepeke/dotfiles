@@ -1,0 +1,12 @@
+source "http://rubygems.org"
+source "http://gems.rubyforge.org"
+source "http://gemcutter.org"
+
+# source :rubygems
+# source :rubyforge
+# source :gemcutter
+
+gem 'sinatra', '0.9.4'
+gem 'haml'
+# gem "dm-is-localizable", :git => "git://github.com/snusnu/dm-is-localizable.git"
+

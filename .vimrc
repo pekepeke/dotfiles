@@ -89,6 +89,7 @@ NeoBundle 'timcharper/textile.vim.git'
 NeoBundle 'pekepeke/cocoa.vim.git'
 NeoBundle 'tpope/vim-rails.git'
 NeoBundle 'vim-scripts/eruby.vim.git'
+NeoBundle 'tobiassvn/vim-gemfile.git'
 "NeoBundle 'astashov/vim-ruby-debugger.git'
 NeoBundle 'vim-scripts/dbext.vim.git'
 NeoBundle 'vim-scripts/SQLUtilities.git'
@@ -111,8 +112,52 @@ NeoBundle 'thinca/vim-ref.git'
 NeoBundle 'pekepeke/ref-javadoc.git'
 NeoBundle 'soh335/vim-ref-jquery.git'
 
-" common
+" vim-help
+NeoBundle 'mattn/learn-vimscript.git'
+" git://gist.github.com/997811.git
+" git://gist.github.com/1046979.git
+
+" neocomplcache
 NeoBundle 'Shougo/neocomplcache.git'
+NeoBundle 'basyura/csharp_complete.git'
+
+" unite.vim
+NeoBundle 'Shougo/unite.vim.git'
+NeoBundle 'Shougo/unite-build.git'
+NeoBundle 'Shougo/unite-help.git'
+" NeoBundle 'Sixeight/unite-grep.git'
+" NeoBundle 'Shougo/unite-grep.git'
+NeoBundle 't9md/vim-unite-ack.git'
+NeoBundle 'h1mesuke/unite-outline.git'
+NeoBundle 'hakobe/unite-script.git'
+NeoBundle 'mattn/unite-remotefile.git'
+NeoBundle 'pekepeke/unite-fileline.git'
+NeoBundle 'sgur/unite-git_grep.git'
+NeoBundle 'sgur/unite-qf.git'
+" NeoBundle 'soh335/unite-qflist.git'
+NeoBundle 'tacroe/unite-alias.git'
+NeoBundle 'tacroe/unite-mark.git'
+NeoBundle 'thinca/vim-unite-history.git'
+NeoBundle 'tsukkee/unite-tag.git'
+NeoBundle 'ujihisa/unite-colorscheme.git'
+NeoBundle 'ujihisa/unite-font.git'
+NeoBundle 'ujihisa/unite-gem.git'
+NeoBundle 'ujihisa/unite-rake.git'
+NeoBundle 'basyura/unite-rails.git'
+NeoBundle 'basyura/unite-yarm.git'
+
+if s:is_win
+  NeoBundle 'sgur/unite-everything.git'
+else
+  if s:is_mac
+    NeoBundle 'choplin/unite-spotlight.git'
+  else
+    NeoBundle 'ujihisa/unite-locate.git'
+  endif
+  NeoBundle 'ujihisa/neco-look.git'
+endif
+
+" common
 NeoBundle 'Shougo/vimfiler.git'
 NeoBundle 'Shougo/vimproc.git'
 NeoBundle 'Shougo/vimshell.git'
@@ -144,7 +189,6 @@ NeoBundle 'tyru/open-browser.vim.git'
 NeoBundle 'mattn/googletranslate-vim.git'
 NeoBundle 'thinca/vim-ambicmd.git'
 NeoBundle 'mattn/gist-vim.git'
-
 if has('python')
   NeoBundle 'tsukkee/lingr-vim.git'
 endif
@@ -171,40 +215,6 @@ NeoBundle 'thinca/vim-textobj-function-javascript.git'
 NeoBundle 'thinca/vim-textobj-function-perl.git'
 NeoBundle 'vim-scripts/textobj-indent.git'
 
-" unite.vim
-NeoBundle 'Shougo/unite.vim.git'
-" NeoBundle 'Sixeight/unite-grep.git'
-" NeoBundle 'Shougo/unite-grep.git'
-NeoBundle 't9md/vim-unite-ack.git'
-NeoBundle 'h1mesuke/unite-outline.git'
-NeoBundle 'hakobe/unite-script.git'
-NeoBundle 'mattn/unite-remotefile.git'
-NeoBundle 'pekepeke/unite-fileline.git'
-NeoBundle 'sgur/unite-git_grep.git'
-NeoBundle 'sgur/unite-qf.git'
-" NeoBundle 'soh335/unite-qflist.git'
-NeoBundle 'tacroe/unite-alias.git'
-NeoBundle 'tacroe/unite-mark.git'
-NeoBundle 'thinca/vim-unite-history.git'
-NeoBundle 'tsukkee/unite-tag.git'
-NeoBundle 'ujihisa/unite-colorscheme.git'
-NeoBundle 'ujihisa/unite-font.git'
-NeoBundle 'ujihisa/unite-gem.git'
-NeoBundle 'ujihisa/unite-help.git'
-NeoBundle 'ujihisa/unite-rake.git'
-NeoBundle 'basyura/unite-rails.git'
-NeoBundle 'basyura/unite-yarm.git'
-
-if s:is_win
-  NeoBundle 'sgur/unite-everything.git'
-else
-  if s:is_mac
-    NeoBundle 'choplin/unite-spotlight.git'
-  else
-    NeoBundle 'ujihisa/unite-locate.git'
-  endif
-  NeoBundle 'ujihisa/neco-look.git'
-endif
 
 " pathogen {{{1
 let g:pathogen_disabled = []
@@ -1115,6 +1125,7 @@ let g:unite_source_ack_command='ack --nocolor --nogroup'
 
 " unite mappings {{{3
 
+nnoremap <silent> [unite][buffer_all]   :<C-u>Unite buffer<CR>
 nnoremap <silent> [unite][buffer]   :<C-u>Unite buffer_tab<CR>
 nnoremap <silent> [unite][tab]   :<C-u>Unite tab<CR>
 nnoremap <silent> [unite][file]     :<C-u>Unite -buffer-name=file file<CR>
@@ -1125,11 +1136,10 @@ nnoremap [unite][empty]    :<C-u>Unite<Space>
 
 nmap [unite]u                [unite][empty]
 nmap [unite]s                [unite][source]
-nmap <silent> [unite]<Space> [unite][buffer]
+nmap <silent> [unite]<Space> [unite][buffer_all]
 nmap <silent> [unite]j       [unite][buffer]
 nmap <silent> [unite]k       [unite][tab]
 nmap <silent> [unite]l       [unite][file]
-nmap <silent> [unite];       [unite][rel_file]
 nmap <silent> [unite]m       [unite][mru]
 
 nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
