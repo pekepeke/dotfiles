@@ -186,9 +186,12 @@ NeoBundle 'mileszs/ack.vim.git'
 
 " web
 NeoBundle 'tyru/open-browser.vim.git'
+NeoBundle 'mattn/webapi-vim.git'
 NeoBundle 'mattn/googletranslate-vim.git'
 NeoBundle 'thinca/vim-ambicmd.git'
 NeoBundle 'mattn/gist-vim.git'
+" NeoBundle 'mattn/vimplenote-vim.git'
+NeoBundle 'pekepeke/vimplenote-vim.git'
 if has('python')
   NeoBundle 'tsukkee/lingr-vim.git'
 endif

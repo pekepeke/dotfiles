@@ -27,6 +27,22 @@ let g:pdv_cfg_License = ""
 let g:lingr_vim_user = ""
 let g:lingr_vim_password = ""
 
+" vimplenote.vim
+let g:VimpleNoteUsername = ""
+let g:VimpleNotePassword = ""
+
+" dbext.vim
+let g:dbext_default_MYSQL_definer = 'root@localhost'
+let g:dbext_default_stored_proc_author = 'root'
+
+let g:dbext_default_user="root"
+let g:dbext_default_passwd=""
+"let g:dbext_default_dbname=""
+let g:dbext_default_host="localhost"
+let g:dbext_default_port=3306
+"let g:dbext_default_usermaps=0
+let g:dbext_default_MYSQL_bin = 'mysql'
+
 let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
 
