@@ -22,7 +22,12 @@ export PYTHONBREW_ROOT=$HOME/.pythonbrew
 [ -e $PYTHONBREW_ROOT/etc/bashrc ] && source $PYTHONBREW_ROOT/etc/bashrc
 
 # for Ruby
-[ -s $HOME/.rvm/scripts/rvm ] && source $HOME/.rvm/scripts/rvm
+if [ -e $HOME/.rbenv ]; then
+  PATH="$HOME/.rbenv/bin:$PATH"
+  eval "$(rbenv init -)"
+else
+  [ -s $HOME/.rvm/scripts/rvm ] && source $HOME/.rvm/scripts/rvm
+fi
 is_exec rails && alias r=rails
 
 # for node.js
