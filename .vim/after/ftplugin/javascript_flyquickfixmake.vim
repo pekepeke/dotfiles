@@ -1,5 +1,8 @@
 
-if executable('gjslint')
+if executable('node')
+  setl makeprg=node\ $HOME/.vim/bin/vimparse.js\ %\ $*
+  setl errorformat=%f:%l:%m
+elseif executable('gjslint')
   setl makeprg=gjslint\ %
   setl errorformat=
         \%+P-----\ FILE\ \ :\ \ %f\ -----,
@@ -19,7 +22,7 @@ endif
 if exists("g:loaded_javascript_flyquickfixmake") | finish | endif
 let g:loaded_javascript_flyquickfixmake=1
 
-if len(filter(['gjslint', 'jsl', 'smjs', 'rhino'], 'executable(v:val)')) <= 0
+if len(filter(['node', 'gjslint', 'jsl', 'smjs', 'rhino'], 'executable(v:val)')) <= 0
   " echoerr "can't execute flyquickfixmake"
   echohl Error | echomsg "can't execute flyquickfixmake" | echohl None
 else

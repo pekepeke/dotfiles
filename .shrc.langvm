@@ -49,15 +49,12 @@ fi
 PATH=$HOME/.node_libraries/bin:$PATH
 MANPATH=$HOME/.node_libraries/share/man:$MANPATH
 NODE_PATH=$HOME/.node_libraries:$NODE_PATH
+alias jsprove='prove --ext=.js --exec=node'
 
 # if [ -s $HOME/.nave/nave.sh ] ; then
   # alias nave=$HOME/.nave/nave.sh
   # alias npm_install='curl http://npmjs.org/install.sh | sh'
 # fi
-
-# c/c++ library path
-#export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer
-#export LD_LIBRARY_PATH=/usr/local/X11R7/lib:$QTDIR/lib:$KDEDIR/lib:/usr/local/lib:/usr/lib:/lib:$ROOTSYS/lib:/usr/local/firefox
 
 # java
 if is_mac ; then
@@ -79,14 +76,23 @@ if [ -d /usr/lib/jvm/java-6-sun ];then
   fi
 fi
 
-# for KDE/QT 
-#export KDEDIR=/usr/local/kde
-#export QTDIR=/usr/local/qt
+# php
+[ -e $HOME/.pear/bin ] && PATH=$HOME/.pear/bin:$PATH
+[ -e $HOME/.pear/php.ini ] && export PHPRC=$HOME/.pear/php.ini
+alias phpprove='prove --ext=.t.php --exec=php'
 
 # Python 
 #export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
 export PYTHONPATH=~/.lib/python
 export PYTHONSTARTUP=~/.pyrc
+
+# c/c++ library path
+#export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer
+#export LD_LIBRARY_PATH=/usr/local/X11R7/lib:$QTDIR/lib:$KDEDIR/lib:/usr/local/lib:/usr/lib:/lib:$ROOTSYS/lib:/usr/local/firefox
+
+# for KDE/QT 
+#export KDEDIR=/usr/local/kde
+#export QTDIR=/usr/local/qt
 
 # for teTeX 
 #export TETEX_PATH=/usr/local/teTeX

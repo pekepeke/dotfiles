@@ -218,6 +218,11 @@ NeoBundle 'thinca/vim-textobj-function-javascript.git'
 NeoBundle 'thinca/vim-textobj-function-perl.git'
 NeoBundle 'vim-scripts/textobj-indent.git'
 
+" metarw
+NeoBundle "mattn/vim-metarw.git"
+NeoBundle "mattn/vim-metarw-gist.git"
+NeoBundle "mattn/vim-metarw-git.git"
+NeoBundle "sorah/sorah/metarw-simplenote.vim.git"
 
 " pathogen {{{1
 let g:pathogen_disabled = []
@@ -935,6 +940,7 @@ Alias WQ wq
 Alias ve vsplit
 Alias se split
 Alias n new
+Alias v vnew
 
 " alignta {{{2
 let g:alignta_confirm_for_retab = 0

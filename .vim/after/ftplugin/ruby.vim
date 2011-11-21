@@ -6,8 +6,8 @@ set cpo&vim
 
 setl nowrap formatoptions-=ro
 setl dictionary=~/.vim/dict/ruby.dict
-setl iskeyword+=@,$,?,:
-setl iskeyword-=.
+setl iskeyword+=@,$,?,!
+setl iskeyword-=.,:
 
 " * ~ end block
 nnoremap vab 0/end<CR>%V%0
