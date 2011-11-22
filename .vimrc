@@ -222,7 +222,7 @@ NeoBundle 'vim-scripts/textobj-indent.git'
 NeoBundle "mattn/vim-metarw.git"
 NeoBundle "mattn/vim-metarw-gist.git"
 NeoBundle "mattn/vim-metarw-git.git"
-NeoBundle "sorah/sorah/metarw-simplenote.vim.git"
+NeoBundle "sorah/metarw-simplenote.vim.git"
 
 " pathogen {{{1
 let g:pathogen_disabled = []
