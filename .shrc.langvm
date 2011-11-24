@@ -20,11 +20,16 @@ fi
 # for Python
 export PYTHONBREW_ROOT=$HOME/.pythonbrew
 [ -e $PYTHONBREW_ROOT/etc/bashrc ] && source $PYTHONBREW_ROOT/etc/bashrc
+#export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
+export PYTHONPATH=~/.lib/python
+export PYTHONSTARTUP=~/.pyrc
+
 
 # for Ruby
 if [ -e $HOME/.rbenv ]; then
   PATH="$HOME/.rbenv/bin:$PATH"
   eval "$(rbenv init -)"
+  [ -e $HOME/.rbenv/completions/rbenv.$(basename $SHELL) ] && source $HOME/.rbenv/completions/rbenv.$(basename $SHELL)
 else
   [ -s $HOME/.rvm/scripts/rvm ] && source $HOME/.rvm/scripts/rvm
 fi
@@ -49,7 +54,7 @@ fi
 PATH=$HOME/.node_libraries/bin:$PATH
 MANPATH=$HOME/.node_libraries/share/man:$MANPATH
 NODE_PATH=$HOME/.node_libraries:$NODE_PATH
-alias jsprove='prove --ext=.js --exec=node'
+alias jsprove='prove --ext=.t.js --exec=node'
 
 # if [ -s $HOME/.nave/nave.sh ] ; then
   # alias nave=$HOME/.nave/nave.sh
@@ -80,11 +85,6 @@ fi
 [ -e $HOME/.pear/bin ] && PATH=$HOME/.pear/bin:$PATH
 [ -e $HOME/.pear/php.ini ] && export PHPRC=$HOME/.pear/php.ini
 alias phpprove='prove --ext=.t.php --exec=php'
-
-# Python 
-#export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
-export PYTHONPATH=~/.lib/python
-export PYTHONSTARTUP=~/.pyrc
 
 # c/c++ library path
 #export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer

@@ -301,10 +301,12 @@ endif
 " html
 MyAutocmd BufNewFile,BufRead *.hta setfiletype hta
 " js alias
+MyAutocmd FileType mkd setlocal ft=markdown
+" js alias
 MyAutocmd FileType js setlocal ft=javascript
 " Ruby, Yaml
 MyAutocmd BufNewFile,BufRead *.ru setfiletype ruby
-" CakePHP
+" php
 MyAutocmd BufNewFile,BufRead *.ctp,*.thtml setfiletype php
 " MySQL
 MyAutocmd BufNewFile,BufRead *.sql set filetype=mysql
@@ -1306,6 +1308,7 @@ if !executable('pandoc') && executable('markdown') "{{{4
           \ 'exec' : [
           \   '%c ' . $HOME . '/bin/mkd2html.rb' . ' %s',
           \ ],
+          \ 'outputter': 'browser',
           \ }
   else
     let g:quickrun_config['markdown'] = {
@@ -1314,16 +1317,15 @@ if !executable('pandoc') && executable('markdown') "{{{4
           \   'echo "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"></head>"',
           \   '%c %s',
           \ ],
+          \ 'outputter': 'browser',
           \ }
   endif
-  " \ 'exec' : [
-  " \   'echo "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"></head>" > %s:p:r.html',
-  " \   '%c %s >> %s:p:r.html',
-  " \   'open %s:p:r.html',
-  " \   'sleep 1',
-  " \   'rm ' .(s:is_win ? '/f' : '-f'). ' %s:p:r.html'
-  " \ ],
-  "\ 'exec' : ['%c %s > %s:p:r.html', 'open %s:p:r.html', 'sleep 1', 'rm ' .(s:is_win ? '/f' : '-f'). ' %s:p:r.html '],
+else
+  let g:quickrun_config['markdown'] = {
+        \ 'type' : 'markdown/pandoc',
+        \ 'outputter' : 'browser',
+        \ 'cmdopt' : '-s'
+        \ }
 endif
 if executable('redcloth') "{{{4
   let g:quickrun_config['textile'] = {
