@@ -300,12 +300,12 @@ endif
 " setfiletype {{{2
 " html
 MyAutocmd BufNewFile,BufRead *.hta setfiletype hta
-" js alias
+" mkd alias
 MyAutocmd FileType mkd setlocal ft=markdown
 " js alias
 MyAutocmd FileType js setlocal ft=javascript
 " Ruby, Yaml
-MyAutocmd BufNewFile,BufRead *.ru setfiletype ruby
+MyAutocmd BufNewFile,BufRead *.ru,Guardfile setfiletype ruby
 " php
 MyAutocmd BufNewFile,BufRead *.ctp,*.thtml setfiletype php
 " MySQL
@@ -859,8 +859,14 @@ vmap e  <Plug>(smartword-e)
 vmap ge <Plug>(smartword-ge)
 
 " vim-altr {{{2
-call altr#define('autoload/%.vim', 'doc/%.txt', 'plugin/%.vim')
-call altr#define('controllers/%.rb', 'models/%.rb', 'helpers/%.rb', 'views/%.erb')
+call altr#define('autoload/%.vim', 'doc/%.txt', 'plugin/%.vim', 'test/%.vim')
+
+" call altr#define('controllers/%.rb', 'models/%.rb', 'helpers/%.rb', 'views/%.erb')
+call altr#define('%.rb', 'spec/%_spec.rb')
+call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.rb')
+call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
+call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
+
 call altr#define('controllers/%.php', 'models/%.php', 'helpers/%.php', 'views/%.php')
 
 nmap [prefix]n <Plug>(altr-forward)
