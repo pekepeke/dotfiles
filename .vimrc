@@ -328,7 +328,7 @@ MyAutocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
 MyAutocmd FileType coffee,ruby,scheme,sh,zsh,vim,yaml,xml
       \ setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
 MyAutocmd FileType html
-      \ setl noexpandtab wrap tabstop=2 shiftwidth=2 textwidth=0
+      \ setl noexpandtab tabstop=2 shiftwidth=2 textwidth=0
 " haskell
 MyAutocmd FileType lisp,perl
       \ setl expandtab
@@ -337,7 +337,7 @@ MyAutocmd FileType objc,php,markdown
 MyAutocmd FileType help
       \ setl noexpandtab tabstop=8 shiftwidth=8
 MyAutocmd FileType python
-      \ setl textwidth=80 tabstop=8 softtabstop=4 shiftwidth=4 expandtab smarttab
+      \ setl textwidth=80 tabstop=8 softtabstop=4 shiftwidth=4 expandtab
 
 function! s:cmdwin_my_settings() "{{{3
   noremap <buffer> q :q<CR>
@@ -632,7 +632,7 @@ nnoremap <silent> <S-Up>    :10wincmd -<CR>
 nnoremap <silent> <S-Down>  :10wincmd +<CR>
 
 nnoremap [space]k :<C-u>nohlsearch<CR>
-nnoremap [space]w :<C-u>execute 'setl '.(&wrap?'no':'').'wrap \| echo "wrap=".&wrap'<CR>
+nnoremap [space]w :<C-u>call s:toggle_option("wrap")<CR>
 
 " replace & grep {{{2
 nnoremap [space]r :<C-u>%S/
@@ -920,6 +920,12 @@ nnoremap [prefix]sj :<C-u>JunkFile<CR>
 
 " altercmd "{{{2
 call altercmd#load()
+
+function s:toggle_option(opt)
+  exe "setl no".a:opt
+  let sts = eval('&'.a:opt)
+  echo printf("set %s : %s", a:opt, sts ? "ON" : "OFF")
+endfunction
 
 function! s:alias_lc(...) " {{{3
   for cmd in a:000
