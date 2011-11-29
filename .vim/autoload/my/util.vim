@@ -55,9 +55,22 @@ function! my#util#output_to_buffer(bufname, text_list) " {{{2
   silent exe 'wincmd p'
 endfunction
 
+function! my#util#detect_crlf(text)
+  return stridx(a:text, "\r\n") == -1 ?
+        \ (stridx(a:text, "\n") == -1 ? "\r" : "\n")
+        \ : "\r\n"
+endfunction
+
+function! my#util#split(text)
+  return split(a:text, my#util#detect_crlf(a:text))
+endfunction
+
 function! my#util#newfile_with_text(path, text)
   exe 'new' a:path
-  exe "normal" "i".a:text
+  " exe "normal" "i".a:text
+  call append(line('$'), 
+        \ type(a:text) == type([]) ? a:text : my#util#split(a:text))
+  silent exe 'wincmd p'
 endfunction
 
 function! my#util#find_proj_dir() " {{{2

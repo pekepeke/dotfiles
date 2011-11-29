@@ -632,7 +632,7 @@ nnoremap <silent> <S-Up>    :10wincmd -<CR>
 nnoremap <silent> <S-Down>  :10wincmd +<CR>
 
 nnoremap [space]k :<C-u>nohlsearch<CR>
-nnoremap [space]w :<C-u>call s:toggle_option("wrap")<CR>
+nnoremap [space]w :<C-u>call <SID>toggle_option("wrap")<CR>
 
 " replace & grep {{{2
 nnoremap [space]r :<C-u>%S/
@@ -922,7 +922,7 @@ nnoremap [prefix]sj :<C-u>JunkFile<CR>
 call altercmd#load()
 
 function s:toggle_option(opt)
-  exe "setl no".a:opt
+  exe "setl inv".a:opt
   let sts = eval('&'.a:opt)
   echo printf("set %s : %s", a:opt, sts ? "ON" : "OFF")
 endfunction
@@ -1846,8 +1846,9 @@ command! Toscss call my#util#newfile_with_text(expand('%:p:r').".scss",
       \ system(printf('sass-convert -F css -T scss "%s"', expand('%:p')))
       \ )
 command! Tocoffee call my#util#newfile_with_text(expand('%:p:r').".coffee",
-      \ system(printf('js2coffee "%s"', expand('%:p')))
+      \ system(printf('js2coffee < "%s"', expand('%:p')))
       \ )
+      " \ system(printf('js2coffee "%s"', expand('%:p')))
 
 " シェル起動系 {{{2
 if s:is_mac "{{{3
