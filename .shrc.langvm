@@ -1,3 +1,7 @@
+if [ x$__VMLANG_INITIALIZED != x ]; then
+  return 0
+fi
+export __VMLANG_INITIALIZED=1
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
 
 [ -f $HOME/.shrc.common.langutil ] && source $HOME/.shrc.common.langutil
@@ -85,6 +89,17 @@ fi
 [ -e $HOME/.pear/bin ] && PATH=$HOME/.pear/bin:$PATH
 [ -e $HOME/.pear/php.ini ] && export PHPRC=$HOME/.pear/php.ini
 alias phpprove='prove --ext=.t.php --exec=php'
+[ -e $HOME/.php-build ] && PATH=$HOME/.php-build/bin:$PATH
+# must be after eval $(rbenv init)
+if [ -e $HOME/.phpenv ]; then
+  if [[ $PATH =~ \.rbenv/bin ]]; then
+    PATH=$(echo $PATH | sed 's@.rbenv/bin@.rbenv/bin:'$HOME'/.phpenv/bin@')
+  else
+    PATH=$HOME/.phpenv/bin:$PATH
+  fi
+  eval "$(phpenv init -)"
+  [ -e $HOME/.phpenv/completions/rbenv.$(basename $SHELL) ] && source $HOME/.phpenv/completions/rbenv.$(basename $SHELL)
+fi
 
 # c/c++ library path
 #export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer
