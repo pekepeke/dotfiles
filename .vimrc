@@ -419,6 +419,9 @@ set whichwrap=b,s,h,l,<,>,[,]  " 行頭・行末間移動を可能に
 if exists('&colorcolumn') | set colorcolumn=+1 | endif
 set splitbelow                 " 横分割は下に
 set splitright                 " 縦分割は右に
+set switchbuf=useopen          " 再利用
+set background=dark
+set title
 
 set hidden                     " 編集中でも他のファイルを開けるように
 set sidescroll=5

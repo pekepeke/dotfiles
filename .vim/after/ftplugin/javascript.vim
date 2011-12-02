@@ -3,7 +3,7 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-" setl expandtab nowrap ts=2 sw=2
+" setl expandtab ts=2 sw=2
 " setl formatoptions-=ro
 nnoremap vam $?\%(.*//.*function\)\@!function<CR>f{%V%0
 setl dictionary=~/.vim/dict/javascript.dict

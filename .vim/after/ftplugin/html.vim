@@ -19,7 +19,7 @@ endfunction
 setl dictionary=~/.vim/dict/html.dict
 setl dictionary+=~/.vim/dict/css.dict
 setl iskeyword+=-,:
-"setl noexpandtab wrap ts=2 sw=2 tw=0
+"setl noexpandtab ts=2 sw=2 tw=0
 inoremap <buffer> <expr> \  smartchr#one_of('\', 'function(', '\\')
 
 let &cpo = s:save_cpo

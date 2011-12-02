@@ -33,7 +33,7 @@ nnoremap <buffer> <silent> zz :call <SID>folding()<CR>
 let s:save_cpo = &cpo
 set cpo&vim
 
-setl nowrap formatoptions-=ro
+setl formatoptions-=ro
 
 nnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
 inoremap <buffer> <silent> [comment-doc] <Esc>:call PhpDocSingle()<CR>i
