@@ -15,6 +15,7 @@ set globalregisters
 set ignorecase
 set smartcase
 set saney
+set imdisable
 
 " ソース
 nnoremap <space>sd :CreateDelegateMethods<CR>
@@ -66,7 +67,7 @@ nnoremap \c<Space> :ToggleComment<CR>
 vnoremap \c<Space> :ToggleComment<CR>
 
 nnoremap ,gc :AddJavaDocComment<CR>
-nnoremap ,m :ToggleMaximizeWindow<CR>
+nnoremap ,mm :ToggleMaximizeWindow<CR>
 
 " quickrun like
 nnoremap \r :RunLast<CR>

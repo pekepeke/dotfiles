@@ -379,7 +379,7 @@ set directory=~/.tmp,/var/tmp,/tmp
 " IME の設定 {{{2
 if has('kaoriya') | set iminsert=0 imsearch=0 | endif
 
-" MyAutocmd BufEnter * if isdirectory(expand('%:p:h')) | execute ":lcd " . expand("%:p:h") | endif
+" MyAutocmd BufEnter * if isdirectory(expand('%:p:h')) | execute "lcd" expand("%:p:h") | endif
 " MyAutocmd BufEnter * call LcdCurrentOrProjDir()
 MyAutocmd BufRead,BufNewFile * call LcdCurrentOrProjDir()
 if !exists('g:my_lcd_autochdir')
@@ -634,7 +634,13 @@ nnoremap <silent> <S-Right> :10wincmd <<CR>
 nnoremap <silent> <S-Up>    :10wincmd -<CR>
 nnoremap <silent> <S-Down>  :10wincmd +<CR>
 
-nnoremap [space]k :<C-u>nohlsearch<CR>
+function! s:show_mapping()
+  let l:key = getchar()
+  exe 'map' l:key
+endfunction
+
+nnoremap [space]m :<C-u>call <SID>show_mapping()<CR>
+nnoremap [space]n :<C-u>nohlsearch<CR>
 nnoremap [space]w :<C-u>call <SID>toggle_option("wrap")<CR>
 
 " replace & grep {{{2
@@ -917,8 +923,8 @@ command! -nargs=0 EnewNofile enew | setl buftype=nofile
 
 let g:scratch_buffer_name='[Scratch]'
 
-nmap [prefix]s :silent exe :<C-u>EnewNofile<CR>
-nmap [prefix]ss <Plug>(scratch-open)
+nmap [prefix]ss :<C-u>EnewNofile<CR>
+nmap [prefix]sc <Plug>(scratch-open)
 nnoremap [prefix]sj :<C-u>JunkFile<CR>
 
 " altercmd "{{{2
@@ -1102,13 +1108,14 @@ function! s:smartchr_my_settings() "{{{3
 
 endfunction
 
-" unite {{{2
+" unite.vim {{{2
 LCAlias Unite
 nnoremap [unite] <Nop>
 nmap     f       [unite]
 nnoremap [unite]f f
 
 " unite basic settings {{{3
+let g:unite_source_history_yank_enable=1
 "let g:unite_enable_start_insert=1
 let g:unite_enable_start_insert=0
 let g:unite_source_file_mru_limit=200
@@ -1175,6 +1182,7 @@ nnoremap <silent> [unite]gr :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
 nnoremap <silent> [unite]gi :<C-u>Unite git_grep -buffer-name=git<CR>
 nnoremap <silent> [unite]q  :<C-u>Unite qf -buffer-name=qfix -no-quit<CR>
 nnoremap <silent> [unite]c  :<C-u>Unite command history/command<CR>
+nnoremap <silent> [unite]y  :<C-u>Unite history/yank<CR>
 nnoremap <silent> [unite]/  :<C-u>Unite history/search history/command<CR>
 nnoremap <silent> [unite]p  :<C-u>Unite process<CR>
 nnoremap <silent> [unite]bb :<C-u>Unite bookmark -default-action=open<CR>
@@ -1479,8 +1487,8 @@ function! OperatorExcelize(motion_wise)
   execute e 'substitute/$/"/'
 endfunction
 
-map ;e <Plug>(operator-excelize)
 map _ <Plug>(operator-replace)
+map ;e <Plug>(operator-excelize)
 map ;h <Plug>(operator-html-escape)
 map ;H <Plug>(operator-html-unescape)
 map ;c <Plug>(operator-camelize)

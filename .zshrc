@@ -42,7 +42,7 @@ setopt auto_param_keys      # カッコの対応などを自動的に補完
 unsetopt cdable_vars        # not expand "~"
 setopt mark_dirs            # ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
 setopt list_types           # 補完候補一覧でファイルの種別を識別マーク表示 (訳注:ls -F の記号)
-setopt interactive_comments # コマンドラインでも                                                                         # 以降をコメントと見なす
+setopt interactive_comments # コマンドラインでも # 以降をコメントと見なす
 setopt complete_in_word     # 語の途中でもカーソル位置で補完
 setopt always_last_prompt   # カーソル位置は保持したままファイル名一覧を順次その場で表示
 setopt magic_equal_subst    # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
