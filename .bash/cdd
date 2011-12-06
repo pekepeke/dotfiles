@@ -30,7 +30,7 @@ function cdd_ls() {
 
 function cdd_rec() {
   perl -nle "\$c=\$i++;if(\$c==$1){print'$2'}else{print}" $cddfile > $cddtmp
-  cp $cddtmp $cddfile
+  'cp' $cddtmp $cddfile
 }
 
 function cdd() {

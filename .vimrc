@@ -69,7 +69,7 @@ NeoBundle 'thinca/vim-quickrun.git'
 
 NeoBundle 'vim-scripts/matchit.zip.git'
 NeoBundle 'vim-scripts/ruby-matchit.git'
-NeoBundle 'vim-scripts/errormarker.vim.git'
+" NeoBundle 'vim-scripts/errormarker.vim.git'
 
 NeoBundle 'motemen/hatena-vim.git'
 NeoBundle 'lukaszb/vim-web-indent.git'
@@ -169,6 +169,7 @@ NeoBundle 'kana/vim-submode.git'
 NeoBundle 'tyru/vim-altercmd.git'
 NeoBundle 'vim-scripts/ShowMarks7.git'
 NeoBundle 'dannyob/quickfixstatus.git'
+NeoBundle 'jceb/vim-hier.git'
 NeoBundle 'tpope/vim-repeat.git'
 NeoBundle 'tpope/vim-surround.git'
 NeoBundle 't9md/vim-surround_custom_mapping.git'
@@ -683,7 +684,16 @@ function! s:my_quickfix_settings()
   " nnoremap <buffer> < :<C-u><CR>
 endfunction
 
+" quickfix のエラー箇所を波線でハイライト
+let g:hier_highlight_group_qf  = "qf_error_ucurl"
+function! s:my_make_settings()
+  highlight qf_error_ucurl gui=undercurl guisp=red
+  :HierUpdate
+  :QuickfixStatusEnable
+endfunction
+
 MyAutocmd FileType qf call s:my_quickfix_settings()
+MyAutocmd QuickfixCmdPost make call s:my_make_settings()
 " MyAutocmd QuickfixCmdPost make,grep,grepadd,vimgrep copen
 " MyAutocmd QuickfixCmdPost l* lopen
 
