@@ -168,6 +168,7 @@ NeoBundle 'kana/vim-smartchr.git'
 NeoBundle 'kana/vim-submode.git'
 NeoBundle 'tyru/vim-altercmd.git'
 NeoBundle 'vim-scripts/ShowMarks7.git'
+NeoBundle 'dannyob/quickfixstatus.git'
 NeoBundle 'tpope/vim-repeat.git'
 NeoBundle 'tpope/vim-surround.git'
 NeoBundle 't9md/vim-surround_custom_mapping.git'
@@ -677,23 +678,9 @@ let MyGrepcmd_useropt = '--exclude="*\.\(svn\|git\|hg)*"'
 nnoremap [space]g  :Ack<Space>-i<Space>''<Left>
 nnoremap [space]gg :Ack<Space>-i<Space>''<Left>
 
-function! s:my_qf_backup()
-  let name = exists('w:quickfix_title') ? w:quickfix_title : 'quickfix_save'
-  let lines = getline(1, "$")
-  if empty(lines) || (len(lines) == 1 && empty(lines[0]))
-    echohl ErrorMsg
-    echo "Text is nothing"
-    echohl Normal
-    return
-  endif
-  enew | setl buftype=nofile noswapfile | setf qf
-  file `=name`
-  nmap <buffer> <CR> <C-w>F
-  call append(0, lines)
-endfunction
 
 function! s:my_quickfix_settings()
-  nnoremap <buffer> ss :<C-u>call <SID>my_qf_backup()<CR>
+  " nnoremap <buffer> < :<C-u><CR>
 endfunction
 
 MyAutocmd FileType qf call s:my_quickfix_settings()

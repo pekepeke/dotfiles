@@ -16,6 +16,10 @@ function! s:AutoReloadHTML(...)
   silent exe "!autotesthtml.rb > /dev/null 2>&1 &"
 endfunction
 
+" http://hail2u.net/blog/software/only-one-line-life-changing-vimrc-setting.html
+setl includeexpr=substitute(v:fname,'^\\/','','')
+setlocal path+=;/
+
 setl dictionary=~/.vim/dict/html.dict
 setl dictionary+=~/.vim/dict/css.dict
 setl iskeyword+=-,:

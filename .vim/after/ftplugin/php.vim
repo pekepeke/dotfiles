@@ -34,6 +34,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 setl formatoptions-=ro
+" http://hail2u.net/blog/software/only-one-line-life-changing-vimrc-setting.html
+setl includeexpr=substitute(v:fname,'^\\/','','')
+setlocal path+=;/
 
 nnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
 inoremap <buffer> <silent> [comment-doc] <Esc>:call PhpDocSingle()<CR>i

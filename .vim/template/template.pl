@@ -15,6 +15,7 @@ sub usage {
 }
 
 my $opt_help;
+Getopt::Long::Configure ("bundling");
 GetOptions(
     'h|help' => \$opt_help, 
 ) or usage;
