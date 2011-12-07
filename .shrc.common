@@ -1,5 +1,5 @@
 # source local settings
-[ $SHLVL -gt 1 ] && return 0
+# [ $SHLVL -gt 1 ] && return 0
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
 [ -f $HOME/.shrc.common.util ] && source $HOME/.shrc.common.util
 
@@ -21,6 +21,7 @@ elif is_mac ; then
   if [ -e "/usr/local/Library/Homebrew" ] ; then
     remove_path /usr/local/bin /usr/bin
     PATH=$PATH:/usr/local/bin:/usr/bin
+    export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
   fi
   for fp in "/Applications/android-sdk-mac_x86/tools" \
     "/Applications/android-sdk-mac_x86/platform-tools" ; do
@@ -36,6 +37,8 @@ else
   export TMUX_DEFAULT_COMMAND=$SHELL
 fi
 
+export PATH
+
 if is_colinux; then
   alias umount-c='sudo umount /c'
   alias mount-c='mount-c-smbfs'
@@ -45,7 +48,6 @@ if is_colinux; then
 fi
 # }}}
 
-export PATH
 
 # {{{ lang, own settings
 if is_exec vim ; then

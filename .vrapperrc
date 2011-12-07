@@ -15,32 +15,30 @@ set globalregisters
 set ignorecase
 set smartcase
 set saney
-set imdisable
+" set imdisable
 
 " ソース
-nnoremap <space>sd :CreateDelegateMethods<CR>
-nnoremap <space>sg :CreateGetterSetter<CR>
-nnoremap <space>sc :GenerateConstructorUsingFields<CR>
-nnoremap <space>so :OverrideMethods<CR>
-nnoremap <space>sf :Format<CR>
-nnoremap <space>sr :SearchRef<CR>
-nnoremap <space>ss :QuickAssist<CR>
-
-nnoremap <space>si :OrganizeImports<CR>
-
-nnoremap <space>ac :AddJavaDocComment<CR>
-nnoremap <space>ai :AddImport<CR>
-nnoremap <space>ac :AddUnimplementedContructors<CR>
+nnoremap ,sd :CreateDelegateMethods<CR>
+nnoremap ,sg :CreateGetterSetter<CR>
+nnoremap ,sc :GenerateConstructorUsingFields<CR>
+nnoremap ,so :OverrideMethods<CR>
+nnoremap ,sf :Format<CR>
+nnoremap ,sr :SearchRef<CR>
+nnoremap ,ss :QuickAssist<CR>
+nnoremap ,si :OrganizeImports<CR>
+nnoremap ,ac :AddJavaDocComment<CR>
+nnoremap ,ai :AddImport<CR>
+nnoremap ,ac :AddUnimplementedContructors<CR>
 
 " リファクタリング
-nnoremap <space>rt :ChangeType<CR>
-nnoremap <space>rv :PromoteLocalVariable<CR>
-nnoremap <space>rn :RenameElement<CR>i
+nnoremap ,rt :ChangeType<CR>
+nnoremap ,rv :PromoteLocalVariable<CR>
+nnoremap ,rn :RenameElement<CR>i
 
 " ナビゲーション
-nnoremap <space>nc :OpenCallHierarchy<CR>
-nnoremap <space>ns :OpenStructure<CR>
-nnoremap <space>nt :OpenTypeHierarchy<CR>
+nnoremap ,nc :OpenCallHierarchy<CR>
+nnoremap ,ns :OpenStructure<CR>
+nnoremap ,nt :OpenTypeHierarchy<CR>
 
 " vim like
 nnoremap <C-]> :OpenEditor<CR>
@@ -63,10 +61,10 @@ nnoremap tn gt
 nnoremap tp gT
 nnoremap tw :Next<CR>
 
-nnoremap \c<Space> :ToggleComment<CR>
-vnoremap \c<Space> :ToggleComment<CR>
+nnoremap gcc :ToggleComment<CR>
+vnoremap gcc :ToggleComment<CR>
 
-nnoremap ,gc :AddJavaDocComment<CR>
+nnoremap ,gcj :AddJavaDocComment<CR>
 nnoremap ,mm :ToggleMaximizeWindow<CR>
 
 " quickrun like
@@ -83,7 +81,7 @@ inoremap <C-f> <Esc><Right>a
 inoremap <C-b> <Esc>i
 
 inoremap <C-d> <Esc><Right>xi
-inoremap <C-w> <Esc><Right>:DeletePreviousWord<CR>a
+inoremap <C-w> <Esc>:DeletePreviousWord<CR>i
 inoremap <C-k> <Esc><Right>:DeleteLineToEnd<CR>a
 inoremap <C-u> <Esc>:DeleteLineToBeginning<CR>i
 inoremap <C-l> <Esc>:ContentAssistProposals<CR>a
