@@ -17,7 +17,12 @@ elseif s:is_win
 endif
 unlet s:configured_runtimepath
 
-" for win {{{2
+" regenerate $PATH {{{2
+if !s:is_win
+  call my#ui#regenerate_unix_path()
+endif
+
+" for win shell {{{2
 if s:is_win
   let $HOME=substitute($HOME, '\\', '/', 'ge')
   if executable('nyacus')
@@ -87,7 +92,9 @@ NeoBundle 'thinca/vim-ft-diff_fold.git'
 NeoBundle 'thinca/vim-ft-markdown_fold.git'
 NeoBundle 'timcharper/textile.vim.git'
 NeoBundle 'pekepeke/cocoa.vim.git'
+NeoBundle 'vim-ruby/vim-ruby.git'
 NeoBundle 'tpope/vim-rails.git'
+NeoBundle 'tpope/vim-cucumber.git'
 NeoBundle 'vim-scripts/eruby.vim.git'
 NeoBundle 'tobiassvn/vim-gemfile.git'
 "NeoBundle 'astashov/vim-ruby-debugger.git'
@@ -172,6 +179,7 @@ NeoBundle 'dannyob/quickfixstatus.git'
 NeoBundle 'jceb/vim-hier.git'
 NeoBundle 'tpope/vim-repeat.git'
 NeoBundle 'tpope/vim-surround.git'
+NeoBundle 'tpope/vim-endwise.git'
 NeoBundle 't9md/vim-surround_custom_mapping.git'
 NeoBundle 't9md/vim-textmanip.git'
 NeoBundle 'ujihisa/camelcasemotion.git'
@@ -410,6 +418,8 @@ set number                     " 行番号の表示
 set ruler
 
 set mouse=nch                  " use mouse normal/command/help
+set timeoutlen=1000
+set ttimeoutlen=50
 
 set showmatch                  " 対応する括弧の表示
 set showcmd                    " 入力中のコマンドを表示
@@ -535,7 +545,7 @@ set autoread                   " 更新があったファイルを自動で読�
 set backupdir=$HOME/.tmp/vim-backups
 set viewdir=$HOME/.tmp/vim-views
 set backupcopy=yes
-set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*
+set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*.tmp,crontab.*
 call my#util#mkdir(&backupdir)
 call my#util#mkdir(&viewdir)
 
@@ -637,11 +647,18 @@ nnoremap <silent> <S-Up>    :10wincmd -<CR>
 nnoremap <silent> <S-Down>  :10wincmd +<CR>
 
 function! s:show_mapping()
-  let l:key = getchar()
-  exe 'map' l:key
+  let key = getchar()
+  let c = nr2char(key)
+  let s = strtrans(c)
+  if stridx(s, "^") == 0
+    let c = "<C-".substitute(s, '^\^', "", "").">"
+  endif
+  if strlen(c) > 0
+    exe 'map' c
+  endif
 endfunction
 
-nnoremap [space]m :<C-u>call <SID>show_mapping()<CR>
+nnoremap <silent> [space]k :<C-u>call <SID>show_mapping()<CR>
 nnoremap [space]n :<C-u>nohlsearch<CR>
 nnoremap [space]w :<C-u>call <SID>toggle_option("wrap")<CR>
 
@@ -921,6 +938,7 @@ command! -nargs=0 EnewNofile enew | setl buftype=nofile
 let g:scratch_buffer_name='[Scratch]'
 
 nmap [prefix]ss :<C-u>EnewNofile<CR>
+nmap [prefix]se :<C-u>EnewNofile<CR>
 nmap [prefix]sc <Plug>(scratch-open)
 nnoremap [prefix]sj :<C-u>JunkFile<CR>
 
@@ -1610,7 +1628,8 @@ endif
 
 " Recommended key-mappings.
 " <CR>: close popup and save indent.
-inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
+" inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
+inoremap <silent> <Cr> <C-R>=neocomplcache#smart_close_popup()<CR><CR>
 
 " <TAB>: completion.
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
