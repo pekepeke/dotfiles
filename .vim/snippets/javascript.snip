@@ -594,14 +594,16 @@ snippet extend
 
 snippet p
 	var p = function() {
-		if (typeof console != 'undefined')
+		if (typeof console != 'undefined') {
 			console.log(Array.prototype.slice.call(arguments, 0));
+		}
 	}
 
 snippet log
 	var log = function() {
-		if (typeof console != 'undefined')
+		if (typeof console != 'undefined') {
 			console.log(Array.prototype.slice.call(arguments, 0));
+		}
 	}
 
 snippet addEvent
@@ -672,4 +674,23 @@ snippet include
 		script.defer = true;
 		document.getElementsByTagName('head').item(0).appendChild(script);
 	};
+
+snippet getClass
+	function getClass(o) {
+	  return Object.prototype.toString.call(o).match(/^\[object\s(.*)\]$/)[1];
+	}
+
+snippet isArray
+	function isArray(o) {
+	  return Object.prototype.toString.call(o) === '[object Array]';
+	}
+
+snippet isDate
+	function isDate(o) {
+	  return Object.prototype.toString.call(o) === '[object Date]';
+	}
+
+snippet writesc
+	document.write('<sc' + 'ript type="text/javascript" src="${1:src}"></sc' + 'ript>');
+
 

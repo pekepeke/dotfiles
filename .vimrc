@@ -584,10 +584,16 @@ nnoremap <silent> [t]e t
 noremap [s] <Nop>
 nmap s [s]
 
+noremap [op-special] <Nop>
+noremap [op-special]; ;
+map ; [op-special]
+
 nnoremap [prefix] <Nop>
 vnoremap [prefix] <Nop>
 nmap , [prefix]
+nnoremap [prefix], ,
 vmap , [prefix]
+vnoremap [prefix], ,
 
 noremap [edit] <Nop>
 nmap <C-e> [edit]
@@ -1503,11 +1509,11 @@ function! OperatorExcelize(motion_wise)
 endfunction
 
 map _ <Plug>(operator-replace)
-map ;e <Plug>(operator-excelize)
-map ;h <Plug>(operator-html-escape)
-map ;H <Plug>(operator-html-unescape)
-map ;c <Plug>(operator-camelize)
-map ;C <Plug>(operator-decamelize)
+map [op-special]e <Plug>(operator-excelize)
+map [op-special]h <Plug>(operator-html-escape)
+map [op-special]H <Plug>(operator-html-unescape)
+map [op-special]c <Plug>(operator-camelize)
+map [op-special]C <Plug>(operator-decamelize)
 
 " textobj {{{2
 omap iF <Plug>(textobj-function-i)
@@ -1802,8 +1808,8 @@ let g:QFix_PreviewEnable = 0
 
 MyAutocmd FileType howm_memo call s:howm_memo_my_settings() " {{{3
 function! s:howm_memo_my_settings()
-  nmap <buffer> [prefix],t :exe 'normal! i'.printf("[%s] ", strftime('%Y-%m-%d %H:%M:%S'))<CR>
-  nmap <buffer> [prefix],d :exe 'normal! i'.printf("[%s] ", strftime('%Y-%m-%d'))<CR>
+  nmap <buffer> [prefix]t :exe 'normal! i'.printf("[%s] ", strftime('%Y-%m-%d %H:%M:%S'))<CR>
+  nmap <buffer> [prefix]d :exe 'normal! i'.printf("[%s] ", strftime('%Y-%m-%d'))<CR>
 endfunction
 
 " etc functions & commands {{{1
