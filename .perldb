@@ -1,0 +1,5 @@
+# vim:ft=perl
+sub afterinit {
+    push @DB::typeahead "{{ v";
+}
+
