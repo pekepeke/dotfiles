@@ -163,7 +163,6 @@ pulist() { # {{{
 if [ -z "$SSH_CLIENT" ]; then
   ssh_path=$(which ssh)
   function ssh() {
-  echo $ssh_path
     _ssh_log_dir=$HOME/.ssh-logs
     if [ ! -e $_ssh_log_dir ]; then
       mkdir $_ssh_log_dir
