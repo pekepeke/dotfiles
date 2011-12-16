@@ -90,9 +90,9 @@ alias sudo=' sudo -H'
 alias vim-filer='vim -c VimFiler'
 alias vim-shell='vim -c VimShell'
 update-submodules() {
-  pushd . >/dev/null
+  pushd . >/dev/null 2>&1
   cd ~/.github-dotfiles && git submodule foreach 'git fetch; git checkout origin/master'
-  popd >/dev/null
+  [ $(dirs | wc -w) -eq 1 ] && popd > /dev/null 2>&1
 }
 alias vim-bundle='update-submodules && vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall"'
 # node

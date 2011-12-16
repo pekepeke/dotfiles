@@ -76,29 +76,43 @@ NeoBundle 'vim-scripts/matchit.zip.git'
 NeoBundle 'vim-scripts/ruby-matchit.git'
 " NeoBundle 'vim-scripts/errormarker.vim.git'
 
+" ruby
 NeoBundle 'vim-ruby/vim-ruby.git'
 NeoBundle 'tpope/vim-rails.git'
 NeoBundle 'tpope/vim-cucumber.git'
 NeoBundle 'vim-scripts/eruby.vim.git'
 NeoBundle 'tobiassvn/vim-gemfile.git'
 "NeoBundle 'astashov/vim-ruby-debugger.git'
+" html
 NeoBundle 'othree/html5.vim.git'
+NeoBundle 'tpope/vim-haml.git'
 NeoBundle 'hail2u/vim-css3-syntax.git'
 NeoBundle 'cakebaker/scss-syntax.vim.git'
 NeoBundle 'groenewege/vim-less.git'
 NeoBundle 'pangloss/vim-javascript.git'
-NeoBundle 'lukaszb/vim-web-indent.git'
+" NeoBundle 'lukaszb/vim-web-indent.git'
+NeoBundle 'vim-scripts/IndentAnything.git'
+NeoBundle 'itspriddle/vim-javascript-indent'
+NeoBundle 'vim-scripts/Dart.git'
 NeoBundle 'pekepeke/titanium-vim.git'
 NeoBundle 'kchmck/vim-coffee-script.git'
+" python
+" http://rope.sourceforge.net/
+" NeoBundle 'klen/python-mode.git'
+" perl
+NeoBundle 'petdance/vim-perl.git'
+" OSX
 NeoBundle 'nanki/vim-objj.git'
-NeoBundle 'tpope/vim-haml.git'
 NeoBundle 'pekepeke/cocoa.vim.git'
+" android
 NeoBundle 'thinca/vim-logcat.git'
+" texts
 NeoBundle 'thinca/vim-ft-diff_fold.git'
+NeoBundle 'plasticboy/vim-markdown.git'
 NeoBundle 'thinca/vim-ft-markdown_fold.git'
 NeoBundle 'timcharper/textile.vim.git'
 NeoBundle 'motemen/hatena-vim.git'
-
+" sql
 NeoBundle 'vim-scripts/dbext.vim.git'
 NeoBundle 'vim-scripts/SQLUtilities.git'
 NeoBundle 'justinrainbow/php-doc.vim.git'
@@ -1640,7 +1654,9 @@ endif
 inoremap <silent> <Cr> <C-R>=neocomplcache#smart_close_popup()<CR><CR>
 
 " <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : "\<TAB>"
 " <C-h>, <BS>: close popup and delete backword char.
 inoremap <expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><BS>   neocomplcache#smart_close_popup()."\<C-h>"
