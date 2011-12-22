@@ -38,6 +38,7 @@ load_sh() {
   return 0
 }
 remove_path() {
+  local rmv
   for rmv in $* ; do
     PATH=`echo $PATH| sed -e 's!'$rmv'!!' -e 's/::/:/'`
   done

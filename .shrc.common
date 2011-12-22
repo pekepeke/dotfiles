@@ -17,6 +17,9 @@ else
   export TMUX_DEFAULT_COMMAND=$SHELL
 fi
 
+if is_mac ; then
+  export LESS="-IMR"
+fi
 if is_colinux; then
   alias umount-c='sudo umount /c'
   alias mount-c='mount-c-smbfs'

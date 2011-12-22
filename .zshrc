@@ -1,6 +1,12 @@
 # .zshrc
 
 [ -f ~/.shrc.common ] && source ~/.shrc.common
+source_all() {
+  for f in $* ; do
+    [ -e $f ] && source $f
+  done
+}
+
 
 # prompt {{{1
 export PROMPT="[%n@%m %3d]%(#.#.$) "
@@ -91,21 +97,25 @@ setopt auto_pushd
 setopt no_tify
 
 # keybinds {{{1
+# textobj {{{2
+source_all ~/.zsh/plugins/opp.zsh/opp.zsh
+source_all ~/.zsh/plugins/opp.zsh/opp/*
+# keybind {{{2
 bindkey -v
-# for command mode
+# for command mode {{{2
 bindkey -a 'O' push-line
 bindkey -a 'H' run-help
 bindkey -a '^A' beginning-of-line
 bindkey -a '^E' end-of-line
 
-## for insert mode
+## for insert mode {{{2
 bindkey -v '^[OH' beginning-of-line
 bindkey -v '^[OF' end-of-line
 bindkey -v "\e[1~" begginning-of-line   # Home
 bindkey -v "\e[4~" end-of-line          # End
 bindkey -v "^[[3~" delete-char          # Del
 bindkey -v "\e[Z" reverse-menu-complete # S-Tab
-## emacs like
+## emacs like {{{2
 bindkey -v '^D' delete-char
 bindkey -v '^H' backward-delete-char
 bindkey -v '^W' backward-kill-word
@@ -213,8 +223,6 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
     echo -n "k$cmd[1]:t\\") 2>/dev/null
   }
 
-  source ~/.zsh/cdd
-
   function chpwd(){
     if [[ $TERM = screen* ]];then
       echo -ne "k${PWD/${HOME}/~}\\"
@@ -227,20 +235,16 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
 fi
 
 # plugins {{{1
-if [ -e ~/.zsh/completion/ ]; then
-  for completion_sh in $(ls ~/.zsh/completion/*); do
-    source $completion_sh
-  done
-fi
-[ -e ~/.zsh/cdf ] && source ~/.zsh/cdf
+
+source_all ~/.zsh/commands/*
 
 # auto-fu.zsh {{{2
 # とりあえず OFF る、、、文字制御が欲しい。。
-if [ -z "x" -a -f "$HOME/.zsh/auto-fu.zsh/auto-fu.zsh" -a "$OSTYPE" != "cygwin" ]; then
+if [ -z "x" -a -f "$HOME/.zsh/plugins/auto-fu.zsh/auto-fu.zsh" -a "$OSTYPE" != "cygwin" ]; then
   unsetopt sh_word_split
   zstyle ':completion:*' completer _oldlist _complete _expand _match _prefix _approximate _list _history
 
-  AUTO_FU_NOCP=1 source $HOME/.zsh/auto-fu.zsh/auto-fu.zsh
+  AUTO_FU_NOCP=1 source $HOME/.zsh/plugins/auto-fu.zsh/auto-fu.zsh
 
   # enable.
   zle-line-init () {
@@ -281,12 +285,14 @@ if [ -z "x" -a -f "$HOME/.zsh/auto-fu.zsh/auto-fu.zsh" -a "$OSTYPE" != "cygwin" 
 fi
 
 # for ruby gems {{{2
-function cdgem() {
-  cd `echo $GEM_HOME/**gems/$1* | awk '{print $1}'`
-}
-compctl -K _cdgem cdgem
-function _cdgem() {
-  reply=(`find $GEM_HOME -type d|grep -e '/gems/[^/]*$'|xargs basename|sort -nr`)
-}
+if [ x$GEM_HOME != x ]; then
+  function cdgem() {
+    cd `echo $GEM_HOME/**gems/$1* | awk '{print $1}'`
+  }
+  compctl -K _cdgem cdgem
+  function _cdgem() {
+    reply=(`find $GEM_HOME -type d|grep -e '/gems/[^/]*$'|xargs basename|sort -nr`)
+  }
+fi
 
 # vim: fdm=marker sw=2 ts=2 et:

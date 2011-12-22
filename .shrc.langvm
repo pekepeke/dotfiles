@@ -22,11 +22,14 @@ elif is_mac ; then
   [ "$LANG" = "ja_JP" ] && export LANG=ja_JP.UTF-8
 fi
 
+# aliases
+is_exec rails && alias r=rails
+alias jsprove='prove --ext=.t.js --exec=node'
+alias phpprove='prove --ext=.t.php --exec=php'
 
 # block multi load {{{1
-[ x$__VMLANG_INITIALIZED != x ] && return 0
-export __VMLANG_INITIALIZED=1
-
+# [ x$__VMLANG_INITIALIZED != x ] && return 0
+# export __VMLANG_INITIALIZED=1
 
 [ -d $HOME/bin ] && PATH=$HOME/bin:$PATH
 [ -d $HOME/.bin ] && PATH=$HOME/.bin:$PATH
@@ -49,7 +52,7 @@ export PYTHONBREW_ROOT=$HOME/.pythonbrew
 #export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
 export PYTHONPATH=~/.lib/python
 export PYTHONSTARTUP=~/.pyrc
-
+export PIP_DOWNLOAD_CACHE="$HOME/.pip_cache"
 
 # for Ruby {{{2
 if [ -e $HOME/.rbenv ]; then
@@ -59,7 +62,6 @@ if [ -e $HOME/.rbenv ]; then
 else
   [ -s $HOME/.rvm/scripts/rvm ] && source $HOME/.rvm/scripts/rvm
 fi
-is_exec rails && alias r=rails
 
 # for node.js {{{2
 if [ -s $HOME/.nvm/nvm.sh ] ; then
@@ -80,7 +82,7 @@ fi
 PATH=$HOME/.node_libraries/bin:$PATH
 MANPATH=$HOME/.node_libraries/share/man:$MANPATH
 NODE_PATH=$HOME/.node_libraries:$NODE_PATH
-alias jsprove='prove --ext=.t.js --exec=node'
+export NODE_PATH
 
 # if [ -s $HOME/.nave/nave.sh ] ; then
   # alias nave=$HOME/.nave/nave.sh
@@ -110,7 +112,6 @@ fi
 # php {{{2
 [ -e $HOME/.pear/bin ] && PATH=$HOME/.pear/bin:$PATH
 [ -e $HOME/.pear/php.ini ] && export PHPRC=$HOME/.pear/php.ini
-alias phpprove='prove --ext=.t.php --exec=php'
 [ -e $HOME/.php-build ] && PATH=$HOME/.php-build/bin:$PATH
 # must be after eval $(rbenv init)
 if [ -e $HOME/.phpenv ]; then
@@ -141,5 +142,6 @@ fi
 export MOZ_NO_REMOTE=true
 
 export PATH
+export MANPATH
 
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:
