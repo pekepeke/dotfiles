@@ -243,6 +243,7 @@ NeoBundle 'thinca/vim-textobj-comment.git'
 NeoBundle 'thinca/vim-textobj-function-javascript.git'
 NeoBundle 'thinca/vim-textobj-function-perl.git'
 NeoBundle 'vim-scripts/textobj-indent.git'
+NeoBundle 'sgur/textobj-parameter.git'
 
 " metarw
 NeoBundle "mattn/vim-metarw.git"
@@ -1536,6 +1537,23 @@ omap iF <Plug>(textobj-function-i)
 omap aF <Plug>(textobj-function-a)
 vmap iF <Plug>(textobj-function-i)
 vmap aF <Plug>(textobj-function-a)
+omap iI <Plug>(textobj-indent-i)
+omap aI <Plug>(textobj-indent-a)
+vmap iI <Plug>(textobj-indent-i)
+vmap aI <Plug>(textobj-indent-a)
+omap iB <Plug>(textobj-between-i)
+omap aB <Plug>(textobj-between-a)
+vmap iB <Plug>(textobj-between-i)
+vmap aB <Plug>(textobj-between-a)
+omap iB <Plug>(textobj-between-i)
+omap aB <Plug>(textobj-between-a)
+vmap iB <Plug>(textobj-between-i)
+vmap aB <Plug>(textobj-between-a)
+omap iP <Plug>(textobj-parameter-i)
+omap aP <Plug>(textobj-parameter-a)
+vmap iP <Plug>(textobj-parameter-i)
+vmap aP <Plug>(textobj-parameter-a)
+
 
 " ref.vim {{{2
 " options {{{3
