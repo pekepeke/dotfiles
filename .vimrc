@@ -168,6 +168,7 @@ NeoBundle 'ujihisa/unite-gem.git'
 NeoBundle 'ujihisa/unite-rake.git'
 NeoBundle 'basyura/unite-rails.git'
 NeoBundle 'basyura/unite-yarm.git'
+NeoBundle 'pasela/unite-webcolorname.git'
 
 if s:is_win
   NeoBundle 'sgur/unite-everything.git'
@@ -563,8 +564,13 @@ set backupdir=$HOME/.tmp/vim-backups
 set viewdir=$HOME/.tmp/vim-views
 set backupcopy=yes
 set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*.tmp,crontab.*
+if has('persistent_undo')
+    set undodir=~/.vimundo
+    set undofile
+endif
 call my#util#mkdir(&backupdir)
 call my#util#mkdir(&viewdir)
+
 
 " 補完 {{{2
 set wildmenu                                 " 補完候補を表示する
@@ -1214,12 +1220,13 @@ nmap <silent> [unite]l       [unite][file]
 nmap <silent> [unite]m       [unite][mru]
 
 nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
+nnoremap <silent> [unite]i  :<C-u>Unite webcolorscheme<CR>
 nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
 nnoremap <silent> [unite]gg :<C-u>Unite ack -buffer-name=grep -no-quit<CR>
 nnoremap <silent> [unite]gr :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
 nnoremap <silent> [unite]gi :<C-u>Unite git_grep -buffer-name=git<CR>
 nnoremap <silent> [unite]q  :<C-u>Unite qf -buffer-name=qfix -no-quit<CR>
-nnoremap <silent> [unite]c  :<C-u>Unite command history/command<CR>
+nnoremap <silent> [unite]:  :<C-u>Unite history/command command<CR>
 nnoremap <silent> [unite]y  :<C-u>Unite history/yank<CR>
 nnoremap <silent> [unite]/  :<C-u>Unite history/search history/command<CR>
 nnoremap <silent> [unite]p  :<C-u>Unite process<CR>
