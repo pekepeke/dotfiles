@@ -74,7 +74,6 @@ NeoBundle 'thinca/vim-quickrun.git'
 
 NeoBundle 'vim-scripts/matchit.zip.git'
 NeoBundle 'vim-scripts/ruby-matchit.git'
-" NeoBundle 'vim-scripts/errormarker.vim.git'
 
 " ruby
 NeoBundle 'vim-ruby/vim-ruby.git'
@@ -194,6 +193,7 @@ NeoBundle 'tyru/vim-altercmd.git'
 NeoBundle 'vim-scripts/ShowMarks7.git'
 NeoBundle 'dannyob/quickfixstatus.git'
 NeoBundle 'jceb/vim-hier.git'
+" NeoBundle 'vim-scripts/errormarker.vim.git'
 NeoBundle 'tpope/vim-repeat.git'
 NeoBundle 'tpope/vim-surround.git'
 NeoBundle 'tpope/vim-endwise.git'
@@ -209,6 +209,7 @@ NeoBundle 'kana/vim-smartword.git'
 NeoBundle 'roman/golden-ratio.git'
 NeoBundle 'scrooloose/nerdtree.git'
 NeoBundle 'thinca/vim-qfreplace.git'
+NeoBundle 'nathanaelkane/vim-indent-guides.git'
 NeoBundle 'mileszs/ack.vim.git'
 
 " web
@@ -378,14 +379,14 @@ MyAutocmd CmdwinEnter * call s:cmdwin_my_settings()
 
 " vim -b : edit binary using xxd-format! "{{{3
 augroup Binary
-    au!
-    au BufReadPre  *.bin let &bin=1
-    au BufReadPost *.bin if &bin | silent %!xxd -g 1
-    au BufReadPost *.bin set ft=xxd | endif
-    au BufWritePre *.bin if &bin | %!xxd -r
-    au BufWritePre *.bin endif
-    au BufWritePost *.bin if &bin | silent %!xxd -g 1
-    au BufWritePost *.bin set nomod | endif
+  au!
+  au BufReadPre  *.bin let &bin=1
+  au BufReadPost *.bin if &bin | silent %!xxd -g 1
+  au BufReadPost *.bin set ft=xxd | endif
+  au BufWritePre *.bin if &bin | %!xxd -r
+  au BufWritePre *.bin endif
+  au BufWritePost *.bin if &bin | silent %!xxd -g 1
+  au BufWritePost *.bin set nomod | endif
 augroup END
 
 " basic settings {{{1
@@ -899,6 +900,19 @@ vmap <C-j> <Plug>(Textmanip.move_selection_down)
 vmap <C-k> <Plug>(Textmanip.move_selection_up)
 vmap <C-h> <Plug>(Textmanip.move_selection_left)
 vmap <C-l> <Plug>(Textmanip.move_selection_right)
+
+" indent-guides
+let g:indent_guides_enable_on_vim_startup = 1
+if has('gui')
+  let g:indent_guides_auto_colors = 1
+else
+  let g:indent_guides_auto_colors = 0
+  augroup indentguides
+    autocmd!
+    autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=236
+    autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=235
+  augroup END
+endif
 
 " smartword {{{2
 nmap w  <Plug>(smartword-w)
