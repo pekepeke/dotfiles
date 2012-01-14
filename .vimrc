@@ -74,7 +74,6 @@ NeoBundle 'thinca/vim-quickrun.git'
 
 NeoBundle 'vim-scripts/matchit.zip.git'
 NeoBundle 'vim-scripts/ruby-matchit.git'
-" NeoBundle 'vim-scripts/errormarker.vim.git'
 
 " ruby
 NeoBundle 'vim-ruby/vim-ruby.git'
@@ -168,6 +167,7 @@ NeoBundle 'ujihisa/unite-gem.git'
 NeoBundle 'ujihisa/unite-rake.git'
 NeoBundle 'basyura/unite-rails.git'
 NeoBundle 'basyura/unite-yarm.git'
+NeoBundle 'pasela/unite-webcolorname.git'
 
 if s:is_win
   NeoBundle 'sgur/unite-everything.git'
@@ -193,6 +193,7 @@ NeoBundle 'tyru/vim-altercmd.git'
 NeoBundle 'vim-scripts/ShowMarks7.git'
 NeoBundle 'dannyob/quickfixstatus.git'
 NeoBundle 'jceb/vim-hier.git'
+" NeoBundle 'vim-scripts/errormarker.vim.git'
 NeoBundle 'tpope/vim-repeat.git'
 NeoBundle 'tpope/vim-surround.git'
 NeoBundle 'tpope/vim-endwise.git'
@@ -208,6 +209,7 @@ NeoBundle 'kana/vim-smartword.git'
 NeoBundle 'roman/golden-ratio.git'
 NeoBundle 'scrooloose/nerdtree.git'
 NeoBundle 'thinca/vim-qfreplace.git'
+NeoBundle 'nathanaelkane/vim-indent-guides.git'
 NeoBundle 'mileszs/ack.vim.git'
 
 " web
@@ -377,14 +379,14 @@ MyAutocmd CmdwinEnter * call s:cmdwin_my_settings()
 
 " vim -b : edit binary using xxd-format! "{{{3
 augroup Binary
-    au!
-    au BufReadPre  *.bin let &bin=1
-    au BufReadPost *.bin if &bin | silent %!xxd -g 1
-    au BufReadPost *.bin set ft=xxd | endif
-    au BufWritePre *.bin if &bin | %!xxd -r
-    au BufWritePre *.bin endif
-    au BufWritePost *.bin if &bin | silent %!xxd -g 1
-    au BufWritePost *.bin set nomod | endif
+  au!
+  au BufReadPre  *.bin let &bin=1
+  au BufReadPost *.bin if &bin | silent %!xxd -g 1
+  au BufReadPost *.bin set ft=xxd | endif
+  au BufWritePre *.bin if &bin | %!xxd -r
+  au BufWritePre *.bin endif
+  au BufWritePost *.bin if &bin | silent %!xxd -g 1
+  au BufWritePost *.bin set nomod | endif
 augroup END
 
 " basic settings {{{1
@@ -563,8 +565,13 @@ set backupdir=$HOME/.tmp/vim-backups
 set viewdir=$HOME/.tmp/vim-views
 set backupcopy=yes
 set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*.tmp,crontab.*
+if has('persistent_undo')
+    set undodir=~/.vimundo
+    set undofile
+endif
 call my#util#mkdir(&backupdir)
 call my#util#mkdir(&viewdir)
+
 
 " 補完 {{{2
 set wildmenu                                 " 補完候補を表示する
@@ -894,6 +901,19 @@ vmap <C-k> <Plug>(Textmanip.move_selection_up)
 vmap <C-h> <Plug>(Textmanip.move_selection_left)
 vmap <C-l> <Plug>(Textmanip.move_selection_right)
 
+" indent-guides
+let g:indent_guides_enable_on_vim_startup = 1
+if has('gui')
+  let g:indent_guides_auto_colors = 1
+else
+  let g:indent_guides_auto_colors = 0
+  augroup indentguides
+    autocmd!
+    autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=236
+    autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=235
+  augroup END
+endif
+
 " smartword {{{2
 nmap w  <Plug>(smartword-w)
 nmap b  <Plug>(smartword-b)
@@ -1214,12 +1234,13 @@ nmap <silent> [unite]l       [unite][file]
 nmap <silent> [unite]m       [unite][mru]
 
 nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
+nnoremap <silent> [unite]i  :<C-u>Unite webcolorscheme<CR>
 nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
 nnoremap <silent> [unite]gg :<C-u>Unite ack -buffer-name=grep -no-quit<CR>
 nnoremap <silent> [unite]gr :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
 nnoremap <silent> [unite]gi :<C-u>Unite git_grep -buffer-name=git<CR>
 nnoremap <silent> [unite]q  :<C-u>Unite qf -buffer-name=qfix -no-quit<CR>
-nnoremap <silent> [unite]c  :<C-u>Unite command history/command<CR>
+nnoremap <silent> [unite]:  :<C-u>Unite history/command command<CR>
 nnoremap <silent> [unite]y  :<C-u>Unite history/yank<CR>
 nnoremap <silent> [unite]/  :<C-u>Unite history/search history/command<CR>
 nnoremap <silent> [unite]p  :<C-u>Unite process<CR>
