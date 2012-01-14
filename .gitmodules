@@ -1,12 +1,12 @@
 [submodule ".vimperator/vimperator-plugins"]
 	path = .vimperator/vimperator-plugins
 	url = https://github.com/vimpr/vimperator-plugins.git
-[submodule ".zsh/auto-fu.zsh"]
+[submodule ".zsh/plugins/auto-fu.zsh"]
 	path = .zsh/plugins/auto-fu.zsh
 	url = http://github.com/hchbaw/auto-fu.zsh.git
 [submodule ".vim/neobundle.vim"]
 	path = .vim/neobundle.vim
 	url = https://github.com/Shougo/neobundle.vim.git
-[submodule ".zsh/opp.zsh"]
+[submodule ".zsh/plugins/opp.zsh"]
 	path = .zsh/plugins/opp.zsh
 	url = https://github.com/hchbaw/opp.zsh.git
