@@ -12,6 +12,7 @@ done
 #  find ~/Library/Application\ Support/Cyberduck/Queue.plist -mtime 1 -exec rm -f {} \; > /dev/null 2>&1
 
 alias mvi='mvim --remote-tab-silent'
+alias gemacs='open -a Emacs.app'
 alias date='gdate'
 alias seq='gseq'
 

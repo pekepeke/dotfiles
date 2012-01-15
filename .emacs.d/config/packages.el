@@ -1,6 +1,8 @@
 (require 'package)
 (require 'cl)
 
+
+
 ;; (defvar emacswiki-packages 
 ;;   (list
 ;;    "grep-edit.el"
@@ -57,7 +59,7 @@
 
 ;;; Auto Complete
 ;; 自動補完
-(package-install 'github "my2m/auto-complete" 'auto-complete-config)
+(package-install 'github "m2ym/auto-complete" 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories
              (format "%s/auto-complete/dict" package-base-dir))
 (ac-config-default)
@@ -75,9 +77,10 @@
 
 ;; iswitchbの代わり
 (let ((original-browse-url-browser-function browse-url-browser-function))
-  (setq anything-command-map-prefix-key "C-c C-<SPC>")
+  (setq anything-command-map-prefix-key "C-c C-c")
   (require 'anything-startup)
   (define-key global-map (kbd "C-x b") 'anything-for-files)
+  (define-key global-map (kbd "C-x C-b") 'anything-for-files)
   (define-key anything-map (kbd "C-z") nil)
   (define-key anything-map (kbd "C-l") 'anything-execute-persistent-action)
   (define-key anything-map (kbd "C-o") nil)
@@ -86,13 +89,38 @@
   (setq browse-url-browser-function original-browse-url-browser-function))
 
 ;;; evil
-(package-install 'git "git/undo-tree.git" 'undo-tree nil "http://www.dr-qubit.org")
-(package-install 'git "evil/evil.git" 'evil nil "git://gitorious.org")
-(evil-mode t)
+;;(package-install 'git "git/undo-tree.git" 'undo-tree nil "http://www.dr-qubit.org")
+;;(package-install 'git "evil/evil.git" 'evil nil "git://gitorious.org")
+;;(evil-mode t)
 
 ;; yasnippet
 (package-install 'github "capitaomorte/yasnippet" 'yasnippet)
 
+;; js2-mode
+(package-install 'svn "js2-mode.el" nil nil
+		 "http://js2-mode.googlecode.com/svn/trunk")
+(autoload 'js2-mode "js2-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(add-hook
+ 'js2-mode-hook
+ '(lambda()
+     (interactive)
+     (require 'js)
+     (setq js-indent-level 4
+	   js-expr-indent-offset 4
+	   indent-tabs-mode nil)
+     (set (make-local-variable 'indent-line-function) 'js-indent-line)
+     (defun indent-and-back-to-indentation ()
+       (interactive)
+       (indent-for-tab-command)
+       (let ((point-of-indentation
+	      (save-excursion
+		(back-to-indentation)
+		(point))))
+	 (skip-chars-forward "\s " point-of-indentation)))
+     (define-key js2-mode-map (kbd "C-i") 'indent-and-back-to-indentation)
+     (define-key js2-mode-map (kbd "C-m") nil)
+     ))
 
 ;;; run-test
 ;; テスト実行

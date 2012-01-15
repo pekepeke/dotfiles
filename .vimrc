@@ -1,5 +1,6 @@
 " init setup "{{{1
 
+let s:is_loaded = exists('g:loaded_dot_vimrc')
 " platform detection {{{2
 let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
@@ -8,7 +9,7 @@ let s:is_win = has('win16') || has('win32') || has('win64')
 let s:configured_runtimepath = &runtimepath
 set all&
 
-if exists('g:loaded_dot_vimrc')
+if s:is_loaded
   if has('gui') | execute 'source' expand("~/.gvimrc") | endif
   let &runtimepath=s:configured_runtimepath
 elseif s:is_win
@@ -105,6 +106,8 @@ NeoBundle 'nanki/vim-objj.git'
 NeoBundle 'pekepeke/cocoa.vim.git'
 " android
 NeoBundle 'thinca/vim-logcat.git'
+" scala
+NeoBundle 'mlen/vim-scala.git'
 " texts
 NeoBundle 'thinca/vim-ft-diff_fold.git'
 NeoBundle 'plasticboy/vim-markdown.git'
@@ -1631,13 +1634,13 @@ let g:echodoc_enable_at_startup=0
 let g:neocomplcache_snippets_dir                        = $HOME . '/.vim/snippets'
 let g:neocomplcache_enable_at_startup                   = 1
 let g:neocomplcache_cursor_hold_i_time                  = 500
-if exists('g:loaded_dot_vimrc') | silent exe 'NeoComplCacheEnable' | endif
+if s:is_loaded | silent exe 'NeoComplCacheEnable' | endif
 
 let g:neocomplcache_max_list = 10  " 補完候補の数
 if !exists('g:neocomplcache_keyword_patterns')
   let g:neocomplcache_keyword_patterns = {}
 endif
-let g:neocomplcache_keyword_patterns['default'] = '\h\w*' " 日本語をキャッシュしない
+let g:neocomplcache_keyword_patterns.default = '\h\w*' " 日本語をキャッシュしない
 let g:neocomplcache_enable_auto_select = 1   " 一番目の候補を自動選択
 
 let g:neocomplcache_enable_smart_case                   = 1
@@ -1672,16 +1675,34 @@ let g:neocomplcache_dictionary_filetype_lists = {
   \ 'objc'        : $HOME . '/.vim/dict/objc.dict',
   \ 'actionscript': $HOME . '/.vim/dict/actionscript.dict',
   \ }
+if !exists('g:neocomplcache_include_patterns')
+  let g:neocomplcache_include_patterns = {}
+endif
+let g:neocomplcache_include_patterns.scala = '^import'
 if !exists('g:neocomplcache_vim_completefuncs')
   let g:neocomplcache_vim_completefuncs = {}
 endif
 let g:neocomplcache_vim_completefuncs.Ref = 'ref#complete'
 if !exists('g:neocomplcache_omni_patterns')
-  let g:neocomplcache_omni_patterns = {
-        \ 'ruby' : '[^. *\t]\.\w*\|\h\w*::',
-        \ }
-        "\ 'php'  : '[^. \t]->\h\w*\|\h\w*::',
+  let g:neocomplcache_omni_patterns = {}
 endif
+let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+
+let g:neocomplcache_plugin_disable = {
+      \ 'syntax_complete' : 1,
+      \ }
+if !exists('g:neocomplcache_delimiter_patterns')
+  let g:neocomplcache_delimiter_patterns = {}
+endif
+let g:neocomplcache_delimiter_patterns.php = ['->', '::', '\']
+if !exists('g:neocomplcache_same_filetype_lists')
+  let g:neocomplcache_same_filetype_lists = {}
+endif
+if !exists('g:neocomplcache_member_prefix_patterns')
+  let g:neocomplcache_member_prefix_patterns = {}
+endif
+let g:neocomplcache_member_prefix_patterns.php = '->\|::'
 " }}}
 
 " SuperTab like snippets behavior.
@@ -1694,8 +1715,16 @@ inoremap <silent> <Cr> <C-R>=neocomplcache#smart_close_popup()<CR><CR>
 
 " <TAB>: completion.
 " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-smap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : "\<TAB>"
+function! s:is_snip_file()
+  let ext = expand('%:e')
+  return (ext == "snip" || ext == "snippet")
+endfunction
+imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable()
+      \ && !<SID>is_snip_file()
+      \ ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neocomplcache#sources#snippets_complete#expandable()
+      \ && !<SID>is_snip_file()
+      \ ? "\<Plug>(neocomplcache_snippets_expand)" : "\<TAB>"
 " <C-h>, <BS>: close popup and delete backword char.
 inoremap <expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
 inoremap <expr><BS>   neocomplcache#smart_close_popup()."\<C-h>"
@@ -1949,9 +1978,9 @@ command! Tocoffee call my#util#newfile_with_text(expand('%:p:r').".coffee",
 " シェル起動系 {{{2
 if s:is_mac "{{{3
   " Utility command for Mac
-  command! Here silent call system('open ' . expand('%:p:h'))
-  command! This silent call system('open ' . expand('%:p'))
-  command! -nargs=1 -complete=file That silent call system('open ' . shellescape(expand(<f-args>), 1))
+  command! Here silent call system('open', expand('%:p:h'))
+  command! This silent call system('open', expand('%:p'))
+  command! -nargs=1 -complete=file That silent call system('open', shellescape(expand(<f-args>), 1))
 elseif s:is_win "{{{3
   " Utility command for Windows
   command! Here silent execute '!explorer' substitute(expand('%:p:h'), '/', '\', 'g')
@@ -1959,18 +1988,21 @@ elseif s:is_win "{{{3
   command! -nargs=1 -complete=file That silent execute '!explorer' shellescape(expand(<f-args>), 1)
 else "{{{3
   " TODO
+  command! This silent execute '!"%"'
 endif
 "}}}
 LCAlias Here This That
 
 " chm launcher {{{2
 if exists('g:my_chm_dir') && (s:is_win || (!s:is_win && !empty(g:my_chm_command)))
-  command! -nargs=1 -complete=customlist,my#chm#complete Chm call my#chm#open("<args>")
+  command! -nargs=1 -complete=customlist,my#chm#complete
+        \ Chm call my#chm#open("<args>")
   LCAlias Chm
 endif
 
 if exists('g:my_cheatsheets_dir')
-  command! -nargs=1 -complete=customlist,my#cheatsheet#complete CheatSheet call my#cheatsheet#open("<args>")
+  command! -nargs=1 -complete=customlist,my#cheatsheet#complete
+        \ CheatSheet call my#cheatsheet#open("<args>")
   LCAlias CheatSheet
 endif
 

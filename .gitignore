@@ -48,6 +48,10 @@ doc/tags-ja
 .vim/vundle
 .vim/neobundle
 
+#emacs
+.emacs.d/tmp
+.emacs.d/packages
+
 # freemind
 .freemind/log.*
 .freemind/auto.mmfilter

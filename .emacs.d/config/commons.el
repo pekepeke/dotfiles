@@ -28,6 +28,8 @@
 
 ;;; 対応する括弧を光らせる。
 (show-paren-mode 1)
+;; colorize
+(global-font-lock-mode t)
 ;;; ウィンドウ内に収まらないときだけ括弧内も光らせる。
 (setq show-paren-style 'mixed)
 (setq blink-matching-paren t)
@@ -44,6 +46,8 @@
 ;; 置換する文字列を優先する.
 (setq case-replace nil)
 
+;;; TAB
+(setq-default default-tab-width 4)
 ;;; 行末の空白を表示
 (setq-default show-trailing-whitespace t)
 ;;; 改行・タブ・スペースの色付け
@@ -332,6 +336,9 @@
   (setq mac-command-key-is-meta t)
   (setq mac-command-modifier-meta t)
   (setq mac-option-modifier 'meta)
+  (setq ns-command-modifier 'meta)
+  (setq ns-alternate-modifier 'super)
+
   (setq grep-find-use-xargs 'bsd)
   (setq browse-url-generic-program "open")
   (when (eq window-system 'ns)

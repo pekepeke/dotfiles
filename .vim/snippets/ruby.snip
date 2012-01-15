@@ -419,4 +419,14 @@ snippet tas
 	task :${2:task_name => [:dependent, :tasks]} do
 		${3}
 	end
+snippet nosuch
+	def method_missing(method_id, *args)
+		${1}
+	end
+snippet begr
+	begin
+		${1}
+	rescue => e
+		${2}
+	end
 
