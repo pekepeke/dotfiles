@@ -6,18 +6,18 @@
 (defvar package-base-dir "~/.emacs.d/packages")
 
 (defun byte-compile-directory (name &optional force)
-	 (loop for f in (directory-files name t)
-		   do (cond
-			   ((string-match "el$" f)
-				(if (or force (file-exists-p (format "%sc")))
-						(progn
-						  (load-file f)
-						  (byte-compile-file f))))
-			   ((and (file-directory-p f)
-					 (not (member (file-name-nondirectory f) '("." ".."))))
-				(byte-compile-directory f)
-				))
-		   ))
+  (loop for f in (directory-files name t)
+		do (cond
+			((string-match "el$" f)
+			 (if (or force (file-exists-p (format "%sc" f)))
+				 (progn
+				   (load-file f)
+				   (byte-compile-file f))))
+			((and (file-directory-p f)
+				  (not (member (file-name-nondirectory f) '("." ".."))))
+			 (byte-compile-directory f)
+			 ))
+		))
 
 (defun package-path-basename (path)
   (file-name-sans-extension (file-name-nondirectory path)))
@@ -50,6 +50,10 @@
    (format (concat "git clone https://github.com/%s.git %s")
            (car files)
            (package-directory files)))
+  (if (file-exists-p (format "%s/.gitmodules" (package-directory files)))
+	  (package-run-shell-command
+	   (format "cd %s && git submodule update --init"
+			   (package-directory files))))
   (byte-compile-directory (package-directory files))
   )
 
@@ -58,6 +62,10 @@
    (format (concat "git clone %s %s")
            (if base-url (format "%s/%s" base-url (car files)) (car files))
            (package-directory files)))
+  (if (file-exists-p (format "%s/.gitmodules" (package-directory files)))
+	  (package-run-shell-command
+	   (format "cd %s && git submodule update --init"
+			   (package-directory files))))
   (byte-compile-directory (package-directory files))
   )
 
@@ -123,9 +131,9 @@
 			 'package-install-from-svn)
 			(file
 			 'package-install-from-file)
-                        (t
-                         (error "unknown package type: <%s>(%s)"
-                                type package)))))
+			(t
+			 (error "unknown package type: <%s>(%s)"
+					type package)))))
     (add-to-list 'load-path
                  (format "%s/%s"
                          (package-directory files)
