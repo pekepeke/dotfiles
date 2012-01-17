@@ -19,6 +19,8 @@ sub new {
     bless $self, $class;
 }
 
+if ($0 eq __FILE__) {
+}
 
 1;
 __END__

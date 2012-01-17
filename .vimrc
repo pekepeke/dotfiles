@@ -243,12 +243,15 @@ NeoBundle 'kana/vim-textobj-jabraces.git'
 NeoBundle 'kana/vim-textobj-lastpat.git'
 NeoBundle 'kana/vim-textobj-syntax.git'
 NeoBundle 'kana/vim-textobj-user.git'
+NeoBundle 'kana/vim-textobj-line.git'
 NeoBundle 'thinca/vim-textobj-between.git'
 NeoBundle 'thinca/vim-textobj-comment.git'
 NeoBundle 'thinca/vim-textobj-function-javascript.git'
 NeoBundle 'thinca/vim-textobj-function-perl.git'
+NeoBundle 't9md/vim-textobj-function-ruby.git'
 NeoBundle 'vim-scripts/textobj-indent.git'
 NeoBundle 'sgur/textobj-parameter.git'
+NeoBundle 'h1mesuke/textobj-wiw.git'
 
 " metarw
 NeoBundle "mattn/vim-metarw.git"
@@ -595,6 +598,58 @@ if has('kaoriya') && has('migemo')
 elseif executable('cmigemo')
   nnoremap <silent> g/ :Mi<CR>
 endif
+
+" alias commands {{{1
+" basic {{{2
+command! -nargs=0 -bang MyQ
+      \ if tabpagenr('$') == 1 && winnr('$') == 1 | enew
+      \ | else | quit<bang> | endif
+
+command! -nargs=0 -bang MyWQ write<bang> | MyQ<bang>
+
+function s:toggle_option(opt)
+  exe "setl inv".a:opt
+  let sts = eval('&'.a:opt)
+  echo printf("set %s : %s", a:opt, sts ? "ON" : "OFF")
+endfunction
+
+" textobj {{{2
+function! s:map_textobj(key, cmd)
+  silent exe 'omap' a:key a:cmd
+  silent exe 'vmap' a:key a:cmd
+endfunction
+
+command! -nargs=+ Tmap call s:map_textobj(<f-args>)
+
+" altercmd "{{{2
+call altercmd#load()
+
+function! s:alias_lc(...) " {{{3
+  for cmd in a:000
+    silent exe 'Alias' tolower(cmd) cmd
+  endfor
+endfunction
+
+command! -bar -nargs=+
+      \ Alias CAlterCommand <args> | AlterCommand <cmdwin> <args>
+
+command! -nargs=+ LCAlias call s:alias_lc(<f-args>)
+" command! -nargs=0 -bang MyQ if &buftype != 'nofile' | bd<bang>
+      " \ | elseif tabpagenr('$') == 1 && winnr('$') == 1 | enew
+      " \ | else | quit<bang> | endif
+
+" alias calls {{{2
+"Alias q bd
+Alias q MyQ
+Alias wq MyWQ
+Alias Q quit
+Alias WQ wq
+
+Alias ve vsplit
+Alias se split
+Alias n new
+Alias v vnew
+
 
 " mappings {{{1
 " define common key-prefixes {{{2
@@ -987,44 +1042,6 @@ nmap [prefix]ss :<C-u>EnewNofile<CR>
 nmap [prefix]se :<C-u>EnewNofile<CR>
 nmap [prefix]sc <Plug>(scratch-open)
 nnoremap [prefix]sj :<C-u>JunkFile<CR>
-
-" altercmd "{{{2
-call altercmd#load()
-
-function s:toggle_option(opt)
-  exe "setl inv".a:opt
-  let sts = eval('&'.a:opt)
-  echo printf("set %s : %s", a:opt, sts ? "ON" : "OFF")
-endfunction
-
-function! s:alias_lc(...) " {{{3
-  for cmd in a:000
-    silent exe 'Alias' tolower(cmd) cmd
-  endfor
-endfunction
-
-" }}} def commands
-command! -bar -nargs=+
-      \ Alias CAlterCommand <args> | AlterCommand <cmdwin> <args>
-command! -nargs=+ LCAlias call s:alias_lc(<f-args>)
-" command! -nargs=0 -bang MyQ if &buftype != 'nofile' | bd<bang>
-      " \ | elseif tabpagenr('$') == 1 && winnr('$') == 1 | enew
-      " \ | else | quit<bang> | endif
-command! -nargs=0 -bang MyQ
-      \ if tabpagenr('$') == 1 && winnr('$') == 1 | enew
-      \ | else | quit<bang> | endif
-command! -nargs=0 -bang MyWQ write<bang> | MyQ<bang>
-
-"Alias q bd
-Alias q MyQ
-Alias wq MyWQ
-Alias Q quit
-Alias WQ wq
-
-Alias ve vsplit
-Alias se split
-Alias n new
-Alias v vnew
 
 " alignta {{{2
 let g:alignta_confirm_for_retab = 0
@@ -1557,27 +1574,21 @@ map [op-special]c <Plug>(operator-camelize)
 map [op-special]C <Plug>(operator-decamelize)
 
 " textobj {{{2
-omap iF <Plug>(textobj-function-i)
-omap aF <Plug>(textobj-function-a)
-vmap iF <Plug>(textobj-function-i)
-vmap aF <Plug>(textobj-function-a)
-omap iI <Plug>(textobj-indent-i)
-omap aI <Plug>(textobj-indent-a)
-vmap iI <Plug>(textobj-indent-i)
-vmap aI <Plug>(textobj-indent-a)
-omap iB <Plug>(textobj-between-i)
-omap aB <Plug>(textobj-between-a)
-vmap iB <Plug>(textobj-between-i)
-vmap aB <Plug>(textobj-between-a)
-omap iB <Plug>(textobj-between-i)
-omap aB <Plug>(textobj-between-a)
-vmap iB <Plug>(textobj-between-i)
-vmap aB <Plug>(textobj-between-a)
-omap iP <Plug>(textobj-parameter-i)
-omap aP <Plug>(textobj-parameter-a)
-vmap iP <Plug>(textobj-parameter-i)
-vmap aP <Plug>(textobj-parameter-a)
-
+Tmap iF <Plug>(textobj-function-i)
+Tmap aF <Plug>(textobj-function-a)
+Tmap iI <Plug>(textobj-indent-i)
+Tmap aI <Plug>(textobj-indent-a)
+Tmap iB <Plug>(textobj-between-i)
+Tmap aB <Plug>(textobj-between-a)
+Tmap iP <Plug>(textobj-parameter-i)
+Tmap aP <Plug>(textobj-parameter-a)
+Tmap iL <Plug>(textobj-line-i)
+Tmap aL <Plug>(textobj-line-a)
+Tmap iC <Plug>(textobj-comment-i)
+Tmap aC <Plug>(textobj-comment-a)
+Tmap iW <Plug>(textobj-wiw-i)
+Tmap aW <Plug>(textobj-wiw-a)
+let g:textobj_wiw_no_default_key_mappings=1
 
 " ref.vim {{{2
 " options {{{3
