@@ -1254,7 +1254,7 @@ nmap <silent> [unite]l       [unite][file]
 nmap <silent> [unite]m       [unite][mru]
 
 nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
-nnoremap <silent> [unite]i  :<C-u>Unite webcolorscheme<CR>
+nnoremap <silent> [unite]i  :<C-u>Unite webcolorname<CR>
 nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
 nnoremap <silent> [unite]gg :<C-u>Unite ack -buffer-name=grep -no-quit<CR>
 nnoremap <silent> [unite]gr :<C-u>Unite grep -buffer-name=grep -no-quit<CR>

@@ -5,23 +5,39 @@
 //	get_include_path(),
 //	dirname(__FILE__).'/lib',
 //)));
-require_once 'PHPUnit/Framework.php';
-require_once '<%= substitute(expand('%:t:r'), 'Test$', '', 'e') %>.php';
 
-class <+FILENAME_NOEXT+> extends PHPUnit_Framework_TestCase
-{
-	public function setUpBeforeClass() {}
-	public function setUp() {
-		$this->obj = new <%= substitute(expand('%:t:r'), 'Test$', '', 'e') %>();
-	}
+require '<%= substitute(expand('%:t:h'), 'Test', '', 'ie') %>';
 
-	public function test() {
-		$this->assertTrue(true);
-		$this->assertEquals(true, $this->obj);
-		$this->assertType('integer', $this->obj);
-		$this->assertLessThanOrEqual(30, 20);
-	}
+class <+FILENAME_NOEXT+> extends PHPUnit_Framework_TestCase {
+    /**
+     * @var <%= substitute(expand('%:t:r'), 'Test', '', 'ie') %>
+     */
+    protected $object;
 
-	public function tearDown() {}
-	public function tearDownAfterClass() {}
+    /**
+     * This method is called before a test is executed.
+     */
+    protected function setUp() {
+        $this->object = new <%= substitute(expand('%:t:r'), 'Test', '', 'ie') %>;
+    }
+
+    /**
+     * This method is called after a test is executed.
+     */
+    protected function tearDown() {
+    }
+
+    /**
+     *
+     * @covers <%= substitute(expand('%:t:r'), 'Test', '', 'ie') %>::XXX
+     */
+    public function testXXX() {
+        $this->assertEquals(
+          0,
+          $this->object->add(0, 0)
+        );
+    }
+}
+
+if (basename(__FILE__) == basename($_SERVER['PHP_SELF'])) {
 }
