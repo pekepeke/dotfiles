@@ -88,10 +88,38 @@
   (package-run-shell-command
    (format "wget --directory-prefix %s %s"
            (package-directory files)
-	   (if base-url (format "%s/%s" base-url (car files)) (car files))
+		   (if base-url (format "%s/%s" base-url (car files)) (car files))
 	   ))
-  (byte-compile-directory (package-directory files))
-  )
+  (byte-compile-directory (package-directory files)))
+
+(defun package-install-from-archive (files &optional base-url)
+  (let ((url (if base-url (format "%s/%s" base-url (car files)) (car files)))
+		(tmp-directory (format "%s/-tmp-%s" package-base-dir (car files)))
+  		(extension (file-name-extension (car files)))
+		(basename (file-name-sans-extension
+				   (file-name-nondirectory (car files))) ))
+	(message "%s %s %s %s" url tmp-directory extension basename)
+	(shell-command
+	 (format "mkdir -p %s" tmp-directory))
+	(package-run-shell-command
+	 (format "wget --directory-prefix %s %s"
+			 tmp-directory url))
+	(cond ((string-match extension "zip")
+		   (package-run-shell-command
+			(format "unzip %s/%s -d %s"
+					tmp-directory (car files) tmp-directory)))
+		  )
+
+	(if (file-directory-p (format "%s/%s" tmp-directory basename))
+		(progn
+		  (rename-file (format "%s/%s" tmp-directory basename)
+					   (format "%s" (package-directory files)))
+		  (package-run-shell-command
+		   (format "rm -rf %s" tmp-directory))
+		  ))
+	(byte-compile-directory (package-directory files))
+  ))
+
 
 (defun package-install-from-repo.or.cz (files)
   (package-run-shell-command
@@ -115,30 +143,33 @@
 (defun package-install
   (type package-spec require-name &optional force &optional repo-base-url)
   (let ((files (package-alist-value
-		package-spec 'files
-		(if (listp package-spec)
-		    package-spec
-		  (list package-spec))))
+				package-spec 'files
+				(if (listp package-spec)
+					package-spec
+				  (list package-spec))))
         (base-path (package-alist-value package-spec 'base-path "."))
         (additional-paths (package-alist-value package-spec 'additional-paths
                                                nil))
-	(package-local nil)
-        (install-proc (case type
-                        (emacswiki
-                         'package-install-from-emacswiki)
-                        (github
-                         'package-install-from-github)
-                        (repo.or.cz
-                         'package-install-from-repo.or.cz)
-			(git
-			 'package-install-from-git)
-			(svn
-			 'package-install-from-svn)
-			(file
-			 'package-install-from-file)
-			(t
-			 (error "unknown package type: <%s>(%s)"
-					type package)))))
+		(package-local nil)
+        (install-proc
+		 (case type
+		   (emacswiki
+			'package-install-from-emacswiki)
+		   (github
+			'package-install-from-github)
+		   (repo.or.cz
+			'package-install-from-repo.or.cz)
+		   (git
+			'package-install-from-git)
+		   (svn
+			'package-install-from-svn)
+		   (file
+			'package-install-from-file)
+		   (archive
+			'package-install-from-archive)
+		   (t
+			(error "unknown package type: <%s>(%s)"
+				   type package)))))
     (add-to-list 'load-path
                  (format "%s/%s"
                          (package-directory files)
@@ -148,19 +179,19 @@
                                       (package-directory files)
                                       additional-path)))
     (setq package-local
-	  (format "%s/%s"(package-directory files) base-path))
+		  (format "%s/%s"(package-directory files) base-path))
     (cond (require-name
-	   (condition-case err
-	       (require require-name)
-	     (error
-	      (message (format "installing %s..." files))
-	      (if repo-base-url (funcall install-proc files repo-base-url)
-		(funcall install-proc files))))
-	   (require require-name))
-	  ((not (file-exists-p package-local))
-	   (if repo-base-url (funcall install-proc files repo-base-url)
-	     (funcall install-proc files)))
-	  ))
+		   (condition-case err
+			   (require require-name)
+			 (error
+			  (message (format "installing %s..." files))
+			  (if repo-base-url (funcall install-proc files repo-base-url)
+				(funcall install-proc files))))
+		   (require require-name))
+		  ((not (file-exists-p package-local))
+		   (if repo-base-url (funcall install-proc files repo-base-url)
+			 (funcall install-proc files)))
+		  ))
   )
 
 

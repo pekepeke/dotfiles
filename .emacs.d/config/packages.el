@@ -44,11 +44,12 @@
 ;;    )
 
 ;;; color-theme
-;(require 'color-theme)
-;(eval-after-load "color-theme"
-;  '(progn
-;     (color-theme-initialize)
-;     (color-theme-arjen)))
+(package-install 'archive "color-theme-6.6.0.zip" 'color-theme
+				 nil "http://download.savannah.gnu.org/releases/color-theme/")
+(eval-after-load "color-theme"
+  '(progn
+     (color-theme-initialize)
+     (color-theme-arjen)))
 
 ;;; grep-edit
 ;; *grep*で編集できるようにする
