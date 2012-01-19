@@ -96,6 +96,7 @@
 ;; yasnippet
 (package-install 'github "capitaomorte/yasnippet" 'yasnippet)
 
+(package-install 'github "jwiegley/eshell" 'eshell)
 
 ;;; run-test
 ;; テスト実行

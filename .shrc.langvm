@@ -34,6 +34,10 @@ alias phpprove='prove --ext=.t.php --exec=php'
 [ -d $HOME/bin ] && PATH=$HOME/bin:$PATH
 [ -d $HOME/.bin ] && PATH=$HOME/.bin:$PATH
 
+_SHELL_NAME=""
+[ -n "$BASH_VERSION" ] && _SHELL_NAME="bash"
+[ -n "$ZSH_VERSION" ] && _SHELL_NAME="zsh"
+
 # for perl {{{2
 if [ -e $HOME/perl5 ]; then
   export PERLBREW_ROOT=$HOME/perl5/perlbrew
@@ -58,7 +62,7 @@ export PIP_DOWNLOAD_CACHE="$HOME/.pip_cache"
 if [ -e $HOME/.rbenv ]; then
   PATH="$HOME/.rbenv/bin:$PATH"
   eval "$(rbenv init -)"
-  [ -e $HOME/.rbenv/completions/rbenv.$(basename $SHELL) ] && source $HOME/.rbenv/completions/rbenv.$(basename $SHELL)
+  [ -e $HOME/.rbenv/completions/rbenv.${_SHELL_NAME} ] && source $HOME/.rbenv/completions/rbenv.${_SHELL_NAME}
 else
   [ -s $HOME/.rvm/scripts/rvm ] && source $HOME/.rvm/scripts/rvm
 fi
@@ -66,6 +70,7 @@ fi
 # for node.js {{{2
 if [ -s $HOME/.nvm/nvm.sh ] ; then
   source $HOME/.nvm/nvm.sh
+  . <(npm completion)
   # nvm use $(nvm ls | head -1 | sed -e 's/\/.*//')
 fi
 if [ -s $HOME/.nave/nave.sh ]; then
@@ -121,7 +126,7 @@ if [ -e $HOME/.phpenv ]; then
     PATH=$HOME/.phpenv/bin:$PATH
   fi
   eval "$(phpenv init -)"
-  [ -e $HOME/.phpenv/completions/rbenv.$(basename $SHELL) ] && source $HOME/.phpenv/completions/rbenv.$(basename $SHELL)
+  [ -e $HOME/.phpenv/completions/rbenv.${_SHELL_NAME} ] && source $HOME/.phpenv/completions/rbenv.${_SHELL_NAME}
 fi
 
 # etc {{{2
@@ -138,6 +143,7 @@ fi
 #export TEXMF=$TETEX_PATH/share/texmf
 #export TETEX_BIN_PATH=$TETEX_PATH/bin/i686-pc-linux-gnu
 
+  [ -e $HOME/.rbenv/completions/rbenv.${_SHELL_NAME} ] && source $HOME/.rbenv/completions/rbenv.${_SHELL_NAME}
 # Mozilla Setting {{{2
 export MOZ_NO_REMOTE=true
 

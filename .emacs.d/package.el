@@ -6,17 +6,22 @@
 (defvar package-base-dir "~/.emacs.d/packages")
 
 (defun byte-compile-directory (name &optional force)
+  (interactive "D")
   (loop for f in (directory-files name t)
 		do (cond
 			((string-match "el$" f)
-			 (if (or force (file-exists-p (format "%sc" f)))
+			 (if (or force (not (file-exists-p (format "%sc" f))))
 				 (progn
+				   (message (format "compiling : %s" f))
 				   (load-file f)
-				   (byte-compile-file f))))
+				   (byte-compile-file f))
+			   (message (format "skip : %s" f))
+			   ))
 			((and (file-directory-p f)
-				  (not (member (file-name-nondirectory f) '("." ".."))))
+				  (not (member (file-name-nondirectory f) '("." ".." ".git" ".svn" ".hg" "test" "tests"))))
 			 (byte-compile-directory f)
-			 ))
+			 )
+			)
 		))
 
 (defun package-path-basename (path)
