@@ -46,10 +46,13 @@
 ;;; color-theme
 (package-install 'archive "color-theme-6.6.0.zip" 'color-theme
 				 nil "http://download.savannah.gnu.org/releases/color-theme/")
+(package-install 'github "sellout/emacs-color-theme-solarized" 'color-theme-solarized)
+
 (eval-after-load "color-theme"
   '(progn
      (color-theme-initialize)
-     (color-theme-arjen)))
+     ;(color-theme-arjen)
+	 (color-theme-solarized-dark) ))
 
 ;;; grep-edit
 ;; *grep*で編集できるようにする
@@ -98,6 +101,11 @@
 (package-install 'github "capitaomorte/yasnippet" 'yasnippet)
 
 (package-install 'github "jwiegley/eshell" 'eshell)
+(add-hook 'eshell-mode-hook
+		  '(lambda()
+			 (interactive)
+			 (define-key eshell-map (kbd "C-a") 'eshell-bol)
+			 ))
 
 ;;; run-test
 ;; テスト実行

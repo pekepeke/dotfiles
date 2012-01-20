@@ -11,14 +11,47 @@
 				 "http://svn.ruby-lang.org/repos/ruby/trunk/misc/")
 (package-install 'github "eschulte/rinari" nil nil)
 (package-install 'github "eschulte/rhtml" nil nil)
+(package-install 'github "yoshiki/yaml-mode" nil)
+(package-install 'github "yoshiki/tmt-mode" nil)
 (package-install 'file "php-mode.el" nil nil
 				 "http://php-mode.svn.sourceforge.net/svnroot/php-mode/tags/php-mode-1.5.0/")
+(package-install 'github "nablaone/slime" nil)
+(package-install 'github "purcell/ac-slime" nil)
+
+;;; popwin
+(package-install 'github "m2ym/popwin-el" 'popwin)
+(setq display-buffer-function 'popwin:display-buffer)
+
+(setq anything-samewindow nil)
+(push '("*anything*" :height 20) popwin:special-display-config)
+(push '(dired-mode :position top) popwin:special-display-config)
+
+
+;;; TODO slime settings
 
 ;;; perl
+(defalias 'perl-mode 'cperl-mode)
+(add-to-list 'auto-mode-alist '("\\.t$" . cperl-mode))
+;;(setq auto-mode-alist (cons '("\\t$" . cperl-mode) auto-mode-alist))
 (add-hook 'cperl-mode-hook
            (lambda ()
              (require 'perl-completion)
-             (add-to-list 'ac-sources 'ac-source-perl-completion)))
+			 (perl-completion-mode t)
+			 (auto-complete-mode t)
+			 (make-variable-buffer-local 'ac-sources)
+             (add-to-list 'ac-sources 'ac-source-perl-completion)) )
+(autoload 'tmt-mode "tmt-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.mt$" . tmt-mode))
+(add-hook 'tmt-mode-hook
+		  (lambda ()
+			))
+
+;;; yaml
+(autoload 'yaml-mode "yaml-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+(add-hook 'yaml-mode-hook
+		  (lambda ()
+			))
 
 ;; javascript
 ;; js2-mode

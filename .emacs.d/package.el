@@ -4,6 +4,8 @@
 (require 'cl)
 
 (defvar package-base-dir "~/.emacs.d/packages")
+(defvar ignore-compile-directories
+  '(".git" ".svn" ".hg" "test" "tests" "t"))
 
 (defun byte-compile-directory (name &optional force)
   (interactive "D")
@@ -18,7 +20,7 @@
 			   (message (format "skip : %s" f))
 			   ))
 			((and (file-directory-p f)
-				  (not (member (file-name-nondirectory f) '("." ".." ".git" ".svn" ".hg" "test" "tests"))))
+				  (not (member (file-name-nondirectory f) (append '("." "..") ignore-compile-directories))))
 			 (byte-compile-directory f)
 			 )
 			)
