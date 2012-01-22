@@ -22,13 +22,15 @@
 
 (load "config/commons")
 (load "config/keybinds")
+(load "config/view-mode")
 ;;; 標準Elispの設定
 (load "config/builtins")
 
 ;;; 非標準Elispの設定
 (load "config/packages")
 
+(load "config/flymake")
+
 (load "config/programming")
 
-(load "config/flymake")
 

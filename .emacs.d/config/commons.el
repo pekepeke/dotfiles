@@ -345,15 +345,19 @@
     (if (< (display-pixel-height) 900)
 	(setq menlo-fontsize 12)
       (setq menlo-fontsize 12))
-    (create-fontset-from-ascii-font (concat "Menlo:size=" (number-to-string menlo-fontsize) ":weight=normal:slant=normal") nil "menlokakugo")
-    (set-fontset-font "fontset-menlokakugo"
-		      'unicode
-		      (font-spec :family "Hiragino Kaku Gothic ProN" :size menlo-fontsize)
-		      nil
-		      'append)
+    (create-fontset-from-ascii-font
+	 (concat "Menlo:size="
+			 (number-to-string menlo-fontsize)
+			 ":weight=normal:slant=normal") nil "menlokakugo")
+    (set-fontset-font
+	 "fontset-menlokakugo"
+	 'unicode
+	 (font-spec :family "Hiragino Kaku Gothic ProN" :size menlo-fontsize)
+	 nil
+	 'append)
     (add-to-list 'default-frame-alist '(font . "fontset-menlokakugo"))
     )
-  
+
   ;; Ctrl/Cmd/Optionがシステムに渡されるのを防ぐ
   (setq mac-pass-control-to-system nil)
   (setq mac-pass-command-to-system nil)

@@ -18,6 +18,10 @@
   ;;%.c-check-syntax:  ; $(CHECKSYNTAX.c)  $*.c
   ;;%.cc-check-syntax: ; $(CHECKSYNTAX.cc) $*.cc
 
+  (set-face-background 'flymake-errline "red4")
+  (set-face-foreground 'flymake-errline "black")
+  (set-face-background 'flymake-warnline "yellow")
+  (set-face-foreground 'flymake-warnline "black")
 
   ;; GUIの警告は表示しない
   (setq flymake-gui-warnings-enabled nil)
@@ -62,13 +66,18 @@
   (defun my-flymake-display-err-minibuf-for-current-line ()
     "Displays the error/warning for the current line in the minibuffer"
     (interactive)
-    (let* ((line-no             (flymake-current-line-no))
-	   (line-err-info-list  (nth 0 (flymake-find-err-info flymake-err-info line-no)))
-	   (count               (length line-err-info-list)))
+    (let* ((line-no
+			(flymake-current-line-no))
+	   (line-err-info-list
+		(nth 0 (flymake-find-err-info flymake-err-info line-no)))
+	   (count
+		(length line-err-info-list)))
       (while (> count 0)
 	(when line-err-info-list
-	  (let* ((text       (flymake-ler-text (nth (1- count) line-err-info-list)))
-		 (line       (flymake-ler-line (nth (1- count) line-err-info-list))))
+	  (let* ((text
+			  (flymake-ler-text (nth (1- count) line-err-info-list)))
+		 (line
+		  (flymake-ler-line (nth (1- count) line-err-info-list))))
 	    (message "[%s] %s" line text)))
 	(setq count (1- count)))))
 
@@ -76,9 +85,12 @@
   (defun my-flymake-display-err-popup.el-for-current-line ()
     "Display a menu with errors/warnings for current line if it has errors and/or warnings."
     (interactive)
-    (let* ((line-no             (flymake-current-line-no))
-	   (line-err-info-list  (nth 0 (flymake-find-err-info flymake-err-info line-no)))
-	   (menu-data           (flymake-make-err-menu-data line-no line-err-info-list)))
+    (let* ((line-no
+			(flymake-current-line-no))
+	   (line-err-info-list
+		(nth 0 (flymake-find-err-info flymake-err-info line-no)))
+	   (menu-data
+		(flymake-make-err-menu-data line-no line-err-info-list)))
       (if menu-data
 	  (popup-tip (mapconcat '(lambda (e) (nth 0 e))
 				(nth 1 menu-data)
@@ -107,8 +119,10 @@
     (flymake-simple-make-or-generic-init
      "g++" '("-Wall" "-Wextra" "-pedantic" "-fsyntax-only")))
 
-  (push '("\\.[cCmM]\\'" flymake-c-init) flymake-allowed-file-name-masks)
-  (push '("\\.\\(?:cc\|cpp\|CC\|CPP\\)\\'" flymake-cc-init) flymake-allowed-file-name-masks)
+  (push '("\\.[cCmM]\\'" flymake-c-init)
+		flymake-allowed-file-name-masks)
+  (push '("\\.\\(?:cc\|cpp\|CC\|CPP\\)\\'" flymake-cc-init)
+		flymake-allowed-file-name-masks)
 
   ;; Invoke ruby with '-c' to get syntax checking
   (when (executable-find "ruby")
@@ -116,10 +130,13 @@
       (flymake-simple-generic-init
        "ruby" '("-c")))
 
-    (push '(".+\\.rb\\'" flymake-ruby-init) flymake-allowed-file-name-masks)
-    (push '("Rakefile\\'" flymake-ruby-init) flymake-allowed-file-name-masks)
+    (push '(".+\\.rb\\'" flymake-ruby-init)
+		  flymake-allowed-file-name-masks)
+    (push '("Rakefile\\'" flymake-ruby-init)
+		  flymake-allowed-file-name-masks)
 
-    (push '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3) flymake-err-line-patterns)
+    (push '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3)
+		  flymake-err-line-patterns)
     )
 
   ;; bash チェック
@@ -179,4 +196,90 @@
   ;;(push '("^\\(.+\\)\:\\([0-9]+\\)\: \\(strict warning: trailing comma.+\\)\:$" 1 2 nil 3)
   ;;	flymake-err-line-patterns)
 
+  ;;; Perl
+  (defvar flymake-perl-err-line-patterns
+	'(("\\(.*\\) at \\([^ \n]+\\) line \\([0-9]+\\)[,.\n]" 2 3 nil 1)))
+
+  (defconst flymake-allowed-perl-file-name-masks
+	'(("\\.pl$" flymake-perl-init)
+	  ("\\.pm$" flymake-perl-init)
+	  ("\\.t$" flymake-perl-init)))
+
+  (defun flymake-perl-init ()
+	(let* ((temp-file (flymake-init-create-temp-buffer-copy
+					   'flymake-create-temp-inplace))
+		   (local-file (file-relative-name
+						temp-file
+						(file-name-directory buffer-file-name))))
+	  (list "perl" (list "-wc" local-file))))
+
+  (defun flymake-perl-load ()
+	(interactive)
+	(defadvice flymake-post-syntax-check (before flymake-force-check-was-interrupted)
+	  (setq flymake-check-was-interrupted t))
+	(ad-activate 'flymake-post-syntax-check)
+	(setq flymake-allowed-file-name-masks (append flymake-allowed-file-name-masks flymake-allowed-perl-file-name-masks))
+	(setq flymake-err-line-patterns flymake-perl-err-line-patterns)
+	(package-install 'file "set-perl5lib.el" 'set-perl5lib nil
+	 "http://svn.coderepos.org/share/lang/elisp/set-perl5lib/")
+	(set-perl5lib)
+	(flymake-mode t))
+
+  (add-hook 'cperl-mode-hook 'flymake-perl-load)
+
+  ;;; php
+  (when (not (fboundp (quote flymake-php-init)))
+    ;; flymake-php-initが未定義のバージョンだったら、自分で定義する
+    (defun flymake-php-init ()
+      (let* ((temp-file   (flymake-init-create-temp-buffer-copy
+                           (quote flymake-create-temp-inplace)))
+             (local-file  (file-relative-name
+                           temp-file
+                           (file-name-directory buffer-file-name))))
+        (list "php" (list "-f" local-file "-l"))))
+    (setq flymake-allowed-file-name-masks
+          (append
+           flymake-allowed-file-name-masks
+           (quote (("\.php[345]?$" flymake-php-init)))))
+    (setq flymake-err-line-patterns
+          (cons
+           (quote ("\(\(?:Parse error\|Fatal error\|Warning\): .*\) in \(.*\) on line \([0-9]+\)" 2 3 nil 1))
+           flymake-err-line-patterns)))
+
+  ;;; objc
+  (defvar xcode:gccver "4.2.1")
+  (defvar xcode:sdkver "5.0")
+  (defvar xcode:sdkpath
+	"/Developer/Platforms/iPhoneSimulator.platform/Developer")
+  (defvar xcode:sdk
+	(concat xcode:sdkpath "/SDKs/iPhoneSimulator" xcode:sdkver ".sdk"))
+  (defvar flymake-objc-compiler
+	(concat xcode:sdkpath "/usr/bin/gcc-" xcode:gccver))
+  (defvar flymake-objc-compile-default-options
+	(list "-Wall" "-Wextra" "-fsyntax-only"
+		  "-ObjC" "-std=c99" "-isysroot" xcode:sdk))
+  (defvar flymake-last-position nil)
+  (defvar flymake-objc-compile-options '("-I."))
+  (defun flymake-objc-init ()
+	(let* ((temp-file (flymake-init-create-temp-buffer-copy
+                    'flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                     temp-file
+                     (file-name-directory buffer-file-name))))
+	  (list flymake-objc-compiler
+			(append flymake-objc-compile-default-options
+					flymake-objc-compile-options
+					(list local-file)))))
+  (add-hook 'objc-mode-hook
+			(lambda ()
+			  ;; 拡張子 m と h に対して flymake を有効にする設定 flymake-mode t の前に書く必要があります
+			  (push '("\\.m$" flymake-objc-init)
+					flymake-allowed-file-name-masks)
+			  (push '("\\.h$" flymake-objc-init)
+					flymake-allowed-file-name-masks)
+			  ;; 存在するファイルかつ書き込み可能ファイル時のみ flymake-mode を有効にします
+			  (if (and (not (null buffer-file-name))
+					   (file-writable-p buffer-file-name))
+				  (flymake-mode t))
+			  ))
   )

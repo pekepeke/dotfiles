@@ -97,30 +97,35 @@
 (defun package-install-from-archive (files &optional base-url)
   (let ((url (if base-url (format "%s/%s" base-url (car files)) (car files)))
 		(tmp-directory (format "%s/-tmp-%s" package-base-dir (car files)))
-  		(extension (file-name-extension (car files)))
 		(basename (file-name-sans-extension
-				   (file-name-nondirectory (car files))) ))
-	(message "%s %s %s %s" url tmp-directory extension basename)
+				   (file-name-sans-extension
+				   (file-name-nondirectory (car files)))))
+		(filename (car files)))
 	(shell-command
 	 (format "mkdir -p %s" tmp-directory))
 	(package-run-shell-command
 	 (format "wget --directory-prefix %s %s"
 			 tmp-directory url))
-	(cond ((string-match extension "zip")
+	(cond ((string-match "\\.zip$" filename)
 		   (package-run-shell-command
 			(format "unzip %s/%s -d %s"
 					tmp-directory (car files) tmp-directory)))
-		  )
-
-	(if (file-directory-p (format "%s/%s" tmp-directory basename))
-		(progn
-		  (rename-file (format "%s/%s" tmp-directory basename)
-					   (format "%s" (package-directory files)))
-		  (package-run-shell-command
-		   (format "rm -rf %s" tmp-directory))
-		  ))
+		  ((string-match "\\.tar\\.bz2" filename)
+		   (package-run-shell-command
+			(format "tar jxvf %s/%s -C %s" tmp-directory filename tmp-directory)))
+	  )
+	(cond
+	 ((file-directory-p (format "%s/%s" tmp-directory basename))
+	  (rename-file (format "%s/%s" tmp-directory basename)
+				   (format "%s" (package-directory files)))
+	  (package-run-shell-command
+	   (format "rm -rf %s" tmp-directory)))
+	 (t
+	  (rename-file tmp-directory
+				   (format "%s" (package-directory files))))
+	 )
 	(byte-compile-directory (package-directory files))
-  ))
+	))
 
 
 (defun package-install-from-repo.or.cz (files)

@@ -1,5 +1,6 @@
 ;;; キーバインド
 (define-key global-map (kbd "C-h") 'delete-backward-char) ; 削除
+(define-key global-map (kbd "M-h") 'backward-kill-word)
 (define-key global-map (kbd "M-?") 'help-for-help)        ; ヘルプ
 (define-key global-map (kbd "C-c h") 'help-command)
 (define-key global-map (kbd "C-z") 'undo)                 ; undo
