@@ -429,4 +429,13 @@ snippet begr
 	rescue => e
 		${2}
 	end
+snippet findf
+	Find.find(${1:File.dirname(__FILE__)}) do |fpath|
+	  if File.basename(fpath)[0] == "." or
+		%W[.git .hg .svn .Trash].include?(File.basename(fpath))
+		Find.prune
+		next
+	  end
+	  ${2:puts fpath}
+	end
 

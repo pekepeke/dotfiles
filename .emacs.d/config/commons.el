@@ -176,6 +176,11 @@
 (setq grep-command (cons (concat grep-command-before-query " .")
                          (+ (length grep-command-before-query) 1)))
 
+;;; emacsclient
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
 (cond
  (run-w32 
   (set-language-environment "Japanese")
@@ -299,12 +304,6 @@
     (shell-command "explorer /e,.")
     )
   (global-set-key "\C-x\C-@" 'ms-explorer-open)
-
-  (if (locate-library "server")
-      (progn
-	(load-library "server")
-	(server-start)
-	))
 
   ;; cygwin 形式でパスアクセスを可能にする。
   (require 'cygwin-mount)

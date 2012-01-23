@@ -11,9 +11,16 @@ done
 # [ -e ~/Library/Application\ Support/Cyberduck/Queue.plist ] && \
 #  find ~/Library/Application\ Support/Cyberduck/Queue.plist -mtime 1 -exec rm -f {} \; > /dev/null 2>&1
 
+
 alias mvi='mvim --remote-tab-silent'
-alias gemacs='open -a Emacs.app'
 alias date='gdate'
 alias seq='gseq'
+
+function gemacs() {
+  emacsclient -n ${*:-.} 2>/dev/null && return 0
+  if [ -e $1 ] || touch $1; then
+    open -a /Applications/Emacs.app ${*:-.}
+  fi
+}
 
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

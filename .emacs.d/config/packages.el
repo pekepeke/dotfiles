@@ -1,6 +1,17 @@
 (require 'package)
 (require 'cl)
 
+;;; 動作しない…
+(package-install 'emacswiki "smartrep.el" 'smartrep)
+;; (eval-after-load "tabbar"
+;;   '(progn
+;; 	 (smartrep-define-key
+;; 		 global-map "C-z" '(("C-n" . 'tabbar-forward-tab)
+;; 							("C-p" . 'tabbar-backward-tab)
+;; 							("C-z" . 'undo)
+;; 							("C-/" . 'redo)
+;; 							))))
+
 ;;; key-chord
 (package-install 'emacswiki "key-chord.el" 'key-chord)
 (setq key-chord-two-keys-delay 0.04)
@@ -87,6 +98,7 @@
 			(add-to-list 'ac-sources 'ac-source-etags)
 			(setq ac-etags-use-document t)
 			))
+
 ;;; company
 (package-install 'archive "company-0.5.tar.bz2" nil nil
 				 "http://nschum.de/src/emacs/company-mode")
@@ -172,7 +184,7 @@
   (setq browse-url-browser-function original-browse-url-browser-function))
 
 ;;; evil
-;;(package-install 'git "git/undo-tree.git" 'undo-tree nil "http://www.dr-qubit.org")
+(package-install 'git "git/undo-tree.git" 'undo-tree nil "http://www.dr-qubit.org")
 ;;(package-install 'git "evil/evil.git" 'evil nil "git://gitorious.org")
 ;;(evil-mode t)
 
@@ -184,12 +196,43 @@
 			 (define-key eshell-map (kbd "C-a") 'eshell-bol)
 			 ))
 
+;;; e2wm
+(package-install 'github "kiwanami/emacs-window-layout" nil)
+(package-install 'github "kiwanami/emacs-window-manager" 'e2wm)
+(global-set-key (kbd "M-+") 'e2wm:start-management)
+(e2wm:add-keymap 
+ e2wm:pst-minor-mode-keymap
+ '(("<M-left>" . e2wm:dp-code ) ; codeへ変更
+   ("<M-right>"  . e2wm:dp-two) ; twoへ変更
+   ("<M-up>"    . e2wm:dp-doc)  ; docへ変更
+   ("<M-down>"  . e2wm:dp-dashboard) ; dashboardへ変更
+   ("C-."       . e2wm:pst-history-forward-command) ; 履歴進む
+   ("C-,"       . e2wm:pst-history-back-command) ; 履歴戻る
+   ("C-M-s"     . e2wm:my-toggle-sub) ; subの表示をトグルする
+   ("prefix L"  . ielm) ; ielm を起動する（subで起動する）
+   ("M-m"       . e2wm:pst-window-select-main-command) ; メインウインドウを選択する
+   ) e2wm:prefix-key)
+
+(e2wm:add-keymap 
+ e2wm:dp-doc-minor-mode-map 
+ '(("prefix I" . info)) ; infoを起動する
+ e2wm:prefix-key)
+
+(defun e2wm:my-toggle-sub () ; Subをトグルする関数
+  (interactive)
+  (e2wm:pst-window-toggle 'sub t 'main))
+
 ;;; run-test
 ;; テスト実行
 (package-install 'github '((files . ("kou/run-test"))
                            (base-path . "lib"))
                  'run-test-setting)
 
+(loop for package in
+	  '(
+		tabbar
+		)
+	  do (load (format "config/packages/%s" package)))
 
 ;;; uim
 ;; 2011-06-27

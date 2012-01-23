@@ -64,7 +64,6 @@
 			 (define-key lisp-mode-map (kbd "C-c C-b") 'eval-current-buffer)
 			 (define-key lisp-mode-map (kbd "C-c C-e") 'edebug-defun)
 			 ))
-
 ;;; html
 (package-install 'github "hober/html5-el" nil)
 (eval-after-load "rng-loc"

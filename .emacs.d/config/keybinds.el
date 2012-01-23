@@ -25,6 +25,25 @@
 (define-key global-map (kbd "C-a") 'back-to-indentation-or-bol)
 (define-key global-map (kbd "<S-home>") 'selection-beginning-of-line-or-bol)
 
+(define-key global-map (kbd "C-w") 'kill-region-or-backward-kill-word)
+
+(defun kill-region-or-backward-kill-word ()
+  (interactive)
+  (if (region-active-p)
+      (kill-region (point) (mark))
+    (backward-kill-word 1)))
+
+(defun kill-word-or-delete-horizontal-space (arg)
+  (interactive "p")
+  (let ((pos (point)))
+    (if (and (not (eobp))
+             (= (char-syntax (char-after pos)) 32)
+             (= (char-syntax (char-after (1+ pos))) 32))
+        (prog1 (delete-horizontal-space) 
+          (unless (memq (char-after pos) '(?( ?) ?{ ?} ?[ ?]))
+            (insert " ")))
+      (kill-word arg))))
+
 ;; minibuffer で単語削除
 (define-key minibuffer-local-completion-map (kbd "C-w") 'backward-kill-word)
 

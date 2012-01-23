@@ -20,10 +20,10 @@
 			   (message (format "skip : %s" f))
 			   ))
 			((and (file-directory-p f)
-				  (not (member (file-name-nondirectory f) (append '("." "..") ignore-compile-directories))))
-			 (byte-compile-directory f)
-			 )
-			)
+				  (not (member
+						(file-name-nondirectory f)
+						(append '("." "..") ignore-compile-directories))))
+			 (byte-compile-directory f)))
 		))
 
 (defun package-path-basename (path)
