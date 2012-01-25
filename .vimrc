@@ -152,7 +152,6 @@ NeoBundle 'Shougo/unite-build.git'
 NeoBundle 'Shougo/unite-help.git'
 " NeoBundle 'Sixeight/unite-grep.git'
 " NeoBundle 'Shougo/unite-grep.git'
-NeoBundle 't9md/vim-unite-ack.git'
 NeoBundle 'h1mesuke/unite-outline.git'
 NeoBundle 'hakobe/unite-script.git'
 NeoBundle 'mattn/unite-remotefile.git'
@@ -166,9 +165,14 @@ NeoBundle 'thinca/vim-unite-history.git'
 NeoBundle 'tsukkee/unite-tag.git'
 NeoBundle 'ujihisa/unite-colorscheme.git'
 NeoBundle 'ujihisa/unite-font.git'
+NeoBundle 'ujihisa/unite-launch.git'
+NeoBundle 'ujihisa/quicklearn.git'
 NeoBundle 'ujihisa/unite-gem.git'
 NeoBundle 'ujihisa/unite-rake.git'
 NeoBundle 'basyura/unite-rails.git'
+NeoBundle 'oppara/vim-unite-cake.git'
+NeoBundle 'heavenshell/unite-zf.git'
+NeoBundle 'heavenshell/unite-sf2.git'
 NeoBundle 'basyura/unite-yarm.git'
 NeoBundle 'pasela/unite-webcolorname.git'
 
@@ -1229,10 +1233,10 @@ else
 endif
 
 " unite-grep {{{3
-let g:unite_source_grep_default_opts = '-iRHn'
-
-" unite-ack {{{3
-let g:unite_source_ack_command='ack --nocolor --nogroup'
+" let g:unite_source_grep_default_opts = '-iRHn'
+let g:unite_source_grep_command = 'ack'
+let g:unite_source_grep_default_opts = '--no-heading --no-color -a'
+let g:unite_source_grep_recursive_opt = ''
 
 " unite mappings {{{3
 
@@ -1256,7 +1260,7 @@ nmap <silent> [unite]m       [unite][mru]
 nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
 nnoremap <silent> [unite]i  :<C-u>Unite webcolorname<CR>
 nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
-nnoremap <silent> [unite]gg :<C-u>Unite ack -buffer-name=grep -no-quit<CR>
+nnoremap <silent> [unite]gg :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
 nnoremap <silent> [unite]gr :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
 nnoremap <silent> [unite]gi :<C-u>Unite git_grep -buffer-name=git<CR>
 nnoremap <silent> [unite]q  :<C-u>Unite qf -buffer-name=qfix -no-quit<CR>
@@ -1266,6 +1270,7 @@ nnoremap <silent> [unite]/  :<C-u>Unite history/search history/command<CR>
 nnoremap <silent> [unite]p  :<C-u>Unite process<CR>
 nnoremap <silent> [unite]bb :<C-u>Unite bookmark -default-action=open<CR>
 nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
+nnoremap <silent> [unite]c :<C-u>Unite quicklearn -immediately
 
 " nnoremap <silent> [unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
 nnoremap <silent> [unite]h :<C-u>call <SID>smart_unite_ref_launch()<CR>
@@ -1365,25 +1370,39 @@ let g:html_use_encoding = 'utf-8'
 
 " quickrun {{{2
 "silent! nmap <unique> <Space> <Plug>(quickrun)
+if !exists('g:quickrun_config')
+  let g:quickrun_config={}
+endif
 if has('clientserver') && !s:is_win
-  let g:quickrun_config = {
-        \   '*': {'runmode': 'async:remote:vimproc', 'split': 'below'},
-        \ }
+  let g:quickrun_config['*'] = {'runmode': 'async:remote:vimproc', 'split': 'below'}
 else
-  let g:quickrun_config = {
-        \ '*' : {'split': 'below'},
-        \ }
+  let g:quickrun_config['*'] = {'split': 'below'}
 endif
 let g:quickrun_config["cat"] = {
-      \ 'command' : 'cat',
-      \ 'exec' : ['%c %s'],
+      \  'command' : 'cat',
+      \  'exec' : ['%c %s'],
       \ }
-
 nnoremap <Leader><Leader>r :<C-u>QuickRun cat<CR>
 
-" for ruby {{{3
+" for lang
+let g:quickrun_config['go'] = {
+      \  'command': '8g',
+      \  'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
+      \ }
+let g:quickrun_config['diag'] = {
+      \  'exec': [
+      \     '%c -a %s -o %{expand("%:r")}.png',
+      \     printf("%s %{expand(%:r)}.png", 
+      \      s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'gnome-open'))
+      \    ],
+      \  'outputter': 'message',
+      \ }
+
+" for testcase
 MyAutocmd BufWinEnter,BufNewFile *_spec.rb set filetype=ruby.rspec
+MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php set filetype=php.unit
 let g:quickrun_config['ruby.rspec'] = {'command' : 'rspec', 'exec' : '%c -l {line(".")}'}
+let g:quickrun_config['php.unit'] = {'command' : 'phpunit'}
 " html {{{3
 if s:is_mac
   let g:quickrun_config['html'] = {'exec' : 'open %s'}
@@ -1999,7 +2018,9 @@ elseif s:is_win "{{{3
   command! -nargs=1 -complete=file That silent execute '!explorer' shellescape(expand(<f-args>), 1)
 else "{{{3
   " TODO
+  command! Here silent execute '!gnome-open' expand('%:p:h')
   command! This silent execute '!"%"'
+  command! -nargs=1 -complete=file That silent execute '!gnome-open' shellescape(expand(<f-args>), 1)
 endif
 "}}}
 LCAlias Here This That
