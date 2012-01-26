@@ -67,6 +67,22 @@ fi
 # }}}
 
 # {{{ aliases
+NOTIFY() {
+  local title=$1
+  shift
+
+  if is_win ; then
+    is_exec growlnotify && growlnotify -t $title -m "$*"
+  elif is_mac ; then
+    is_exec growlnotify && growlnotify -t $title -m "$*"
+  else
+    if is_exec growlnotify ; then
+      growlnotify -t $title -m "$*"
+    elif is_exec notify-send ; then
+      notify-send $title "$*"
+    fi
+  fi
+}
 if is_exec gls ; then
   alias ls='gls --color=auto'
 else
@@ -93,11 +109,17 @@ alias sudo=' sudo -H'
 alias vim-filer='vim -c VimFiler'
 alias vim-shell='vim -c VimShell'
 update-submodules() {
-  pushd . >/dev/null 2>&1
+  local curdir=$(pwd)
   cd ~/.github-dotfiles && git submodule foreach 'git fetch; git checkout origin/master'
-  [ $(dirs | wc -w) -gt 0 ] && popd > /dev/null 2>&1
+  cd ${curdir}
+  NOTIFY "update .github-dotfiles" "complete!"
 }
-alias vim-bundle='update-submodules; vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall"'
+vim-bundle() {
+  update-submodules
+  vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall"
+  NOTIFY "neobundle update" "complete!"
+}
+# alias vim-bundle='update-submodules; vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall";NOTIFY "neobundle update" "complete!"'
 
 # emacs
 ## Invoke the ``dired'' of current working directory in Emacs buffer.
