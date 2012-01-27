@@ -165,7 +165,7 @@ NeoBundle 'thinca/vim-unite-history.git'
 NeoBundle 'tsukkee/unite-tag.git'
 NeoBundle 'ujihisa/unite-colorscheme.git'
 NeoBundle 'ujihisa/unite-font.git'
-NeoBundle 'ujihisa/unite-launch.git'
+" NeoBundle 'ujihisa/unite-launch.git'
 NeoBundle 'ujihisa/quicklearn.git'
 NeoBundle 'ujihisa/unite-gem.git'
 NeoBundle 'ujihisa/unite-rake.git'
@@ -669,10 +669,6 @@ nnoremap <silent> [t]e t
 
 noremap [s] <Nop>
 nmap s [s]
-
-noremap [op-special] <Nop>
-noremap [op-special]; ;
-map ; [op-special]
 
 nnoremap [prefix] <Nop>
 vnoremap [prefix] <Nop>
@@ -1586,27 +1582,27 @@ function! OperatorExcelize(motion_wise)
 endfunction
 
 map _ <Plug>(operator-replace)
-map [op-special]e <Plug>(operator-excelize)
-map [op-special]h <Plug>(operator-html-escape)
-map [op-special]H <Plug>(operator-html-unescape)
-map [op-special]c <Plug>(operator-camelize)
-map [op-special]C <Plug>(operator-decamelize)
+map ;e <Plug>(operator-excelize)
+map ;h <Plug>(operator-html-escape)
+map ;H <Plug>(operator-html-unescape)
+map ;c <Plug>(operator-camelize)
+map ;C <Plug>(operator-decamelize)
 
 " textobj {{{2
-Tmap iF <Plug>(textobj-function-i)
-Tmap aF <Plug>(textobj-function-a)
-Tmap iI <Plug>(textobj-indent-i)
-Tmap aI <Plug>(textobj-indent-a)
-Tmap iB <Plug>(textobj-between-i)
-Tmap aB <Plug>(textobj-between-a)
-Tmap iP <Plug>(textobj-parameter-i)
-Tmap aP <Plug>(textobj-parameter-a)
-Tmap iL <Plug>(textobj-line-i)
-Tmap aL <Plug>(textobj-line-a)
-Tmap iC <Plug>(textobj-comment-i)
-Tmap aC <Plug>(textobj-comment-a)
-Tmap iW <Plug>(textobj-wiw-i)
-Tmap aW <Plug>(textobj-wiw-a)
+Tmap i;f <Plug>(textobj-function-i)
+Tmap a;f <Plug>(textobj-function-a)
+Tmap i;i <Plug>(textobj-indent-i)
+Tmap a;i <Plug>(textobj-indent-a)
+Tmap i;p <Plug>(textobj-parameter-i)
+Tmap a;p <Plug>(textobj-parameter-a)
+Tmap i;l <Plug>(textobj-line-i)
+Tmap a;l <Plug>(textobj-line-a)
+Tmap i;c <Plug>(textobj-comment-i)
+Tmap a;c <Plug>(textobj-comment-a)
+Tmap i;b <Plug>(textobj-between-i)
+Tmap a;b <Plug>(textobj-between-a)
+Tmap i;w <Plug>(textobj-wiw-i)
+Tmap a;w <Plug>(textobj-wiw-a)
 let g:textobj_wiw_no_default_key_mappings=1
 
 " ref.vim {{{2

@@ -1,7 +1,7 @@
 # #!/usr/bin/ruby
 # vim:sw=2 ts=2 ft=snippet noexpandtab:
 snippet #!
-	#!/usr/bin/ruby
+	#!/usr/bin/env ruby
 
 # New Block
 snippet =b
@@ -60,35 +60,29 @@ snippet until
 	until ${1:condition}
 		${2}
 	end
-snippet cla class .. end
+snippet clase class .. end
 	class ${1:`substitute(Filename(), '^.', '\u&', '')`}
 		${2}
 	end
-snippet cla class .. initialize .. end
+snippet clasi class .. initialize .. end
 	class ${1:`substitute(Filename(), '^.', '\u&', '')`}
 		def initialize(${2:args})
 			${3}
 		end
-
-
 	end
-snippet cla class .. < ParentClass .. initialize .. end
+snippet clap class .. < ParentClass .. initialize .. end
 	class ${1:`substitute(Filename(), '^.', '\u&', '')`} < ${2:ParentClass}
 		def initialize(${3:args})
 			${4}
 		end
-
-
 	end
-snippet cla ClassName = Struct .. do .. end
+snippet clast ClassName = Struct .. do .. end
 	${1:`substitute(Filename(), '^.', '\u&', '')`} = Struct.new(:${2:attr_names}) do
 		def ${3:method_name}
 			${4}
 		end
-
-
 	end
-snippet cla class BlankSlate .. initialize .. end
+snippet clasb class BlankSlate .. initialize .. end
 	class ${1:BlankSlate}
 		instance_methods.each { |meth| undef_method(meth) unless meth =~ /\A__/ }
 snippet cla class << self .. end
@@ -110,13 +104,13 @@ snippet mod module .. end
 	module ${1:`substitute(Filename(), '^.', '\u&', '')`}
 		${2}
 	end
-snippet mod module .. module_function .. end
+snippet modf module .. module_function .. end
 	module ${1:`substitute(Filename(), '^.', '\u&', '')`}
 		module_function
 
 		${2}
 	end
-snippet mod module .. ClassMethods .. end
+snippet modc module .. ClassMethods .. end
 	module ${1:`substitute(Filename(), '^.', '\u&', '')`}
 		module ClassMethods
 			${2}
@@ -189,7 +183,7 @@ snippet usau
 	end
 snippet array
 	Array.new(${1:10}) { |${2:i}| ${3} }
-snippet hash
+snippet ha
 	Hash.new { |${1:hash}, ${2:key}| $1[$2] = ${3} }
 snippet filee File.foreach() { |line| .. }
 	File.foreach(${1:"path/to/file"}) { |${2:line}| ${3} }
@@ -199,7 +193,7 @@ snippet Dir Dir.global() { |file| .. }
 	Dir.glob(${1:"dir/glob/*"}) { |${2:file}| ${3} }
 snippet Dir Dir[".."]
 	Dir[${1:"glob/**/*.rb"}]${2}
-snippet dir
+snippet dirn
 	Filename.dirname(__FILE__)
 snippet deli
 	delete_if { |${1:e}| ${2} }
@@ -315,7 +309,7 @@ snippet optp
 		opt.on('-${1:o}", "${2:desc}") {|v| ${3} }
 		opt.parse!
 	end
-snippet opt
+snippet optso
 	opts.on( "-${1:o}", "--${2:long-option-name}", ${3:String},
 	         "${4:Option description.}") do |${5:opt}|
 		${6}
