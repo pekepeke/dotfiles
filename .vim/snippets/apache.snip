@@ -1,0 +1,64 @@
+# Snippets for code blocks used oftenly in Apache files.
+# <Directory>
+snippet dir
+	<Directory ${1:/}>
+		DirectoryIndex ${2:index.html}
+		Order Deny,Allow
+		Deny from All
+	</Directory>
+# <FilesMatch>   
+snippet filesmatch
+	<FilesMatch "${1:regex}">
+		${2}
+	</FilesMatch>
+# <IfModule>
+snippet ifmodule
+	<IfModule ${1:mod_example.c}>
+		${2}
+	</IfModule>
+# <LimitExcept>
+snippet limitexcept
+	<LimitExcept ${1:POST GET}>
+		${2}
+	</LimitExcept>
+# <Proxy>
+snippet proxy
+	<Proxy ${1:*}>
+		${2}
+	</Proxy>
+# <VirtualHost>
+snippet virtualhost
+	<VirtualHost ${1:*}:${2:80}>
+		ServerAdmin ${3:webmaster@example.com}
+		DocumentRoot ${4:/www/example.com}
+		ServerName ${5:www.example.com}
+	</VirtualHost>
+# php
+snippet php
+	php_value error_reporting 2047
+	php_flag display_errors On
+	php_flag session.use_cookies On
+	php_value session.cookie_lifetime 0
+	php_flag session.use_trans_sid Off
+	php_value session.gc_maxlifetime 3600
+	php_value session.save_path "{$2:/path/to/dir}"
+	php_flag short_open_tag On
+	AddType application/x-httpd-php .html
+# php_value
+snippet php_value
+	php_value ${1} "{$2}"
+# php_flag
+snippet php_flag
+	php_flag ${1} "{$2:Off}
+# capistrano
+snippet cap
+	ErrorDocument 503 /system/maintenance.html
+	RewriteEngine On
+	RewriteCond %{REQUEST_URI} !.(css|js|swf|gif|jpg|png)$
+	RewriteCond %{DOCUMENT_ROOT}/system/maintenance.html -f
+	RewriteCond %{REQUEST_URI} !^/images/
+	RewriteCond %{REQUEST_URI} !^/javascripts/
+	RewriteCond %{REQUEST_URI} !^/stylesheets/
+	RewriteCond %{SCRIPT_FILENAME} !maintenance.html
+	RewriteRule ^.*$  -  [redirect=503,last]
+

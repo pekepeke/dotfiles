@@ -8,6 +8,10 @@ snippet class
 snippet fun
 	${1:function_name} = (${2:argumen}) ->
 		${3: //body...}
+# Function (bound)
+snippet bfun
+	(${1:args}) =>
+		${2:// body...}
 
 # Asignation if
 snippet =if
@@ -24,6 +28,29 @@ snippet =ifthen
 # Asignation or=
 snippet or=
 	${1:options} or= ${2:defaults}
+
+# Array comprehension
+snippet fora
+	for ${1:name} in ${2:array}
+		${3:// body...}
+# Object comprehension
+snippet foro
+	for ${1:key}, ${2:value} of ${3:object}
+		${4:// body...}
+# Range comprehension (inclusive)
+snippet forr
+	for ${1:name} in [${2:start}..${3:finish}]
+		${4:// body...}
+snippet forrb
+	for ${1:name} in [${2:start}..${3:finish}] by ${4:step}
+		${5:// body...}
+# Range comprehension (exclusive)
+snippet forrex
+	for ${1:name} in [${2:start}...${3:finish}]
+		${4:// body...}
+snippet forrexb
+	for ${1:name} in [${2:start}...${3:finish}] by ${4:step}
+		${5:// body...}
 
 # Asignation forin
 snippet forin
@@ -51,8 +78,8 @@ snippet forindo
 snippet try
 	try
 		${1:expresion}
-	catch error
-		${2:error}
+	catch ${2:error}
+		${3}
 
 # Asignation tryfin
 snippet tryfin
@@ -88,10 +115,9 @@ snippet ##
 ##
 snippet desc
 	# ${1:Specification}
-
-describe '${2:Model or When ...}', ->
-	${3}
-	return
+	describe '${2:Model or When ...}', ->
+		${3}
+		return
 
 snippet it
 	it '${1:Should ...}', ->
@@ -141,3 +167,9 @@ snippet expcallw
 snippet expncallw
 	expect(${1:predicate}).wasNotCalledWith ${2:arguments}
 
+# Log
+snippet log
+	console.log ${1}
+# Require
+snippet req
+	${2:$1} = require '${1:sys}'${3}
