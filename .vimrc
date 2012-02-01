@@ -218,7 +218,7 @@ NeoBundle 'scrooloose/nerdtree.git'
 NeoBundle 'thinca/vim-qfreplace.git'
 NeoBundle 'nathanaelkane/vim-indent-guides.git'
 NeoBundle 'mileszs/ack.vim.git'
-if s:is_mac && has('gui_mac')
+if s:is_mac && has('gui')
   NeoBundle 'gmarik/sudo-gui.vim'
 endif
 
