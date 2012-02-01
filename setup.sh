@@ -1,5 +1,11 @@
 #!/bin/bash
 
+GIT_URL="git://github.com/pekepeke/dotfiles.git"
+LOCAL_DIR="$HOME/.github-dotfiles"
+BACKUP_FILES=".bash_profile .bashrc .screenrc .vimrc"
+SKIP_FILES=". .. .git setup.sh"
+COPY_FILES=""
+
 usage() {
   prg_name=`basename $0`
   cat <<EOM
@@ -21,42 +27,37 @@ matchin() {
 
 main() {
   cd $(dirname $0)
+
+  if [ ! -e $(basename $0) ]; then
+    if [ ! -e ~/.github-dotfiles ]; then
+      git clone ${GIT_URL} ${LOCAL_DIR}
+    fi
+    cd ${LOCAL_DIR}
+  fi
   CDIR=$(pwd)
   if [ ! -e $HOME/.rc-org ]; then
     mkdir $HOME/.rc-org
-    for F in .bash_profile .bashrc .screenrc .vimrc ;do
+    for F in "$BACKUP_FILES" ;do
       mv $HOME/$F $HOME/.rc-org
     done
   fi
   for F in .?* ;do
-    # if [ "$F" == "." -o "$F" == ".." -o "$F" == ".git" -o "$F" == "setup.sh" ] ; then
-    if matchin "$F" "." ".." ".git" "setup.sh" ; then
+    if matchin "$F" $SKIP_FILES ; then
       echo skip object $F
     elif [ -e "$HOME/$F" ]; then
       echo skip $F
+    elif matchin "$F" $COPY_FILES ; then
+      echo cp $CDIR/$f $HOME
+      cp $CDIR/$f $HOME
     else
       echo ln -s $CDIR/$F $HOME
       ln -s $CDIR/$F $HOME
     fi
   done
-  for prefix in bundle vundle neobundle; do
-    vp_dir=$CDIR/.vim/$prefix/vimproc/autoload
-    if [ ! -e "$vp_dir" ]; then
-      git submodule init
-      git submodule update
-    fi
-  done
-  #if [ ! -e "$vp_dir/autoload/proc.so" ]; then
-  # cd $CDIR/.vim/bundle/vimproc
-  # case $OSTYPE in
-    # darwin*)
-      # make -f make_mac.mak
-      # ;;
-    # *)
-      # make -f make_gcc.mak
-      # ;;
-  # esac
-  #fi
+  if [ -e "$CDIR/.gitmodules" ]; then
+    git submodule init
+    git submodule update
+  fi
 }
 
 while getopts "h:v" opt; do
