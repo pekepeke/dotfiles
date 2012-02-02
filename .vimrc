@@ -114,6 +114,10 @@ NeoBundle 'plasticboy/vim-markdown.git'
 NeoBundle 'thinca/vim-ft-markdown_fold.git'
 NeoBundle 'timcharper/textile.vim.git'
 NeoBundle 'motemen/hatena-vim.git'
+" haskell
+" NeoBundle 'ehamberg/haskellmode-vim.git'
+NeoBundle 'ujihisa/ref-hoogle.git'
+NeoBundle 'ujihisa/neco-ghc.git'
 " sql
 NeoBundle 'vim-scripts/dbext.vim.git'
 NeoBundle 'vim-scripts/SQLUtilities.git'
