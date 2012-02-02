@@ -171,6 +171,9 @@ lazy fmaps -u='b\.hatena\.ne\.jp/pekepekesamurai/' j k o,oj b v E,e
 
 " == auto_word_select_mode.js == "
 let g:auto_word_select_key = "<Leader>i"
+
+" === instapaper.js ===
+let g:instapaper_username='konno110@gmail.com'
 " }}}
 
 " {{{ ==================== etc ==================== "
