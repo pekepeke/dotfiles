@@ -13,8 +13,9 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.Grid
 import Data.Monoid
 
-import qualified XMonad.StackSet as W
 import qualified Data.Map as M
+import qualified XMonad.Actions.ConstrainedResize as Sqr
+import qualified XMonad.StackSet as W
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- launch a terminal
