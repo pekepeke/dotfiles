@@ -1,0 +1,6 @@
+" vim:fdm=marker sw=2 ts=2 ft=vim expandtab:
+
+" === instapaper.js ===
+let g:instapaper_username=''
+let g:instapaper_password=''
+

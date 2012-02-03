@@ -172,8 +172,6 @@ lazy fmaps -u='b\.hatena\.ne\.jp/pekepekesamurai/' j k o,oj b v E,e
 " == auto_word_select_mode.js == "
 let g:auto_word_select_key = "<Leader>i"
 
-" === instapaper.js ===
-let g:instapaper_username='konno110@gmail.com'
 " }}}
 
 " {{{ ==================== etc ==================== "
@@ -234,6 +232,14 @@ EOM
 " }}}
 
 source ~/.vimperatorrc.js
+js <<EOM
+(function(fpath) {
+  if (io.File(fpath).isReadable()) {
+    io.source(fpath);
+  }
+})("~/.vimperatorrc.local")
+endif
+EOM
 echo ".vimperatorrc sourced"
 
 "" vim: set ft=vim fdm=marker sw=2 ts=2 et:

@@ -238,6 +238,9 @@ if has('python')
   NeoBundle 'tsukkee/lingr-vim.git'
 endif
 
+NeoBundle 'kana/vim-gf-user.git'
+NeoBundle 'kana/vim-gf-diff.git'
+
 " operator
 NeoBundle 'kana/vim-operator-replace.git'
 NeoBundle 'kana/vim-operator-user.git'
@@ -844,16 +847,6 @@ nnoremap ? :<C-u>nohlsearch<CR>?
 
 " echo
 nnoremap [prefix]e :echo<Space>
-
-" gf " http://labs.timedia.co.jp/2011/04/git-diff-aware-gf-commands-for-vim.html#comment-91
-" git-diff-aware version of gf commands.
-nnoremap <expr> gf  <SID>do_git_diff_aware_gf('gf')
-nnoremap <expr> gF  <SID>do_git_diff_aware_gf('gF')
-nnoremap <expr> <C-w>f  <SID>do_git_diff_aware_gf('<C-w>f')
-nnoremap <expr> <C-w><C-f>  <SID>do_git_diff_aware_gf('<C-w><C-f>')
-nnoremap <expr> <C-w>F  <SID>do_git_diff_aware_gf('<C-w>F')
-nnoremap <expr> <C-w>gf  <SID>do_git_diff_aware_gf('<C-w>gf')
-nnoremap <expr> <C-w>gF  <SID>do_git_diff_aware_gf('<C-w>gF')
 
 function! s:do_git_diff_aware_gf(command)
   let target_path = expand('<cfile>')
