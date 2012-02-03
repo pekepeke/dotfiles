@@ -82,8 +82,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- GridSelect
     [((modm, xK_g), goToSelected defaultGSConfig)]
 
-myMouse :: XConfig Layout -> M.Map (KeyMask, Button) (Window -> X ())
-myMouse (XConfig {XMonad.modMask = modm}) = M.fromList $
+myMouseBindings :: XConfig Layout -> M.Map (KeyMask, Button) (Window -> X ())
+myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm, button1), (\w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster))
     , ((modm, button2), (\w -> focus w >> Sqr.mouseResizeWindow w False >> windows W.shiftMaster)) --it's actually my right button, I've switched it with the middle one
     , ((modm, button3), (\w -> windows $ W.shiftMaster . W.focusUp . W.swapDown)) --try to bring under-floating up; works fine with two floating windows
@@ -92,8 +92,8 @@ myMouse (XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, button2), (\w -> focus w >> Sqr.mouseResizeWindow w True >> windows W.shiftMaster))
     , ((modm .|. shiftMask, button4), (\_ -> windows W.swapUp))
     , ((modm .|. shiftMask, button5), (\_ -> windows W.swapDown))
-    , ((modm .|. controlMask, button4), (\_ -> prevWS))
-    , ((modm .|. controlMask, button5), (\_ -> nextWS))
+    -- , ((modm .|. controlMask, button4), (\_ -> prevWS))
+    -- , ((modm .|. controlMask, button5), (\_ -> nextWS))
     ]
 
 myLayout = withBorder 1 (tiled ||| Mirror tiled ||| Grid) ||| Full
