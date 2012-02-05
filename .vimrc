@@ -88,6 +88,7 @@ NeoBundle 'othree/html5.vim.git'
 NeoBundle 'tpope/vim-haml.git'
 NeoBundle 'hail2u/vim-css3-syntax.git'
 NeoBundle 'cakebaker/scss-syntax.vim.git'
+NeoBundle 'mattn/zencoding-vim.git'
 NeoBundle 'groenewege/vim-less.git'
 NeoBundle 'pangloss/vim-javascript.git'
 " NeoBundle 'lukaszb/vim-web-indent.git'
@@ -118,14 +119,14 @@ NeoBundle 'motemen/hatena-vim.git'
 " NeoBundle 'ehamberg/haskellmode-vim.git'
 NeoBundle 'ujihisa/ref-hoogle.git'
 NeoBundle 'ujihisa/neco-ghc.git'
+" php
+NeoBundle 'justinrainbow/php-doc.vim.git'
 " sql
 NeoBundle 'vim-scripts/dbext.vim.git'
 NeoBundle 'vim-scripts/SQLUtilities.git'
-NeoBundle 'justinrainbow/php-doc.vim.git'
 "NeoBundle 'OmniCppComplete'
 
 NeoBundle 'tyru/current-func-info.vim.git'
-NeoBundle 'mattn/zencoding-vim.git'
 " NeoBundle 'mexpolk/vim-taglist.git'
 NeoBundle 'vim-scripts/taglist.vim.git'
 NeoBundle 'tomtom/tcomment_vim.git'
@@ -135,6 +136,7 @@ NeoBundle 'ciaranm/detectindent.git'
 NeoBundle 'ujihisa/shadow.vim.git'
 "NeoBundle 'motemen/git-vim.git'
 NeoBundle 'tpope/vim-fugitive.git'
+NeoBundle 'Shougo/vim-vcs.git'
 
 " help
 NeoBundle 'thinca/vim-ref.git'
@@ -154,31 +156,29 @@ NeoBundle 'basyura/csharp_complete.git'
 NeoBundle 'Shougo/unite.vim.git'
 NeoBundle 'Shougo/unite-build.git'
 NeoBundle 'Shougo/unite-help.git'
-" NeoBundle 'Sixeight/unite-grep.git'
-" NeoBundle 'Shougo/unite-grep.git'
 NeoBundle 'h1mesuke/unite-outline.git'
-NeoBundle 'hakobe/unite-script.git'
-NeoBundle 'mattn/unite-remotefile.git'
-NeoBundle 'pekepeke/unite-fileline.git'
 NeoBundle 'sgur/unite-git_grep.git'
 NeoBundle 'sgur/unite-qf.git'
-" NeoBundle 'soh335/unite-qflist.git'
-NeoBundle 'tacroe/unite-alias.git'
 NeoBundle 'tacroe/unite-mark.git'
 NeoBundle 'thinca/vim-unite-history.git'
 NeoBundle 'tsukkee/unite-tag.git'
-NeoBundle 'ujihisa/unite-colorscheme.git'
-NeoBundle 'ujihisa/unite-font.git'
 " NeoBundle 'ujihisa/unite-launch.git'
 NeoBundle 'ujihisa/quicklearn.git'
 NeoBundle 'ujihisa/unite-gem.git'
 NeoBundle 'ujihisa/unite-rake.git'
-NeoBundle 'basyura/unite-rails.git'
-NeoBundle 'oppara/vim-unite-cake.git'
-NeoBundle 'heavenshell/unite-zf.git'
-NeoBundle 'heavenshell/unite-sf2.git'
+" NeoBundle 'basyura/unite-rails.git'
+" NeoBundle 'oppara/vim-unite-cake.git'
+" NeoBundle 'heavenshell/unite-zf.git'
+" NeoBundle 'heavenshell/unite-sf2.git'
 NeoBundle 'basyura/unite-yarm.git'
 NeoBundle 'pasela/unite-webcolorname.git'
+
+" NeoBundle 'ujihisa/unite-colorscheme.git'
+" NeoBundle 'ujihisa/unite-font.git'
+" NeoBundle 'tacroe/unite-alias.git'
+" NeoBundle 'hakobe/unite-script.git'
+" NeoBundle 'mattn/unite-remotefile.git'
+" NeoBundle 'pekepeke/unite-fileline.git'
 
 if s:is_win
   NeoBundle 'sgur/unite-everything.git'
@@ -204,7 +204,6 @@ NeoBundle 'tyru/vim-altercmd.git'
 NeoBundle 'vim-scripts/ShowMarks7.git'
 NeoBundle 'dannyob/quickfixstatus.git'
 NeoBundle 'jceb/vim-hier.git'
-" NeoBundle 'vim-scripts/errormarker.vim.git'
 NeoBundle 'tpope/vim-repeat.git'
 NeoBundle 'tpope/vim-surround.git'
 NeoBundle 'tpope/vim-endwise.git'
@@ -218,7 +217,7 @@ NeoBundle 'the-isz/MinYankRing.vim.git'
 NeoBundle 'sjl/gundo.vim.git'
 NeoBundle 'kana/vim-smartword.git'
 NeoBundle 'roman/golden-ratio.git'
-NeoBundle 'scrooloose/nerdtree.git'
+" NeoBundle 'scrooloose/nerdtree.git'
 NeoBundle 'thinca/vim-qfreplace.git'
 NeoBundle 'nathanaelkane/vim-indent-guides.git'
 NeoBundle 'mileszs/ack.vim.git'
@@ -839,7 +838,8 @@ function! s:toggle_quickfix_window() "{{{3
   endif
 endfunction "}}}
 
-nnoremap [space]f :NERDTreeToggle<CR>
+" nnoremap [space]f :NERDTreeToggle<CR>
+nnoremap [space]f :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40<CR>
 nnoremap <silent> [space]t :TlistToggle<CR>
 
 nnoremap / :<C-u>nohlsearch<CR>/
@@ -992,6 +992,8 @@ call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
 call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
 
 call altr#define('controllers/%.php', 'models/%.php', 'helpers/%.php', 'views/%.php')
+call altr#define('Controller/%.php', 'Test/Case/%Test.php')
+call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
 
 nmap [prefix]n <Plug>(altr-forward)
 nmap [prefix]p <Plug>(altr-back)
@@ -1114,12 +1116,6 @@ let g:yankring_history_dir = "$HOME/.tmp"
 
 " NERDCommenter {{{2
 let g:NERDSpaceDelims = 1
-
-" NERDTree {{{2
-let g:NERDTreeHijackNetrw = 0
-let g:NERDTReeIgnore = ['\.svn', '\.git', '\~$']
-let g:NERDTreeMapOpenSplit="s"
-let g:NERDTreeMapOpenVSplit="gi"
 
 " chalice {{{2
 let g:chalice_cachedir = expand('$HOME/.tmp/chalice_cache')
@@ -1399,10 +1395,16 @@ let g:quickrun_config['diag'] = {
       \ }
 
 " for testcase
-MyAutocmd BufWinEnter,BufNewFile *_spec.rb set filetype=ruby.rspec
-MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php set filetype=php.unit
+MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
+MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.unit
+MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
+MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
 let g:quickrun_config['ruby.rspec'] = {'command' : 'rspec', 'exec' : '%c -l {line(".")}'}
-let g:quickrun_config['php.unit'] = {'command' : 'phpunit'}
+let g:quickrun_config['php.phpunit'] = {'command' : 'phpunit'}
+let g:quickrun_config['php.caketest'] = {'command' : 'caketest'}
+let g:quickrun_config['python.nosetests'] = {'command': 'nosetests', 'cmdopt': '-s -vv'}
+let g:quickrun_config['perl.prove'] = {'command': 'prove'}
+
 " html {{{3
 if s:is_mac
   let g:quickrun_config['html'] = {'exec' : 'open %s'}
@@ -1798,7 +1800,9 @@ endif
 hi link VimShellError WarningMsg
 
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
+if exists('*vcs#info')
+  let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
+endif
 let g:vimshell_enable_smart_case = 1
 let g:vimshell_enable_auto_slash = 1
 
@@ -1888,7 +1892,7 @@ LCAlias IRB
 " vimfiler {{{2
 let g:vimfiler_as_default_explorer=1
 let g:vimfiler_safe_mode_by_default=0
-let g:vimfiler_edit_action = 'below'
+let g:vimfiler_edit_action = 'belowright'
 
 let g:vimfiler_tree_leaf_icon = ' '
 let g:vimfiler_tree_opened_icon = '▾'
@@ -1902,6 +1906,13 @@ function! s:vimfiler_my_settings() " {{{3
   nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
   hi link ExrenameModified Statement
   "nnoremap <buffer> v V
+  if exists('b:vimfiler')
+    if exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree'
+      nmap <buffer> e <Plug>(vimfiler_split_edit_file)
+      nmap <buffer> l <Plug>(vimfiler_expand_tree)
+      nmap <buffer> L <Plug>(vimfiler_smart_l)
+    endif
+  endif
 endfunction
 
 " qfixhowm {{{2

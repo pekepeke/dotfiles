@@ -1,0 +1,619 @@
+include php.snip
+
+snippet     TestClass
+abbr        Class extends PHPUnit_Framework_TestCase
+alias       testclass
+	/**
+	 * ${1}
+	 */
+	class ${2:`expand("%:r")`} extends ${3:PHPUnit_Framework_TestCase}
+	{
+		${0:# code...}
+	}
+
+snippet     testfunc
+alias       testfunction, testFunc, testfun
+	/**
+	 * @test
+	 */
+	public function ${1:test name}()
+	{
+		${0:# code...}
+	}
+
+delete func
+
+snippet     func
+abbr        function
+alias       function, fun
+	${1:public} function ${2:test name}(${3})
+	{
+		${0:# code...}
+	}
+
+# Fixtures
+
+snippet     setUp
+abbr        setUp fixture
+	protected function setUp()
+	{
+		${0:# code...}
+	}
+
+snippet     setUpBeforeClass
+abbr        setUpBeforeClass fixture
+	protected function setUpBeforeClass()
+	{
+		${0:# code ...}
+	}
+
+snippet     tearDown
+abbr        tearDown fixture
+	protected function tearDown()
+	{
+		${0:# code ...}
+	}
+
+snippet     tearDownAfterClass
+abbr        tearDownAfterClass fixture
+	protected function tearDownAfterClass()
+	{
+		${0:# code ...}
+	}
+
+
+# PHPUnit Annotations
+
+snippet     assert
+abbr        assert annotation
+alias       @assert
+	/**
+	 * @assert (${1}) ${2:==} ${3}
+	 */
+	${0:# code ...}
+
+snippet     author
+abbr        author annotation
+alias       @author
+	/**
+	 * @author ${1}
+	 */
+	${0:# code ...}
+
+snippet     backupGlobals
+abbr        backupGlobals annotation
+alias       @backupGlobals
+	/**
+	 * @backupGlobals ${1:disabled}
+	 */
+	${0:# code ...}
+
+snippet     backupStaticAttributes
+abbr        backupStaticAttributes annotation
+alias       @backupStaticAttributes
+	/**
+	 * @backupStaticAttributes ${1:disabled}
+	 */
+	${0:# code ...}
+
+snippet     covers
+abbr        covers annotation
+alias       @covers
+	/**
+	 * @covers ${1:ClassName}::${2:methodName}
+	 */
+	${0:# code ...}
+
+snippet     dataProvider
+abbr        dataProvider annotation
+alias       @dataProvider
+	/**
+	 * @dataProvider ${1:provider}
+	 */
+	${0:# code ...}
+
+snippet     depends
+abbr        depends annotation
+alias       @depends
+	/**
+	 * @depends ${1}
+	 */
+	${0:# code ...}
+
+snippet     expectedException
+abbr        expectedException annotation
+alias       @expectedException
+	/**
+	 * @expectedException ${1}
+	 */
+	${0:# code ...}
+
+snippet     expectedExceptionCode
+abbr        expectedExceptionCode annotation
+alias       @expectedExceptionCode
+	/**
+	 * @expectedException ${1:name}
+	 * @expectedExceptionCode ${2:code}
+	 */
+	${0:# code ...}
+
+snippet     expectedExceptionMessage
+abbr        expectedExceptionMessage annotation
+alias       @expectedExceptionMessage
+	/**
+	 * @expectedException ${1:name}
+	 * @expectedExceptionMessage ${2:message}
+	 */
+	${0:# code ...}
+
+snippet     group
+abbr        group annotation
+alias       @group
+	/**
+	 * @group ${1}
+	 */
+	${0:# code ...}
+
+snippet     outputBuffering
+abbr        outputBuffering annotation
+alias       @outputBuffering
+	/**
+	 * @outputBuffering ${1:enabled}
+	 */
+	${0:# code ...}
+
+snippet     runTestsInSeparateProcesses
+abbr        runTestsInSeparateProcesses annotation
+alias       @runTestsInSeparateProcesses, @runtest
+	/**
+	 * @runTestsInSeparateProcesses
+	 */
+	${0:# code ...}
+
+snippet     runInSeparateProcess
+abbr        runInSeparateProcess annotation
+alias       @runInSeparateProcess, @runin
+	/**
+	 * @runInSeparateProcess
+	 */
+	${0:# code ...}
+
+snippet     test
+abbr        test annotation
+alias       @test
+	/**
+	 * @test
+	 */
+	${0:# code ...}
+
+snippet     testdox
+abbr        testdox annotation
+alias       @testdox
+	/**
+	 * @testdox
+	 */
+	${0:# code ...}
+
+snippet     ticket
+abbr        ticket annotation
+alias       @ticket
+	/**
+	 * @ticket
+	 */
+	${0:# code ...}
+
+
+# PHPUnit Assertions
+
+snippet     aArrayHasKey
+abbr        assertArrayHasKey
+alias       assertArrayHasKey
+	$this->assertArrayHasKey(${1:key}, ${2:array});
+
+snippet     aArrayNotHasKey
+abbr        assertArrayNotHasKey
+alias       assertArrayNotHasKey
+	$this->assertArrayNotHasKey(${1:key}, ${2:array});
+
+snippet     aClassHasAttribute
+abbr        assertClassHasAttribute
+alias       assertClassHasAttribute
+	$this->assertClassHasAttribute(${1:attributeName}, ${2:className});
+
+snippet     aClassNotHasAttribute
+abbr        assertClassNotHasAttribute
+alias       assertClassNotHasAttribute
+	$this->assertClassNotHasAttribute(${1:attributeName}, ${2:className});
+
+snippet     aClassHasStaticAttribute
+abbr        assertClassHasStaticAttribute
+alias       assertClassHasStaticAttribute
+	$this->assertClassHasStaticAttribute(${1:attributeName}, ${2:className});
+
+snippet     aClassNotHasStaticAttribute
+abbr        assertClassNotHasStaticAttribute
+alias       assertClassNotHasStaticAttribute
+	$this->assertClassNotHasStaticAttribute(${1:attributeName}, ${2:className});
+
+snippet     aContains
+abbr        assertContains
+alias       assertContains
+	$this->assertContains(${1:needle}, ${2:haystack});
+
+snippet     aNotContains
+abbr        assertNotContains
+alias       assertNotContains
+	$this->assertNotContains(${1:needle}, ${2:haystack});
+
+snippet     aAttributeContains
+abbr        assertAttributeContains
+alias       assertAttributeContains
+	$this->assertAttributeContains(${1:needle}, ${2:haystackAttributeName}, ${3:haystackClassOrObject});
+
+snippet     aAttributeNotContains
+abbr        assertAttributeNotContains
+alias       assertAttributeNotContains
+	$this->assertAttributeNotContains(${1:needle}, ${2:haystackAttributeName}, ${3:haystackClassOrObject});
+
+snippet     aContainsOnly
+abbr        assertContainsOnly
+alias       assertContainsOnly
+	$this->assertContainsOnly(${1:type}, ${2:haystack});
+
+snippet     aNotContainsOnly
+abbr        assertNotContainsOnly
+alias       assertNotContainsOnly
+	$this->assertNotContainsOnly(${1:type}, ${2:haystack});
+
+snippet     aAttributeContainsOnly
+abbr        assertAttributeContainsOnly
+alias       assertAttributeContainsOnly
+	$this->assertAttributeContainsOnly(${1:type}, ${2:haystack});
+
+snippet     aAttributeNotContainsOnly
+abbr        assertAttributeNotContainsOnly
+alias       assertAttributeNotContainsOnly
+	$this->assertAttributeNotContainsOnly(${1:type}, ${2:haystack});
+
+snippet     aEmpty
+abbr        assertEmpty
+alias       assertEmpty
+	$this->assertEmpty(${1:actual});
+
+snippet     aNotEmpty
+abbr        assertNotEmpty
+alias       assertNotEmpty
+	$this->assertNotEmpty(${1:actual});
+
+snippet     aAttributeEmpty
+abbr        assertAttributeEmpty
+alias       assertAttributeEmpty
+	$this->assertAttributeEmpty(${1:actual});
+
+snippet     aAttributeNotEmpty
+abbr        assertAttributeNotEmpty
+alias       assertAttributeNotEmpty
+	$this->assertAttributeNotEmpty(${1:actual});
+
+snippet     aEqualXMLStructure
+abbr        assertEqualXMLStructure
+alias       assertEqualXMLStructure
+	$this->assertEqualXMLStructure(${1:expectedElement}, ${2:actualElement});
+
+snippet     aEquals
+abbr        assertEquals
+alias       assertEquals
+	$this->assertEquals(${1:expected}, ${2:actual});
+
+snippet     aNotEquals
+abbr        assertNotEquals
+alias       assertNotEquals
+	$this->assertNotEquals(${1:expected}, ${2:actual});
+
+snippet     aAttributeEquals
+abbr        assertAttributeEquals
+alias       assertAttributeEquals
+	$this->assertAttributeEquals(${1:expected}, ${2:actualAttributeName}, ${3:actualClassOrObject});
+
+snippet     aAttributeNotEquals
+abbr        assertAttributeNotEquals
+alias       assertAttributeNotEquals
+	$this->assertAttributeNotEquals(${1:expected}, ${2:actualAttributeName}, ${3:actualClassOrObject});
+
+snippet     aFalse
+abbr        assertFalse
+alias       assertFalse
+	$this->assertfalse(${1:condition});
+
+snippet     aTrue
+abbr        assertTrue
+alias       assertTrue
+	$this->assertfalse(${1:condition});
+
+snippet     aFileEquals
+abbr        assertFileEquals
+alias       assertFileEquals
+	$this->assertFileEquals(${1:expected}, ${2:actual});
+
+snippet     aFileNotEquals
+abbr        assertFileNotEquals
+alias       assertFileNotEquals
+	$this->assertFileNotEquals(${1:expected}, ${2:actual});
+
+snippet     aFileExists
+abbr        assertFileExists
+alias       assertFileExists
+	$this->assertFileEquals(${1:filename});
+
+snippet     aFileNotExists
+abbr        assertFileNotExists
+alias       assertFileNotExists
+	$this->assertFileNotEquals(${1:filename});
+
+snippet     aGreaterThan
+abbr        assertGreaterThan
+alias       assertGreaterThan
+	$this->assertGreaterThan(${1:expected}, ${2:actual});
+
+snippet     aAttributeGreaterThan
+abbr        assertAttributeGreaterThan
+alias       assertAttributeGreaterThan
+	$this->assertAttributeGreaterThan(${1:expected}, ${2:actualAttributeName}, ${3:actualClassOrObject});
+
+snippet     aGreaterThanOrEqual
+abbr        assertGreaterThanOrEqual
+alias       assertGreaterThanOrEqual
+	$this->assertGreaterThanOrEqual(${1:expected}, ${2:actual});
+
+snippet     aAttributeGreaterThanOrEqual
+abbr        assertAttributeGreaterThanOrEqual
+alias       assertAttributeGreaterThanOrEqual
+	$this->assertAttributeGreaterThanOrEqual(${1:expected}, ${2:actualAttributeName}, ${3:actualClassOrObject});
+
+snippet     aInstanceOf
+abbr        assertInstanceOf
+alias       assertInstanceOf
+	$this->assertInstanceOf(${1:expected}, ${2:actual});
+
+snippet     aNotInstanceOf
+abbr        assertNotInstanceOf
+alias       assertNotInstanceOf
+	$this->assertNotInstanceOf(${1:expected}, ${2:actual});
+
+snippet     aAttributeInstanceOf
+abbr        assertAttributeInstanceOf
+alias       assertAttributeInstanceOf
+	$this->assertAttributeInstanceOf(${1:expected}, ${2:actualAttributeName});
+
+snippet     aAttributeNotInstanceOf
+abbr        assertAttributeNotInstanceOf
+alias       assertAttributeNotInstanceOf
+	$this->assertAttributeNotInstanceOf(${1:expected}, ${2:actualAttributeName});
+
+snippet     aInternalType
+abbr        assertInternalType
+alias       assertInternalType
+	$this->assertInternalType(${1:expected}, ${2:actual});
+
+snippet     aNotInternalType
+abbr        assertNotInternalType
+alias       assertNotInternalType
+	$this->assertNotInternalType(${1:expected}, ${2:actual});
+
+snippet     aAttributeInternalType
+abbr        assertAttributeInternalType
+alias       assertAttributeInternalType
+	$this->assertAttributeInternalType(${1:expected}, ${2:actualAttributeName});
+
+snippet     aAttributeNotInternalType
+abbr        assertAttributeNotInternalType
+alias       assertAttributeNotInternalType
+	$this->assertAttributeNotInternalType(${1:expected}, ${2:actualAttributeName});
+
+snippet     aLessThan
+abbr        assertLessThan
+alias       assertLessThan
+	$this->assertLessThan(${1:expected}, ${2:actual});
+
+snippet     aAttributeLessThan
+abbr        assertAttributeLessThan
+alias       assertAttributeLessThan
+	$this->assertAttributeLessThan(${1:expected}, ${2:actualAttributeName}, ${3:actualClassOrObject});
+
+snippet     aLessThanOrEqual
+abbr        assertLessThanOrEqual
+alias       assertLessThanOrEqual
+	$this->assertLessThanOrEqual(${1:expected}, ${2:actual});
+
+snippet     aAttributeLessThanOrEqual
+abbr        assertAttributeLessThanOrEqual
+alias       assertAttributeLessThanOrEqual
+	$this->assertAttributeLessThanOrEqual(${1:expected}, ${2:actualAttributeName}, ${3:actualClassOrObject});
+
+snippet     aNull
+abbr        assertNull
+alias       assertNull
+	$this->assertNull(${1:variable});
+
+snippet     aNotNull
+abbr        assertNotNull
+alias       assertNotNull
+	$this->assertNotNull(${1:variable});
+
+snippet     aObjectHasAttribute
+abbr        assertObjectHasAttribute
+alias       assertObjectHasAttribute
+	$this->assertObjectHasAttribute(${1:attributeName}, ${2:object});
+
+snippet     aObjectNotHasAttribute
+abbr        assertObjectNotHasAttribute
+alias       assertObjectNotHasAttribute
+	$this->assertObjectNotHasAttribute(${1:attributeName}, ${2:object});
+
+snippet     aRegExp
+abbr        assertRegExp
+alias       assertRegExp
+	$this->assertRegExp(${1:patern}, ${2:string});
+
+snippet     aNotRegExp
+abbr        assertNotRegExp
+alias       assertNotRegExp
+	$this->assertNotRegExp(${1:patern}, ${2:string});
+
+snippet     aStringMatchesFormat
+abbr        assertStringMatchesFormat
+alias       assertStringMatchesFormat
+	$this->assertStringMatchesFormat(${1:format}, ${2:string});
+
+snippet     aStringNotMatchesFormat
+abbr        assertStringNotMatchesFormat
+alias       assertStringNotMatchesFormat
+	$this->assertStringNotMatchesFormat(${1:format}, ${2:string});
+
+snippet     aStringMatchesFormatFile
+abbr        assertStringMatchesFormatFile
+alias       assertStringMatchesFormatFile
+	$this->assertStringMatchesFormatFile(${1:formatFile}, ${2:string});
+
+snippet     aStringNotMatchesFormatFile
+abbr        assertStringNotMatchesFormatFile
+alias       assertStringNotMatchesFormatFile
+	$this->assertStringNotMatchesFormatFile(${1:formatFile}, ${2:string});
+
+snippet     aSame
+abbr        assertSame
+alias       assertSame
+	$this->assertSame(${1:expected}, ${2:actual});
+
+snippet     aNotSame
+abbr        assertNotSame
+alias       assertNotSame
+	$this->assertNotSame(${1:expected}, ${2:actual});
+
+#assertAttributeSame
+snippet     aAttributeSame
+abbr        assertAttributeSame
+alias       assertAttributeSame
+	$this->assertAttributeSame(${1:expected}, ${2:actualAttributeName}, ${3:actualClassOrObject});
+
+snippet     aAttributeNotSame
+abbr        assertAttributeNotSame
+alias       assertAttributeNotSame
+	$this->assertAttributeNotSame(${1:expected}, ${2:actualAttributeName}, ${3:actualClassOrObject});
+
+snippet     aSelectCount
+abbr        assertSelectCount
+alias       assertSelectCount
+	$tshi->assertSelectCount(${1:selector}, ${2:count}, ${3:actual});
+
+snippet     aSelectEquals
+abbr        assertSelectEquals
+alias       assertSelectEquals
+	$this->assertSelectEquals(${1:selector}, ${2:content}, ${3:count}, ${4:actual});
+
+snippet     aSelectRegExp
+abbr        assertSelectRegExp
+abbr        assertSelectRegExp
+	$this->assertSelectRegExp(${1:selector}, ${2:pattern}, ${3:count}, ${4:actual});
+
+snippet     aStringEndsWith
+abbr        assertStringEndsWith
+alias       assertStringEndsWith
+	$this->assertStringEndsWith(${1:suffix}, ${2:string});
+
+snippet     aStringEndsNotWith
+abbr        assertStringEndsNotWith
+alias       assertStringEndsNotWith
+	$this->assertStringEndsNotWith(${1:suffix}, ${2:string});
+
+snippet     aStringEqualsFile
+abbr        assertStringEqualsFile
+alias       assertStringEqualsFile
+	$this->assertStringEqualsFile(${1:expectedFile}, ${2:actualString});
+
+snippet     aStringNotEqualsFile
+abbr        assertStringNotEqualsFile
+alias       assertStringNotEqualsFile
+	$this->assertStringNotEqualsFile(${1:expectedFile}, ${2:actualString});
+
+snippet     aStringStartsWith
+abbr        assertStringStartsWith
+alias       assertStringStartsWith
+	$this->assertStringStartsWith(${1:prefix}, ${2:string});
+
+snippet     aStringStartsNotWith
+abbr        assertStringStartsNotWith
+alias       assertStringStartsNotWith
+	$this->assertStringStartsNotWith(${1:prefix}, ${2:string});
+
+snippet     aTag
+abbr        assertTag
+alias       assertTag
+	$this->assertTag(${1:matcher}, ${2:actual});
+
+snippet     aNotTag
+abbr        assertNotTag
+alias       assertNotTag
+	$this->assertNotTag(${1:matcher}, ${2:actual});
+
+snippet     aThat
+abbr        assertThat
+alias       assertThat
+	$this->assertThat(${1:value}, ${2:PHPUnit_Framework_Constraint constraint});
+
+################################################################################
+# WARNING:
+# assertType() assertNotType(), assertAttributeType(), assertAttributeNotType()
+# That will be removed in PHPUnit 3.6 and should no longer be used.
+#
+# When asserting internal types, please used assertInternalType().
+# When asserting that an object is an instance of a specified class or interface,
+#  Please used assertInstanceOf().
+################################################################################
+#snippet     aType
+#abbr        assertType
+#	$this->assertType(${1:expected}, ${2:actual});
+#
+#snippet     aNotType
+#abbr        assertNotType
+#	$this->assertNotType(${1:expected}, ${2:actual});
+#
+#snippet     aAttributeType
+#abbr        assertAttributeType
+#	$this->assertAttributeType(${1:expected}, ${2:actualAttributeName});
+#
+#snippet     aAttributeNotType
+#abbr        assertAttributeNotType
+#	$this->assertAttributeNotType(${1:expected}, ${2:actualAttributeName});
+
+snippet     aXmlFileEqualsXmlFile
+abbr        assertXmlFileEqualsXmlFile
+alias       assertXmlFileEqualsXmlFile
+	$this->assertXmlFileEqualsXmlFile(${1:expectedFile}, ${2:actualFile});
+
+snippet     aXmlFileNotEqualsXmlFile
+abbr        assertXmlFileNotEqualsXmlFile
+alias       assertXmlFileNotEqualsXmlFile
+	$this->assertXmlFileNotEqualsXmlFile(${1:expectedFile}, ${2:actualFile});
+
+snippet     aXmlStringEqualsXmlFile
+abbr        assertXmlStringEqualsXmlFile
+alias       assertXmlStringEqualsXmlFile
+	$this->assertXmlStringEqualsXmlFile(${1:expectedFile}, ${2:actualXml});
+
+snippet     aXmlStringNotEqualsXmlFile
+abbr        assertXmlStringNotEqualsXmlFile
+alias       assertXmlStringNotEqualsXmlFile
+	$this->assertXmlStringNotEqualsXmlFile(${1:expectedFile}, ${2:actualXml});
+
+snippet     aXmlStringEqualsXmlString
+abbr        assertXmlStringEqualsXmlString
+alias       assertXmlStringEqualsXmlString
+	$this->assertXmlStringEqualsXmlString(${1:expectedXml}, ${2:actualXml});
+
+snippet     aXmlStringNotEqualsXmlString
+abbr        assertXmlStringNotEqualsXmlString
+alias       assertXmlStringNotEqualsXmlString
+	$this->assertXmlStringNotEqualsXmlString(${1:expectedXml}, ${2:actualXml});
+
+# Incomplete and Skipped tests
