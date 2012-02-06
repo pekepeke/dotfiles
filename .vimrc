@@ -121,6 +121,9 @@ NeoBundle 'ujihisa/ref-hoogle.git'
 NeoBundle 'ujihisa/neco-ghc.git'
 " php
 NeoBundle 'justinrainbow/php-doc.vim.git'
+NeoBundle 'beyondwords/vim-twig.git'
+NeoBundle 'vim-scripts/smarty.vim.git'
+NeoBundle 'violetyk/cake.vim.git'
 " sql
 NeoBundle 'vim-scripts/dbext.vim.git'
 NeoBundle 'vim-scripts/SQLUtilities.git'
@@ -214,6 +217,7 @@ NeoBundle 'h1mesuke/vim-alignta.git'
 " NeoBundle 'vim-scripts/YankRing.vim.git'
 " NeoBundle 'chrismetcalf/vim-yankring.git'
 NeoBundle 'the-isz/MinYankRing.vim.git'
+
 NeoBundle 'sjl/gundo.vim.git'
 NeoBundle 'kana/vim-smartword.git'
 NeoBundle 'roman/golden-ratio.git'
@@ -356,6 +360,7 @@ MyAutocmd FileType js setlocal ft=javascript
 MyAutocmd BufNewFile,BufRead *.ru,Guardfile setfiletype ruby
 " php
 MyAutocmd BufNewFile,BufRead *.ctp,*.thtml setfiletype php
+MyAutocmd BufNewFile,BufRead *.tpl setfiletype html.smarty
 " MySQL
 MyAutocmd BufNewFile,BufRead *.sql set filetype=mysql
 " Textile
@@ -418,6 +423,7 @@ set fileencoding=utf-8
 set fileformat=unix
 
 set clipboard=unnamed
+" if has('unnamedplus') set clipboard+=unnamedplus endif
 " set mouse=a
 set mouse=nv
 
@@ -1668,11 +1674,20 @@ let g:neocomplcache_enable_at_startup                   = 1
 let g:neocomplcache_cursor_hold_i_time                  = 500
 if s:is_loaded | silent exe 'NeoComplCacheEnable' | endif
 
+for var in [
+      \ 'keyword_patterns',
+      \ 'dictionary_filetype_lists',
+      \ 'plugin_disable',
+      \ 'include_patterns', 'vim_completefuncs', 
+      \ 'omni_patterns', 'delimiter_patterns',
+      \ 'same_filetype_lists', 'member_prefix_patterns',
+      \ ]
+  if !exists('g:neocomplcache_'.var)
+    let g:['neocomplcache_'.var] = {}
+  endif
+endfor
+
 let g:neocomplcache_max_list = 10  " 補完候補の数
-if !exists('g:neocomplcache_keyword_patterns')
-  let g:neocomplcache_keyword_patterns = {}
-endif
-let g:neocomplcache_keyword_patterns.default = '\h\w*' " 日本語をキャッシュしない
 let g:neocomplcache_enable_auto_select = 1   " 一番目の候補を自動選択
 
 let g:neocomplcache_enable_smart_case                   = 1
@@ -1697,7 +1712,13 @@ let g:neocomplcache_min_syntax_length                   = 3
   " \ 'keyword_complete'  : 2,
   " \ 'omni_complete'     : 1,
   " \ }
-let g:neocomplcache_dictionary_filetype_lists = {
+
+let g:neocomplcache_keyword_patterns.default = '\h\w*' " 日本語をキャッシュしない
+
+call extend(g:neocomplcache_plugin_disable, {
+      \ 'syntax_complete' : 1
+      \ })
+call extend(g:neocomplcache_dictionary_filetype_lists, {
   \ 'default'     : '',
   \ 'vimshell'    : $HOME . '/.vimshell/command-history',
   \ 'javascript'  : $HOME . '/.vim/dict/javascript.dict',
@@ -1706,34 +1727,14 @@ let g:neocomplcache_dictionary_filetype_lists = {
   \ 'php'         : $HOME . '/.vim/dict/php.dict',
   \ 'objc'        : $HOME . '/.vim/dict/objc.dict',
   \ 'actionscript': $HOME . '/.vim/dict/actionscript.dict',
-  \ }
-if !exists('g:neocomplcache_include_patterns')
-  let g:neocomplcache_include_patterns = {}
-endif
-let g:neocomplcache_include_patterns.scala = '^import'
-if !exists('g:neocomplcache_vim_completefuncs')
-  let g:neocomplcache_vim_completefuncs = {}
-endif
-let g:neocomplcache_vim_completefuncs.Ref = 'ref#complete'
-if !exists('g:neocomplcache_omni_patterns')
-  let g:neocomplcache_omni_patterns = {}
-endif
-let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
-let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+  \ })
 
-let g:neocomplcache_plugin_disable = {
-      \ 'syntax_complete' : 1,
-      \ }
-if !exists('g:neocomplcache_delimiter_patterns')
-  let g:neocomplcache_delimiter_patterns = {}
-endif
+let g:neocomplcache_include_patterns.scala = '^import'
+let g:neocomplcache_vim_completefuncs.Ref = 'ref#complete'
+let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+
+let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplcache_delimiter_patterns.php = ['->', '::', '\']
-if !exists('g:neocomplcache_same_filetype_lists')
-  let g:neocomplcache_same_filetype_lists = {}
-endif
-if !exists('g:neocomplcache_member_prefix_patterns')
-  let g:neocomplcache_member_prefix_patterns = {}
-endif
 let g:neocomplcache_member_prefix_patterns.php = '->\|::'
 " }}}
 
@@ -1748,8 +1749,7 @@ inoremap <silent> <Cr> <C-R>=neocomplcache#smart_close_popup()<CR><CR>
 " <TAB>: completion.
 " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 function! s:is_snip_file()
-  let ext = expand('%:e')
-  return (ext == "snip" || ext == "snippet")
+  return &filetype == "snippet"
 endfunction
 imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable()
       \ && !<SID>is_snip_file()
@@ -1775,7 +1775,7 @@ nnoremap [space]nd :NeoComplCacheDisable<CR>
 
 " completes {{{3
 if exists("+omnifunc") " {{{4
-  MyAutocmd FileType php          setl omnifunc=phpcomplete#CompletePHP
+  " MyAutocmd FileType php          setl omnifunc=phpcomplete#CompletePHP
   MyAutocmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
   MyAutocmd FileType python       setl omnifunc=pythoncomplete#Complete
   MyAutocmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
