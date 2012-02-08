@@ -122,7 +122,6 @@ NeoBundle 'ujihisa/neco-ghc.git'
 " php
 NeoBundle 'justinrainbow/php-doc.vim.git'
 NeoBundle 'beyondwords/vim-twig.git'
-NeoBundle 'vim-scripts/smarty.vim.git'
 NeoBundle 'violetyk/cake.vim.git'
 " sql
 NeoBundle 'vim-scripts/dbext.vim.git'
@@ -374,7 +373,7 @@ MyAutocmd BufNewFile,BufRead *.proj,*.cs,*.xaml compiler msbuild
 MyAutocmd BufNewFile,BufRead *.command setfiletype sh
 
 MyAutocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-      \ | exe "normal g`\""
+      \ | exe "normal! g`\""
       \ | endif
 
 " indent {{{2
@@ -632,6 +631,29 @@ function s:toggle_option(opt)
   echo printf("set %s : %s", a:opt, sts ? "ON" : "OFF")
 endfunction
 
+function s:initialize_global_dict(prefix, names)
+  if type(a:prefix) == type([])
+    let prefix = ""
+    let names = a:prefix
+  else
+    let prefix = a:prefix
+    let names = a:names
+  endif
+  for name in names
+    if !exists('g:' . prefix . name)
+      let g:[prefix . name] = {}
+    endif
+  endfor
+endfunction
+
+function s:bulk_dict_variables(defines)
+  for var in a:defines
+    for name in var.names
+      let var.dict[name] = var.value
+    endfor
+  endfor
+endfunction
+
 " textobj {{{2
 function! s:map_textobj(key, cmd)
   silent exe 'omap' a:key a:cmd
@@ -845,7 +867,7 @@ function! s:toggle_quickfix_window() "{{{3
 endfunction "}}}
 
 " nnoremap [space]f :NERDTreeToggle<CR>
-nnoremap [space]f :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40<CR>
+nnoremap <silent> [space]f :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40<CR>
 nnoremap <silent> [space]t :TlistToggle<CR>
 
 nnoremap / :<C-u>nohlsearch<CR>/
@@ -1674,18 +1696,15 @@ let g:neocomplcache_enable_at_startup                   = 1
 let g:neocomplcache_cursor_hold_i_time                  = 500
 if s:is_loaded | silent exe 'NeoComplCacheEnable' | endif
 
-for var in [
+call s:initialize_global_dict('neocomplcache_', [
       \ 'keyword_patterns',
       \ 'dictionary_filetype_lists',
       \ 'plugin_disable',
       \ 'include_patterns', 'vim_completefuncs', 
       \ 'omni_patterns', 'delimiter_patterns',
       \ 'same_filetype_lists', 'member_prefix_patterns',
-      \ ]
-  if !exists('g:neocomplcache_'.var)
-    let g:['neocomplcache_'.var] = {}
-  endif
-endfor
+      \ 'next_keyword_patterns'
+      \])
 
 let g:neocomplcache_max_list = 10  " 補完候補の数
 let g:neocomplcache_enable_auto_select = 1   " 一番目の候補を自動選択
@@ -1729,13 +1748,31 @@ call extend(g:neocomplcache_dictionary_filetype_lists, {
   \ 'actionscript': $HOME . '/.vim/dict/actionscript.dict',
   \ })
 
+let g:use_zen_complete_tag=1
+
 let g:neocomplcache_include_patterns.scala = '^import'
 let g:neocomplcache_vim_completefuncs.Ref = 'ref#complete'
 let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
 
-let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+" let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplcache_delimiter_patterns.php = ['->', '::', '\']
 let g:neocomplcache_member_prefix_patterns.php = '->\|::'
+
+call s:bulk_dict_variables([{
+      \   'dict' : g:neocomplcache_omni_patterns,
+      \   'names' : ['twig', 'smarty'],
+      \   'value' : '<[^>]*'
+      \ }, {
+      \   'dict' : g:neocomplcache_next_keyword_patterns,
+      \   'names' : ['twig', 'smarty'],
+      \   'value' : '[[:alnum:]_:-]*>\|[^"]*"'
+      \ }])
+" let g:neocomplcache_omni_patterns.twig = '<[^>]*'
+" let g:neocomplcache_omni_patterns.smarty =
+"       \ g:neocomplcache_omni_patterns.twig
+" let g:neocomplcache_next_keyword_patterns.twig = '[[:alnum:]_:-]*>\|[^"]*"'
+" let g:neocomplcache_next_keyword_patterns.smarty =
+"       \ g:neocomplcache_next_keyword_patterns.twig
 " }}}
 
 " SuperTab like snippets behavior.
@@ -1775,7 +1812,7 @@ nnoremap [space]nd :NeoComplCacheDisable<CR>
 
 " completes {{{3
 if exists("+omnifunc") " {{{4
-  " MyAutocmd FileType php          setl omnifunc=phpcomplete#CompletePHP
+  MyAutocmd FileType php          setl omnifunc=phpcomplete#CompletePHP
   MyAutocmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
   MyAutocmd FileType python       setl omnifunc=pythoncomplete#Complete
   MyAutocmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
@@ -1892,7 +1929,7 @@ LCAlias IRB
 " vimfiler {{{2
 let g:vimfiler_as_default_explorer=1
 let g:vimfiler_safe_mode_by_default=0
-let g:vimfiler_edit_action = 'right'
+let g:vimfiler_edit_action = 'below'
 
 let g:vimfiler_tree_leaf_icon = ' '
 let g:vimfiler_tree_opened_icon = '▾'
@@ -1902,13 +1939,26 @@ let g:vimfiler_marked_file_icon = '*'
 
 MyAutocmd FileType vimfiler call s:vimfiler_my_settings()
 
+function s:vimfiler_my_tree_edit(method)
+  let file = vimfiler#get_file()
+  if empty(file) | return | endif
+  let path = file.action__path
+  if isdirectory(path) | return | endif
+
+  wincmd p
+  execute a:method
+  exe 'edit' path
+endfunction
+
 function! s:vimfiler_my_settings() " {{{3
   nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
   hi link ExrenameModified Statement
   "nnoremap <buffer> v V
   if exists('b:vimfiler')
     if exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree'
-      nmap <buffer> e <Plug>(vimfiler_split_edit_file)
+      nmap <buffer> e :call <SID>vimfiler_my_tree_edit('new')<CR>
+      " nmap <buffer> e <Plug>(vimfiler_split_edit_file)
+      " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
       nmap <buffer> l <Plug>(vimfiler_expand_tree)
       nmap <buffer> L <Plug>(vimfiler_smart_l)
     endif
@@ -1963,7 +2013,7 @@ function! s:unite_action_file_insert.func(candicate)
     let &cpoptions = l:old_cpoptions
     let linesread=line('$')-linesread-1
     if linesread >= 0
-      silent exe 'normal ='.linesread.'+'
+      silent exe 'normal! ='.linesread.'+'
     endif
   endif
 endfunction
