@@ -127,6 +127,8 @@ NeoBundle 'violetyk/cake.vim.git'
 NeoBundle 'vim-scripts/dbext.vim.git'
 NeoBundle 'vim-scripts/SQLUtilities.git'
 "NeoBundle 'OmniCppComplete'
+" shell
+NeoBundle 'Shougo/vim-nyaos.git'
 
 NeoBundle 'tyru/current-func-info.vim.git'
 " NeoBundle 'mexpolk/vim-taglist.git'
@@ -152,6 +154,7 @@ NeoBundle 'mattn/learn-vimscript.git'
 
 " neocomplcache
 NeoBundle 'Shougo/neocomplcache.git'
+NeoBundle 'Shougo/neocomplcache-snippets-complete.git'
 NeoBundle 'basyura/csharp_complete.git'
 
 " unite.vim
