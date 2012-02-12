@@ -22,7 +22,7 @@ echo # git submodule init
 echo # git submodule update
 echo ####################################################
 
-if not exist .vim\vundle\errormarker.vim\doc mkdir .vim\vundle\errormarker.vim\doc
+::if not exist .vim\vundle\errormarker.vim\doc mkdir .vim\vundle\errormarker.vim\doc
 pause
 goto :EOF
 

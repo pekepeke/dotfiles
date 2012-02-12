@@ -186,7 +186,7 @@ NeoBundle 'pasela/unite-webcolorname.git'
 " NeoBundle 'pekepeke/unite-fileline.git'
 
 if s:is_win
-  NeoBundle 'sgur/unite-everything.git'
+  "NeoBundle 'sgur/unite-everything.git'
 else
   if s:is_mac
     NeoBundle 'choplin/unite-spotlight.git'
@@ -421,6 +421,7 @@ augroup END
 set fileencodings=utf-8,euc-jp,iso-2022-jp,cp932
 set fileformats=unix,dos,mac
 set encoding=utf-8
+set termencoding=utf-8
 set fileencoding=utf-8
 set fileformat=unix
 
@@ -542,10 +543,11 @@ function! s:sticky_func() "{{{3
   " \'6' : '^', '7' : '&', '8' : '*', '9' : '(', '0' : ')', '-' : '_', '=' : '+',
   " \';' : ':', '[' : '{', ']' : '}', '`' : '~', "'" : "\"", '\' : '|',
   " \}
+  "'\' : '|',
   let l:sticky_table = {
-        \',' : '<', '.' : '>', '/' : '?', '\' : '_',
+        \',' : '<', '.' : '>', '/' : '?', '\' : '_', 
         \'1' : '!', '2' : '"', '3' : '#', '4' : '$', '5' : '%',
-        \'6' : '&', '7' : "'", '8' : '(', '9' : ')', '0' : '|', '-' : '=', '^' : '~', '¥' : '|',
+        \'6' : '&', '7' : "'", '8' : '(', '9' : ')', '0' : '|', '-' : '=', '^' : '~',
         \'@' : '`', '[' : '{', ';' : '+', ':' : '*', ']' : '}'
         \}
   let l:special_table = {
@@ -628,13 +630,13 @@ command! -nargs=0 -bang MyQ
 
 command! -nargs=0 -bang MyWQ write<bang> | MyQ<bang>
 
-function s:toggle_option(opt)
+function! s:toggle_option(opt)
   exe "setl inv".a:opt
   let sts = eval('&'.a:opt)
   echo printf("set %s : %s", a:opt, sts ? "ON" : "OFF")
 endfunction
 
-function s:initialize_global_dict(prefix, names)
+function! s:initialize_global_dict(prefix, names)
   if type(a:prefix) == type([])
     let prefix = ""
     let names = a:prefix
@@ -649,7 +651,7 @@ function s:initialize_global_dict(prefix, names)
   endfor
 endfunction
 
-function s:bulk_dict_variables(defines)
+function! s:bulk_dict_variables(defines)
   for var in a:defines
     for name in var.names
       let var.dict[name] = var.value
@@ -1848,7 +1850,11 @@ let g:vimshell_enable_auto_slash = 1
 
 function! s:setup_vimproc_dll() " {{{3
   if s:is_win
-    let g:vimproc_dll_path = expand('~/.vim/lib/vimproc/win32/proc.dll')
+    if has('win64')
+      let g:vimproc_dll_path = expand('~/.vim/lib/vimproc/win64/proc.dll')
+    elseif has('win32')
+      let g:vimproc_dll_path = expand('~/.vim/lib/vimproc/win32/proc.dll')
+    endif
   endif
   let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc.so')
   if filereadable(path)
@@ -1935,14 +1941,14 @@ let g:vimfiler_safe_mode_by_default=0
 let g:vimfiler_edit_action = 'below'
 
 let g:vimfiler_tree_leaf_icon = ' '
-let g:vimfiler_tree_opened_icon = '▾'
-let g:vimfiler_tree_closed_icon = '▸'
+let g:vimfiler_tree_opened_icon = '笆ｾ'
+let g:vimfiler_tree_closed_icon = '笆ｸ'
 let g:vimfiler_file_icon = '-'
 let g:vimfiler_marked_file_icon = '*'
 
 MyAutocmd FileType vimfiler call s:vimfiler_my_settings()
 
-function s:vimfiler_my_tree_edit(method)
+function! s:vimfiler_my_tree_edit(method)
   let file = vimfiler#get_file()
   if empty(file) | return | endif
   let path = file.action__path
