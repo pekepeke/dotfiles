@@ -4,7 +4,12 @@
 		<meta charset="utf-8" />
 		<meta name="robots" content="noindex, nofollow"/>
 		<title></title>
-		<link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css" />
+		<!-- 
+		<link rel="stylesheet" media="screen" href="reset.css" />
+		<meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, minimum-scale=0.5 , maximum-scale=2">
+		<link rel="stylesheet" media="screen and (max-width: 65025px)" href="style.css" />
+		<link rel="stylesheet" media="screen and (max-width: 640px)" href="mobile.css" />
+		-->
 		<style type="text/css"><!--
 			--></style>
 		<script src="http://www.google.com/jsapi"></script>
@@ -12,9 +17,18 @@
 			google.load("jquery", "1.7.1");
 			google.load("jqueryui", "1.8.16");
 			//]]></script>
+
+		<!--
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css" />
+		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.js"></script>
+		<script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.0.6-development-only.js"></script>
+		-->
 		<!--[if lt IE 9]>
 		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+		<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
 		<![endif]-->
+
 		<script>//<![CDATA[
 			Array.prototype.forEach = Array.prototype.forEach || function(callback,thisObject){ for(var i=0,len=this.length;i<len;i++) callback.call(thisObject,this[i],i,this) };
 Array.prototype.map = Array.prototype.map || function(callback,thisObject){ for(var i=0,res=[],len=this.length;i<len;i++) res[i] = callback.call(thisObject,this[i],i,this); return res;};

@@ -201,8 +201,9 @@ NeoBundle 'Shougo/vimfiler.git'
 NeoBundle 'Shougo/vimproc.git'
 NeoBundle 'Shougo/vimshell.git'
 NeoBundle 'kana/vim-altr.git'
-NeoBundle 'kana/vim-fakeclip.git'
-NeoBundle 'kana/vim-scratch.git'
+if !s:is_win
+  NeoBundle 'kana/vim-fakeclip.git'
+endif
 NeoBundle 'kana/vim-smartchr.git'
 NeoBundle 'kana/vim-submode.git'
 NeoBundle 'tyru/vim-altercmd.git'
@@ -992,7 +993,7 @@ vmap <C-k> <Plug>(Textmanip.move_selection_up)
 vmap <C-h> <Plug>(Textmanip.move_selection_left)
 vmap <C-l> <Plug>(Textmanip.move_selection_right)
 
-" indent-guides
+" indent-guides {{{2
 let g:indent_guides_enable_on_vim_startup = 1
 if has('gui')
   let g:indent_guides_auto_colors = 1
@@ -1071,12 +1072,9 @@ endfunction "}}}
 command! -nargs=0 JunkFile call s:open_junk_file()
 command! -nargs=0 EnewNofile enew | setl buftype=nofile
 
-let g:scratch_buffer_name='[Scratch]'
 
-nmap [prefix]ss :<C-u>EnewNofile<CR>
+nnoremap [prefix]ss :<C-u>JunkFile<CR>
 nmap [prefix]se :<C-u>EnewNofile<CR>
-nmap [prefix]sc <Plug>(scratch-open)
-nnoremap [prefix]sj :<C-u>JunkFile<CR>
 
 " alignta {{{2
 let g:alignta_confirm_for_retab = 0
@@ -1941,18 +1939,35 @@ let g:vimfiler_safe_mode_by_default=0
 let g:vimfiler_edit_action = 'below'
 
 let g:vimfiler_tree_leaf_icon = ' '
-let g:vimfiler_tree_opened_icon = '笆ｾ'
-let g:vimfiler_tree_closed_icon = '笆ｸ'
+let g:vimfiler_tree_opened_icon = '▾'
+let g:vimfiler_tree_closed_icon = '▸'
 let g:vimfiler_file_icon = '-'
 let g:vimfiler_marked_file_icon = '*'
 
 MyAutocmd FileType vimfiler call s:vimfiler_my_settings()
 
+function! s:vimfiler_smart_tree_h()
+  let file = vimfiler#get_file()
+  if empty(file) | return | endif
+  let path = file.action__path
+  " if !isdirectory(path) | return | endif
+  let cmd = "\<Plug>(vimfiler_smart_h)"
+  if file.vimfiler__is_opened
+    let cmd = "\<Plug>(vimfiler_expand_tree)"
+  elseif file.vimfiler__nest_level > 0
+    return
+  endif
+  exe 'normal' cmd
+endfunction
+
 function! s:vimfiler_my_tree_edit(method)
   let file = vimfiler#get_file()
   if empty(file) | return | endif
   let path = file.action__path
-  if isdirectory(path) | return | endif
+  if isdirectory(path)
+    exe 'normal' "\<Plug>(vimfiler_expand_tree)"
+    return
+  endif
 
   wincmd p
   execute a:method
@@ -1965,11 +1980,13 @@ function! s:vimfiler_my_settings() " {{{3
   "nnoremap <buffer> v V
   if exists('b:vimfiler')
     if exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree'
-      nmap <buffer> e :call <SID>vimfiler_my_tree_edit('new')<CR>
       " nmap <buffer> e <Plug>(vimfiler_split_edit_file)
       " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
-      nmap <buffer> l <Plug>(vimfiler_expand_tree)
+      nmap <silent><buffer> e :call <SID>vimfiler_my_tree_edit('new')<CR>
+      nmap <silent><buffer> l :call <SID>vimfiler_my_tree_edit('new')<CR>
+      " nmap <buffer> l <Plug>(vimfiler_expand_tree)
       nmap <buffer> L <Plug>(vimfiler_smart_l)
+      nmap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
     endif
   endif
 endfunction
@@ -2078,9 +2095,9 @@ command! Tocoffee call my#util#newfile_with_text(expand('%:p:r').".coffee",
 " シェル起動系 {{{2
 if s:is_mac "{{{3
   " Utility command for Mac
-  command! Here silent call system('open', expand('%:p:h'))
-  command! This silent call system('open', expand('%:p'))
-  command! -nargs=1 -complete=file That silent call system('open', shellescape(expand(<f-args>), 1))
+  command! Here silent execute '!open' shellescape(expand('%:p:h'))
+  command! This silent execute '!open' shellescape(expand('%:p'))
+  command! -nargs=1 -complete=file That silent execute '!open' shellescape(expand(<f-args>), 1)
 elseif s:is_win "{{{3
   " Utility command for Windows
   command! Here silent execute '!explorer' substitute(expand('%:p:h'), '/', '\', 'g')
