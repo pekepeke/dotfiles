@@ -845,12 +845,6 @@ MyAutocmd QuickfixCmdPost make call s:my_make_settings()
 " MyAutocmd QuickfixCmdPost make,grep,grepadd,vimgrep copen
 " MyAutocmd QuickfixCmdPost l* lopen
 
-" tab {{{2
-nnoremap <silent> [t]c :<C-u>tabnew<CR>:tabmove<CR>
-nnoremap <silent> [t]q :<C-u>tabclose<CR>
-nnoremap <silent> [t]n :<C-u>tabnext<CR>
-nnoremap <silent> [t]p :<C-u>tabprevious<CR>
-nnoremap <silent> [t]o :<C-u>tabonly<CR>
 
 " tags-and-searches {{{2
 nnoremap [t]r t
@@ -879,6 +873,7 @@ nnoremap <silent> [space]t :TlistToggle<CR>
 nnoremap / :<C-u>nohlsearch<CR>/
 nnoremap ? :<C-u>nohlsearch<CR>?
 
+nnoremap <C-w><Space> <C-w>p
 " echo
 nnoremap [prefix]e :echo<Space>
 
@@ -1106,6 +1101,10 @@ call submode#map       ('tabwalker', 'n', '', 'h', 'gT:redraw<CR>')
 call submode#map       ('tabwalker', 'n', '', 'l', 'gt:redraw<CR>')
 call submode#map       ('tabwalker', 'n', '', 'H', ':execute "tabmove" tabpagenr() - 2<CR>')
 call submode#map       ('tabwalker', 'n', '', 'L', ':execute "tabmove" tabpagenr()<CR>')
+call submode#map       ('tabwalker', 'n', '', 'n', ':execute "tabnew"<CR>:tabmove<CR>')
+call submode#map       ('tabwalker', 'n', '', 'q', ':execute "tabclose"<CR>')
+call submode#map       ('tabwalker', 'n', '', 'o', ':execute "tabonly"<CR>')
+
 
 " Change current window size {{{3
 " winmove {{{3
@@ -1949,13 +1948,19 @@ MyAutocmd FileType vimfiler call s:vimfiler_my_settings()
 function! s:vimfiler_smart_tree_h()
   let file = vimfiler#get_file()
   if empty(file) | return | endif
-  let path = file.action__path
-  " if !isdirectory(path) | return | endif
   let cmd = "\<Plug>(vimfiler_smart_h)"
   if file.vimfiler__is_opened
     let cmd = "\<Plug>(vimfiler_expand_tree)"
   elseif file.vimfiler__nest_level > 0
-    return
+    let nest_level = file.vimfiler__nest_level
+    while 1
+      exe 'normal!' 'k'
+      let file = vimfiler#get_file()
+      if empty(file) || file.vimfiler__nest_level < nest_level
+        " let cmd = "\<Plug>(vimfiler_expand_tree)" | break
+        return
+      endif
+    endwhile
   endif
   exe 'normal' cmd
 endfunction
@@ -1964,7 +1969,7 @@ function! s:vimfiler_my_tree_edit(method)
   let file = vimfiler#get_file()
   if empty(file) | return | endif
   let path = file.action__path
-  if isdirectory(path)
+  if file.vimfiler__is_directory
     exe 'normal' "\<Plug>(vimfiler_expand_tree)"
     return
   endif

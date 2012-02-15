@@ -38,6 +38,7 @@ _SHELL_NAME=""
 [ -n "$BASH_VERSION" ] && _SHELL_NAME="bash"
 [ -n "$ZSH_VERSION" ] && _SHELL_NAME="zsh"
 
+# languages {{{1
 # for perl {{{2
 if [ -e $HOME/perl5 ]; then
   export PERLBREW_ROOT=$HOME/perl5/perlbrew
@@ -115,8 +116,6 @@ if [ -d /usr/lib/jvm/java-6-sun ];then
 fi
 
 # php {{{2
-[ -e $HOME/.pear/bin ] && PATH=$HOME/.pear/bin:$PATH
-[ -e $HOME/.pear/php.ini ] && export PHPRC=$HOME/.pear/php.ini
 [ -e $HOME/.php-build ] && PATH=$HOME/.php-build/bin:$PATH
 # must be after eval $(rbenv init)
 if [ -e $HOME/.phpenv ]; then
@@ -128,6 +127,47 @@ if [ -e $HOME/.phpenv ]; then
   eval "$(phpenv init -)"
   [ -e $HOME/.phpenv/completions/rbenv.${_SHELL_NAME} ] && source $HOME/.phpenv/completions/rbenv.${_SHELL_NAME}
 fi
+
+## cakephp {{{3
+cake-dispatch() { #{{{
+  local has_cd=0
+  if [ -e app ]; then
+    cd app
+    has_cd=1
+  fi
+  local mode=$1
+  shift
+
+  case $mode in
+    console)
+      if [ -x Console/cake ] ; then
+        Console/cake "$*"
+      elif [ -x console/cake ]; then
+        console/cake "$*"
+      fi
+      ;;
+    clear-cache)
+      [ -e ./tmp/cache ] && find ./tmp/cache -type f -name 'cake_*' -exec rm {} \;
+      ;;
+    *)
+      echo "command not found $*"
+      ;;
+  esac
+
+  if [ $has_cd -eq 1 ]; then
+    cd ..
+  fi
+} #}}}
+cake-c() {
+  cake-dispatch console "$*"
+}
+bake() {
+  cake-dispatch console bake "$*"
+}
+cake-cc() {
+  cake-dispatch clear-cache "$*"
+}
+## }}}
 
 # etc {{{2
 # c/c++ library path
