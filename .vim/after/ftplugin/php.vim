@@ -12,6 +12,8 @@ if !exists('g:loaded_php_ftplugin') " {{{1
   let php_parent_error_open = 1
   "let php_sync_method = x
 
+  let php_folding = 0
+
   "" php-doc.vim
   let g:pdv_cfg_Type = 'mixed'
   let g:pdv_cfg_Package = ""
@@ -20,15 +22,6 @@ if !exists('g:loaded_php_ftplugin') " {{{1
   let g:pdv_cfg_Copyright = ""
   let g:pdv_cfg_License = 'PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}'
 endif " }}}
-
-let php_folding = 0
-function! s:folding()
-  if &foldmethod == "manual" 
-    exe "EnableFastPHPFolds" 
-  endif
-  redraw!
-endfunction
-nnoremap <buffer> <silent> zz :call <SID>folding()<CR>
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -42,7 +35,13 @@ nnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
 inoremap <buffer> <silent> [comment-doc] <Esc>:call PhpDocSingle()<CR>i
 vnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
 
-nnoremap <buffer> <silent> <C-K> :Ref phpmanual<CR>
+if exists(':EnableFastPHPFolds')
+  function! s:folding()
+    exe "EnableFastPHPFolds" 
+    redraw!
+  endfunction
+  nnoremap <buffer> <silent> zz :call <SID>folding()<CR>
+endif
 
 " function! s:last_char() " {{{1
   " return matchstr(getline('.'), '.', col('.')-2)

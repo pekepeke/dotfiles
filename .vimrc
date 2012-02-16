@@ -1,6 +1,5 @@
 " init setup "{{{1
 
-let s:is_loaded = exists('g:loaded_dot_vimrc')
 " platform detection {{{2
 let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
@@ -9,12 +8,12 @@ let s:is_win = has('win16') || has('win32') || has('win64')
 let s:configured_runtimepath = &runtimepath
 set all&
 
-if s:is_loaded
-  if has('gui') | execute 'source' expand("~/.gvimrc") | endif
-  let &runtimepath=s:configured_runtimepath
-elseif s:is_win
+if has('vim_starting')
   set runtimepath^=$HOME/.vim
   set runtimepath+=$HOME/.vim/after
+else
+  if has('gui') | execute 'source' expand("~/.gvimrc") | endif
+  let &runtimepath=s:configured_runtimepath
 endif
 unlet s:configured_runtimepath
 
@@ -45,30 +44,19 @@ if s:is_win
   endif
 endif
 
-" etc settings {{{2
-set nocompatible
-
-if filereadable(expand('~/.vimrc.personal'))
-  execute 'source' expand('~/.vimrc.personal')
-endif
-if isdirectory(expand('~/.vim/bin/'))
-  let $PATH.=(s:is_win ? ';' : ':').expand('~/.vim/bin/')
-endif
-" }}}
-" defun macros
-augroup MyAuGroup
-  autocmd!
-augroup END
-command! -bang -nargs=* MyAutocmd autocmd<bang> MyAuGroup <args>
-command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
-
 " preexec for runtimepath {{{1
-filetype off
+set nocompatible
+filetype plugin indent off
 
 " vundle {{{1
-set rtp+=~/.vim/neobundle.vim
 let g:my_bundle_dir = expand("$HOME/.vim/neobundle")
-call neobundle#rc(g:my_bundle_dir)
+if has('vim_starting')
+  " pathogen
+  call pathogen#infect()
+
+  set rtp+=~/.vim/neobundle.vim
+  call neobundle#rc(g:my_bundle_dir)
+endif
 
 " lang
 NeoBundle 'thinca/vim-quickrun.git'
@@ -279,13 +267,6 @@ NeoBundle "mattn/vim-metarw-gist.git"
 NeoBundle "mattn/vim-metarw-git.git"
 NeoBundle "sorah/metarw-simplenote.vim.git"
 
-" pathogen {{{1
-let g:pathogen_disabled = []
-if !s:is_mac | let g:pathogen_disabled += ['cocoa.vim'] | endif
-call pathogen#runtime_append_all_bundles()
-
-command! PathogenHelptags call pathogen#helptags()
-
 " afterexec for runtimepath {{{1
 syntax enable
 filetype plugin indent on
@@ -294,6 +275,21 @@ filetype plugin indent on
 if executable('sh') && executable('make')
   command! -nargs=0 VimprocCompile call my#util#compile_vimproc(g:my_bundle_dir . '/vimproc')
 endif
+
+" etc settings {{{2
+if filereadable(expand('~/.vimrc.personal'))
+  execute 'source' expand('~/.vimrc.personal')
+endif
+if isdirectory(expand('~/.vim/bin/'))
+  let $PATH.=(s:is_win ? ';' : ':').expand('~/.vim/bin/')
+endif
+" }}}
+" defun macros
+augroup MyAuGroup
+  autocmd!
+augroup END
+command! -bang -nargs=* MyAutocmd autocmd<bang> MyAuGroup <args>
+command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
 
 " color settings "{{{1
 "set t_Co=256
@@ -363,7 +359,13 @@ MyAutocmd FileType js setlocal ft=javascript
 MyAutocmd BufNewFile,BufRead *.ru,Guardfile setfiletype ruby
 " php
 MyAutocmd BufNewFile,BufRead *.ctp,*.thtml setfiletype php
-MyAutocmd BufNewFile,BufRead *.tpl setfiletype html.smarty
+" MyAutocmd BufReadPost,BufNewFile *.tpl
+"       \ if match(join(getline(1, 20), "\n"), "{$|{[a-zA-Z]+}") != -1
+"       \ | setfiletype smarty
+"       \ | else
+"       \ | setfiletype twig
+"       \ endif
+
 " MySQL
 MyAutocmd BufNewFile,BufRead *.sql set filetype=mysql
 " Textile
@@ -1696,7 +1698,7 @@ let g:echodoc_enable_at_startup=0
 let g:neocomplcache_snippets_dir                        = $HOME . '/.vim/snippets'
 let g:neocomplcache_enable_at_startup                   = 1
 let g:neocomplcache_cursor_hold_i_time                  = 500
-if s:is_loaded | silent exe 'NeoComplCacheEnable' | endif
+if !has('vim_starting') | silent exe 'NeoComplCacheEnable' | endif
 
 call s:initialize_global_dict('neocomplcache_', [
       \ 'keyword_patterns',
@@ -2026,6 +2028,9 @@ function! s:howm_memo_my_settings()
   nmap <buffer> [prefix]d :exe 'normal! i'.printf("[%s] ", strftime('%Y-%m-%d'))<CR>
 endfunction
 
+" phpfolding.vim {{{2
+let g:DisableAutoPHPFolding = 1
+
 " etc functions & commands {{{1
 " tiny snippets {{{2
 let g:my_snippets_dir = "$HOME/memos/tiny-snippets"
@@ -2222,5 +2227,4 @@ command!
 
 " }}}1
 
-let g:loaded_dot_vimrc=1
 " vim: set fdm=marker sw=2 ts=2 et:
