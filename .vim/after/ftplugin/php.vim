@@ -13,6 +13,8 @@ if !exists('g:loaded_php_ftplugin') " {{{1
   "let php_sync_method = x
 
   let php_folding = 0
+  " phpfolding.vim
+  let g:DisableAutoPHPFolding = 1
 
   "" php-doc.vim
   let g:pdv_cfg_Type = 'mixed'

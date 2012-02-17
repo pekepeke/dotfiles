@@ -359,13 +359,6 @@ MyAutocmd FileType js setlocal ft=javascript
 MyAutocmd BufNewFile,BufRead *.ru,Guardfile setfiletype ruby
 " php
 MyAutocmd BufNewFile,BufRead *.ctp,*.thtml setfiletype php
-" MyAutocmd BufReadPost,BufNewFile *.tpl
-"       \ if match(join(getline(1, 20), "\n"), "{$|{[a-zA-Z]+}") != -1
-"       \ | setfiletype smarty
-"       \ | else
-"       \ | setfiletype twig
-"       \ endif
-
 " MySQL
 MyAutocmd BufNewFile,BufRead *.sql set filetype=mysql
 " Textile
@@ -1104,9 +1097,9 @@ call submode#map       ('tabwalker', 'n', '', 'l', 'gt:redraw<CR>')
 call submode#map       ('tabwalker', 'n', '', 'H', ':execute "tabmove" tabpagenr() - 2<CR>')
 call submode#map       ('tabwalker', 'n', '', 'L', ':execute "tabmove" tabpagenr()<CR>')
 call submode#map       ('tabwalker', 'n', '', 'n', ':execute "tabnew"<CR>:tabmove<CR>')
+call submode#map       ('tabwalker', 'n', '', 'c', ':execute "tabnew"<CR>:tabmove<CR>')
 call submode#map       ('tabwalker', 'n', '', 'q', ':execute "tabclose"<CR>')
 call submode#map       ('tabwalker', 'n', '', 'o', ':execute "tabonly"<CR>')
-
 
 " Change current window size {{{3
 " winmove {{{3
@@ -1428,12 +1421,13 @@ let g:quickrun_config['diag'] = {
 
 " for testcase
 MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
-MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.unit
+MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
+MyAutocmd BufWinEnter,BufNewFile */Test/Case/*test.php,*/Test/Case/*Test.php setl filetype=php.phpunit.caketest
 MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
 MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
 let g:quickrun_config['ruby.rspec'] = {'command' : 'rspec', 'exec' : '%c -l {line(".")}'}
 let g:quickrun_config['php.phpunit'] = {'command' : 'phpunit'}
-let g:quickrun_config['php.caketest'] = {'command' : 'caketest'}
+let g:quickrun_config['php.phpunit.caketest'] = {'command' : 'caketest'}
 let g:quickrun_config['python.nosetests'] = {'command': 'nosetests', 'cmdopt': '-s -vv'}
 let g:quickrun_config['perl.prove'] = {'command': 'prove'}
 
@@ -1949,20 +1943,21 @@ MyAutocmd FileType vimfiler call s:vimfiler_my_settings()
 
 function! s:vimfiler_smart_tree_h()
   let file = vimfiler#get_file()
-  if empty(file) | return | endif
   let cmd = "\<Plug>(vimfiler_smart_h)"
-  if file.vimfiler__is_opened
-    let cmd = "\<Plug>(vimfiler_expand_tree)"
-  elseif file.vimfiler__nest_level > 0
-    let nest_level = file.vimfiler__nest_level
-    while 1
-      exe 'normal!' 'k'
-      let file = vimfiler#get_file()
-      if empty(file) || file.vimfiler__nest_level < nest_level
-        " let cmd = "\<Plug>(vimfiler_expand_tree)" | break
-        return
-      endif
-    endwhile
+  if !empty(file)
+    if file.vimfiler__is_opened
+      let cmd = "\<Plug>(vimfiler_expand_tree)"
+    elseif file.vimfiler__nest_level > 0
+      let nest_level = file.vimfiler__nest_level
+      while 1
+        exe 'normal!' 'k'
+        let file = vimfiler#get_file()
+        if empty(file) || file.vimfiler__nest_level < nest_level
+          " let cmd = "\<Plug>(vimfiler_expand_tree)" | break
+          return
+        endif
+      endwhile
+    endif
   endif
   exe 'normal' cmd
 endfunction
@@ -2028,8 +2023,6 @@ function! s:howm_memo_my_settings()
   nmap <buffer> [prefix]d :exe 'normal! i'.printf("[%s] ", strftime('%Y-%m-%d'))<CR>
 endfunction
 
-" phpfolding.vim {{{2
-let g:DisableAutoPHPFolding = 1
 
 " etc functions & commands {{{1
 " tiny snippets {{{2
