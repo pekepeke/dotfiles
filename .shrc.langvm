@@ -141,9 +141,9 @@ cake-dispatch() { #{{{
   case $mode in
     console)
       if [ -x Console/cake ] ; then
-        Console/cake "$*"
+        Console/cake $*
       elif [ -x console/cake ]; then
-        console/cake "$*"
+        console/cake $*
       fi
       ;;
     clear-cache)
@@ -159,13 +159,13 @@ cake-dispatch() { #{{{
   fi
 } #}}}
 cake-c() {
-  cake-dispatch console "$*"
+  cake-dispatch console $*
 }
 bake() {
-  cake-dispatch console bake "$*"
+  cake-dispatch console bake $*
 }
 cake-cc() {
-  cake-dispatch clear-cache "$*"
+  cake-dispatch clear-cache $*
 }
 ## }}}
 

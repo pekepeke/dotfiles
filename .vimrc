@@ -211,7 +211,7 @@ NeoBundle 'the-isz/MinYankRing.vim.git'
 
 NeoBundle 'sjl/gundo.vim.git'
 NeoBundle 'kana/vim-smartword.git'
-NeoBundle 'roman/golden-ratio.git'
+NeoBundle 'pekepeke/golden-ratio.git'
 " NeoBundle 'scrooloose/nerdtree.git'
 NeoBundle 'thinca/vim-qfreplace.git'
 NeoBundle 'nathanaelkane/vim-indent-guides.git'
@@ -784,8 +784,8 @@ function! s:show_mapping()
   endif
 endfunction
 
-nnoremap <silent> [space]k :<C-u>call <SID>show_mapping()<CR>
-nnoremap [space]n :<C-u>nohlsearch<CR>
+nnoremap <silent> [space]hk :<C-u>call <SID>show_mapping()<CR>
+nnoremap [space]/ :<C-u>nohlsearch<CR>
 nnoremap [space]w :<C-u>call <SID>toggle_option("wrap")<CR>
 
 " replace & grep {{{2
@@ -954,6 +954,7 @@ vnoremap <S-Tab> <gv
 " plugin settings {{{1
 
 " golden-ratio
+let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler', 'quickrun']
 nmap [space]s <Plug>(golden_ratio_toggle)
 
 " ambicmd
@@ -1015,12 +1016,18 @@ call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.
 call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
 call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
 
+call altr#define('%.js', 'test/%Test.js', 'spec/%_spec.js')
+call altr#define('%.coffee', 'test/%Test.coffee', 'spec/%_spec.coffee')
+
 call altr#define('controllers/%.php', 'models/%.php', 'helpers/%.php', 'views/%.php')
-call altr#define('Controller/%.php', 'Test/Case/%Test.php')
+call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
 call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
+call altr#define('View/%.php', 'Test/Case/View/%Test.php')
 
 nmap [prefix]n <Plug>(altr-forward)
 nmap [prefix]p <Plug>(altr-back)
+nmap [space]j <Plug>(altr-forward)
+nmap [space]k <Plug>(altr-back)
 
 " vim-template "{{{2
 let g:template_basedir = expand('$HOME/.vim')
@@ -1682,7 +1689,7 @@ Alias php[manual] Ref phpmanual
 Alias timo Ref timobileref
 Alias tide Ref tidesktopref
 
-nnoremap [space]h :Ref alc <C-r>=expand("<cWORD>")<CR><CR>
+nnoremap [space]hh :Ref alc <C-r>=expand("<cWORD>")<CR><CR>
 
 " echodoc {{{2
 let g:echodoc_enable_at_startup=0
@@ -1941,7 +1948,7 @@ let g:vimfiler_marked_file_icon = '*'
 
 MyAutocmd FileType vimfiler call s:vimfiler_my_settings()
 
-function! s:vimfiler_smart_tree_h()
+function! s:vimfiler_smart_tree_h() "{{{4
   let file = vimfiler#get_file()
   let cmd = "\<Plug>(vimfiler_smart_h)"
   if !empty(file)
@@ -1962,7 +1969,16 @@ function! s:vimfiler_smart_tree_h()
   exe 'normal' cmd
 endfunction
 
-function! s:vimfiler_my_tree_edit(method)
+function s:vimfiler_tree_edit(method) "{{{4
+  let file = vimfiler#get_file()
+  if empty(file) || empty(a:method) | return | endif
+  let path = file.action__path
+  wincmd p
+  execute a:method
+  exe 'edit' path
+endfunction
+
+function! s:vimfiler_smart_tree_l(method) "{{{4
   let file = vimfiler#get_file()
   if empty(file) | return | endif
   let path = file.action__path
@@ -1970,11 +1986,8 @@ function! s:vimfiler_my_tree_edit(method)
     exe 'normal' "\<Plug>(vimfiler_expand_tree)"
     return
   endif
-
-  wincmd p
-  execute a:method
-  exe 'edit' path
-endfunction
+  call s:vimfiler_tree_edit(a:method)
+endfunction "}}}
 
 function! s:vimfiler_my_settings() " {{{3
   nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
@@ -1984,8 +1997,8 @@ function! s:vimfiler_my_settings() " {{{3
     if exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree'
       " nmap <buffer> e <Plug>(vimfiler_split_edit_file)
       " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
-      nmap <silent><buffer> e :call <SID>vimfiler_my_tree_edit('new')<CR>
-      nmap <silent><buffer> l :call <SID>vimfiler_my_tree_edit('new')<CR>
+      nmap <silent><buffer> e :call <SID>vimfiler_tree_edit('new')<CR>
+      nmap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
       " nmap <buffer> l <Plug>(vimfiler_expand_tree)
       nmap <buffer> L <Plug>(vimfiler_smart_l)
       nmap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
