@@ -87,7 +87,9 @@ function! my#util#find_proj_dir() " {{{2
     endif
   endfor
   if pjdir == ''
-    for f in ['tiapp.xml', 'build.xml', 'prj.el', '.project', 'pom.xml', 'Makefile', 'configure', 'Rakefile', 'NAnt.build', 'tags', 'gtags']
+    for f in ['tiapp.xml', 'build.xml', 'prj.el', '.project', 'pom.xml', 
+          \ 'Console', 'console',
+          \ 'Makefile', 'configure', 'Rakefile', 'NAnt.build', 'tags', 'gtags']
       let f = findfile(f, cdir . ';')
       if f != ''
         let pjdir = fnamemodify(f, ':p:h')

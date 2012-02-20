@@ -130,20 +130,19 @@ fi
 
 ## cakephp {{{3
 cake-dispatch() { #{{{
-  local has_cd=0
+  local has_cd=0 mode=$1 rlwrap=$(which rlwrap 2>/dev/null)
   if [ -e app ]; then
     cd app
     has_cd=1
   fi
-  local mode=$1
   shift
 
   case $mode in
     console)
       if [ -x Console/cake ] ; then
-        Console/cake "$*"
+        $rlwrap Console/cake "$*"
       elif [ -x console/cake ]; then
-        console/cake "$*"
+        $rlwrap console/cake "$*"
       fi
       ;;
     clear-cache)

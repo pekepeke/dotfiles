@@ -2,6 +2,12 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let g:my_preview_browser_cmd = get(g:, 'my_browserpreview_cmd', "")
+function! my#ui#rename() "{{{2
+  let path = input("dest : ", expand("%:p"), "file")
+  if !empty(path)
+    exe "f" path | call delete(expand('#')) | w
+  endif
+endfunction
 
 function! my#ui#relative_copy(dst) "{{{2
   let fpath = expand('%')
@@ -20,7 +26,6 @@ function! my#ui#relative_copy(dst) "{{{2
   let cmd = my#util#is_win() ? 'copy' : 'cp'
   execute '!' cmd fpath dpath
 endfunction "}}}
-
 function! my#ui#complete_encodings(A, L, P) "{{{2
   let encodings = ['utf-8', 'sjis', 'euc-jp', 'iso-2022-jp']
   let matches = []
@@ -52,7 +57,6 @@ function! my#ui#indent_whole_buffer() " {{{2
   normal gg=G
   call setpos(".", l:p)
 endfunction "}}}
-
 function! my#ui#launch_browser(appname) "{{{2
   let path = ""
   if a:appname == "ie"
@@ -104,8 +108,7 @@ function! my#ui#launch_browser(appname) "{{{2
     silent execute "!" path expand("%:p")
   endif
 endfunction "}}}
-
-function! my#ui#preview_browser() range "{{{4
+function! my#ui#preview_browser() range "{{{2
   if !exists('g:my_preview_browser_cmd')
     echoerr "command not found."
     return
