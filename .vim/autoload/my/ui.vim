@@ -2,8 +2,8 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let g:my_preview_browser_cmd = get(g:, 'my_browserpreview_cmd', "")
-function! my#ui#rename() "{{{2
-  let path = input("dest : ", expand("%:p"), "file")
+function! my#ui#rename(path) "{{{2
+  let path = empty(a:path) ? input("dest : ", expand("%:p"), "file") : a:path
   if !empty(path)
     exe "f" path | call delete(expand('#')) | w
   endif

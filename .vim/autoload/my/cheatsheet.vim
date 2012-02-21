@@ -19,9 +19,9 @@ function! my#cheatsheet#open(fname) "{{{1
   if !filereadable(l:path)
     let l:path = a:fname
   endif
-  if s:is_win
+  if my#util#is_win()
     silent exe '! start hh' l:path
-  elseif s:is_mac
+  elseif my#util#is_mac()
     silent exe '! open' l:path
   else
     silent exe '!' l:path

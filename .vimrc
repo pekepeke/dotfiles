@@ -223,6 +223,14 @@ endif
 " web
 NeoBundle 'tyru/open-browser.vim.git'
 NeoBundle 'mattn/webapi-vim.git'
+if executable('python')
+  NeoBundle 'mattn/mkdpreview-vim'
+  let plugin_path = g:my_bundle_dir . "/mkdpreview-vim/static/mkdpreview.py"
+  if !s:is_win && filereadable(plugin_path) && !executable(plugin_path)
+    exe "!chmod u+x" plugin_path
+  endif
+  unlet plugin_path
+endif
 NeoBundle 'mattn/googletranslate-vim.git'
 NeoBundle 'thinca/vim-ambicmd.git'
 NeoBundle 'mattn/gist-vim.git'
@@ -862,7 +870,9 @@ function! s:toggle_quickfix_window() "{{{3
 endfunction "}}}
 
 " nnoremap [space]f :NERDTreeToggle<CR>
-nnoremap <silent> [space]f :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40<CR>
+nnoremap <silent> [space]f :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=getcwd()<CR><CR>
+nnoremap <silent> [space]ff :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=getcwd()<CR><CR>
+nnoremap <silent> [space]fg :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=fnameescape(expand('%:p:h'))<CR><CR>
 nnoremap <silent> [space]t :TlistToggle<CR>
 
 nnoremap / :<C-u>nohlsearch<CR>/
@@ -1522,11 +1532,18 @@ endif
 nnoremap <silent> [prefix]tt :<C-u>TlistToggle<CR>1<C-w>h
 nnoremap <silent> [prefix]tr :<C-u>TlistUpdate<CR>
 nnoremap          [prefix]tc :Ctags<CR>
-command! -nargs=0 Ctags call s:exec_ctags()
-function! s:exec_ctags() "{{{3
-  let cmdname = my#util#has_plugin('vimproc') != '' ? 'VimProcBang' : '!'
-  execute cmdname 'ctags -R'
+command! -nargs=? Ctags call s:exec_ctags(<q-args>)
+function! s:exec_ctags(path) "{{{3
+  let with_cmd = my#util#has_plugin('vimproc') != '' ? 'VimProcBang' : '!'
+  let cwd = getcwd()
+  if !empty(a:path) && isdirectory(a:path)
+    exe 'lcd' a:path
+  endif
+  execute with_cmd 'ctags -R'
   NeoComplCacheCachingTags
+  if !empty(a:path) && isdirectory(a:path)
+    exe 'lcd' cwd
+  endif
 endfunction
 
 " surround.vim {{{2
@@ -2155,9 +2172,7 @@ command! -nargs=1 -complete=buffer DiffBuf vertical diffsplit <args>
 command! -nargs=1 -complete=file DiffFile vertical diffsplit <args>
 
 " rename {{{2
-"command! -nargs=1 -complete=file Rename f <args>|call delete(expand('#'))
-"command! -nargs=1 -complete=file Rename f <args> | call delete(expand('#')) | w
-command! -nargs=1 -complete=customlist,my#rename#complete Rename call my#rename#exec("<args>")
+command! -nargs=? -complete=file Rename call my#ui#rename(<q-args>)
 Alias ren Rename
 
 command! -nargs=1 -complete=file Relcp call my#ui#relative_copy(<f-args>)
@@ -2233,4 +2248,4 @@ command!
 
 " }}}1
 
-" vim: set fdm=marker sw=2 ts=2 et:
+" vim: set ft=vim fdm=marker sw=2 ts=2 et:
