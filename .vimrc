@@ -215,6 +215,7 @@ NeoBundle 'pekepeke/golden-ratio.git'
 " NeoBundle 'scrooloose/nerdtree.git'
 NeoBundle 'thinca/vim-qfreplace.git'
 NeoBundle 'nathanaelkane/vim-indent-guides.git'
+NeoBundle 'c9s/cascading.vim.git'
 NeoBundle 'mileszs/ack.vim.git'
 if s:is_mac && has('gui')
   NeoBundle 'gmarik/sudo-gui.vim'
@@ -856,7 +857,12 @@ nnoremap <silent> [t]j :<C-u>tag<CR>
 nnoremap <silent> [t]k :<C-u>pop<CR>
 nnoremap <silent> [t]l :<C-u>tags<CR>
 
-" etc {{{2
+" nmaps {{{2
+" win move
+nnoremap <C-j> :<C-w>j
+nnoremap <C-k> :<C-k>j
+nnoremap <C-l> :<C-l>j
+nnoremap <C-h> :<C-h>j
 nnoremap [space]. :source ~/.vimrc<CR>
 
 "nnoremap [edit]<C-o> :copen<CR><C-w><C-w>
@@ -882,20 +888,6 @@ nnoremap <C-w><Space> <C-w>p
 " echo
 nnoremap [prefix]e :echo<Space>
 
-function! s:do_git_diff_aware_gf(command)
-  let target_path = expand('<cfile>')
-  if target_path =~# '^[ab]/'  " with a peculiar prefix of git-diff(1)?
-    if filereadable(target_path) || isdirectory(target_path)
-      return a:command
-    else
-      " BUGS: Side effect - Cursor position is changed.
-      let [_, c] = searchpos('\f\+', 'cenW')
-      return c . '|' . 'v' . (len(target_path) - 2 - 1) . 'h' . a:command
-    endif
-  else
-    return a:command
-  endif
-endfunction
 
 " imaps {{{2
 inoremap <C-t> <C-v><Tab>
@@ -964,7 +956,8 @@ vnoremap <S-Tab> <gv
 " plugin settings {{{1
 
 " golden-ratio
-let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler', 'quickrun']
+let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler']
+", 'quickrun']
 nmap [space]s <Plug>(golden_ratio_toggle)
 
 " ambicmd
