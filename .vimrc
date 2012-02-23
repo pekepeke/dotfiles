@@ -449,7 +449,8 @@ if !exists('g:my_lcd_autochdir')
 endif
 
 function! LcdCurrentOrProjDir() "{{{3
-  if exists('b:vimfiler')
+  if !(&filetype == "vimfiler" || &filetype == "unite" || &filetype == "vimshell"
+        \ || &filetype == "quickrun" )
   elseif g:my_lcd_autochdir && !exists('b:my_lcd_current_or_prj_dir')
     let b:my_lcd_current_or_prj_dir = my#util#find_proj_dir()
     if b:my_lcd_current_or_prj_dir != ''
@@ -1054,6 +1055,8 @@ function! s:template_keywords() "{{{3
   %s/<%=\(.\{-}\)%>/\=eval(submatch(1))/ge
 endfunction
 
+" vim-repeat "{{{2
+silent! call repeat#set(".", v:count)
 " scratch.vim {{{2
 " http://vim-users.jp/2010/11/hack181/
 " Open junk file. {{{3
@@ -1948,7 +1951,7 @@ LCAlias IRB
 " vimfiler {{{2
 let g:vimfiler_as_default_explorer=1
 let g:vimfiler_safe_mode_by_default=0
-let g:vimfiler_edit_action = 'below'
+" let g:vimfiler_edit_action = 'below'
 
 let g:vimfiler_tree_leaf_icon = ' '
 let g:vimfiler_tree_opened_icon = '▾'
