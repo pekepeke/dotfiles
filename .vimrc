@@ -1,5 +1,4 @@
 " init setup "{{{1
-
 " platform detection {{{2
 let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
@@ -124,6 +123,7 @@ NeoBundle 'vim-scripts/taglist.vim.git'
 NeoBundle 'tomtom/tcomment_vim.git'
 " NeoBundle 'scrooloose/nerdcommenter.git'
 NeoBundle 'thinca/vim-template.git'
+NeoBundle 'mattn/sonictemplate-vim.git'
 NeoBundle 'ciaranm/detectindent.git'
 NeoBundle 'ujihisa/shadow.vim.git'
 "NeoBundle 'motemen/git-vim.git'
@@ -1055,9 +1055,9 @@ function! s:template_keywords() "{{{3
   %s/<%=\(.\{-}\)%>/\=eval(submatch(1))/ge
 endfunction
 
-" vim-repeat "{{{2
-silent! call repeat#set(".", v:count)
-" scratch.vim {{{2
+" sonictemplate-vim {{{2
+let g:sonictemplate_vim_template_dir = expand('$HOME/.vim/sonictemplate/')
+
 " http://vim-users.jp/2010/11/hack181/
 " Open junk file. {{{3
 function! s:open_junk_file()
@@ -1075,7 +1075,6 @@ endfunction "}}}
 command! -nargs=0 JunkFile call s:open_junk_file()
 command! -nargs=0 EnewNofile enew | setl buftype=nofile
 
-
 nnoremap [prefix]ss :<C-u>JunkFile<CR>
 nmap [prefix]se :<C-u>EnewNofile<CR>
 
@@ -1084,6 +1083,9 @@ let g:alignta_confirm_for_retab = 0
 " let g:Align_xstrlen=3
 " vmap [prefix]a :Align
 vmap [prefix]a :Alignta<Space>
+
+" repeat.vim {{{2
+silent! repeat#set() " for loading
 
 " submode {{{2
 " http://d.hatena.ne.jp/tyru/20100502/vim_mappings
@@ -1094,6 +1096,10 @@ call submode#map       ('winsize', 'n', '', 'j', '<C-w>-:redraw<CR>')
 call submode#map       ('winsize', 'n', '', 'k', '<C-w>+:redraw<CR>')
 call submode#map       ('winsize', 'n', '', 'h', '<C-w><:redraw<CR>')
 call submode#map       ('winsize', 'n', '', 'l', '<C-w>>:redraw<CR>')
+call submode#map       ('winsize', 'n', '', 'J', ':set lines+=1<CR>')
+call submode#map       ('winsize', 'n', '', 'K', ':set lines-=1<CR>')
+call submode#map       ('winsize', 'n', '', 'H', ':set columns-=5<CR>')
+call submode#map       ('winsize', 'n', '', 'L', ':set columns+=5<CR>')
 
 " undo/redo {{{3
 call submode#enter_with('undo/redo', 'n', '', 'g-', 'g-')
@@ -1104,6 +1110,7 @@ call submode#map       ('undo/redo', 'n', '', '+', 'g+')
 
 " Tab walker. {{{3
 call submode#enter_with('tabwalker', 'n', '', '[s]t', '<Nop>')
+call submode#enter_with('tabwalker', 'n', '', '[s]e', '<Nop>')
 call submode#leave_with('tabwalker', 'n', '', '<Esc>')
 call submode#map       ('tabwalker', 'n', '', 'h', 'gT:redraw<CR>')
 call submode#map       ('tabwalker', 'n', '', 'l', 'gt:redraw<CR>')
@@ -1114,9 +1121,7 @@ call submode#map       ('tabwalker', 'n', '', 'c', ':execute "tabnew"<CR>:tabmov
 call submode#map       ('tabwalker', 'n', '', 'q', ':execute "tabclose"<CR>')
 call submode#map       ('tabwalker', 'n', '', 'o', ':execute "tabonly"<CR>')
 
-" Change current window size {{{3
 " winmove {{{3
-call submode#enter_with('winmove', 'n', '', '[s]e', '<Nop>')
 call submode#enter_with('winmove', 'n', '', '[s]j', '<C-w>j')
 call submode#enter_with('winmove', 'n', '', '[s]k', '<C-w>k')
 call submode#leave_with('winmove', 'n', '', '<Esc>')
@@ -2126,16 +2131,19 @@ if s:is_mac "{{{3
   " Utility command for Mac
   command! Here silent execute '!open' shellescape(expand('%:p:h'))
   command! This silent execute '!open' shellescape(expand('%:p'))
+  command! In silent execute '!osascript' '-e' "'tell application \"Terminal\" to do script \"cd ".expand('%:p:h')."; clear;\"'"
   command! -nargs=1 -complete=file That silent execute '!open' shellescape(expand(<f-args>), 1)
 elseif s:is_win "{{{3
   " Utility command for Windows
   command! Here silent execute '!explorer' substitute(expand('%:p:h'), '/', '\', 'g')
   command! This silent execute '!start cmd /c "%"'
+  command! In silent execute '!start cmd /k cd "'.substitute(expand('%:p:h'), '/', '\', 'g').'"'
   command! -nargs=1 -complete=file That silent execute '!explorer' shellescape(expand(<f-args>), 1)
 else "{{{3
   " TODO
   command! Here silent execute '!gnome-open' expand('%:p:h')
   command! This silent execute '!"%"'
+  command! In silent execute '!gnome-terminal -e "cd '.shellescape(expand('%:p:h')).'"'
   command! -nargs=1 -complete=file That silent execute '!gnome-open' shellescape(expand(<f-args>), 1)
 endif
 "}}}

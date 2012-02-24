@@ -63,3 +63,6 @@ doc/tags-ja
 .xmonad/xmonad.hi
 .xmonad/xmonad.o
 
+# pip
+.pip/pip.log
+
