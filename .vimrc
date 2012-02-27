@@ -860,10 +860,10 @@ nnoremap <silent> [t]l :<C-u>tags<CR>
 
 " nmaps {{{2
 " win move
-nnoremap <C-j> :<C-w>j
-nnoremap <C-k> :<C-k>j
-nnoremap <C-l> :<C-l>j
-nnoremap <C-h> :<C-h>j
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+nnoremap <C-h> <C-w>h
 nnoremap [space]. :source ~/.vimrc<CR>
 
 "nnoremap [edit]<C-o> :copen<CR><C-w><C-w>
@@ -1536,6 +1536,13 @@ nnoremap          [prefix]tc :Ctags<CR>
 command! -nargs=? Ctags call s:exec_ctags(<q-args>)
 function! s:exec_ctags(path) "{{{3
   let with_cmd = my#util#has_plugin('vimproc') != '' ? 'VimProcBang' : '!'
+  let path = a:path
+  if empty(path)
+    let path = input("input base dir : ", expand('%:p:h'))
+  endif
+  if empty(path)
+    return
+  endif
   let cwd = getcwd()
   if !empty(a:path) && isdirectory(a:path)
     exe 'lcd' a:path

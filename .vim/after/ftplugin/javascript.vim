@@ -5,6 +5,8 @@ set cpo&vim
 
 " setl expandtab ts=2 sw=2
 " setl formatoptions-=ro
+setl iskeyword+=$
+
 nnoremap vam $?\%(.*//.*function\)\@!function<CR>f{%V%0
 setl dictionary=~/.vim/dict/javascript.dict
 setl dictionary+=~/.vim/dict/qunit.dict
