@@ -188,6 +188,7 @@ endif
 NeoBundle 'Shougo/vimfiler.git'
 NeoBundle 'Shougo/vimproc.git'
 NeoBundle 'Shougo/vimshell.git'
+NeoBundle 'Shougo/vinarise.git'
 NeoBundle 'kana/vim-altr.git'
 if !s:is_win
   NeoBundle 'kana/vim-fakeclip.git'
@@ -236,11 +237,12 @@ NeoBundle 'mattn/googletranslate-vim.git'
 NeoBundle 'thinca/vim-ambicmd.git'
 NeoBundle 'mattn/gist-vim.git'
 " NeoBundle 'mattn/vimplenote-vim.git'
-NeoBundle 'pekepeke/vimplenote-vim.git'
+" NeoBundle 'pekepeke/vimplenote-vim.git'
 if has('python')
   NeoBundle 'tsukkee/lingr-vim.git'
 endif
 
+" gf-user
 NeoBundle 'kana/vim-gf-user.git'
 NeoBundle 'kana/vim-gf-diff.git'
 
@@ -271,10 +273,10 @@ NeoBundle 'sgur/textobj-parameter.git'
 NeoBundle 'h1mesuke/textobj-wiw.git'
 
 " metarw
-NeoBundle "mattn/vim-metarw.git"
-NeoBundle "mattn/vim-metarw-gist.git"
-NeoBundle "mattn/vim-metarw-git.git"
-NeoBundle "sorah/metarw-simplenote.vim.git"
+" NeoBundle "mattn/vim-metarw.git"
+" NeoBundle "mattn/vim-metarw-gist.git"
+" NeoBundle "mattn/vim-metarw-git.git"
+" NeoBundle "sorah/metarw-simplenote.vim.git"
 
 " afterexec for runtimepath {{{1
 syntax enable
@@ -956,12 +958,12 @@ vnoremap <S-Tab> <gv
 
 " plugin settings {{{1
 
-" golden-ratio
+" golden-ratio {{{2
 let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler']
 ", 'quickrun']
 nmap [space]s <Plug>(golden_ratio_toggle)
 
-" ambicmd
+" ambicmd {{{2
 cnoremap <expr> <C-l> ambicmd#expand("\<Space>")
 " cnoremap <expr> <CR> ambicmd#expand("\<CR>")
 
@@ -1161,21 +1163,21 @@ let g:yankring_history_dir = "$HOME/.tmp"
 let g:NERDSpaceDelims = 1
 
 " chalice {{{2
-let g:chalice_cachedir = expand('$HOME/.tmp/chalice_cache')
-call my#util#mkdir(g:chalice_cachedir)
-let chalice_startupflags = 'bookmark'
+" let g:chalice_cachedir = expand('$HOME/.tmp/chalice_cache')
+" call my#util#mkdir(g:chalice_cachedir)
+" let chalice_startupflags = 'bookmark'
 
 " pydiction {{{2
 let g:pydiction_location = '~/.vim/dict/pydiction-complete-dict'
 
-" html5.vim
+" html5.vim {{{2
 let g:event_handler_attributes_complete = 1
 let g:rdfa_attributes_complete = 1
 let g:microdata_attributes_complete = 1
 let g:aria_attributes_complete = 1
 
 " sudo.vim {{{2
-if s:is_mac && has('gui_mac')
+if s:is_mac && has('gui')
   command! -bang SW SudoWriteMacGUI
 else
   command! SW w sudo:%
@@ -1185,7 +1187,7 @@ endif
 let g:hatena_base_dir = $HOME . '/.tmp/vim-hatena/'
 call my#util#mkdir(g:hatena_base_dir.'/cookies')
 
-" dbext.vim
+" dbext.vim {{{2
 let g:dbext_default_prompt_for_parameters=0
 let g:dbext_default_history_file = expand('~/.tmp/dbext_sql_history.txt')
 
@@ -1198,9 +1200,9 @@ nmap <C-y>o <Plug>(endtagcomment)
 " smartchr "{{{2
 inoremap <expr>, smartchr#one_of(', ', ',')
 
-MyAutocmd FileType
-      \ c,cpp,javascript,ruby,python,java,perl,php
-      \ call s:smartchr_my_settings()
+" MyAutocmd FileType
+"       \ c,cpp,javascript,ruby,python,java,perl,php
+"       \ call s:smartchr_my_settings()
 
 function! s:smartchr_my_settings() "{{{3
   " http://d.hatena.ne.jp/ampmmn/20080925/1222338972
@@ -1225,7 +1227,7 @@ function! s:smartchr_my_settings() "{{{3
 "        \ : smartchr#one_of(' = ', ' == ', '===', '=')
 
   " if文直後の(は自動で間に空白を入れる
-  inoremap <buffer><expr> ( search('\<\if\%#', 'bcn')? ' (': '('
+  " inoremap <buffer><expr> ( search('\<\if\%#', 'bcn')? ' (': '('
 
 endfunction
 
@@ -1407,107 +1409,6 @@ let g:html_use_css = 1
 let g:use_xhtml = 1
 let g:html_use_encoding = 'utf-8'
 
-" quickrun {{{2
-"silent! nmap <unique> <Space> <Plug>(quickrun)
-if !exists('g:quickrun_config')
-  let g:quickrun_config={}
-endif
-if has('clientserver') && !s:is_win
-  let g:quickrun_config['*'] = {'runmode': 'async:remote:vimproc', 'split': 'below'}
-else
-  let g:quickrun_config['*'] = {'split': 'below'}
-endif
-let g:quickrun_config["cat"] = {
-      \  'command' : 'cat',
-      \  'exec' : ['%c %s'],
-      \ }
-nnoremap <Leader><Leader>r :<C-u>QuickRun cat<CR>
-
-" for lang
-let g:quickrun_config['go'] = {
-      \  'command': '8g',
-      \  'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
-      \ }
-let g:quickrun_config['diag'] = {
-      \  'exec': [
-      \     '%c -a %s -o %{expand("%:r")}.png',
-      \     printf("%s %{expand(%:r)}.png", 
-      \      s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'gnome-open'))
-      \    ],
-      \  'outputter': 'message',
-      \ }
-
-" for testcase
-MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
-MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
-MyAutocmd BufWinEnter,BufNewFile */Test/Case/*test.php,*/Test/Case/*Test.php setl filetype=php.phpunit.caketest
-MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
-MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
-let g:quickrun_config['ruby.rspec'] = {'command' : 'rspec', 'exec' : '%c -l {line(".")}'}
-let g:quickrun_config['php.phpunit'] = {'command' : 'phpunit'}
-let g:quickrun_config['php.phpunit.caketest'] = {'command' : 'caketest'}
-let g:quickrun_config['python.nosetests'] = {'command': 'nosetests', 'cmdopt': '-s -vv'}
-let g:quickrun_config['perl.prove'] = {'command': 'prove'}
-
-" html {{{3
-if s:is_mac
-  let g:quickrun_config['html'] = {'exec' : 'open %s'}
-  let g:quickrun_config['xhtml'] = {'exec' : 'open %s'}
-else
-endif
-
-" objc {{{3
-if executable('gcc') && s:is_mac
-  let g:quickrun_config['objc'] = {
-        \ 'command' : 'gcc',
-        \ 'exec' : ['%c %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
-        \ 'tempfile': '{tempname()}.m'
-        \ }
-        "\ 'exec' : ['%c %s -o %s:p:r -framework Cocoa', '%s:p:r %a', 'rm -f %s:p:r'],
-endif
-" text markups {{{3
-if !executable('pandoc') && executable('markdown') "{{{4
-  if executable('ruby') && filereadable($HOME.'/bin/mkd2html.rb')
-          " \ 'command' : 'ruby ' . $HOME . '/bin/mkd2html.rb' ,
-          " \   '%c %s',
-    let g:quickrun_config['markdown'] = {
-          \ 'command' : 'ruby' ,
-          \ 'exec' : [
-          \   '%c ' . $HOME . '/bin/mkd2html.rb' . ' %s',
-          \ ],
-          \ 'outputter': 'browser',
-          \ }
-  else
-    let g:quickrun_config['markdown'] = {
-          \ 'command' : 'markdown',
-          \ 'exec' : [
-          \   'echo "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"></head>"',
-          \   '%c %s',
-          \ ],
-          \ 'outputter': 'browser',
-          \ }
-  endif
-else
-  let g:quickrun_config['markdown'] = {
-        \ 'type' : 'markdown/pandoc',
-        \ 'outputter' : 'browser',
-        \ 'cmdopt' : '-s'
-        \ }
-endif
-if executable('redcloth') "{{{4
-  let g:quickrun_config['textile'] = {
-        \ 'command' : 'redcloth',
-        \ 'exec' : [
-        \   '%c %s',
-        \ ],
-        \ }
-endif
-
-function! s:quickrun_my_settings() "{{{4
-  nmap <buffer> q :quit<CR>
-endfunction "}}}
-MyAutocmd FileType quickrun call s:quickrun_my_settings()
-
 " taglist {{{2
 " basic options {{{3
 set tags+=tags;$HOME
@@ -1616,9 +1517,10 @@ let g:surround_custom_mapping.php = {
       \ '-':  "<?php \r ?>", 
       \ '=':  "<?php echo $\r; ?>", 
       \ 'h':  "<?php echo h( $\r ); ?>", 
+      \ 'e':  "<?php echo $\r; ?>", 
+      \ 'f':  "<?php foreach ($\r as $val): ?>\n<?php endforeach; ?>", 
       \ '#':  "<?php # \r ?>", 
       \ '/':  "<?php // \r ?>", 
-      \ 'f':  "<?php foreach ($\r as $val): ?>\n<?php endforeach; ?>", 
       \ }
 let g:surround_custom_mapping.javascript = {
       \ 'f':  "function(){ \r }"
@@ -1715,6 +1617,115 @@ Alias timo Ref timobileref
 Alias tide Ref tidesktopref
 
 nnoremap [space]hh :Ref alc <C-r>=expand("<cWORD>")<CR><CR>
+
+" quickrun {{{2
+"silent! nmap <unique> <Space> <Plug>(quickrun)
+if !exists('g:quickrun_config')
+  let g:quickrun_config={}
+endif
+if has('clientserver') && !s:is_win
+  let g:quickrun_config['*'] = {'runmode': 'async:remote:vimproc', 'split': 'below'}
+else
+  let g:quickrun_config['*'] = {'split': 'below'}
+endif
+let g:quickrun_config["cat"] = {
+      \  'command' : 'cat',
+      \  'exec' : ['%c %s'],
+      \ }
+nnoremap <Leader><Leader>r :<C-u>QuickRun cat<CR>
+
+" for lang
+let g:quickrun_config['go'] = {
+      \  'command': '8g',
+      \  'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
+      \ }
+let g:quickrun_config['diag'] = {
+      \  'exec': [
+      \     '%c -a %s -o %{expand("%:r")}.png',
+      \     printf("%s %{expand(%:r)}.png", 
+      \      s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'gnome-open'))
+      \    ],
+      \  'outputter': 'message',
+      \ }
+
+" for testcase
+MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
+MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
+MyAutocmd BufWinEnter,BufNewFile */Test/Case/*test.php,*/Test/Case/*Test.php setl filetype=php.phpunit.caketest
+MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
+MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
+if exists('*ref#register_detection')
+  call ref#register_detection('ruby.rspec', 'refe', 'append')
+  call ref#register_detection('php.phpunit', 'phpmanual', 'append')
+  call ref#register_detection('php.phpunit.caketest', 'phpmanual', 'append')
+  call ref#register_detection('python.nosetests', 'pydoc', 'append')
+  call ref#register_detection('perl.prove', 'perldoc', 'append')
+endif
+
+let g:quickrun_config['ruby.rspec'] = {'command' : 'rspec', 'exec' : '%c -l {line(".")}'}
+let g:quickrun_config['php.phpunit'] = {'command' : 'phpunit'}
+let g:quickrun_config['php.phpunit.caketest'] = {'command' : 'caketest'}
+let g:quickrun_config['python.nosetests'] = {'command': 'nosetests', 'cmdopt': '-s -vv'}
+let g:quickrun_config['perl.prove'] = {'command': 'prove'}
+
+" html {{{3
+if s:is_mac
+  let g:quickrun_config['html'] = {'exec' : 'open %s'}
+  let g:quickrun_config['xhtml'] = {'exec' : 'open %s'}
+else
+endif
+
+" objc {{{3
+if executable('gcc') && s:is_mac
+  let g:quickrun_config['objc'] = {
+        \ 'command' : 'gcc',
+        \ 'exec' : ['%c %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
+        \ 'tempfile': '{tempname()}.m'
+        \ }
+        "\ 'exec' : ['%c %s -o %s:p:r -framework Cocoa', '%s:p:r %a', 'rm -f %s:p:r'],
+endif
+" text markups {{{3
+if !executable('pandoc') && executable('markdown') "{{{4
+  if executable('ruby') && filereadable($HOME.'/bin/mkd2html.rb')
+          " \ 'command' : 'ruby ' . $HOME . '/bin/mkd2html.rb' ,
+          " \   '%c %s',
+    let g:quickrun_config['markdown'] = {
+          \ 'command' : 'ruby' ,
+          \ 'exec' : [
+          \   '%c ' . $HOME . '/bin/mkd2html.rb' . ' %s',
+          \ ],
+          \ 'outputter': 'browser',
+          \ }
+  else
+    let g:quickrun_config['markdown'] = {
+          \ 'command' : 'markdown',
+          \ 'exec' : [
+          \   'echo "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"></head>"',
+          \   '%c %s',
+          \ ],
+          \ 'outputter': 'browser',
+          \ }
+  endif
+else
+  let g:quickrun_config['markdown'] = {
+        \ 'type' : 'markdown/pandoc',
+        \ 'outputter' : 'browser',
+        \ 'cmdopt' : '-s'
+        \ }
+endif
+if executable('redcloth') "{{{4
+  let g:quickrun_config['textile'] = {
+        \ 'command' : 'redcloth',
+        \ 'exec' : [
+        \   '%c %s',
+        \ ],
+        \ }
+endif
+
+function! s:quickrun_my_settings() "{{{4
+  nmap <buffer> q :quit<CR>
+endfunction "}}}
+MyAutocmd FileType quickrun call s:quickrun_my_settings()
 
 " echodoc {{{2
 let g:echodoc_enable_at_startup=0

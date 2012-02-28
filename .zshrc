@@ -71,10 +71,13 @@ unsetopt beep
 #export WORDCHARS='*?_.[]~=&;!#$%^(){}<>'
 
 # autoload {{{1
+[ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions $fpath)
 [ -e ~/.zsh/functions/completion ] && fpath=($HOME/.zsh/functions/completion $fpath)
 autoload -U compinit
 compinit -u
 
+zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
+  /usr/sbin /usr/bin /sbin /bin /usr/X11R6/bin
 zstyle ':completion:*:default' menu select=2
 #zstyle ':completion:*' list-colors di=34 fi=0
 #zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'

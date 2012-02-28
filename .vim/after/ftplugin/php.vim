@@ -3,19 +3,20 @@ scriptencoding utf-8
 if !exists('g:loaded_php_ftplugin') " {{{1
   let g:loaded_php_ftplugin = 1
 
-  "let php_folding = 1
-  let php_sql_query = 1
-  let php_baselib = 1
-  let php_htmlInStrings = 1
-  let php_noShortTags = 1
-  let php_parent_error_close = 1
-  let php_parent_error_open = 1
-  "let php_sync_method = x
+  "let g:php_folding = 1
+  let g:php_sql_query = 1
+  let g:php_baselib = 1
+  let g:php_htmlInStrings = 1
+  let g:php_noShortTags = 1
+  let g:php_parent_error_close = 1
+  let g:php_parent_error_open = 1
+  "let g:php_sync_method = x
 
-  let php_folding = 0
+  let g:php_folding = 0
   " phpfolding.vim
   let g:DisableAutoPHPFolding = 1
 
+  let g:PHP_autoformatcomment=0
   "" php-doc.vim
   let g:pdv_cfg_Type = 'mixed'
   let g:pdv_cfg_Package = ""
