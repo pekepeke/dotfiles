@@ -1,5 +1,6 @@
 # [ $SHLVL -gt 1 ] && return 0
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
+[ -z "$PATH_ORG" ] && PATH_ORG=$PATH; PATH=$PATH_ORG
 [ -f $HOME/.shrc.common.langutil ] && source $HOME/.shrc.common.langutil
 
 # OS settings {{{1
@@ -73,12 +74,15 @@ if [ -s $HOME/.nvm/nvm.sh ] ; then
   source $HOME/.nvm/nvm.sh
   . <(npm completion)
   # nvm use $(nvm ls | head -1 | sed -e 's/\/.*//')
-fi
-if [ -s $HOME/.nave/nave.sh ]; then
-  alias nave='$HOME/.nave/nave.sh'
-  # if [ ${NAVELVL-0} -lt 1 ] ; then
-  #   $HOME/.nave/nave.sh use stable > /dev/null 2>&1
-  # fi
+elif [ -e ~/.nodebrew ]; then
+  PATH=$HOME/.nodebrew/current/bin:$PATH
+else
+  if [ -s $HOME/.nave/nave.sh ]; then
+    alias nave='$HOME/.nave/nave.sh'
+    # if [ ${NAVELVL-0} -lt 1 ] ; then
+    #   $HOME/.nave/nave.sh use stable > /dev/null 2>&1
+    # fi
+  fi
 fi
 
 if [ ! -e $HOME/.node_libraries ]; then

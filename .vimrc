@@ -956,6 +956,13 @@ vnoremap <Tab>   >gv
 vnoremap <S-Tab> <gv
 "nnoremap : q:
 
+" mouse {{{2
+if s:is_mac
+  nnoremap <MiddleMouse> <Nop>
+  inoremap <MiddleMouse> <Nop>
+  vnoremap <MiddleMouse> <Nop>
+endif
+
 " plugin settings {{{1
 
 " golden-ratio {{{2
@@ -2022,7 +2029,9 @@ function! s:vimfiler_smart_tree_l(method) "{{{4
     exe 'normal' "\<Plug>(vimfiler_expand_tree)"
     return
   endif
-  call s:vimfiler_tree_edit(a:method)
+  if !empty(a:method)
+    call s:vimfiler_tree_edit(a:method)
+  endif
 endfunction "}}}
 
 function! s:vimfiler_my_settings() " {{{3
@@ -2033,14 +2042,19 @@ function! s:vimfiler_my_settings() " {{{3
     if exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree'
       " nmap <buffer> e <Plug>(vimfiler_split_edit_file)
       " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
-      nmap <silent><buffer> e :call <SID>vimfiler_tree_edit('new')<CR>
-      nmap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
+      nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('new')<CR>
+      nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
+      nnoremap <silent><buffer> <LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>
+      nnoremap <silent><buffer> <2-LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('new')<CR>
       " nmap <buffer> l <Plug>(vimfiler_expand_tree)
       nmap <buffer> L <Plug>(vimfiler_smart_l)
-      nmap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
+      nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
     endif
   endif
 endfunction
+
+" vinarise {{{2
+let g:vinarise_enable_auto_detect = 1
 
 " qfixhowm {{{2
 let QFixHowm_Key      = 'g'
