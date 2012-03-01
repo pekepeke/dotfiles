@@ -2004,12 +2004,14 @@ function! s:vimfiler_smart_tree_h() "{{{4
         let file = vimfiler#get_file()
         if empty(file) || file.vimfiler__nest_level < nest_level
           " let cmd = "\<Plug>(vimfiler_expand_tree)" | break
+          normal! ^
           return
         endif
       endwhile
     endif
   endif
   exe 'normal' cmd
+  normal! ^
 endfunction
 
 function s:vimfiler_tree_edit(method) "{{{4
@@ -2027,6 +2029,7 @@ function! s:vimfiler_smart_tree_l(method) "{{{4
   let path = file.action__path
   if file.vimfiler__is_directory
     exe 'normal' "\<Plug>(vimfiler_expand_tree)"
+    normal! ^
     return
   endif
   if !empty(a:method)
@@ -2054,7 +2057,7 @@ function! s:vimfiler_my_settings() " {{{3
 endfunction
 
 " vinarise {{{2
-let g:vinarise_enable_auto_detect = 1
+" let g:vinarise_enable_auto_detect = 1
 
 " qfixhowm {{{2
 let QFixHowm_Key      = 'g'

@@ -1,7 +1,7 @@
 autocmd! BufNewFile,BufRead *.tpl
       \ if match(join(getline(1, 20), "\n"), "{$|{[a-zA-Z]+}") != -1
-      \ | setfiletype smarty
+      \ | setfiletype html.smarty
       \ | else
-      \ | setfiletype twig
+      \ | setfiletype html.twig
       \ | endif
 
