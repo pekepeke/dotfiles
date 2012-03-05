@@ -209,6 +209,7 @@ NeoBundle 'h1mesuke/vim-alignta.git'
 " NeoBundle 'vim-scripts/YankRing.vim.git'
 " NeoBundle 'chrismetcalf/vim-yankring.git'
 NeoBundle 'the-isz/MinYankRing.vim.git'
+NeoBundle 'kien/ctrlp.vim.git'
 
 NeoBundle 'sjl/gundo.vim.git'
 NeoBundle 'kana/vim-smartword.git'
@@ -538,7 +539,7 @@ set nrformats=hex
 " nnoremap <expr> ;; <SID>sticky_func()
 " cnoremap <expr> ;  <SID>sticky_func()
 " snoremap <expr> ;  <SID>sticky_func()
-let g:sticky_shift_enable = 1
+let g:sticky_shift_enable = 0
 command! -nargs=0 StickyShift let g:sticky_shift_enable=1
 command! -nargs=0 NoStickyShift let g:sticky_shift_enable=0
 
