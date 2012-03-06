@@ -16,7 +16,7 @@ if !exists('g:loaded_php_ftplugin') " {{{1
   " phpfolding.vim
   let g:DisableAutoPHPFolding = 1
 
-  let g:PHP_autoformatcomment=0
+  " let g:PHP_autoformatcomment=0
   "" php-doc.vim
   let g:pdv_cfg_Type = 'mixed'
   let g:pdv_cfg_Package = ""
@@ -29,7 +29,8 @@ endif " }}}
 let s:save_cpo = &cpo
 set cpo&vim
 
-setl formatoptions-=ro
+" setl formatoptions-=ro
+setl formatoptions-=o
 " http://hail2u.net/blog/software/only-one-line-life-changing-vimrc-setting.html
 setl includeexpr=substitute(v:fname,'^\\/','','')
 setl path+=;/

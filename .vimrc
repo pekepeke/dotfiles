@@ -424,7 +424,6 @@ augroup Binary
 augroup END
 
 " basic settings {{{1
-
 " 文字コード周り {{{2
 set fileencodings=utf-8,euc-jp,iso-2022-jp,cp932
 set fileformats=unix,dos,mac
@@ -892,6 +891,43 @@ nnoremap <C-w><Space> <C-w>p
 " echo
 nnoremap [prefix]e :echo<Space>
 
+" http://vim-users.jp/2011/04/hack213/
+let g:scrolloff = &scrolloff
+set scrolloff=0
+" Hack for <LeftMouse> not to adjust ('scrolloff') when single-clicking.
+" Implement 'scrolloff' by auto-command to control the fire.
+MyAutocmd CursorMoved * call s:reinventing_scrolloff()
+let s:last_lnum = -1
+function! s:reinventing_scrolloff()
+    if s:last_lnum > 0 && line('.') ==# s:last_lnum
+        return
+    endif
+    let s:last_lnum = line('.')
+    let winline     = winline()
+    let winheight   = winheight(0)
+    let middle      = winheight / 2
+    let upside      = (winheight / winline) >= 2
+    " If upside is true, add winlines to above the cursor.
+    " If upside is false, add winlines to under the cursor.
+    if upside
+        let up_num = g:scrolloff - winline + 1
+        let up_num = winline + up_num > middle ? middle - winline : up_num
+        if up_num > 0
+            execute 'normal!' up_num."\<C-y>"
+        endif
+    else
+        let down_num = g:scrolloff - (winheight - winline)
+        let down_num = winline - down_num < middle ? winline - middle : down_num
+        if down_num > 0
+            execute 'normal!' down_num."\<C-e>"
+        endif
+    endif
+endfunction
+nnoremap <silent> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>
+nnoremap          <2-LeftMouse>     g*
+nnoremap <silent> <ScrollWheelUp>   <Esc>:set eventignore=all<CR><ScrollWheelUp>:set eventignore=<CR>
+nnoremap <silent> <ScrollWheelDown> <Esc>:set eventignore=all<CR><ScrollWheelDown>:set eventignore=<CR>
+" vmap              <LeftMouse> <Plug>(visualstar-g*)
 
 " imaps {{{2
 inoremap <C-t> <C-v><Tab>
@@ -1092,7 +1128,7 @@ nmap [prefix]se :<C-u>EnewNofile<CR>
 let g:alignta_confirm_for_retab = 0
 " let g:Align_xstrlen=3
 " vmap [prefix]a :Align
-vmap [prefix]a :Alignta<Space>
+vmap [prefix]a :Alignta
 
 " repeat.vim {{{2
 silent! repeat#set() " for loading
@@ -2037,7 +2073,6 @@ function! s:vimfiler_smart_tree_l(method) "{{{4
     call s:vimfiler_tree_edit(a:method)
   endif
 endfunction "}}}
-
 function! s:vimfiler_my_settings() " {{{3
   nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
   hi link ExrenameModified Statement
@@ -2048,8 +2083,9 @@ function! s:vimfiler_my_settings() " {{{3
       " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
       nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('new')<CR>
       nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
-      nnoremap <silent><buffer> <LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>
-      nnoremap <silent><buffer> <2-LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('new')<CR>
+      " nnoremap <silent><buffer> <LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>
+      nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
+      nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('new')<CR>
       " nmap <buffer> l <Plug>(vimfiler_expand_tree)
       nmap <buffer> L <Plug>(vimfiler_smart_l)
       nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
