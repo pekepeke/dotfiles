@@ -219,7 +219,7 @@ NeoBundle 'thinca/vim-qfreplace.git'
 NeoBundle 'nathanaelkane/vim-indent-guides.git'
 NeoBundle 'c9s/cascading.vim.git'
 NeoBundle 'mileszs/ack.vim.git'
-if s:is_mac && has('gui')
+if s:is_mac
   NeoBundle 'gmarik/sudo-gui.vim'
 endif
 
@@ -451,8 +451,9 @@ if !exists('g:my_lcd_autochdir')
 endif
 
 function! LcdCurrentOrProjDir() "{{{3
-  if !(&filetype == "vimfiler" || &filetype == "unite" || &filetype == "vimshell"
+  if (&filetype == "vimfiler" || &filetype == "unite" || &filetype == "vimshell"
         \ || &filetype == "quickrun" )
+    return
   elseif g:my_lcd_autochdir && !exists('b:my_lcd_current_or_prj_dir')
     let b:my_lcd_current_or_prj_dir = my#util#find_proj_dir()
     if b:my_lcd_current_or_prj_dir != ''
@@ -891,42 +892,63 @@ nnoremap <C-w><Space> <C-w>p
 " echo
 nnoremap [prefix]e :echo<Space>
 
-" http://vim-users.jp/2011/04/hack213/
-let g:scrolloff = &scrolloff
-set scrolloff=0
-" Hack for <LeftMouse> not to adjust ('scrolloff') when single-clicking.
-" Implement 'scrolloff' by auto-command to control the fire.
-MyAutocmd CursorMoved * call s:reinventing_scrolloff()
-let s:last_lnum = -1
-function! s:reinventing_scrolloff()
-    if s:last_lnum > 0 && line('.') ==# s:last_lnum
-        return
+if 0 " {{{3 http://vim-users.jp/2011/04/hack213/
+  let g:scrolloff = &scrolloff
+  set scrolloff=0
+  " Hack for <LeftMouse> not to adjust ('scrolloff') when single-clicking.
+  " Implement 'scrolloff' by auto-command to control the fire.
+  MyAutocmd CursorMoved * call s:reinventing_scrolloff()
+  let s:last_lnum = -1
+  function! s:reinventing_scrolloff()
+      if s:last_lnum > 0 && line('.') ==# s:last_lnum
+          return
+      endif
+      let s:last_lnum = line('.')
+      let winline     = winline()
+      let winheight   = winheight(0)
+      let middle      = winheight / 2
+      let upside      = (winheight / winline) >= 2
+      " If upside is true, add winlines to above the cursor.
+      " If upside is false, add winlines to under the cursor.
+      if upside
+          let up_num = g:scrolloff - winline + 1
+          let up_num = winline + up_num > middle ? middle - winline : up_num
+          if up_num > 0
+              execute 'normal!' up_num."\<C-y>"
+          endif
+      else
+          let down_num = g:scrolloff - (winheight - winline)
+          let down_num = winline - down_num < middle ? winline - middle : down_num
+          if down_num > 0
+              execute 'normal!' down_num."\<C-e>"
+          endif
+      endif
+  endfunction
+  nnoremap <silent> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>
+  nnoremap          <2-LeftMouse>     g*
+  nnoremap <silent> <ScrollWheelUp>   <Esc>:set eventignore=all<CR><ScrollWheelUp>:set eventignore=<CR>
+  nnoremap <silent> <ScrollWheelDown> <Esc>:set eventignore=all<CR><ScrollWheelDown>:set eventignore=<CR>
+else " {{{3 altanative
+  let s:org_scrolloff=-1
+  function! s:noscrolloff_leftmouse()
+    if s:org_scrolloff < 0
+      let s:org_scrolloff = &scrolloff
     endif
-    let s:last_lnum = line('.')
-    let winline     = winline()
-    let winheight   = winheight(0)
-    let middle      = winheight / 2
-    let upside      = (winheight / winline) >= 2
-    " If upside is true, add winlines to above the cursor.
-    " If upside is false, add winlines to under the cursor.
-    if upside
-        let up_num = g:scrolloff - winline + 1
-        let up_num = winline + up_num > middle ? middle - winline : up_num
-        if up_num > 0
-            execute 'normal!' up_num."\<C-y>"
-        endif
-    else
-        let down_num = g:scrolloff - (winheight - winline)
-        let down_num = winline - down_num < middle ? winline - middle : down_num
-        if down_num > 0
-            execute 'normal!' down_num."\<C-e>"
-        endif
+    let &scrolloff = 0
+    exe 'normal!' "\<LeftMouse>"
+    " let &scrolloff = org_scrolloff
+  endfunction
+  function! s:restore_noscrolloff()
+    if s:org_scrolloff < 0
+      return
     endif
-endfunction
-nnoremap <silent> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>
-nnoremap          <2-LeftMouse>     g*
-nnoremap <silent> <ScrollWheelUp>   <Esc>:set eventignore=all<CR><ScrollWheelUp>:set eventignore=<CR>
-nnoremap <silent> <ScrollWheelDown> <Esc>:set eventignore=all<CR><ScrollWheelDown>:set eventignore=<CR>
+    let &scrolloff = s:org_scrolloff
+    let s:org_scrolloff = -1
+  endfunction
+  MyAutocmd CursorMoved * call s:restore_noscrolloff()
+  nnoremap <silent> <LeftMouse>       <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>:set eventignore=<CR>
+  nnoremap          <2-LeftMouse>     g*
+endif "}}}
 " vmap              <LeftMouse> <Plug>(visualstar-g*)
 
 " imaps {{{2
@@ -1203,14 +1225,6 @@ let g:netrw_home = expand("$HOME/.tmp/")
 " yankring {{{2
 let g:yankring_history_dir = "$HOME/.tmp"
 
-" NERDCommenter {{{2
-let g:NERDSpaceDelims = 1
-
-" chalice {{{2
-" let g:chalice_cachedir = expand('$HOME/.tmp/chalice_cache')
-" call my#util#mkdir(g:chalice_cachedir)
-" let chalice_startupflags = 'bookmark'
-
 " pydiction {{{2
 let g:pydiction_location = '~/.vim/dict/pydiction-complete-dict'
 
@@ -1342,7 +1356,11 @@ nmap <silent> [unite]k       [unite][tab]
 nmap <silent> [unite]l       [unite][file]
 nmap <silent> [unite]m       [unite][mru]
 
-nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
+if my#util#has_plugin('vimproc')
+  nnoremap <silent> [unite]a  :<C-u>Unite file_rec/async -start-insert<CR>
+else
+  nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
+endif
 nnoremap <silent> [unite]i  :<C-u>Unite webcolorname<CR>
 nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
 nnoremap <silent> [unite]gg :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
@@ -2084,8 +2102,10 @@ function! s:vimfiler_my_settings() " {{{3
       nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('new')<CR>
       nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
       " nnoremap <silent><buffer> <LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>
-      nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
-      nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('new')<CR>
+      " nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
+      " nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('new')<CR>
+      nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
+      nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>::set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('new')<CR>
       " nmap <buffer> l <Plug>(vimfiler_expand_tree)
       nmap <buffer> L <Plug>(vimfiler_smart_l)
       nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
