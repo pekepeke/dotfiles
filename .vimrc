@@ -809,15 +809,12 @@ vnoremap [space]r :S/
 if executable('ack')
   set grepprg=ack\ -a
   set grepformat=%f:%l:%m
-
-  command! -nargs=? -complete=dir Todos Ack "TODO\|FIXME\|XXX" <args>
 else
   set grepprg=grep\ -n\ $*\ /dev/null
   "set grepprg=grep\ -n\ $*\ /dev/null\ --exclude\ \"\*\.svn\*\"
   let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
   let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
   let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
-  command! -nargs=? -complete=dir Todos silent grep -R "TODO\|FIXME\|XXX" <args>
 endif
 command! TodosBuffer silent exe 'GrepBuffer TODO' | silent exe 'GrepBufferAdd FIXME' | silent exe 'GrepBufferAdd XXX'
 
@@ -1365,6 +1362,8 @@ nnoremap <silent> [unite]i  :<C-u>Unite webcolorname<CR>
 nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
 nnoremap <silent> [unite]gg :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
 nnoremap <silent> [unite]gr :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
+nnoremap <silent> [unite]gt :<C-u>Unite grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX
+      \ -buffer-name=todo -no-quit<CR>
 nnoremap <silent> [unite]gi :<C-u>Unite git_grep -buffer-name=git<CR>
 nnoremap <silent> [unite]q  :<C-u>Unite qf -buffer-name=qfix -no-quit<CR>
 nnoremap <silent> [unite]:  :<C-u>Unite history/command command<CR>
@@ -1419,9 +1418,12 @@ nnoremap          [unite]rr :<C-u>UniteResume<Space>
 nnoremap <silent> [unite]re :<C-u>UniteResume<CR>
 nnoremap <silent> [unite]ri :<C-u>UniteResume git<CR>
 nnoremap <silent> [unite]rg :<C-u>UniteResume grep<CR>
+nnoremap <silent> [unite]rt :<C-u>UniteResume todo<CR>
 nnoremap <silent> [unite]rq :<C-u>UniteResume qfix<CR>
 
 inoremap <C-k> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-insert<CR>
+
+command! Todos silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
 
 MyAutocmd FileType unite call s:unite_my_settings() "{{{3
 function! s:unite_my_settings()
@@ -1714,6 +1716,22 @@ let g:quickrun_config['diag'] = {
 MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
 MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
 MyAutocmd BufWinEnter,BufNewFile */Test/Case/*test.php,*/Test/Case/*Test.php setl filetype=php.phpunit.caketest
+function! s:gen_phpunit_skel()
+  let old_cwd = getcwd()
+  let cwd = expand('%:p:h')
+  let name = expand('%:t')
+  let m = matchlist(join(getline(1, 10), "\n"), "\s*namespace\s*\(\w+\)\s*;")
+  let type = match(name, '\(_test|Test\)\.php$') == -1 ? "--test" : "--class"
+  let opts = []
+  if !empty(m)
+    call add(opts, '--')
+    call add(opts, m[1])
+  endif
+  silent exe 'lcd' cwd
+  exe "!" printf("phpunit-skelgen %s %s %s", join(opts, " "), type, name)
+  silent exe 'lcd' old_cwd
+endfunction
+command! PhpUnitSkelGen call <SID>gen_phpunit_skel()
 MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
 MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
 if exists('*ref#register_detection')
