@@ -1,6 +1,16 @@
 (require 'package)
 (require 'cl)
 
+;; (package-install 'github "emacsmirror/mwe-color-box")
+(package-install 'github "nschum/highlight-parentheses.el" 'highlight-parentheses)
+(add-hook 'emacs-lisp-mode-hook
+          '(lambda ()
+             (highlight-parentheses-mode)
+             (setq autopair-handle-action-fns
+                   (list 'autopair-default-handle-action
+                         '(lambda (action pair pos-before)
+                            (hl-paren-color-update))))))
+
 ;;; 動作しない…
 (package-install 'emacswiki "smartrep.el" 'smartrep)
 ;; (eval-after-load "tabbar"

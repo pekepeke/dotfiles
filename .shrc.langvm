@@ -131,37 +131,40 @@ if [ -e $HOME/.phpenv ]; then
   eval "$(phpenv init -)"
   [ -e $HOME/.phpenv/completions/rbenv.${_SHELL_NAME} ] && source $HOME/.phpenv/completions/rbenv.${_SHELL_NAME}
 fi
-
 ## cakephp {{{3
 cake-dispatch() { #{{{
-  local has_cd=0 mode=$1 rlwrap=$(which rlwrap 2>/dev/null)
-  if [ -e app ]; then
-    cd app
-    has_cd=1
-  fi
+  local mode=$1 rlwrap=$(which rlwrap 2>/dev/null)
+  local cwd=$(pwd)
+  local appdir=$cwd/app
+  while [ 1 ] ; do
+    [ -e $appdir/Console/cake ] && break
+    [ -e $appdir/console/cake ] && break
+    if [ "/" = "$appdir" ] ; then
+      echo "command not found"
+      return 1
+    fi
+    appdir=$(dirname $appdir)
+  done
   shift
 
+  [ x$ENV = x ] && ENV=development
   case $mode in
     console)
-      if [ -x Console/cake ] ; then
-        $rlwrap Console/cake $*
-      elif [ -x console/cake ]; then
-        $rlwrap console/cake $*
+      if [ -x $appdir/Console/cake ] ; then
+        (cd "$appdir"; ENV=$ENV $rlwrap Console/cake $*)
+      elif [ -x $appdir/console/cake ]; then
+        (cd "$appdir"; ENV=$ENV $rlwrap console/cake $*)
       fi
       ;;
     clear-cache)
-      [ -e ./tmp/cache ] && find ./tmp/cache -type f -name 'cake_*' -exec rm {} \;
+      (cd "$appdir"; [ -e ./tmp/cache ] && find ./tmp/cache -type f -name 'cake_*' -exec rm {} \;)
       ;;
     *)
       echo "command not found $*"
       ;;
   esac
-
-  if [ $has_cd -eq 1 ]; then
-    cd ..
-  fi
 } #}}}
-cake-c() {
+cakec() {
   cake-dispatch console $*
 }
 bake() {
@@ -171,7 +174,6 @@ cake-cc() {
   cake-dispatch clear-cache $*
 }
 ## }}}
-
 # etc {{{2
 # c/c++ library path
 #export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer
