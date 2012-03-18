@@ -110,9 +110,11 @@ alias sudo=' sudo -H'
 alias vim-filer='vim -c VimFiler'
 alias vim-shell='vim -c VimShell'
 update-submodules() {
-  local curdir=$(pwd)
-  cd ~/.github-dotfiles && git submodule foreach 'git fetch; git checkout origin/master'
-  cd ${curdir}
+  local cwd=$(pwd)
+  cd ~/.github-dotfiles
+  git submodule init
+  git submodule foreach 'git fetch; git checkout origin/master'
+  cd ${cwd}
   NOTIFY "update .github-dotfiles" "complete!"
 }
 vim-bundle() {

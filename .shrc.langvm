@@ -120,7 +120,6 @@ if [ -d /usr/lib/jvm/java-6-sun ];then
 fi
 
 # php {{{2
-[ -e $HOME/.php-build ] && PATH=$HOME/.php-build/bin:$PATH
 # must be after eval $(rbenv init)
 if [ -e $HOME/.phpenv ]; then
   if [[ $PATH =~ \.rbenv/bin ]]; then
@@ -131,6 +130,7 @@ if [ -e $HOME/.phpenv ]; then
   eval "$(phpenv init -)"
   [ -e $HOME/.phpenv/completions/rbenv.${_SHELL_NAME} ] && source $HOME/.phpenv/completions/rbenv.${_SHELL_NAME}
 fi
+[ -e $HOME/.php-build ] && PATH=$HOME/.php-build/bin:$PATH
 ## cakephp {{{3
 cake-dispatch() { #{{{
   local mode=$1 rlwrap=$(which rlwrap 2>/dev/null)

@@ -84,6 +84,7 @@ NeoBundle 'itspriddle/vim-javascript-indent'
 NeoBundle 'vim-scripts/Dart.git'
 NeoBundle 'pekepeke/titanium-vim.git'
 NeoBundle 'kchmck/vim-coffee-script.git'
+NeoBundle 'bbommarito/vim-slim.git'
 " python
 " http://rope.sourceforge.net/
 " NeoBundle 'klen/python-mode.git'
@@ -1079,14 +1080,14 @@ vmap ge <Plug>(smartword-ge)
 " vim-altr {{{2
 call altr#define('autoload/%.vim', 'doc/%.txt', 'plugin/%.vim', 'test/%.vim')
 
-" call altr#define('controllers/%.rb', 'models/%.rb', 'helpers/%.rb', 'views/%.erb')
 call altr#define('%.rb', 'spec/%_spec.rb')
+call altr#define('lib/%.rb', 'spec/lib/%_spec.rb')
 call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.rb')
 call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
 call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
 
-call altr#define('%.js', 'test/%Test.js', 'spec/%_spec.js')
-call altr#define('%.coffee', 'test/%Test.coffee', 'spec/%_spec.coffee')
+call altr#define('%.js', 'test/%Test.js', 'test/%_test.js', 'spec/%_spec.js', 'spec/%Spec.js')
+call altr#define('%.coffee', 'test/%Test.coffee', 'test/%_test.coffee', 'spec/%_spec.coffee', 'spec/%Spec.coffee')
 
 call altr#define('controllers/%.php', 'models/%.php', 'helpers/%.php', 'views/%.php')
 call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
@@ -1966,13 +1967,23 @@ let g:vimshell_enable_auto_slash = 1
 
 function! s:setup_vimproc_dll() " {{{3
   if s:is_win
-    if has('win64')
-      let g:vimproc_dll_path = expand('~/.vim/lib/vimproc/win64/proc.dll')
-    elseif has('win32')
-      let g:vimproc_dll_path = expand('~/.vim/lib/vimproc/win32/proc.dll')
+    if has('unix')
+      let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_cygwin.dll')
     endif
+    if !filereadable(path)
+      if has('win64')
+        let path = expand('~/.vim/lib/vimproc/win64/proc.dll')
+      elseif has('win32')
+        let path = expand('~/.vim/lib/vimproc/win32/proc.dll')
+      elseif has('win16')
+        let path = expand('~/.vim/lib/vimproc/win16/proc.dll')
+      endif
+    endif
+  elseif s:is_mac
+    let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_mac.so')
+  else
+    let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_unix.so')
   endif
-  let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc.so')
   if filereadable(path)
     let g:vimproc_dll_path = path
   endif
@@ -2087,13 +2098,16 @@ function! s:vimfiler_smart_tree_h() "{{{4
   normal! ^
 endfunction
 
-function s:vimfiler_tree_edit(method) "{{{4
-  let file = vimfiler#get_file()
-  if empty(file) || empty(a:method) | return | endif
-  let path = file.action__path
+function! s:vimfiler_tree_edit(method) "{{{4
+  " let file = vimfiler#get_file()
+  " if empty(file) || empty(a:method) | return | endif
+  " let path = file.action__path
+  " wincmd p
+  " execute a:method
+  " exe 'edit' path
+  let linenr = line('.')
   wincmd p
-  execute a:method
-  exe 'edit' path
+  call vimfiler#mappings#do_action(a:method, linenr)
 endfunction
 
 function! s:vimfiler_smart_tree_l(method) "{{{4
@@ -2109,6 +2123,12 @@ function! s:vimfiler_smart_tree_l(method) "{{{4
     call s:vimfiler_tree_edit(a:method)
   endif
 endfunction "}}}
+function! s:vimfiler_tree_tabopen() " {{{4
+  let bnr = bufnr('%')
+  let linenr = line('.')
+  call vimfiler#mappings#do_action("tabopen", linenr)
+  silent! exe printf('vsplit +wincmd\ H\|wincmd\ l #%d', bnr)
+endfunction
 function! s:vimfiler_my_settings() " {{{3
   nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
   hi link ExrenameModified Statement
@@ -2117,7 +2137,8 @@ function! s:vimfiler_my_settings() " {{{3
     if exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree'
       " nmap <buffer> e <Plug>(vimfiler_split_edit_file)
       " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
-      nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('new')<CR>
+      nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('split')<CR>
+      nnoremap <silent><buffer> E :call <SID>vimfiler_tree_tabopen()<CR>
       nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
       " nnoremap <silent><buffer> <LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>
       " nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
