@@ -57,6 +57,18 @@ if has('vim_starting')
   call neobundle#rc(g:my_bundle_dir)
 endif
 
+" colorscheme
+NeoBundle 'tomasr/molokai.git'
+NeoBundle 'mrkn/mrkn256.vim.git'
+NeoBundle 'tpope/vim-vividchalk.git'
+NeoBundle 'depuracao/vim-darkdevel.git'
+NeoBundle 'goatslacker/mango.vim'
+NeoBundle 'jpo/vim-railscasts-theme.git'
+NeoBundle 'fmoralesc/vim-vitamins.git'
+NeoBundle 'jnurmine/Zenburn.git'
+NeoBundle 'vim-scripts/rdark.git'
+NeoBundle 'vim-scripts/Lucius.git'
+
 " lang
 NeoBundle 'thinca/vim-quickrun.git'
 
@@ -70,6 +82,8 @@ NeoBundle 'tpope/vim-cucumber.git'
 NeoBundle 'vim-scripts/eruby.vim.git'
 NeoBundle 'tobiassvn/vim-gemfile.git'
 "NeoBundle 'astashov/vim-ruby-debugger.git'
+NeoBundle 't9md/vim-chef.git'
+
 " html
 NeoBundle 'othree/html5.vim.git'
 NeoBundle 'tpope/vim-haml.git'
@@ -166,8 +180,7 @@ NeoBundle 'ujihisa/unite-rake.git'
 " NeoBundle 'heavenshell/unite-sf2.git'
 NeoBundle 'basyura/unite-yarm.git'
 NeoBundle 'pasela/unite-webcolorname.git'
-
-" NeoBundle 'ujihisa/unite-colorscheme.git'
+NeoBundle 'ujihisa/unite-colorscheme.git'
 " NeoBundle 'ujihisa/unite-font.git'
 " NeoBundle 'tacroe/unite-alias.git'
 " NeoBundle 'hakobe/unite-script.git'
@@ -2105,9 +2118,13 @@ function! s:vimfiler_tree_edit(method) "{{{4
   " wincmd p
   " execute a:method
   " exe 'edit' path
+  if empty(a:method) | return | endif
   let linenr = line('.')
+  let context = s:vimfiler_create_action_context(a:method, linenr)
   wincmd p
-  call vimfiler#mappings#do_action(a:method, linenr)
+  " call vimfiler#mappings#do_action(a:method, linenr)
+  call context.execute()
+  unlet context
 endfunction
 
 function! s:vimfiler_smart_tree_l(method) "{{{4
@@ -2119,15 +2136,43 @@ function! s:vimfiler_smart_tree_l(method) "{{{4
     normal! ^
     return
   endif
-  if !empty(a:method)
-    call s:vimfiler_tree_edit(a:method)
-  endif
+  call s:vimfiler_tree_edit(a:method)
 endfunction "}}}
 function! s:vimfiler_tree_tabopen() " {{{4
   let bnr = bufnr('%')
   let linenr = line('.')
-  call vimfiler#mappings#do_action("tabopen", linenr)
+  let context = s:vimfiler_create_action_context('tabopen', linenr)
+  call context.execute()
+  unlet context
   silent! exe printf('vsplit +wincmd\ H\|wincmd\ l #%d', bnr)
+endfunction
+
+let s:vimfiler_context = {} " {{{4
+function! s:vimfiler_context.new(...)
+  let dict = get(a:000, 0, {})
+  return extend(dict, self)
+endfunction
+
+function! s:vimfiler_context.execute()
+  call unite#mappings#do_action(self.action, self.files, {
+        \ 'vimfiler__current_directory' : self.current_dir,
+        \ })
+endfunction
+
+function! s:vimfiler_create_action_context(action, ...) " {{{4
+  let cursor_linenr = get(a:000, 0, line('.'))
+  let vimfiler = vimfiler#get_current_vimfiler()
+  let marked_files = vimfiler#get_marked_files()
+  if empty(marked_files)
+    let marked_files = [ vimfiler#get_file(cursor_linenr) ]
+  endif
+
+  let context = s:vimfiler_context.new({
+        \ 'action' : a:action,
+        \ 'files' : marked_files,
+        \ 'current_dir' : vimfiler.current_dir,
+        \ })
+  return context
 endfunction
 function! s:vimfiler_my_settings() " {{{3
   nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
