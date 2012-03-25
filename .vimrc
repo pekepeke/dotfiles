@@ -1,4 +1,4 @@
-" init setup "{{{1
+" init setup {{{1
 " platform detection {{{2
 let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
@@ -66,14 +66,19 @@ NeoBundle 'goatslacker/mango.vim'
 NeoBundle 'jpo/vim-railscasts-theme.git'
 NeoBundle 'fmoralesc/vim-vitamins.git'
 NeoBundle 'jnurmine/Zenburn.git'
+NeoBundle 'gregsexton/Atom.git'
 NeoBundle 'vim-scripts/rdark.git'
 NeoBundle 'vim-scripts/Lucius.git'
 
 " lang
 NeoBundle 'thinca/vim-quickrun.git'
-
+NeoBundle 'kien/rainbow_parentheses.vim.git'
 NeoBundle 'vim-scripts/matchit.zip.git'
 NeoBundle 'vim-scripts/ruby-matchit.git'
+NeoBundle 'AndrewRadev/splitjoin.vim.git'
+NeoBundle 'AndrewRadev/inline_edit.vim.git'
+NeoBundle 'gregsexton/MatchTag.git'
+NeoBundle 'Raimondi/delimitMate.git'
 
 " ruby
 NeoBundle 'vim-ruby/vim-ruby.git'
@@ -93,8 +98,10 @@ NeoBundle 'mattn/zencoding-vim.git'
 NeoBundle 'groenewege/vim-less.git'
 NeoBundle 'pangloss/vim-javascript.git'
 " NeoBundle 'lukaszb/vim-web-indent.git'
-NeoBundle 'vim-scripts/IndentAnything.git'
-NeoBundle 'itspriddle/vim-javascript-indent'
+" NeoBundle 'vim-scripts/IndentAnything.git'
+" NeoBundle 'itspriddle/vim-javascript-indent'
+NeoBundle 'jiangmiao/simple-javascript-indenter.git'
+NeoBundle 'ap/vim-css-color.git'
 NeoBundle 'vim-scripts/Dart.git'
 NeoBundle 'pekepeke/titanium-vim.git'
 NeoBundle 'kchmck/vim-coffee-script.git'
@@ -738,9 +745,9 @@ nmap s [s]
 nnoremap [prefix] <Nop>
 vnoremap [prefix] <Nop>
 nmap , [prefix]
-nnoremap [prefix], ,
 vmap , [prefix]
-vnoremap [prefix], ,
+" nnoremap [prefix], ,
+" vnoremap [prefix], ,
 
 noremap [edit] <Nop>
 nmap <C-e> [edit]
@@ -874,10 +881,6 @@ nnoremap <silent> [t]l :<C-u>tags<CR>
 
 " nmaps {{{2
 " win move
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-nnoremap <C-h> <C-w>h
 nnoremap [space]. :source ~/.vimrc<CR>
 
 "nnoremap [edit]<C-o> :copen<CR><C-w><C-w>
@@ -900,8 +903,6 @@ nnoremap / :<C-u>nohlsearch<CR>/
 nnoremap ? :<C-u>nohlsearch<CR>?
 
 nnoremap <C-w><Space> <C-w>p
-" echo
-nnoremap [prefix]e :echo<Space>
 
 if 0 " {{{3 http://vim-users.jp/2011/04/hack213/
   let g:scrolloff = &scrolloff
@@ -1035,6 +1036,13 @@ endif
 
 " plugin settings {{{1
 
+" splitjoin.vim {{{2
+nmap [prefix],j :<C-u>SplitjoinJoin<CR>
+nmap [prefix],k :<C-u>SplitjoinSplit<CR>
+
+" rainbow_parentheses {{{2
+MyAutocmd VimEnter * RainbowParenthesesToggleAll
+
 " golden-ratio {{{2
 let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler']
 ", 'quickrun']
@@ -1107,8 +1115,6 @@ call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
 call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
 call altr#define('View/%.php', 'Test/Case/View/%Test.php')
 
-nmap [prefix]n <Plug>(altr-forward)
-nmap [prefix]p <Plug>(altr-back)
 nmap [space]j <Plug>(altr-forward)
 nmap [space]k <Plug>(altr-back)
 
@@ -1203,6 +1209,8 @@ call submode#map       ('tabwalker', 'n', '', 'o', ':execute "tabonly"<CR>')
 " winmove {{{3
 call submode#enter_with('winmove', 'n', '', '[s]j', '<C-w>j')
 call submode#enter_with('winmove', 'n', '', '[s]k', '<C-w>k')
+call submode#enter_with('winmove', 'n', '', '[s]h', '<C-w>h')
+call submode#enter_with('winmove', 'n', '', '[s]l', '<C-w>l')
 call submode#leave_with('winmove', 'n', '', '<Esc>')
 call submode#map       ('winmove', 'n', '', 'j', '<C-w>j')
 call submode#map       ('winmove', 'n', '', 'k', '<C-w>k')
@@ -1220,6 +1228,8 @@ call submode#map       ('winsize', 'n', '', '>', '<C-w>>:redraw<CR>')
 " Quickfix {{{3
 call submode#enter_with('quickfix', 'n', '', '[s]q', '<Nop>')
 call submode#leave_with('quickfix', 'n', '', '<Esc>')
+call submode#map       ('quickfix', 'n', '', 'j', ':cn<CR>')
+call submode#map       ('quickfix', 'n', '', 'k', ':cp<CR>')
 call submode#map       ('quickfix', 'n', '', 'n', ':cn<CR>')
 call submode#map       ('quickfix', 'n', '', 'p', ':cp<CR>')
 call submode#map       ('quickfix', 'n', '', 'c', ':cclose<CR>')
@@ -2182,14 +2192,14 @@ function! s:vimfiler_my_settings() " {{{3
     if exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree'
       " nmap <buffer> e <Plug>(vimfiler_split_edit_file)
       " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
-      nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('split')<CR>
+      nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('open')<CR>
       nnoremap <silent><buffer> E :call <SID>vimfiler_tree_tabopen()<CR>
       nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
       " nnoremap <silent><buffer> <LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>
       " nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
       " nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('new')<CR>
       nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
-      nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>::set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('new')<CR>
+      nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>::set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('open')<CR>
       " nmap <buffer> l <Plug>(vimfiler_expand_tree)
       nmap <buffer> L <Plug>(vimfiler_smart_l)
       nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
