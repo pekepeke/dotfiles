@@ -503,7 +503,7 @@ set showcmd                    " 入力中のコマンドを表示
 set backspace=indent,eol,start " BSでなんでも削除
 set nolinebreak
 set textwidth=1000
-set formatoptions+=m
+set formatoptions+=mM
 set whichwrap=b,s,h,l,<,>,[,]  " 行頭・行末間移動を可能に
 if exists('&colorcolumn') | set colorcolumn=+1 | endif
 set splitbelow                 " 横分割は下に
@@ -518,6 +518,10 @@ set viminfo+=!
 set visualbell
 set noerrorbells
 
+set guioptions-=mT
+let did_install_default_menus = 1
+let did_install_syntax_menu = 1
+set noequalalways
 set langmenu=none
 set helplang=ja,en
 set foldmethod=marker
@@ -544,8 +548,13 @@ set expandtab
 set softtabstop=0 tabstop=4 shiftwidth=4
 
 " 全角スペースを強調 {{{3
-highlight ZenkakuSpace ctermbg=6
-match ZenkakuSpace /\s\+$\|　/
+function! ZenkakuSpace()
+  highlight ZenkakuSpace ctermbg=6
+  silent! match ZenkakuSpace /\s\+$\|　/
+endfunction
+if has('syntax')
+  MyAutocmd VimEnter,BufEnter * call ZenkakuSpace()
+endif
 if exists('&ambiwidth')
   set ambiwidth=double
 endif " }}}
