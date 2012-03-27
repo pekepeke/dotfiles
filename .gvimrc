@@ -4,15 +4,10 @@ set lines=70
 set guioptions-=T
 set cmdheight=1
 "set nohlsearch
-
-set mouse=a
-set nomousefocus
-set mousehide
 "set guioptions+=a
-
-"colorscheme molokai
-"colorscheme mrkn256
-colorscheme vividchalk
+" set mouse=a
+" set nomousefocus
+" set mousehide
 
 " autocmd BufReadPost * tab ball
 "}}}
@@ -52,9 +47,10 @@ elseif s:is_mac
     set nomacatsui
   endif
   if has('gui_macvim')
-    command! -nargs=0 Osaka set noantialias guifont=Osaka-Mono:h14
-    command! -nargs=0 Monaco set antialias guifont=Monaco:h12
-    command! -nargs=0 Menlo set antialias guifont=Menlo:h12
+    command! -nargs=0 Osaka set noantialias guifont=Osaka-Mono:h14 guifontwide=Osaka-Mono:h14
+    command! -nargs=0 OsakaAnti set antialias guifont=Osaka-Mono:h12 guifontwide=Osaka-Mono:h12
+    command! -nargs=0 Monaco set antialias guifont=Monaco:h12 guifontwide=Hiragino\ Kaku\ Gothic\ Pro:h14
+    command! -nargs=0 Menlo set antialias guifont=Menlo:h12 guifontwide=Hiragino\ Kaku\ Gothic\ Pro:h14
     Monaco
 
     if has('printer')

@@ -57,6 +57,7 @@ if has('vim_starting')
   call neobundle#rc(g:my_bundle_dir)
 endif
 
+NeoBundle 'Lokaltog/vim-powerline.git'
 " colorscheme
 NeoBundle 'tomasr/molokai.git'
 NeoBundle 'mrkn/mrkn256.vim.git'
@@ -69,6 +70,8 @@ NeoBundle 'jnurmine/Zenburn.git'
 NeoBundle 'gregsexton/Atom.git'
 NeoBundle 'vim-scripts/rdark.git'
 NeoBundle 'vim-scripts/Lucius.git'
+NeoBundle 'altercation/vim-colors-solarized.git'
+NeoBundle 'nanotech/jellybeans.vim'
 
 " lang
 NeoBundle 'thinca/vim-quickrun.git'
@@ -79,65 +82,6 @@ NeoBundle 'AndrewRadev/splitjoin.vim.git'
 NeoBundle 'AndrewRadev/inline_edit.vim.git'
 NeoBundle 'gregsexton/MatchTag.git'
 NeoBundle 'Raimondi/delimitMate.git'
-
-" ruby
-NeoBundle 'vim-ruby/vim-ruby.git'
-NeoBundle 'tpope/vim-rails.git'
-NeoBundle 'tpope/vim-cucumber.git'
-NeoBundle 'vim-scripts/eruby.vim.git'
-NeoBundle 'tobiassvn/vim-gemfile.git'
-"NeoBundle 'astashov/vim-ruby-debugger.git'
-NeoBundle 't9md/vim-chef.git'
-
-" html
-NeoBundle 'othree/html5.vim.git'
-NeoBundle 'tpope/vim-haml.git'
-NeoBundle 'hail2u/vim-css3-syntax.git'
-NeoBundle 'cakebaker/scss-syntax.vim.git'
-NeoBundle 'mattn/zencoding-vim.git'
-NeoBundle 'groenewege/vim-less.git'
-NeoBundle 'pangloss/vim-javascript.git'
-" NeoBundle 'lukaszb/vim-web-indent.git'
-" NeoBundle 'vim-scripts/IndentAnything.git'
-" NeoBundle 'itspriddle/vim-javascript-indent'
-NeoBundle 'jiangmiao/simple-javascript-indenter.git'
-NeoBundle 'ap/vim-css-color.git'
-NeoBundle 'vim-scripts/Dart.git'
-NeoBundle 'pekepeke/titanium-vim.git'
-NeoBundle 'kchmck/vim-coffee-script.git'
-NeoBundle 'bbommarito/vim-slim.git'
-" python
-" http://rope.sourceforge.net/
-" NeoBundle 'klen/python-mode.git'
-" perl
-NeoBundle 'petdance/vim-perl.git'
-" OSX
-NeoBundle 'nanki/vim-objj.git'
-NeoBundle 'pekepeke/cocoa.vim.git'
-" android
-NeoBundle 'thinca/vim-logcat.git'
-" scala
-NeoBundle 'mlen/vim-scala.git'
-" texts
-NeoBundle 'thinca/vim-ft-diff_fold.git'
-NeoBundle 'plasticboy/vim-markdown.git'
-NeoBundle 'thinca/vim-ft-markdown_fold.git'
-NeoBundle 'timcharper/textile.vim.git'
-NeoBundle 'motemen/hatena-vim.git'
-" haskell
-" NeoBundle 'ehamberg/haskellmode-vim.git'
-NeoBundle 'ujihisa/ref-hoogle.git'
-NeoBundle 'ujihisa/neco-ghc.git'
-" php
-NeoBundle 'justinrainbow/php-doc.vim.git'
-NeoBundle 'beyondwords/vim-twig.git'
-NeoBundle 'violetyk/cake.vim.git'
-" sql
-NeoBundle 'vim-scripts/dbext.vim.git'
-NeoBundle 'vim-scripts/SQLUtilities.git'
-"NeoBundle 'OmniCppComplete'
-" shell
-NeoBundle 'Shougo/vim-nyaos.git'
 
 NeoBundle 'tyru/current-func-info.vim.git'
 " NeoBundle 'mexpolk/vim-taglist.git'
@@ -166,6 +110,75 @@ NeoBundle 'mattn/learn-vimscript.git'
 NeoBundle 'Shougo/neocomplcache.git'
 NeoBundle 'Shougo/neocomplcache-snippets-complete.git'
 NeoBundle 'basyura/csharp_complete.git'
+
+" ruby
+NeoBundle 'vim-ruby/vim-ruby.git'
+NeoBundle 'tpope/vim-rails.git'
+NeoBundle 'tpope/vim-cucumber.git'
+NeoBundle 'ecomba/vim-ruby-refactoring.git'
+NeoBundle 'vim-scripts/eruby.vim.git'
+NeoBundle 'tobiassvn/vim-gemfile.git'
+"NeoBundle 'astashov/vim-ruby-debugger.git'
+
+" html
+NeoBundle 'othree/html5.vim.git'
+NeoBundle 'tpope/vim-haml.git'
+NeoBundle 'hail2u/vim-css3-syntax.git'
+NeoBundle 'cakebaker/scss-syntax.vim.git'
+NeoBundle 'mattn/zencoding-vim.git'
+NeoBundle 'groenewege/vim-less.git'
+NeoBundle 'digitaltoad/vim-jade.git'
+NeoBundle 'pangloss/vim-javascript.git'
+" NeoBundle 'lukaszb/vim-web-indent.git'
+" NeoBundle 'vim-scripts/IndentAnything.git'
+" NeoBundle 'itspriddle/vim-javascript-indent'
+NeoBundle 'jiangmiao/simple-javascript-indenter.git'
+NeoBundle 'ap/vim-css-color.git'
+NeoBundle 'vim-scripts/Dart.git'
+NeoBundle 'pekepeke/titanium-vim.git'
+NeoBundle 'kchmck/vim-coffee-script.git'
+NeoBundle 'bbommarito/vim-slim.git'
+NeoBundle 'tangledhelix/vim-octopress.git'
+
+" python
+" http://rope.sourceforge.net/
+" NeoBundle 'klen/python-mode.git'
+NeoBundle 'vim-scripts/python_match.vim.git'
+
+" perl
+NeoBundle 'petdance/vim-perl.git'
+" OSX
+NeoBundle 'nanki/vim-objj.git'
+NeoBundle 'pekepeke/cocoa.vim.git'
+" android
+NeoBundle 'thinca/vim-logcat.git'
+" scala
+NeoBundle 'mlen/vim-scala.git'
+" texts
+NeoBundle 'thinca/vim-ft-diff_fold.git'
+NeoBundle 'plasticboy/vim-markdown.git'
+NeoBundle 'thinca/vim-ft-markdown_fold.git'
+NeoBundle 'timcharper/textile.vim.git'
+NeoBundle 'motemen/hatena-vim.git'
+" haskell
+" NeoBundle 'ehamberg/haskellmode-vim.git'
+NeoBundle 'ujihisa/ref-hoogle.git'
+NeoBundle 'ujihisa/neco-ghc.git'
+" php
+NeoBundle 'justinrainbow/php-doc.vim.git'
+NeoBundle 'beyondwords/vim-twig.git'
+NeoBundle 'violetyk/cake.vim.git'
+" sql
+NeoBundle 'mattn/vdbi-vim.git'
+NeoBundle 'vim-scripts/dbext.vim.git'
+NeoBundle 'vim-scripts/SQLUtilities.git'
+"NeoBundle 'OmniCppComplete'
+" shell
+NeoBundle 'Shougo/vim-nyaos.git'
+" etc
+NeoBundle 'jcfaria/Vim-R-plugin.git'
+NeoBundle 'smerrill/vcl-vim-plugin.git'
+NeoBundle 't9md/vim-chef.git'
 
 " unite.vim
 NeoBundle 'Shougo/unite.vim.git'
@@ -232,6 +245,7 @@ NeoBundle 'h1mesuke/vim-alignta.git'
 NeoBundle 'the-isz/MinYankRing.vim.git'
 NeoBundle 'kien/ctrlp.vim.git'
 
+NeoBundle 'othree/eregex.vim.git'
 NeoBundle 'sjl/gundo.vim.git'
 NeoBundle 'kana/vim-smartword.git'
 NeoBundle 'pekepeke/golden-ratio.git'
@@ -335,6 +349,9 @@ if &t_Co == 256 || s:is_win || has('gui')
 else
   " colorscheme wombat
   colorscheme desert
+endif
+if has('gui')
+  MyAutocmd GUIEnter * colorscheme vividchalk
 endif
 MyAutocmd BufEnter *.ehtml,*.erb :hi link erubyRubyDelim Label "Delimiter
 
@@ -457,6 +474,8 @@ set clipboard=unnamed
 " if has('unnamedplus') set clipboard+=unnamedplus endif
 " set mouse=a
 set mouse=nv
+set nomousefocus
+set mousehide
 
 set shellslash
 set directory=~/.tmp,/var/tmp,/tmp
@@ -1044,7 +1063,6 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
-
 " splitjoin.vim {{{2
 nmap [prefix],j :<C-u>SplitjoinJoin<CR>
 nmap [prefix],k :<C-u>SplitjoinSplit<CR>
@@ -1368,44 +1386,41 @@ let g:unite_source_grep_default_opts = '--no-heading --no-color -a'
 let g:unite_source_grep_recursive_opt = ''
 
 " unite mappings {{{3
+function! s:unite_map(bang, prefix, key, ...) " {{{4
+  let key = empty(a:bang) ? a:key : toupper(a:key)
+  let bang_key = empty(a:bang) ? toupper(a:key) : a:key
+  let cmdargs = join(a:000, " ")
+  let fmt = "%snoremap <silent> [unite]%s :<C-u>Unite %s %s<CR>"
+  exe printf(fmt, a:prefix, key, "", cmdargs)
+  exe printf(fmt, a:prefix, bang_key, "-no-quit", cmdargs)
+endfunction " }}}
+command! -nargs=* -bang UniteNMap call s:unite_map("<bang>", "n", <f-args>)
 
-nnoremap <silent> [unite][buffer_all]   :<C-u>Unite buffer<CR>
-nnoremap <silent> [unite][buffer]   :<C-u>Unite buffer_tab<CR>
-nnoremap <silent> [unite][tab]   :<C-u>Unite tab<CR>
-nnoremap <silent> [unite][file]     :<C-u>Unite -buffer-name=file file<CR>
-nnoremap <silent> [unite][rel_file] :<C-u>Unite file:<C-r>=fnameescape(expand('%:p:h'))<CR>/ -buffer-name=file<CR>
-nnoremap <silent> [unite][mru]      :<C-u>Unite -buffer-name=file file_mru directory_mru bookmark -default-action=open<CR>
-nnoremap <silent> [unite][source]   :<C-u>Unite source<CR>
-nnoremap [unite][empty]    :<C-u>Unite<Space>
+nmap [unite]u  :<C-u>Unite<Space>
 
-nmap [unite]u                [unite][empty]
-nmap [unite]s                [unite][source]
-nmap <silent> [unite]<Space> [unite][buffer_all]
-nmap <silent> [unite]j       [unite][buffer]
-nmap <silent> [unite]k       [unite][tab]
-nmap <silent> [unite]l       [unite][file]
-nmap <silent> [unite]m       [unite][mru]
+UniteNMap   s         source
+UniteNMap   <Space>   buffer
+UniteNMap   j         buffer_tab
+UniteNMap   k         tab
+UniteNMap   l         file
+UniteNMap   m         file file_mru directory_mru -default-action=open -buffer-name=file
+UniteNMap   i         webcolorname
+UniteNMap   o         tag outline
+UniteNMap!  gr        grep -buffer-name=grep
+UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=todo
+UniteNMap!  gi        git_grep -buffer-name=git_grep
+UniteNMap   y         history/yank
+UniteNMap   :         history/command command
+UniteNMap   /         history/search
+UniteNMap   bb        bookmark -default-action=open
+nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
+UniteNMap   c         quicklearn -immediately
 
 if my#util#has_plugin('vimproc')
-  nnoremap <silent> [unite]a  :<C-u>Unite file_rec/async -start-insert<CR>
+  UniteNMap a file_rec/async -start-insert
 else
-  nnoremap <silent> [unite]a  :<C-u>Unite file_rec -start-insert<CR>
+  UniteNMap a file_rec -start-insert
 endif
-nnoremap <silent> [unite]i  :<C-u>Unite webcolorname<CR>
-nnoremap <silent> [unite]o  :<C-u>Unite tag outline<CR>
-nnoremap <silent> [unite]gg :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
-nnoremap <silent> [unite]gr :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
-nnoremap <silent> [unite]gt :<C-u>Unite grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX
-      \ -buffer-name=todo -no-quit<CR>
-nnoremap <silent> [unite]gi :<C-u>Unite git_grep -buffer-name=git<CR>
-nnoremap <silent> [unite]q  :<C-u>Unite qf -buffer-name=qfix -no-quit<CR>
-nnoremap <silent> [unite]:  :<C-u>Unite history/command command<CR>
-nnoremap <silent> [unite]y  :<C-u>Unite history/yank<CR>
-nnoremap <silent> [unite]/  :<C-u>Unite history/search history/command<CR>
-nnoremap <silent> [unite]p  :<C-u>Unite process<CR>
-nnoremap <silent> [unite]bb :<C-u>Unite bookmark -default-action=open<CR>
-nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
-nnoremap <silent> [unite]c :<C-u>Unite quicklearn -immediately
 
 " nnoremap <silent> [unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
 nnoremap <silent> [unite]h :<C-u>call <SID>smart_unite_ref_launch()<CR>
