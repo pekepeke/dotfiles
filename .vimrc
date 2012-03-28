@@ -937,10 +937,23 @@ function! s:replace_at_caret_data_scheme() " {{{3
   let cfile = expand('<cfile>')
   let cpath = expand(cfile)
   let errmsg = ""
-  if !executable('ruby')
-    let errmsg = "not found : ruby"
-  elseif empty(cfile) || !filereadable(cpath)
+  if empty(cfile) || !filereadable(cpath)
     let errmsg = "file not found : " . cfile
+  endif
+  if executable('ruby')
+    let cmd = printf("ruby -rwebrick/httputils -e '%s'", 
+          \ printf('fp="%s";include WEBrick::HTTPUtils;'
+          \      . 'puts "data:#{mime_type(fp, DefaultMimeTypes)};base64,'
+          \      . '#{[File.read(fp)].pack("m").gsub(/\n/,"")}"', cpath))
+  " elseif executable('python')
+  "   let cmd = printf("python -c 'import mimetypes;fp=\"%s\";print %s'"
+  "         \ , cpath, printf('"data:%s;base64,%s" % mimetypes.guess_type(fp)[0], open(fp).read().encode("base64")'))
+  elseif executable('php')
+    let cmd = printf("php -r '$fp=\"%s\";%s;'", cpath,
+          \ 'printf("data:%s;base64,%s",mime_content_type($fp),base64_encode(file_get_contents($fp)))'
+          \ )
+  else
+    let errmsg = "vm not found : ruby|php"
   endif
   if !empty(errmsg)
     echohl Error
@@ -949,14 +962,10 @@ function! s:replace_at_caret_data_scheme() " {{{3
     return
   endif
   let line = getline(".")
-  let cmd = printf("ruby -rwebrick/httputils -e '%s'", 
-        \ printf('fp="%s";include WEBrick::HTTPUtils;'
-        \      . 'puts "data:#{mime_type(fp, DefaultMimeTypes)};base64,'
-        \      . '#{[File.read(fp)].pack("m").gsub(/\n/,"")}"', cpath))
   call setline(".",
         \ strpart(line, 0, stridx(line, cfile))
         \ . system(cmd)
-        \ . strpart(line, stridx(line, cfile), strlen(cfile))
+        \ . strpart(line, stridx(line, cfile) + strlen(cfile))
         \ )
 endfunction
 

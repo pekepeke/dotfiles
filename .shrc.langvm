@@ -70,12 +70,12 @@ else
 fi
 
 # for node.js {{{2
-if [ -s $HOME/.nvm/nvm.sh ] ; then
+if [ -e ~/.nodebrew ]; then
+  PATH=$HOME/.nodebrew/current/bin:$PATH
+elif [ -s $HOME/.nvm/nvm.sh ] ; then
   source $HOME/.nvm/nvm.sh
   . <(npm completion)
   # nvm use $(nvm ls | head -1 | sed -e 's/\/.*//')
-elif [ -e ~/.nodebrew ]; then
-  PATH=$HOME/.nodebrew/current/bin:$PATH
 else
   if [ -s $HOME/.nave/nave.sh ]; then
     alias nave='$HOME/.nave/nave.sh'
