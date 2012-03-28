@@ -42,7 +42,7 @@ Vagrant::Config.run do |config|
       }
   end
 
-  config.vm.customize ["modifyvm", :id, "--name", "vagrant_imagoo", "--memory", "1024"]
+  config.vm.customize ["modifyvm", :id, "--name", "vagrant_pc", "--memory", "1024"]
   # config.vm.provision :chef_client do |chef|
   #   chef.chef_server_url = "https://api.opscode.com/organizations/ORGNAME"
   #   chef.validation_key_path = "ORGNAME-validator.pem"

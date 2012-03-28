@@ -248,7 +248,7 @@ NeoBundle 'kien/ctrlp.vim.git'
 NeoBundle 'othree/eregex.vim.git'
 NeoBundle 'sjl/gundo.vim.git'
 NeoBundle 'kana/vim-smartword.git'
-NeoBundle 'pekepeke/golden-ratio.git'
+" NeoBundle 'pekepeke/golden-ratio.git'
 " NeoBundle 'scrooloose/nerdtree.git'
 NeoBundle 'thinca/vim-qfreplace.git'
 NeoBundle 'nathanaelkane/vim-indent-guides.git'
@@ -932,6 +932,34 @@ nnoremap ? :<C-u>nohlsearch<CR>?
 
 nnoremap <C-w><Space> <C-w>p
 
+nnoremap [prefix]ds :call <SID>replace_at_caret_data_scheme()<CR>
+function! s:replace_at_caret_data_scheme() " {{{3
+  let cfile = expand('<cfile>')
+  let cpath = expand(cfile)
+  let errmsg = ""
+  if !executable('ruby')
+    let errmsg = "not found : ruby"
+  elseif empty(cfile) || !filereadable(cpath)
+    let errmsg = "file not found : " . cfile
+  endif
+  if !empty(errmsg)
+    echohl Error
+    echo errmsg
+    echohl None
+    return
+  endif
+  let line = getline(".")
+  let cmd = printf("ruby -rwebrick/httputils -e '%s'", 
+        \ printf('fp="%s";include WEBrick::HTTPUtils;'
+        \      . 'puts "data:#{mime_type(fp, DefaultMimeTypes)};base64,'
+        \      . '#{[File.read(fp)].pack("m").gsub(/\n/,"")}"', cpath))
+  call setline(".",
+        \ strpart(line, 0, stridx(line, cfile))
+        \ . system(cmd)
+        \ . strpart(line, stridx(line, cfile), strlen(cfile))
+        \ )
+endfunction
+
 if 0 " {{{3 http://vim-users.jp/2011/04/hack213/
   let g:scrolloff = &scrolloff
   set scrolloff=0
@@ -1071,9 +1099,9 @@ nmap [prefix],k :<C-u>SplitjoinSplit<CR>
 MyAutocmd VimEnter * RainbowParenthesesToggleAll
 
 " golden-ratio {{{2
-let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler']
+" let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler']
 ", 'quickrun']
-nmap [space]s <Plug>(golden_ratio_toggle)
+" nmap [space]s <Plug>(golden_ratio_toggle)
 
 " ambicmd {{{2
 cnoremap <expr> <C-l> ambicmd#expand("\<Space>")
@@ -1301,7 +1329,7 @@ let g:dbext_default_history_file = expand('~/.tmp/dbext_sql_history.txt')
 let g:user_zen_leader_key='<C-y>'
 
 " endtagcomment https://gist.github.com/411828 {{{2
-nmap <C-y>o <Plug>(endtagcomment)
+nmap [prefix]/ <Plug>(endtagcomment)
 
 " smartchr "{{{2
 inoremap <expr>, smartchr#one_of(', ', ',')
@@ -1403,7 +1431,7 @@ UniteNMap   <Space>   buffer
 UniteNMap   j         buffer_tab
 UniteNMap   k         tab
 UniteNMap   l         file
-UniteNMap   m         file file_mru directory_mru -default-action=open -buffer-name=file
+UniteNMap   m         file_mru directory_mru -default-action=open -buffer-name=file
 UniteNMap   i         webcolorname
 UniteNMap   o         tag outline
 UniteNMap!  gr        grep -buffer-name=grep
@@ -1412,6 +1440,7 @@ UniteNMap!  gi        git_grep -buffer-name=git_grep
 UniteNMap   y         history/yank
 UniteNMap   :         history/command command
 UniteNMap   /         history/search
+UniteNMap   ?         mapping
 UniteNMap   bb        bookmark -default-action=open
 nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
 UniteNMap   c         quicklearn -immediately
