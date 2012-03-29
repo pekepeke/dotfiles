@@ -1,6 +1,6 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
 
-[ -s $HOME/.shrc.langvm ] && source $HOME/.shrc.langvm
+[ -s $HOME/.shrc.languages ] && source $HOME/.shrc.languages
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -8,7 +8,7 @@
 #[ -n $(which zsh) ] && exec zsh
 #[ -e /bin/which -a $(ps |grep zsh|grep -v grep| wc -l) -eq 0 ] && which zsh >/dev/null 2>&1 && exec zsh
 
-[ -s $HOME/.shrc.common ] && source $HOME/.shrc.common
+[ -s $HOME/.shrc.boot ] && source $HOME/.shrc.boot
 
 ## common settings {{{1
 # disable auto logout {{{2

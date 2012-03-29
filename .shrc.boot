@@ -1,14 +1,12 @@
 # source local settings
 # [ $SHLVL -gt 1 ] && return 0
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
-[ -f $HOME/.shrc.common.util ] && source $HOME/.shrc.common.util
 
-if [ -f $HOME/.shrc.common.local ] ; then
-  source $HOME/.shrc.common.local
+if [ -f $HOME/.shrc.local ] ; then
+  source $HOME/.shrc.local
 else
-  touch $HOME/.shrc.common.local
+  touch $HOME/.shrc.local
 fi
-
 # }}}
 # {{{ terminal
 if is_exec reattach-to-user-namespace ; then
@@ -68,7 +66,7 @@ fi
 # }}}
 
 # {{{ aliases
-NOTIFY() {
+__NOTIFY() {
   local title=$1
   shift
 
@@ -105,22 +103,23 @@ alias cp='cp -ip'
 alias rm=' rm -i'
 alias mv='mv -i'
 alias sudo=' sudo -H'
+alias telnet='telnet -K'
 
 # vim
-alias vim-filer='vim -c VimFiler'
-alias vim-shell='vim -c VimShell'
+alias vimfiler='vim -c VimFiler'
+alias vimshell='vim -c VimShell'
 update-submodules() {
   local cwd=$(pwd)
   cd ~/.github-dotfiles
   git submodule init
   git submodule foreach 'git fetch; git checkout origin/master'
   cd ${cwd}
-  NOTIFY "update .github-dotfiles" "complete!"
+  __NOTIFY "update .github-dotfiles" "complete!"
 }
 vim-bundle() {
   update-submodules
   vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall"
-  NOTIFY "neobundle update" "complete!"
+  __NOTIFY "neobundle update" "complete!"
 }
 # alias vim-bundle='update-submodules; vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall";NOTIFY "neobundle update" "complete!"'
 
@@ -131,8 +130,8 @@ function dired () {
 }
 
 ## Chdir to the ``default-directory'' of currently opened in Emacs buffer.
-function cde () {
-    EMACS_CWD=`emacsclient -e "
+cde() {
+    local EMACS_CWD=`emacsclient -e "
      (expand-file-name
       (with-current-buffer
           (if (featurep 'elscreen)
@@ -148,35 +147,6 @@ function cde () {
 
     echo "chdir to $EMACS_CWD"
     cd "$EMACS_CWD"
-}
-
-# node
-nvm-node-versions() {
-  #curl -s http://nodejs.org/dist/ | grep "v[0-9]" | sed -e 's/.*\(v[0-9][0-9\.]*\).*/\1/' -e 's/\.$//' | sort
-  curl -s http://nodejs.org/dist/ | grep "v[0-9]" | sed -e 's/.*\(v[0-9][0-9\.]*\).*/\1/' -e 's/\.$//' | sort | perl -ne '$i++;chomp;printf "%-15s%s",$_,(eof || $i % 4 == 0 ? "\n" : "")' 
-}
-nvm-update() {
-  if [ ! -e ~/.nvm ] ; then
-    return 1
-  fi
-  pushd .
-  cd ~/.nvm
-  git pull
-  popd
-  return 0
-}
-nave-update() {
-  if [ ! -e ~/.nave ] ; then
-    return 1
-  fi
-  pushd .
-  cd ~/.nave
-  git pull
-  popd
-  return 0
-}
-npmglobal() {
-  npm -g $*
 }
 
 # lang
@@ -196,8 +166,8 @@ alias vimsafe='vim -u NONE -i NONE'
 alias vimf='vim -u '
 
 # compass
-compass_scss='compass create --sass-dir "scss" --css-dir "css" --javascripts-dir "js" --images-dir "img"'
-compass_sass='compass create --sass-dir "scss" --css-dir "css" --javascripts-dir "js" --images-dir "img" --syntax sass'
+alias compass_scss='compass create --sass-dir "scss" --css-dir "css" --javascripts-dir "js" --images-dir "img"'
+alias compass_sass='compass create --sass-dir "scss" --css-dir "css" --javascripts-dir "js" --images-dir "img" --syntax sass'
 
 # win like
 alias rd=rmdir
@@ -219,22 +189,22 @@ pulist() { # {{{
   fi
 } # }}}
 
-if [ -z "$SSH_CLIENT" ]; then
-  ssh_path=$(which ssh)
-  function ssh() {
-    _ssh_log_dir=$HOME/.ssh-logs
+if [ -z "$SSH_CLIENT" -a x$__ssh_path = x ]; then
+  __ssh_path=$(which ssh)
+  ssh() {
+    local _ssh_log_dir=$HOME/.ssh-logs
     if [ ! -e $_ssh_log_dir ]; then
       mkdir $_ssh_log_dir
       mkdir $_ssh_log_dir/org
     fi
     #_prefix=$(echo $* | perl -ne '$_=~s/\W+/_/g; print $_;')
     #_prefix=$(echo $* | perl -ne '$_=~s/(\d+\.\d+\.\d+\.\d+|[a-z\.-]+)/; print $1;')
-    _prefix=$(echo $* | perl -ne 'my @l;push @l,$1 while (/\s(\d+\.\d+\.\d+\.\d+|[a-z\.-]+)/g); print join("_",@l);')
+    local _prefix=$(echo $* | perl -ne 'my @l;push @l,$1 while (/\s(\d+\.\d+\.\d+\.\d+|[a-z\.-]+)/g); print join("_",@l);')
     [ x$_prefix = x ] && _prefix=$(echo $* | perl -ne '$_=~s/\s+$//;$_=~s/\s+/_/g;$_=~s/([^\w ])/"%".unpack("H2", $1)/eg;print')
-    tmp_log_path=$_ssh_log_dir/org/$(date +'%Y%m%d_%H%M%S')_script_${_prefix}.log
-    log_path=$_ssh_log_dir/$(date +'%Y%m%d_%H%M%S')_script_${_prefix}.log
+    local tmp_log_path=$_ssh_log_dir/org/$(date +'%Y%m%d_%H%M%S')_script_${_prefix}.log
+    local log_path=$_ssh_log_dir/$(date +'%Y%m%d_%H%M%S')_script_${_prefix}.log
 
-    $ssh_path $* | tee $tmp_log_path
+    $__ssh_path $* | tee $tmp_log_path
     if [ -s $tmp_log_path ] ; then
       cat $tmp_log_path | perl -ne '$_ =~ s/\e(\[\d*m?(;\d*m)?|\]\d*)//g; print $_' > $log_path
       #col -b $tmp_log_path > $log_path
@@ -250,9 +220,9 @@ if [ -z "$SSH_CLIENT" ]; then
     # exit
   # fi
   function ssh_logs_archive() {
-    _ssh_log_dir=$HOME/.ssh-logs
+    local _ssh_log_dir=$HOME/.ssh-logs
     for f in $(find $_ssh_log_dir -depth 1 -type f -mtime +30); do
-      target=$_ssh_log_dir/$(stat -f %Sm -t %Y%m $f)
+      local target=$_ssh_log_dir/$(stat -f %Sm -t %Y%m $f)
       [ ! -e $target ] && mkdir $target
       mv $f $target/
     done

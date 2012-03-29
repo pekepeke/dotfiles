@@ -1,6 +1,6 @@
-# .zshrc
+# .boot
 
-[ -f ~/.shrc.common ] && source ~/.shrc.common
+[ -f ~/.shrc.boot ] && source ~/.shrc.boot
 source_all() {
   for f in $* ; do
     [ -e $f ] && source $f

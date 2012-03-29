@@ -2199,12 +2199,21 @@ function! s:vimfiler_tree_edit(method) "{{{4
   unlet context
 endfunction
 
-function! s:vimfiler_smart_tree_l(method) "{{{4
+function! s:vimfiler_smart_tree_l(method, ...) "{{{4
   let file = vimfiler#get_file()
-  if empty(file) | return | endif
+  if empty(file) 
+    if (a:0 > 0 && a:1 == 1)
+      exe 'normal' "\<Plug>(vimfiler_smart_h)"
+    endif
+    return
+  endif
   let path = file.action__path
   if file.vimfiler__is_directory
-    exe 'normal' "\<Plug>(vimfiler_expand_tree)"
+    if (a:0 > 0 && a:1 == 2)
+      exe 'normal' "\<Plug>(vimfiler_smart_l)"
+    else
+      exe 'normal' "\<Plug>(vimfiler_expand_tree)"
+    endif
     normal! ^
     return
   endif
@@ -2260,8 +2269,8 @@ function! s:vimfiler_my_settings() " {{{3
       " nnoremap <silent><buffer> <LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>
       " nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
       " nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('new')<CR>
-      nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
-      nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>::set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('open')<CR>
+      nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('', 1)<CR>:set eventignore=<CR>
+      nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>::set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
       " nmap <buffer> l <Plug>(vimfiler_expand_tree)
       nmap <buffer> L <Plug>(vimfiler_smart_l)
       nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>

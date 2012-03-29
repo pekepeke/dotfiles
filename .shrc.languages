@@ -1,15 +1,15 @@
 # [ $SHLVL -gt 1 ] && return 0
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
 [ -z "$PATH_ORG" ] && PATH_ORG=$PATH; PATH=$PATH_ORG
-[ -f $HOME/.shrc.common.langutil ] && source $HOME/.shrc.common.langutil
+[ -f $HOME/.shrc.refe ] && source $HOME/.shrc.refe
 
 # OS settings {{{1
 if is_win ; then
   export CYGWIN='cygwin'
-  [ -e $HOME/.shrc.common.cygwin ] && source $HOME/.shrc.common.cygwin
+  [ -e $HOME/.shrc.cygwin ] && source $HOME/.shrc.cygwin
   [ -d $HOME/bin/windows ] && PATH=$HOME/bin/windows:$PATH
 elif is_mac ; then
-  [ -e $HOME/.shrc.common.mac ] && source $HOME/.shrc.common.mac
+  [ -e $HOME/.shrc.osx ] && source $HOME/.shrc.osx
   if [ -e "/usr/local/Library/Homebrew" ] ; then
     remove_path /usr/local/bin /usr/bin
     PATH=$PATH:/usr/local/bin:/usr/bin
@@ -72,6 +72,7 @@ fi
 # for node.js {{{2
 if [ -e ~/.nodebrew ]; then
   PATH=$HOME/.nodebrew/current/bin:$PATH
+  # alias nodebrew='CFLAGS="-D__DARWIN_64_BIT_INO_T" CXXFLAGS="-D__DARWIN_64_BIT_INO_T" nodebrew'
 elif [ -s $HOME/.nvm/nvm.sh ] ; then
   source $HOME/.nvm/nvm.sh
   . <(npm completion)
@@ -84,20 +85,6 @@ else
     # fi
   fi
 fi
-
-if [ ! -e $HOME/.node_libraries ]; then
-  mkdir -p ~/.node_libraries/bin
-  mkdir -p ~/.node_libraries/share/man
-fi
-PATH=$HOME/.node_libraries/bin:$PATH
-MANPATH=$HOME/.node_libraries/share/man:$MANPATH
-NODE_PATH=$HOME/.node_libraries:$NODE_PATH
-export NODE_PATH
-
-# if [ -s $HOME/.nave/nave.sh ] ; then
-  # alias nave=$HOME/.nave/nave.sh
-  # alias npm_install='curl http://npmjs.org/install.sh | sh'
-# fi
 
 # java {{{2
 if is_mac ; then
