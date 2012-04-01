@@ -1,6 +1,7 @@
 --langmap=PHP:.php.inc
 --php-types=c+f+d
---langdef=actionscript--langmap=actionscript:.as
+--langdef=actionscript
+--langmap=actionscript:.as
 --regex-actionscript=/^[ \t]*[(private| public|static) ( \t)]*function[ \t]+([A-Za-z0-9_]+)[ \t]*\(/\1/f, function, functions/
 --regex-actionscript=/^[ \t]*[(public) ( \t)]*function[ \t]+(set|get) [ \t]+([A-Za-z0-9_]+)[ \t]*\(/\1 \2/p,property, properties/
 --regex-actionscript=/^[ \t]*[(private| public|static) ( \t)]*var[ \t]+([A-Za-z0-9_]+)[ \t]*/\1/v,variable, variables/
@@ -38,3 +39,12 @@
 --regex-latex=/\\ref[[:space:]]*\{([^}]+)\}/\1/r,ref/
 --regex-latex=/\\pageref[[:space:]]*\{([^}]+)\}/\1/p,pageref/
 --regex-make=/^([^:# \t]+)[ \t]*[:]{1,2}/\1/t,targets/
+--langdef=objc
+--langmap=objc:.m.h
+--regex-objc=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+):[[:space:]]*\(/\1/m,method/
+--regex-objc=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+)[[:space:]]*\{/\1/m,method/
+--regex-objc=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+)[[:space:]]*\;/\1/m,method/
+--regex-objc=/^[[:space:]]*\@property[[:space:]]+.*[[:space:]]+\*?(.*);$/\1/p,property/
+--regex-objc=/^[[:space:]]*\@implementation[[:space:]]+(.*)$/\1/c,class/
+--regex-objc=/^[[:space:]]*\@interface[[:space:]]+(.*)[[:space:]]+:.*{/\1/i,interface/
+

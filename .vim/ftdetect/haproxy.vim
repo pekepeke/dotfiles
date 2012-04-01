@@ -1,1 +1,1 @@
-au BufNewFile,BufRead haproxy.cfg set filetype=haproxy
+au BufNewFile,BufRead haproxy.cfg setfiletype haproxy

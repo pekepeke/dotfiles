@@ -48,6 +48,7 @@ set nocompatible
 filetype plugin indent off
 
 " vundle {{{1
+" load {{{2
 let g:my_bundle_dir = expand("$HOME/.vim/neobundle")
 if has('vim_starting')
   " pathogen
@@ -57,8 +58,9 @@ if has('vim_starting')
   call neobundle#rc(g:my_bundle_dir)
 endif
 
+" vundles {{{2
 NeoBundle 'Lokaltog/vim-powerline.git'
-" colorscheme
+" colorscheme {{{3
 NeoBundle 'tomasr/molokai.git'
 NeoBundle 'mrkn/mrkn256.vim.git'
 NeoBundle 'tpope/vim-vividchalk.git'
@@ -73,7 +75,7 @@ NeoBundle 'vim-scripts/Lucius.git'
 NeoBundle 'altercation/vim-colors-solarized.git'
 NeoBundle 'nanotech/jellybeans.vim'
 
-" lang
+" lang {{{3
 NeoBundle 'thinca/vim-quickrun.git'
 NeoBundle 'kien/rainbow_parentheses.vim.git'
 NeoBundle 'vim-scripts/matchit.zip.git'
@@ -91,27 +93,27 @@ NeoBundle 'tomtom/tcomment_vim.git'
 NeoBundle 'thinca/vim-template.git'
 NeoBundle 'mattn/sonictemplate-vim.git'
 NeoBundle 'ciaranm/detectindent.git'
-NeoBundle 'ujihisa/shadow.vim.git'
+" NeoBundle 'ujihisa/shadow.vim.git'
 "NeoBundle 'motemen/git-vim.git'
 NeoBundle 'tpope/vim-fugitive.git'
 NeoBundle 'Shougo/vim-vcs.git'
 
-" help
+" help {{{3
 NeoBundle 'thinca/vim-ref.git'
 NeoBundle 'pekepeke/ref-javadoc.git'
 NeoBundle 'soh335/vim-ref-jquery.git'
 
-" vim-help
+" vim-help {{{3
 NeoBundle 'mattn/learn-vimscript.git'
 " git://gist.github.com/997811.git
 " git://gist.github.com/1046979.git
 
-" neocomplcache
+" neocomplcache {{{3
 NeoBundle 'Shougo/neocomplcache.git'
 NeoBundle 'Shougo/neocomplcache-snippets-complete.git'
 NeoBundle 'basyura/csharp_complete.git'
 
-" ruby
+" ruby {{{3
 NeoBundle 'vim-ruby/vim-ruby.git'
 NeoBundle 'tpope/vim-rails.git'
 NeoBundle 'tpope/vim-cucumber.git'
@@ -120,67 +122,70 @@ NeoBundle 'vim-scripts/eruby.vim.git'
 NeoBundle 'tobiassvn/vim-gemfile.git'
 "NeoBundle 'astashov/vim-ruby-debugger.git'
 
-" html
+" html {{{3
 NeoBundle 'othree/html5.vim.git'
+NeoBundle 'mattn/zencoding-vim.git'
 NeoBundle 'tpope/vim-haml.git'
+NeoBundle 'digitaltoad/vim-jade.git'
+
 NeoBundle 'hail2u/vim-css3-syntax.git'
 NeoBundle 'cakebaker/scss-syntax.vim.git'
-NeoBundle 'mattn/zencoding-vim.git'
+NeoBundle 'wavded/vim-stylus.git'
 NeoBundle 'groenewege/vim-less.git'
-NeoBundle 'digitaltoad/vim-jade.git'
+NeoBundle 'bbommarito/vim-slim.git'
+NeoBundle 'ap/vim-css-color.git'
+
 NeoBundle 'pangloss/vim-javascript.git'
 " NeoBundle 'lukaszb/vim-web-indent.git'
 " NeoBundle 'vim-scripts/IndentAnything.git'
 " NeoBundle 'itspriddle/vim-javascript-indent'
 NeoBundle 'jiangmiao/simple-javascript-indenter.git'
-NeoBundle 'ap/vim-css-color.git'
 NeoBundle 'vim-scripts/Dart.git'
-NeoBundle 'pekepeke/titanium-vim.git'
 NeoBundle 'kchmck/vim-coffee-script.git'
-NeoBundle 'bbommarito/vim-slim.git'
-NeoBundle 'tangledhelix/vim-octopress.git'
+NeoBundle 'pekepeke/titanium-vim.git'
 
-" python
+" python {{{3
 " http://rope.sourceforge.net/
 " NeoBundle 'klen/python-mode.git'
 NeoBundle 'vim-scripts/python_match.vim.git'
 
-" perl
+" perl {{{3
 NeoBundle 'petdance/vim-perl.git'
-" OSX
+" OSX {{{3
 NeoBundle 'nanki/vim-objj.git'
 NeoBundle 'pekepeke/cocoa.vim.git'
-" android
+" android {{{3
 NeoBundle 'thinca/vim-logcat.git'
-" scala
+" scala {{{3
 NeoBundle 'mlen/vim-scala.git'
-" texts
+" texts {{{3
 NeoBundle 'thinca/vim-ft-diff_fold.git'
 NeoBundle 'plasticboy/vim-markdown.git'
 NeoBundle 'thinca/vim-ft-markdown_fold.git'
 NeoBundle 'timcharper/textile.vim.git'
 NeoBundle 'motemen/hatena-vim.git'
-" haskell
+" haskell {{{3
 " NeoBundle 'ehamberg/haskellmode-vim.git'
 NeoBundle 'ujihisa/ref-hoogle.git'
 NeoBundle 'ujihisa/neco-ghc.git'
-" php
+" php {{{3
 NeoBundle 'justinrainbow/php-doc.vim.git'
 NeoBundle 'beyondwords/vim-twig.git'
 NeoBundle 'violetyk/cake.vim.git'
-" sql
+" sql {{{3
 NeoBundle 'mattn/vdbi-vim.git'
 NeoBundle 'vim-scripts/dbext.vim.git'
 NeoBundle 'vim-scripts/SQLUtilities.git'
 "NeoBundle 'OmniCppComplete'
-" shell
+" shell {{{3
 NeoBundle 'Shougo/vim-nyaos.git'
-" etc
+" etc {{{3
+NeoBundle 'tangledhelix/vim-octopress.git'
 NeoBundle 'jcfaria/Vim-R-plugin.git'
 NeoBundle 'smerrill/vcl-vim-plugin.git'
 NeoBundle 't9md/vim-chef.git'
 
-" unite.vim
+" unite.vim {{{3
 NeoBundle 'Shougo/unite.vim.git'
 NeoBundle 'Shougo/unite-build.git'
 NeoBundle 'Shougo/unite-help.git'
@@ -218,7 +223,7 @@ else
   NeoBundle 'ujihisa/neco-look.git'
 endif
 
-" common
+" common {{{3
 NeoBundle 'Shougo/vimfiler.git'
 NeoBundle 'Shougo/vimproc.git'
 NeoBundle 'Shougo/vimshell.git'
@@ -258,7 +263,7 @@ if s:is_mac
   NeoBundle 'gmarik/sudo-gui.vim'
 endif
 
-" web
+" web {{{3
 NeoBundle 'tyru/open-browser.vim.git'
 NeoBundle 'mattn/webapi-vim.git'
 if executable('python')
@@ -278,17 +283,17 @@ if has('python')
   NeoBundle 'tsukkee/lingr-vim.git'
 endif
 
-" gf-user
+" gf-user {{{3
 NeoBundle 'kana/vim-gf-user.git'
 NeoBundle 'kana/vim-gf-diff.git'
 
-" operator
+" operator {{{3
 NeoBundle 'kana/vim-operator-replace.git'
 NeoBundle 'kana/vim-operator-user.git'
 NeoBundle 'tyru/operator-camelize.vim.git'
 NeoBundle 'tyru/operator-html-escape.vim.git'
 
-" textobj
+" textobj {{{3
 NeoBundle 'kana/vim-textobj-datetime.git'
 NeoBundle 'kana/vim-textobj-diff.git'
 NeoBundle 'kana/vim-textobj-entire.git'
@@ -308,7 +313,7 @@ NeoBundle 'vim-scripts/textobj-indent.git'
 NeoBundle 'sgur/textobj-parameter.git'
 NeoBundle 'h1mesuke/textobj-wiw.git'
 
-" metarw
+" metarw {{{3
 " NeoBundle "mattn/vim-metarw.git"
 " NeoBundle "mattn/vim-metarw-gist.git"
 " NeoBundle "mattn/vim-metarw-git.git"
@@ -1174,9 +1179,9 @@ call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
 call altr#define('%.js', 'test/%Test.js', 'test/%_test.js', 'spec/%_spec.js', 'spec/%Spec.js')
 call altr#define('%.coffee', 'test/%Test.coffee', 'test/%_test.coffee', 'spec/%_spec.coffee', 'spec/%Spec.coffee')
 
-call altr#define('controllers/%.php', 'models/%.php', 'helpers/%.php', 'views/%.php')
 call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
 call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
+call altr#define('View/Helper/%.php', 'Test/Case/View/Helper/%Test.php')
 call altr#define('View/%.php', 'Test/Case/View/%Test.php')
 
 nmap [space]j <Plug>(altr-forward)

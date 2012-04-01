@@ -1,0 +1,11 @@
+var jake = require('jake');
+var fs = require('fs');
+var file = require('file');
+
+jake.task('default', function() {
+  print('');
+  fs.watchFile('app.txt', function(cur, prev){
+    print(cur);
+  });
+});
+
