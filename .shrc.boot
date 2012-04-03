@@ -237,6 +237,12 @@ if [ -n "$ZSH_NAME" ]; then
 fi
 # }}}
 
+# tmux {{{
+if [ "$TMUX" != "" ]; then
+  tmux set-option status-bg colour$(($(echo -n $(whoami)@$(hostname) | sum | cut -f1 -d' ') % 8 + 8)) | cat > /dev/null
+fi
+
+# }}}
 # GNU screen setting {{{
 if is_exec tscreen; then
   alias screen=tscreen
