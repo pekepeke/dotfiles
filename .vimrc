@@ -103,6 +103,7 @@ NeoBundle 'Shougo/vim-vcs.git'
 NeoBundle 'thinca/vim-ref.git'
 NeoBundle 'pekepeke/ref-javadoc.git'
 NeoBundle 'soh335/vim-ref-jquery.git'
+" NeoBundle 'mojako/ref-sources.vim.git'
 
 " vim-help {{{4
 NeoBundle 'mattn/learn-vimscript.git'
@@ -503,7 +504,7 @@ function! LcdCurrentOrProjDir() "{{{3
     return
   elseif g:my_lcd_autochdir && !exists('b:my_lcd_current_or_prj_dir')
     let b:my_lcd_current_or_prj_dir = my#util#find_proj_dir()
-    if b:my_lcd_current_or_prj_dir != ''
+    if b:my_lcd_current_or_prj_dir != '' && isdirectory(b:my_lcd_current_or_prj_dir)
       execute 'lcd' fnameescape(b:my_lcd_current_or_prj_dir)
     endif
   endif
@@ -1740,8 +1741,10 @@ if isdirectory($HOME.'/.bin/apps/jqapi-latest')
   let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest/docs'
   "let g:ref_jquery_use_cache = 1
 endif
-if isdirectory($HOME."/.nvm/src/node-v0.4.7/doc")
-  let g:ref_nodejsdoc_dir = $HOME."/.nvm/src/node-v0.4.7/doc"
+if isdirectory($HOME."/.nodebrew")
+  let g:ref_nodejsdoc_dir = my#dir#find("~/.nodebrew/src/node-v*").last() . "/doc"
+elseif isdirectory($HOME."/.nvm")
+  let g:ref_nodejsdoc_dir = my#dir#find("~/.nvm/src/node-v*").last() . "/doc"
 endif
 
 if s:is_win
@@ -1913,7 +1916,7 @@ if !has('vim_starting') | silent exe 'NeoComplCacheEnable' | endif
 call s:initialize_global_dict('neocomplcache_', [
       \ 'keyword_patterns',
       \ 'dictionary_filetype_lists',
-      \ 'plugin_disable',
+      \ 'source_disable',
       \ 'include_patterns', 'vim_completefuncs', 
       \ 'omni_patterns', 'delimiter_patterns',
       \ 'same_filetype_lists', 'member_prefix_patterns',
@@ -1927,7 +1930,6 @@ let g:neocomplcache_enable_smart_case                   = 1
 let g:neocomplcache_enable_camel_case_completion        = 0 " camel case off
 let g:neocomplcache_enable_underbar_completion          = 1
 " let g:neocomplcache_enable_auto_delimiter               = 1
-" let g:neocomplcache_disable_caching_buffer_name_pattern = "\.log$\|_history$\|\.howm$\|\.jax$\|\.snippets$"
 let g:neocomplcache_disable_caching_file_path_pattern = "\.log$\|_history$\|\.howm$\|\.jax$\|\.snippets$"
 let g:neocomplcache_lock_buffer_name_pattern            = '\*ku\*'
 
@@ -1948,7 +1950,7 @@ let g:neocomplcache_min_syntax_length                   = 3
 
 let g:neocomplcache_keyword_patterns.default = '\h\w*' " 日本語をキャッシュしない
 
-call extend(g:neocomplcache_plugin_disable, {
+call extend(g:neocomplcache_source_disable, {
       \ 'syntax_complete' : 1
       \ })
 call extend(g:neocomplcache_dictionary_filetype_lists, {
