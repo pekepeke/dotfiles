@@ -52,7 +52,7 @@ export MYSQL_PS1='\u@\h.\d mysql:\c> '
 # {{{ color
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
-  eval "`dircolors -b`"
+  # eval "`dircolors -b`"
   #alias dir='ls --color=auto --format=vertical'
   #alias vdir='ls --color=auto --format=long'
 
@@ -83,8 +83,10 @@ __NOTIFY() {
   fi
 }
 if is_exec gls ; then
+  [ -e ~/.dir_colors ] && eval `gdircolors ~/.dir_colors -b`
   alias ls='gls --color=auto'
 else
+  [ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
   alias ls='ls --color=auto'
 fi
 

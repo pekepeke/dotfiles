@@ -130,6 +130,7 @@ NeoBundle 'mattn/zencoding-vim.git'
 NeoBundle 'tpope/vim-haml.git'
 NeoBundle 'digitaltoad/vim-jade.git'
 
+" css {{{4
 NeoBundle 'hail2u/vim-css3-syntax.git'
 NeoBundle 'cakebaker/scss-syntax.vim.git'
 NeoBundle 'wavded/vim-stylus.git'
@@ -137,7 +138,9 @@ NeoBundle 'groenewege/vim-less.git'
 NeoBundle 'bbommarito/vim-slim.git'
 NeoBundle 'ap/vim-css-color.git'
 
+" javascript {{{4
 NeoBundle 'pangloss/vim-javascript.git'
+NeoBundle 'teramako/jscomplete-vim.git'
 " NeoBundle 'lukaszb/vim-web-indent.git'
 " NeoBundle 'vim-scripts/IndentAnything.git'
 " NeoBundle 'itspriddle/vim-javascript-indent'
@@ -2031,7 +2034,8 @@ if exists("+omnifunc") " {{{4
   MyAutocmd FileType php          setl omnifunc=phpcomplete#CompletePHP
   MyAutocmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
   MyAutocmd FileType python       setl omnifunc=pythoncomplete#Complete
-  MyAutocmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
+  " MyAutocmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
+  MyAutocmd FileType javascript   setl omnifunc=jscomplete#CompleteJS
   MyAutocmd FileType xml          setl omnifunc=xmlcomplete#CompleteTags
   MyAutocmd FileType css          setl omnifunc=csscomplete#CompleteCSS
   MyAutocmd FileType c            setl omnifunc=ccomplete#Complete
@@ -2159,7 +2163,7 @@ LCAlias IRB
 " vimfiler {{{2
 let g:vimfiler_as_default_explorer=1
 let g:vimfiler_safe_mode_by_default=0
-" let g:vimfiler_edit_action = 'below'
+let g:vimfiler_edit_action = 'below'
 
 let g:vimfiler_tree_leaf_icon = ' '
 let g:vimfiler_tree_opened_icon = '▾'
