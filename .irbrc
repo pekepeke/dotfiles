@@ -1,18 +1,12 @@
 # .irbrc
 # coding: utf-8
-#$RI = "refe"
 
-if RUBY_VERSION < '1.9'
-  $KCODE='u'
-  require 'jcode'
+load File.dirname(__FILE__) + '/.rubyrc'
+require 'rubygems' unless defined? Gem
+begin
+    require 'irbtools'
+rescue LoadError
 end
-
-$RI = "ri"
-if `which refe` != ""
-  $RI = "refe"
-end
-
-require 'pp'              # ついでなんでpp(PrettyPrint)のライブラリをロード
 require 'irb/completion'
 
 IRB.conf.merge!({
@@ -29,21 +23,12 @@ IRB.conf[:PROMPT][:SIMPLE] = {
   :RETURN => "=> %s\n"
 }
 
-# --- wirble --- gem install wirble
-require 'rubygems'
-begin
-  require 'wirble'
-  Wirble.init
-  Wirble.colorize
-rescue LoadError=>e
-  puts e
+$RI = "ri"
+if `which rurema` != ""
+  $RI = "rurema"
+elsif `which refe` != ""
+  $RI = "refe"
 end
-begin
-  require 'what_methods'
-rescue LoadError=>e
-  puts e
-end
-
 # Class.r :method でrefe - http://d.hatena.ne.jp/secondlife/20051114/1131894899
 # gem install refeしてから有効
 module Kernel
@@ -65,12 +50,5 @@ class Module
       puts `#{$RI} #{self}`
     end
   end
-end
-
-# for rails
-# Log to STDOUT if in Rails
-if ENV.include?('RAILS_ENV') && !Object.const_defined?('RAILS_DEFAULT_LOGGER')
-  require 'logger'
-  RAILS_DEFAULT_LOGGER = Logger.new(STDOUT)
 end
 
