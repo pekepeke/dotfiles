@@ -1,4 +1,48 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
 
+# $:.push(File.join(File.dirname(__FILE__), 'lib'))
+# require 'rubygems'
+# require "bundler"
+# Bundler.setup
+require 'erubis'
+
+set :erubis, :escape_html => true
+enable :sessions, :logging
+set :public_folder, File.dirname(__FILE__) + "/public"
+
+configure :production do
+  disable :dump_errors
+end
+configure :development do
+end
+configure :test do
+end
+
+helpers do
+  include Rack::Utils
+  alias :escape_html :h
+end
+
+before do
+  # 
+end
+after do
+  #
+end
+
+get '/' do
+  erubis :index
+end
+if __FILE__ == $0
+end
+
+
+@@index
+<h1></h1>
+<p></p>
+
+@@layout
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -27,12 +71,6 @@
 		<!-- Le javascript
 		================================================== -->
 
-		<!--
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css" />
-		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
-		<script src="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.js"></script>
-		<script src="http://ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.0.6-development-only.js"></script>
-		-->
 		<script src="http://www.google.com/jsapi"></script>
 		<script>//<![[CDATA[
 			google.load("jquery", "1.7.1");
@@ -94,17 +132,8 @@
 
 		<div class="container">
 
-			<h1>title</h1>
-			<p>text</p>
+      <%== yield %>
 
 		</div> <!-- /container -->
-
-		<script type="text/javascript" src="https://raw.github.com/tanabe/AutoReloader-js/master/auto-reloader.js"></script>
-		<script type="text/javascript">
-			if (location.protocol.match(/^https?:/)) {
-				AutoReloader.watchCSS();
-				AutoReloader.watchJS();
-			}
-		</script>
 	</body>
 </html>
