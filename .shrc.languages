@@ -72,6 +72,7 @@ fi
 # for node.js {{{2
 if [ -e ~/.nodebrew ]; then
   PATH=$HOME/.nodebrew/current/bin:$PATH
+  export NODE_PATH=$HOME/.nodebrew/current/lib/node:$HOME/.nodebrew/current/lib/node_modules
   # alias nodebrew='CFLAGS="-D__DARWIN_64_BIT_INO_T" CXXFLAGS="-D__DARWIN_64_BIT_INO_T" nodebrew'
 elif [ -s $HOME/.nvm/nvm.sh ] ; then
   source $HOME/.nvm/nvm.sh
