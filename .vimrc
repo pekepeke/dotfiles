@@ -387,11 +387,6 @@ if !s:is_win
 endif
 
 " etc hacks {{{2
-if s:is_mac
-  " for objc " override matlab
-  MyAutocmd BufNewFile,BufRead *.m setfiletype objc
-endif
-
 " http://vim-users.jp/2009/10/hack84/
 MyAutocmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
 MyAutocmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
@@ -418,6 +413,7 @@ MyAutocmd FileType mkd setlocal ft=markdown
 MyAutocmd FileType js setlocal ft=javascript
 " Ruby, Yaml
 MyAutocmd BufNewFile,BufRead *.ru,Guardfile setfiletype ruby
+MyAutocmd BufNewFile,BufRead *.erubis setfiletype eruby
 " php
 MyAutocmd BufNewFile,BufRead *.ctp,*.thtml setfiletype php
 " MySQL

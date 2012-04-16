@@ -1,1 +1,15 @@
 --type-add=perl=.psgi
+--type-add=jsp=.jspf
+--type-set=sass=.sass,.scss
+--type-add=ruby=.haml,.rake,.feature
+--type-add=objc=.pch
+--type-set=xcode=.pbxproj,.pbxuser,.perspectivev3
+--type-set=ragel=.rl
+--type-set=nib=.xib
+--type-set=plist=.plist
+--type-set=tmstuff=.tmproj,.tm_build_errors
+--type-set=ignorables=.log,.tmp,.pdf
+--noignorables
+--nonib
+--notmstuff
+--noxcode
