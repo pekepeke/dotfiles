@@ -1,1 +1,1 @@
-au BufRead,BufNewFile *.pp setfiletype puppet
+au BufRead,BufNewFile *.pp set filetype=puppet

@@ -123,6 +123,7 @@ NeoBundle 'ecomba/vim-ruby-refactoring.git'
 NeoBundle 'vim-scripts/eruby.vim.git'
 NeoBundle 'tobiassvn/vim-gemfile.git'
 "NeoBundle 'astashov/vim-ruby-debugger.git'
+NeoBundle 't9md/vim-chef.git'
 
 " html {{{4
 NeoBundle 'othree/html5.vim.git'
@@ -162,7 +163,7 @@ NeoBundle 'pekepeke/cocoa.vim.git'
 " android {{{4
 NeoBundle 'thinca/vim-logcat.git'
 " scala {{{4
-NeoBundle 'mlen/vim-scala.git'
+NeoBundle 'derekwyatt/vim-scala.git'
 " texts {{{4
 NeoBundle 'thinca/vim-ft-diff_fold.git'
 NeoBundle 'plasticboy/vim-markdown.git'
@@ -188,7 +189,6 @@ NeoBundle 'Shougo/vim-nyaos.git'
 NeoBundle 'tangledhelix/vim-octopress.git'
 NeoBundle 'jcfaria/Vim-R-plugin.git'
 NeoBundle 'smerrill/vcl-vim-plugin.git'
-NeoBundle 't9md/vim-chef.git'
 
 " unite.vim {{{3
 NeoBundle 'Shougo/unite.vim.git'
@@ -405,28 +405,18 @@ if has('vim_starting')
 endif
 
 " setfiletype {{{2
-" html
-MyAutocmd BufNewFile,BufRead *.hta setfiletype hta
-" mkd alias
-MyAutocmd FileType mkd setlocal ft=markdown
-" js alias
-MyAutocmd FileType js setlocal ft=javascript
-" Ruby, Yaml
-MyAutocmd BufNewFile,BufRead *.ru,Guardfile setfiletype ruby
-MyAutocmd BufNewFile,BufRead *.erubis setfiletype eruby
-" php
-MyAutocmd BufNewFile,BufRead *.ctp,*.thtml setfiletype php
+" alias
+MyAutocmd FileType mkd set ft=markdown
+MyAutocmd FileType js set ft=javascript
 " MySQL
 MyAutocmd BufNewFile,BufRead *.sql set filetype=mysql
-" Textile
-MyAutocmd BufRead,BufNewFile *.textile setfiletype textile
 " IO
 MyAutocmd BufNewFile,BufRead *.io set filetype=io
 " MSBuild
-MyAutocmd BufNewFile,BufRead *.proj,*.xaml setfiletype xml
+MyAutocmd BufNewFile,BufRead *.proj,*.xaml set filetype=xml
 MyAutocmd BufNewFile,BufRead *.proj,*.cs,*.xaml compiler msbuild
 " command
-MyAutocmd BufNewFile,BufRead *.command setfiletype sh
+MyAutocmd BufNewFile,BufRead *.command set filetype=sh
 
 MyAutocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
       \ | exe "normal! g`\""
@@ -1453,6 +1443,7 @@ UniteNMap   o         tag outline
 UniteNMap!  gr        grep -buffer-name=grep
 UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=todo
 UniteNMap!  gi        git_grep -buffer-name=git_grep
+UniteNMap!  q         qf -buffer-name=qfix
 UniteNMap   y         history/yank
 UniteNMap   :         history/command command
 UniteNMap   /         history/search
