@@ -255,6 +255,7 @@ NeoBundle 'h1mesuke/vim-alignta.git'
 " NeoBundle 'chrismetcalf/vim-yankring.git'
 NeoBundle 'the-isz/MinYankRing.vim.git'
 NeoBundle 'kien/ctrlp.vim.git'
+NeoBundle 'glidenote/memolist.vim.git'
 
 NeoBundle 'othree/eregex.vim.git'
 NeoBundle 'sjl/gundo.vim.git'
@@ -853,7 +854,7 @@ vnoremap [space]r :S/
 
 " grep
 if executable('ack')
-  set grepprg=ack\ -a
+  set grepprg=ack-grep\ -a
   set grepformat=%f:%l:%m
 else
   set grepprg=grep\ -n\ $*\ /dev/null
@@ -1415,7 +1416,7 @@ endif
 
 " unite-grep {{{3
 " let g:unite_source_grep_default_opts = '-iRHn'
-let g:unite_source_grep_command = 'ack'
+let g:unite_source_grep_command = 'ack-grep'
 let g:unite_source_grep_default_opts = '--no-heading --no-color -a'
 let g:unite_source_grep_recursive_opt = ''
 
@@ -1440,6 +1441,7 @@ UniteNMap   l         file
 UniteNMap   m         file_mru directory_mru -default-action=open -buffer-name=file
 UniteNMap   i         webcolorname
 UniteNMap   o         tag outline
+UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep
 UniteNMap!  gr        grep -buffer-name=grep
 UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=todo
 UniteNMap!  gi        git_grep -buffer-name=git_grep
@@ -2281,36 +2283,12 @@ endfunction
 " vinarise {{{2
 " let g:vinarise_enable_auto_detect = 1
 
-" qfixhowm {{{2
-let QFixHowm_Key      = 'g'
-let howm_dir          = $HOME."/.howm"
-"let howm_filename     = '%Y-%m/%Y-%m-%d-%H%M%S.howm'
-let howm_filename     = '%Y-%m/%Y-%m-%d.howm'
-let howm_fileencoding = 'utf8'
-let howm_fileformat   = 'unix'
-let QFixHowm_ScheduleSearchDir = howm_dir
-
-let QFixHowm_Replace_Title_Len = 64
-if !filereadable(g:howm_dir . '/Sche-Hd-0000-00-00-000000.howm')
-  call my#util#mkdir(g:howm_dir)
-  call my#util#copy($HOME.'/.vim/lib/howm/Sche-Hd-0000-00-00-000000.howm', g:howm_dir.'/Sche-Hd-0000-00-00-000000.howm')
-endif
-let SubWindow_Title = $HOME.'/.vim/lib/howm/__submenu__.howm'
-let SubWindow_Width = 20
-
-" disable menu
-let QFixHowm_MenuBar=0
-let MyGrep_MenuBar=0
-
-let QFixHowm_ShowTodoOnMenu = 1
-let g:QFix_PreviewEnable = 0
-
-MyAutocmd FileType howm_memo call s:howm_memo_my_settings() " {{{3
-function! s:howm_memo_my_settings()
-  nmap <buffer> [prefix]t :exe 'normal! i'.printf("[%s] ", strftime('%Y-%m-%d %H:%M:%S'))<CR>
-  nmap <buffer> [prefix]d :exe 'normal! i'.printf("[%s] ", strftime('%Y-%m-%d'))<CR>
-endfunction
-
+" memolist {{{2
+let g:memolist_path = $HOME . '/memo'
+nmap <silent> <Leader>mf :exe 'Unite' 'file:'.g:memolist_path<CR>
+nmap <silent> <Leader>mc :MemoNew<CR>
+nmap <silent> <Leader>ml :MemoList<CR>
+nmap <silent> <Leader>mg :MemoGrep<CR>
 
 " etc functions & commands {{{1
 " tiny snippets {{{2
