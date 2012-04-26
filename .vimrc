@@ -1948,13 +1948,14 @@ call extend(g:neocomplcache_source_disable, {
 call extend(g:neocomplcache_dictionary_filetype_lists, {
   \ 'default'     : '',
   \ 'vimshell'    : $HOME . '/.vimshell/command-history',
-  \ 'javascript'  : $HOME . '/.vim/dict/javascript.dict',
+  \ 'javascript'  : $HOME . '/.vim/dict/node.dict',
   \ 'ruby'        : $HOME . '/.vim/dict/ruby.dict',
   \ 'perl'        : $HOME . '/.vim/dict/perl.dict',
   \ 'php'         : $HOME . '/.vim/dict/php.dict',
   \ 'objc'        : $HOME . '/.vim/dict/objc.dict',
   \ 'actionscript': $HOME . '/.vim/dict/actionscript.dict',
   \ })
+  " \ 'javascript'  : $HOME . '/.vim/dict/javascript.dict',
 
 let g:use_zen_complete_tag=1
 

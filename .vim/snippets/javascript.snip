@@ -506,191 +506,207 @@ snippet width
 snippet wrap
 	${1:obj}.wrap('${2:&lt;div class="extra-wrapper"&gt;&lt;/div&gt;}')${3}
 
-snippet array
-	Array.prototype.forEach = Array.prototype.forEach || function(callback,thisObject){ for(var i=0,len=this.length;i<len;i++) callback.call(thisObject,this[i],i,this) };
-	Array.prototype.map = Array.prototype.map || function(callback,thisObject){ for(var i=0,res=[],len=this.length;i<len;i++) res[i] = callback.call(thisObject,this[i],i,this); return res;};
-	Array.prototype.filter = Array.prototype.filter || function(callback,thisObject){ for(var i=0,res=[],len=this.length;i<len;i++) callback.call(thisObject,this[i],i,this) && res.push(this[i]); return res; };
-	Array.prototype.indexOf = Array.prototype.indexOf || function(searchElement,fromIndex){ var i = fromIndex<0 ? this.length+fromIndex : fromIndex || 0; for(;i<this.length;i++) if(searchElement === this[i]) return i; return -1; };
-	Array.prototype.lastIndexOf = Array.prototype.lastIndexOf || function(searchElement,fromIndex){ var max = this.length-1; var i = fromIndex < 0 ? Math.max(max+1 + fromIndex,0): fromIndex > max ? max : max-(fromIndex||0) || max;for(;i>=0;i--) if(searchElement === this[i]) return i; return -1;};
-	Array.prototype.every = Array.prototype.every || function(callback,thisObject){ for(var i=0,len=this.length;i<len;i++) if(!callback.call(thisObject,this[i],i,this)) return false; return true;};
-	Array.prototype.some = Array.prototype.some || function(callback,thisObject){ for(var i=0,len=this.length;i<len;i++) if(callback.call(thisObject,this[i],i,this)) return true; return false;};
-	Array.prototype.reduce = Array.prototype.reduce || function(callback) { var i, l = this.length, cur; if ((l <= 0 || l === null) && arguments.length <= 1) { throw new Error("invalid arguments", arguments); } if (arguments.length <= 1) { cur = this[0]; i = 1; } else { cur = arguments[1]; } for (var i= i || 0; i < l; i++) { cur = callback.call(this, cur, this[i], i, this); } return cur; };
-	Array.prototype.shuffle = function() { var r = Array.apply(null, this); for (var i=0, l=r.length; i<l ;i++) { var j = Math.floor(Math.random() * l); if (j==i) continue; var tmp = r[j]; r[j] = r[i]; r[i] = tmp; }}
-
-snippet arrays
-	var Arrays = {
-		range : function(from, to) {
-			var arr = []
-			for (var i=(from<to ? from : to), l=(from < to ? to : from);i<=l;i++) arr.push(i);
-			return arr;
-		},
-		each : function(items, callback) {
-			for (var i=0, l = items.length;i<l;i++) {
-				callback.call(items, items[i], i);
-			}
-		},
-		map : function(items, callback) {
-			var arr = [];
-			for (var i=0, l=items.length;i<l;i++) {
-				arr.push(callback.call(items, items[i], i));
-			}
-			return arr;
-		},
-		some : function(items, callback) {
-			for (var i=0, l = items.length;i<l;i++) {
-				if (callback.call(items, items[i], i)) return items[i];
-			}
-		},
-		filter : function(items, callback) {
-			var arr = [];
-			for (var i=0, l = items.length;i<l;i++) {
-				if (callback.call(items, items[i], i)) arr.push(items[i]);
-			}
-			return arr;
-		},
-		every : function(items, callback) {
-			for (var i=0,  l = items.length; i<l ;i++) {
-				if (!callback.call(items, items[i], i)) {
-					return false;
-				}
-			}
-			return true;
-		},
-		reduce : function(items, callback) {
-			var i, l = items.length, cur;
-
-			if ((l <= 0 || l === null) && arguments.length <= 2) {
-				throw new Error("invalid arguments", arguments);
-			}
-			if (arguments.length <= 2) {
-				cur = items[0]; i = 1;
-			} else {
-				cur = arguments[2];
-			}
-
-			for (var i= i || 0; i < l; i++) {
-				cur = callback.call(items, cur, items[i], i, items);
-			}
-			return cur;
-		},
-		shuffle : function(items, callback) {
-			var r = Array.prototype.slice.call(items, 0);
-			for (var i=0, l=r.length; i<l ;i++) {
-				var j = Math.floor(Math.random() * l);
-				if (j==i) continue;
-				var tmp = r[j]; r[j] = r[i]; r[i] = tmp;
-			}
-		}
-	};
-
-snippet extend
-	var extend = function(to, fr) {
-		if (!fr) return to;
-		for (var k in fr) {
-			to[k] = fr[k];
-		}
-		return to;
-	}
-
-snippet p
-	var p = function() {
-		if (typeof console != 'undefined') {
-			console.log(Array.prototype.slice.call(arguments, 0));
-		}
-	}
-
-snippet log
-	var log = function() {
-		if (typeof console != 'undefined') {
-			console.log(Array.prototype.slice.call(arguments, 0));
-		}
-	}
-
-snippet addEvent
-	var addEvent = function(obj, type, func){
-		if (obj.addEventListener) obj.addEventListener(type, func, false);
-		else if(obj.attachEvent) obj.attachEvent('on' + type, func);
-	}
-
-snippet removeEvent
-	var removeEvent = function(obj, type, func){
-		if (obj.removeEventListener) obj.removeEventListener(type, func, false);
-		else if (obj.detachEvent) obj.detachEvent('on' + type, func);
-	}
-
-snippet calljsonp
-	var callJSONP = function(url) {
-		var el = document.createElement('script');
-		el.charset = 'utf-8';
-		el.src = url;
-		document.body.appendChild(el);
-	}
-
-snippet params
-	var params = function(name) {
-		if (!this.params) {
-			var url = window.location.href;
-			var p = url.indexOf('?');
-			var arr = p != -1 ? url.substring(p+1, url.length).split('&') : [];
-			this.params = {};
-			for (var i=0, l=arr.length; i<l ; i++) {
-				var v = arr[i].split('=');
-				this.params[v[0]] = v[1];
-			}
-		}
-		return typeof name == 'undefined' ? this.params : this.params[name];
-	};
-
-snippet event
-	var mouseEvent = function(id, event_name) {
-		var el = document.getElementById(id);
-		if (typeof el.fireEvent === 'function') {
-			el.fireEvent('on' + event_name);
-		} else {
-			var event = document.createEvent('MouseEvents');
-			event.initEvent(event_name, false, true);
-			el.dispatchEvent(event);
-		}
-	};
-
-	var keyEvent = function(id, event, keycode) {
-		var el = document.getElementById(id);
-		if (typeof document.createEventObject === 'function') {
-			var event = document.createEventObject();
-			event.keyCode = keycode;
-			el.fireEvent('on' + event_name, event);
-		} else {
-			var event = document.createEvent('KeyboardEvent');
-			event.initKeyEvent(event_name, true, true, null, false, false, false, false, keycode, 0);
-			el.dispatchEvent(event);
-		}
-	};
-	
-snippet include
-	var include = function (assetURL) {
-		var script = document.createElement('script');
-		script.src = assetURL;
-		script.type = "text/javascript";
-		script.defer = true;
-		document.getElementsByTagName('head').item(0).appendChild(script);
-	};
-
-snippet getClass
-	function getClass(o) {
-	  return Object.prototype.toString.call(o).match(/^\[object\s(.*)\]$/)[1];
-	}
-
-snippet isArray
-	function isArray(o) {
-	  return Object.prototype.toString.call(o) === '[object Array]';
-	}
-
-snippet isDate
-	function isDate(o) {
-	  return Object.prototype.toString.call(o) === '[object Date]';
-	}
-
 snippet writesc
 	document.write('<sc' + 'ript type="text/javascript" src="${1:src}"></sc' + 'ript>');
 
+snippet addLis
+	addListener('${1:event}', function(${2:}){
+		${3:}
+	});
+
+snippet app.get
+	app.get('${1:path}', function(req, res, next){
+		${2:}
+	});
+
+snippet app.listen
+	app.listen(${1:3000}, ${2:function(){
+		console.log("App server listening on port %d", app.address().port);
+	}});
+
+snippet app.post
+	app.post('${1:path}', function(req, res, next){
+		${2:}
+	});
+
+snippet assert.notE
+	assert.notEqual(${1:actual}, ${2:expected});
+
+snippet assertdeep
+	assert.deepEqual(${1:actual}, ${2:expected});
+
+snippet asserteq
+	assert.equal(${1:actual}, ${2:expected});
+
+snippet crypto.createCred
+	crypto.createCredentials({key:${1:key}, cert:${2:cert}${3:, ca:[]});
+
+snippet env
+	process.env.${1:VARIABLE}
+
+snippet express
+	var app = express.createServer();
+	app.configure(function(){
+		app.set('views', __dirname + '${1:/../views}');
+		${2:app.use(connect.bodyDecoder());}
+		${3:app.use(connect.methodOverride());}
+		app.use(connect.compiler({ src: __dirname + '/../public', enable: ['less'] }));
+		app.use(app.router);
+		app.use(connect.staticProvider(__dirname + '${4:/../public'}));
+	});
+
+	app.configure('development', function(){
+		app.use(connect.errorHandler({ dumpExceptions: true, showStack: true })); 
+	});
+
+	app.configure('production', function(){
+		app.use(connect.errorHandler()); 
+	});
+
+snippet filt
+	filter(function(item){
+		return ${1:false};
+	});
+
+snippet foreEach
+	forEach(function(${1:item},${2:index}){
+		${3:}
+	}); 
+
+snippet fs.readFile
+	fs.readFile('${1:filename}', function(err, data){
+		${2: }
+	});
+
+snippet fs.unlink
+	fs.unlink('${1:location}', function(err){
+		${2: }
+	});
+
+snippet fs.watchFile
+	fs.watchFile('${1:filename}', function(current, previous){
+	});
+
+snippet fs.writeFile
+	fs.writeFile('${1:filename}', ${2:data}, ${3:'utf8'}, function(err){
+		${4: }
+	});
+
+snippet func
+	function(${1:}){${2:}}
+
+snippet http.createClient
+	http.createClient(${1:80}, '${2:www.google.com}');
+
+snippet http.createServer
+	http.createServer(function(${1:request}, ${2:response}){
+		${3:}
+	}).listen(${4:8124});
+
+snippet json.pa
+	JSON.parse(${1:'{"string":"of json"}});
+
+snippet json.st
+	JSON.stringify(${1:{some:'object'}});
+
+snippet log
+	console.log('${1:message}')
+
+snippet mongoose.connect
+	mongoose.connect('mongodb://${1:localhost}/${2:collection}');
+
+snippet mongoose.find
+	${1:Model}.find({ ${2:} }).all(function(${3:results}){
+		${4:}
+	});
+
+snippet mongoose.model
+	mongoose.model('${1:Model}', {
+		properties: [
+			${2:'name'}
+		],
+		indexes: [ ${3:'name'} ],
+		cast: { ${4:} }
+	});
+
+snippet net.createServer
+	net.createServer(function(${1:socket}){
+		$1.setEncoding("${2:utf8}");
+		$1.on('data', function(data){
+		});
+		$1.on('end', function(){
+
+});
+	}).listen(${3:8124}, '${4:127.0.0.1}');
+
+snippet on
+	on('${1:eventname}', function(${2:err, res}){
+	  ${3:}
+	});
+
+snippet req
+	var $1 = require ('${1:sys}')
+
+
+snippet reqfs
+	var fs = require('fs');
+
+
+snippet reqhttp
+	var http = require('http');
+
+
+snippet reqio
+	var io = require('socketio');
+
+snippet reqmongoose
+	var mongoose = require('mongoose').Mongoose;
+
+snippet reqpath
+	require.paths.unshift(${1:__dirname}${2:+'/lib/'});
+
+snippet reqsys
+	var sys = require('sys');
+
+snippet reqvows
+	var vows = require('vows');
+	var assert = require('assert');
+
+	vows.describe('${1:something}').addBatch({
+		'${2:firstthing}':{
+			topic:function(){
+			}
+		}
+	}).export(module);
+
+snippet res.render
+	res.render('${1:template}', {
+		locals:{
+			${2:templatevars}
+		}
+	});
+
+snippet setinterv
+	setInterval(${1:callback}, ${2:delay})
+
+snippet settime
+	setTimeout(${1:operation}, ${2:miliseconds})
+
+snippet sysi
+	sys.inspect(${1:object})
+
+snippet websocket
+	var ${1:socket} = ${2:io}.listen(${3:app});
+
+	$1.on('connection', function(client){
+		client.on('message', function(${4:msg}){
+			${5:}
+		});
+		client.on('disconnect', function(){
+				${6:}
+		});
+	});
+
+snippet writeHead
+	writeHead(${1:200}, ${2:{'Content-Type':'text/plain'}});
 
