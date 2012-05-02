@@ -1507,7 +1507,7 @@ nnoremap <silent> [unite]rg :<C-u>UniteResume grep<CR>
 nnoremap <silent> [unite]rt :<C-u>UniteResume todo<CR>
 nnoremap <silent> [unite]rq :<C-u>UniteResume qfix<CR>
 
-inoremap <C-k> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-insert<CR>
+inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-insert<CR>
 
 command! Todos silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
 
@@ -1586,8 +1586,8 @@ nnoremap <silent> [prefix]tr :<C-u>TlistUpdate<CR>
 nnoremap          [prefix]tc :Ctags<CR>
 command! -nargs=? Ctags call s:exec_ctags(<q-args>)
 function! s:exec_ctags(path) "{{{3
-  let with_cmd = my#util#has_plugin('vimproc') != '' ? 'VimProcBang' : '!'
   let path = a:path
+  let ctags_cmd = "ctags -R"
   if empty(path)
     let path = input("input base dir : ", expand('%:p:h'))
   endif
@@ -1598,8 +1598,12 @@ function! s:exec_ctags(path) "{{{3
   if !empty(a:path) && isdirectory(a:path)
     exe 'lcd' a:path
   endif
-  execute with_cmd 'ctags -R'
-  NeoComplCacheCachingTags
+  if my#util#has_plugin('vimproc')
+    call vimproc#system_bg(ctags_cmd)
+  else
+    execute "!" ctags_cmd
+    NeoComplCacheCachingTags
+  endif
   if !empty(a:path) && isdirectory(a:path)
     exe 'lcd' cwd
   endif
@@ -1912,10 +1916,10 @@ call s:initialize_global_dict('neocomplcache_', [
       \ 'include_patterns', 'vim_completefuncs', 
       \ 'omni_patterns', 'delimiter_patterns',
       \ 'same_filetype_lists', 'member_prefix_patterns',
-      \ 'next_keyword_patterns'
-      \])
+      \ 'next_keyword_patterns',
+      \ ])
 
-let g:neocomplcache_max_list = 10  " 補完候補の数
+let g:neocomplcache_max_list = 100  " 補完候補の数
 let g:neocomplcache_enable_auto_select = 1   " 一番目の候補を自動選択
 
 let g:neocomplcache_enable_smart_case                   = 1
@@ -1923,7 +1927,7 @@ let g:neocomplcache_enable_camel_case_completion        = 0 " camel case off
 let g:neocomplcache_enable_underbar_completion          = 1
 " let g:neocomplcache_enable_auto_delimiter               = 1
 let g:neocomplcache_disable_caching_file_path_pattern = "\.log$\|_history$\|\.howm$\|\.jax$\|\.snippets$"
-let g:neocomplcache_lock_buffer_name_pattern            = '\*ku\*'
+let g:neocomplcache_lock_buffer_name_pattern            = '\*ku\*\|\.log$\|\.jax$\|\.log\.'
 
 let g:neocomplcache_min_syntax_length                   = 3
 " let g:neocomplcache_plugin_completion_length     = {
@@ -1943,13 +1947,14 @@ let g:neocomplcache_min_syntax_length                   = 3
 let g:neocomplcache_keyword_patterns.default = '\h\w*' " 日本語をキャッシュしない
 
 call extend(g:neocomplcache_source_disable, {
-      \ 'syntax_complete' : 1
+      \ 'syntax_complete' : 1,
       \ })
 call extend(g:neocomplcache_dictionary_filetype_lists, {
   \ 'default'     : '',
   \ 'vimshell'    : $HOME . '/.vimshell/command-history',
   \ 'javascript'  : $HOME . '/.vim/dict/node.dict',
   \ 'ruby'        : $HOME . '/.vim/dict/ruby.dict',
+  \ 'eruby'       : $HOME . '/.vim/dict/ruby.dict',
   \ 'perl'        : $HOME . '/.vim/dict/perl.dict',
   \ 'php'         : $HOME . '/.vim/dict/php.dict',
   \ 'objc'        : $HOME . '/.vim/dict/objc.dict',
@@ -1976,12 +1981,6 @@ call s:bulk_dict_variables([{
       \   'names' : ['twig', 'smarty'],
       \   'value' : '[[:alnum:]_:-]*>\|[^"]*"'
       \ }])
-" let g:neocomplcache_omni_patterns.twig = '<[^>]*'
-" let g:neocomplcache_omni_patterns.smarty =
-"       \ g:neocomplcache_omni_patterns.twig
-" let g:neocomplcache_next_keyword_patterns.twig = '[[:alnum:]_:-]*>\|[^"]*"'
-" let g:neocomplcache_next_keyword_patterns.smarty =
-"       \ g:neocomplcache_next_keyword_patterns.twig
 " }}}
 
 " SuperTab like snippets behavior.
