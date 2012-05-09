@@ -71,12 +71,12 @@ __NOTIFY() {
   shift
 
   if is_win ; then
-    is_exec growlnotify && growlnotify -t $title -m "$*"
+    is_exec growlnotify && growlnotify -t $title -m "$*" --image ~/bin/data/growl_i.png
   elif is_mac ; then
-    is_exec growlnotify && growlnotify -t $title -m "$*"
+    is_exec growlnotify && growlnotify -t $title -m "$*" --image ~/bin/data/growl_i.png
   else
     if is_exec growlnotify ; then
-      growlnotify -t $title -m "$*"
+      growlnotify -t $title -m "$*" --image ~/bin/data/growl_i.png
     elif is_exec notify-send ; then
       notify-send $title "$*"
     fi
@@ -106,6 +106,7 @@ alias rm=' rm -i'
 alias mv='mv -i'
 alias sudo=' sudo -H'
 alias telnet='telnet -K'
+alias ack='ack-grep'
 
 # vim
 alias vimfiler='vim -c VimFiler'
@@ -120,6 +121,7 @@ update-submodules() {
 }
 vim-bundle() {
   update-submodules
+  find ~/.vim/neobundle -name tags | grep doc | grep -v .git | xargs rm
   vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall"
   __NOTIFY "neobundle update" "complete!"
 }
