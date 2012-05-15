@@ -89,6 +89,7 @@ NeoBundle 'Raimondi/delimitMate.git'
 NeoBundle 'tyru/current-func-info.vim.git'
 " NeoBundle 'mexpolk/vim-taglist.git'
 NeoBundle 'vim-scripts/taglist.vim.git'
+NeoBundle 'majutsushi/tagbar.git'
 NeoBundle 'tomtom/tcomment_vim.git'
 " NeoBundle 'scrooloose/nerdcommenter.git'
 NeoBundle 'thinca/vim-template.git'
@@ -626,8 +627,8 @@ endfunction
 set laststatus=2  " ステータス表示用変数
 "set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'}%=%l,%c%V%8P
 let &statusline="%<%f %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'
-      \ .'['.cfi#format('%s()','no func').']'
       \ }%=%l,%c%V%8P"
+      " \ .'['.cfi#format('%s()','no func').']'
 
 set modeline
 set modelines=10
