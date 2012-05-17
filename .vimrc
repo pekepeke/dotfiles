@@ -81,15 +81,19 @@ NeoBundle 'thinca/vim-quickrun.git'
 NeoBundle 'kien/rainbow_parentheses.vim.git'
 NeoBundle 'vim-scripts/matchit.zip.git'
 NeoBundle 'vim-scripts/ruby-matchit.git'
+NeoBundle 'vim-scripts/matchparenpp.git'
 NeoBundle 'AndrewRadev/splitjoin.vim.git'
 NeoBundle 'AndrewRadev/inline_edit.vim.git'
 NeoBundle 'gregsexton/MatchTag.git'
-NeoBundle 'Raimondi/delimitMate.git'
+" NeoBundle 'Raimondi/delimitMate.git'
+NeoBundle 'kana/vim-smartinput.git'
+NeoBundle 'tpope/vim-unimpaired.git'
 
+NeoBundle 'vim-scripts/ShowMultiBase.git'
 NeoBundle 'tyru/current-func-info.vim.git'
-" NeoBundle 'mexpolk/vim-taglist.git'
-NeoBundle 'vim-scripts/taglist.vim.git'
+" NeoBundle 'vim-scripts/taglist.vim.git'
 NeoBundle 'majutsushi/tagbar.git'
+" NeoBundle 'abudden/TagHighlight.git'
 NeoBundle 'tomtom/tcomment_vim.git'
 " NeoBundle 'scrooloose/nerdcommenter.git'
 NeoBundle 'thinca/vim-template.git'
@@ -98,7 +102,12 @@ NeoBundle 'ciaranm/detectindent.git'
 " NeoBundle 'ujihisa/shadow.vim.git'
 "NeoBundle 'motemen/git-vim.git'
 NeoBundle 'tpope/vim-fugitive.git'
+NeoBundle 'int3/vim-extradite.git'
 NeoBundle 'Shougo/vim-vcs.git'
+NeoBundle 'sjl/splice.vim.git'
+NeoBundle 'vim-scripts/DirDiff.vim.git'
+NeoBundle 'vim-scripts/Headlights.git'
+NeoBundle 'thinca/vim-ft-diff_fold.git'
 
 " help {{{4
 NeoBundle 'thinca/vim-ref.git'
@@ -138,7 +147,11 @@ NeoBundle 'cakebaker/scss-syntax.vim.git'
 NeoBundle 'wavded/vim-stylus.git'
 NeoBundle 'groenewege/vim-less.git'
 NeoBundle 'bbommarito/vim-slim.git'
-NeoBundle 'ap/vim-css-color.git'
+if !(s:is_mac && has('gui'))
+  NeoBundle 'ap/vim-css-color.git'
+endif
+NeoBundle 'vim-scripts/cssbaseline.vim.git'
+NeoBundle 'bae22/prefixer.git'
 
 " javascript {{{4
 NeoBundle 'pangloss/vim-javascript.git'
@@ -166,11 +179,16 @@ NeoBundle 'thinca/vim-logcat.git'
 " scala {{{4
 NeoBundle 'derekwyatt/vim-scala.git'
 " texts {{{4
-NeoBundle 'thinca/vim-ft-diff_fold.git'
 NeoBundle 'plasticboy/vim-markdown.git'
 NeoBundle 'thinca/vim-ft-markdown_fold.git'
 NeoBundle 'timcharper/textile.vim.git'
+NeoBundle 'chrisbra/csv.vim.git'
+
 NeoBundle 'motemen/hatena-vim.git'
+NeoBundle 'nvie/vim-rst-tables.git'
+NeoBundle 'vim-scripts/DrawIt.git'
+NeoBundle 'vim-scripts/sequence.git'
+
 " haskell {{{4
 " NeoBundle 'ehamberg/haskellmode-vim.git'
 NeoBundle 'ujihisa/ref-hoogle.git'
@@ -190,6 +208,8 @@ NeoBundle 'Shougo/vim-nyaos.git'
 NeoBundle 'tangledhelix/vim-octopress.git'
 NeoBundle 'jcfaria/Vim-R-plugin.git'
 NeoBundle 'smerrill/vcl-vim-plugin.git'
+NeoBundle 'qqshfox/vim-tmux.git'
+NeoBundle 'vim-scripts/nginx.vim.git'
 
 " unite.vim {{{3
 NeoBundle 'Shougo/unite.vim.git'
@@ -217,6 +237,8 @@ NeoBundle 'ujihisa/unite-colorscheme.git'
 " NeoBundle 'hakobe/unite-script.git'
 " NeoBundle 'mattn/unite-remotefile.git'
 " NeoBundle 'pekepeke/unite-fileline.git'
+NeoBundle 'zhaocai/unite-scriptnames.git'
+NeoBundle 'daisuzu/unite-grep_launcher.git'
 
 if s:is_win
   "NeoBundle 'sgur/unite-everything.git'
@@ -267,6 +289,7 @@ NeoBundle 'thinca/vim-qfreplace.git'
 NeoBundle 'nathanaelkane/vim-indent-guides.git'
 NeoBundle 'c9s/cascading.vim.git'
 NeoBundle 'mileszs/ack.vim.git'
+NeoBundle 'vim-scripts/MultipleSearch.git'
 if s:is_mac
   NeoBundle 'gmarik/sudo-gui.vim'
 endif
@@ -326,6 +349,9 @@ NeoBundle 'h1mesuke/textobj-wiw.git'
 " NeoBundle "mattn/vim-metarw-gist.git"
 " NeoBundle "mattn/vim-metarw-git.git"
 " NeoBundle "sorah/metarw-simplenote.vim.git"
+
+" libs {{{3
+NeoBundle 'vim-scripts/cecutil.git'
 
 " afterexec for runtimepath {{{1
 syntax enable
@@ -425,7 +451,7 @@ MyAutocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
       \ | endif
 
 " indent {{{2
-MyAutocmd FileType coffee,ruby,scheme,sh,zsh,vim,yaml,xml
+MyAutocmd FileType coffee,ruby,scheme,sh,zsh,vim,yaml,xml,javascript
       \ setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
 MyAutocmd FileType html
       \ setl noexpandtab tabstop=2 shiftwidth=2 textwidth=0
@@ -438,6 +464,8 @@ MyAutocmd FileType help
       \ setl noexpandtab tabstop=8 shiftwidth=8
 MyAutocmd FileType python
       \ setl textwidth=80 tabstop=8 softtabstop=4 shiftwidth=4 expandtab
+" MyAutocmd FileType python
+"       \ setl textwidth=80 tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 
 function! s:cmdwin_my_settings() "{{{3
   noremap <buffer> q :q<CR>
@@ -855,8 +883,12 @@ vnoremap [space]r :S/
 
 " grep
 if executable('ack')
+  set grepprg=ack\ -a
+  set grepformat=%f:%l:%m
+elseif executable('ack-grep')
   set grepprg=ack-grep\ -a
   set grepformat=%f:%l:%m
+  let g:ackprg="ack-grep -H --nocolor --nogroup --column"
 else
   set grepprg=grep\ -n\ $*\ /dev/null
   "set grepprg=grep\ -n\ $*\ /dev/null\ --exclude\ \"\*\.svn\*\"
@@ -1099,6 +1131,14 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" dirdiff.vim {{{2
+let g:DirDiffExcludes = "CVS,*.class,*.exe,.*.swp"
+let g:DirDiffIgnore = "Id:,Revision:,Date:"
+map ;dg <Plug>DirDiffGet
+map ;dp <Plug>DirDiffPut
+map ;dj <Plug>DirDiffNext
+map ;dk <Plug>DirDiffPrev
+
 " splitjoin.vim {{{2
 nmap [prefix],j :<C-u>SplitjoinJoin<CR>
 nmap [prefix],k :<C-u>SplitjoinSplit<CR>
@@ -1421,6 +1461,14 @@ let g:unite_source_grep_command = 'ack-grep'
 let g:unite_source_grep_default_opts = '--no-heading --no-color -a'
 let g:unite_source_grep_recursive_opt = ''
 
+" unite-grep_launcher {{{3
+if !exists('g:grep_launcher_words')
+  let g:grep_launcher_words = {}
+endif
+call extend(g:grep_launcher_words, {
+      \ 'TODO' : 'TODO\|FIXME\|XXX',
+      \ })
+
 " unite mappings {{{3
 function! s:unite_map(bang, prefix, key, ...) " {{{4
   let key = empty(a:bang) ? a:key : toupper(a:key)
@@ -1445,6 +1493,7 @@ UniteNMap   o         tag outline
 UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep
 UniteNMap!  gr        grep -buffer-name=grep
 UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=todo
+UniteNMap   gl        grep_launcher
 UniteNMap!  gi        git_grep -buffer-name=git_grep
 UniteNMap!  q         qf -buffer-name=qfix
 UniteNMap   y         history/yank
@@ -1560,30 +1609,63 @@ let g:html_use_css = 1
 let g:use_xhtml = 1
 let g:html_use_encoding = 'utf-8'
 
-" taglist {{{2
+" tagbar taglist {{{2
 " basic options {{{3
 set tags+=tags;$HOME
 if filereadable($HOME."/.bin/tags/java6") | set tags+=$HOME/.bin/tags/java6 | endif
 if filereadable($HOME."/.bin/tags/android-base") | set tags+=$HOME/.bin/tags/android-base | endif
 
-let g:Tlist_Auto_Update = 1
-let g:Tlist_Show_One_File = 0
-let g:Tlist_Exit_OnlyWindow = 1
-let g:Tlist_Use_Right_Window = 0
-let g:Tlist_WinWidth = 25
+if 0 "{{{4
+  let g:Tlist_Auto_Update = 1
+  let g:Tlist_Show_One_File = 0
+  let g:Tlist_Exit_OnlyWindow = 1
+  let g:Tlist_Use_Right_Window = 0
+  let g:Tlist_WinWidth = 25
 
-let g:tlist_objc_settings='objc;P:protocols;i:interfaces;I:implementations;M:instance methods;C:implementation methods;Z:protocol methods;v:property'
-let g:tlist_javascript_settings='javascript;v:var;c:class;p:prototype;m:method;f:function;o:object'
-let g:tlist_scala_settings = 'scala;t:trait;c:class;T:type;m:method;C:constant;l:local;p:package;o:object'
-let g:tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
-let g:tlist_tex_settings   = 'latex;s:sections;g:graphics;l:labels'
+  let g:tlist_objc_settings='objc;P:protocols;i:interfaces;I:implementations;M:instance methods;C:implementation methods;Z:protocol methods;v:property'
+  let g:tlist_javascript_settings='javascript;v:var;c:class;p:prototype;m:method;f:function;o:object'
+  let g:tlist_scala_settings = 'scala;t:trait;c:class;T:type;m:method;C:constant;l:local;p:package;o:object'
+  let g:tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
+  let g:tlist_tex_settings   = 'latex;s:sections;g:graphics;l:labels'
+else "{{{4
+  if executable('coffeetags')
+    let g:tagbar_type_coffee = {
+          \ 'ctagsbin' : 'coffeetags',
+          \ 'ctagsargs' : '',
+          \ 'kinds' : [
+          \ 'f:functions',
+          \ 'o:object',
+          \ ],
+          \ 'sro' : ".",
+          \ 'kind2scope' : {
+          \ 'f' : 'object',
+          \ 'o' : 'object',
+          \ }
+          \ }
+  endif
+  let g:tagbar_type_scala = {
+      \ 'ctagstype' : 'Scala',
+      \ 'kinds'     : [
+          \ 'p:packages:1',
+          \ 'V:values',
+          \ 'v:variables',
+          \ 'T:types',
+          \ 't:traits',
+          \ 'o:objects',
+          \ 'a:aclasses',
+          \ 'c:classes',
+          \ 'r:cclasses',
+          \ 'm:methods'
+      \ ]
+  \ }
+endif "}}}
 
 if s:is_mac && executable('/Applications/MacVim.app/Contents/MacOS/ctags')
   let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
 endif
 " }}}
-nnoremap <silent> [prefix]tt :<C-u>TlistToggle<CR>1<C-w>h
-nnoremap <silent> [prefix]tr :<C-u>TlistUpdate<CR>
+nnoremap <silent> [prefix]tt :<C-u>TagbarToggle<CR>1<C-w>h
+nnoremap <silent> [prefix]tr :<C-u>TagbarOpen<CR>
 nnoremap          [prefix]tc :Ctags<CR>
 command! -nargs=? Ctags call s:exec_ctags(<q-args>)
 function! s:exec_ctags(path) "{{{3
@@ -1723,7 +1805,6 @@ Tmap a;c <Plug>(textobj-comment-a)
 Tmap i;b <Plug>(textobj-between-i)
 Tmap a;b <Plug>(textobj-between-a)
 Tmap i;w <Plug>(textobj-wiw-i)
-Tmap a;w <Plug>(textobj-wiw-a)
 let g:textobj_wiw_no_default_key_mappings=1
 
 " ref.vim {{{2

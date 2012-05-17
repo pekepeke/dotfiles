@@ -1,5 +1,5 @@
 setl errorformat=%f:%l:%m
-setl makeprg=pyflakes
+setl makeprg=pycheck.py\ %
 setl shellpipe=2>&1\ >
 
 if exists('g:loaded_python_flyquickmake')
