@@ -122,7 +122,7 @@ update-submodules() {
 vim-bundle() {
   update-submodules
   find ~/.vim/neobundle -name tags | grep doc | grep -v .git | xargs rm
-  vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall"
+  vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "silent NeoBundleDocs" -c "quitall"
   __NOTIFY "neobundle update" "complete!"
 }
 # alias vim-bundle='update-submodules; vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall";NOTIFY "neobundle update" "complete!"'

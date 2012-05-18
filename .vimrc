@@ -106,7 +106,7 @@ NeoBundle 'int3/vim-extradite.git'
 NeoBundle 'Shougo/vim-vcs.git'
 NeoBundle 'sjl/splice.vim.git'
 NeoBundle 'vim-scripts/DirDiff.vim.git'
-NeoBundle 'vim-scripts/Headlights.git'
+NeoBundle 'mbadran/headlights.git'
 NeoBundle 'thinca/vim-ft-diff_fold.git'
 
 " help {{{4
