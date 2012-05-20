@@ -1,0 +1,55 @@
+*ref-jsdom.txt* JavaScript DOM ドキュメント用の ref ソース。
+
+Version: 0.0.1
+Author : hikaruworld
+License: MIT License
+
+==============================================================================
+目次                                *ref-jsdom-contents*
+
+概要                                |ref-jsdom-introduction|
+カスタマイズ                        |ref-jsdom-customizing|
+更新履歴                            |ref-jsdom-changelog|
+
+
+==============================================================================
+概要                                *ref-jsdom-introduction*
+
+*ref-jsdom* は JavaScript ドキュメント用 の |ref| のソースです。
+
+
+要件:
+- |ref| 0.4.3 以降
+- Alternative JavaScript Documentation (TODO URL)
+
+
+
+==============================================================================
+カスタマイズ                        *ref-jsdom-customizing*
+
+g:ref_jsdom_path                    *g:ref_jsdom_path*
+            JavaScript ドキュメントのパスです。パスはローカルの
+            ディレクトリ、あるいはURLである必要があります。
+
+g:ref_jsdom_cmd                     *g:ref_jsdom_cmd*
+            html を表示するためのコマンドです。%s は html ファイル
+            に置き換えられます。コマンドとその引数を含む |List| も
+            指定できます。
+            デフォルト値は以下の物でコマンドが実行可能なものです。
+            - 'elinks -dump -no-numbering -no-references %s'
+            - 'w3m -dump %s'
+            - 'links -dump %s'
+            - 'lynx -dump -nonumbers %s'
+
+
+
+==============================================================================
+更新履歴                    *ref-jsdom-changelog*
+
+0.0.1    2011-12-06
+    - 初版。
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+

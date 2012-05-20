@@ -1,0 +1,58 @@
+*ref-jscore.txt*	JavaScript ドキュメント用の ref ソース。
+
+Version: 0.0.1
+Author : hikaruworld
+License: MIT License
+
+==============================================================================
+目次                                            *ref-jscore-contents*
+
+概要                                            |ref-jscore-introduction|
+カスタマイズ                                    |ref-jscore-customizing|
+更新履歴                                        |ref-jscore-changelog|
+
+
+==============================================================================
+概要                                            *ref-jscore-introduction*
+
+*ref-jscore* は JavaScriptCore ドキュメント用 の |ref| のソースです。
+
+
+要件:
+- |ref| 0.4.3 以降
+- Alternative JavaScript Documentation
+  (https://developer.mozilla.org/ja/JavaScript/Reference)
+
+
+
+==============================================================================
+カスタマイズ                                    *ref-jscore-customizing*
+
+g:ref_jscore_path                               *g:ref_jscore_path*
+			JavaScript ドキュメントのパスです。パスはローカルの
+            ディレクトリ、あるいはURLである必要があります。
+            URLの場合mozilla.orgのDocumentationパスを参照に構築さ
+            れています。
+
+g:ref_jscore_cmd                                *g:ref_jscore_cmd*
+			html を表示するためのコマンドです。%s は html ファイル
+			に置き換えられます。コマンドとその引数を含む |List| も
+			指定できます。
+			デフォルト値は以下の物でコマンドが実行可能なものです。
+			- 'elinks -dump -no-numbering -no-references %s'
+			- 'w3m -dump %s'
+			- 'links -dump %s'
+			- 'lynx -dump -nonumbers %s'
+
+
+
+==============================================================================
+更新履歴					*ref-jscore-changelog*
+
+0.0.1	2011-12-06
+	- 初版。
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+

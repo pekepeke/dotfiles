@@ -1,0 +1,55 @@
+*ref-html.txt*	HTML4 ドキュメント用の ref ソース。
+
+Version: 0.0.1
+Author : hikaruworld
+License: MIT License
+
+==============================================================================
+目次                                    *ref-html-contents*
+
+概要                                    |ref-html-introduction|
+カスタマイズ                            |ref-html-customizing|
+更新履歴                                |ref-html-changelog|
+
+
+==============================================================================
+概要						            *ref-html-introduction*
+
+*ref-html* は HTML4 ドキュメント用 の |ref| のソースです。
+
+
+要件:
+- |ref| 0.4.3 以降
+- Alternative HTML4 Documentation (TODO Referece URL)
+
+
+
+==============================================================================
+カスタマイズ                            *ref-html-customizing*
+
+g:ref_html_path                         *g:ref_html_path*
+			HTML4 ドキュメントのパスです。パスはローカルのディレクトリ
+			である必要があります。
+
+g:ref_html_cmd                          *g:ref_html_cmd*
+			html を表示するためのコマンドです。%s は html ファイル
+			に置き換えられます。コマンドとその引数を含む |List| も
+			指定できます。
+			デフォルト値は以下の物でコマンドが実行可能なものです。
+			- 'elinks -dump -no-numbering -no-references %s'
+			- 'w3m -dump %s'
+			- 'links -dump %s'
+			- 'lynx -dump -nonumbers %s'
+
+
+
+==============================================================================
+更新履歴                                *ref-html-changelog*
+
+0.0.1	2011-12-06
+	- 初版。
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+

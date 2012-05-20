@@ -1,0 +1,55 @@
+*ref-html5.txt*	HTML5 ドキュメント用の ref ソース。
+
+Version: 0.0.1
+Author : hikaruworld
+License: MIT License
+
+==============================================================================
+目次                                    *ref-html5-contents*
+
+概要                                    |ref-html5-introduction|
+カスタマイズ                            |ref-html5-customizing|
+更新履歴                                |ref-html5-changelog|
+
+
+==============================================================================
+概要                                    *ref-html5-introduction*
+
+*ref-html5* は HTML5 ドキュメント用 の |ref| のソースです。
+
+
+要件:
+- |ref| 0.4.3 以降
+- Alternative HTML5 Documentation (example: http://www.html5.jp)
+
+
+
+==============================================================================
+カスタマイズ                            *ref-html5-customizing*
+
+g:ref_html5_path                        *g:ref_html5_path*
+			HTML5 ドキュメントのパスです。パスはローカルのディレクトリ
+			である必要があります。
+
+g:ref_html5_cmd                         *g:ref_html5_cmd*
+			html を表示するためのコマンドです。%s は html ファイル
+			に置き換えられます。コマンドとその引数を含む |List| も
+			指定できます。
+			デフォルト値は以下の物でコマンドが実行可能なものです。
+			- 'elinks -dump -no-numbering -no-references %s'
+			- 'w3m -dump %s'
+			- 'links -dump %s'
+			- 'lynx -dump -nonumbers %s'
+
+
+
+==============================================================================
+更新履歴                                *ref-html5-changelog*
+
+0.0.1	2011-12-06
+	- 初版。
+
+
+==============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
+
