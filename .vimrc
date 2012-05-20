@@ -106,7 +106,7 @@ NeoBundle 'int3/vim-extradite.git'
 NeoBundle 'Shougo/vim-vcs.git'
 NeoBundle 'sjl/splice.vim.git'
 NeoBundle 'vim-scripts/DirDiff.vim.git'
-NeoBundle 'mbadran/headlights.git'
+NeoBundleLazy 'mbadran/headlights.git'
 NeoBundle 'thinca/vim-ft-diff_fold.git'
 
 " help {{{4
@@ -159,7 +159,7 @@ NeoBundle 'teramako/jscomplete-vim.git'
 " NeoBundle 'lukaszb/vim-web-indent.git'
 " NeoBundle 'vim-scripts/IndentAnything.git'
 " NeoBundle 'itspriddle/vim-javascript-indent'
-NeoBundle 'jiangmiao/simple-javascript-indenter.git'
+" NeoBundle 'jiangmiao/simple-javascript-indenter.git'
 NeoBundle 'vim-scripts/Dart.git'
 NeoBundle 'kchmck/vim-coffee-script.git'
 NeoBundle 'pekepeke/titanium-vim.git'
@@ -168,6 +168,12 @@ NeoBundle 'pekepeke/titanium-vim.git'
 " http://rope.sourceforge.net/
 " NeoBundle 'klen/python-mode.git'
 NeoBundle 'vim-scripts/python_match.vim.git'
+NeoBundle 'lambdalisue/vim-python-virtualenv.git'
+NeoBundle 'lambdalisue/vim-django-support.git'
+" NeoBundle 'sontek/rope-vim.git'
+" if executable('ipython')
+"   NeoBundleLazy 'ivanov/vim-ipython.git'
+" endif
 
 " perl {{{4
 NeoBundle 'petdance/vim-perl.git'
@@ -694,7 +700,8 @@ set wildchar=<tab>
 set wildignore+=*.o,*.obj,.git,*.rbc,.class,.svn
 " set completeopt=menu,preview,longest,menuone
 " set complete=.,w,b,u,t,i,k                   " 補完候補の設定
-set completeopt=menuone,preview
+" set completeopt=menuone,preview
+set completeopt=menuone
 set complete=.,w,b,u,t,i,k
 
 " for migemo {{{2
