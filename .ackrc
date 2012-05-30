@@ -1,15 +1,47 @@
 --type-add=perl=.psgi
 --type-add=jsp=.jspf
+--type-add=jsp=.jinc
+--type-add=jsp=.tag
+# ruby
+--type-add=ruby=.rake
+--type-set=gemspec=.gemspec
+--type-add=html=.erb,.slim
+--type-add=css=.scss,.sass
+--type-set=cucumber=.feature
 --type-set=sass=.sass,.scss
 --type-add=ruby=.haml,.rake,.feature
+# js
+--type-add=html=.jade
+--type-add=js=.coffee
+--type-add=css=.less
+# objc
 --type-add=objc=.pch
---type-set=xcode=.pbxproj,.pbxuser,.perspectivev3
 --type-set=ragel=.rl
 --type-set=nib=.xib
 --type-set=plist=.plist
+# php
+--type-set=smarty=.tpl
+--type-set=twig=.twig
+# texts
+--type-set=template=.template
+--type-set=markdown=.md,.mkd
+--type-set=textile=.textile
+--type-set=rest=.rst
+--type-set=xml=.zcml
+--type-set=ini=.ini,.cfg
+--type-set=email=.email
+# ignores
+--type-set=xcode=.pbxproj,.pbxuser,.perspectivev3
 --type-set=tmstuff=.tmproj,.tm_build_errors
 --type-set=ignorables=.log,.tmp,.pdf
+--type-set=xlf=.xlf
 --noignorables
 --nonib
 --notmstuff
 --noxcode
+--sort-files
+--follow
+--color
+--group
+--pager='less'
+--smart-case

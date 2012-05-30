@@ -175,12 +175,121 @@ function! my#util#benchmark() " {{{2
   return copy(bm)
 endfunction
 
-function! my#util#compile_vimproc(basedir)
+function! my#util#compile_vimproc(basedir) " {{{2
   let path = expand(a:basedir)
   let makefile = s:is_win ? 'make_cygwin.mak' :
         \ (s:is_mac ? 'make_mac.mak' : 'make_gcc.mak')
 
   exe printf("! cd %s && make -f %s/%s", path, path, makefile)
+endfunction
+
+let s:rand = {}
+function! s:rand.srand(...)
+  if a:0 <= 0
+    let self.seed = localtime()
+  else
+    let self.seed = a:1
+  endif
+  return self
+endfunction
+
+function! s:rand.next_seed()
+  let self.seed = self.seed * 214013 + 2531011
+  return (self.seed < 0 ? self.seed - 0x80000000 : self.seed) / 0x10000 % 0x8000
+endfunction
+
+function! s:rand.next_int(...)
+ let num = self.next_seed()
+ if a:0 <= 0
+   return num
+ endif
+ let max = a:0 > 1 ? a:000[1] : a:000[0]
+ let min = a:0 > 1 ? a:000[0] : 0
+ return num % ((max + 1) - min) + min
+endfunction
+
+function! s:rand.select(list)
+  return a:list[self.next_int(len(a:list) - 1)]
+endfunction
+
+let s:chars = {}
+function! s:rand.characters()
+  return s:chars
+endfunction
+
+function! s:chars._gen(start, num)
+  return map(range(a:start, a:start + a:num), 'nr2char(v:val)')
+endfunction
+
+function! s:chars.char()
+  return self._gen(0x20, 94)
+endfunction
+
+function! s:chars.alnum()
+  let source = self.lower() + self.digit()
+  let source = source + self.upper()
+  return source
+endfunction
+
+function! s:chars.lower()
+  return self._gen(0x61, 25)
+endfunction
+
+function! s:chars.digit()
+  return self._gen(0x30, 9)
+endfunction
+
+function! s:chars.upper()
+  return self._gen(0x41, 25)
+endfunction
+
+function! s:chars.glyph()
+  let source = self._gen(0x21, 14) + self._gen(0x3A, 6)
+  let source = source + self._gen(0x5B, 5)
+  let source = source + self._gen(0x7B, 3)
+  return source
+endfunction
+
+function! s:rand.string_from(list, len)
+  let source = []
+  for i in range(1, a:len)
+    call add(source, self.select(a:list))
+  endfor
+  return join(source, "")
+endfunction
+
+function! s:rand.get_alnum(len)
+  return self.string_from(s:chars.alnum(), a:len)
+endfunction
+
+function! s:rand.get_char(len)
+  return self.string_from(s:chars.char(), a:len)
+endfunction
+
+function! s:rand.get_lower(len)
+  return self.string_from(s:chars.lower(), a:len)
+endfunction
+
+function! s:rand.get_upper(len)
+  return self.string_from(s:chars.upper(), a:len)
+endfunction
+
+function! s:rand.get_digit(len)
+  return self.string_from(s:chars.digit(), a:len)
+endfunction
+
+function! s:rand.get_glyph(len)
+  return self.string_from(s:chars.glyph(), a:len)
+endfunction
+
+function! s:rand.get_string(len)
+  let source = s:chars.alnum() + s:chars.glyph()
+  return self.string_from(source, a:len)
+endfunction
+
+function! my#util#random()
+  let instance = copy(s:rand)
+  return instance.srand()
 endfunction
 
 let &cpo = s:save_cpo
