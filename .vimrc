@@ -45,6 +45,7 @@ endif
 
 " preexec for runtimepath {{{1
 set nocompatible
+filetype off
 filetype plugin indent off
 
 " vundle {{{1
@@ -211,6 +212,7 @@ NeoBundle 'vim-scripts/SQLUtilities.git'
 " shell {{{4
 NeoBundle 'Shougo/vim-nyaos.git'
 " etc {{{4
+NeoBundle 'sophacles/vim-processing.git'
 NeoBundle 'tangledhelix/vim-octopress.git'
 NeoBundle 'jcfaria/Vim-R-plugin.git'
 NeoBundle 'smerrill/vcl-vim-plugin.git'
@@ -1892,7 +1894,12 @@ let g:quickrun_config['diag'] = {
       \    ],
       \  'outputter': 'message',
       \ }
-
+if s:is_mac
+  let g:quickrun_config['processing'] = {
+        \   'command': 'osascript',
+        \   'exec' : ['osascript ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
+        \ }
+endif
 " for testcase
 MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
 MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
