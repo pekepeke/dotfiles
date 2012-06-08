@@ -75,6 +75,7 @@ NeoBundle 'vim-scripts/rdark.git'
 NeoBundle 'vim-scripts/Lucius.git'
 NeoBundle 'altercation/vim-colors-solarized.git'
 NeoBundle 'nanotech/jellybeans.vim'
+NeoBundle 'StanAngeloff/vim-zend55.git'
 
 " lang {{{3
 " basic {{{4
@@ -88,8 +89,10 @@ NeoBundle 'AndrewRadev/inline_edit.vim.git'
 NeoBundle 'gregsexton/MatchTag.git'
 " NeoBundle 'Raimondi/delimitMate.git'
 NeoBundle 'kana/vim-smartinput.git'
+NeoBundle 'acustodioo/vim-enter-indent.git'
 NeoBundle 'tpope/vim-unimpaired.git'
 
+NeoBundle 'tpope/vim-unimpaired.git'
 NeoBundle 'vim-scripts/ShowMultiBase.git'
 NeoBundle 'tyru/current-func-info.vim.git'
 " NeoBundle 'vim-scripts/taglist.vim.git'
@@ -157,6 +160,7 @@ NeoBundle 'bae22/prefixer.git'
 " javascript {{{4
 NeoBundle 'pangloss/vim-javascript.git'
 NeoBundle 'teramako/jscomplete-vim.git'
+NeoBundle 'vim-scripts/jQuery.git'
 " NeoBundle 'lukaszb/vim-web-indent.git'
 " NeoBundle 'vim-scripts/IndentAnything.git'
 " NeoBundle 'itspriddle/vim-javascript-indent'
@@ -164,13 +168,15 @@ NeoBundle 'teramako/jscomplete-vim.git'
 NeoBundle 'vim-scripts/Dart.git'
 NeoBundle 'kchmck/vim-coffee-script.git'
 NeoBundle 'pekepeke/titanium-vim.git'
+NeoBundle 'jeyb/vim-jst.git'
 
 " python {{{4
 " http://rope.sourceforge.net/
 " NeoBundle 'klen/python-mode.git'
 NeoBundle 'vim-scripts/python_match.vim.git'
 NeoBundle 'lambdalisue/vim-python-virtualenv.git'
-NeoBundle 'lambdalisue/vim-django-support.git'
+" NeoBundle 'lambdalisue/vim-django-support.git'
+NeoBundle 'gerardo/vim-django-support.git'
 " NeoBundle 'sontek/rope-vim.git'
 " if executable('ipython')
 "   NeoBundleLazy 'ivanov/vim-ipython.git'
@@ -204,6 +210,7 @@ NeoBundle 'ujihisa/neco-ghc.git'
 NeoBundle 'justinrainbow/php-doc.vim.git'
 NeoBundle 'beyondwords/vim-twig.git'
 NeoBundle 'violetyk/cake.vim.git'
+NeoBundle 'vim-scripts/phpcomplete.vim.git'
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim.git'
 NeoBundle 'vim-scripts/dbext.vim.git'
@@ -218,6 +225,11 @@ NeoBundle 'jcfaria/Vim-R-plugin.git'
 NeoBundle 'smerrill/vcl-vim-plugin.git'
 NeoBundle 'qqshfox/vim-tmux.git'
 NeoBundle 'vim-scripts/nginx.vim.git'
+if has('ruby') && executable('sprout-as3')
+  NeoBundle 'endel/flashdevelop.vim.git'
+  NeoBundle 'tomtom/tlib_vim.git'
+  NeoBundle 'airblade/vim-rooter.git'
+endif
 
 " unite.vim {{{3
 NeoBundle 'Shougo/unite.vim.git'
@@ -421,6 +433,17 @@ if !s:is_win
         \ | silent! exe '!echo -n "k%\\"'
         \ | endif
 endif
+" create directory automatically {{{2
+augroup vimrc-auto-mkdir
+    autocmd!
+    autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
+    function! s:auto_mkdir(dir, force)
+        if !isdirectory(a:dir) && (a:force ||
+            \ input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
+            call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
+        endif
+    endfunction
+augroup END
 
 " etc hacks {{{2
 " http://vim-users.jp/2009/10/hack84/
@@ -1254,6 +1277,7 @@ endfunction
 
 " sonictemplate-vim {{{2
 let g:sonictemplate_vim_template_dir = expand('$HOME/.vim/sonictemplate/')
+nnoremap [prefix]i :<C-u>Template<Space><Tab>
 
 " http://vim-users.jp/2010/11/hack181/
 " Open junk file. {{{3
@@ -2108,6 +2132,7 @@ inoremap <expr> <C-j> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
 
 imap <C-l> <Plug>(neocomplcache_snippets_expand)
 smap <C-l> <Plug>(neocomplcache_snippets_expand)
+imap <C-s> <Plug>(neocomplcache_start_unite_complete)
 " imap <expr><C-l> (pumvisible() ? neocomplcache#close_popup():"") ."\<Plug>(neocomplcache_snippets_expand)"
 " smap <expr><C-l> (pumvisible() ? neocomplcache#close_popup():"") ."\<Plug>(neocomplcache_snippets_expand)"
 
@@ -2380,11 +2405,12 @@ endfunction
 " let g:vinarise_enable_auto_detect = 1
 
 " memolist {{{2
+let g:memolist_suffix = "md"
 let g:memolist_path = $HOME . '/memo'
-nmap <silent> <Leader>mf :exe 'Unite' 'file:'.g:memolist_path<CR>
-nmap <silent> <Leader>mc :MemoNew<CR>
-nmap <silent> <Leader>ml :MemoList<CR>
-nmap <silent> <Leader>mg :MemoGrep<CR>
+nmap <silent> [prefix]mf :exe 'Unite' 'file:'.g:memolist_path<CR>
+nmap <silent> [prefix]mc :MemoNew<CR>
+nmap <silent> [prefix]ml :MemoList<CR>
+nmap <silent> [prefix]mg :MemoGrep<CR>
 
 " etc functions & commands {{{1
 " tiny snippets {{{2
@@ -2514,7 +2540,6 @@ command! -nargs=1 -complete=file Relcp call my#ui#relative_copy(<f-args>)
 LCAlias Relcp
 
 " win maximize toggle {{{3
-nnoremap [prefix]m :call my#winmaximizer#get().toggle()<CR>
 nnoremap [prefix]mm :call my#winmaximizer#get().toggle()<CR>
 nnoremap [prefix]mj :call my#winmaximizer#get().toggleDirection("v")<CR>
 nnoremap [prefix]mh :call my#winmaximizer#get().toggleDirection("h")<CR>

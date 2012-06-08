@@ -234,7 +234,7 @@ snippet param
 snippet openr
 	open my ${1:$fh}, '<', ${2:path} or die "$2: $!";
 	while (<$1>) {
-		$2
+		$3
 	}
 	close($1);
 
