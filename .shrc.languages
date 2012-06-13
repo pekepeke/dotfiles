@@ -120,6 +120,11 @@ if [ -e $HOME/.phpenv ]; then
   fi
   eval "$(phpenv init -)"
   [ -e $HOME/.phpenv/completions/rbenv.${_SHELL_NAME} ] && source $HOME/.phpenv/completions/rbenv.${_SHELL_NAME}
+  # PATH=$PATH:$HOME/.php-build/bin
+  export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd "
+  # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-sysvmsg --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --with-xpm-dir=/usr/X11R6 --with-png-dir=/usr --with-snmp=/usr"
+  # --with-enchant=/usr --enable-gd-native-ttf --with-freetype-dir=/usr --with-t1lib=/usr --with-gmp=/usr --with-imap=/usr --with-imap-ssl --enable-intl --with-onig=/usr
+  # --enable-fpm --without-mm 
 fi
 ## cakephp {{{3
 cake-dispatch() { #{{{

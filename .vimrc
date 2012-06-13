@@ -90,7 +90,6 @@ NeoBundle 'gregsexton/MatchTag.git'
 " NeoBundle 'Raimondi/delimitMate.git'
 NeoBundle 'kana/vim-smartinput.git'
 NeoBundle 'acustodioo/vim-enter-indent.git'
-NeoBundle 'tpope/vim-unimpaired.git'
 
 NeoBundle 'tpope/vim-unimpaired.git'
 NeoBundle 'vim-scripts/ShowMultiBase.git'
@@ -220,6 +219,7 @@ NeoBundle 'vim-scripts/SQLUtilities.git'
 NeoBundle 'Shougo/vim-nyaos.git'
 " etc {{{4
 NeoBundle 'sophacles/vim-processing.git'
+NeoBundle 'pekepeke/ref-processing-vim.git'
 NeoBundle 'tangledhelix/vim-octopress.git'
 NeoBundle 'jcfaria/Vim-R-plugin.git'
 NeoBundle 'smerrill/vcl-vim-plugin.git'
@@ -985,9 +985,6 @@ function! s:toggle_quickfix_window() "{{{3
 endfunction "}}}
 
 " nnoremap [space]f :NERDTreeToggle<CR>
-nnoremap <silent> [space]f :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=getcwd()<CR><CR>
-nnoremap <silent> [space]ff :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=getcwd()<CR><CR>
-nnoremap <silent> [space]fg :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=fnameescape(expand('%:p:h'))<CR><CR>
 nnoremap <silent> [space]t :TlistToggle<CR>
 
 nnoremap / :<C-u>nohlsearch<CR>/
@@ -1185,6 +1182,7 @@ MyAutocmd VimEnter * RainbowParenthesesToggleAll
 
 " ambicmd {{{2
 cnoremap <expr> <C-l> ambicmd#expand("\<Space>")
+" cnoremap <expr> <Space> ambicmd#expand("\<Space>")
 " cnoremap <expr> <CR> ambicmd#expand("\<CR>")
 
 " camelcasemotion {{{2
@@ -1277,7 +1275,6 @@ endfunction
 
 " sonictemplate-vim {{{2
 let g:sonictemplate_vim_template_dir = expand('$HOME/.vim/sonictemplate/')
-nnoremap [prefix]i :<C-u>Template<Space><Tab>
 
 " http://vim-users.jp/2010/11/hack181/
 " Open junk file. {{{3
@@ -1521,7 +1518,8 @@ UniteNMap   j         buffer_tab
 UniteNMap   k         tab
 UniteNMap   l         file
 UniteNMap   m         file_mru directory_mru -default-action=open -buffer-name=file
-UniteNMap   i         webcolorname
+UniteNMap   t         sonictemplate
+UniteNMap   c         webcolorname
 UniteNMap   o         tag outline
 UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep
 UniteNMap!  gr        grep -buffer-name=grep
@@ -2282,6 +2280,21 @@ let g:vimfiler_file_icon = '-'
 let g:vimfiler_marked_file_icon = '*'
 
 MyAutocmd FileType vimfiler call s:vimfiler_my_settings()
+" keymaps {{{3
+" nnoremap <silent> [space]f :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=getcwd()<CR><CR>
+" nnoremap <silent> [space]ff :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=getcwd()<CR><CR>
+" nnoremap <silent> [space]fg :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=fnameescape(expand('%:p:h'))<CR><CR>
+" command! -nargs=? VFTree VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:
+nnoremap <silent> [space]f  :call <SID>vimfiler_tree_launch()<CR>
+nnoremap <silent> [space]ff :call <SID>vimfiler_tree_launch()<CR>
+nnoremap <silent> [space]fg :call <SID>vimfiler_tree_launch(fnameescape(expand('%:p:h')))<CR>
+command! -nargs=? -complete=file VimFilerTree call s:vimfiler_tree_launch(<f-args>)
+command! -nargs=? -complete=file FTree call s:vimfiler_tree_launch(<f-args>)
+
+function! s:vimfiler_tree_launch(...) "{{{4
+  let fpath = a:0 > 0 ? a:1 : getcwd()
+  execute 'VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:' . fpath
+endfunction
 
 function! s:vimfiler_smart_tree_h() "{{{4
   let file = vimfiler#get_file()
