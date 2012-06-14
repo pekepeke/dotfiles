@@ -6,5 +6,9 @@
 //	dirname(__FILE__).'/lib',
 //)));
 
-if (basename(__FILE__) == basename($_SERVER['PHP_SELF'])) {
+class {{_name_}} {
+
+	function __construct() {
+	}
 }
+

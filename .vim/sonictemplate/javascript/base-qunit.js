@@ -8,8 +8,10 @@ module('test group', {
 });
 
 test("desc", function() {
-    equals(v,  "", "msg");
-    same(v, "", "msg");
-    ok(true);
-  });
+  {{_cursor_}}
+  // equals(v,  "", "msg");
+  // same(v, "", "msg");
+  // ok(true);
+});
+
 

@@ -84,10 +84,10 @@ __NOTIFY() {
 }
 if is_exec gls ; then
   [ -e ~/.dir_colors ] && eval `gdircolors ~/.dir_colors -b`
-  alias ls='gls --color=auto'
+  alias ls='gls --color=always'
 else
   [ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
-  alias ls='ls --color=auto'
+  alias ls='ls --color=always'
 fi
 
 #alias ls='ls -hF --show-control-chars --color'
@@ -107,6 +107,7 @@ alias mv='mv -i'
 alias sudo=' sudo -H'
 alias telnet='telnet -K'
 alias ack='ack-grep'
+alias less='less -R'
 
 # vim
 alias vimfiler='vim -c VimFiler'
