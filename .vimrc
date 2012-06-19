@@ -1175,6 +1175,10 @@ nmap [prefix],k :<C-u>SplitjoinSplit<CR>
 " rainbow_parentheses {{{2
 MyAutocmd VimEnter * RainbowParenthesesToggleAll
 
+" vim-smartinput {{{2
+command! SmartinputOff call smartinput#clear_rules()
+command! SmartinputOn call smartinput#define_default_rules()
+
 " golden-ratio {{{2
 " let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler']
 ", 'quickrun']

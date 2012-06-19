@@ -16,4 +16,11 @@ Pry.config.prompt = [
     "[#{pry.input_array.size}] #{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}(#{Pry.view_clip(target_self)})#{nested}* "
   }
 ]
-
+begin
+  require 'pry-clipboard'
+  # aliases
+  Pry.config.commands.alias_command 'ch', 'copy-history'
+  Pry.config.commands.alias_command 'cr', 'copy-result'
+rescue LoadError => e
+  warn "can't load pry-clipboard"
+end

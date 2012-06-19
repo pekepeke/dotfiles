@@ -51,3 +51,18 @@ if (!function_exists('array_zip')) {
 		return $zipped;
 	}
 }
+if (!function_exists('array_clean')) {
+	function array_clean($array) {
+		return array_merge(array_diff($array, array('')));
+	}
+}
+
+if (!function_exists('is_hash')) {
+	function is_hash(& $array) {
+		$i = 0;
+		foreach ( $array as $k => $dummy ) {
+			if ( $k !== $i   ) return true;
+		}
+		return false;
+	}
+}

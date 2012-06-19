@@ -40,7 +40,7 @@ set previouspattern+="prev, 前(の)?ページ,\b前.*,\b←"
 
 " == for pageinfo == "
 " autocmd VimperatorEnter .* :set pageinfo=gmhHc
-autocmd VimperatorEnter .* :set pageinfo=gmfS
+autocmd VimperatorEnter .* :set pageinfo=gmf
 
 " == hints == "
 set followhints=1

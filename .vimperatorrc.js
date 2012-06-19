@@ -329,7 +329,6 @@ let (optset = options.setPref) {
       ldrize_cooperation
       uaSwitchLite
       walk-input
-      xpcom_inspector
       httpheaders
       noscript
     </>.toString().split(/\s+/)
@@ -337,9 +336,10 @@ let (optset = options.setPref) {
 
     if (!$LU.is_ff4()) {
       <>
-        refcontrol
         autoproxychanger
         migemized_find
+        xpcom_inspector
+        refcontrol
         migratestatusbar
       </>.toString().split(/\s+/).forEach(function(v) gv.plugin_loader_plugins.push(v));
     }
