@@ -127,6 +127,7 @@ NeoBundle 'mattn/learn-vimscript.git'
 NeoBundle 'Shougo/neocomplcache.git'
 NeoBundle 'Shougo/neocomplcache-snippets-complete.git'
 NeoBundle 'basyura/csharp_complete.git'
+NeoBundle 'osyo-manga/neocomplcache-jsx.git'
 
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby.git'
@@ -225,6 +226,8 @@ NeoBundle 'jcfaria/Vim-R-plugin.git'
 NeoBundle 'smerrill/vcl-vim-plugin.git'
 NeoBundle 'qqshfox/vim-tmux.git'
 NeoBundle 'vim-scripts/nginx.vim.git'
+NeoBundle 'glidenote/keepalived-syntax.vim.git'
+NeoBundle 'uggedal/go-vim.git'
 if has('ruby') && executable('sprout-as3')
   NeoBundle 'endel/flashdevelop.vim.git'
   NeoBundle 'tomtom/tlib_vim.git'
@@ -360,6 +363,7 @@ NeoBundle 'thinca/vim-textobj-comment.git'
 NeoBundle 'thinca/vim-textobj-function-javascript.git'
 NeoBundle 'thinca/vim-textobj-function-perl.git'
 NeoBundle 't9md/vim-textobj-function-ruby.git'
+NeoBundle 'nelstrom/vim-textobj-rubyblock.git'
 NeoBundle 'vim-scripts/textobj-indent.git'
 NeoBundle 'sgur/textobj-parameter.git'
 NeoBundle 'h1mesuke/textobj-wiw.git'
@@ -971,6 +975,7 @@ nnoremap <silent> [t]k :<C-u>pop<CR>
 nnoremap <silent> [t]l :<C-u>tags<CR>
 
 " nmaps {{{2
+autocmd FileType help,ref,git-status,git-log nnoremap <buffer> q <C-w>c
 " win move
 nnoremap [space]. :source ~/.vimrc<CR>
 
