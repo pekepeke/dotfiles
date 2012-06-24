@@ -25,7 +25,7 @@ function! s:source.get_body(query) " {{{2
   let cnt = len(targets)
   if cnt == 0
     throw printf("%s is not found", a:query)
-  elseif cnt == 1
+  elseif cnt == 1 || len(filter(targets, 'v:val == ' . string(query)))
     let path = printf("%s/api/%s.markdown", g:ref_nodejsdoc_dir, targets[0])
     return join(readfile(path), "\n")
   else
