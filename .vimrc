@@ -169,6 +169,7 @@ NeoBundle 'vim-scripts/Dart.git'
 NeoBundle 'kchmck/vim-coffee-script.git'
 NeoBundle 'pekepeke/titanium-vim.git'
 NeoBundle 'jeyb/vim-jst.git'
+NeoBundle 'pekepeke/ref-jsextra-vim.git'
 
 " python {{{4
 " http://rope.sourceforge.net/
@@ -1895,6 +1896,36 @@ Alias timo Ref timobileref
 Alias tide Ref tidesktopref
 
 nnoremap [space]hh :Ref alc <C-r>=expand("<cWORD>")<CR><CR>
+
+if !exists('g:ref_jsextra_defines')
+  let g:ref_jsextra_defines = {}
+endif
+call extend(g:ref_jsextra_defines, {
+      \ 'EaselJS' : { 
+      \   'type' : 'yui', 
+      \   'command' : 'zip', 
+      \   'relative' : '', 
+      \   'url' : 'https://github.com/CreateJS/EaselJS/raw/master/docs/EaselJS_docs-0.4.2.zip',
+      \ },
+      \ 'TweenJS' : { 
+      \   'type' : 'yui', 
+      \   'command' : 'zip', 
+      \   'relative' : '', 
+      \   'url' : 'https://github.com/CreateJS/TweenJS/raw/master/docs/TweenJS_docs-0.2.0.zip',
+      \ },
+      \ 'PreloadJS' : { 
+      \   'type' : 'yui', 
+      \   'command' : 'zip', 
+      \   'relative' : '', 
+      \   'url' : 'https://github.com/CreateJS/PreloadJS/raw/master/docs/PreloadJS_docs-0.1.0.zip',
+      \ },
+      \ 'SoundJS' : { 
+      \   'type' : 'yui', 
+      \   'command' : 'zip', 
+      \   'relative' : '', 
+      \   'url' : 'https://github.com/CreateJS/SoundJS/raw/master/docs/SoundJS_docs-0.2.0.zip',
+      \ },
+      \ })
 
 " quickrun {{{2
 "silent! nmap <unique> <Space> <Plug>(quickrun)
