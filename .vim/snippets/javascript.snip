@@ -710,3 +710,55 @@ snippet websocket
 snippet writeHead
 	writeHead(${1:200}, ${2:{'Content-Type':'text/plain'}});
 
+snippet keypress
+	keypress(function(ev) {
+		switch(ev.keyCode) {
+			case 13:	// enter
+			$1
+			break;
+		}
+		return false;
+	});
+
+snippet keydown
+	keydown(function(ev) {
+	switch (ev.keyCode) {
+		case 13:	// enter
+		break;
+		case 27:	// ESC
+		break;
+		case 8:		// BS
+		case 46:	//DEL
+		break;
+		case 37:	// LEFT
+		break;
+		case 38:	// UP
+		break;
+		case 39:	// RIGHT
+		break;
+		case 40:	// DOWN
+		break;
+	}
+	return false;
+
+	});
+
+snippet keyup
+	keyup(function(ev) {
+		case 13:	// enter
+		break;
+		case 27:	// ESC
+		break;
+		case 8:		// BS
+		case 46:	//DEL
+		break;
+		case 37:	// LEFT
+		break;
+		case 38:	// UP
+		break;
+		case 39:	// RIGHT
+		break;
+		case 40:	// DOWN
+		break;
+	});
+

@@ -1543,7 +1543,9 @@ UniteNMap   /         history/search
 UniteNMap   ?         mapping
 UniteNMap   bb        bookmark -default-action=open
 nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
-UniteNMap   c         quicklearn -immediately
+" UniteNMap   rr        quicklearn -immediately
+nnoremap <Space>R :<C-u>Unite quicklearn -immediately<CR>
+
 
 if my#util#has_plugin('vimproc')
   UniteNMap a file_rec/async -start-insert
