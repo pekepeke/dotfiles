@@ -144,6 +144,7 @@ NeoBundle 'othree/html5.vim.git'
 NeoBundle 'mattn/zencoding-vim.git'
 NeoBundle 'tpope/vim-haml.git'
 NeoBundle 'digitaltoad/vim-jade.git'
+NeoBundle 'vim-scripts/indenthtml.vim.git'
 
 " css {{{4
 NeoBundle 'hail2u/vim-css3-syntax.git'
@@ -160,6 +161,7 @@ NeoBundle 'bae22/prefixer.git'
 " javascript {{{4
 NeoBundle 'pangloss/vim-javascript.git'
 NeoBundle 'teramako/jscomplete-vim.git'
+" NeoBundle 'drslump/vim-syntax-js.git'
 NeoBundle 'vim-scripts/jQuery.git'
 " NeoBundle 'lukaszb/vim-web-indent.git'
 " NeoBundle 'vim-scripts/IndentAnything.git'
@@ -210,6 +212,7 @@ NeoBundle 'ujihisa/neco-ghc.git'
 " php {{{4
 NeoBundle 'justinrainbow/php-doc.vim.git'
 NeoBundle 'beyondwords/vim-twig.git'
+NeoBundle 'tokutake/twig-indent.git'
 NeoBundle 'violetyk/cake.vim.git'
 NeoBundle 'vim-scripts/phpcomplete.vim.git'
 " sql {{{4

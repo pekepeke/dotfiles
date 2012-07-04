@@ -15,4 +15,9 @@ setl dictionary+=~/.vim/dict/wsh.dict
 inoremap <buffer> <expr> \  smartchr#one_of('\', 'function(', '\\')
 nnoremap [comment-doc] :<C-u>call JsDoc()<CR>
 
+" for vim-syntax-js
+" if has('conceal')
+"   setl conceallevel=2 concealcursor=nc
+" endif
+
 let &cpo = s:save_cpo

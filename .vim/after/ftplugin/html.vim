@@ -27,4 +27,15 @@ setl iskeyword+=-,:
 "setl noexpandtab ts=2 sw=2 tw=0
 inoremap <buffer> <expr> \  smartchr#one_of('\', 'function(', '\\')
 
+if exists('g:loaded_html_after_ftplugin')
+  finish
+endif
+
+let g:loaded_html_after_ftplugin = 1
+" html/indent.vim
+let g:html_indent_script1 = "inc"
+let g:html_indent_style1 = "inc"
+let g:html_indent_inctags = "html,body,head,tbody"
+" let g:html_indent_autotags = "th,td,tr,tfoot,thead"
+
 let &cpo = s:save_cpo
