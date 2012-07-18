@@ -923,12 +923,12 @@ vnoremap [space]r :S/
 
 " grep
 if executable('ack')
-  set grepprg=ack\ -a
+  set grepprg=ack\ -a\ --nocolor\ --nogroup\ --nopager
   set grepformat=%f:%l:%m
 elseif executable('ack-grep')
-  set grepprg=ack-grep\ -a
+  set grepprg=ack-grep\ -a\ --nocolor\ --nogroup\ --nopager
   set grepformat=%f:%l:%m
-  let g:ackprg="ack-grep -H --nocolor --nogroup --column"
+  let g:ackprg="ack-grep -H --nocolor --nogroup --column --nopager"
 else
   set grepprg=grep\ -n\ $*\ /dev/null
   "set grepprg=grep\ -n\ $*\ /dev/null\ --exclude\ \"\*\.svn\*\"
@@ -1501,7 +1501,7 @@ endif
 " unite-grep {{{3
 " let g:unite_source_grep_default_opts = '-iRHn'
 let g:unite_source_grep_command = 'ack-grep'
-let g:unite_source_grep_default_opts = '--no-heading --no-color -a'
+let g:unite_source_grep_default_opts = '--no-heading --no-color -a --nogroup --nopager'
 let g:unite_source_grep_recursive_opt = ''
 
 " unite-grep_launcher {{{3
