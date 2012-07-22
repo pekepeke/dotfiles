@@ -2530,6 +2530,7 @@ command! ToUnixBuffer set fileformat=unix fileencoding=utf8
 command! ToWindowsBuffer set fileformat=dos fileencoding=cp932
 command! ToMacBuffer set fileformat=mac fileencoding=utf8
 command! TrimRSpace %s/ \+$//
+command! ConvChilder %s/〜/～/g
 command! Tosass call my#util#newfile_with_text(expand('%:p:r').".sass",
       \ system(printf('sass-convert -F css -T sass "%s"', expand('%:p')))
       \ )
