@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>charactersArray</key>
+	<array/>
+	<key>commandsArray</key>
+	<array/>
+	<key>commentsArray</key>
+	<array>
+		<dict>
+			<key>beginString</key>
+			<string>#(.*+)</string>
+			<key>regularExpression</key>
+			<true/>
+		</dict>
+	</array>
+	<key>completionsArray</key>
+	<array/>
+	<key>extensions</key>
+	<array>
+		<dict>
+			<key>keyString</key>
+			<string>yaml</string>
+		</dict>
+		<dict>
+			<key>keyString</key>
+			<string>yml</string>
+		</dict>
+	</array>
+	<key>keywordsArray</key>
+	<array>
+		<dict>
+			<key>beginString</key>
+			<string>^[\t ]*\w*[\t ]*:</string>
+			<key>regularExpression</key>
+			<true/>
+		</dict>
+	</array>
+	<key>numbersArray</key>
+	<array>
+		<dict>
+			<key>beginString</key>
+			<string>\b\d*[\d\.]\d+\b
+</string>
+			<key>regularExpression</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>beginString</key>
+			<string>\b\d+\b</string>
+			<key>regularExpression</key>
+			<true/>
+		</dict>
+	</array>
+	<key>outlineMenuArray</key>
+	<array>
+		<dict>
+			<key>beginString</key>
+			<string>(^[\t ]*\w*)[\t ]*:[\t ]*(.*)</string>
+		</dict>
+	</array>
+	<key>stringsArray</key>
+	<array>
+		<dict>
+			<key>beginString</key>
+			<string>"</string>
+			<key>endString</key>
+			<string>"</string>
+		</dict>
+		<dict>
+			<key>beginString</key>
+			<string>'</string>
+			<key>endString</key>
+			<string>'</string>
+		</dict>
+	</array>
+	<key>styleName</key>
+	<string>yaml</string>
+	<key>valuesArray</key>
+	<array>
+		<dict>
+			<key>beginString</key>
+			<string>false</string>
+		</dict>
+		<dict>
+			<key>beginString</key>
+			<string>true</string>
+		</dict>
+	</array>
+</dict>
+</plist>
