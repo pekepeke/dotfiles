@@ -1,40 +1,73 @@
+# perl
 --type-add=perl=.psgi
+# java
 --type-add=jsp=.jspf
 --type-add=jsp=.jinc
 --type-add=jsp=.tag
+
 # ruby
 --type-add=ruby=.rake
+--type-add=ruby=.haml,.rake,.feature,.rsel
 --type-set=gemspec=.gemspec
+--type-set=rack=.ru
 --type-add=html=.erb,.slim
 --type-add=css=.scss,.sass
 --type-set=cucumber=.feature
 --type-set=sass=.sass,.scss
---type-add=ruby=.haml,.rake,.feature
+
 # js
 --type-add=html=.jade
 --type-add=js=.coffee
+--type-set=jsx=.jsx
+--type-set=haxe=.hx
+--type-set=dart=.dart
 --type-add=css=.less
+
 # objc
 --type-add=objc=.pch
 --type-set=ragel=.rl
 --type-set=nib=.xib
 --type-set=plist=.plist
+
 # php
+--type-add=php=.inc
 --type-set=smarty=.tpl
 --type-set=twig=.twig
+
+# lisp
+--type-set=nu=.nu
+
+# vim
+--type-set=vim=.vim
+
 # texts
 --type-set=template=.template
---type-set=markdown=.md,.mkd
+--type-set=markdown=.md,.mkd,.markdown
 --type-set=textile=.textile
 --type-set=rest=.rst
 --type-set=xml=.zcml
 --type-set=ini=.ini,.cfg
 --type-set=email=.email
+
 # ignores
 --type-set=xcode=.pbxproj,.pbxuser,.perspectivev3
 --type-set=tmstuff=.tmproj,.tm_build_errors
---type-set=ignorables=.log,.tmp,.pdf
+--type-set=ignorables=.log,.tmp,.pdf,.bak,.swp
+--type-add=ignorables=.gitignore,jquery.js,jquery-ui.js
+--type-add=ignorables=.powrc,.rbenv-version,.rspec,.rbfu-version
+--type-add=ignorables=tags
 --type-set=xlf=.xlf
+
+# ignore dirs
+--ignore-dir=tmp
+--ignore-dir=cache
+--ignore-dir=logs
+--ignore-dir=.sass-cache
+--ignore-dir=.Trash
+--ignore-dir=vendor
+--ignore-dir=Vendor
+--ignore-dir=pear
+
 --noignorables
 --nonib
 --notmstuff

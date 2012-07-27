@@ -86,7 +86,7 @@
 	(emap map:"L" to:"<cr>")
 	(emap map:"~" toExpression:(do ()
         ((current-explorer) browseURL:(NSURL fileURLWithPath:("~" stringByExpandingTildeInPath)))))
-	(emap map:"<c-n>" toMotion:"show_menu:")
+	(emap setKey:"<c-n>" toMotion:"show_menu:")
 	)
 
 ;; commandMap not exists .... --;;;

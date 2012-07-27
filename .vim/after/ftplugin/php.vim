@@ -65,5 +65,6 @@ endif
 inoremap <buffer><expr> [ smartchr#one_of('[', 'array(', '[[')
 inoremap <buffer><expr> ] smartchr#one_of(']', ')', ']]')
 inoremap <buffer><expr> \ smartchr#one_of('\', 'function ', '\\')
+inoremap <buffer><expr> @ smartchr#one_of('@', '$this->', 'self::$', '@@')
 
 let &cpo = s:save_cpo

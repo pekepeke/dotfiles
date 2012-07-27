@@ -22,6 +22,8 @@ nmap <silent> <buffer> [t]pm :PerlUseInsertionCWord<CR>
 
 nnoremap <buffer> <silent> [comment-doc] :call <SID>my_pod_header()<CR>
 
+inoremap <buffer><expr> @ smartchr#one_of('@', '$this->', '@@')
+
 " nnoremap <buffer> <silent> <C-K> :Ref perldoc<CR>
 function! s:my_pod_header()
   let subname = substitute( getline('.'), 'sub\s\+\(\w\+\)\s\+.*$', '\1', '')
