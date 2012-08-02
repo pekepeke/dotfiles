@@ -1,0 +1,560 @@
+<?xml version="1.0"?>
+<root>
+  <appdef>
+    <appname>VICO</appname>
+    <equal>se.bzero.Vico</equal>
+  </appdef>
+  <item>
+    <name>custom settings</name>
+    <list>
+      <item>
+        <name>Underscore(Ro) to Backslash(\) (except VM, RDC)</name>
+        <identifier>remap.jis_underscore2backslash.except_vm_rdc</identifier>
+        <autogen>--KeyToKey-- KeyCode::JIS_UNDERSCORE, ModifierFlag::NONE, KeyCode::VK_JIS_BACKSLASH</autogen>
+        <not>VIRTUALMACHINE, REMOTEDESKTOPCONNECTION</not>
+      </item>
+    </list>
+    <item>
+      <name>Extended Vim Mode</name>
+      <list>
+        <item>
+          <name>Vim Like Control Application</name>
+          <identifier vk_config="true">notsave.simultaneouskeypresses_myvimode</identifier>
+          <autogen>--ShowStatusMessage-- Expose Vi Mode</autogen>
+          <block>
+            <!-- not_only></not_only -->
+            <autogen>--KeyToKey-- KeyCode::H, KeyCode::CURSOR_LEFT</autogen>
+            <autogen>--KeyToKey-- KeyCode::J, KeyCode::CURSOR_DOWN</autogen>
+            <autogen>--KeyToKey-- KeyCode::K, KeyCode::CURSOR_UP</autogen>
+            <autogen>--KeyToKey-- KeyCode::L, KeyCode::CURSOR_RIGHT</autogen>
+
+            <autogen>--KeyToKey-- KeyCode::Y, KeyCode::F8</autogen>
+            <autogen>--KeyToKey-- KeyCode::U, KeyCode::EXPOSE_ALL</autogen>
+            <autogen>--KeyToKey-- KeyCode::I, KeyCode::EXPOSE_ALL, ModifierFlag::CONTROL_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::O, KeyCode::EXPOSE_ALL, ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::P, KeyCode::DASHBOARD</autogen>
+            <autogen>--KeyToKey-- KeyCode::F, KeyCode::F4, ModifierFlag::CONTROL_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::B, KeyCode::F4, ModifierFlag::CONTROL_L, ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::M, KeyCode::F2, ModifierFlag::CONTROL_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::N, KeyCode::F3, ModifierFlag::CONTROL_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::BRACKET_RIGHT, KeyCode::ESCAPE</autogen>
+            <autogen>--KeyToKey-- KeyCode::DOT, KeyCode::ENTER</autogen>
+          </block>
+        </item>
+        <item>
+          <name>Simultaneous Key Presses [W+E] turns on "Simultaneous Expose Vi Mode"</name>
+          <identifier>remap.simultaneouskeypresses_myvimode_we</identifier>
+          <autogen>--SimultaneousKeyPresses-- KeyCode::W, KeyCode::E, KeyCode::VK_CONFIG_SYNC_KEYDOWNUP_notsave_simultaneouskeypresses_myvimode</autogen>
+        </item>
+      </list>
+    </item>
+    <item>
+      <name>Excel Key Mappings</name>
+      <list>
+        <item>
+          <name>Control+J to Command+Option+Return on Excel</name>
+          <identifier>remap.myemacsmode.excel_controlJ</identifier>
+          <only>EXCEL</only>
+          <autogen>--KeyToKey-- KeyCode::J, VK_CONTROL, KeyCode::RETURN, ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+        </item>
+        <item>
+          <name>Control+M to Command+Option+Return on Excel</name>
+          <identifier>option.myemacsmode.excel_controlM</identifier>
+          <only>EXCEL</only>
+          <autogen>--KeyToKey-- KeyCode::M, VK_CONTROL, KeyCode::RETURN, ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+        </item>
+        <item>
+          <name>[ex] Control+AE to Home/End on Excel</name>
+          <identifier>option.myemacsmode.excel_ex_controlAE</identifier>
+          <only>EXCEL</only>
+          <autogen>--KeyToKey-- KeyCode::A, VK_CONTROL, KeyCode::HOME</autogen>
+          <autogen>--KeyToKey-- KeyCode::E, VK_CONTROL, KeyCode::END</autogen>
+        </item>
+      </list>
+    </item>
+    <item>
+      <name>Ubiquitous Vim Bindings - Insert Mode Commands</name>
+      <list>
+        <item>
+          <name>Command_R tap toggles Normal Mode</name>
+          <identifier>remap.my.vimnormal_commandr_toggle</identifier>
+          <not>TERMINAL, VI, VICO, PASSWORD, FIREFOX, EMACS, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION </not>
+          <autogen>--KeyOverlaidModifier-- KeyCode::COMMAND_R, KeyCode::COMMAND_R, KeyCode::VK_LOCK_ALL_FORCE_OFF, KeyCode::VK_CONFIG_TOGGLE_notsave_ubiq_vimnormal, KeyCode::VK_CONFIG_FORCE_OFF_notsave_g_operator_pending, KeyCode::VK_CONFIG_FORCE_OFF_notsave_c_w_operator_pending</autogen>
+        </item>
+        <item>
+          <name>Control+W to Delete Backword Word</name>
+          <identifier>option.myvimmode_controlW</identifier>
+          <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+          <autogen>--KeyToKey-- KeyCode::W, VK_CONTROL, KeyCode::CURSOR_LEFT, ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L, KeyCode::DELETE</autogen>
+        </item>
+        <item>
+          <name>Control+U to Delete Line</name>
+          <identifier>option.myvimmode_controlU</identifier>
+          <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+          <autogen>--KeyToKey-- KeyCode::U, VK_CONTROL, KeyCode::CURSOR_LEFT, ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L, KeyCode::DELETE</autogen>
+        </item>
+        <item>
+          <name>Enable Insert Mode Commands</name>
+          <appendix>Ctrl-w delete preceding word (Shift+Option+Left, Delete)</appendix>
+          <appendix>Ctrl-u delete preceding line (Shift+Command+Left, Delete)</appendix>
+          <appendix>Ctrl-d remove an indent (Command+BracketLeft)</appendix>
+          <appendix>Ctrl-t add an indent (Command+BracketRight)</appendix>
+          <appendix></appendix>
+          <appendix>These commands are available when not in Normal Mode.</appendix>
+          <identifier>option.myvimbindings.ubiq_vimnormal_insert</identifier>
+
+          <!-- Insert Mode Commands -->
+          <block>
+            <config_not>notsave.ubiq_vimnormal</config_not>
+            <config_only>option.myvimbindings.ubiq_vimnormal_insert</config_only>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11</not>
+            <!-- not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+              <not>TERMINAL, VI, VICO, PASSWORD, FIREFOX, EMACS</not -->
+
+              <!-- Ctrl-w -->
+              <autogen>--KeyToKey-- KeyCode::W, VK_CONTROL, KeyCode::CURSOR_LEFT, ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L, KeyCode::DELETE</autogen>
+
+              <!-- Ctrl-u -->
+              <autogen>--KeyToKey-- KeyCode::U, VK_CONTROL, KeyCode::CURSOR_LEFT, ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L, KeyCode::DELETE</autogen>
+
+              <!-- Ctrl-d -->
+              <autogen>--KeyToKey-- KeyCode::D, VK_CONTROL, KeyCode::BRACKET_LEFT, ModifierFlag::COMMAND_L</autogen>
+
+              <!-- Ctrl-t -->
+              <autogen>--KeyToKey-- KeyCode::T, VK_CONTROL, KeyCode::BRACKET_RIGHT, ModifierFlag::COMMAND_L</autogen>
+
+            </block>
+          </item>
+        </list>
+      </item>
+      <item>
+        <name>My Emacs Mode</name>
+        <list>
+          <item>
+            <name>Ignore Multi KeyPress</name>
+                <identifier>option.myemacsmode__ignoremultikeypress</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11 </not>
+            <autogen>--KeyToKey-- KeyCode::P, VK_CONTROL | VK_COMMAND, KeyCode::P, ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::P, VK_CONTROL | VK_OPTION, KeyCode::P,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::P, VK_CONTROL | VK_OPTION | VK_COMMAND, KeyCode::P,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::P, VK_CONTROL | VK_OPTION | VK_SHIFT, KeyCode::P,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::P, VK_CONTROL | VK_COMMAND | VK_SHIFT, KeyCode::P,  ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::P, VK_CONTROL | VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::P,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::P, VK_OPTION | VK_COMMAND, KeyCode::P,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::P, VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::P,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+
+            <autogen>--KeyToKey-- KeyCode::N, VK_CONTROL | VK_COMMAND, KeyCode::N, ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::N, VK_CONTROL | VK_OPTION, KeyCode::N,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::N, VK_CONTROL | VK_OPTION | VK_COMMAND, KeyCode::N,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::N, VK_CONTROL | VK_OPTION | VK_SHIFT, KeyCode::N,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::N, VK_CONTROL | VK_COMMAND | VK_SHIFT, KeyCode::N,  ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::N, VK_CONTROL | VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::N,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::N, VK_OPTION | VK_COMMAND, KeyCode::N,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::N, VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::N,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+
+            <autogen>--KeyToKey-- KeyCode::B, VK_CONTROL | VK_COMMAND, KeyCode::B, ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::B, VK_CONTROL | VK_OPTION, KeyCode::B,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::B, VK_CONTROL | VK_OPTION | VK_COMMAND, KeyCode::B,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::B, VK_CONTROL | VK_OPTION | VK_SHIFT, KeyCode::B,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::B, VK_CONTROL | VK_COMMAND | VK_SHIFT, KeyCode::B,  ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::B, VK_CONTROL | VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::B,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::B, VK_OPTION | VK_COMMAND, KeyCode::B,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::B, VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::B,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+
+            <autogen>--KeyToKey-- KeyCode::F, VK_CONTROL | VK_COMMAND, KeyCode::F, ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::F, VK_CONTROL | VK_OPTION, KeyCode::F,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::F, VK_CONTROL | VK_OPTION | VK_COMMAND, KeyCode::F,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::F, VK_CONTROL | VK_OPTION | VK_SHIFT, KeyCode::F,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::F, VK_CONTROL | VK_COMMAND | VK_SHIFT, KeyCode::F,  ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::F, VK_CONTROL | VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::F,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::F, VK_OPTION | VK_COMMAND, KeyCode::F,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::F, VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::F,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+
+            <autogen>--KeyToKey-- KeyCode::A, VK_CONTROL | VK_COMMAND, KeyCode::A, ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::A, VK_CONTROL | VK_OPTION, KeyCode::A,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::A, VK_CONTROL | VK_OPTION | VK_COMMAND, KeyCode::A,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::A, VK_CONTROL | VK_OPTION | VK_SHIFT, KeyCode::A,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::A, VK_CONTROL | VK_COMMAND | VK_SHIFT, KeyCode::A,  ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::A, VK_CONTROL | VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::A,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::A, VK_OPTION | VK_COMMAND, KeyCode::A,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::A, VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::A,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+
+            <autogen>--KeyToKey-- KeyCode::E, VK_CONTROL | VK_COMMAND, KeyCode::E, ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::E, VK_CONTROL | VK_OPTION, KeyCode::E,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::E, VK_CONTROL | VK_OPTION | VK_COMMAND, KeyCode::E,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::E, VK_CONTROL | VK_OPTION | VK_SHIFT, KeyCode::E,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::E, VK_CONTROL | VK_COMMAND | VK_SHIFT, KeyCode::E,  ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::E, VK_CONTROL | VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::E,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::E, VK_OPTION | VK_COMMAND, KeyCode::E,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::E, VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::E,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+
+            <autogen>--KeyToKey-- KeyCode::D, VK_CONTROL | VK_COMMAND, KeyCode::D, ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::D, VK_CONTROL | VK_OPTION, KeyCode::D,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::D, VK_CONTROL | VK_OPTION | VK_COMMAND, KeyCode::D,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::D, VK_CONTROL | VK_OPTION | VK_SHIFT, KeyCode::D,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::D, VK_CONTROL | VK_COMMAND | VK_SHIFT, KeyCode::D,  ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::D, VK_CONTROL | VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::D,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::D, VK_OPTION | VK_COMMAND, KeyCode::D,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::D, VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::D,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+
+            <autogen>--KeyToKey-- KeyCode::H, VK_CONTROL | VK_COMMAND, KeyCode::H, ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::H, VK_CONTROL | VK_OPTION, KeyCode::H,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::H, VK_CONTROL | VK_OPTION | VK_COMMAND, KeyCode::H,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::H, VK_CONTROL | VK_OPTION | VK_SHIFT, KeyCode::H,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::H, VK_CONTROL | VK_COMMAND | VK_SHIFT, KeyCode::H,  ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::H, VK_CONTROL | VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::H,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::H, VK_OPTION | VK_COMMAND, KeyCode::H,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::H, VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::H,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+
+            <autogen>--KeyToKey-- KeyCode::I, VK_CONTROL | VK_COMMAND, KeyCode::I, ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::I, VK_CONTROL | VK_OPTION, KeyCode::I,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::I, VK_CONTROL | VK_OPTION | VK_COMMAND, KeyCode::I,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::I, VK_CONTROL | VK_OPTION | VK_SHIFT, KeyCode::I,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::I, VK_CONTROL | VK_COMMAND | VK_SHIFT, KeyCode::I,  ModifierFlag::CONTROL_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::I, VK_CONTROL | VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::I,  ModifierFlag::CONTROL_L | ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::I, VK_OPTION | VK_COMMAND, KeyCode::I,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::I, VK_OPTION | VK_COMMAND | VK_SHIFT, KeyCode::I,  ModifierFlag::OPTION_L | ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+          </item>
+          <item>
+            <name>for Eclipse</name>
+            <list>
+              <item>
+                <name>Control+[ to Escape with Eclipse</name>
+                <identifier>option.myemacsmode__witheclipse_controlLeftbracket</identifier>
+                <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11 </not>
+                <autogen>--KeyToKey-- KeyCode::BRACKET_LEFT, VK_CONTROL, KeyCode::ESCAPE</autogen>
+              </item>
+              <item>
+                <name>Control+PNBF to Up/Down/Left/Right with Eclipse</name>
+                <identifier>option.myemacsmode_witheclipse_controlPNBF</identifier>
+                <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11 </not>
+                <autogen>--KeyToKey-- KeyCode::P, VK_CONTROL, KeyCode::CURSOR_UP   </autogen>
+                <autogen>--KeyToKey-- KeyCode::N, VK_CONTROL, KeyCode::CURSOR_DOWN </autogen>
+                <autogen>--KeyToKey-- KeyCode::B, VK_CONTROL, KeyCode::CURSOR_LEFT </autogen>
+                <autogen>--KeyToKey-- KeyCode::F, VK_CONTROL, KeyCode::CURSOR_RIGHT </autogen>
+              </item>
+              <item>
+                <name>Control+PN to Up/Down with Eclipse</name>
+                <identifier>option.myemacsmode_witheclipse_controlPN</identifier>
+                <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11 </not>
+                <autogen>--KeyToKey-- KeyCode::P, VK_CONTROL, KeyCode::CURSOR_UP   </autogen>
+                <autogen>--KeyToKey-- KeyCode::N, VK_CONTROL, KeyCode::CURSOR_DOWN </autogen>
+              </item>
+              <item>
+                <name>Control+BF to Left/Right</name>
+                <identifier>option.myemacsmode_controlBF</identifier>
+                <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+                <autogen>--KeyToKey-- KeyCode::B, VK_CONTROL, KeyCode::CURSOR_LEFT </autogen>
+                <autogen>--KeyToKey-- KeyCode::F, VK_CONTROL, KeyCode::CURSOR_RIGHT </autogen>
+              </item>
+            </list>
+          </item>
+          <item>
+            <name>Control+[ to Escape</name>
+            <identifier>option.myemacsmode_controlLeftbracket</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::BRACKET_LEFT, VK_CONTROL, KeyCode::ESCAPE</autogen>
+          </item>
+          <item>
+            <name>Control+PNBF to Up/Down/Left/Right</name>
+            <identifier>option.myemacsmode_controlPNBF</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::P, VK_CONTROL, KeyCode::CURSOR_UP   </autogen>
+            <autogen>--KeyToKey-- KeyCode::N, VK_CONTROL, KeyCode::CURSOR_DOWN </autogen>
+            <autogen>--KeyToKey-- KeyCode::B, VK_CONTROL, KeyCode::CURSOR_LEFT </autogen>
+            <autogen>--KeyToKey-- KeyCode::F, VK_CONTROL, KeyCode::CURSOR_RIGHT </autogen>
+          </item>
+          <item>
+            <name>Control+D to Forward Delete</name>
+            <identifier>option.myemacsmode_controlD</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::D, VK_CONTROL, KeyCode::FORWARD_DELETE</autogen>
+          </item>
+          <item>
+            <name>Control+D to Forward Delete</name>
+            <appendix>(when there are no other modifiers)</appendix>
+            <identifier>option.myemacsmode_controlD_nomodifiers</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::D, VK_CONTROL | ModifierFlag::NONE, KeyCode::FORWARD_DELETE</autogen>
+          </item>
+          <item>
+            <name>Control+H to Delete</name>
+            <identifier>option.myemacsmode_controlH</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::H, VK_CONTROL, KeyCode::DELETE</autogen>
+          </item>
+          <item>
+            <name>Control+I to Tab</name>
+            <identifier>option.myemacsmode_controlI</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::I, VK_CONTROL, KeyCode::TAB</autogen>
+          </item>
+          <item>
+            <name>Control+J to Return</name>
+            <identifier>remap.myemacsmode_controlJ2return</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::J, VK_CONTROL, KeyCode::RETURN</autogen>
+          </item>
+          <item>
+            <name>Control+J to Enter</name>
+            <identifier>remap.myemacsmode_controlJ2enter</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::J, VK_CONTROL, KeyCode::ENTER</autogen>
+          </item>
+          <item>
+            <name>Control+M to Return</name>
+            <identifier>option.myemacsmode_controlM</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::M, VK_CONTROL, KeyCode::RETURN</autogen>
+          </item>
+          <item>
+            <name>Control+V to PageDown</name>
+            <identifier>option.myemacsmode_controlV</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::V, VK_CONTROL, KeyCode::PAGEDOWN</autogen>
+          </item>
+          <item>
+            <name>Option+V to PageUp</name>
+            <identifier>option.myemacsmode_optionV</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::V, VK_OPTION, KeyCode::PAGEUP</autogen>
+          </item>
+          <item>
+            <name>Command+V to PageUp</name>
+            <identifier>option.myemacsmode_commandV</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::V, VK_COMMAND, KeyCode::PAGEUP</autogen>
+          </item>
+          <item>
+            <name>Control+Y to Command+V</name>
+            <identifier>option.myemacsmode_controlY</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::Y, VK_CONTROL, KeyCode::V, ModifierFlag::COMMAND_L</autogen>
+          </item>
+          <item>
+            <name>Control+AE to Command+Left/Right not Excel</name>
+            <identifier>option.myemacsmode.excel_controlAE</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, EXCEL, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::A, VK_CONTROL, KeyCode::CURSOR_LEFT, ModifierFlag::COMMAND_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::E, VK_CONTROL, KeyCode::CURSOR_RIGHT, ModifierFlag::COMMAND_L</autogen>
+          </item>
+          <item>
+            <name>Control+AE to Command+Shift+Left/Right,Left/Right</name>
+            <appendix>(An Alternative way if you use Command+Left/Right for Spaces)</appendix>
+            <identifier>option.myemacsmode_controlAE_alternative</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::A, VK_CONTROL, KeyCode::CURSOR_LEFT, ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::E, VK_CONTROL, KeyCode::CURSOR_RIGHT, ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+          </item>
+          <item>
+            <name>Control+K to Command+Shift+Right,Forward Delete</name>
+            <identifier>option.myemacsmode_controlK_ex</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::K, VK_CONTROL | ModifierFlag::NONE, KeyCode::CURSOR_RIGHT, ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L, KeyCode::FORWARD_DELETE</autogen>
+          </item>
+          <item>
+            <name>Control+K to Command+Shift+Right,Command+X</name>
+            <identifier>option.myemacsmode_controlK</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::K, VK_CONTROL | ModifierFlag::NONE, KeyCode::CURSOR_RIGHT, ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L, KeyCode::X, ModifierFlag::COMMAND_L</autogen>
+          </item>
+          <item>
+            <name>Control+W to Command+X</name>
+            <identifier>option.myemacsmode_controlW</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::W, VK_CONTROL, KeyCode::X, ModifierFlag::COMMAND_L</autogen>
+          </item>
+          <item>
+            <name>Option+W to Command+C</name>
+            <identifier>option.myemacsmode_OptionWCopy</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::W, VK_OPTION, KeyCode::C, ModifierFlag::COMMAND_L</autogen>
+          </item>
+          <item>
+            <name>Option+BF to Option+Left/Right</name>
+            <identifier>option.myemacsmode_optionBF</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::B, VK_OPTION, KeyCode::CURSOR_LEFT, ModifierFlag::OPTION_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::F, VK_OPTION, KeyCode::CURSOR_RIGHT, ModifierFlag::OPTION_L</autogen>
+          </item>
+          <item>
+            <name>Option+D to Option+Forward Delete</name>
+            <identifier>option.myemacsmode_optionD</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::D, VK_OPTION, KeyCode::FORWARD_DELETE, ModifierFlag::OPTION_L</autogen>
+          </item>
+          <item>
+            <name>Option+&lt; to Home / Option+&gt; to End</name>
+            <identifier>option.myemacsmode_optionLtGt</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::COMMA, VK_OPTION | VK_SHIFT, KeyCode::HOME, ModifierFlag::OPTION_L</autogen>
+            <autogen>--KeyToKey-- KeyCode::DOT,   VK_OPTION | VK_SHIFT, KeyCode::END, ModifierFlag::OPTION_L</autogen>
+          </item>
+          <item>
+            <name>Control+/ to Command_Z</name>
+            <identifier>option.myemacsmode_controlSlash</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::SLASH, VK_CONTROL, KeyCode::Z, ModifierFlag::COMMAND_L</autogen>
+          </item>
+          <item>
+            <name>Control+S to Command+F</name>
+            <identifier>option.myemacsmode_controlS</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::S, VK_CONTROL, KeyCode::F, ModifierFlag::COMMAND_L</autogen>
+          </item>
+          <item>
+            <name>[ex] Control+1 to Home / Control+2 to End</name>
+            <identifier>option.myemacsmode_ex_control12</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::KEY_1, VK_CONTROL, KeyCode::HOME</autogen>
+            <autogen>--KeyToKey-- KeyCode::KEY_2, VK_CONTROL, KeyCode::END</autogen>
+          </item>
+          <item>
+            <name>[ex] Control+Comma(,)/Dot(.) to Home/End</name>
+            <identifier>option.myemacsmode_ex_controlcommadot</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::COMMA, VK_CONTROL, KeyCode::HOME</autogen>
+            <autogen>--KeyToKey-- KeyCode::DOT,   VK_CONTROL, KeyCode::END</autogen>
+          </item>
+          <item>
+            <name>[ex] Control+Q to PageUp</name>
+            <identifier>option.myemacsmode_ex_controlQ</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::Q, VK_CONTROL, KeyCode::PAGEUP</autogen>
+          </item>
+          <item>
+            <name>[ex] Control+W to Option+Delete</name>
+            <identifier>option.myemacsmode_ex_controlW</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::W, VK_CONTROL, KeyCode::DELETE, ModifierFlag::OPTION_L</autogen>
+          </item>
+          <item>
+            <name>[ex] Control+U to Command+Shift+Left,Command+X</name>
+            <identifier>option.myemacsmode_ex_controlU</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::U, VK_CONTROL | ModifierFlag::NONE, KeyCode::CURSOR_LEFT, ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L, KeyCode::X, ModifierFlag::COMMAND_L</autogen>
+          </item>
+          <item>
+            <name>[ex] Control+U to Command+Shift+Left,Delete</name>
+            <identifier>option.myemacsmode_ex_controlU_delete</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::U, VK_CONTROL | ModifierFlag::NONE, KeyCode::CURSOR_LEFT, ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L, KeyCode::DELETE</autogen>
+          </item>
+          <item>
+            <name>[ex] Control+U to Command+Shift+Left,Forward Delete</name>
+            <identifier>option.myemacsmode_ex_controlU_forwarddelete</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::U, VK_CONTROL | ModifierFlag::NONE, KeyCode::CURSOR_LEFT, ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L, KeyCode::FORWARD_DELETE</autogen>
+          </item>
+          <item>
+            <name>[ex] Control+U to PageUp</name>
+            <identifier>remap.myemacsmode_controlU2pageup</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::U, VK_CONTROL, KeyCode::PAGEUP</autogen>
+          </item>
+          <item>
+            <name>[ex] Control+G to Escape</name>
+            <identifier>option.myemacsmode_ex_controlG</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::G, VK_CONTROL, KeyCode::ESCAPE</autogen>
+          </item>
+          <item>
+            <name>[ex] Control+AE to Home/End</name>
+            <identifier>option.myemacsmode_ex_controlAE</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::A, VK_CONTROL, KeyCode::HOME</autogen>
+            <autogen>--KeyToKey-- KeyCode::E, VK_CONTROL, KeyCode::END</autogen>
+          </item>
+          <item>
+            <name>[ex] Command+W to Command+C</name>
+            <identifier>option.myemacsmode_ex_commandW</identifier>
+            <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+            <autogen>--KeyToKey-- KeyCode::W, VK_COMMAND, KeyCode::C, ModifierFlag::COMMAND_L</autogen>
+          </item>
+          <item>
+            <name>[ex] Command+W to Control+X,Control+M,Command+C (only in Xcode)</name>
+            <appendix>(+ Command+W to Command+C (except Xcode))</appendix>
+            <identifier>option.myemacsmode_ex_commandW_xcode</identifier>
+            <block>
+              <only>XCODE</only>
+              <autogen>--KeyToKey-- KeyCode::W, VK_COMMAND, KeyCode::X, ModifierFlag::CONTROL_L, KeyCode::M, ModifierFlag::CONTROL_L, KeyCode::C, ModifierFlag::COMMAND_L</autogen>
+            </block>
+            <block>
+              <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE, XCODE</not>
+              <autogen>--KeyToKey-- KeyCode::W, VK_COMMAND, KeyCode::C, ModifierFlag::COMMAND_L</autogen>
+            </block>
+          </item>
+          <item>
+            <name>[ex] Control+W to Control+X,Control+M,Command+X (only in Xcode)</name>
+            <appendix>(+ Control+W to Command+X (except Xcode))</appendix>
+            <identifier>option.myemacsmode_ex_controlW_xcode</identifier>
+            <block>
+              <only>XCODE</only>
+              <autogen>--KeyToKey-- KeyCode::W, VK_CONTROL, KeyCode::X, ModifierFlag::CONTROL_L, KeyCode::M, ModifierFlag::CONTROL_L, KeyCode::X, ModifierFlag::COMMAND_L</autogen>
+            </block>
+            <block>
+              <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+              <autogen>--KeyToKey-- KeyCode::W, VK_CONTROL, KeyCode::X, ModifierFlag::COMMAND_L</autogen>
+            </block>
+          </item>
+          <item>
+            <name>[ex] Option+W to Command+W</name>
+            <identifier>option.myemacsmode_ex_optionW</identifier>
+            <autogen>--KeyToKey-- KeyCode::W, VK_OPTION, KeyCode::W, ModifierFlag::COMMAND_L</autogen>
+          </item>
+          <item>
+            <name>[ex] Use Control+X as prefix key</name>
+            <list>
+              <item>
+                <!-- C-x Mode Core -->
+                <name>Control+X detail</name>
+                <appendix>C-x C-s to Command_L+S</appendix>
+                <appendix>C-x C-f to Command_L+O</appendix>
+                <appendix>C-x k to Command_L+W</appendix>
+                <appendix>C-x C-c to Command_L+Q</appendix>
+                <appendix>C-x C-g to turn off Control+X Mode</appendix>
+                <identifier vk_config="true">notsave.myemacsmode_ex_controlX_core</identifier>
+                <autogen>--ShowStatusMessage-- C-x Mode</autogen>
+                <autogen>--KeyToKey-- KeyCode::S, VK_CONTROL | ModifierFlag::NONE, KeyCode::S, ModifierFlag::COMMAND_L, KeyCode::VK_CONFIG_FORCE_OFF_notsave_myemacsmode_ex_controlX_core</autogen>
+                <autogen>--KeyToKey-- KeyCode::C, VK_CONTROL | ModifierFlag::NONE, KeyCode::Q, ModifierFlag::COMMAND_L, KeyCode::VK_CONFIG_FORCE_OFF_notsave_myemacsmode_ex_controlX_core</autogen>
+                <autogen>--KeyToKey-- KeyCode::F, VK_CONTROL | ModifierFlag::NONE, KeyCode::O, ModifierFlag::COMMAND_L, KeyCode::VK_CONFIG_FORCE_OFF_notsave_myemacsmode_ex_controlX_core</autogen>
+                <autogen>--KeyToKey-- KeyCode::K, ModifierFlag::NONE,              KeyCode::W, ModifierFlag::COMMAND_L, KeyCode::VK_CONFIG_FORCE_OFF_notsave_myemacsmode_ex_controlX_core</autogen>
+                <autogen>--KeyToKey-- KeyCode::G, VK_CONTROL | ModifierFlag::NONE,                                      KeyCode::VK_CONFIG_FORCE_OFF_notsave_myemacsmode_ex_controlX_core</autogen>
+              </item>
+              <item>
+                <name>Enable Control+X</name>
+                <identifier>option.myemacsmode_ex_controlX</identifier>
+                <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+                <autogen>--KeyToKey-- KeyCode::X, VK_CONTROL | ModifierFlag::NONE, KeyCode::VK_CONFIG_FORCE_ON_notsave_myemacsmode_ex_controlX_core</autogen>
+              </item>
+            </list>
+          </item>
+          <item>
+            <name>[ex] Use Control+Space as MarkSet</name>
+            <list>
+              <item>
+                <!-- MarkSet Mode Core -->
+                <name>MarkSet Mode detail</name>
+                <appendix>Control+W to Command_L+X</appendix>
+                <appendix>Option+W to Command_L+C</appendix>
+                <appendix>Control+G to turn off MarkSet</appendix>
+                <appendix>Control+Space to turn off MarkSet</appendix>
+                <identifier vk_config="true">notsave.myemacsmode_ex_controlSpace_core</identifier>
+                <autogen>--ShowStatusMessage-- MarkSet</autogen>
+                <autogen>--KeyToKey-- KeyCode::W,     VK_CONTROL | ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::VK_LOCK_SHIFT_L_FORCE_OFF, KeyCode::X, ModifierFlag::COMMAND_L, KeyCode::VK_CONFIG_FORCE_OFF_notsave_myemacsmode_ex_controlSpace_core</autogen>
+                <autogen>--KeyToKey-- KeyCode::W,     VK_OPTION  | ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::VK_LOCK_SHIFT_L_FORCE_OFF, KeyCode::C, ModifierFlag::COMMAND_L, KeyCode::VK_CONFIG_FORCE_OFF_notsave_myemacsmode_ex_controlSpace_core</autogen>
+                <autogen>--KeyToKey-- KeyCode::G,     VK_CONTROL | ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::VK_LOCK_SHIFT_L_FORCE_OFF,                                      KeyCode::VK_CONFIG_FORCE_OFF_notsave_myemacsmode_ex_controlSpace_core</autogen>
+                <autogen>--KeyToKey-- KeyCode::SPACE, VK_CONTROL | ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::VK_LOCK_SHIFT_L_FORCE_OFF,                                      KeyCode::VK_CONFIG_FORCE_OFF_notsave_myemacsmode_ex_controlSpace_core</autogen>
+              </item>
+              <item>
+                <name>Enable Control+Space</name>
+                <identifier>option.myemacsmode_ex_controlSpace</identifier>
+                <not>VI, VICO, FIREFOX, EMACS, TERMINAL, VIRTUALMACHINE, REMOTEDESKTOPCONNECTION, X11, ECLIPSE</not>
+                <autogen>--KeyToKey-- KeyCode::SPACE, VK_CONTROL | ModifierFlag::NONE, KeyCode::VK_LOCK_SHIFT_L_FORCE_ON, KeyCode::VK_CONFIG_FORCE_ON_notsave_myemacsmode_ex_controlSpace_core</autogen>
+              </item>
+            </list>
+          </item>
+        </list>
+      </item>
+    </item>
+  </root>
