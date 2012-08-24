@@ -184,7 +184,6 @@ cake-cc() {
 #export TEXMF=$TETEX_PATH/share/texmf
 #export TETEX_BIN_PATH=$TETEX_PATH/bin/i686-pc-linux-gnu
 
-  [ -e $HOME/.rbenv/completions/rbenv.${_SHELL_NAME} ] && source $HOME/.rbenv/completions/rbenv.${_SHELL_NAME}
 # Mozilla Setting {{{2
 export MOZ_NO_REMOTE=true
 

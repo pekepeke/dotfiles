@@ -26,16 +26,28 @@ export TIDESKTOPREF_DOCROOT=$LMANDIR/tidesktopref/doc/
 # }}}
 
 # RSENSE {{{
-for RSENSE in $(ls -dt $LMANDIR/rsense* 2>/dev/null) ; do
-  export RSENSE_HOME=$RSENSE
-  break
-done
-if [ "x$RSENSE_HOME" != "x" ]; then
-  alias rsense-updaterc='ruby $RSENSE_HOME/etc/config.rb > ~/.rsense'
+if [ -e ~/.zsh.rsense.tmp ]; then
+  source ~/.zsh.rsense.tmp
 fi
-unset RSENSE
-#chmod +x $RSENSE_HOME/bin/rsense
-#$RSENSE_HOME/etc/config.rb > ~/.rsense
+
+if [ x$SENSE_HOME = "x" ] ; then
+  # for RSENSE in $(find $LMANDIR -type d -name 'rsense*' -depth 1 2>/dev/null) ; do
+  for RSENSE in $(ls -dt $LMANDIR/ruby-refm-* 2>/dev/null ) ; do
+    if [ -d $RSENSE ]; then
+      export RSENSE_HOME=$RSENSE
+      break
+    fi
+  done
+
+  unset RSENSE
+  #chmod +x $RSENSE_HOME/bin/rsense
+  #$RSENSE_HOME/etc/config.rb > ~/.rsense
+  cat >~/.zsh.rsense.tmp<<EOM 
+export RSENSE_HOME=$RSENSE_HOME
+alias rsense-updaterc='ruby $RSENSE_HOME/etc/config.rb > ~/.rsense'
+EOM
+  source ~/.zsh.rsense.tmp
+fi
 unset LMANDIR
 # }}}
 

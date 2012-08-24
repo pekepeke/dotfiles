@@ -1,4 +1,5 @@
 " init setup {{{1
+scriptencoding utf-8
 " platform detection {{{2
 let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
@@ -152,6 +153,7 @@ NeoBundle 'cakebaker/scss-syntax.vim.git'
 NeoBundle 'wavded/vim-stylus.git'
 NeoBundle 'groenewege/vim-less.git'
 NeoBundle 'bbommarito/vim-slim.git'
+NeoBundle 'miripiruni/CSScomb-for-Vim.git'
 if !(s:is_mac && has('gui'))
   NeoBundle 'ap/vim-css-color.git'
 endif
@@ -161,6 +163,7 @@ NeoBundle 'bae22/prefixer.git'
 " javascript {{{4
 NeoBundle 'pangloss/vim-javascript.git'
 NeoBundle 'teramako/jscomplete-vim.git'
+NeoBundle 'myhere/vim-nodejs-complete.git'
 " NeoBundle 'drslump/vim-syntax-js.git'
 NeoBundle 'vim-scripts/jQuery.git'
 " NeoBundle 'lukaszb/vim-web-indent.git'
@@ -225,6 +228,7 @@ NeoBundle 'Shougo/vim-nyaos.git'
 " etc {{{4
 NeoBundle 'sophacles/vim-processing.git'
 NeoBundle 'pekepeke/ref-processing-vim.git'
+NeoBundle 'sjl/strftimedammit.vim.git'
 NeoBundle 'tangledhelix/vim-octopress.git'
 NeoBundle 'jcfaria/Vim-R-plugin.git'
 NeoBundle 'smerrill/vcl-vim-plugin.git'
@@ -371,6 +375,7 @@ NeoBundle 'nelstrom/vim-textobj-rubyblock.git'
 NeoBundle 'vim-scripts/textobj-indent.git'
 NeoBundle 'sgur/textobj-parameter.git'
 NeoBundle 'h1mesuke/textobj-wiw.git'
+NeoBundle 'coderifous/textobj-word-column.vim.git'
 
 " metarw {{{3
 " NeoBundle "mattn/vim-metarw.git"
@@ -405,9 +410,27 @@ augroup END
 command! -bang -nargs=* MyAutocmd autocmd<bang> MyAuGroup <args>
 command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
 
+
 " color settings "{{{1
 "set t_Co=256
 set background=dark
+function s:my_highlight_defines()
+  highlight IdeographicSpace term=underline ctermbg=darkgreen guibg=darkgreen
+  highlight NonText term=underline ctermfg=darkgray guifg=darkgray
+  highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
+  " highlight clear CursorLine
+  "hi CursorLine gui=underline term=underline cterm=underline
+  " highlight CursorLine ctermbg=black guibg=black
+  highlight link VimShellError WarningMsg
+endfunction
+augroup my-highlight-chars
+  autocmd!
+  autocmd ColorScheme * call s:my_highlight_defines()
+  autocmd VimEnter,WinEnter * match IdeographicSpace /　/
+  autocmd GUIEnter * match IdeographicSpace /　/
+augroup END
+
+
 if &t_Co == 256 || s:is_win || has('gui')
   " must be write .gvimrc
   colorscheme vividchalk
@@ -420,14 +443,41 @@ endif
 if has('gui')
   MyAutocmd GUIEnter * colorscheme vividchalk
 endif
-MyAutocmd BufEnter *.ehtml,*.erb :hi link erubyRubyDelim Label "Delimiter
+MyAutocmd BufEnter *.ehtml,*.erb highlight link erubyRubyDelim Label "Delimiter
 
 "" カーソル行 {{{2
-MyAutocmd WinLeave * set nocursorline
-MyAutocmd WinEnter,BufRead * set cursorline
-hi clear CursorLine
-"hi CursorLine gui=underline term=underline cterm=underline
-hi CursorLine ctermbg=black guibg=black
+" http://d.hatena.ne.jp/thinca/20090530/1243615055
+augroup vimrc-auto-cursorline
+  autocmd!
+  autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
+  autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
+  autocmd WinEnter * call s:auto_cursorline('WinEnter')
+  autocmd WinLeave * call s:auto_cursorline('WinLeave')
+
+  let s:cursorline_lock = 0
+  function! s:auto_cursorline(event)
+    if a:event ==# 'WinEnter'
+      setlocal cursorline
+      let s:cursorline_lock = 2
+    elseif a:event ==# 'WinLeave'
+      setlocal nocursorline
+    elseif a:event ==# 'CursorMoved'
+      if s:cursorline_lock
+        if 1 < s:cursorline_lock
+          let s:cursorline_lock = 1
+        else
+          setlocal nocursorline
+          let s:cursorline_lock = 0
+        endif
+      endif
+    elseif a:event ==# 'CursorHold'
+      setlocal cursorline
+      let s:cursorline_lock = 1
+    endif
+  endfunction
+augroup END
+" MyAutocmd WinLeave * set nocursorline
+" MyAutocmd WinEnter,BufRead * set cursorline
 
 " for Filetypes {{{1
 " shebang {{{2
@@ -632,14 +682,6 @@ set expandtab
 "set softtabstop=4 tabstop=4 shiftwidth=4
 set softtabstop=0 tabstop=4 shiftwidth=4
 
-" 全角スペースを強調 {{{3
-function! ZenkakuSpace()
-  highlight ZenkakuSpace ctermbg=6
-  silent! match ZenkakuSpace /\s\+$\|　/
-endfunction
-if has('syntax')
-  MyAutocmd VimEnter,BufEnter * call ZenkakuSpace()
-endif
 if exists('&ambiwidth')
   set ambiwidth=double
 endif " }}}
@@ -705,8 +747,7 @@ set ignorecase smartcase       " 賢い検索
 set incsearch                  " インクメンタル
 set wrapscan                   " 検索で最初にもどる
 set hlsearch                   " 検索で色
-
-set virtualedit=block
+set virtualedit+=block         " 矩形の virtualedit 許可
 
 " バックアップ {{{2
 set nobackup               " バックアップとか自分で
@@ -1075,25 +1116,31 @@ if 0 " {{{3 http://vim-users.jp/2011/04/hack213/
   nnoremap <silent> <ScrollWheelUp>   <Esc>:set eventignore=all<CR><ScrollWheelUp>:set eventignore=<CR>
   nnoremap <silent> <ScrollWheelDown> <Esc>:set eventignore=all<CR><ScrollWheelDown>:set eventignore=<CR>
 else " {{{3 altanative
-  let s:org_scrolloff=-1
-  function! s:noscrolloff_leftmouse()
-    if s:org_scrolloff < 0
-      let s:org_scrolloff = &scrolloff
-    endif
-    let &scrolloff = 0
-    exe 'normal!' "\<LeftMouse>"
-    " let &scrolloff = org_scrolloff
-  endfunction
-  function! s:restore_noscrolloff()
-    if s:org_scrolloff < 0
-      return
-    endif
-    let &scrolloff = s:org_scrolloff
-    let s:org_scrolloff = -1
-  endfunction
-  MyAutocmd CursorMoved * call s:restore_noscrolloff()
-  nnoremap <silent> <LeftMouse>       <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>:set eventignore=<CR>
-  nnoremap          <2-LeftMouse>     g*
+  augroup vimfiler-mouse
+    autocmd!
+
+    let s:org_scrolloff=-1
+    function! s:noscrolloff_leftmouse()
+      if s:org_scrolloff < 0
+        let s:org_scrolloff = &scrolloff
+      endif
+      let &scrolloff = 0
+      exe 'normal!' "\<LeftMouse>"
+      " let &scrolloff = org_scrolloff
+      autocmd CursorMoved * call s:restore_noscrolloff()
+    endfunction
+    function! s:restore_noscrolloff()
+      autocmd!
+      if s:org_scrolloff < 0
+        return
+      endif
+      let &scrolloff = s:org_scrolloff
+      let s:org_scrolloff = -1
+    endfunction
+    " autocmd CursorMoved * call s:restore_noscrolloff()
+    nnoremap <silent> <LeftMouse>       <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>:set eventignore=<CR>
+    nnoremap          <2-LeftMouse>     g*
+  augroup END
 endif "}}}
 " vmap              <LeftMouse> <Plug>(visualstar-g*)
 
@@ -1185,8 +1232,81 @@ nmap [prefix],k :<C-u>SplitjoinSplit<CR>
 MyAutocmd VimEnter * RainbowParenthesesToggleAll
 
 " vim-smartinput {{{2
+function! s:sminput_define_rules()
+  call smartinput#define_rule({
+              \   'at':       '(\%#)',
+              \   'char':     '<Space>',
+              \   'input':    '<Space><Space><Left>',
+              \   })
+
+  call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
+  call smartinput#define_rule({
+              \   'at':       '( \%# )',
+              \   'char':     '<BS>',
+              \   'input':    '<Del><BS>',
+              \   })
+
+  call smartinput#define_rule({
+              \   'at':       '{\%#}',
+              \   'char':     '<Space>',
+              \   'input':    '<Space><Space><Left>',
+              \   })
+
+  call smartinput#define_rule({
+              \   'at':       '{ \%# }',
+              \   'char':     '<BS>',
+              \   'input':    '<Del><BS>',
+              \   })
+
+  call smartinput#define_rule({
+              \   'at':       '\[\%#\]',
+              \   'char':     '<Space>',
+              \   'input':    '<Space><Space><Left>',
+              \   })
+
+  call smartinput#define_rule({
+              \   'at':       '\[ \%# \]',
+              \   'char':     '<BS>',
+              \   'input':    '<Del><BS>',
+              \   })
+
+  " Ruby 文字列内変数埋め込み
+  call smartinput#map_to_trigger('i', '#', '#', '#')
+  call smartinput#define_rule({
+              \   'at': '\%#',
+              \   'char': '#',
+              \   'input': '#{}<Left>',
+              \   'filetype': ['ruby'],
+              \   'syntax': ['Constant', 'Special'],
+              \   })
+
+  " Ruby ブロック引数 ||
+  call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
+  call smartinput#define_rule({
+              \   'at': '\({\|\<do\>\)\s*\%#',
+              \   'char': '<Bar>',
+              \   'input': '<Bar><Bar><Left>',
+              \   'filetype': ['ruby'],
+              \    })
+
+  " テンプレート内のスペース
+  call smartinput#map_to_trigger('i', '<', '<', '<')
+  call smartinput#define_rule({
+              \   'at':       '<\%#>',
+              \   'char':     '<Space>',
+              \   'input':    '<Space><Space><Left>',
+              \   'filetype': ['cpp'],
+              \   })
+  call smartinput#define_rule({
+              \   'at':       '< \%# >',
+              \   'char':     '<BS>',
+              \   'input':    '<Del><BS>',
+              \   'filetype': ['cpp'],
+              \   })
+endfunction
 command! SmartinputOff call smartinput#clear_rules()
-command! SmartinputOn call smartinput#define_default_rules()
+command! SmartinputOn call <SID>sminput_define_rules()
+call s:sminput_define_rules()
 
 " golden-ratio {{{2
 " let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler']
@@ -1229,8 +1349,8 @@ else
   let g:indent_guides_auto_colors = 0
   augroup indentguides
     autocmd!
-    autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=236
-    autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=235
+    autocmd VimEnter,Colorscheme * :highlight IndentGuidesEven ctermbg=236 ctermfg=white
+    autocmd VimEnter,Colorscheme * :highlight IndentGuidesOdd ctermbg=235 ctermfg=white
   augroup END
 endif
 
@@ -1246,6 +1366,8 @@ vmap ge <Plug>(smartword-ge)
 
 " vim-altr {{{2
 call altr#define('autoload/%.vim', 'doc/%.txt', 'plugin/%.vim', 'test/%.vim')
+
+call altr#define('%.c', '%.cpp', '%.m', '%.h')
 
 call altr#define('%.rb', 'spec/%_spec.rb')
 call altr#define('lib/%.rb', 'spec/lib/%_spec.rb')
@@ -1514,10 +1636,16 @@ call extend(g:grep_launcher_words, {
 
 " unite mappings {{{3
 function! s:unite_map(bang, prefix, key, ...) " {{{4
-  let key = empty(a:bang) ? a:key : toupper(a:key)
-  let bang_key = empty(a:bang) ? toupper(a:key) : a:key
+  if a:key[0] == "<"
+    let key = empty(a:bang) ? a:key : substitute(a:key, "^<", "<S-", "")
+    let bang_key = empty(a:bang) ? substitute(a:key, "^<", "<S-", "") : a:key
+  else
+    let key = empty(a:bang) ? a:key : toupper(a:key)
+    let bang_key = empty(a:bang) ? toupper(a:key) : a:key
+  endif
   let cmdargs = join(a:000, " ")
   let fmt = "%snoremap <silent> [unite]%s :<C-u>Unite %s %s<CR>"
+
   exe printf(fmt, a:prefix, key, "", cmdargs)
   exe printf(fmt, a:prefix, bang_key, "-no-quit", cmdargs)
 endfunction " }}}
@@ -2207,7 +2335,6 @@ elseif exists('+omnifunc')
 endif
 
 " vimshell {{{2
-hi link VimShellError WarningMsg
 
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 if exists('*vcs#info')
