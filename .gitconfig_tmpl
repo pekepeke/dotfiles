@@ -7,6 +7,7 @@
 	grep = auto
 [core]
 	excludesfile = /home/piyo/.gitignore-global
+    quotepath = false
 [merge]
 	tool = vimdiff
 [alias]
@@ -25,4 +26,6 @@
 	d4 = diff HEAD~~~~
 	d5 = diff HEAD~~~~~
 	d10 = diff HEAD~~~~~~~~~~
-
+[tig "bind"]
+    generic = g move-first-line
+    generic = G move-last-line

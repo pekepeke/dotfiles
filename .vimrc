@@ -77,6 +77,7 @@ NeoBundle 'vim-scripts/Lucius.git'
 NeoBundle 'altercation/vim-colors-solarized.git'
 NeoBundle 'nanotech/jellybeans.vim'
 NeoBundle 'StanAngeloff/vim-zend55.git'
+NeoBundle 'w0ng/vim-hybrid.git'
 
 " lang {{{3
 " basic {{{4
@@ -213,10 +214,10 @@ NeoBundle 'vim-scripts/sequence.git'
 NeoBundle 'ujihisa/ref-hoogle.git'
 NeoBundle 'ujihisa/neco-ghc.git'
 " php {{{4
-NeoBundle 'justinrainbow/php-doc.vim.git'
 NeoBundle 'beyondwords/vim-twig.git'
 NeoBundle 'tokutake/twig-indent.git'
 NeoBundle 'violetyk/cake.vim.git'
+NeoBundle 'justinrainbow/php-doc.vim.git'
 NeoBundle 'vim-scripts/phpcomplete.vim.git'
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim.git'
@@ -387,8 +388,8 @@ NeoBundle 'coderifous/textobj-word-column.vim.git'
 NeoBundle 'vim-scripts/cecutil.git'
 
 " afterexec for runtimepath {{{1
-syntax enable
 filetype plugin indent on
+syntax enable
 
 " vimproc
 if executable('sh') && executable('make')
@@ -415,19 +416,27 @@ command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
 "set t_Co=256
 set background=dark
 function s:my_highlight_defines()
-  highlight IdeographicSpace term=underline ctermbg=darkgreen guibg=darkgreen
   highlight NonText term=underline ctermfg=darkgray guifg=darkgray
   highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
+  " highlight link IdeographicSpace Error
+  highlight IdeographicSpace term=underline ctermbg=darkgreen guibg=darkgreen
+  " highlight link TrailingSpaces Error
+  highlight TrailingSpaces term=underline ctermbg=darkgreen guibg=darkgreen
   " highlight clear CursorLine
   "hi CursorLine gui=underline term=underline cterm=underline
   " highlight CursorLine ctermbg=black guibg=black
   highlight link VimShellError WarningMsg
 endfunction
-augroup my-highlight-chars
+function s:my_additional_syntaxes()
+  syntax match IdeographicSpace containedin=ALL /　/
+  syntax match TrailingSpaces containedin=ALL /\s\+$/
+endfunction
+augroup my-additional-highlight
   autocmd!
   autocmd ColorScheme * call s:my_highlight_defines()
-  autocmd VimEnter,WinEnter * match IdeographicSpace /　/
-  autocmd GUIEnter * match IdeographicSpace /　/
+  autocmd Syntax * call s:my_additional_syntaxes()
+  autocmd VimEnter,WinEnter * call s:my_additional_syntaxes()
+  call s:my_highlight_defines()
 augroup END
 
 

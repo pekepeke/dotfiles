@@ -41,12 +41,7 @@ _SHELL_NAME=""
 
 # languages {{{1
 # for perl {{{2
-if [ -e $HOME/perl5 ]; then
-  export PERLBREW_ROOT=$HOME/perl5/perlbrew
-  PATH=$HOME/perl5/bin:$PATH
-else
-  export PERLBREW_ROOT=$HOME/.perlbrew
-fi
+export PERLBREW_ROOT=$HOME/.perlbrew
 if [ -s $PERLBREW_ROOT/etc/bashrc ] ;then
   PATH=$PERLBREW_ROOT/bin:$PATH
   source $PERLBREW_ROOT/etc/bashrc
@@ -150,6 +145,8 @@ cake-dispatch() { #{{{
         (cd "$appdir"; ENV=$ENV $rlwrap Console/cake $*)
       elif [ -x $appdir/console/cake ]; then
         (cd "$appdir"; ENV=$ENV $rlwrap console/cake $*)
+      else
+        echo "command not found $*"
       fi
       ;;
     clear-cache)

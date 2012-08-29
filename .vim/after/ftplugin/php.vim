@@ -29,8 +29,8 @@ endif " }}}
 let s:save_cpo = &cpo
 set cpo&vim
 
-" setl formatoptions-=ro
-setl formatoptions-=o
+setl formatoptions-=ro
+" setl formatoptions-=o
 " http://hail2u.net/blog/software/only-one-line-life-changing-vimrc-setting.html
 setl includeexpr=substitute(v:fname,'^\\/','','')
 setl path+=;/
