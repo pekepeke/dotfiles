@@ -6,20 +6,16 @@
 # OS settings {{{1
 if is_win ; then
   export CYGWIN='cygwin'
-  [ -e $HOME/.shrc.cygwin ] && source $HOME/.shrc.cygwin
-  [ -d $HOME/bin/windows ] && PATH=$HOME/bin/windows:$PATH
+  soft_source $HOME/.shrc.cygwin
+  PATH=$HOME/bin/windows:$PATH
 elif is_mac ; then
-  [ -e $HOME/.shrc.osx ] && source $HOME/.shrc.osx
+  soft_source $HOME/.shrc.osx
   if [ -e "/usr/local/Library/Homebrew" ] ; then
-    remove_path /usr/local/bin /usr/bin
-    PATH=$PATH:/usr/local/bin:/usr/bin
+    # remove_path /usr/local/bin /usr/bin
+    PATH=/usr/local/bin:/usr/bin:$PATH
     export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
   fi
-  for fp in "/Applications/android-sdk-mac_x86/tools" \
-    "/Applications/android-sdk-mac_x86/platform-tools" ; do
-    [ -e $fp ] && PATH=$PATH:$fp
-  done
-  [ -d $HOME/bin/mac ] && PATH=$HOME/bin/mac:$PATH
+  PATH=$HOME/bin/mac:$PATH:/Applications/android-sdk-mac_x86/tools:/Applications/android-sdk-mac_x86/platform-tools
   [ "$LANG" = "ja_JP" ] && export LANG=ja_JP.UTF-8
 fi
 
@@ -32,12 +28,7 @@ alias phpprove='prove --ext=.t.php --exec=php'
 # [ x$__VMLANG_INITIALIZED != x ] && return 0
 # export __VMLANG_INITIALIZED=1
 
-[ -d $HOME/bin ] && PATH=$HOME/bin:$PATH
-[ -d $HOME/.bin ] && PATH=$HOME/.bin:$PATH
-
-_SHELL_NAME=""
-[ -n "$BASH_VERSION" ] && _SHELL_NAME="bash"
-[ -n "$ZSH_VERSION" ] && _SHELL_NAME="zsh"
+PATH=$HOME/bin:$HOME/.bin:$PATH
 
 # languages {{{1
 # for perl {{{2
@@ -62,9 +53,9 @@ fi
 if [ -e $HOME/.rbenv ]; then
   PATH="$HOME/.rbenv/bin:$PATH"
   eval "$(rbenv init -)"
-  [ -e $HOME/.rbenv/completions/rbenv.${_SHELL_NAME} ] && source $HOME/.rbenv/completions/rbenv.${_SHELL_NAME}
+  soft_source $HOME/.rbenv/completions/rbenv.$(basename $SHELL)
 else
-  [ -s $HOME/.rvm/scripts/rvm ] && source $HOME/.rvm/scripts/rvm
+  soft_source $HOME/.rvm/scripts/rvm
 fi
 
 # for node.js {{{2
@@ -79,9 +70,6 @@ elif [ -s $HOME/.nvm/nvm.sh ] ; then
 else
   if [ -s $HOME/.nave/nave.sh ]; then
     alias nave='$HOME/.nave/nave.sh'
-    # if [ ${NAVELVL-0} -lt 1 ] ; then
-    #   $HOME/.nave/nave.sh use stable > /dev/null 2>&1
-    # fi
   fi
 fi
 
@@ -114,13 +102,13 @@ if [ -e $HOME/.phpenv ]; then
     PATH=$HOME/.phpenv/bin:$PATH
   fi
   eval "$(phpenv init -)"
-  [ -e $HOME/.phpenv/completions/rbenv.${_SHELL_NAME} ] && source $HOME/.phpenv/completions/rbenv.${_SHELL_NAME}
+  soft_source $HOME/.phpenv/completions/rbenv.$(basename $SHELL)
   # PATH=$PATH:$HOME/.php-build/bin
-  export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql"
   # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd "
   # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-sysvmsg --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --with-xpm-dir=/usr/X11R6 --with-png-dir=/usr --with-snmp=/usr"
   # --with-enchant=/usr --enable-gd-native-ttf --with-freetype-dir=/usr --with-t1lib=/usr --with-gmp=/usr --with-imap=/usr --with-imap-ssl --enable-intl --with-onig=/usr
   # --enable-fpm --without-mm 
+  export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql"
 fi
 ## cakephp {{{3
 cake-dispatch() { #{{{

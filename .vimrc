@@ -60,6 +60,20 @@ if has('vim_starting')
   call neobundle#rc(g:my_bundle_dir)
 endif
 
+augroup my-neobundle-lazy-group
+  autocmd!
+augroup END
+function s:my_neobundle_lazy_on(modes, sources)
+  let sources = type(a:sources) == type([]) ? a:sources : [a:sources]
+  let mode = type(a:modes) == type([]) ? join(a:modes, ",") : a:modes
+  for uri in sources
+    execute 'NeoBundleLazy' uri
+    let name = substitute(fnamemodify(uri, ':te'), "\\.git[\"']*$\\|['\"]$'", '', '')
+    execute 'autocmd' 'my-neobundle-lazy-group' 'FileType' mode 'NeoBundleSource' name
+  endfor
+endfunction
+command! -nargs=+ NeoBundleLazyOn call <SID>my_neobundle_lazy_on(<f-args>)
+
 " vundles {{{2
 NeoBundle 'Lokaltog/vim-powerline.git'
 " colorscheme {{{3
@@ -135,7 +149,7 @@ NeoBundle 'osyo-manga/neocomplcache-jsx.git'
 NeoBundle 'vim-ruby/vim-ruby.git'
 NeoBundle 'tpope/vim-rails.git'
 NeoBundle 'tpope/vim-cucumber.git'
-NeoBundle 'ecomba/vim-ruby-refactoring.git'
+NeoBundleLazyOn ruby 'ecomba/vim-ruby-refactoring.git'
 NeoBundle 'vim-scripts/eruby.vim.git'
 NeoBundle 'tobiassvn/vim-gemfile.git'
 "NeoBundle 'astashov/vim-ruby-debugger.git'
@@ -143,10 +157,11 @@ NeoBundle 't9md/vim-chef.git'
 
 " html {{{4
 NeoBundle 'othree/html5.vim.git'
-NeoBundle 'mattn/zencoding-vim.git'
+" NeoBundle 'mattn/zencoding-vim.git'
 NeoBundle 'tpope/vim-haml.git'
 NeoBundle 'digitaltoad/vim-jade.git'
-NeoBundle 'vim-scripts/indenthtml.vim.git'
+NeoBundleLazyOn html 'mattn/zencoding-vim.git'
+NeoBundleLazyOn html,haml,jade 'vim-scripts/indenthtml.vim.git'
 
 " css {{{4
 NeoBundle 'hail2u/vim-css3-syntax.git'
@@ -155,11 +170,14 @@ NeoBundle 'wavded/vim-stylus.git'
 NeoBundle 'groenewege/vim-less.git'
 NeoBundle 'bbommarito/vim-slim.git'
 NeoBundle 'miripiruni/CSScomb-for-Vim.git'
-if !(s:is_mac && has('gui'))
-  NeoBundle 'ap/vim-css-color.git'
-endif
+NeoBundle 'ap/vim-css-color.git'
+" if !(s:is_mac && has('gui'))
+"   NeoBundle 'ap/vim-css-color.git'
+" else
+"   NeoBundleLazy 'ap/vim-css-color.git'
+" endif
 NeoBundle 'vim-scripts/cssbaseline.vim.git'
-NeoBundle 'bae22/prefixer.git'
+NeoBundleLazyOn css,sass,scss,less 'bae22/prefixer.git'
 
 " javascript {{{4
 NeoBundle 'pangloss/vim-javascript.git'
@@ -180,10 +198,10 @@ NeoBundle 'pekepeke/ref-jsextra-vim.git'
 " python {{{4
 " http://rope.sourceforge.net/
 " NeoBundle 'klen/python-mode.git'
-NeoBundle 'vim-scripts/python_match.vim.git'
-NeoBundle 'lambdalisue/vim-python-virtualenv.git'
+NeoBundleLazyOn python 'vim-scripts/python_match.vim.git'
+NeoBundleLazyOn python 'lambdalisue/vim-python-virtualenv.git'
 " NeoBundle 'lambdalisue/vim-django-support.git'
-NeoBundle 'gerardo/vim-django-support.git'
+NeoBundleLazyOn python 'gerardo/vim-django-support.git'
 " NeoBundle 'sontek/rope-vim.git'
 " if executable('ipython')
 "   NeoBundleLazy 'ivanov/vim-ipython.git'
@@ -191,13 +209,17 @@ NeoBundle 'gerardo/vim-django-support.git'
 
 " perl {{{4
 NeoBundle 'petdance/vim-perl.git'
+
 " OSX {{{4
 NeoBundle 'nanki/vim-objj.git'
 NeoBundle 'pekepeke/cocoa.vim.git'
+
 " android {{{4
 NeoBundle 'thinca/vim-logcat.git'
+
 " scala {{{4
 NeoBundle 'derekwyatt/vim-scala.git'
+
 " texts {{{4
 NeoBundle 'plasticboy/vim-markdown.git'
 NeoBundle 'thinca/vim-ft-markdown_fold.git'
@@ -211,14 +233,16 @@ NeoBundle 'vim-scripts/sequence.git'
 
 " haskell {{{4
 " NeoBundle 'ehamberg/haskellmode-vim.git'
-NeoBundle 'ujihisa/ref-hoogle.git'
-NeoBundle 'ujihisa/neco-ghc.git'
+NeoBundleLazyOn haskell 'ujihisa/ref-hoogle.git'
+NeoBundleLazyOn haskell 'ujihisa/neco-ghc.git'
+
 " php {{{4
 NeoBundle 'beyondwords/vim-twig.git'
 NeoBundle 'tokutake/twig-indent.git'
-NeoBundle 'violetyk/cake.vim.git'
-NeoBundle 'justinrainbow/php-doc.vim.git'
-NeoBundle 'vim-scripts/phpcomplete.vim.git'
+NeoBundleLazyOn php 'violetyk/cake.vim.git'
+NeoBundleLazyOn php 'justinrainbow/php-doc.vim.git'
+NeoBundleLazyOn php 'vim-scripts/phpcomplete.vim.git'
+
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim.git'
 NeoBundle 'vim-scripts/dbext.vim.git'
@@ -415,7 +439,7 @@ command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
 " color settings "{{{1
 "set t_Co=256
 set background=dark
-function s:my_highlight_defines()
+function s:my_highlight_defines() "{{{2
   highlight NonText term=underline ctermfg=darkgray guifg=darkgray
   highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
   " highlight link IdeographicSpace Error
@@ -427,20 +451,21 @@ function s:my_highlight_defines()
   " highlight CursorLine ctermbg=black guibg=black
   highlight link VimShellError WarningMsg
 endfunction
-function s:my_additional_syntaxes()
+function s:my_additional_syntaxes() "{{{2
   syntax match IdeographicSpace containedin=ALL /　/
   syntax match TrailingSpaces containedin=ALL /\s\+$/
 endfunction
-augroup my-additional-highlight
+augroup my-additional-highlight "{{{2
   autocmd!
-  autocmd ColorScheme * call s:my_highlight_defines()
-  autocmd Syntax * call s:my_additional_syntaxes()
-  autocmd VimEnter,WinEnter * call s:my_additional_syntaxes()
+  autocmd ColorScheme * call <SID>my_highlight_defines()
+  autocmd Syntax * call <SID>my_additional_syntaxes()
+  autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
+        \ | syntax enable
   call s:my_highlight_defines()
 augroup END
+MyAutocmd Syntax eruby highlight link erubyRubyDelim Label
 
-
-if &t_Co == 256 || s:is_win || has('gui')
+if &t_Co == 256 || s:is_win || has('gui') "{{{2
   " must be write .gvimrc
   colorscheme vividchalk
   "colorscheme mrkn256
@@ -452,7 +477,6 @@ endif
 if has('gui')
   MyAutocmd GUIEnter * colorscheme vividchalk
 endif
-MyAutocmd BufEnter *.ehtml,*.erb highlight link erubyRubyDelim Label "Delimiter
 
 "" カーソル行 {{{2
 " http://d.hatena.ne.jp/thinca/20090530/1243615055
@@ -2510,7 +2534,8 @@ function! s:vimfiler_tree_edit(method) "{{{4
   if empty(a:method) | return | endif
   let linenr = line('.')
   let context = s:vimfiler_create_action_context(a:method, linenr)
-  wincmd p
+  "wincmd p
+  silent wincmd l
   " call vimfiler#mappings#do_action(a:method, linenr)
   call context.execute()
   unlet context

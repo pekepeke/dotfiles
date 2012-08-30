@@ -37,6 +37,10 @@ load_sh() {
   source $1
   return 0
 }
+soft_source() {
+  [ -e "$1" ] && source "$1"
+  return $?
+}
 remove_path() {
   local rmv
   for rmv in $* ; do

@@ -1,11 +1,20 @@
 # .boot
 
-[ -f ~/.shrc.boot ] && source ~/.shrc.boot
+[ -e ~/.shrc.boot ] && source ~/.shrc.boot
+
+# utilities {{{1
+if_compile() {
+  for f in $* ; do
+    [ $f -nt $f.zwc ] && zcompile $f
+  done
+}
 source_all() {
   for f in $* ; do
     source $f
   done
 }
+
+if_compile ~/.shrc.*
 
 
 # prompt {{{1
@@ -70,11 +79,14 @@ unsetopt beep
 
 #export WORDCHARS='*?_.[]~=&;!#$%^(){}<>'
 
-# autoload {{{1
+# complete & autoload {{{1
 [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions $fpath)
 [ -e ~/.zsh/functions/completion ] && fpath=($HOME/.zsh/functions/completion $fpath)
 autoload -U compinit
 compinit -u
+# 高速化?
+zstyle ':completion:*' accept-exact '*(N)'
+zstyle ':completion:*' use-cache true
 
 zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
   /usr/sbin /usr/bin /sbin /bin /usr/X11R6/bin
