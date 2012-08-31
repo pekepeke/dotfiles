@@ -16,7 +16,6 @@ source_all() {
 
 if_compile ~/.shrc.*
 
-
 # prompt {{{1
 export PROMPT="[%n@%m %3d]%(#.#.$) "
 

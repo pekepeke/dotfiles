@@ -11,25 +11,6 @@
 *.zip
 *.bzip
 
-# Windows
-## Windows image file caches
-Thumbs.db
-## Folder config file
-Desktop.ini
-
-# OSX
-.DS_Store?
-Icon?
-## Thumbnails
-._*
-## Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-# vim
-.*.sw[a-z]
-*.un~
-
 # tags
 TAGS
 tags
@@ -40,7 +21,56 @@ pm_to_blib/
 nytprof.out
 .last_cover_status
 
+# Windows
+## Windows image file caches
+Thumbs.db
+## Folder config file
+Desktop.ini
+
+# OSX
+DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes
+
+# Sass
+*.sass-cache
+
+# CVS
+/CVS/*
+*/CVS/*
+.cvsignore
+*/.cvsignore
+
+# SVN
+.svn/
+
+# vim
+.*.sw[a-z]
+*.un~
+Session.vim
+.netrwhist
 # vim help
 doc/tags
 doc/tags-ja
 
+# emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+.elc
+auto-save-list
+tramp
+.\#*
+
+# Org-mode
+.org-id-locations
+*_archive
