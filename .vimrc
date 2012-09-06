@@ -25,8 +25,14 @@ endif
 " for win shell {{{2
 if s:is_win
   let $HOME=substitute($HOME, '\\', '/', 'ge')
+  function! s:init_cmd()
+    set shell=$COMSPEC
+    set shellcmdflag=/c
+    set shellpipe=>%s\ 2>&1
+    set shellxquote=\"
+  endfunction
   if executable('nyacus')
-    function! Nyacus()
+    function! s:init_nyacus()
       " Use NYACUS.
       set shell=nyacus.exe
       set shellcmdflag=-e
@@ -34,13 +40,9 @@ if s:is_win
       set shellredir=>%s\ 2>&1
       set shellxquote=\"
     endfunction
-    function! Cmd()
-      set shell=$COMSPEC
-      set shellcmdflag=/c
-      set shellpipe=>%s\ 2>&1
-      set shellxquote=\"
-    endfunction
-    call Nyacus()
+    call s:init_nyacus()
+  else
+    call s:init_cmd()
   endif
 endif
 
@@ -451,19 +453,26 @@ function s:my_highlight_defines() "{{{2
   " highlight CursorLine ctermbg=black guibg=black
   highlight link VimShellError WarningMsg
 endfunction
+
 function s:my_additional_syntaxes() "{{{2
   syntax match IdeographicSpace containedin=ALL /　/
   syntax match TrailingSpaces containedin=ALL /\s\+$/
 endfunction
+
 augroup my-additional-highlight "{{{2
   autocmd!
   autocmd ColorScheme * call <SID>my_highlight_defines()
   autocmd Syntax * call <SID>my_additional_syntaxes()
-  autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
-        \ | syntax enable
+  autocmd Syntax eruby highlight link erubyRubyDelim Label
+  " TODO しばらく様子見
+  if s:is_mac && has('gui')
+    autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
+          \ | syntax enable
+  else
+    autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
+  endif
   call s:my_highlight_defines()
 augroup END
-MyAutocmd Syntax eruby highlight link erubyRubyDelim Label
 
 if &t_Co == 256 || s:is_win || has('gui') "{{{2
   " must be write .gvimrc
@@ -556,8 +565,8 @@ endif
 
 " setfiletype {{{2
 " alias
-MyAutocmd FileType mkd set ft=markdown
-MyAutocmd FileType js set ft=javascript
+MyAutocmd FileType mkd set filetype=markdown
+MyAutocmd FileType js set filetype=javascript
 " MySQL
 MyAutocmd BufNewFile,BufRead *.sql set filetype=mysql
 " IO
@@ -1340,6 +1349,8 @@ endfunction
 command! SmartinputOff call smartinput#clear_rules()
 command! SmartinputOn call <SID>sminput_define_rules()
 call s:sminput_define_rules()
+" clear auto cmaps(for altercmd.vim)
+cunmap <CR>
 
 " golden-ratio {{{2
 " let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler']
