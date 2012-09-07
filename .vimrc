@@ -383,6 +383,7 @@ NeoBundle 'tyru/operator-camelize.vim.git'
 NeoBundle 'tyru/operator-html-escape.vim.git'
 
 " textobj {{{3
+NeoBundle 'kana/vim-textobj-user.git'
 NeoBundle 'kana/vim-textobj-datetime.git'
 NeoBundle 'kana/vim-textobj-diff.git'
 NeoBundle 'kana/vim-textobj-entire.git'
@@ -391,10 +392,9 @@ NeoBundle 'kana/vim-textobj-function.git'
 NeoBundle 'kana/vim-textobj-jabraces.git'
 NeoBundle 'kana/vim-textobj-lastpat.git'
 NeoBundle 'kana/vim-textobj-syntax.git'
-NeoBundle 'kana/vim-textobj-user.git'
 NeoBundle 'kana/vim-textobj-line.git'
 NeoBundle 'thinca/vim-textobj-between.git'
-NeoBundle 'thinca/vim-textobj-comment.git'
+" NeoBundle 'thinca/vim-textobj-comment.git'
 NeoBundle 'thinca/vim-textobj-function-javascript.git'
 NeoBundle 'thinca/vim-textobj-function-perl.git'
 NeoBundle 't9md/vim-textobj-function-ruby.git'
@@ -461,18 +461,13 @@ endfunction
 
 augroup my-additional-highlight "{{{2
   autocmd!
-  autocmd ColorScheme * call <SID>my_highlight_defines()
-  autocmd Syntax * call <SID>my_additional_syntaxes()
-  autocmd Syntax eruby highlight link erubyRubyDelim Label
-  " TODO しばらく様子見
-  if s:is_mac && has('gui')
-    autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
-          \ | syntax enable
-  else
-    autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
-  endif
-  call s:my_highlight_defines()
 augroup END
+" augroup の中に書くと MacVim でなんかおかしくなるぽい -_-#
+autocmd my-additional-highlight ColorScheme * call <SID>my_highlight_defines()
+autocmd my-additional-highlight Syntax * call <SID>my_additional_syntaxes()
+autocmd my-additional-highlight Syntax eruby highlight link erubyRubyDelim Label
+autocmd my-additional-highlight VimEnter,WinEnter * call <SID>my_additional_syntaxes()
+call s:my_highlight_defines()
 
 if &t_Co == 256 || s:is_win || has('gui') "{{{2
   " must be write .gvimrc
@@ -1479,7 +1474,11 @@ nmap [prefix]se :<C-u>EnewNofile<CR>
 let g:alignta_confirm_for_retab = 0
 " let g:Align_xstrlen=3
 " vmap [prefix]a :Align
-vmap [prefix]a :Alignta
+vnoremap [prefix]a :Alignta
+vnoremap [prefix],a :Alignta<< [:=><\-)}\]]\+
+vnoremap [prefix],r :Alignta<< [=><\-)}\]]\+
+vnoremap [prefix],t :Alignta \|<CR>
+vnoremap [prefix],c :Alignta<< \(//\|#\|\/\*\)/1<CR>
 
 " repeat.vim {{{2
 silent! repeat#set() " for loading
@@ -2010,20 +2009,20 @@ map ;c <Plug>(operator-camelize)
 map ;C <Plug>(operator-decamelize)
 
 " textobj {{{2
-Tmap i;f <Plug>(textobj-function-i)
-Tmap a;f <Plug>(textobj-function-a)
-Tmap i;i <Plug>(textobj-indent-i)
-Tmap a;i <Plug>(textobj-indent-a)
-Tmap i;p <Plug>(textobj-parameter-i)
-Tmap a;p <Plug>(textobj-parameter-a)
-Tmap i;l <Plug>(textobj-line-i)
-Tmap a;l <Plug>(textobj-line-a)
-Tmap i;c <Plug>(textobj-comment-i)
-Tmap a;c <Plug>(textobj-comment-a)
-Tmap i;b <Plug>(textobj-between-i)
-Tmap a;b <Plug>(textobj-between-a)
-Tmap i;w <Plug>(textobj-wiw-i)
-let g:textobj_wiw_no_default_key_mappings=1
+" Tmap i<Space>f <Plug>(textobj-function-i)
+" Tmap a<Space>f <Plug>(textobj-function-a)
+" Tmap i<Space>i <Plug>(textobj-indent-i)
+" Tmap a<Space>i <Plug>(textobj-indent-a)
+Tmap i<Space>p <Plug>(textobj-parameter-i)
+Tmap a<Space>p <Plug>(textobj-parameter-a)
+" Tmap i<Space>l <Plug>(textobj-line-i)
+" Tmap a<Space>l <Plug>(textobj-line-a)
+Tmap i<Space>b <Plug>(textobj-between-i)
+Tmap a<Space>b <Plug>(textobj-between-a)
+let g:textobj_between_no_default_key_mappings=1
+" Tmap i<Space>w <Plug>(textobj-wiw-i)
+" Tmap a<Space>w <Plug>(textobj-wiw-a)
+" let g:textobj_wiw_no_default_key_mappings=1
 
 " ref.vim {{{2
 " options {{{3
