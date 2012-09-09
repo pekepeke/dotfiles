@@ -1,5 +1,4 @@
 " init setup {{{1
-scriptencoding utf-8
 " platform detection {{{2
 let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
@@ -616,13 +615,15 @@ augroup END
 
 " basic settings {{{1
 " 文字コード周り {{{2
-set fileencodings=utf-8,euc-jp,iso-2022-jp,cp932
-set fileformats=unix,dos,mac
 set encoding=utf-8
 set termencoding=utf-8
 set fileencoding=utf-8
 set fileformat=unix
+scriptencoding utf-8
+set fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp,cp932
+set fileformats=unix,dos,mac
 
+set display=lastline
 set clipboard=unnamed
 " if has('unnamedplus') set clipboard+=unnamedplus endif
 " set mouse=a
@@ -675,7 +676,7 @@ set showcmd                    " 入力中のコマンドを表示
 set backspace=indent,eol,start " BSでなんでも削除
 set nolinebreak
 set textwidth=1000
-set formatoptions+=mM
+set formatoptions& formatoptions+=mM
 set whichwrap=b,s,h,l,<,>,[,]  " 行頭・行末間移動を可能に
 if exists('&colorcolumn') | set colorcolumn=+1 | endif
 set splitbelow                 " 横分割は下に
@@ -686,11 +687,11 @@ set title
 
 set hidden                     " 編集中でも他のファイルを開けるように
 set sidescroll=5
-set viminfo+=!
+set viminfo& viminfo+=!
 set visualbell
 set noerrorbells
 
-set guioptions-=mT
+set guioptions& guioptions-=mT
 let did_install_default_menus = 1
 let did_install_syntax_menu = 1
 set noequalalways
