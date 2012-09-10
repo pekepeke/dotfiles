@@ -399,7 +399,7 @@ NeoBundle 'thinca/vim-textobj-function-perl.git'
 NeoBundle 't9md/vim-textobj-function-ruby.git'
 NeoBundle 'nelstrom/vim-textobj-rubyblock.git'
 NeoBundle 'vim-scripts/textobj-indent.git'
-NeoBundle 'sgur/textobj-parameter.git'
+NeoBundle 'sgur/vim-textobj-parameter.git'
 NeoBundle 'h1mesuke/textobj-wiw.git'
 NeoBundle 'coderifous/textobj-word-column.vim.git'
 
@@ -413,8 +413,8 @@ NeoBundle 'coderifous/textobj-word-column.vim.git'
 NeoBundle 'vim-scripts/cecutil.git'
 
 " afterexec for runtimepath {{{1
-filetype plugin indent on
 syntax enable
+filetype plugin indent on
 
 " vimproc
 if executable('sh') && executable('make')

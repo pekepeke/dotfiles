@@ -175,4 +175,6 @@ export MOZ_NO_REMOTE=true
 export PATH
 export MANPATH
 
+env_unique PATH
+env_unique MANPATH
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:
