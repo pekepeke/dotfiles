@@ -79,8 +79,10 @@ __NOTIFY() { # {{{3
 }
 
 # basic commands {{{2
-[ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
-alias ls='ls --color=always'
+if ! alias ls >/dev/null ; then
+  [ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
+  alias ls='ls --color=always'
+fi
 
 #alias ls='ls -hF --show-control-chars --color'
 #alias ls='ls --show-control-chars --color=auto'
