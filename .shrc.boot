@@ -1,4 +1,5 @@
 # source local settings
+# init {{{1
 # [ $SHLVL -gt 1 ] && return 0
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
 
@@ -7,33 +8,9 @@ if [ -f $HOME/.shrc.local ] ; then
 else
   touch $HOME/.shrc.local
 fi
-# }}}
-# {{{ terminal
-if is_exec reattach-to-user-namespace ; then
-  export TMUX_DEFAULT_COMMAND="reattach-to-user-namespace -l $SHELL"
-  export TMUX_PREFIX_COMMAND="reattach-to-user-namespace"
-else
-  export TMUX_DEFAULT_COMMAND=$SHELL
-fi
 
-if is_mac ; then
-  export LESS="-IMR"
-fi
-if is_colinux; then
-  alias umount-c='sudo umount /c'
-  alias mount-c='mount-c-smbfs'
-  alias mount-c-cofs='sudo mount -t cofs cofs0 /c -o defaults,noatime,noexec,user,uid=$USER,gid=users'
-  alias mount-c-smbfs='sudo mount -t smbfs "//windows/C\$" /c -o defaults,noatime,user,uid=$USER,gid=users,fmask=0644,dmask=0755,username=$USER'
-  alias shutdown-colinux='sudo halt; exit'
-fi
-# }}}
-
-# {{{ lang, own settings
-if is_exec vim ; then
-  export EDITOR="$(which vim)"
-else
-  export EDITOR="$(which vi)"
-fi
+# environments {{{1
+export EDITOR=vim
 
 # stty
 stty stop undef
@@ -47,9 +24,28 @@ fi
 #export MYSQL_PS1='[1;33m\u@\h[0m.[1;35m\d[0m mysql:\c> '
 export MYSQL_PS1='\u@\h.\d mysql:\c> '
 
-# }}}
+if is_exec reattach-to-user-namespace ; then
+  export TMUX_DEFAULT_COMMAND="reattach-to-user-namespace -l $SHELL"
+  export TMUX_PREFIX_COMMAND="reattach-to-user-namespace"
+else
+  export TMUX_DEFAULT_COMMAND=$SHELL
+fi
 
-# {{{ color
+# tmux {{{2
+# if [ "$TMUX" != "" ]; then
+#   tmux set-option status-bg colour$(($(echo -n $(whoami)@$(hostname) | sum | cut -f1 -d' ') % 8 + 8)) | cat > /dev/null
+# fi
+
+
+if is_colinux; then
+  alias umount-c='sudo umount /c'
+  alias mount-c='mount-c-smbfs'
+  alias mount-c-cofs='sudo mount -t cofs cofs0 /c -o defaults,noatime,noexec,user,uid=$USER,gid=users'
+  alias mount-c-smbfs='sudo mount -t smbfs "//windows/C\$" /c -o defaults,noatime,user,uid=$USER,gid=users,fmask=0644,dmask=0755,username=$USER'
+  alias shutdown-colinux='sudo halt; exit'
+fi
+
+# color {{{1
 # enable color support of ls and also add handy aliases
 if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
   # eval "`dircolors -b`"
@@ -63,10 +59,9 @@ if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
   #alias egrep='egrep --color=auto'
 fi
 
-# }}}
-
-# {{{ aliases
-__NOTIFY() {
+# aliases {{{1
+# notify {{{2
+__NOTIFY() { # {{{3
   local title=$1
   shift
 
@@ -82,13 +77,10 @@ __NOTIFY() {
     fi
   fi
 }
-if is_exec gls ; then
-  [ -e ~/.dir_colors ] && eval `gdircolors ~/.dir_colors -b`
-  alias ls='gls --color=always'
-else
-  [ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
-  alias ls='ls --color=always'
-fi
+
+# basic commands {{{2
+[ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
+alias ls='ls --color=always'
 
 #alias ls='ls -hF --show-control-chars --color'
 #alias ls='ls --show-control-chars --color=auto'
@@ -109,10 +101,14 @@ alias telnet='telnet -K'
 alias ack='ack-grep'
 alias less='less -R'
 
-# vim
+# vim {{{2
 alias vimfiler='vim -c VimFiler'
 alias vimshell='vim -c VimShell'
-update-submodules() {
+
+alias viminspect='vim --startuptime "$HOME/vimrc-read.log"'
+alias vimsafe='vim -u NONE -i NONE'
+alias vimf='vim -u '
+update-submodules() { #{{{3
   local cwd=$(pwd)
   cd ~/.github-dotfiles
   git submodule init
@@ -120,22 +116,22 @@ update-submodules() {
   cd ${cwd}
   __NOTIFY "update .github-dotfiles" "complete!"
 }
-vim-bundle() {
+vim-bundle() { #{{{3
   update-submodules
   find ~/.vim/neobundle -name tags | grep doc | grep -v .git | xargs rm
-  vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "silent NeoBundleDocs" -c "quitall"
+  vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "quitall"
   __NOTIFY "neobundle update" "complete!"
 }
 # alias vim-bundle='update-submodules; vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall";NOTIFY "neobundle update" "complete!"'
 
-# emacs
+# emacs {{{2
 ## Invoke the ``dired'' of current working directory in Emacs buffer.
-function dired () {
+dired () { #{{{3
   emacsclient -e "(dired \"${1:a}\")"
 }
 
 ## Chdir to the ``default-directory'' of currently opened in Emacs buffer.
-cde() {
+cde() { #{{{3
     local EMACS_CWD=`emacsclient -e "
      (expand-file-name
       (with-current-buffer
@@ -154,31 +150,27 @@ cde() {
     cd "$EMACS_CWD"
 }
 
-# lang
+# lang {{{2
 alias iperl='perl -de0'
 alias rol='ruby -n -e '
 
 # rsync 
 alias rsync='rsync -avzu'
 
-# display charset
+# display charset {{{2
 alias utf8='export LANG=ja_JP.UTF-8; export LANGUAGE=ja_JP.UTF-8; export LC_ALL=ja_JP.UTF-8'
 alias euc='export LANG=ja_JP.EUC; export LANGUAGE=ja_JP.EUC; export LC_ALL=ja_JP.EUC'
 alias en='export LANG=en; export LANGUAGE=en; export LC_ALL=en'
 
-alias viminspect='vim --startuptime "$HOME/vimrc-read.log"'
-alias vimsafe='vim -u NONE -i NONE'
-alias vimf='vim -u '
-
-# compass
+# compass {{{3
 alias compass_scss='compass create --sass-dir "scss" --css-dir "css" --javascripts-dir "js" --images-dir "img"'
 alias compass_sass='compass create --sass-dir "scss" --css-dir "css" --javascripts-dir "js" --images-dir "img" --syntax sass'
 
-# win like
+# win like {{{2
 alias rd=rmdir
 #alias pulist='ps aux | grep '
 
-pulist() { # {{{
+pulist() { # {{{3
   local ARG i
   for i in $*; do
     if [ -z "$ARG" ]; then
@@ -192,11 +184,25 @@ pulist() { # {{{
   else
     ps aux | grep -E "PID|$ARG"
   fi
-} # }}}
+}
 
+# zsh {{{2
+if [ -n "$ZSH_NAME" ]; then
+  alias -g L='| less'
+  alias -g H='| head'
+  alias -g T='| tail'
+  alias -g V="| vim -"
+fi
+
+# GNU screen setting {{{1
+if is_exec tscreen; then
+  alias screen=tscreen
+fi
+
+# ssh logging {{{1
 if [ -z "$SSH_CLIENT" -a x$__ssh_path = x ]; then
   __ssh_path=$(which ssh)
-  ssh() {
+  ssh() { # {{{2
     local _ssh_log_dir=$HOME/.ssh-logs
     if [ ! -e $_ssh_log_dir ]; then
       mkdir $_ssh_log_dir
@@ -224,7 +230,7 @@ if [ -z "$SSH_CLIENT" -a x$__ssh_path = x ]; then
     # script ~/log/`date +%Y%m%d-%H%M%S.log`
     # exit
   # fi
-  function ssh_logs_archive() {
+  ssh_logs_archive() { # {{{2
     local _ssh_log_dir=$HOME/.ssh-logs
     for f in $(find $_ssh_log_dir -depth 1 -type f -mtime +30); do
       local target=$_ssh_log_dir/$(stat -f %Sm -t %Y%m $f)
@@ -232,35 +238,17 @@ if [ -z "$SSH_CLIENT" -a x$__ssh_path = x ]; then
       mv $f $target/
     done
   }
-fi
-
-if [ -n "$ZSH_NAME" ]; then
-  alias -g L='| less'
-  alias -g H='| head'
-  alias -g T='| tail'
-  alias -g V="| vim -"
-fi
-# }}}
-
-# tmux {{{
-if [ "$TMUX" != "" ]; then
-  tmux set-option status-bg colour$(($(echo -n $(whoami)@$(hostname) | sum | cut -f1 -d' ') % 8 + 8)) | cat > /dev/null
-fi
-
-# }}}
-# GNU screen setting {{{
-if is_exec tscreen; then
-  alias screen=tscreen
+  # }}}
 fi
 
 # function ssh_screen(){
-  # eval server=?${$#}
-  # screen -t $server ssh "$@"
+#   eval server=?${$#}
+#   screen -t $server ssh "$@"
 # }
 
 # if [ x$TERM = xscreen ]; then
   # alias ssh=ssh_screen
 # fi
-# }}}
 
+# __END__ {{{1
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

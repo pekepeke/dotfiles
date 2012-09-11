@@ -1,47 +1,46 @@
 # util functions
-
-is_exec() {
+is_exec() { # {{{1
   [ x"$1" = x"" ] && return 1
   which $1 >/dev/null 2>&1
   return $?
 }
-is_win() {
+is_win() { # {{{1
   case $OSTYPE in
     cygwin*)
       return 0;;
   esac
   return 1
 }
-is_mac() {
+is_mac() { # {{{1
   case $OSTYPE in
     darwin*)
       return 0;;
   esac
   return 1
 }
-is_freebsd() {
+is_freebsd() { # {{{1
   case $OSTYPE in
     freebsd*)
       return 0;;
   esac
   return 1
 }
-is_colinux() {
+is_colinux() { # {{{1
   [ "$ENV_WORKING" = 'colinux' ] && return 0
   return 1
 }
-load_sh() {
+load_sh() { # {{{1
   if [ x$1 = x -o ! -f "$1" ];then
     return 1
   fi
   source $1
   return 0
 }
-soft_source() {
+soft_source() { # {{{1
   [ -e "$1" ] && source "$1"
   return $?
 }
-remove_path() {
+remove_path() { # {{{1
   local rmv
   for rmv in $* ; do
     PATH=`echo $PATH| sed -e 's!'$rmv'!!' -e 's/::/:/'`
@@ -49,7 +48,7 @@ remove_path() {
   return 0
 }
 # http://d.hatena.ne.jp/tyru/20090526/1243339840
-env_unique() {
+env_unique() { # {{{1
   if [ $# = 0 ]; then return; fi
   local env="$1"
   local sep="$2"
@@ -65,4 +64,5 @@ env_unique() {
     $env $sep)"
 }
 
+# __END__ {{{1
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

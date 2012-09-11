@@ -175,13 +175,6 @@ function! my#util#benchmark() " {{{2
   return copy(bm)
 endfunction
 
-function! my#util#compile_vimproc(basedir) " {{{2
-  let path = expand(a:basedir)
-  let makefile = s:is_win ? 'make_cygwin.mak' :
-        \ (s:is_mac ? 'make_mac.mak' : 'make_gcc.mak')
-
-  exe printf("! cd %s && make -f %s/%s", path, path, makefile)
-endfunction
 
 let s:rand = {}
 function! s:rand.srand(...)

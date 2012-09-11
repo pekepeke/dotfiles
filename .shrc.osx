@@ -1,4 +1,8 @@
+# settings {{{1
+export LESS="-IMR"
 
+# aliases {{{1
+# browser {{{2
 for app in Safari Firefox Opera "Google Chrome"; do
   if [ -e "/Applications/${app}.app" ]; then
     aname=$(echo $app | tr '[A-Z] ' '[a-z]_')
@@ -6,20 +10,23 @@ for app in Safari Firefox Opera "Google Chrome"; do
   fi
 done
 
+# commands {{{2
 [ ! -e /usr/local/bin/vim -a -e /Applications/MacVim.app/Contents/MacOS/Vim ] && alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
 # [ -e ~/Library/Application\ Support/Cyberduck/Queue.plist ] && \
 #  find ~/Library/Application\ Support/Cyberduck/Queue.plist -mtime 1 -exec rm -f {} \; > /dev/null 2>&1
 
-
-alias mvi='mvim --remote-tab-silent'
+alias ls='gls --color=always'
 alias date='gdate'
 alias seq='gseq'
 
-function gemacs() {
+alias mvi='mvim --remote-tab-silent'
+
+gemacs() { # {{{3
   emacsclient -n ${*:-.} 2>/dev/null && return 0
   if [ -e $1 ] || touch $1; then
     open -a /Applications/Emacs.app ${*:-.}
   fi
 }
 
+# __END__ {{{1
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

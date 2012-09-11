@@ -1,3 +1,4 @@
+# init {{{1
 # [ $SHLVL -gt 1 ] && return 0
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
 [ -z "$PATH_ORG" ] && PATH_ORG=$PATH; PATH=$PATH_ORG
@@ -19,7 +20,7 @@ elif is_mac ; then
   [ "$LANG" = "ja_JP" ] && export LANG=ja_JP.UTF-8
 fi
 
-# aliases
+# aliases {{{1
 is_exec rails && alias r=rails
 alias jsprove='prove --ext=.t.js --exec=node'
 alias phpprove='prove --ext=.t.php --exec=php'
@@ -54,6 +55,11 @@ if [ -e $HOME/.rbenv ]; then
   PATH="$HOME/.rbenv/bin:$PATH"
   eval "$(rbenv init -)"
   soft_source $HOME/.rbenv/completions/rbenv.$(basename $SHELL)
+  rvm() {
+    if [[ $1 == 'use' ]]; then
+      rbenv shell $2
+    fi
+  }
 else
   soft_source $HOME/.rvm/scripts/rvm
 fi
@@ -156,6 +162,9 @@ cake-cc() {
 }
 ## }}}
 # etc {{{2
+soft_source $HOME/.tmuxinator/scripts/tmuxinator
+soft_source $HOME/.screeninator/scripts/screeninator
+
 # c/c++ library path
 #export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer
 #export LD_LIBRARY_PATH=/usr/local/X11R7/lib:$QTDIR/lib:$KDEDIR/lib:/usr/local/lib:/usr/lib:/lib:$ROOTSYS/lib:/usr/local/firefox
@@ -175,6 +184,9 @@ export MOZ_NO_REMOTE=true
 export PATH
 export MANPATH
 
+# finalize {{{1
 env_unique PATH
 env_unique MANPATH
+
+# __END__ {{{1
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

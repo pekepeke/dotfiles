@@ -1,6 +1,4 @@
-#export RSYNC_PASSWORD=xxxx
-
-# MAN {{{
+# MAN {{{1
 LMANDIR=$HOME/.bin/apps
 if [ ! -e $HOME/.bin/apps ]; then
   mkdir -p $HOME/.bin/apps
@@ -23,9 +21,8 @@ export CPPREF_DOCROOT=$LMANDIR/cppref/doc/
 export JSREF_DOCROOT=$LMANDIR/jsref/doc/
 export TIMOBILEREF_DOCROOT=$LMANDIR/timobileref/doc/
 export TIDESKTOPREF_DOCROOT=$LMANDIR/tidesktopref/doc/
-# }}}
 
-# RSENSE {{{
+# RSENSE {{{1
 if [ -e ~/.zsh.rsense.tmp ]; then
   source ~/.zsh.rsense.tmp
 fi
@@ -49,6 +46,6 @@ EOM
   source ~/.zsh.rsense.tmp
 fi
 unset LMANDIR
-# }}}
 
+# __END__ {{{1
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

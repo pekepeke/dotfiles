@@ -48,7 +48,7 @@ endif
 " preexec for runtimepath {{{1
 set nocompatible
 filetype off
-filetype plugin indent off
+" filetype plugin indent off
 
 " vundle {{{1
 " load {{{2
@@ -57,7 +57,7 @@ if has('vim_starting')
   " pathogen
   call pathogen#infect()
 
-  set rtp+=~/.vim/neobundle.vim
+  set runtimepath+=~/.vim/neobundle.vim
   call neobundle#rc(g:my_bundle_dir)
 endif
 
@@ -155,6 +155,7 @@ NeoBundle 'vim-scripts/eruby.vim.git'
 NeoBundle 'tobiassvn/vim-gemfile.git'
 "NeoBundle 'astashov/vim-ruby-debugger.git'
 NeoBundle 't9md/vim-chef.git'
+NeoBundle 'taq/vim-rspec.git'
 
 " html {{{4
 NeoBundle 'othree/html5.vim.git'
@@ -311,7 +312,13 @@ endif
 " common {{{3
 NeoBundle 'mattn/benchvimrc-vim.git'
 NeoBundle 'Shougo/vimfiler.git'
-NeoBundle 'Shougo/vimproc.git'
+NeoBundle 'Shougo/vimproc.git', {
+      \ 'build' : {
+      \     'cygwin' : 'make -f make_cygwin.mak',
+      \     'mac'    : 'make -f make_mac.mak',
+      \     'unix'   : 'make -f make_gcc.mak',
+      \   }
+      \ }
 NeoBundle 'Shougo/vimshell.git'
 NeoBundle 'Shougo/vinarise.git'
 NeoBundle 'kana/vim-altr.git'
@@ -416,11 +423,6 @@ NeoBundle 'vim-scripts/cecutil.git'
 syntax enable
 filetype plugin indent on
 
-" vimproc
-if executable('sh') && executable('make')
-  command! -nargs=0 VimprocCompile call my#util#compile_vimproc(g:my_bundle_dir . '/vimproc')
-endif
-
 " etc settings {{{2
 if filereadable(expand('~/.vimrc.personal'))
   execute 'source' expand('~/.vimrc.personal')
@@ -446,7 +448,7 @@ function s:my_highlight_defines() "{{{2
   " highlight link IdeographicSpace Error
   highlight IdeographicSpace term=underline ctermbg=darkgreen guibg=darkgreen
   " highlight link TrailingSpaces Error
-  highlight TrailingSpaces term=underline ctermbg=darkgreen guibg=darkgreen
+  highlight TrailingSpaces ctermbg=darkgray guibg=#222222
   " highlight clear CursorLine
   "hi CursorLine gui=underline term=underline cterm=underline
   " highlight CursorLine ctermbg=black guibg=black
@@ -458,15 +460,15 @@ function s:my_additional_syntaxes() "{{{2
   syntax match TrailingSpaces containedin=ALL /\s\+$/
 endfunction
 
-augroup my-additional-highlight "{{{2
+augroup my-additional-colors "{{{2
   autocmd!
 augroup END
 " augroup の中に書くと MacVim でなんかおかしくなるぽい -_-#
-autocmd my-additional-highlight ColorScheme * call <SID>my_highlight_defines()
-autocmd my-additional-highlight Syntax * call <SID>my_additional_syntaxes()
-autocmd my-additional-highlight Syntax eruby highlight link erubyRubyDelim Label
-autocmd my-additional-highlight VimEnter,WinEnter * call <SID>my_additional_syntaxes()
-call s:my_highlight_defines()
+autocmd my-additional-colors ColorScheme * call <SID>my_highlight_defines()
+autocmd my-additional-colors Syntax * call <SID>my_additional_syntaxes()
+autocmd my-additional-colors Syntax eruby highlight link erubyRubyDelim Label
+autocmd my-additional-colors VimEnter,WinEnter * call <SID>my_additional_syntaxes()
+      \ | call s:my_highlight_defines()
 
 if &t_Co == 256 || s:is_win || has('gui') "{{{2
   " must be write .gvimrc
@@ -1073,7 +1075,6 @@ function! s:toggle_quickfix_window() "{{{3
 endfunction "}}}
 
 " nnoremap [space]f :NERDTreeToggle<CR>
-nnoremap <silent> [space]t :TlistToggle<CR>
 
 nnoremap / :<C-u>nohlsearch<CR>/
 nnoremap ? :<C-u>nohlsearch<CR>?
@@ -1558,6 +1559,15 @@ let g:netrw_home = expand("$HOME/.tmp/")
 " yankring {{{2
 let g:yankring_history_dir = "$HOME/.tmp"
 
+" rails.vim {{{2
+let g:rails_some_option = 1
+let g:rails_level = 4
+let g:rails_syntax = 1
+let g:rails_statusline = 1
+let g:rails_url='http://localhost:3000'
+let g:rails_subversion=0
+let g:rails_default_file='config/database.yml'
+
 " pydiction {{{2
 let g:pydiction_location = '~/.vim/dict/pydiction-complete-dict'
 
@@ -1879,10 +1889,12 @@ else "{{{4
 endif "}}}
 
 if s:is_mac && executable('/Applications/MacVim.app/Contents/MacOS/ctags')
-  let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
+  " let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
+  let g:tagbar_ctags_bin='/Applications/MacVim.app/Contents/MacOS/ctags'
 endif
-" }}}
+" }}}3
 nnoremap <silent> [prefix]tt :<C-u>TagbarToggle<CR>1<C-w>h
+nnoremap <silent> [space]t   :<C-u>TagbarToggle<CR>
 nnoremap <silent> [prefix]tr :<C-u>TagbarOpen<CR>
 nnoremap          [prefix]tc :Ctags<CR>
 command! -nargs=? Ctags call s:exec_ctags(<q-args>)
@@ -2512,9 +2524,10 @@ function! s:vimfiler_tree_launch(...) "{{{4
   execute 'VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:' . fpath
 endfunction
 
-function! s:vimfiler_smart_tree_h() "{{{4
+function! s:vimfiler_smart_tree_h(...) "{{{4
   let file = vimfiler#get_file()
-  let cmd = "\<Plug>(vimfiler_smart_h)"
+  let cmd = a:0 > 0 ? a:1 : ""
+  "\<Plug>(vimfiler_smart_h)"
   if !empty(file)
     if file.vimfiler__is_opened
       let cmd = "\<Plug>(vimfiler_expand_tree)"
@@ -2531,8 +2544,14 @@ function! s:vimfiler_smart_tree_h() "{{{4
       endwhile
     endif
   endif
-  exe 'normal' cmd
-  normal! ^
+  if !empty(cmd)
+    exe 'normal' cmd
+    normal! ^
+  endif
+endfunction
+
+function! s:vimfiler_tree_up() "{{{4
+  call s:vimfiler_smart_tree_h("\<Plug>(vimfiler_smart_h)")
 endfunction
 
 function! s:vimfiler_tree_edit(method) "{{{4
@@ -2572,12 +2591,16 @@ function! s:vimfiler_smart_tree_l(method, ...) "{{{4
   endif
   call s:vimfiler_tree_edit(a:method)
 endfunction "}}}
-function! s:vimfiler_tree_tabopen() " {{{4
+function! s:vimfiler_tabopen() " {{{4
   let bnr = bufnr('%')
   let linenr = line('.')
   let context = s:vimfiler_create_action_context('tabopen', linenr)
   call context.execute()
   unlet context
+endfunction
+
+function! s:vimfiler_tree_tabopen() " {{{4
+  call s:vimfiler_tabopen()
   silent! exe printf('vsplit +wincmd\ H\|wincmd\ l #%d', bnr)
 endfunction
 
@@ -2613,7 +2636,14 @@ function! s:vimfiler_my_settings() " {{{3
   hi link ExrenameModified Statement
   "nnoremap <buffer> v V
   if exists('b:vimfiler')
-    if exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree'
+    if exists('b:vimfiler.context.explorer') && b:vimfiler.context.explorer "{{{4
+      nmap <silent><buffer> L <Plug>(vimfiler_smart_l)
+      nmap <silent><buffer> E :call <SID>vimfiler_tabopen()<CR>
+      " smart_h ができない…ｼｮﾎﾞﾝﾇ(´Д｀)
+      " nmap <silent><buffer> H <Plug>(vimfiler_smart_h)
+      nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>^
+      nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>::set eventignore=<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
+    elseif exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
       " nmap <buffer> e <Plug>(vimfiler_split_edit_file)
       " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
       nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('open')<CR>
@@ -2627,6 +2657,7 @@ function! s:vimfiler_my_settings() " {{{3
       " nmap <buffer> l <Plug>(vimfiler_expand_tree)
       nmap <buffer> L <Plug>(vimfiler_smart_l)
       nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
+      nnoremap <silent><buffer> gu :call <SID>vimfiler_tree_up()<CR>
     endif
   endif
 endfunction
@@ -2838,5 +2869,5 @@ command!
       \ call my#ui#cmd_capture(<q-args>)
 
 " }}}1
-
+" __END__ {{{1
 " vim: set ft=vim fdm=marker sw=2 ts=2 et:
