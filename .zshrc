@@ -38,6 +38,9 @@ case "$TERM" in
     ;;
 esac
 
+# env vars {{{1
+REPORTTIME=3 # 3秒以上かかった処理は詳細表示
+
 # options {{{1
 # cd {{{2
 setopt auto_cd

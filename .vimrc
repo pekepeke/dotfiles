@@ -263,6 +263,9 @@ NeoBundle 'qqshfox/vim-tmux.git'
 NeoBundle 'vim-scripts/nginx.vim.git'
 NeoBundle 'glidenote/keepalived-syntax.vim.git'
 NeoBundle 'uggedal/go-vim.git'
+if executable('gocode')
+  NeoBundle 'undx/vim-gocode.git'
+endif
 if has('ruby') && executable('sprout-as3')
   NeoBundle 'endel/flashdevelop.vim.git'
   NeoBundle 'tomtom/tlib_vim.git'
@@ -312,13 +315,33 @@ endif
 " common {{{3
 NeoBundle 'mattn/benchvimrc-vim.git'
 NeoBundle 'Shougo/vimfiler.git'
-NeoBundle 'Shougo/vimproc.git', {
+if s:is_win && !has('win32unix')
+  if executable('gcc')
+    if has('win64')
+      NeoBundle 'Shougo/vimproc.git', { 'build' : {
+          \     'windows' : 'make -f make_mingw64.mak',
+          \   } }
+    else " if has('win32')
+      NeoBundle 'Shougo/vimproc.git', { 'build' : {
+          \     'windows' : 'make -f make_mingw32.mak',
+          \   } }
+    endif
+  elseif has('win32') && executable('cl') && executable('make')
+    NeoBundle 'Shougo/vimproc.git', { 'build' : {
+        \     'windows' : 'make -f make_msvc32.mak',
+        \   } }
+  else
+    NeoBundle 'Shougo/vimproc.git'
+  endif
+else
+  NeoBundle 'Shougo/vimproc.git', {
       \ 'build' : {
       \     'cygwin' : 'make -f make_cygwin.mak',
       \     'mac'    : 'make -f make_mac.mak',
       \     'unix'   : 'make -f make_gcc.mak',
       \   }
       \ }
+endif
 NeoBundle 'Shougo/vimshell.git'
 NeoBundle 'Shougo/vinarise.git'
 NeoBundle 'kana/vim-altr.git'
@@ -729,6 +752,7 @@ endif " }}}
 "set wm=2
 set nowrap     " 折り返しなし
 set nrformats=hex
+set updatetime=1000
 
 " sticky shift {{{2
 " http://vim-users.jp/2009/08/hack-54/
