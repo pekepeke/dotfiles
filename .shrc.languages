@@ -162,9 +162,6 @@ cake-cc() {
 }
 ## }}}
 # etc {{{2
-soft_source $HOME/.tmuxinator/scripts/tmuxinator
-soft_source $HOME/.screeninator/scripts/screeninator
-
 # c/c++ library path
 #export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer
 #export LD_LIBRARY_PATH=/usr/local/X11R7/lib:$QTDIR/lib:$KDEDIR/lib:/usr/local/lib:/usr/lib:/lib:$ROOTSYS/lib:/usr/local/firefox

@@ -46,6 +46,9 @@ shopt -s checkwinsize
 # /etc/hosts の代わり C-x @: 候補の一覧, Esc-@: 補完実行
 # HOSTFILE=$HOME/etc/hosts
 
+soft_source $HOME/.tmuxinator/scripts/tmuxinator
+soft_source $HOME/.screeninator/scripts/screeninator
+
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 

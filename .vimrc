@@ -48,7 +48,6 @@ endif
 " preexec for runtimepath {{{1
 set nocompatible
 filetype off
-" filetype plugin indent off
 
 " vundle {{{1
 " load {{{2
@@ -516,7 +515,7 @@ augroup vimrc-auto-cursorline
   autocmd WinLeave * call s:auto_cursorline('WinLeave')
 
   let s:cursorline_lock = 0
-  function! s:auto_cursorline(event)
+  function! s:auto_cursorline(event) "{{{3
     if a:event ==# 'WinEnter'
       setlocal cursorline
       let s:cursorline_lock = 2
@@ -535,7 +534,7 @@ augroup vimrc-auto-cursorline
       setlocal cursorline
       let s:cursorline_lock = 1
     endif
-  endfunction
+  endfunction "}}}3
 augroup END
 " MyAutocmd WinLeave * set nocursorline
 " MyAutocmd WinEnter,BufRead * set cursorline
@@ -578,13 +577,45 @@ function! s:vimrc_local(loc)
     source `=i`
   endfor
 endfunction
+
 if has('vim_starting')
   call s:vimrc_local(getcwd())
 endif
 
 " setfiletype {{{2
+" override default filetypedetect
+augroup filetypedetect
+  " html for E127 error
+  autocmd! BufNewFile,BufRead *.html,*.htm,*.htm,*.shtml,*.stm
+  autocmd BufNewFile,BufRead *.html,*.htm,*.htm,*.shtml,*.stm  call <SID>detect_ft_html()
+  function! s:detect_ft_html() " {{{3
+    let n = 1
+    let lines = []
+    while n < 10 && n < line("$")
+      let a_line = getline(n)
+      if a_line =~ '{%\|{{\|{#'
+        set filetype=htmldjango
+        return
+      elseif a_line =~ '<?php\s\+'
+        set filetype=php
+        return
+      endif
+      call add(lines, a_line)
+      let n = n + 1
+    endwhile
+
+    for a_line in lines
+      if a_line =~ '\<DTD\s\+XHTML\s'
+        set filetype=xhtml
+        return
+      endif
+    endfor
+
+    set filetype=html
+  endfunction "}}}3
+augroup END
+
 " alias
-MyAutocmd FileType mkd set filetype=markdown
 MyAutocmd FileType js set filetype=javascript
 " MySQL
 MyAutocmd BufNewFile,BufRead *.sql set filetype=mysql
@@ -614,8 +645,6 @@ MyAutocmd FileType help
       \ setl noexpandtab tabstop=8 shiftwidth=8
 MyAutocmd FileType python
       \ setl textwidth=80 tabstop=8 softtabstop=4 shiftwidth=4 expandtab
-" MyAutocmd FileType python
-"       \ setl textwidth=80 tabstop=2 softtabstop=2 shiftwidth=2 expandtab
 
 function! s:cmdwin_my_settings() "{{{3
   noremap <buffer> q :q<CR>
@@ -662,8 +691,6 @@ set directory=~/.tmp,/var/tmp,/tmp
 " IME の設定 {{{2
 if has('kaoriya') | set iminsert=0 imsearch=0 | endif
 
-" MyAutocmd BufEnter * if isdirectory(expand('%:p:h')) | execute "lcd" expand("%:p:h") | endif
-" MyAutocmd BufEnter * call LcdCurrentOrProjDir()
 MyAutocmd BufRead,BufNewFile * call LcdCurrentOrProjDir()
 if !exists('g:my_lcd_autochdir')
   let g:my_lcd_autochdir = 1
@@ -682,7 +709,7 @@ function! LcdCurrentOrProjDir() "{{{3
 endfunction
 
 " diff {{{2
-set diffopt-=filler diffopt+=iwhite
+set diffopt& diffopt-=filler diffopt+=iwhite
 
 " 表示周り {{{2
 set lazyredraw
@@ -756,10 +783,6 @@ set updatetime=1000
 
 " sticky shift {{{2
 " http://vim-users.jp/2009/08/hack-54/
-" nnoremap <expr> ;; <SID>sticky_func()
-" nnoremap <expr> ;; <SID>sticky_func()
-" cnoremap <expr> ;  <SID>sticky_func()
-" snoremap <expr> ;  <SID>sticky_func()
 let g:sticky_shift_enable = 0
 command! -nargs=0 StickyShift let g:sticky_shift_enable=1
 command! -nargs=0 NoStickyShift let g:sticky_shift_enable=0
