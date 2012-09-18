@@ -20,6 +20,7 @@ alias date='gdate'
 alias seq='gseq'
 
 alias mvi='mvim --remote-tab-silent'
+alias cote='open -a CotEditor'
 
 gemacs() { # {{{3
   emacsclient -n ${*:-.} 2>/dev/null && return 0
