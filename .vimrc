@@ -96,6 +96,8 @@ NeoBundle 'w0ng/vim-hybrid.git'
 " lang {{{3
 " basic {{{4
 NeoBundle 'thinca/vim-quickrun.git'
+NeoBundle 'osyo-manga/shabadou.vim.git'
+NeoBundle 'osyo-manga/vim-watchdogs.git'
 NeoBundle 'kien/rainbow_parentheses.vim.git'
 NeoBundle 'vim-scripts/matchit.zip.git'
 NeoBundle 'vim-scripts/ruby-matchit.git'
@@ -277,7 +279,8 @@ NeoBundle 'Shougo/unite-build.git'
 NeoBundle 'Shougo/unite-help.git'
 NeoBundle 'h1mesuke/unite-outline.git'
 NeoBundle 'sgur/unite-git_grep.git'
-NeoBundle 'sgur/unite-qf.git'
+" NeoBundle 'sgur/unite-qf.git'
+NeoBundle 'osyo-manga/unite-quickfix.git'
 NeoBundle 'tacroe/unite-mark.git'
 NeoBundle 'thinca/vim-unite-history.git'
 NeoBundle 'tsukkee/unite-tag.git'
@@ -465,6 +468,7 @@ command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
 "set t_Co=256
 set background=dark
 function s:my_highlight_defines() "{{{2
+  highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
   highlight NonText term=underline ctermfg=darkgray guifg=darkgray
   highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
   " highlight link IdeographicSpace Error
@@ -484,13 +488,12 @@ endfunction
 
 augroup my-additional-colors "{{{2
   autocmd!
+  autocmd ColorScheme * call <SID>my_highlight_defines()
+  autocmd Syntax * call <SID>my_additional_syntaxes()
+  autocmd Syntax eruby highlight link erubyRubyDelim Label
+  autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
+        \ | call <SID>my_highlight_defines()
 augroup END
-" augroup の中に書くと MacVim でなんかおかしくなるぽい -_-#
-autocmd my-additional-colors ColorScheme * call <SID>my_highlight_defines()
-autocmd my-additional-colors Syntax * call <SID>my_additional_syntaxes()
-autocmd my-additional-colors Syntax eruby highlight link erubyRubyDelim Label
-autocmd my-additional-colors VimEnter,WinEnter * call <SID>my_additional_syntaxes()
-      \ | call s:my_highlight_defines()
 
 if &t_Co == 256 || s:is_win || has('gui') "{{{2
   " must be write .gvimrc
@@ -1088,9 +1091,8 @@ endfunction
 " quickfix のエラー箇所を波線でハイライト
 let g:hier_highlight_group_qf  = "qf_error_ucurl"
 function! s:my_make_settings()
-  highlight qf_error_ucurl gui=undercurl guisp=red
-  :HierUpdate
-  :QuickfixStatusEnable
+  HierUpdate
+  QuickfixStatusEnable
 endfunction
 
 MyAutocmd FileType qf call s:my_quickfix_settings()
@@ -1768,7 +1770,7 @@ UniteNMap!  gr        grep -buffer-name=grep
 UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=todo
 UniteNMap   gl        grep_launcher
 UniteNMap!  gi        git_grep -buffer-name=git_grep
-UniteNMap!  q         qf -buffer-name=qfix
+UniteNMap!  q         quickfix -buffer-name=qfix
 UniteNMap   y         history/yank
 UniteNMap   :         history/command command
 UniteNMap   /         history/search
@@ -1779,7 +1781,8 @@ nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
 nnoremap <Space>R :<C-u>Unite quicklearn -immediately<CR>
 
 
-if my#util#has_plugin('vimproc')
+" if my#util#has_plugin('vimproc')
+if neobundle#is_installed('vimproc')
   UniteNMap a file_rec/async -start-insert
 else
   UniteNMap a file_rec -start-insert
@@ -2168,18 +2171,20 @@ call extend(g:ref_jsextra_defines, {
 if !exists('g:quickrun_config')
   let g:quickrun_config={}
 endif
-if has('clientserver') && !s:is_win
-  let g:quickrun_config['*'] = {'runmode': 'async:remote:vimproc', 'split': 'below'}
-else
-  let g:quickrun_config['*'] = {'split': 'below'}
-endif
+let g:quickrun_config['_'] = {
+      \   'runner' : 'vimproc',
+      \   'runner/vimproc/updatetime' : 100,
+      \   'outputter/buffer/split' : ':botright 8sp',
+      \   'hook/inu/enable' : 1,
+      \   'hook/inu/wait' : 20,
+      \ }
 let g:quickrun_config["cat"] = {
       \  'command' : 'cat',
       \  'exec' : ['%c %s'],
       \ }
 nnoremap <Leader><Leader>r :<C-u>QuickRun cat<CR>
 
-" for lang
+" for lang "{{{3
 let g:quickrun_config['go'] = {
       \  'command': '8g',
       \  'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
@@ -2198,7 +2203,7 @@ if s:is_mac
         \   'exec' : ['osascript ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
         \ }
 endif
-" for testcase
+" for testcase {{{3
 MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
 MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
 MyAutocmd BufWinEnter,BufNewFile */Test/Case/*test.php,*/Test/Case/*Test.php setl filetype=php.phpunit.caketest
@@ -2292,6 +2297,18 @@ function! s:quickrun_my_settings() "{{{4
   nmap <buffer> q :quit<CR>
 endfunction "}}}
 MyAutocmd FileType quickrun call s:quickrun_my_settings()
+
+" watchdog {{{2
+if neobundle#is_installed('vim-watchdogs')
+  let g:quickrun_config['watchdogs_checker/_'] = {
+        \   'hook/close_quickfix/enable_failure' : 1,
+        \   'hook/close_quickfix/enable_success' : 1,
+        \   'hook/hier_update/enable' : 1,
+        \   'hook/quickfix_stateus_enable/enable' : 1,
+        \ }
+  call watchdogs#setup(g:quickrun_config)
+  let g:watchdogs_check_BufWritePost_enable = 1
+endif
 
 " echodoc {{{2
 let g:echodoc_enable_at_startup=0
@@ -2612,7 +2629,11 @@ function! s:vimfiler_tree_edit(method) "{{{4
   let linenr = line('.')
   let context = s:vimfiler_create_action_context(a:method, linenr)
   "wincmd p
+  let cur_nr = bufnr()
   silent wincmd l
+  if cur_nr == bufnr()
+    silent wincmd v
+  endif
   " call vimfiler#mappings#do_action(a:method, linenr)
   call context.execute()
   unlet context
