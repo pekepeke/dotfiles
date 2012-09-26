@@ -456,17 +456,11 @@ if isdirectory(expand('~/.vim/bin/'))
   let $PATH.=(s:is_win ? ';' : ':').expand('~/.vim/bin/')
 endif
 " }}}
-" defun macros
-augroup MyAuGroup
-  autocmd!
-augroup END
-command! -bang -nargs=* MyAutocmd autocmd<bang> MyAuGroup <args>
-command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
-
 
 " color settings "{{{1
 "set t_Co=256
 set background=dark
+
 function s:my_highlight_defines() "{{{2
   highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
   highlight NonText term=underline ctermfg=darkgray guifg=darkgray
@@ -492,7 +486,6 @@ augroup my-additional-colors "{{{2
   autocmd Syntax * call <SID>my_additional_syntaxes()
   autocmd Syntax eruby highlight link erubyRubyDelim Label
   autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
-        \ | call <SID>my_highlight_defines()
 augroup END
 
 if &t_Co == 256 || s:is_win || has('gui') "{{{2
@@ -505,7 +498,14 @@ else
   colorscheme desert
 endif
 if has('gui')
-  MyAutocmd GUIEnter * colorscheme vividchalk
+  augroup my-gui-colorscheme "{{{2
+    autocmd!
+    autocmd GUIEnter * colorscheme vividchalk
+    if s:is_mac && has('gui')
+      " macvim .... -_-###
+      autocmd GUIEnter * call <SID>my_highlight_defines()
+    endif
+  augroup END
 endif
 
 "" カーソル行 {{{2
@@ -541,6 +541,15 @@ augroup vimrc-auto-cursorline
 augroup END
 " MyAutocmd WinLeave * set nocursorline
 " MyAutocmd WinEnter,BufRead * set cursorline
+
+
+" defun macros {{{1
+augroup MyAuGroup
+  autocmd!
+augroup END
+command! -bang -nargs=* MyAutocmd autocmd<bang> MyAuGroup <args>
+command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
+
 
 " for Filetypes {{{1
 " shebang {{{2
@@ -2176,6 +2185,7 @@ let g:quickrun_config['_'] = {
       \   'runner/vimproc/updatetime' : 100,
       \   'outputter/buffer/split' : ':botright 8sp',
       \   'hook/inu/enable' : 1,
+      \   'hook/inu/redraw' : 1,
       \   'hook/inu/wait' : 20,
       \ }
 let g:quickrun_config["cat"] = {
@@ -2300,12 +2310,17 @@ MyAutocmd FileType quickrun call s:quickrun_my_settings()
 
 " watchdog {{{2
 if neobundle#is_installed('vim-watchdogs')
-  let g:quickrun_config['watchdogs_checker/_'] = {
-        \   'hook/close_quickfix/enable_failure' : 1,
-        \   'hook/close_quickfix/enable_success' : 1,
-        \   'hook/hier_update/enable' : 1,
-        \   'hook/quickfix_stateus_enable/enable' : 1,
-        \ }
+  call extend(g:quickrun_config, {
+        \   'watchdogs_checker/_' : {
+        \      'hook/close_quickfix/enable_failure' : 1,
+        \      'hook/close_quickfix/enable_success' : 1,
+        \      'hook/hier_update/enable' : 1,
+        \      'hook/quickfix_stateus_enable/enable' : 1,
+        \   },
+        \   'perl/watchdogs_checker' : {
+        \      'type' : 'watchdogs_checker/vimparse.pl',
+        \   },
+        \ })
   call watchdogs#setup(g:quickrun_config)
   let g:watchdogs_check_BufWritePost_enable = 1
 endif
