@@ -3,7 +3,7 @@ set cpo&vim
 
 function! s:detect_objc()
   if match(getline(1, min([line("$"), 200])), '^\(@\(interface\|end\|class\|implementation\)\|#\(import\)\)') 
-    set filetype=objc
+    setl filetype=objc
   endif
 endfunction
 

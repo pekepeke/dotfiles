@@ -216,6 +216,7 @@ NeoBundle 'petdance/vim-perl.git'
 " OSX {{{4
 NeoBundle 'nanki/vim-objj.git'
 NeoBundle 'pekepeke/cocoa.vim.git'
+NeoBundle 'vim-scripts/applescript.vim.git'
 
 " android {{{4
 NeoBundle 'thinca/vim-logcat.git'
@@ -2180,7 +2181,7 @@ call extend(g:ref_jsextra_defines, {
 if !exists('g:quickrun_config')
   let g:quickrun_config={}
 endif
-let g:quickrun_config['_'] = {
+let g:quickrun_config._ = {
       \   'runner' : 'vimproc',
       \   'runner/vimproc/updatetime' : 100,
       \   'outputter/buffer/split' : ':botright 8sp',
@@ -2188,18 +2189,18 @@ let g:quickrun_config['_'] = {
       \   'hook/inu/redraw' : 1,
       \   'hook/inu/wait' : 20,
       \ }
-let g:quickrun_config["cat"] = {
+let g:quickrun_config.cat = {
       \  'command' : 'cat',
       \  'exec' : ['%c %s'],
       \ }
 nnoremap <Leader><Leader>r :<C-u>QuickRun cat<CR>
 
 " for lang "{{{3
-let g:quickrun_config['go'] = {
+let g:quickrun_config.go = {
       \  'command': '8g',
       \  'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
       \ }
-let g:quickrun_config['diag'] = {
+let g:quickrun_config.diag = {
       \  'exec': [
       \     '%c -a %s -o %{expand("%:r")}.png',
       \     printf("%s %{expand(%:r)}.png", 
@@ -2208,9 +2209,13 @@ let g:quickrun_config['diag'] = {
       \  'outputter': 'message',
       \ }
 if s:is_mac
-  let g:quickrun_config['processing'] = {
+  let g:quickrun_config.processing = {
         \   'command': 'osascript',
         \   'exec' : ['osascript ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
+        \ }
+  let g:quickrun_config.applescript = {
+        \    'command' : 'osascript',
+        \    'output' : '_',
         \ }
 endif
 " for testcase {{{3
