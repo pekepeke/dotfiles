@@ -1971,7 +1971,7 @@ function! s:exec_ctags(path) "{{{3
   if !empty(a:path) && isdirectory(a:path)
     exe 'lcd' a:path
   endif
-  if my#util#has_plugin('vimproc')
+  if neobundle#is_installed('vimproc')
     call vimproc#system_bg(ctags_cmd)
   else
     execute "!" ctags_cmd
@@ -2484,17 +2484,20 @@ let g:vimshell_enable_smart_case = 1
 let g:vimshell_enable_auto_slash = 1
 
 function! s:setup_vimproc_dll() " {{{3
+  let path = ""
   if s:is_win
     if has('unix')
       let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_cygwin.dll')
-    endif
-    if !filereadable(path)
-      if has('win64')
-        let path = expand('~/.vim/lib/vimproc/win64/proc.dll')
-      elseif has('win32')
-        let path = expand('~/.vim/lib/vimproc/win32/proc.dll')
-      elseif has('win16')
-        let path = expand('~/.vim/lib/vimproc/win16/proc.dll')
+    else
+      let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_' . (has('win64') ? 'win64' : 'win32') .'.dll')
+      if !filereadable(path)
+        if has('win64')
+          let path = expand('~/.vim/lib/vimproc/vimproc_win64.dll')
+        elseif has('win32')
+          let path = expand('~/.vim/lib/vimproc/vimproc_win32.dll')
+        elseif has('win16')
+          let path = expand('~/.vim/lib/vimproc/vimproc_win16.dll')
+        endif
       endif
     endif
   elseif s:is_mac
