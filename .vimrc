@@ -2390,18 +2390,25 @@ call extend(g:neocomplcache_dictionary_filetype_lists, {
   \ 'php'         : $HOME . '/.vim/dict/php.dict',
   \ 'objc'        : $HOME . '/.vim/dict/objc.dict',
   \ 'actionscript': $HOME . '/.vim/dict/actionscript.dict',
+  \ 'autohotkey'  : $HOME . '/.vim/dict/autohotkey.dict'
   \ })
   " \ 'javascript'  : $HOME . '/.vim/dict/javascript.dict',
 
 let g:use_zen_complete_tag=1
 
-let g:neocomplcache_include_patterns.scala = '^import'
 let g:neocomplcache_vim_completefuncs.Ref = 'ref#complete'
+
 let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+
+let g:neocomplcache_include_patterns.scala = '^import'
 
 " let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplcache_delimiter_patterns.php = ['->', '::', '\']
 let g:neocomplcache_member_prefix_patterns.php = '->\|::'
+
+let g:neocomplcache_include_paths.autohotkey = '.,,'
+let g:neocomplcache_include_patterns.autohotkey = '^\s*#\s*include'
+let g:neocomplcache_include_exprs.autohotkey = ''
 
 call s:bulk_dict_variables([{
       \   'dict' : g:neocomplcache_omni_patterns,
