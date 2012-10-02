@@ -197,6 +197,7 @@ NeoBundle 'kchmck/vim-coffee-script.git'
 NeoBundle 'pekepeke/titanium-vim.git'
 NeoBundle 'jeyb/vim-jst.git'
 NeoBundle 'pekepeke/ref-jsextra-vim.git'
+NeoBundle 'chikatoike/sourcemap.vim.git'
 
 " python {{{4
 " http://rope.sourceforge.net/
@@ -2313,19 +2314,110 @@ function! s:quickrun_my_settings() "{{{4
 endfunction "}}}
 MyAutocmd FileType quickrun call s:quickrun_my_settings()
 
-" watchdog {{{2
+" watchdogs {{{2
 if neobundle#is_installed('vim-watchdogs')
   call extend(g:quickrun_config, {
-        \   'watchdogs_checker/_' : {
-        \      'hook/close_quickfix/enable_failure' : 1,
-        \      'hook/close_quickfix/enable_success' : 1,
-        \      'hook/hier_update/enable' : 1,
-        \      'hook/quickfix_stateus_enable/enable' : 1,
-        \   },
-        \   'perl/watchdogs_checker' : {
-        \      'type' : 'watchdogs_checker/vimparse.pl',
-        \   },
+        \  'watchdogs_checker/_' : {
+        \    'hook/close_quickfix/enable_failure' : 1,
+        \    'hook/close_quickfix/enable_success' : 1,
+        \    'hook/hier_update/enable' : 1,
+        \    'hook/quickfix_stateus_enable/enable' : 1,
+        \  },
+        \  'perl/watchdogs_checker' : {
+        \    'type' : 'watchdogs_checker/vimparse.pl',
+        \  },
+        \  'coffee/watchdogs_checker' : {
+        \    'type' : 'watchdogs_checker/coffee',
+        \  },
+        \  'watchdogs_checker/coffee' : {
+        \    'command' : 'coffee',
+        \    'exec'    : '%c -c %o %s:p',
+        \    'quickfix/errorformat' : 'Error:\ In\ %f\\,\ %m\ on\ line\ %l,'
+        \                           . 'Error:\ In\ %f\\,\ Parse\ error\ on\ line\ %l:\ %m,'
+        \                           . 'SyntaxError:\ In\ %f\\,\ %m,'
+        \                           . '%-G%.%#',
+        \  },
+        \  'applescript/watchdogs_checker' : {
+        \    'type' : 'watchdogs_checker/osacompile',
+        \  },
+        \  'watchdogs_checker/osacompile' : {
+        \    'command' : 'osacompile',
+        \     'exec'    : '%c -o %o %s:p',
+        \     'quickfix/errorformat' : '%f:%l:%m',
+        \  },
+        \  'csharp/watchdogs_checker' : {
+        \    'type' : 'watchdogs_checker/mcs',
+        \  },
+        \  'watchdogs_checker/mcs' : {
+        \    'command' : 'mcs',
+        \     'exec'    : '%c --parse %o %s:p',
+        \     'quickfix/errorformat' : '%f(%l\,%c): %trror %m',
+        \  },
+        \  'haml/watchdogs_checker' : {
+        \    'type' : 'watchdogs_checker/haml',
+        \  },
+        \  'watchdogs_checker/haml' : {
+        \    'command' : 'haml',
+        \     'exec'    : '%c -c %o %s:p',
+        \     'quickfix/errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
+        \  },
+        \  'objc/watchdogs_checker' : {
+        \    'type' : 'watchdogs_checker/gcc_objc',
+        \  },
+        \  'watchdogs_checker/gcc_objc' : {
+        \    'command' : 'gcc',
+        \     'exec'    : '%c -fsyntax-only -lobjc %o %s:p',
+        \     'quickfix/errorformat' : '%-G%f:%s:,'
+        \                            . '%f:%l:%c: %trror: %m,'
+        \                            . '%f:%l:%c: %tarning: %m,'
+        \                            . '%f:%l:%c: %m,'
+        \                            . '%f:%l: %trror: %m,'
+        \                            . '%f:%l: %tarning: %m,'
+        \                            . '%f:%l: %m',
+        \  },
+        \  'cucumber/watchdogs_checker' : {
+        \    'type' : 'watchdogs_checker/cucumber',
+        \  },
+        \  'watchdogs_checker/cucumber' : {
+        \    'command' : 'cucumber',
+        \     'exec'    : '%c --dry-run --quiet --strict --format pretty %o %s:p',
+        \     'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
+        \  },
+        \  'lua/watchdogs_checker' : {
+        \    'type' : 'watchdogs_checker/luac',
+        \  },
+        \  'watchdogs_checker/luac' : {
+        \    'command' : 'luac',
+        \     'exec'    : '%c -p %o %s:p',
+        \     'quickfix/errorformat' : 'luac: %#%f:%l: %m',
+        \  },
+        \  'eruby/watchdogs_checker' : {
+        \    'type' : 'watchdogs_checker/ruby_erb',
+        \  },
+        \  'watchdogs_checker/erubis' : {
+        \    'command' : 'erubis',
+        \     'exec'    : '%c -z %o %s:p',
+        \     'quickfix/errorformat' : '%f:%l:%m',
+        \  },
+        \  'watchdogs_checker/ruby_erb' : {
+        \    'command' : 'ruby',
+        \     'exec'    : '%c  -rerb -e "puts ERB.new('
+        \            . 'File.read(''%s:p'').gsub(''<\%='', ''<\%'')'
+        \            . ', nil, ''-'').src" | %c -c %o',
+        \     'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error\, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
+        \  },
         \ })
+        " ruby_erb => does not run well " \     'quickfix/errorformat' : '-:%l: %m',
+
+        " \  '/watchdogs_checker' : {
+        " \    'type' : 'watchdogs_checker/',
+        " \  },
+        " \  'watchdogs_checker/' : {
+        " \    'command' : '',
+        " \     'exec'    : '%c -c %o %s:p',
+        " \     'quickfix/errorformat' : '',
+        " \  },
+
   call watchdogs#setup(g:quickrun_config)
   let g:watchdogs_check_BufWritePost_enable = 1
 endif
@@ -2339,16 +2431,6 @@ let g:neocomplcache_snippets_dir                        = $HOME . '/.vim/snippet
 let g:neocomplcache_enable_at_startup                   = 1
 let g:neocomplcache_cursor_hold_i_time                  = 500
 if !has('vim_starting') | silent exe 'NeoComplCacheEnable' | endif
-
-call s:initialize_global_dict('neocomplcache_', [
-      \ 'keyword_patterns',
-      \ 'dictionary_filetype_lists',
-      \ 'source_disable',
-      \ 'include_patterns', 'vim_completefuncs', 
-      \ 'omni_patterns', 'delimiter_patterns',
-      \ 'same_filetype_lists', 'member_prefix_patterns',
-      \ 'next_keyword_patterns',
-      \ ])
 
 let g:neocomplcache_max_list = 100  " 補完候補の数
 let g:neocomplcache_enable_auto_select = 1   " 一番目の候補を自動選択
@@ -2374,6 +2456,18 @@ let g:neocomplcache_min_syntax_length                   = 3
   " \ 'keyword_complete'  : 2,
   " \ 'omni_complete'     : 1,
   " \ }
+
+call s:initialize_global_dict('neocomplcache_', [
+      \ 'keyword_patterns',
+      \ 'dictionary_filetype_lists',
+      \ 'source_disable',
+      \ 'include_patterns', 'vim_completefuncs', 
+      \ 'omni_patterns', 'delimiter_patterns',
+      \ 'same_filetype_lists', 'member_prefix_patterns',
+      \ 'next_keyword_patterns',
+      \ 'include_exprs',
+      \ 'include_paths',
+      \ ])
 
 let g:neocomplcache_keyword_patterns.default = '\h\w*' " 日本語をキャッシュしない
 
@@ -2659,9 +2753,9 @@ function! s:vimfiler_tree_edit(method) "{{{4
   let linenr = line('.')
   let context = s:vimfiler_create_action_context(a:method, linenr)
   "wincmd p
-  let cur_nr = bufnr()
+  let cur_nr = bufnr('%')
   silent wincmd l
-  if cur_nr == bufnr()
+  if cur_nr == bufnr('%')
     silent wincmd v
   endif
   " call vimfiler#mappings#do_action(a:method, linenr)
