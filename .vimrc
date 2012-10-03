@@ -319,7 +319,7 @@ endif
 
 " common {{{3
 NeoBundle 'mattn/benchvimrc-vim.git'
-NeoBundle 'Shougo/vimfiler.git'
+NeoBundle 'Shougo/vimfiler.git', {'depends': 'Shougo/unite.vim.git'}
 if s:is_win && !has('win32unix')
   if executable('gcc')
     if has('win64')
@@ -369,7 +369,7 @@ NeoBundle 'h1mesuke/vim-alignta.git'
 " NeoBundle 'vim-scripts/YankRing.vim.git'
 " NeoBundle 'chrismetcalf/vim-yankring.git'
 NeoBundle 'the-isz/MinYankRing.vim.git'
-NeoBundle 'kien/ctrlp.vim.git'
+NeoBundleLazy 'kien/ctrlp.vim.git'
 NeoBundle 'glidenote/memolist.vim.git'
 
 NeoBundle 'othree/eregex.vim.git'
@@ -415,6 +415,7 @@ NeoBundle 'kana/vim-operator-replace.git'
 NeoBundle 'kana/vim-operator-user.git'
 NeoBundle 'tyru/operator-camelize.vim.git'
 NeoBundle 'tyru/operator-html-escape.vim.git'
+NeoBundle 'pekepeke/vim-operator-shuffle.git'
 
 " textobj {{{3
 NeoBundle 'kana/vim-textobj-user.git'
