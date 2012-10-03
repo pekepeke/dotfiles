@@ -1852,7 +1852,7 @@ inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-inser
 
 command! Todos silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
 
-" cmd-t
+" cmd-t {{{3
 function! s:get_cmd_t_key(key)
   return printf("<%s-%s>", has('gui_macvim') ? "D" : "A", a:key)
 endfunction
@@ -1861,6 +1861,7 @@ if neobundle#is_installed('vimproc')
 else
   execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ':<C-u>Unite file_rec -start-insert<CR>'
 endif
+execute 'nnoremap' '<silent>' s:get_cmd_t_key("r") ':<C-u>Unite outline -start-insert<CR>'
 
 MyAutocmd FileType unite call s:unite_my_settings() "{{{3
 function! s:unite_my_settings()
