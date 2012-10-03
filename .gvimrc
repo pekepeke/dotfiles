@@ -1,4 +1,6 @@
-" basic settings "{{{
+" basic settings "{{{1
+scriptencoding utf-8
+
 set columns=100
 set lines=70
 set guioptions-=T
@@ -10,13 +12,13 @@ set cmdheight=1
 " set mousehide
 
 " autocmd BufReadPost * tab ball
-"}}}
 
-" environment settings "{{{
-let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
+" environment settings "{{{1
+let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') ||
+      \ (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
 
-if s:is_win
+if s:is_win " {{{2
   "set guifont=MS_Gothic:h10:cSHIFTJIS
   "set guifont=MeiryoConsolas:h9:cSHIFTJIS
   "set guifont=Anonymous\ Pro:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
@@ -42,17 +44,22 @@ if s:is_win
     set ambiwidth=auto
   endif
 
-elseif s:is_mac
+elseif s:is_mac "{{{2
   if exists('&macatsui')
     set nomacatsui
   endif
   if has('gui_macvim')
+    " fonts {{{3
     command! -nargs=0 Osaka set noantialias guifont=Osaka-Mono:h14 guifontwide=Osaka-Mono:h14
-    command! -nargs=0 OsakaAnti set antialias guifont=Osaka-Mono:h12 guifontwide=Osaka-Mono:h12
-    command! -nargs=0 Monaco set antialias guifont=Monaco:h12 guifontwide=Hiragino\ Kaku\ Gothic\ Pro:h14
-    command! -nargs=0 Menlo set antialias guifont=Menlo:h12 guifontwide=Hiragino\ Kaku\ Gothic\ Pro:h14
-    Monaco
+    command! -nargs=0 OsakaAnti set antialias guifont=Osaka-Mono:h14 guifontwide=Osaka-Mono:h14
+    command! -nargs=0 OsakaMonaco set antialias guifont=Monaco:h12 guifontwide=Osaka-Mono:h12
+    " command! -nargs=0 Monaco set antialias guifont=Monaco:h12 guifontwide=Hiragino\ Kaku\ Gothic\ Pro:h14
+    command! -nargs=0 Monaco set antialias guifont=Monaco:h12 guifontwide=HiraKakuPro-W3:h14
+    command! -nargs=0 Menlo set antialias guifont=Menlo:h12 guifontwide=HiraKakuPro-W3:h14
+    " Monaco
+    OsakaMonaco
 
+    " etc settings {{{3
     if has('printer')
       set printfont=Osaka-Mono:h14
     endif
@@ -65,30 +72,33 @@ elseif s:is_mac
     set fuoptions=maxvert,maxhorz
     " MyAutocmd GUIEnter * set fullscreen
 
-    nnoremap <silent> gwn :macaction selectNextWindow:<CR>
-    nnoremap <silent> gwp :macaction selectPreviousWindow:<CR>
-
-    inoremap <silent> <Esc> <Esc>:set iminsert=0<CR>
-
-    nnoremap <C-D-=> :<C-u>call SetTransparency("+")<CR>
-    nnoremap <C-D--> :<C-u>call SetTransparency("-")<CR>
-
-    nnoremap <S-LeftMouse> :<C-u>help<Space><C-r><C-W><CR>
-    nnoremap <D-Up> zk
-    nnoremap <D-Down> zj
-
-    function! SetTransparency(ope)
+    " keybinds {{{3
+    function! s:set_transparency(ope)
       execute "let newval = &transparency " . a:ope . " " . 10
       let newval = (newval <   0) ? 0   : newval
       let newval = (newval > 100) ? 100 : newval
       let &transparency = newval
     endfunction
+
+    nnoremap <silent> gwn :macaction selectNextWindow:<CR>
+    nnoremap <silent> gwp :macaction selectPreviousWindow:<CR>
+
+    inoremap <silent> <Esc> <Esc>:set iminsert=0<CR>
+
+    nnoremap <C-D-=> :<C-u>call <SID>set_transparency("+")<CR>
+    nnoremap <C-D--> :<C-u>call <SID>set_transparency("-")<CR>
+
+    nnoremap <S-LeftMouse> :<C-u>help<Space><C-r><C-W><CR>
+    nnoremap <D-Up> zk
+    nnoremap <D-Down> zj
+
+    " unbind menu keys {{{3
+    macmenu File.New\ Tab key=<nop>
+    
   endif
-else " unix setting
+else " unix setting {{{2
   "set guifont=VL\ ゴシック\ 12
   set guifont=Inconsolata\ 11
 endif
-" }}}
-
 "source $HOME/.vimrc
-
+" __END__ {{{1

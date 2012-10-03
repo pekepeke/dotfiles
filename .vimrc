@@ -1,6 +1,7 @@
 " init setup {{{1
 " platform detection {{{2
-let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
+let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') ||
+      \ (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
 
 " reset settings & restore runtimepath {{{2
@@ -1849,6 +1850,16 @@ nnoremap <silent> [unite]rq :<C-u>UniteResume qfix<CR>
 inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-insert<CR>
 
 command! Todos silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
+
+" cmd-t
+function! s:get_cmd_t_key(key)
+  return printf("<%s-%s>", has('gui_macvim') ? "D" : "A", a:key)
+endfunction
+if neobundle#is_installed('vimproc')
+  execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ':<C-u>Unite file_rec/async -start-insert<CR>'
+else
+  execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ':<C-u>Unite file_rec -start-insert<CR>'
+endif
 
 MyAutocmd FileType unite call s:unite_my_settings() "{{{3
 function! s:unite_my_settings()
