@@ -109,6 +109,7 @@ NeoBundle 'gregsexton/MatchTag.git'
 " NeoBundle 'Raimondi/delimitMate.git'
 NeoBundle 'kana/vim-smartinput.git'
 NeoBundle 'acustodioo/vim-enter-indent.git'
+" NeoBundle 'dahu/vim-fanfingtastic.git'
 
 NeoBundle 'tpope/vim-unimpaired.git'
 NeoBundle 'vim-scripts/ShowMultiBase.git'
@@ -173,8 +174,9 @@ NeoBundle 'cakebaker/scss-syntax.vim.git'
 NeoBundle 'wavded/vim-stylus.git'
 NeoBundle 'groenewege/vim-less.git'
 NeoBundle 'bbommarito/vim-slim.git'
-NeoBundle 'miripiruni/CSScomb-for-Vim.git'
-NeoBundle 'ap/vim-css-color.git'
+NeoBundleLazyOn css,sass,scss,less 'miripiruni/CSScomb-for-Vim.git'
+" NeoBundle 'ap/vim-css-color.git'
+NeoBundle 'Rykka/colorv.vim.git'
 " if !(s:is_mac && has('gui'))
 "   NeoBundle 'ap/vim-css-color.git'
 " else
@@ -231,6 +233,7 @@ NeoBundle 'plasticboy/vim-markdown.git'
 NeoBundle 'thinca/vim-ft-markdown_fold.git'
 NeoBundle 'timcharper/textile.vim.git'
 NeoBundle 'chrisbra/csv.vim.git'
+NeoBundle 'henrik/vim-yaml-flattener.git'
 
 NeoBundle 'motemen/hatena-vim.git'
 NeoBundle 'nvie/vim-rst-tables.git'
@@ -274,6 +277,9 @@ if has('ruby') && executable('sprout-as3')
   NeoBundle 'endel/flashdevelop.vim.git'
   NeoBundle 'tomtom/tlib_vim.git'
   NeoBundle 'airblade/vim-rooter.git'
+endif
+if executable('loga')
+  NeoBundle 'tacahiroy/vim-logaling.git'
 endif
 
 " unite.vim {{{3
@@ -449,8 +455,8 @@ NeoBundle 'coderifous/textobj-word-column.vim.git'
 NeoBundle 'vim-scripts/cecutil.git'
 
 " afterexec for runtimepath {{{1
-syntax enable
 filetype plugin indent on
+syntax enable
 
 " etc settings {{{2
 if filereadable(expand('~/.vimrc.personal'))
@@ -466,7 +472,6 @@ endif
 set background=dark
 
 function s:my_highlight_defines() "{{{2
-  highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
   highlight NonText term=underline ctermfg=darkgray guifg=darkgray
   highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
   " highlight link IdeographicSpace Error
@@ -477,6 +482,7 @@ function s:my_highlight_defines() "{{{2
   "hi CursorLine gui=underline term=underline cterm=underline
   " highlight CursorLine ctermbg=black guibg=black
   highlight link VimShellError WarningMsg
+  " highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
 endfunction
 
 function s:my_additional_syntaxes() "{{{2
@@ -505,9 +511,10 @@ if has('gui')
   augroup my-gui-colorscheme "{{{2
     autocmd!
     autocmd GUIEnter * colorscheme vividchalk
-    if s:is_mac && has('gui')
+    if has('gui_macvim')
       " macvim .... -_-###
       autocmd GUIEnter * call <SID>my_highlight_defines()
+      autocmd BufRead,BufNewFile * syntax enable
     endif
   augroup END
 endif
@@ -707,7 +714,7 @@ set directory=~/.tmp,/var/tmp,/tmp
 " IME の設定 {{{2
 if has('kaoriya') | set iminsert=0 imsearch=0 | endif
 
-MyAutocmd BufRead,BufNewFile * call LcdCurrentOrProjDir()
+MyAutocmd BufEnter * call LcdCurrentOrProjDir()
 if !exists('g:my_lcd_autochdir')
   let g:my_lcd_autochdir = 1
 endif
@@ -1102,7 +1109,7 @@ function! s:my_quickfix_settings()
 endfunction
 
 " quickfix のエラー箇所を波線でハイライト
-let g:hier_highlight_group_qf  = "qf_error_ucurl"
+" let g:hier_highlight_group_qf  = "qf_error_ucurl"
 function! s:my_make_settings()
   HierUpdate
   QuickfixStatusEnable
@@ -1795,11 +1802,11 @@ nnoremap <Space>R :<C-u>Unite quicklearn -immediately<CR>
 
 
 " if my#util#has_plugin('vimproc')
-if neobundle#is_installed('vimproc')
-  UniteNMap a file_rec/async -start-insert
-else
-  UniteNMap a file_rec -start-insert
-endif
+" if neobundle#is_installed('vimproc')
+"   UniteNMap a file_rec/async -start-insert
+" else
+UniteNMap a file_rec -start-insert
+" endif
 
 " nnoremap <silent> [unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
 nnoremap <silent> [unite]h :<C-u>call <SID>smart_unite_ref_launch()<CR>
@@ -1856,11 +1863,17 @@ command! Todos silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd(
 function! s:get_cmd_t_key(key)
   return printf("<%s-%s>", has('gui_macvim') ? "D" : "A", a:key)
 endfunction
-if neobundle#is_installed('vimproc')
-  execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ':<C-u>Unite file_rec/async -start-insert<CR>'
-else
-  execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ':<C-u>Unite file_rec -start-insert<CR>'
-endif
+function! s:unite_project(...)
+  let opts = (a:0 ? join(a:000, ' ') : '')
+  let dir = unite#util#path2project_directory(expand('%'))
+  execute 'Unite' opts 'file_rec:' . dir
+endfunction
+" if neobundle#is_installed('vimproc')
+"   execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ':<C-u>Unite file_rec/async -start-insert<CR>'
+" else
+" execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ':<C-u>Unite file_rec -start-insert<CR>'
+execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>call <SID>unite_project('-start-insert')<CR>"
+" endif
 execute 'nnoremap' '<silent>' s:get_cmd_t_key("r") ':<C-u>Unite outline -start-insert<CR>'
 
 MyAutocmd FileType unite call s:unite_my_settings() "{{{3
@@ -2957,6 +2970,8 @@ if s:is_mac "{{{3
   command! This silent execute '!open' shellescape(expand('%:p'))
   command! In silent execute '!osascript' '-e' "'tell application \"Terminal\" to do script \"cd ".expand('%:p:h')."; clear;\"'"
   command! -nargs=1 -complete=file That silent execute '!open' shellescape(expand(<f-args>), 1)
+  command! SublimeEdit silent execute '!open' '-a' 'Sublime\ Text\ 2' shellescape(expand('%:p'))
+  command! CotEdit silent execute '!open' '-a' 'CotEditor' shellescape(expand('%:p'))
 elseif s:is_win "{{{3
   " Utility command for Windows
   command! Here silent execute '!explorer' substitute(expand('%:p:h'), '/', '\', 'g')

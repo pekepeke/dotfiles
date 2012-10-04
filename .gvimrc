@@ -22,7 +22,9 @@ if s:is_win " {{{2
   "set guifont=MS_Gothic:h10:cSHIFTJIS
   "set guifont=MeiryoConsolas:h9:cSHIFTJIS
   "set guifont=Anonymous\ Pro:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
-  set guifont=Consolas:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
+  command! -nargs=0 Consolas set guifont=Consolas:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
+  command! -nargs=0 Ricty set guifont=Ricty:h12 guifontwide=Ricty:h12
+  Consolas
 
   if has('printer')
     set printfont=MS_Gothic:h12:cSHIFTJIS
@@ -56,8 +58,10 @@ elseif s:is_mac "{{{2
     " command! -nargs=0 Monaco set antialias guifont=Monaco:h12 guifontwide=Hiragino\ Kaku\ Gothic\ Pro:h14
     command! -nargs=0 Monaco set antialias guifont=Monaco:h12 guifontwide=HiraKakuPro-W3:h14
     command! -nargs=0 Menlo set antialias guifont=Menlo:h12 guifontwide=HiraKakuPro-W3:h14
+    command! -nargs=0 Ricty set antialias guifont=Ricty:h14 guifontwide=Ricty:h14
     " Monaco
-    OsakaMonaco
+    " OsakaMonaco
+    Ricty
 
     " etc settings {{{3
     if has('printer')
@@ -98,7 +102,8 @@ elseif s:is_mac "{{{2
   endif
 else " unix setting {{{2
   "set guifont=VL\ ゴシック\ 12
-  set guifont=Inconsolata\ 11
+  command! -nargs=0 Inconsolata set guifont=Inconsolata\ 11
+  command! -nargs=0 Ricty set guifont=Ricty\ 14
 endif
 "source $HOME/.vimrc
 " __END__ {{{1

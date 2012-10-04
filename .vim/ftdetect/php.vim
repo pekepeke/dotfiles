@@ -5,4 +5,5 @@ autocmd! BufNewFile,BufRead *.tpl
       \ | setl filetype=html.twig
       \ | endif
 
+autocmd BufNewFile,BufRead *.php,*.phpm,*.inc set filetype=php
 autocmd BufNewFile,BufRead *.ctp,*.thtml set filetype=php
