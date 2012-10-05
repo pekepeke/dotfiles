@@ -3,6 +3,8 @@
 let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') ||
       \ (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
+function! s:nop(...)
+endfunction
 
 " reset settings & restore runtimepath {{{2
 let s:configured_runtimepath = &runtimepath
@@ -16,11 +18,6 @@ else
   let &runtimepath=s:configured_runtimepath
 endif
 unlet s:configured_runtimepath
-
-" regenerate $PATH {{{2
-if !s:is_win
-  call my#ui#regenerate_unix_path()
-endif
 
 " for win shell {{{2
 if s:is_win
@@ -59,6 +56,8 @@ if has('vim_starting')
 
   set runtimepath+=~/.vim/neobundle.vim
   call neobundle#rc(g:my_bundle_dir)
+
+  syntax enable
 endif
 
 augroup my-neobundle-lazy-group
@@ -69,283 +68,284 @@ function s:my_neobundle_lazy_on(modes, sources)
   let mode = type(a:modes) == type([]) ? join(a:modes, ",") : a:modes
   for uri in sources
     execute 'NeoBundleLazy' uri
-    let name = substitute(fnamemodify(uri, ':te'), "\\.git[\"']*$\\|['\"]$'", '', '')
-    execute 'autocmd' 'my-neobundle-lazy-group' 'FileType' mode 'NeoBundleSource' name
+    let name = fnamemodify(uri, ':te')
+    let name = substitute(name, '^[''"]*\|\.git[''"]*$\|[''"]*$', '', 'g')
+    execute 'autocmd' 'my-neobundle-lazy-group' 'FileType' mode 'silent' 'NeoBundleSource' name
   endfor
 endfunction
 command! -nargs=+ NeoBundleLazyOn call <SID>my_neobundle_lazy_on(<f-args>)
 
 " vundles {{{2
-NeoBundle 'Lokaltog/vim-powerline.git'
+NeoBundle 'Lokaltog/vim-powerline'
 " colorscheme {{{3
-NeoBundle 'tomasr/molokai.git'
-NeoBundle 'mrkn/mrkn256.vim.git'
-NeoBundle 'tpope/vim-vividchalk.git'
-NeoBundle 'depuracao/vim-darkdevel.git'
+NeoBundle 'tomasr/molokai'
+NeoBundle 'mrkn/mrkn256.vim'
+NeoBundle 'tpope/vim-vividchalk'
+NeoBundle 'depuracao/vim-darkdevel'
 NeoBundle 'goatslacker/mango.vim'
-NeoBundle 'jpo/vim-railscasts-theme.git'
-NeoBundle 'fmoralesc/vim-vitamins.git'
-NeoBundle 'jnurmine/Zenburn.git'
-NeoBundle 'gregsexton/Atom.git'
-NeoBundle 'vim-scripts/rdark.git'
-NeoBundle 'vim-scripts/Lucius.git'
-NeoBundle 'altercation/vim-colors-solarized.git'
+NeoBundle 'jpo/vim-railscasts-theme'
+NeoBundle 'fmoralesc/vim-vitamins'
+NeoBundle 'jnurmine/Zenburn'
+NeoBundle 'gregsexton/Atom'
+NeoBundle 'vim-scripts/rdark'
+NeoBundle 'vim-scripts/Lucius'
+NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'nanotech/jellybeans.vim'
-NeoBundle 'StanAngeloff/vim-zend55.git'
-NeoBundle 'w0ng/vim-hybrid.git'
+NeoBundle 'StanAngeloff/vim-zend55'
+NeoBundle 'w0ng/vim-hybrid'
 
 " lang {{{3
 " basic {{{4
-NeoBundle 'thinca/vim-quickrun.git'
-NeoBundle 'osyo-manga/shabadou.vim.git'
-NeoBundle 'osyo-manga/vim-watchdogs.git'
-NeoBundle 'kien/rainbow_parentheses.vim.git'
-NeoBundle 'vim-scripts/matchit.zip.git'
-NeoBundle 'vim-scripts/ruby-matchit.git'
-NeoBundle 'vim-scripts/matchparenpp.git'
-NeoBundle 'AndrewRadev/splitjoin.vim.git'
-NeoBundle 'AndrewRadev/inline_edit.vim.git'
-NeoBundle 'gregsexton/MatchTag.git'
-" NeoBundle 'Raimondi/delimitMate.git'
-NeoBundle 'kana/vim-smartinput.git'
-NeoBundle 'acustodioo/vim-enter-indent.git'
-" NeoBundle 'dahu/vim-fanfingtastic.git'
+NeoBundle 'thinca/vim-quickrun'
+NeoBundle 'osyo-manga/shabadou.vim'
+NeoBundle 'osyo-manga/vim-watchdogs'
+NeoBundle 'kien/rainbow_parentheses.vim'
+NeoBundle 'vim-scripts/matchit.zip'
+NeoBundle 'vim-scripts/ruby-matchit'
+NeoBundle 'vim-scripts/matchparenpp'
+NeoBundle 'AndrewRadev/splitjoin.vim'
+NeoBundle 'AndrewRadev/inline_edit.vim'
+NeoBundle 'gregsexton/MatchTag'
+" NeoBundle 'Raimondi/delimitMate'
+NeoBundle 'kana/vim-smartinput'
+NeoBundle 'acustodioo/vim-enter-indent'
+" NeoBundle 'dahu/vim-fanfingtastic'
 
-NeoBundle 'tpope/vim-unimpaired.git'
-NeoBundle 'vim-scripts/ShowMultiBase.git'
-NeoBundle 'tyru/current-func-info.vim.git'
-" NeoBundle 'vim-scripts/taglist.vim.git'
-NeoBundle 'majutsushi/tagbar.git'
-" NeoBundle 'abudden/TagHighlight.git'
-NeoBundle 'tomtom/tcomment_vim.git'
-" NeoBundle 'scrooloose/nerdcommenter.git'
-NeoBundle 'thinca/vim-template.git'
-NeoBundle 'mattn/sonictemplate-vim.git'
-NeoBundle 'ciaranm/detectindent.git'
-" NeoBundle 'ujihisa/shadow.vim.git'
-"NeoBundle 'motemen/git-vim.git'
-NeoBundle 'tpope/vim-fugitive.git'
-NeoBundle 'int3/vim-extradite.git'
-NeoBundle 'Shougo/vim-vcs.git'
-NeoBundle 'sjl/splice.vim.git'
-NeoBundle 'vim-scripts/DirDiff.vim.git'
-NeoBundleLazy 'mbadran/headlights.git'
-NeoBundle 'thinca/vim-ft-diff_fold.git'
+NeoBundle 'tpope/vim-unimpaired'
+NeoBundle 'vim-scripts/ShowMultiBase'
+NeoBundle 'tyru/current-func-info.vim'
+" NeoBundle 'vim-scripts/taglist.vim'
+NeoBundle 'majutsushi/tagbar'
+" NeoBundle 'abudden/TagHighlight'
+NeoBundle 'tomtom/tcomment_vim'
+" NeoBundle 'scrooloose/nerdcommenter'
+NeoBundle 'thinca/vim-template'
+NeoBundle 'mattn/sonictemplate-vim'
+NeoBundle 'ciaranm/detectindent'
+" NeoBundle 'ujihisa/shadow.vim'
+"NeoBundle 'motemen/git-vim'
+NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'int3/vim-extradite'
+NeoBundle 'Shougo/vim-vcs'
+NeoBundle 'sjl/splice.vim'
+NeoBundle 'vim-scripts/DirDiff.vim'
+NeoBundleLazy 'mbadran/headlights'
+NeoBundle 'thinca/vim-ft-diff_fold'
 
 " help {{{4
-NeoBundle 'thinca/vim-ref.git'
-NeoBundle 'pekepeke/ref-javadoc.git'
-NeoBundle 'soh335/vim-ref-jquery.git'
-" NeoBundle 'mojako/ref-sources.vim.git'
+NeoBundle 'thinca/vim-ref'
+NeoBundle 'pekepeke/ref-javadoc'
+NeoBundle 'soh335/vim-ref-jquery'
+" NeoBundle 'mojako/ref-sources.vim'
 
 " vim-help {{{4
-NeoBundle 'mattn/learn-vimscript.git'
+NeoBundle 'mattn/learn-vimscript'
 " git://gist.github.com/997811.git
 " git://gist.github.com/1046979.git
 
 " neocomplcache {{{4
-NeoBundle 'Shougo/neocomplcache.git'
-NeoBundle 'Shougo/neocomplcache-snippets-complete.git'
-NeoBundle 'basyura/csharp_complete.git'
-NeoBundle 'osyo-manga/neocomplcache-jsx.git'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neocomplcache-snippets-complete'
+NeoBundle 'basyura/csharp_complete'
+NeoBundle 'osyo-manga/neocomplcache-jsx'
 
 " ruby {{{4
-NeoBundle 'vim-ruby/vim-ruby.git'
-NeoBundle 'tpope/vim-rails.git'
-NeoBundle 'tpope/vim-cucumber.git'
-NeoBundleLazyOn ruby 'ecomba/vim-ruby-refactoring.git'
-NeoBundle 'vim-scripts/eruby.vim.git'
-NeoBundle 'tobiassvn/vim-gemfile.git'
-"NeoBundle 'astashov/vim-ruby-debugger.git'
-NeoBundle 't9md/vim-chef.git'
-NeoBundle 'taq/vim-rspec.git'
+NeoBundle 'vim-ruby/vim-ruby'
+NeoBundle 'tpope/vim-rails'
+NeoBundle 'tpope/vim-cucumber'
+NeoBundleLazyOn ruby 'ecomba/vim-ruby-refactoring'
+NeoBundle 'vim-scripts/eruby.vim'
+NeoBundle 'tobiassvn/vim-gemfile'
+"NeoBundle 'astashov/vim-ruby-debugger'
+NeoBundle 't9md/vim-chef'
+NeoBundle 'taq/vim-rspec'
 
 " html {{{4
-NeoBundle 'othree/html5.vim.git'
-" NeoBundle 'mattn/zencoding-vim.git'
-NeoBundle 'tpope/vim-haml.git'
-NeoBundle 'digitaltoad/vim-jade.git'
-NeoBundleLazyOn html 'mattn/zencoding-vim.git'
-NeoBundleLazyOn html,haml,jade 'vim-scripts/indenthtml.vim.git'
+NeoBundle 'othree/html5.vim'
+" NeoBundle 'mattn/zencoding-vim'
+NeoBundle 'tpope/vim-haml'
+NeoBundle 'digitaltoad/vim-jade'
+NeoBundleLazyOn html 'mattn/zencoding-vim'
+NeoBundleLazyOn html,haml,jade 'vim-scripts/indenthtml.vim'
 
 " css {{{4
-NeoBundle 'hail2u/vim-css3-syntax.git'
-NeoBundle 'cakebaker/scss-syntax.vim.git'
-NeoBundle 'wavded/vim-stylus.git'
-NeoBundle 'groenewege/vim-less.git'
-NeoBundle 'bbommarito/vim-slim.git'
-NeoBundleLazyOn css,sass,scss,less 'miripiruni/CSScomb-for-Vim.git'
-" NeoBundle 'ap/vim-css-color.git'
-NeoBundle 'Rykka/colorv.vim.git'
+NeoBundle 'hail2u/vim-css3-syntax'
+NeoBundle 'cakebaker/scss-syntax.vim'
+NeoBundle 'wavded/vim-stylus'
+NeoBundle 'groenewege/vim-less'
+NeoBundle 'bbommarito/vim-slim'
+NeoBundleLazyOn css,sass,scss,less 'miripiruni/CSScomb-for-Vim'
+" NeoBundle 'ap/vim-css-color'
+NeoBundle 'Rykka/colorv.vim'
 " if !(s:is_mac && has('gui'))
-"   NeoBundle 'ap/vim-css-color.git'
+"   NeoBundle 'ap/vim-css-color'
 " else
-"   NeoBundleLazy 'ap/vim-css-color.git'
+"   NeoBundleLazy 'ap/vim-css-color'
 " endif
-NeoBundle 'vim-scripts/cssbaseline.vim.git'
-NeoBundleLazyOn css,sass,scss,less 'bae22/prefixer.git'
+NeoBundle 'vim-scripts/cssbaseline.vim'
+NeoBundleLazyOn css,sass,scss,less 'bae22/prefixer'
 
 " javascript {{{4
-NeoBundle 'pangloss/vim-javascript.git'
-NeoBundle 'teramako/jscomplete-vim.git'
-NeoBundle 'myhere/vim-nodejs-complete.git'
-" NeoBundle 'drslump/vim-syntax-js.git'
-NeoBundle 'vim-scripts/jQuery.git'
-" NeoBundle 'lukaszb/vim-web-indent.git'
-" NeoBundle 'vim-scripts/IndentAnything.git'
+NeoBundle 'pangloss/vim-javascript'
+NeoBundle 'teramako/jscomplete-vim'
+NeoBundle 'myhere/vim-nodejs-complete'
+" NeoBundle 'drslump/vim-syntax-js'
+NeoBundle 'vim-scripts/jQuery'
+" NeoBundle 'lukaszb/vim-web-indent'
+" NeoBundle 'vim-scripts/IndentAnything'
 " NeoBundle 'itspriddle/vim-javascript-indent'
-" NeoBundle 'jiangmiao/simple-javascript-indenter.git'
-NeoBundle 'vim-scripts/Dart.git'
-NeoBundle 'kchmck/vim-coffee-script.git'
-NeoBundle 'pekepeke/titanium-vim.git'
-NeoBundle 'jeyb/vim-jst.git'
-NeoBundle 'pekepeke/ref-jsextra-vim.git'
-NeoBundle 'chikatoike/sourcemap.vim.git'
+" NeoBundle 'jiangmiao/simple-javascript-indenter'
+NeoBundle 'vim-scripts/Dart'
+NeoBundle 'kchmck/vim-coffee-script'
+NeoBundle 'pekepeke/titanium-vim'
+NeoBundle 'jeyb/vim-jst'
+NeoBundle 'pekepeke/ref-jsextra-vim'
+NeoBundle 'chikatoike/sourcemap.vim'
 
 " python {{{4
 " http://rope.sourceforge.net/
-" NeoBundle 'klen/python-mode.git'
-NeoBundleLazyOn python 'vim-scripts/python_match.vim.git'
-NeoBundleLazyOn python 'lambdalisue/vim-python-virtualenv.git'
-" NeoBundle 'lambdalisue/vim-django-support.git'
-NeoBundleLazyOn python 'gerardo/vim-django-support.git'
-" NeoBundle 'sontek/rope-vim.git'
+" NeoBundle 'klen/python-mode'
+NeoBundleLazyOn python 'vim-scripts/python_match.vim'
+NeoBundleLazyOn python 'lambdalisue/vim-python-virtualenv'
+" NeoBundle 'lambdalisue/vim-django-support'
+NeoBundleLazyOn python 'gerardo/vim-django-support'
+" NeoBundle 'sontek/rope-vim'
 " if executable('ipython')
-"   NeoBundleLazy 'ivanov/vim-ipython.git'
+"   NeoBundleLazy 'ivanov/vim-ipython'
 " endif
 
 " perl {{{4
-NeoBundle 'petdance/vim-perl.git'
+NeoBundle 'petdance/vim-perl'
 
 " OSX {{{4
-NeoBundle 'nanki/vim-objj.git'
-NeoBundle 'pekepeke/cocoa.vim.git'
-NeoBundle 'vim-scripts/applescript.vim.git'
+NeoBundle 'nanki/vim-objj'
+NeoBundle 'pekepeke/cocoa.vim'
+NeoBundle 'vim-scripts/applescript.vim'
 
 " android {{{4
-NeoBundle 'thinca/vim-logcat.git'
+NeoBundle 'thinca/vim-logcat'
 
 " scala {{{4
-NeoBundle 'derekwyatt/vim-scala.git'
+NeoBundle 'derekwyatt/vim-scala'
 
 " texts {{{4
-NeoBundle 'plasticboy/vim-markdown.git'
-NeoBundle 'thinca/vim-ft-markdown_fold.git'
-NeoBundle 'timcharper/textile.vim.git'
-NeoBundle 'chrisbra/csv.vim.git'
-NeoBundle 'henrik/vim-yaml-flattener.git'
+NeoBundle 'plasticboy/vim-markdown'
+NeoBundle 'thinca/vim-ft-markdown_fold'
+NeoBundle 'timcharper/textile.vim'
+NeoBundle 'chrisbra/csv.vim'
+NeoBundle 'henrik/vim-yaml-flattener'
 
-NeoBundle 'motemen/hatena-vim.git'
-NeoBundle 'nvie/vim-rst-tables.git'
-NeoBundle 'vim-scripts/DrawIt.git'
-NeoBundle 'vim-scripts/sequence.git'
+NeoBundle 'motemen/hatena-vim'
+NeoBundle 'nvie/vim-rst-tables'
+NeoBundle 'vim-scripts/DrawIt'
+NeoBundle 'vim-scripts/sequence'
 
 " haskell {{{4
-" NeoBundle 'ehamberg/haskellmode-vim.git'
-NeoBundleLazyOn haskell 'ujihisa/ref-hoogle.git'
-NeoBundleLazyOn haskell 'ujihisa/neco-ghc.git'
+" NeoBundle 'ehamberg/haskellmode-vim'
+NeoBundleLazyOn haskell 'ujihisa/ref-hoogle'
+NeoBundleLazyOn haskell 'ujihisa/neco-ghc'
 
 " php {{{4
-NeoBundle 'beyondwords/vim-twig.git'
-NeoBundle 'tokutake/twig-indent.git'
-NeoBundleLazyOn php 'violetyk/cake.vim.git'
-NeoBundleLazyOn php 'justinrainbow/php-doc.vim.git'
-NeoBundleLazyOn php 'vim-scripts/phpcomplete.vim.git'
+NeoBundle 'beyondwords/vim-twig'
+NeoBundle 'tokutake/twig-indent'
+NeoBundleLazyOn php 'violetyk/cake.vim'
+NeoBundleLazyOn php 'justinrainbow/php-doc.vim'
+NeoBundleLazyOn php 'vim-scripts/phpcomplete.vim'
 
 " sql {{{4
-NeoBundle 'mattn/vdbi-vim.git'
-NeoBundle 'vim-scripts/dbext.vim.git'
-NeoBundle 'vim-scripts/SQLUtilities.git'
+NeoBundle 'mattn/vdbi-vim'
+NeoBundle 'vim-scripts/dbext.vim'
+NeoBundle 'vim-scripts/SQLUtilities'
 "NeoBundle 'OmniCppComplete'
 " shell {{{4
-NeoBundle 'Shougo/vim-nyaos.git'
+NeoBundle 'Shougo/vim-nyaos'
 " etc {{{4
-NeoBundle 'sophacles/vim-processing.git'
-NeoBundle 'pekepeke/ref-processing-vim.git'
-NeoBundle 'sjl/strftimedammit.vim.git'
-NeoBundle 'tangledhelix/vim-octopress.git'
-NeoBundle 'jcfaria/Vim-R-plugin.git'
-NeoBundle 'smerrill/vcl-vim-plugin.git'
-NeoBundle 'qqshfox/vim-tmux.git'
-NeoBundle 'vim-scripts/nginx.vim.git'
-NeoBundle 'glidenote/keepalived-syntax.vim.git'
-NeoBundle 'uggedal/go-vim.git'
+NeoBundle 'sophacles/vim-processing'
+NeoBundle 'pekepeke/ref-processing-vim'
+NeoBundle 'sjl/strftimedammit.vim'
+NeoBundle 'tangledhelix/vim-octopress'
+NeoBundle 'jcfaria/Vim-R-plugin'
+NeoBundle 'smerrill/vcl-vim-plugin'
+NeoBundle 'qqshfox/vim-tmux'
+NeoBundle 'vim-scripts/nginx.vim'
+NeoBundle 'glidenote/keepalived-syntax.vim'
+NeoBundle 'uggedal/go-vim'
 if executable('gocode')
-  NeoBundle 'undx/vim-gocode.git'
+  NeoBundle 'undx/vim-gocode'
 endif
 if has('ruby') && executable('sprout-as3')
-  NeoBundle 'endel/flashdevelop.vim.git'
-  NeoBundle 'tomtom/tlib_vim.git'
-  NeoBundle 'airblade/vim-rooter.git'
+  NeoBundle 'endel/flashdevelop.vim'
+  NeoBundle 'tomtom/tlib_vim'
+  NeoBundle 'airblade/vim-rooter'
 endif
 if executable('loga')
-  NeoBundle 'tacahiroy/vim-logaling.git'
+  NeoBundle 'tacahiroy/vim-logaling'
 endif
 
 " unite.vim {{{3
-NeoBundle 'Shougo/unite.vim.git'
-NeoBundle 'Shougo/unite-build.git'
-NeoBundle 'Shougo/unite-help.git'
-NeoBundle 'h1mesuke/unite-outline.git'
-NeoBundle 'sgur/unite-git_grep.git'
-" NeoBundle 'sgur/unite-qf.git'
-NeoBundle 'osyo-manga/unite-quickfix.git'
-NeoBundle 'tacroe/unite-mark.git'
-NeoBundle 'thinca/vim-unite-history.git'
-NeoBundle 'tsukkee/unite-tag.git'
-" NeoBundle 'ujihisa/unite-launch.git'
-NeoBundle 'ujihisa/quicklearn.git'
-NeoBundle 'ujihisa/unite-gem.git'
-NeoBundle 'ujihisa/unite-rake.git'
-" NeoBundle 'basyura/unite-rails.git'
-" NeoBundle 'oppara/vim-unite-cake.git'
-" NeoBundle 'heavenshell/unite-zf.git'
-" NeoBundle 'heavenshell/unite-sf2.git'
-NeoBundle 'basyura/unite-yarm.git'
-NeoBundle 'pasela/unite-webcolorname.git'
-NeoBundle 'ujihisa/unite-colorscheme.git'
-" NeoBundle 'ujihisa/unite-font.git'
-" NeoBundle 'tacroe/unite-alias.git'
-" NeoBundle 'hakobe/unite-script.git'
-" NeoBundle 'mattn/unite-remotefile.git'
-" NeoBundle 'pekepeke/unite-fileline.git'
-NeoBundle 'zhaocai/unite-scriptnames.git'
-NeoBundle 'daisuzu/unite-grep_launcher.git'
+NeoBundle 'Shougo/unite.vim'
+NeoBundle 'Shougo/unite-build'
+NeoBundle 'Shougo/unite-help'
+NeoBundle 'h1mesuke/unite-outline'
+NeoBundle 'sgur/unite-git_grep'
+" NeoBundle 'sgur/unite-qf'
+NeoBundle 'osyo-manga/unite-quickfix'
+NeoBundle 'tacroe/unite-mark'
+NeoBundle 'thinca/vim-unite-history'
+NeoBundle 'tsukkee/unite-tag'
+" NeoBundle 'ujihisa/unite-launch'
+NeoBundle 'ujihisa/quicklearn'
+NeoBundle 'ujihisa/unite-gem'
+NeoBundle 'ujihisa/unite-rake'
+" NeoBundle 'basyura/unite-rails'
+" NeoBundle 'oppara/vim-unite-cake'
+" NeoBundle 'heavenshell/unite-zf'
+" NeoBundle 'heavenshell/unite-sf2'
+NeoBundle 'basyura/unite-yarm'
+NeoBundle 'pasela/unite-webcolorname'
+NeoBundle 'ujihisa/unite-colorscheme'
+" NeoBundle 'ujihisa/unite-font'
+" NeoBundle 'tacroe/unite-alias'
+" NeoBundle 'hakobe/unite-script'
+" NeoBundle 'mattn/unite-remotefile'
+" NeoBundle 'pekepeke/unite-fileline'
+NeoBundle 'zhaocai/unite-scriptnames'
+NeoBundle 'daisuzu/unite-grep_launcher'
 
 if s:is_win
-  "NeoBundle 'sgur/unite-everything.git'
+  "NeoBundle 'sgur/unite-everything'
 else
   if s:is_mac
-    NeoBundle 'choplin/unite-spotlight.git'
+    NeoBundle 'choplin/unite-spotlight'
   else
-    NeoBundle 'ujihisa/unite-locate.git'
+    NeoBundle 'ujihisa/unite-locate'
   endif
-  NeoBundle 'ujihisa/neco-look.git'
+  NeoBundle 'ujihisa/neco-look'
 endif
 
 " common {{{3
-NeoBundle 'mattn/benchvimrc-vim.git'
-NeoBundle 'Shougo/vimfiler.git', {'depends': 'Shougo/unite.vim.git'}
+NeoBundle 'mattn/benchvimrc-vim'
+NeoBundle 'Shougo/vimfiler', {'depends': 'Shougo/unite.vim'}
 if s:is_win && !has('win32unix')
   if executable('gcc')
     if has('win64')
-      NeoBundle 'Shougo/vimproc.git', { 'build' : {
+      NeoBundle 'Shougo/vimproc', { 'build' : {
           \     'windows' : 'make -f make_mingw64.mak',
           \   } }
     else " if has('win32')
-      NeoBundle 'Shougo/vimproc.git', { 'build' : {
+      NeoBundle 'Shougo/vimproc', { 'build' : {
           \     'windows' : 'make -f make_mingw32.mak',
           \   } }
     endif
   elseif has('win32') && executable('cl') && executable('make')
-    NeoBundle 'Shougo/vimproc.git', { 'build' : {
+    NeoBundle 'Shougo/vimproc', { 'build' : {
         \     'windows' : 'make -f make_msvc32.mak',
         \   } }
   else
-    NeoBundle 'Shougo/vimproc.git'
+    NeoBundle 'Shougo/vimproc'
   endif
 else
-  NeoBundle 'Shougo/vimproc.git', {
+  NeoBundle 'Shougo/vimproc', {
       \ 'build' : {
       \     'cygwin' : 'make -f make_cygwin.mak',
       \     'mac'    : 'make -f make_mac.mak',
@@ -353,48 +353,47 @@ else
       \   }
       \ }
 endif
-NeoBundle 'Shougo/vimshell.git'
-NeoBundle 'Shougo/vinarise.git'
-NeoBundle 'kana/vim-altr.git'
-if !s:is_win
-  NeoBundle 'kana/vim-fakeclip.git'
-endif
-NeoBundle 'kana/vim-smartchr.git'
-NeoBundle 'kana/vim-submode.git'
-NeoBundle 'tyru/vim-altercmd.git'
-NeoBundle 'vim-scripts/ShowMarks7.git'
-NeoBundle 'dannyob/quickfixstatus.git'
-NeoBundle 'jceb/vim-hier.git'
-NeoBundle 'tpope/vim-repeat.git'
-NeoBundle 'tpope/vim-surround.git'
-NeoBundle 'tpope/vim-endwise.git'
-NeoBundle 't9md/vim-surround_custom_mapping.git'
-NeoBundle 't9md/vim-textmanip.git'
-NeoBundle 'ujihisa/camelcasemotion.git'
-NeoBundle 'h1mesuke/vim-alignta.git'
-" NeoBundle 'vim-scripts/YankRing.vim.git'
-" NeoBundle 'chrismetcalf/vim-yankring.git'
-NeoBundle 'the-isz/MinYankRing.vim.git'
-NeoBundleLazy 'kien/ctrlp.vim.git'
-NeoBundle 'glidenote/memolist.vim.git'
+NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/vinarise'
+NeoBundle 'kana/vim-altr'
+NeoBundle 'kana/vim-fakeclip'
+NeoBundle 'kana/vim-smartchr'
+NeoBundle 'kana/vim-submode'
+NeoBundle 'tyru/vim-altercmd'
+NeoBundle 'vim-scripts/ShowMarks7'
+NeoBundle 'dannyob/quickfixstatus'
+NeoBundle 'jceb/vim-hier'
+NeoBundle 'tpope/vim-repeat'
+NeoBundle 'tpope/vim-surround'
+NeoBundle 'tpope/vim-endwise'
+NeoBundle 't9md/vim-surround_custom_mapping'
+NeoBundle 't9md/vim-textmanip'
+NeoBundle 'ujihisa/camelcasemotion'
+NeoBundle 'h1mesuke/vim-alignta'
+" NeoBundle 'vim-scripts/YankRing.vim'
+" NeoBundle 'chrismetcalf/vim-yankring'
+NeoBundle 'the-isz/MinYankRing.vim'
+NeoBundleLazy 'kien/ctrlp.vim'
+NeoBundle 'glidenote/memolist.vim'
 
-NeoBundle 'othree/eregex.vim.git'
-NeoBundle 'sjl/gundo.vim.git'
-NeoBundle 'kana/vim-smartword.git'
-" NeoBundle 'pekepeke/golden-ratio.git'
-" NeoBundle 'scrooloose/nerdtree.git'
-NeoBundle 'thinca/vim-qfreplace.git'
-NeoBundle 'nathanaelkane/vim-indent-guides.git'
-NeoBundle 'c9s/cascading.vim.git'
-NeoBundle 'mileszs/ack.vim.git'
-NeoBundle 'vim-scripts/MultipleSearch.git'
+NeoBundle 'othree/eregex.vim'
+NeoBundle 'sjl/gundo.vim'
+NeoBundle 'kana/vim-smartword'
+" NeoBundle 'pekepeke/golden-ratio'
+" NeoBundle 'scrooloose/nerdtree'
+NeoBundle 'thinca/vim-qfreplace'
+NeoBundle 'nathanaelkane/vim-indent-guides'
+NeoBundle 'c9s/cascading.vim'
+NeoBundle 'mileszs/ack.vim'
+NeoBundle 'vim-scripts/MultipleSearch'
+NeoBundle 'vim-scripts/sudo.vim'
 if s:is_mac
   NeoBundle 'gmarik/sudo-gui.vim'
 endif
 
 " web {{{3
-NeoBundle 'tyru/open-browser.vim.git'
-NeoBundle 'mattn/webapi-vim.git'
+NeoBundle 'tyru/open-browser.vim'
+NeoBundle 'mattn/webapi-vim'
 if executable('python')
   NeoBundle 'mattn/mkdpreview-vim'
   let plugin_path = g:my_bundle_dir . "/mkdpreview-vim/static/mkdpreview.py"
@@ -403,47 +402,49 @@ if executable('python')
   endif
   unlet plugin_path
 endif
-NeoBundle 'mattn/googletranslate-vim.git'
-NeoBundle 'thinca/vim-ambicmd.git'
-NeoBundle 'mattn/gist-vim.git'
-" NeoBundle 'mattn/vimplenote-vim.git'
-" NeoBundle 'pekepeke/vimplenote-vim.git'
-if has('python')
-  NeoBundle 'tsukkee/lingr-vim.git'
+NeoBundle 'mattn/googletranslate-vim'
+NeoBundle 'thinca/vim-ambicmd'
+NeoBundle 'mattn/gist-vim'
+" NeoBundle 'mattn/vimplenote-vim'
+" NeoBundle 'pekepeke/vimplenote-vim'
+if !has('gui') || has('python') || s:is_windows || s:is_mac
+  NeoBundle 'tsukkee/lingr-vim'
+else
+  NeoBundleLazy 'tsukkee/lingr-vim'
 endif
 
 " gf-user {{{3
-NeoBundle 'kana/vim-gf-user.git'
-NeoBundle 'kana/vim-gf-diff.git'
+NeoBundle 'kana/vim-gf-user'
+NeoBundle 'kana/vim-gf-diff'
 
 " operator {{{3
-NeoBundle 'kana/vim-operator-replace.git'
-NeoBundle 'kana/vim-operator-user.git'
-NeoBundle 'tyru/operator-camelize.vim.git'
-NeoBundle 'tyru/operator-html-escape.vim.git'
-NeoBundle 'pekepeke/vim-operator-shuffle.git'
+NeoBundle 'kana/vim-operator-replace'
+NeoBundle 'kana/vim-operator-user'
+NeoBundle 'tyru/operator-camelize.vim'
+NeoBundle 'tyru/operator-html-escape.vim'
+NeoBundle 'pekepeke/vim-operator-shuffle'
 
 " textobj {{{3
-NeoBundle 'kana/vim-textobj-user.git'
-NeoBundle 'kana/vim-textobj-datetime.git'
-NeoBundle 'kana/vim-textobj-diff.git'
-NeoBundle 'kana/vim-textobj-entire.git'
-NeoBundle 'kana/vim-textobj-fold.git'
-NeoBundle 'kana/vim-textobj-function.git'
-NeoBundle 'kana/vim-textobj-jabraces.git'
-NeoBundle 'kana/vim-textobj-lastpat.git'
-NeoBundle 'kana/vim-textobj-syntax.git'
-NeoBundle 'kana/vim-textobj-line.git'
-NeoBundle 'thinca/vim-textobj-between.git'
-" NeoBundle 'thinca/vim-textobj-comment.git'
-NeoBundle 'thinca/vim-textobj-function-javascript.git'
-NeoBundle 'thinca/vim-textobj-function-perl.git'
-NeoBundle 't9md/vim-textobj-function-ruby.git'
-NeoBundle 'nelstrom/vim-textobj-rubyblock.git'
-NeoBundle 'vim-scripts/textobj-indent.git'
-NeoBundle 'sgur/vim-textobj-parameter.git'
-NeoBundle 'h1mesuke/textobj-wiw.git'
-NeoBundle 'coderifous/textobj-word-column.vim.git'
+NeoBundle 'kana/vim-textobj-user'
+NeoBundle 'kana/vim-textobj-datetime'
+NeoBundle 'kana/vim-textobj-diff'
+NeoBundle 'kana/vim-textobj-entire'
+NeoBundle 'kana/vim-textobj-fold'
+NeoBundle 'kana/vim-textobj-function'
+NeoBundle 'kana/vim-textobj-jabraces'
+NeoBundle 'kana/vim-textobj-lastpat'
+NeoBundle 'kana/vim-textobj-syntax'
+NeoBundle 'kana/vim-textobj-line'
+NeoBundle 'thinca/vim-textobj-between'
+" NeoBundle 'thinca/vim-textobj-comment'
+NeoBundle 'thinca/vim-textobj-function-javascript'
+NeoBundle 'thinca/vim-textobj-function-perl'
+NeoBundle 't9md/vim-textobj-function-ruby'
+NeoBundle 'nelstrom/vim-textobj-rubyblock'
+NeoBundle 'vim-scripts/textobj-indent'
+NeoBundle 'sgur/vim-textobj-parameter'
+NeoBundle 'h1mesuke/textobj-wiw'
+NeoBundle 'coderifous/textobj-word-column.vim'
 
 " metarw {{{3
 " NeoBundle "mattn/vim-metarw.git"
@@ -452,11 +453,10 @@ NeoBundle 'coderifous/textobj-word-column.vim.git'
 " NeoBundle "sorah/metarw-simplenote.vim.git"
 
 " libs {{{3
-NeoBundle 'vim-scripts/cecutil.git'
+NeoBundle 'vim-scripts/cecutil'
 
 " afterexec for runtimepath {{{1
 filetype plugin indent on
-syntax enable
 
 " etc settings {{{2
 if filereadable(expand('~/.vimrc.personal'))
@@ -514,7 +514,6 @@ if has('gui')
     if has('gui_macvim')
       " macvim .... -_-###
       autocmd GUIEnter * call <SID>my_highlight_defines()
-      autocmd BufRead,BufNewFile * syntax enable
     endif
   augroup END
 endif
@@ -562,7 +561,7 @@ command! -bang -nargs=* MyAutocmd autocmd<bang> MyAuGroup <args>
 command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
 
 
-" for Filetypes {{{1
+" for filetypes {{{1
 " shebang {{{2
 if !s:is_win
   MyAutocmd BufWritePost *
@@ -693,7 +692,11 @@ augroup END
 " basic settings {{{1
 " 文字コード周り {{{2
 set encoding=utf-8
-set termencoding=utf-8
+if s:is_win && (!has('win32unix') || !has('gui_running'))
+  set termencoding=cp932
+else
+  set termencoding=utf-8
+endif
 set fileencoding=utf-8
 set fileformat=unix
 scriptencoding utf-8
@@ -944,21 +947,23 @@ endfunction
 command! -nargs=+ Tmap call s:map_textobj(<f-args>)
 
 " altercmd "{{{2
-call altercmd#load()
+if neobundle#is_installed('vim-altercmd')
+  call altercmd#load()
 
-function! s:alias_lc(...) " {{{3
-  for cmd in a:000
-    silent exe 'Alias' tolower(cmd) cmd
-  endfor
-endfunction
+  function! s:alias_lc(...) " {{{3
+    for cmd in a:000
+      silent exe 'Alias' tolower(cmd) cmd
+    endfor
+  endfunction
 
-command! -bar -nargs=+
-      \ Alias CAlterCommand <args> | AlterCommand <cmdwin> <args>
+  command! -bar -nargs=+
+        \ Alias CAlterCommand <args> | AlterCommand <cmdwin> <args>
 
-command! -nargs=+ LCAlias call s:alias_lc(<f-args>)
-" command! -nargs=0 -bang MyQ if &buftype != 'nofile' | bd<bang>
-      " \ | elseif tabpagenr('$') == 1 && winnr('$') == 1 | enew
-      " \ | else | quit<bang> | endif
+  command! -nargs=+ LCAlias call s:alias_lc(<f-args>)
+else
+  command! -bar -nargs=+ LCAlias call <SID>nop(<f-args>)
+  command! -bar -nargs=+ Alias call <SID>nop(<f-args>)
+endif
 
 " alias calls {{{2
 "Alias q bd
@@ -1021,6 +1026,21 @@ endif
 nnoremap gs :<C-u>setf<Space>
 nnoremap <C-h> :<C-u>help<Space>
 nmap Y y$
+
+" S をつぶしてみる
+noremap [SW] <Nop>
+nmap S [SW]
+
+nnoremap <silent> [SW]s S
+nnoremap <silent> [SW]S "_dd
+nnoremap <silent> [SW]d "_d
+nnoremap <silent> [SW]D "_D
+
+nnoremap <silent> x "_x
+nnoremap <silent> X "_X
+" x はたまに使う
+nnoremap <silent> [s]x x
+nnoremap <silent> [s]X X
 
 " http://vim-users.jp/2009/10/hack91/
 cnoremap <expr> /  getcmdtype() == '/' ? '\/' : '/'
@@ -1325,7 +1345,7 @@ endif
 
 " plugin settings {{{1
 " dirdiff.vim {{{2
-let g:DirDiffExcludes = "CVS,*.class,*.exe,.*.swp"
+let g:DirDiffExcludes = "CVS,*.class,*.exe,.*.swp,*.log,.git,.svn,.hg"
 let g:DirDiffIgnore = "Id:,Revision:,Date:"
 map ;dg <Plug>DirDiffGet
 map ;dp <Plug>DirDiffPut
@@ -1412,11 +1432,13 @@ function! s:sminput_define_rules()
               \   'filetype': ['cpp'],
               \   })
 endfunction
-command! SmartinputOff call smartinput#clear_rules()
-command! SmartinputOn call <SID>sminput_define_rules()
-call s:sminput_define_rules()
-" clear auto cmaps(for altercmd.vim)
-cunmap <CR>
+if neobundle#is_installed('vim-smartinput')
+  command! SmartinputOff call smartinput#clear_rules()
+  command! SmartinputOn call <SID>sminput_define_rules()
+  call s:sminput_define_rules()
+  " clear auto cmaps(for altercmd.vim)
+  cunmap <CR>
+endif
 
 " golden-ratio {{{2
 " let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler']
@@ -1443,14 +1465,6 @@ xmap <silent> i,b <Plug>CamelCaseMotion_ib
 omap <silent> i,e <Plug>CamelCaseMotion_ie
 xmap <silent> i,e <Plug>CamelCaseMotion_ie
 
-" textmanip {{{2
-nmap [space]v <Plug>(Textmanip.duplicate_selection_n)
-vmap [space]v <Plug>(Textmanip.duplicate_selection_v)
-vmap <C-j> <Plug>(Textmanip.move_selection_down)
-vmap <C-k> <Plug>(Textmanip.move_selection_up)
-vmap <C-h> <Plug>(Textmanip.move_selection_left)
-vmap <C-l> <Plug>(Textmanip.move_selection_right)
-
 " indent-guides {{{2
 let g:indent_guides_enable_on_vim_startup = 1
 if has('gui')
@@ -1465,36 +1479,40 @@ else
 endif
 
 " smartword {{{2
-nmap w  <Plug>(smartword-w)
-nmap b  <Plug>(smartword-b)
-nmap e  <Plug>(smartword-e)
-nmap ge <Plug>(smartword-ge)
-vmap w  <Plug>(smartword-w)
-vmap b  <Plug>(smartword-b)
-vmap e  <Plug>(smartword-e)
-vmap ge <Plug>(smartword-ge)
+if neobundle#is_installed('vim-smartword')
+  nmap w  <Plug>(smartword-w)
+  nmap b  <Plug>(smartword-b)
+  nmap e  <Plug>(smartword-e)
+  nmap ge <Plug>(smartword-ge)
+  vmap w  <Plug>(smartword-w)
+  vmap b  <Plug>(smartword-b)
+  vmap e  <Plug>(smartword-e)
+  vmap ge <Plug>(smartword-ge)
+endif
 
 " vim-altr {{{2
-call altr#define('autoload/%.vim', 'doc/%.txt', 'plugin/%.vim', 'test/%.vim')
+if neobundle#is_installed('vim-altr')
+  call altr#define('autoload/%.vim', 'doc/%.txt', 'plugin/%.vim', 'test/%.vim')
 
-call altr#define('%.c', '%.cpp', '%.m', '%.h')
+  call altr#define('%.c', '%.cpp', '%.m', '%.h')
 
-call altr#define('%.rb', 'spec/%_spec.rb')
-call altr#define('lib/%.rb', 'spec/lib/%_spec.rb')
-call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.rb')
-call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
-call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
+  call altr#define('%.rb', 'spec/%_spec.rb')
+  call altr#define('lib/%.rb', 'spec/lib/%_spec.rb')
+  call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.rb')
+  call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
+  call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
 
-call altr#define('%.js', 'test/%Test.js', 'test/%_test.js', 'spec/%_spec.js', 'spec/%Spec.js')
-call altr#define('%.coffee', 'test/%Test.coffee', 'test/%_test.coffee', 'spec/%_spec.coffee', 'spec/%Spec.coffee')
+  call altr#define('%.js', 'test/%Test.js', 'test/%_test.js', 'spec/%_spec.js', 'spec/%Spec.js')
+  call altr#define('%.coffee', 'test/%Test.coffee', 'test/%_test.coffee', 'spec/%_spec.coffee', 'spec/%Spec.coffee')
 
-call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
-call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
-call altr#define('View/Helper/%.php', 'Test/Case/View/Helper/%Test.php')
-call altr#define('View/%.php', 'Test/Case/View/%Test.php')
+  call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
+  call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
+  call altr#define('View/Helper/%.php', 'Test/Case/View/Helper/%Test.php')
+  call altr#define('View/%.php', 'Test/Case/View/%Test.php')
 
-nmap [space]j <Plug>(altr-forward)
-nmap [space]k <Plug>(altr-back)
+  nmap [space]j <Plug>(altr-forward)
+  nmap [space]k <Plug>(altr-back)
+endif
 
 " vim-template "{{{2
 let g:template_basedir = expand('$HOME/.vim')
@@ -1556,67 +1574,69 @@ silent! repeat#set() " for loading
 
 " submode {{{2
 " http://d.hatena.ne.jp/tyru/20100502/vim_mappings
-" Change current window size {{{3
-call submode#enter_with('winsize', 'n', '', '[s]w', '<Nop>')
-call submode#leave_with('winsize', 'n', '', '<Esc>')
-call submode#map       ('winsize', 'n', '', 'j', '<C-w>-:redraw<CR>')
-call submode#map       ('winsize', 'n', '', 'k', '<C-w>+:redraw<CR>')
-call submode#map       ('winsize', 'n', '', 'h', '<C-w><:redraw<CR>')
-call submode#map       ('winsize', 'n', '', 'l', '<C-w>>:redraw<CR>')
-call submode#map       ('winsize', 'n', '', 'J', ':set lines+=1<CR>')
-call submode#map       ('winsize', 'n', '', 'K', ':set lines-=1<CR>')
-call submode#map       ('winsize', 'n', '', 'H', ':set columns-=5<CR>')
-call submode#map       ('winsize', 'n', '', 'L', ':set columns+=5<CR>')
+if neobundle#is_installed('vim-submode')
+  " Change current window size {{{3
+  call submode#enter_with('winsize', 'n', '', '[s]w', '<Nop>')
+  call submode#leave_with('winsize', 'n', '', '<Esc>')
+  call submode#map       ('winsize', 'n', '', 'j', '<C-w>-:redraw<CR>')
+  call submode#map       ('winsize', 'n', '', 'k', '<C-w>+:redraw<CR>')
+  call submode#map       ('winsize', 'n', '', 'h', '<C-w><:redraw<CR>')
+  call submode#map       ('winsize', 'n', '', 'l', '<C-w>>:redraw<CR>')
+  call submode#map       ('winsize', 'n', '', 'J', ':set lines+=1<CR>')
+  call submode#map       ('winsize', 'n', '', 'K', ':set lines-=1<CR>')
+  call submode#map       ('winsize', 'n', '', 'H', ':set columns-=5<CR>')
+  call submode#map       ('winsize', 'n', '', 'L', ':set columns+=5<CR>')
 
-" undo/redo {{{3
-call submode#enter_with('undo/redo', 'n', '', 'g-', 'g-')
-call submode#enter_with('undo/redo', 'n', '', 'g+', 'g+')
-call submode#leave_with('undo/redo', 'n', '', '<Esc>')
-call submode#map       ('undo/redo', 'n', '', '-', 'g-')
-call submode#map       ('undo/redo', 'n', '', '+', 'g+')
+  " undo/redo {{{3
+  call submode#enter_with('undo/redo', 'n', '', 'g-', 'g-')
+  call submode#enter_with('undo/redo', 'n', '', 'g+', 'g+')
+  call submode#leave_with('undo/redo', 'n', '', '<Esc>')
+  call submode#map       ('undo/redo', 'n', '', '-', 'g-')
+  call submode#map       ('undo/redo', 'n', '', '+', 'g+')
 
-" Tab walker. {{{3
-call submode#enter_with('tabwalker', 'n', '', '[s]t', '<Nop>')
-call submode#enter_with('tabwalker', 'n', '', '[s]e', '<Nop>')
-call submode#leave_with('tabwalker', 'n', '', '<Esc>')
-call submode#map       ('tabwalker', 'n', '', 'h', 'gT:redraw<CR>')
-call submode#map       ('tabwalker', 'n', '', 'l', 'gt:redraw<CR>')
-call submode#map       ('tabwalker', 'n', '', 'H', ':execute "tabmove" tabpagenr() - 2<CR>')
-call submode#map       ('tabwalker', 'n', '', 'L', ':execute "tabmove" tabpagenr()<CR>')
-call submode#map       ('tabwalker', 'n', '', 'n', ':execute "tabnew"<CR>:tabmove<CR>')
-call submode#map       ('tabwalker', 'n', '', 'c', ':execute "tabnew"<CR>:tabmove<CR>')
-call submode#map       ('tabwalker', 'n', '', 'q', ':execute "tabclose"<CR>')
-call submode#map       ('tabwalker', 'n', '', 'o', ':execute "tabonly"<CR>')
+  " Tab walker. {{{3
+  call submode#enter_with('tabwalker', 'n', '', '[s]t', '<Nop>')
+  call submode#enter_with('tabwalker', 'n', '', '[s]e', '<Nop>')
+  call submode#leave_with('tabwalker', 'n', '', '<Esc>')
+  call submode#map       ('tabwalker', 'n', '', 'h', 'gT:redraw<CR>')
+  call submode#map       ('tabwalker', 'n', '', 'l', 'gt:redraw<CR>')
+  call submode#map       ('tabwalker', 'n', '', 'H', ':execute "tabmove" tabpagenr() - 2<CR>')
+  call submode#map       ('tabwalker', 'n', '', 'L', ':execute "tabmove" tabpagenr()<CR>')
+  call submode#map       ('tabwalker', 'n', '', 'n', ':execute "tabnew"<CR>:tabmove<CR>')
+  call submode#map       ('tabwalker', 'n', '', 'c', ':execute "tabnew"<CR>:tabmove<CR>')
+  call submode#map       ('tabwalker', 'n', '', 'q', ':execute "tabclose"<CR>')
+  call submode#map       ('tabwalker', 'n', '', 'o', ':execute "tabonly"<CR>')
 
-" winmove {{{3
-call submode#enter_with('winmove', 'n', '', '[s]j', '<C-w>j')
-call submode#enter_with('winmove', 'n', '', '[s]k', '<C-w>k')
-call submode#enter_with('winmove', 'n', '', '[s]h', '<C-w>h')
-call submode#enter_with('winmove', 'n', '', '[s]l', '<C-w>l')
-call submode#leave_with('winmove', 'n', '', '<Esc>')
-call submode#map       ('winmove', 'n', '', 'j', '<C-w>j')
-call submode#map       ('winmove', 'n', '', 'k', '<C-w>k')
-call submode#map       ('winmove', 'n', '', 'h', '<C-w>h')
-call submode#map       ('winmove', 'n', '', 'l', '<C-w>l')
-call submode#map       ('winmove', 'n', '', 'J', '<C-w>j')
-call submode#map       ('winmove', 'n', '', 'K', '<C-w>k')
-call submode#map       ('winmove', 'n', '', 'H', '<C-w>h')
-call submode#map       ('winmove', 'n', '', 'L', '<C-w>l')
-call submode#map       ('winsize', 'n', '', '-', '<C-w>-:redraw<CR>')
-call submode#map       ('winsize', 'n', '', '+', '<C-w>+:redraw<CR>')
-call submode#map       ('winsize', 'n', '', '<', '<C-w><:redraw<CR>')
-call submode#map       ('winsize', 'n', '', '>', '<C-w>>:redraw<CR>')
+  " winmove {{{3
+  call submode#enter_with('winmove', 'n', '', '[s]j', '<C-w>j')
+  call submode#enter_with('winmove', 'n', '', '[s]k', '<C-w>k')
+  call submode#enter_with('winmove', 'n', '', '[s]h', '<C-w>h')
+  call submode#enter_with('winmove', 'n', '', '[s]l', '<C-w>l')
+  call submode#leave_with('winmove', 'n', '', '<Esc>')
+  call submode#map       ('winmove', 'n', '', 'j', '<C-w>j')
+  call submode#map       ('winmove', 'n', '', 'k', '<C-w>k')
+  call submode#map       ('winmove', 'n', '', 'h', '<C-w>h')
+  call submode#map       ('winmove', 'n', '', 'l', '<C-w>l')
+  call submode#map       ('winmove', 'n', '', 'J', '<C-w>j')
+  call submode#map       ('winmove', 'n', '', 'K', '<C-w>k')
+  call submode#map       ('winmove', 'n', '', 'H', '<C-w>h')
+  call submode#map       ('winmove', 'n', '', 'L', '<C-w>l')
+  call submode#map       ('winsize', 'n', '', '-', '<C-w>-:redraw<CR>')
+  call submode#map       ('winsize', 'n', '', '+', '<C-w>+:redraw<CR>')
+  call submode#map       ('winsize', 'n', '', '<', '<C-w><:redraw<CR>')
+  call submode#map       ('winsize', 'n', '', '>', '<C-w>>:redraw<CR>')
 
-" Quickfix {{{3
-call submode#enter_with('quickfix', 'n', '', '[s]q', '<Nop>')
-call submode#leave_with('quickfix', 'n', '', '<Esc>')
-call submode#map       ('quickfix', 'n', '', 'j', ':cn<CR>')
-call submode#map       ('quickfix', 'n', '', 'k', ':cp<CR>')
-call submode#map       ('quickfix', 'n', '', 'n', ':cn<CR>')
-call submode#map       ('quickfix', 'n', '', 'p', ':cp<CR>')
-call submode#map       ('quickfix', 'n', '', 'c', ':cclose<CR>')
-call submode#map       ('quickfix', 'n', '', 'o', ':copen<CR>')
-call submode#map       ('quickfix', 'n', '', 'w', ':cwindow<CR>')
+  " Quickfix {{{3
+  call submode#enter_with('quickfix', 'n', '', '[s]q', '<Nop>')
+  call submode#leave_with('quickfix', 'n', '', '<Esc>')
+  call submode#map       ('quickfix', 'n', '', 'j', ':cn<CR>')
+  call submode#map       ('quickfix', 'n', '', 'k', ':cp<CR>')
+  call submode#map       ('quickfix', 'n', '', 'n', ':cn<CR>')
+  call submode#map       ('quickfix', 'n', '', 'p', ':cp<CR>')
+  call submode#map       ('quickfix', 'n', '', 'c', ':cclose<CR>')
+  call submode#map       ('quickfix', 'n', '', 'o', ':copen<CR>')
+  call submode#map       ('quickfix', 'n', '', 'w', ':cwindow<CR>')
+endif
 
 " open-browser.vim {{{2
 nmap [space]u <Plug>(openbrowser-open)
@@ -1647,7 +1667,7 @@ let g:microdata_attributes_complete = 1
 let g:aria_attributes_complete = 1
 
 " sudo.vim {{{2
-if s:is_mac && has('gui')
+if s:is_mac && has('gui') && neobundle#is_installed('sudo-gui.vim')
   command! -bang SW SudoWriteMacGUI
 else
   command! SW w sudo:%
@@ -1668,7 +1688,9 @@ let g:user_zen_leader_key='<C-y>'
 nmap [prefix]/ <Plug>(endtagcomment)
 
 " smartchr "{{{2
-inoremap <expr>, smartchr#one_of(', ', ',')
+if neobundle#is_installed('vim-smartchr')
+  inoremap <expr>, smartchr#one_of(', ', ',')
+endif
 
 " MyAutocmd FileType
 "       \ c,cpp,javascript,ruby,python,java,perl,php
@@ -1703,9 +1725,11 @@ endfunction
 
 " unite.vim {{{2
 LCAlias Unite
-nnoremap [unite] <Nop>
-nmap     f       [unite]
-nnoremap [unite]f f
+if neobundle#is_installed('unite.vim')
+  nnoremap [unite] <Nop>
+  nmap     f       [unite]
+  nnoremap [unite]f f
+endif
 
 " unite basic settings {{{3
 let g:unite_source_history_yank_enable=1
@@ -1985,6 +2009,7 @@ nnoremap <silent> [space]t   :<C-u>TagbarToggle<CR>
 nnoremap <silent> [prefix]tr :<C-u>TagbarOpen<CR>
 nnoremap          [prefix]tc :Ctags<CR>
 command! -nargs=? Ctags call s:exec_ctags(<q-args>)
+
 function! s:exec_ctags(path) "{{{3
   let path = a:path
   let ctags_cmd = "ctags -R"
@@ -2092,21 +2117,23 @@ let g:surround_custom_mapping.vim= {
 
 " operator {{{2
 " http://labs.timedia.co.jp/2011/07/vim-excel-and-sql.html
-call operator#user#define('excelize', 'OperatorExcelize')
-function! OperatorExcelize(motion_wise)
-  let b = line("'[")
-  let e = line("']")
-  execute b ',' e 'substitute/\v(\''?)(\$?\u+\$?\d+)(\''?)/\1" \& \2 \& "\3/g'
-  execute b 'substitute/^/="/'
-  execute e 'substitute/$/"/'
-endfunction
+if neobundle#is_installed('vim-operator-user')
+  call operator#user#define('excelize', 'OperatorExcelize')
+  function! OperatorExcelize(motion_wise)
+    let b = line("'[")
+    let e = line("']")
+    execute b ',' e 'substitute/\v(\''?)(\$?\u+\$?\d+)(\''?)/\1" \& \2 \& "\3/g'
+    execute b 'substitute/^/="/'
+    execute e 'substitute/$/"/'
+  endfunction
 
-map _ <Plug>(operator-replace)
-map ;e <Plug>(operator-excelize)
-map ;h <Plug>(operator-html-escape)
-map ;H <Plug>(operator-html-unescape)
-map ;c <Plug>(operator-camelize)
-map ;C <Plug>(operator-decamelize)
+  map _ <Plug>(operator-replace)
+  map ;e <Plug>(operator-excelize)
+  map ;h <Plug>(operator-html-escape)
+  map ;H <Plug>(operator-html-unescape)
+  map ;c <Plug>(operator-camelize)
+  map ;C <Plug>(operator-decamelize)
+endif
 
 " textobj {{{2
 " Tmap i<Space>f <Plug>(textobj-function-i)
@@ -2252,9 +2279,9 @@ MyAutocmd BufWinEnter,BufNewFile */Test/Case/*test.php,*/Test/Case/*Test.php set
 function! s:gen_phpunit_skel()
   let old_cwd = getcwd()
   let cwd = expand('%:p:h')
-  let name = expand('%:t')
+  let name = expand('%:t:r')
   let m = matchlist(join(getline(1, 10), "\n"), "\s*namespace\s*\(\w+\)\s*;")
-  let type = match(name, '\(_test|Test\)\.php$') == -1 ? "--test" : "--class"
+  let type = match(name, '\(_test|Test\)$') == -1 ? "--test" : "--class"
   let opts = []
   if !empty(m)
     call add(opts, '--')
@@ -2541,41 +2568,43 @@ call s:bulk_dict_variables([{
       \ }])
 " }}}
 
-" SuperTab like snippets behavior.
-"imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+if neobundle#is_installed('neocomplcache')
+  " SuperTab like snippets behavior.
+  "imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
 
-" Recommended key-mappings.
-" <CR>: close popup and save indent.
-" inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
-inoremap <silent> <Cr> <C-R>=neocomplcache#smart_close_popup()<CR><CR>
+  " Recommended key-mappings.
+  " <CR>: close popup and save indent.
+  " inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
+  inoremap <silent> <Cr> <C-R>=neocomplcache#smart_close_popup()<CR><CR>
 
-" <TAB>: completion.
-" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-function! s:is_snip_file()
-  return &filetype == "snippet"
-endfunction
-imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable()
-      \ && !<SID>is_snip_file()
-      \ ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-smap <expr><TAB> neocomplcache#sources#snippets_complete#expandable()
-      \ && !<SID>is_snip_file()
-      \ ? "\<Plug>(neocomplcache_snippets_expand)" : "\<TAB>"
-" <C-h>, <BS>: close popup and delete backword char.
-inoremap <expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><BS>   neocomplcache#smart_close_popup()."\<C-h>"
-inoremap <expr><C-y>  neocomplcache#close_popup()
-inoremap <expr><C-e>  neocomplcache#cancel_popup()
+  " <TAB>: completion.
+  " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+  function! s:is_snip_file()
+    return &filetype == "snippet"
+  endfunction
+  imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable()
+        \ && !<SID>is_snip_file()
+        \ ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+  smap <expr><TAB> neocomplcache#sources#snippets_complete#expandable()
+        \ && !<SID>is_snip_file()
+        \ ? "\<Plug>(neocomplcache_snippets_expand)" : "\<TAB>"
+  " <C-h>, <BS>: close popup and delete backword char.
+  inoremap <expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
+  inoremap <expr><BS>   neocomplcache#smart_close_popup()."\<C-h>"
+  inoremap <expr><C-y>  neocomplcache#close_popup()
+  inoremap <expr><C-e>  neocomplcache#cancel_popup()
 
-inoremap <expr> <C-j> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
+  inoremap <expr> <C-j> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
 
-imap <C-l> <Plug>(neocomplcache_snippets_expand)
-smap <C-l> <Plug>(neocomplcache_snippets_expand)
-imap <C-s> <Plug>(neocomplcache_start_unite_complete)
-" imap <expr><C-l> (pumvisible() ? neocomplcache#close_popup():"") ."\<Plug>(neocomplcache_snippets_expand)"
-" smap <expr><C-l> (pumvisible() ? neocomplcache#close_popup():"") ."\<Plug>(neocomplcache_snippets_expand)"
+  imap <C-l> <Plug>(neocomplcache_snippets_expand)
+  smap <C-l> <Plug>(neocomplcache_snippets_expand)
+  imap <C-s> <Plug>(neocomplcache_start_unite_complete)
+  " imap <expr><C-l> (pumvisible() ? neocomplcache#close_popup():"") ."\<Plug>(neocomplcache_snippets_expand)"
+  " smap <expr><C-l> (pumvisible() ? neocomplcache#close_popup():"") ."\<Plug>(neocomplcache_snippets_expand)"
 
-nnoremap [space]ne :NeoComplCacheEnable<CR>
-nnoremap [space]nd :NeoComplCacheDisable<CR>
+  nnoremap [space]ne :NeoComplCacheEnable<CR>
+  nnoremap [space]nd :NeoComplCacheDisable<CR>
+endif
 
 " completes {{{3
 if exists("+omnifunc") " {{{4

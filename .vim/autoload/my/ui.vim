@@ -137,24 +137,5 @@ function! my#ui#preview_browser() range "{{{2
   redraw!
 endfunction 
 
-function! my#ui#regenerate_unix_path()
-  let pathes = split($PATH, ":")
-  let new_pathes = []
-  let tail = []
-
-  for path in pathes
-    if stridx(path, "/usr/") == 0 || stridx(path, "/bin") == 0
-      if path == "/usr/local/bin"
-        call insert(tail, path)
-      else
-        call add(tail, path)
-      endif
-    else
-      call add(new_pathes, path)
-    endif
-  endfor
-  let $PATH=join(extend(new_pathes, tail), ":")
-endfunction
-
 let &cpo = s:save_cpo
 
