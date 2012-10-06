@@ -1,0 +1,23 @@
+encoding = "UTF-8"
+
+fontName = "Monaco"
+fontSize = 12
+
+showInvisibles = true
+
+softWrap = true
+tabSize = 2
+
+[.git/COMMIT_EDITMSG]
+spellChecking = true
+spellingLanguage = 'en'
+
+
+[*.{jpg, jpeg, png, gif, tif, tiff, pdf, psd, ico, icns, xls, xlsx, ppt, doc, docx}]
+binary = true
+
+
+["{README, INSTALL, LICENSE, TODO}"]
+fileType = "text.plain"
+
+

@@ -498,15 +498,6 @@ augroup my-additional-colors "{{{2
   autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
 augroup END
 
-if &t_Co == 256 || s:is_win || has('gui') "{{{2
-  " must be write .gvimrc
-  colorscheme vividchalk
-  "colorscheme mrkn256
-  "colorscheme lucius
-else
-  " colorscheme wombat
-  colorscheme desert
-endif
 if has('gui')
   augroup my-gui-colorscheme "{{{2
     autocmd!
@@ -516,6 +507,11 @@ if has('gui')
       autocmd GUIEnter * call <SID>my_highlight_defines()
     endif
   augroup END
+elseif &t_Co == 256 || s:is_win "{{{2
+  colorscheme vividchalk
+else
+  " colorscheme wombat
+  colorscheme desert
 endif
 
 "" カーソル行 {{{2
@@ -1743,28 +1739,30 @@ let g:unite_winheight = 20
 let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
 
 " unite buffers {{{3
-call unite#set_substitute_pattern('file', '\$\w\+', '\=eval(submatch(0))', 200)
+if neobundle#is_installed('unite.vim')
+  call unite#set_substitute_pattern('file', '\$\w\+', '\=eval(submatch(0))', 200)
 
-call unite#set_substitute_pattern('file', '[^~.]\zs/', '*/*', 20)
-call unite#set_substitute_pattern('file', '/\ze[^*]', '/*', 10)
+  call unite#set_substitute_pattern('file', '[^~.]\zs/', '*/*', 20)
+  call unite#set_substitute_pattern('file', '/\ze[^*]', '/*', 10)
 
-call unite#set_substitute_pattern('file', '^@@', '\=fnamemodify(expand("#"), ":p:h")."/*"', 2)
-call unite#set_substitute_pattern('file', '^@', '\=getcwd()."/*"', 1)
-call unite#set_substitute_pattern('file', '^\\', '~/*')
-call unite#set_substitute_pattern('file', '^\~', escape($HOME, '\'), -2)
+  call unite#set_substitute_pattern('file', '^@@', '\=fnamemodify(expand("#"), ":p:h")."/*"', 2)
+  call unite#set_substitute_pattern('file', '^@', '\=getcwd()."/*"', 1)
+  call unite#set_substitute_pattern('file', '^\\', '~/*')
+  call unite#set_substitute_pattern('file', '^\~', escape($HOME, '\'), -2)
 
-call unite#set_substitute_pattern('file', '^;v', '~/.vim/*')
-call unite#set_substitute_pattern('file', '^;ft', '~/.vim/after/ftplugin/')
-call unite#set_substitute_pattern('file', '^;r', '\=$VIMRUNTIME."/*"')
-if s:is_win
-  call unite#set_substitute_pattern('file', '^;p', 'C:/Program Files/*')
-  if isdirectory(expand('$USERPROFILE/Desktop'))
-    call unite#set_substitute_pattern('file', '^;d', '\=expand("$USERPROFILE/Desktop/")."*"')
+  call unite#set_substitute_pattern('file', '^;v', '~/.vim/*')
+  call unite#set_substitute_pattern('file', '^;ft', '~/.vim/after/ftplugin/')
+  call unite#set_substitute_pattern('file', '^;r', '\=$VIMRUNTIME."/*"')
+  if s:is_win
+    call unite#set_substitute_pattern('file', '^;p', 'C:/Program Files/*')
+    if isdirectory(expand('$USERPROFILE/Desktop'))
+      call unite#set_substitute_pattern('file', '^;d', '\=expand("$USERPROFILE/Desktop/")."*"')
+    else
+      call unite#set_substitute_pattern('file', '^;d', '\=expand("$USERPROFILE/デスクトップ/")."*"')
+    endif
   else
-    call unite#set_substitute_pattern('file', '^;d', '\=expand("$USERPROFILE/デスクトップ/")."*"')
+    call unite#set_substitute_pattern('file', '^;d', '\=$HOME."/Desktop/*"')
   endif
-else
-  call unite#set_substitute_pattern('file', '^;d', '\=$HOME."/Desktop/*"')
 endif
 
 " unite-grep {{{3
@@ -2924,26 +2922,28 @@ nmap <silent> [prefix]mg :MemoGrep<CR>
 " tiny snippets {{{2
 let g:my_snippets_dir = "$HOME/memos/tiny-snippets"
 
-let s:unite_action_file_insert = {} " {{{3
-function! s:unite_action_file_insert.func(candicate)
-  "echo a:candicate
-  let l:path = a:candicate.word
-  if isdirectory(l:path)
-    call unite#do_action('narrow')
-  elseif filereadable(l:path)
-    let linesread=line('$')
-    let l:old_cpoptions=&cpoptions
-    setlocal cpoptions-=a
-    :execute 'read '.l:path
-    let &cpoptions = l:old_cpoptions
-    let linesread=line('$')-linesread-1
-    if linesread >= 0
-      silent exe 'normal! ='.linesread.'+'
+if neobundle#is_installed('unite.vim')
+  let s:unite_action_file_insert = {} " {{{3
+  function! s:unite_action_file_insert.func(candicate)
+    "echo a:candicate
+    let l:path = a:candicate.word
+    if isdirectory(l:path)
+      call unite#do_action('narrow')
+    elseif filereadable(l:path)
+      let linesread=line('$')
+      let l:old_cpoptions=&cpoptions
+      setlocal cpoptions-=a
+      :execute 'read '.l:path
+      let &cpoptions = l:old_cpoptions
+      let linesread=line('$')-linesread-1
+      if linesread >= 0
+        silent exe 'normal! ='.linesread.'+'
+      endif
     endif
-  endif
-endfunction
-call unite#custom_action('file', 'insert_file', s:unite_action_file_insert)
-unlet! s:unite_action_file_insert
+  endfunction
+  call unite#custom_action('file', 'insert_file', s:unite_action_file_insert)
+  unlet! s:unite_action_file_insert
+endif
 
 function! MyFilerecLauncher(mode, option) " {{{3
   if g:my_snippets_dir == ''
