@@ -1,0 +1,106 @@
+scriptencoding utf-8
+
+syntax enable
+
+let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') || (executable('uname') && system('uname') =~? '^darwin')
+let s:is_win = has('win16') || has('win32') || has('win64')
+
+set nocompatible
+set hidden
+set showcmd
+
+set ts=2 sw=2 tw=1000
+set termencoding=utf-8
+set encoding=japan
+set fileencodings=ucs-bom,utf-8,iso-2022-jp,cp932,euc-jp
+" set fenc=utf-8
+set enc=utf-8
+if s:is_win
+  set termencoding=cp932
+else
+  set termencoding=utf-8
+endif
+
+set number ruler
+set display=lastline
+set nowrap
+set nrformats=hex
+set updatetime=1000
+set diffopt& diffopt-=filler diffopt+=iwhite
+set visualbell
+set mouse=a
+set ignorecase smartcase wrapscan
+set incsearch hlsearch
+set virtualedit+=block
+
+set scrolloff=3
+set autoindent
+set smarttab
+set expandtab
+set showmatch matchtime=3
+set backspace=indent,eol,start
+
+set wildmenu
+set wildmode=list:longest,full
+set wildchar=<tab>
+set completeopt=menuone,preview
+set complete=.,w,b,u,t,i,k
+
+set laststatus=2
+set modeline
+set modelines=10
+let &statusline="%<%f %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'
+      \ }%=%l,%c%V%8P"
+
+cnoremap <C-x> <C-r>=expand('%:p:h')<CR>/
+nnoremap q <Nop>
+nnoremap Q q
+
+nnoremap / :nohl<CR>/
+nnoremap ? :nohl<CR>?
+
+nnoremap tr t
+nnoremap <silent> tt <C-]>
+nnoremap <silent> tj :<C-u>tag<CR>
+nnoremap <silent> tk :<C-u>pop<CR>
+nnoremap <silent> tl :<C-u>tags<CR>
+
+silent call pathogen#infect()
+
+filetype indent plugin on
+
+set background=dark
+colorscheme vividchalk
+
+if v:version > 702
+else
+  " mkdir -p ~/.vim/autoload ~/.vim/bundle; curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim; mkdir -p ~/.vim/bundle ; cd ~/.vim/bundle; 
+  " git clone https://github.com/Shougo/vimfiler.git
+  " git clone https://github.com/Shougo/unite.vim.git
+  " curl -L https://github.com/Shougo/vimfiler/tarball/master | tar zxv
+  " curl -L https://github.com/Shougo/unite.vim/tarball/master | tar zxv
+
+  let s:has_unite = strlen(globpath(&rtp, 'plugin/unite.vim'))
+  let g:vimfiler_as_default_explorer=1
+  let g:vimfiler_safe_mode_by_default=0
+  let g:vimfiler_edit_command = 'new'
+
+  if s:has_unite
+    nnoremap [unite] <Nop>
+    nmap     f       [unite]
+    nnoremap [unite]f f
+    let g:unite_enable_start_insert=0
+    let g:unite_source_file_mru_limit=200
+    let g:unite_source_file_mru_time_format = ''
+    let g:unite_winheight = 20
+    let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
+
+    nmap <silent> [unite]j       :<C-u>Unite buffer_tab<CR>
+    nmap <silent> [unite]l       :<C-u>Unite file<CR>
+    nmap <silent> [unite]m       :<C-u>Unite file_mru directory_mru<CR>
+    nmap <silent> [unite]k       :<C-u>Unite tab<CR>
+  endif
+endif
+
+" __END__ {{{1
+" vim:fdm=marker sw=2 ts=2 ft=vim expandtab:

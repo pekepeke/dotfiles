@@ -89,6 +89,7 @@ fi
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
+alias lf='ls | grep -i'
 
 alias grep='grep --color=auto'
 alias today='date +%Y%m%d'
@@ -110,7 +111,7 @@ alias vimshell='vim -c VimShell'
 alias viminspect='vim --startuptime "$HOME/vimrc-read.log"'
 alias vimsafe='vim -u NONE -i NONE'
 alias vimf='vim -u '
-alias view='view -u $HOME/.vimrc.view'
+alias view='view -u $HOME/.vimpagerrc'
 
 update-submodules() { #{{{3
   local cwd=$(pwd)
