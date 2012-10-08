@@ -1,4 +1,6 @@
 " init setup {{{1
+scriptencoding utf-8
+
 " platform detection {{{2
 let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') ||
       \ (executable('uname') && system('uname') =~? '^darwin')
@@ -695,7 +697,6 @@ else
 endif
 set fileencoding=utf-8
 set fileformat=unix
-scriptencoding utf-8
 set fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp,cp932
 set fileformats=unix,dos,mac
 
@@ -1068,22 +1069,6 @@ nnoremap <silent> <S-Right> :10wincmd <<CR>
 nnoremap <silent> <S-Up>    :10wincmd -<CR>
 nnoremap <silent> <S-Down>  :10wincmd +<CR>
 
-function! s:show_mapping()
-  let key = getchar()
-  let c = nr2char(key)
-  let s = strtrans(c)
-  if stridx(s, "^") == 0
-    let c = "<C-".substitute(s, '^\^', "", "").">"
-  endif
-  if strlen(c) > 0
-    exe 'map' c
-  endif
-endfunction
-
-nnoremap <silent> [space]hk :<C-u>call <SID>show_mapping()<CR>
-nnoremap [space]/ :<C-u>nohlsearch<CR>
-nnoremap [space]w :<C-u>call <SID>toggle_option("wrap")<CR>
-
 " replace & grep {{{2
 nnoremap [space]r :<C-u>%S/
 vnoremap [space]r :S/
@@ -1163,6 +1148,23 @@ endfunction "}}}
 
 nnoremap / :<C-u>nohlsearch<CR>/
 nnoremap ? :<C-u>nohlsearch<CR>?
+
+function! s:show_mapping() " {{{3
+  let key = getchar()
+  let c = nr2char(key)
+  let s = strtrans(c)
+  if stridx(s, "^") == 0
+    let c = "<C-".substitute(s, '^\^', "", "").">"
+  endif
+  if strlen(c) > 0
+    exe 'map' c
+  endif
+endfunction " }}}
+
+nnoremap <silent> [space]hk :<C-u>call <SID>show_mapping()<CR>
+nnoremap [space]/ :<C-u>nohlsearch<CR>
+nnoremap [space]w :<C-u>call <SID>toggle_option("wrap")<CR>
+
 
 nnoremap <C-w><Space> <C-w>p
 

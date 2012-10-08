@@ -110,6 +110,8 @@ alias vimshell='vim -c VimShell'
 alias viminspect='vim --startuptime "$HOME/vimrc-read.log"'
 alias vimsafe='vim -u NONE -i NONE'
 alias vimf='vim -u '
+alias view='view -u $HOME/.vimrc.view'
+
 update-submodules() { #{{{3
   local cwd=$(pwd)
   cd ~/.github-dotfiles
