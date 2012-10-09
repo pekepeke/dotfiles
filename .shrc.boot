@@ -105,6 +105,11 @@ alias ack='ack-grep'
 alias less='less -R'
 
 # vim {{{2
+if [ -x ~/bin/vimpager ] ; then
+  export PAGER=~/bin/vimpager
+  alias less=$PAGER
+  alias zless=$PAGER
+fi
 alias vimfiler='vim -c VimFiler'
 alias vimshell='vim -c VimShell'
 
