@@ -65,14 +65,14 @@ endif
 augroup my-neobundle-lazy-group
   autocmd!
 augroup END
-function s:my_neobundle_lazy_on(modes, sources)
+function s:my_neobundle_lazy_on(on, modes, sources)
   let sources = type(a:sources) == type([]) ? a:sources : [a:sources]
   let mode = type(a:modes) == type([]) ? join(a:modes, ",") : a:modes
   for uri in sources
     execute 'NeoBundleLazy' uri
     let name = fnamemodify(uri, ':te')
     let name = substitute(name, '^[''"]*\|\.git[''"]*$\|[''"]*$', '', 'g')
-    execute 'autocmd' 'my-neobundle-lazy-group' 'FileType' mode 'silent' 'NeoBundleSource' name
+    execute 'autocmd' 'my-neobundle-lazy-group' a:on mode 'silent' 'NeoBundleSource' name
   endfor
 endfunction
 command! -nargs=+ NeoBundleLazyOn call <SID>my_neobundle_lazy_on(<f-args>)
@@ -155,7 +155,7 @@ NeoBundle 'osyo-manga/neocomplcache-jsx'
 NeoBundle 'vim-ruby/vim-ruby'
 NeoBundle 'tpope/vim-rails'
 NeoBundle 'tpope/vim-cucumber'
-NeoBundleLazyOn ruby 'ecomba/vim-ruby-refactoring'
+NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
 NeoBundle 'vim-scripts/eruby.vim'
 NeoBundle 'tobiassvn/vim-gemfile'
 "NeoBundle 'astashov/vim-ruby-debugger'
@@ -167,8 +167,8 @@ NeoBundle 'othree/html5.vim'
 " NeoBundle 'mattn/zencoding-vim'
 NeoBundle 'tpope/vim-haml'
 NeoBundle 'digitaltoad/vim-jade'
-NeoBundleLazyOn html 'mattn/zencoding-vim'
-NeoBundleLazyOn html,haml,jade 'vim-scripts/indenthtml.vim'
+NeoBundleLazyOn FileType html 'mattn/zencoding-vim'
+NeoBundleLazyOn FileType html,haml,jade 'vim-scripts/indenthtml.vim'
 
 " css {{{4
 NeoBundle 'hail2u/vim-css3-syntax'
@@ -176,7 +176,7 @@ NeoBundle 'cakebaker/scss-syntax.vim'
 NeoBundle 'wavded/vim-stylus'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'bbommarito/vim-slim'
-NeoBundleLazyOn css,sass,scss,less 'miripiruni/CSScomb-for-Vim'
+NeoBundleLazyOn FileType css,sass,scss,less 'miripiruni/CSScomb-for-Vim'
 " NeoBundle 'ap/vim-css-color'
 NeoBundle 'Rykka/colorv.vim'
 " if !(s:is_mac && has('gui'))
@@ -185,12 +185,12 @@ NeoBundle 'Rykka/colorv.vim'
 "   NeoBundleLazy 'ap/vim-css-color'
 " endif
 NeoBundle 'vim-scripts/cssbaseline.vim'
-NeoBundleLazyOn css,sass,scss,less 'bae22/prefixer'
+NeoBundleLazyOn FileType css,sass,scss,less 'bae22/prefixer'
 
 " javascript {{{4
 NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'teramako/jscomplete-vim'
-NeoBundle 'myhere/vim-nodejs-complete'
+NeoBundleLazyOn FileType javascript 'myhere/vim-nodejs-complete'
 " NeoBundle 'drslump/vim-syntax-js'
 NeoBundle 'vim-scripts/jQuery'
 " NeoBundle 'lukaszb/vim-web-indent'
@@ -203,14 +203,15 @@ NeoBundle 'pekepeke/titanium-vim'
 NeoBundle 'jeyb/vim-jst'
 NeoBundle 'pekepeke/ref-jsextra-vim'
 NeoBundle 'chikatoike/sourcemap.vim'
+NeoBundle 'leafgarland/typescript-vim'
 
 " python {{{4
 " http://rope.sourceforge.net/
 " NeoBundle 'klen/python-mode'
-NeoBundleLazyOn python 'vim-scripts/python_match.vim'
-NeoBundleLazyOn python 'lambdalisue/vim-python-virtualenv'
+NeoBundleLazyOn FileType python 'vim-scripts/python_match.vim'
+NeoBundleLazyOn FileType python 'lambdalisue/vim-python-virtualenv'
 " NeoBundle 'lambdalisue/vim-django-support'
-NeoBundleLazyOn python 'gerardo/vim-django-support'
+NeoBundleLazyOn FileType python 'gerardo/vim-django-support'
 " NeoBundle 'sontek/rope-vim'
 " if executable('ipython')
 "   NeoBundleLazy 'ivanov/vim-ipython'
@@ -239,20 +240,20 @@ NeoBundle 'henrik/vim-yaml-flattener'
 
 NeoBundle 'motemen/hatena-vim'
 NeoBundle 'nvie/vim-rst-tables'
-NeoBundle 'vim-scripts/DrawIt'
 NeoBundle 'vim-scripts/sequence'
+NeoBundleLazy 'vim-scripts/DrawIt', {'depends' : 'vim-scripts/cecutil'}
 
 " haskell {{{4
 " NeoBundle 'ehamberg/haskellmode-vim'
-NeoBundleLazyOn haskell 'ujihisa/ref-hoogle'
-NeoBundleLazyOn haskell 'ujihisa/neco-ghc'
+NeoBundleLazyOn FileType haskell 'ujihisa/ref-hoogle'
+NeoBundleLazyOn FileType haskell 'ujihisa/neco-ghc'
 
 " php {{{4
 NeoBundle 'beyondwords/vim-twig'
-NeoBundle 'tokutake/twig-indent'
-NeoBundleLazyOn php 'violetyk/cake.vim'
-NeoBundleLazyOn php 'justinrainbow/php-doc.vim'
-NeoBundleLazyOn php 'vim-scripts/phpcomplete.vim'
+NeoBundleLazyOn FileType twig 'tokutake/twig-indent'
+NeoBundleLazyOn FileType php 'violetyk/cake.vim'
+NeoBundleLazyOn FileType php 'justinrainbow/php-doc.vim'
+NeoBundleLazyOn FileType php 'vim-scripts/phpcomplete.vim'
 
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim'
@@ -260,7 +261,10 @@ NeoBundle 'vim-scripts/dbext.vim'
 NeoBundle 'vim-scripts/SQLUtilities'
 "NeoBundle 'OmniCppComplete'
 " shell {{{4
-NeoBundle 'Shougo/vim-nyaos'
+if s:is_win
+  NeoBundle 'Shougo/vim-nyaos'
+endif
+
 " etc {{{4
 NeoBundle 'sophacles/vim-processing'
 NeoBundle 'pekepeke/ref-processing-vim'
@@ -369,12 +373,13 @@ NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-endwise'
 NeoBundle 't9md/vim-surround_custom_mapping'
-NeoBundle 't9md/vim-textmanip'
+NeoBundle 't9md/vim-quickhl'
+NeoBundleLazy 't9md/vim-textmanip'
 NeoBundle 'ujihisa/camelcasemotion'
 NeoBundle 'h1mesuke/vim-alignta'
-" NeoBundle 'vim-scripts/YankRing.vim'
+NeoBundle 'vim-scripts/YankRing.vim'
 " NeoBundle 'chrismetcalf/vim-yankring'
-NeoBundle 'the-isz/MinYankRing.vim'
+" NeoBundle 'the-isz/MinYankRing.vim'
 NeoBundleLazy 'kien/ctrlp.vim'
 NeoBundle 'glidenote/memolist.vim'
 
@@ -387,7 +392,7 @@ NeoBundle 'thinca/vim-qfreplace'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'c9s/cascading.vim'
 NeoBundle 'mileszs/ack.vim'
-NeoBundle 'vim-scripts/MultipleSearch'
+NeoBundleLazy 'vim-scripts/MultipleSearch'
 NeoBundle 'vim-scripts/sudo.vim'
 if s:is_mac
   NeoBundle 'gmarik/sudo-gui.vim'
@@ -454,11 +459,10 @@ NeoBundle 'coderifous/textobj-word-column.vim'
 " NeoBundle "mattn/vim-metarw-git.git"
 " NeoBundle "sorah/metarw-simplenote.vim.git"
 
-" libs {{{3
-NeoBundle 'vim-scripts/cecutil'
-
 " afterexec for runtimepath {{{1
 filetype plugin indent on
+" macvim だと必要?
+syntax on
 
 " etc settings {{{2
 if filereadable(expand('~/.vimrc.personal'))
@@ -507,6 +511,7 @@ if has('gui')
     if has('gui_macvim')
       " macvim .... -_-###
       autocmd GUIEnter * call <SID>my_highlight_defines()
+      autocmd GUIEnter * syntax enable
     endif
   augroup END
 elseif &t_Co == 256 || s:is_win "{{{2
@@ -1536,6 +1541,8 @@ endfunction
 
 " sonictemplate-vim {{{2
 let g:sonictemplate_vim_template_dir = expand('$HOME/.vim/sonictemplate/')
+nmap <C-y><C-t> <Plug>(sonictemplate)
+imap <C-y><C-t> <Plug>(sonictemplate)
 
 " http://vim-users.jp/2010/11/hack181/
 " Open junk file. {{{3
@@ -2474,6 +2481,13 @@ if neobundle#is_installed('vim-watchdogs')
   call watchdogs#setup(g:quickrun_config)
   let g:watchdogs_check_BufWritePost_enable = 1
 endif
+
+" quickhl {{{2
+nmap [space]m <Plug>(quickhl-toggle)
+xmap [space]m <Plug>(quickhl-toggle)
+nmap [space]M <Plug>(quickhl-reset)
+xmap [space]M <Plug>(quickhl-reset)
+nmap [space], <Plug>(quickhl-match)
 
 " echodoc {{{2
 let g:echodoc_enable_at_startup=0
