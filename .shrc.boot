@@ -89,7 +89,6 @@ fi
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
-alias lf='ls | grep -i'
 
 alias grep='grep --color=auto'
 alias today='date +%Y%m%d'
@@ -163,6 +162,9 @@ cde() { #{{{3
 # lang {{{2
 alias iperl='perl -de0'
 alias rol='ruby -n -e '
+perlmodules() {
+  cat `perldoc -l perllocal` | perl -nle '/C<Module> L<([^\|]*?)\|.*?>/ and print "$1"'
+}
 
 # rsync 
 alias rsync='rsync -avzu'
@@ -201,7 +203,9 @@ if [ -n "$ZSH_NAME" ]; then
   alias -g L='| less'
   alias -g H='| head'
   alias -g T='| tail'
-  alias -g V="| vim -"
+  #alias -g V="| vim -"
+  alias -g V="| view -"
+  alias -g G='| grep -i'
 fi
 
 # GNU screen setting {{{1
