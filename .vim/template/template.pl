@@ -6,7 +6,7 @@ use utf8;
 
 use Carp;
 use Data::Dumper;
-use Getopt::Long;
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
 use Pod::Usage;
 
 sub usage {
@@ -15,7 +15,7 @@ sub usage {
 }
 
 my $opt_help;
-Getopt::Long::Configure ("bundling");
+Getopt::Long::Configure("bundling");
 GetOptions(
     'h|help' => \$opt_help, 
 ) or usage;
