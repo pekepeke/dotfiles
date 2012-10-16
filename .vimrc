@@ -171,20 +171,16 @@ NeoBundleLazyOn FileType html 'mattn/zencoding-vim'
 NeoBundleLazyOn FileType html,haml,jade 'vim-scripts/indenthtml.vim'
 
 " css {{{4
+NeoBundle 'Rykka/colorv.vim'
+" NeoBundle 'ap/vim-css-color'
+" NeoBundle 'lilydjwg/colorizer'
 NeoBundle 'hail2u/vim-css3-syntax'
 NeoBundle 'cakebaker/scss-syntax.vim'
 NeoBundle 'wavded/vim-stylus'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'bbommarito/vim-slim'
 NeoBundleLazyOn FileType css,sass,scss,less 'miripiruni/CSScomb-for-Vim'
-" NeoBundle 'ap/vim-css-color'
-NeoBundle 'Rykka/colorv.vim'
-" if !(s:is_mac && has('gui'))
-"   NeoBundle 'ap/vim-css-color'
-" else
-"   NeoBundleLazy 'ap/vim-css-color'
-" endif
-NeoBundle 'vim-scripts/cssbaseline.vim'
+NeoBundleLazyOn FileType css,sass,scss,less 'vim-scripts/cssbaseline.vim'
 NeoBundleLazyOn FileType css,sass,scss,less 'bae22/prefixer'
 
 " javascript {{{4
@@ -220,6 +216,9 @@ NeoBundleLazyOn FileType python 'gerardo/vim-django-support'
 " perl {{{4
 NeoBundle 'petdance/vim-perl'
 
+" C,CPP {{{4
+NeoBundleLazyOn FileType c,cpp 'vim-scripts/DoxygenToolkit.vim'
+
 " OSX {{{4
 NeoBundle 'nanki/vim-objj'
 NeoBundle 'pekepeke/cocoa.vim'
@@ -231,12 +230,25 @@ NeoBundle 'thinca/vim-logcat'
 " scala {{{4
 NeoBundle 'derekwyatt/vim-scala'
 
+" go {{{4
+NeoBundle 'uggedal/go-vim'
+if executable('gocode')
+  NeoBundle 'undx/vim-gocode'
+endif
+
+" as {{{4
+if has('ruby') && executable('sprout-as3')
+  NeoBundle 'endel/flashdevelop.vim'
+  NeoBundle 'tomtom/tlib_vim'
+  NeoBundle 'airblade/vim-rooter'
+endif
+
 " texts {{{4
 NeoBundle 'plasticboy/vim-markdown'
 NeoBundle 'thinca/vim-ft-markdown_fold'
 NeoBundle 'timcharper/textile.vim'
 NeoBundle 'chrisbra/csv.vim'
-NeoBundle 'henrik/vim-yaml-flattener'
+NeoBundleLazyOn FileType yaml 'henrik/vim-yaml-flattener'
 
 NeoBundle 'motemen/hatena-vim'
 NeoBundle 'nvie/vim-rst-tables'
@@ -260,10 +272,6 @@ NeoBundle 'mattn/vdbi-vim'
 NeoBundle 'vim-scripts/dbext.vim'
 NeoBundle 'vim-scripts/SQLUtilities'
 "NeoBundle 'OmniCppComplete'
-" shell {{{4
-if s:is_win
-  NeoBundle 'Shougo/vim-nyaos'
-endif
 
 " etc {{{4
 NeoBundle 'sophacles/vim-processing'
@@ -271,21 +279,18 @@ NeoBundle 'pekepeke/ref-processing-vim'
 NeoBundle 'sjl/strftimedammit.vim'
 NeoBundle 'tangledhelix/vim-octopress'
 NeoBundle 'jcfaria/Vim-R-plugin'
+
+if executable('loga')
+  NeoBundle 'tacahiroy/vim-logaling'
+endif
+
+" config {{{4
 NeoBundle 'smerrill/vcl-vim-plugin'
 NeoBundle 'qqshfox/vim-tmux'
 NeoBundle 'vim-scripts/nginx.vim'
 NeoBundle 'glidenote/keepalived-syntax.vim'
-NeoBundle 'uggedal/go-vim'
-if executable('gocode')
-  NeoBundle 'undx/vim-gocode'
-endif
-if has('ruby') && executable('sprout-as3')
-  NeoBundle 'endel/flashdevelop.vim'
-  NeoBundle 'tomtom/tlib_vim'
-  NeoBundle 'airblade/vim-rooter'
-endif
-if executable('loga')
-  NeoBundle 'tacahiroy/vim-logaling'
+if s:is_win
+  NeoBundle 'Shougo/vim-nyaos'
 endif
 
 " unite.vim {{{3
@@ -444,10 +449,10 @@ NeoBundle 'kana/vim-textobj-syntax'
 NeoBundle 'kana/vim-textobj-line'
 NeoBundle 'thinca/vim-textobj-between'
 " NeoBundle 'thinca/vim-textobj-comment'
-NeoBundle 'thinca/vim-textobj-function-javascript'
-NeoBundle 'thinca/vim-textobj-function-perl'
-NeoBundle 't9md/vim-textobj-function-ruby'
-NeoBundle 'nelstrom/vim-textobj-rubyblock'
+NeoBundleLazyOn FileType javascript 'thinca/vim-textobj-function-javascript'
+NeoBundleLazyOn FileType perl 'thinca/vim-textobj-function-perl'
+NeoBundleLazyOn FileType ruby 't9md/vim-textobj-function-ruby'
+NeoBundleLazyOn FileType ruby 'nelstrom/vim-textobj-rubyblock'
 NeoBundle 'vim-scripts/textobj-indent'
 NeoBundle 'sgur/vim-textobj-parameter'
 NeoBundle 'h1mesuke/textobj-wiw'

@@ -3,10 +3,10 @@ scriptencoding utf-8
 
 set columns=100
 set lines=70
-set guioptions-=T
 set cmdheight=1
-"set nohlsearch
-"set guioptions+=a
+" set guioptions-=T
+" set nohlsearch
+" set guioptions+=a
 " set mouse=a
 " set nomousefocus
 " set mousehide
@@ -101,6 +101,8 @@ elseif s:is_mac "{{{2
     
   endif
 else " unix setting {{{2
+  set guioptions=te
+
   "set guifont=VL\ ゴシック\ 12
   command! -nargs=0 Inconsolata set guifont=Inconsolata\ 11
   command! -nargs=0 Ricty set guifont=Ricty\ 14
