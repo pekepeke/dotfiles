@@ -11,9 +11,34 @@
 *.zip
 *.bzip
 
+# compiled sources
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# logfiles
+*.log
+
 # tags
 TAGS
 tags
+
+# Windows
+Thumbs.db
+ethumbs.db
+Desktop.ini
+
+# OSX
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
 
 # perl
 blib/
@@ -21,45 +46,23 @@ pm_to_blib/
 nytprof.out
 .last_cover_status
 
-# Windows
-## Windows image file caches
-Thumbs.db
-## Folder config file
-Desktop.ini
-
-# OSX
-.DS_Store
-.AppleDouble
-.LSOverride
-Icon
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
 # Sass
 *.sass-cache
 
-# CVS
+# VCS
 /CVS/*
 */CVS/*
 .cvsignore
 */.cvsignore
-
-# SVN
 .svn/
 
 # vim
+doc/tags
+doc/tags-ja
 .*.sw[a-z]
 *.un~
 Session.vim
 .netrwhist
-# vim help
-doc/tags
-doc/tags-ja
 
 # emacs
 *~

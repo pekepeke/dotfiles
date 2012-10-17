@@ -76,5 +76,5 @@
 --follow
 --color
 --group
---pager='less'
 --smart-case
+# --pager='less'
