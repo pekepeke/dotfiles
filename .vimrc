@@ -154,11 +154,13 @@ NeoBundle 'osyo-manga/neocomplcache-jsx'
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
 NeoBundle 'tpope/vim-rails'
-NeoBundle 'tpope/vim-cucumber'
+NeoBundleLazyOn FileType ruby 'tpope/vim-cucumber'
 NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
 NeoBundle 'vim-scripts/eruby.vim'
 NeoBundle 'tobiassvn/vim-gemfile'
-"NeoBundle 'astashov/vim-ruby-debugger'
+if has("signs") && has("clientserver") && v:version > 700
+  NeoBundleLazyOn FileType ruby NeoBundle 'astashov/vim-ruby-debugger'
+endif
 NeoBundle 't9md/vim-chef'
 NeoBundle 'taq/vim-rspec'
 
@@ -497,8 +499,8 @@ function s:my_highlight_defines() "{{{2
 endfunction
 
 function s:my_additional_syntaxes() "{{{2
-  syntax match IdeographicSpace containedin=ALL /　/
-  syntax match TrailingSpaces containedin=ALL /\s\+$/
+  match IdeographicSpace /　/
+  match TrailingSpaces /\s\+$/
 endfunction
 
 augroup my-additional-colors "{{{2
