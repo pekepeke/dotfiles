@@ -21,6 +21,7 @@ alias seq='gseq'
 
 alias mvi='mvim --remote-tab-silent'
 alias cote='open -a CotEditor'
+alias twe='open -a TextWrangler' 
 
 gemacs() { # {{{3
   emacsclient -n ${*:-.} 2>/dev/null && return 0

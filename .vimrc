@@ -147,7 +147,8 @@ NeoBundle 'mattn/learn-vimscript'
 
 " neocomplcache {{{4
 NeoBundle 'Shougo/neocomplcache'
-NeoBundle 'Shougo/neocomplcache-snippets-complete'
+NeoBundle 'Shougo/neosnippet'
+" NeoBundle 'Shougo/neocomplcache-snippets-complete'
 NeoBundle 'basyura/csharp_complete'
 NeoBundle 'osyo-manga/neocomplcache-jsx'
 
@@ -159,7 +160,7 @@ NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
 NeoBundle 'vim-scripts/eruby.vim'
 NeoBundle 'tobiassvn/vim-gemfile'
 if has("signs") && has("clientserver") && v:version > 700
-  NeoBundleLazyOn FileType ruby NeoBundle 'astashov/vim-ruby-debugger'
+  NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
 endif
 NeoBundle 't9md/vim-chef'
 NeoBundle 'taq/vim-rspec'
@@ -220,6 +221,13 @@ NeoBundle 'petdance/vim-perl'
 
 " C,CPP {{{4
 NeoBundleLazyOn FileType c,cpp 'vim-scripts/DoxygenToolkit.vim'
+
+" C# {{{4}}}
+" NeoBundle 'OrangeT/vim-csharp'
+NeoBundle 'yuratomo/dotnet-complete'
+if s:is_win
+  NeoBundleLazyOn FileType cs 'yuratomo/ildasm.vim'
+endif
 
 " OSX {{{4
 NeoBundle 'nanki/vim-objj'
@@ -477,6 +485,9 @@ if filereadable(expand('~/.vimrc.personal'))
 endif
 if isdirectory(expand('~/.vim/bin/'))
   let $PATH.=(s:is_win ? ';' : ':').expand('~/.vim/bin/')
+endif
+if s:is_win
+  let $PATH.=';' . expand($WINDIR . '/Microsoft.NET/Framework/v4.0.30319/')
 endif
 " }}}
 
@@ -2261,6 +2272,21 @@ let g:quickrun_config.cat = {
       \  'command' : 'cat',
       \  'exec' : ['%c %s'],
       \ }
+if s:is_win
+  let g:quickrun_config.cs = {
+        \ 'command' : 'csc',
+        \ 'runmode' : 'simple',
+        \ 'exec' : ['%c /nologo %s:gs?/?\\? > /dev/null', '"%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
+        \ 'tempfile' : '{tempname()}.cs',
+        \ }
+else
+  let g:quickrun_config.cs = {
+        \ 'command' : 'cs',
+        \ 'runmode' : 'simple',
+        \ 'exec' : ['%c %s > /dev/null', 'mono "%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
+        \ 'tempfile' : '{tempname()}.cs',
+        \ }
+endif
 nnoremap <Leader><Leader>r :<C-u>QuickRun cat<CR>
 
 " for lang "{{{3
@@ -2338,6 +2364,12 @@ if executable('gcc') && s:is_mac
         \ }
         "\ 'exec' : ['%c %s -o %s:p:r -framework Cocoa', '%s:p:r %a', 'rm -f %s:p:r'],
 endif
+
+" csharp {{{3[]}}}
+MyAutocmd BufNewFile,BufRead *.xaml    setf xml | setl omnifunc=xaml#complete
+MyAutocmd BufNewFile,BufRead *.cs      setl omnifunc=cs#complet
+MyAutocmd BufNewFile,BufRead *.cs      setl bexpr=cs#balloon() | setl ballooneval
+
 " text markups {{{3
 if !executable('pandoc') && executable('markdown') "{{{4
   if executable('ruby') && filereadable($HOME.'/bin/mkd2html.rb')
