@@ -117,7 +117,11 @@ NeoBundle 'tpope/vim-unimpaired'
 NeoBundle 'vim-scripts/ShowMultiBase'
 NeoBundle 'tyru/current-func-info.vim'
 " NeoBundle 'vim-scripts/taglist.vim'
-NeoBundle 'majutsushi/tagbar'
+if s:is_win
+  NeoBundleLazy 'majutsushi/tagbar'
+else
+  NeoBundle 'majutsushi/tagbar'
+endif
 " NeoBundle 'abudden/TagHighlight'
 NeoBundle 'tomtom/tcomment_vim'
 " NeoBundle 'scrooloose/nerdcommenter'
@@ -133,6 +137,8 @@ NeoBundle 'sjl/splice.vim'
 NeoBundle 'vim-scripts/DirDiff.vim'
 NeoBundleLazy 'mbadran/headlights'
 NeoBundle 'thinca/vim-ft-diff_fold'
+NeoBundle 'AndrewRadev/linediff.vim'
+NeoBundle 'vim-scripts/ConflictDetection'
 
 " help {{{4
 NeoBundle 'thinca/vim-ref'
@@ -170,8 +176,9 @@ NeoBundle 'othree/html5.vim'
 " NeoBundle 'mattn/zencoding-vim'
 NeoBundle 'tpope/vim-haml'
 NeoBundle 'digitaltoad/vim-jade'
-NeoBundleLazyOn FileType html 'mattn/zencoding-vim'
-NeoBundleLazyOn FileType html,haml,jade 'vim-scripts/indenthtml.vim'
+NeoBundleLazyOn FileType html,eruby,php 'mattn/zencoding-vim'
+NeoBundleLazyOn FileType html,php,haml,jade 'vim-scripts/indenthtml.vim'
+NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
 
 " css {{{4
 NeoBundle 'Rykka/colorv.vim'
@@ -189,7 +196,8 @@ NeoBundleLazyOn FileType css,sass,scss,less 'bae22/prefixer'
 " javascript {{{4
 NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'teramako/jscomplete-vim'
-NeoBundleLazyOn FileType javascript 'myhere/vim-nodejs-complete'
+NeoBundle 'mklabs/grunt.vim.git'
+NeoBundleLazy 'myhere/vim-nodejs-complete'
 " NeoBundle 'drslump/vim-syntax-js'
 NeoBundle 'vim-scripts/jQuery'
 " NeoBundle 'lukaszb/vim-web-indent'
@@ -211,6 +219,10 @@ NeoBundleLazyOn FileType python 'vim-scripts/python_match.vim'
 NeoBundleLazyOn FileType python 'lambdalisue/vim-python-virtualenv'
 " NeoBundle 'lambdalisue/vim-django-support'
 NeoBundleLazyOn FileType python 'gerardo/vim-django-support'
+NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
+if has('python')
+  " NeoBundleLazyOn FileType python 'davidhalter/jedi-vim'
+endif
 " NeoBundle 'sontek/rope-vim'
 " if executable('ipython')
 "   NeoBundleLazy 'ivanov/vim-ipython'
@@ -222,7 +234,7 @@ NeoBundle 'petdance/vim-perl'
 " C,CPP {{{4
 NeoBundleLazyOn FileType c,cpp 'vim-scripts/DoxygenToolkit.vim'
 
-" C# {{{4}}}
+" C# {{{4
 " NeoBundle 'OrangeT/vim-csharp'
 NeoBundle 'yuratomo/dotnet-complete'
 if s:is_win
@@ -429,7 +441,7 @@ NeoBundle 'thinca/vim-ambicmd'
 NeoBundle 'mattn/gist-vim'
 " NeoBundle 'mattn/vimplenote-vim'
 " NeoBundle 'pekepeke/vimplenote-vim'
-if !has('gui') || has('python') || s:is_windows || s:is_mac
+if has('python') && (s:is_win || s:is_mac || !has('gui'))
   NeoBundle 'tsukkee/lingr-vim'
 else
   NeoBundleLazy 'tsukkee/lingr-vim'
@@ -1680,6 +1692,20 @@ let g:rails_url='http://localhost:3000'
 let g:rails_subversion=0
 let g:rails_default_file='config/database.yml'
 
+" csharp {{{2
+if neobundle#is_installed('dotnet-complete')
+  MyAutocmd BufNewFile,BufRead *.xaml    setf xml | setl omnifunc=xaml#complete
+  MyAutocmd BufNewFile,BufRead *.cs      setl omnifunc=cs#complete
+  MyAutocmd BufNewFile,BufRead *.cs      setl bexpr=cs#balloon() | setl ballooneval
+endif
+
+" jedi-vim {{{2
+if neobundle#is_installed('jedi-vim')
+  let g:jedi#auto_initialization = 1
+  let g:jedi#popup_on_dot = 0
+  let g:jedi#rename_command = '<leader>R'
+  MyAutoCmd FileType python let b:did_ftplugin = 1
+endif
 " pydiction {{{2
 let g:pydiction_location = '~/.vim/dict/pydiction-complete-dict'
 
@@ -2364,11 +2390,6 @@ if executable('gcc') && s:is_mac
         \ }
         "\ 'exec' : ['%c %s -o %s:p:r -framework Cocoa', '%s:p:r %a', 'rm -f %s:p:r'],
 endif
-
-" csharp {{{3[]}}}
-MyAutocmd BufNewFile,BufRead *.xaml    setf xml | setl omnifunc=xaml#complete
-MyAutocmd BufNewFile,BufRead *.cs      setl omnifunc=cs#complet
-MyAutocmd BufNewFile,BufRead *.cs      setl bexpr=cs#balloon() | setl ballooneval
 
 " text markups {{{3
 if !executable('pandoc') && executable('markdown') "{{{4
