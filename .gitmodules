@@ -15,4 +15,4 @@
 	url = https://github.com/zsh-users/zsh-completions.git
 [submodule ".zsh/plugins/z"]
 	path = .zsh/plugins/z
-	url = git://github.com/rupa/z.git
+	url = git://github.com/jimeh/z.git
