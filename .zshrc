@@ -256,11 +256,13 @@ fi
 source_all ~/.zsh/commands/*
 
 # autojump {{{2
-_Z_CMD=j
-source ~/.zsh/plugins/z/z.sh
-precmd() {
-  _z --add "$(pwd -P)"
-}
+if [ -e ~/.zsh/plugins/z/z.sh ]; then
+  _Z_CMD=j
+  source ~/.zsh/plugins/z/z.sh
+  precmd() {
+    _z --add "$(pwd -P)"
+  }
+fi
 
 # auto-fu.zsh {{{2
 # とりあえず OFF る、、、文字制御が欲しい。。
