@@ -11,13 +11,20 @@ for app in Safari Firefox Opera "Google Chrome"; do
 done
 
 # commands {{{2
-[ ! -e /usr/local/bin/vim -a -e /Applications/MacVim.app/Contents/MacOS/Vim ] && alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
+# [ ! -e /usr/local/bin/vim -a -e /Applications/MacVim.app/Contents/MacOS/Vim ] && alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
 # [ -e ~/Library/Application\ Support/Cyberduck/Queue.plist ] && \
-#  find ~/Library/Application\ Support/Cyberduck/Queue.plist -mtime 1 -exec rm -f {} \; > /dev/null 2>&1
+# find ~/Library/Application\ Support/Cyberduck/Queue.plist -mtime 1 -exec rm -f {} \; > /dev/null 2>&1
 
 alias ls='gls --color=always'
 alias date='gdate'
 alias seq='gseq'
+
+alias b='brew'
+alias bs='brew -S'
+alias bi='brew info'
+alias bl='brew list'
+alias bop='open $(brew --prefix)/'
+alias bcd='cd $(brew --prefix)/'
 
 alias mvi='mvim --remote-tab-silent'
 alias cote='open -a CotEditor'

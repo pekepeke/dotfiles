@@ -205,6 +205,8 @@ NeoBundle 'vim-scripts/jQuery'
 " NeoBundle 'itspriddle/vim-javascript-indent'
 " NeoBundle 'jiangmiao/simple-javascript-indenter'
 NeoBundle 'vim-scripts/Dart'
+NeoBundle 'jdonaldson/vaxe'
+" NeoBundle 'MarcWeber/vim-haxe'
 NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'pekepeke/titanium-vim'
 NeoBundle 'jeyb/vim-jst'
@@ -529,7 +531,7 @@ endfunction
 augroup my-additional-colors "{{{2
   autocmd!
   autocmd ColorScheme * call <SID>my_highlight_defines()
-  autocmd Syntax * call <SID>my_additional_syntaxes()
+  " autocmd Syntax * call <SID>my_additional_syntaxes()
   autocmd Syntax eruby highlight link erubyRubyDelim Label
   autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
 augroup END
