@@ -64,16 +64,15 @@ if [ -e ~/.zsh/plugins/z/z.sh ]; then
 fi
 
 # auto-fu.zsh {{{2
-if [ -e ~/.zsh/plugins/auto-fu.zsh ]; then
-  source ~/.zsh/plugins/auto-fu.zsh/auto-fu.zsh
-  zle-line-init() { auto-fu-init }
-  zle -N zle-line-init
-  zstyle ':completion:*' completer _oldlist _complete
-  zstyle ':auto-fu:var' postdisplay $''
-  zstyle ':auto-fu:highlight' completion fg=black,bold
-  zstyle ':auto-fu:highlight' completion/one fg=gray,normal,underline
-
-fi
+# if [ -e ~/.zsh/plugins/auto-fu.zsh ]; then
+#   source ~/.zsh/plugins/auto-fu.zsh/auto-fu.zsh
+#   zle-line-init() { auto-fu-init }
+#   zle -N zle-line-init
+#   zstyle ':completion:*' completer _oldlist _complete
+#   zstyle ':auto-fu:var' postdisplay $''
+#   zstyle ':auto-fu:highlight' completion fg=black,bold
+#   zstyle ':auto-fu:highlight' completion/one fg=gray,normal,underline
+# fi
 
 # for ruby gems {{{2
 if [ x$GEM_HOME != x ]; then
