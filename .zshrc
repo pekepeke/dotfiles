@@ -2,7 +2,7 @@
 
 [ -e ~/.shrc.boot ] && source ~/.shrc.boot
 
-# utilities {{{1
+# functions {{{1
 if_compile() {
   for f in $* ; do
     [ $f -nt $f.zwc ] && zcompile $f
@@ -15,6 +15,77 @@ source_all() {
 }
 
 if_compile ~/.shrc.*
+
+
+# # https://github.com/zsh-users/antigen.git {{{1
+# if [ -e ~/.zsh/antigen/antigen.zsh ]; then
+#   source ~/.zsh/antigen/antigen.zsh
+#   antigen-bundle brew
+#   antigen-bundle git
+# 
+#   antigen-bundle pip
+#   antigen-bundle perl
+#   antigen-bundle cpanm
+# 
+#   antigen-bundle heroku
+#   antigen-bundle ruby
+#   antigen-bundle rbenv
+#   antigen-bundle rake
+#   antigen-bundle gem
+#   antigen-bundle cap
+#   antigen-bundle bundler
+# 
+#   antigen-bundle kennethreitz/autoenv
+#   antigen-bundle vagrant
+# 
+#   antigen-bundle zsh-users/zsh-syntax-highlighting
+#   antigen-bundle hchbaw/opp.zsh
+# 
+#   # antigen-theme funky
+# 
+#   antigen-apply
+# fi
+
+# plugins {{{1
+# textobj {{{2
+source_all ~/.zsh/plugins/opp.zsh/opp.zsh
+source_all ~/.zsh/plugins/opp.zsh/opp/*
+# complete {{{2
+[ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions $fpath)
+[ -e ~/.zsh/functions/completion ] && fpath=($HOME/.zsh/functions/completion $fpath)
+source_all ~/.zsh/commands/*
+
+# autojump {{{2
+if [ -e ~/.zsh/plugins/z/z.sh ]; then
+  source ~/.zsh/plugins/z/z.sh
+  precmd() {
+    _z --add "$(pwd -P)"
+  }
+fi
+
+# auto-fu.zsh {{{2
+if [ -e ~/.zsh/plugins/auto-fu.zsh ]; then
+  source ~/.zsh/plugins/auto-fu.zsh/auto-fu.zsh
+  zle-line-init() { auto-fu-init }
+  zle -N zle-line-init
+  zstyle ':completion:*' completer _oldlist _complete
+  zstyle ':auto-fu:var' postdisplay $''
+  zstyle ':auto-fu:highlight' completion fg=black,bold
+  zstyle ':auto-fu:highlight' completion/one fg=gray,normal,underline
+
+fi
+
+# for ruby gems {{{2
+if [ x$GEM_HOME != x ]; then
+  function cdgem() {
+    cd `echo $GEM_HOME/**gems/$1* | awk '{print $1}'`
+  }
+  compctl -K _cdgem cdgem
+  function _cdgem() {
+    reply=(`find $GEM_HOME -type d|grep -e '/gems/[^/]*$'|xargs basename|sort -nr`)
+  }
+fi
+
 
 # prompt {{{1
 export PROMPT="[%n@%m %3d]%(#.#.$) "
@@ -82,8 +153,6 @@ unsetopt beep
 #export WORDCHARS='*?_.[]~=&;!#$%^(){}<>'
 
 # complete & autoload {{{1
-[ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions $fpath)
-[ -e ~/.zsh/functions/completion ] && fpath=($HOME/.zsh/functions/completion $fpath)
 autoload -U compinit
 compinit -u
 # 高速化?
@@ -114,9 +183,6 @@ setopt auto_pushd
 setopt no_tify
 
 # keybinds {{{1
-# textobj {{{2
-source_all ~/.zsh/plugins/opp.zsh/opp.zsh
-source_all ~/.zsh/plugins/opp.zsh/opp/*
 # keybind {{{2
 bindkey -v
 # for command mode {{{2
@@ -195,10 +261,10 @@ e_RED=`echo -e "\033[1;31m"`
 e_BLUE=`echo -e "\033[1;36m"`
 
 function make() {
-LANG=C command make "$@" 2>&1 | sed -e "s@[Ee]rror:.*@$e_RED&$e_normal@g" -e "s@cannot\sfind.*@$e_RED&$e_normal@g" -e "s@[Ww]arning:.*@$e_BLUE&$e_normal@g"
+  LANG=C command make "$@" 2>&1 | sed -e "s@[Ee]rror:.*@$e_RED&$e_normal@g" -e "s@cannot\sfind.*@$e_RED&$e_normal@g" -e "s@[Ww]arning:.*@$e_BLUE&$e_normal@g"
 }
 function cwaf() {
-LANG=C command ./waf "$@" 2>&1 | sed -e "s@[Ee]rror:.*@$e_RED&$e_normal@g" -e "s@cannot\sfind.*@$e_RED&$e_normal@g" -e "s@[Ww]arning:.*@$e_BLUE&$e_normal@g"
+  LANG=C command ./waf "$@" 2>&1 | sed -e "s@[Ee]rror:.*@$e_RED&$e_normal@g" -e "s@cannot\sfind.*@$e_RED&$e_normal@g" -e "s@[Ww]arning:.*@$e_BLUE&$e_normal@g"
 }
 
 if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
@@ -226,7 +292,7 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
         if (( $#cmd >= 2)); then
           cmd[1]=$cmd[2]
         fi
-        ;&
+        ;;
       *)
         echo -n "k$cmd[1]:t\\"
         return
@@ -248,76 +314,6 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
     fi
     #ls -A
     _reg_pwd_screennum
-  }
-fi
-
-# plugins {{{1
-
-source_all ~/.zsh/commands/*
-
-# autojump {{{2
-if [ -e ~/.zsh/plugins/z/z.sh ]; then
-  _Z_CMD=j
-  source ~/.zsh/plugins/z/z.sh
-  precmd() {
-    _z --add "$(pwd -P)"
-  }
-fi
-
-# auto-fu.zsh {{{2
-# とりあえず OFF る、、、文字制御が欲しい。。
-if [ -z "x" -a -f "$HOME/.zsh/plugins/auto-fu.zsh/auto-fu.zsh" -a "$OSTYPE" != "cygwin" ]; then
-  unsetopt sh_word_split
-  zstyle ':completion:*' completer _oldlist _complete _expand _match _prefix _approximate _list _history
-
-  AUTO_FU_NOCP=1 source $HOME/.zsh/plugins/auto-fu.zsh/auto-fu.zsh
-
-  # enable.
-  zle-line-init () {
-    auto-fu-init
-  }
-  zle -N zle-line-init
-
-  # http://d.hatena.ne.jp/tarao/20100823/1282543408
-  #
-  # delete unambiguous prefix when accepting line
-  function afu+delete-unambiguous-prefix () {
-    afu-clearing-maybe
-    local buf; buf="$BUFFER"
-    local bufc; bufc="$buffer_cur"
-    [[ -z "$cursor_new" ]] && cursor_new=-1
-    [[ "$buf[$cursor_new]" == ' ' ]] && return
-    [[ "$buf[$cursor_new]" == '/' ]] && return
-    ((afu_in_p == 1)) && [[ "$buf" != "$bufc" ]] && {
-      # there are more than one completion candidates
-      zle afu+complete-word
-      [[ "$buf" == "$BUFFER" ]] && {
-        # the completion suffix was an unambiguous prefix
-        afu_in_p=0; buf="$bufc"
-      }
-      BUFFER="$buf"
-      buffer_cur="$bufc"
-    }
-  }
-  zle -N afu+delete-unambiguous-prefix
-  function afu-ad-delete-unambiguous-prefix () {
-    local afufun="$1"
-    local code; code=$functions[$afufun]
-    eval "function $afufun () { zle afu+delete-unambiguous-prefix; $code }"
-  }
-  afu-ad-delete-unambiguous-prefix afu+accept-line
-  afu-ad-delete-unambiguous-prefix afu+accept-line-and-down-history
-  afu-ad-delete-unambiguous-prefix afu+accept-and-hold
-fi
-
-# for ruby gems {{{2
-if [ x$GEM_HOME != x ]; then
-  function cdgem() {
-    cd `echo $GEM_HOME/**gems/$1* | awk '{print $1}'`
-  }
-  compctl -K _cdgem cdgem
-  function _cdgem() {
-    reply=(`find $GEM_HOME -type d|grep -e '/gems/[^/]*$'|xargs basename|sort -nr`)
   }
 fi
 

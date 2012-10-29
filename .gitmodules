@@ -16,3 +16,6 @@
 [submodule ".zsh/plugins/z"]
 	path = .zsh/plugins/z
 	url = https://github.com/rupa/z.git
+[submodule ".zsh/antigen"]
+	path = .zsh/antigen
+	url = https://github.com/zsh-users/antigen.git

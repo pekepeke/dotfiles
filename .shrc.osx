@@ -3,12 +3,10 @@ export LESS="-IMR"
 
 # aliases {{{1
 # browser {{{2
-for app in Safari Firefox Opera "Google Chrome"; do
-  if [ -e "/Applications/${app}.app" ]; then
-    aname=$(echo $app | tr '[A-Z] ' '[a-z]_')
-    alias $aname="open -a \"${app}\""
-  fi
-done
+alias safari='open -a Safari'
+alias firefox='open -a Firefox'
+alias opera='open -a Opera'
+alias chrome='open -a "Google Chrome"'
 
 # commands {{{2
 # [ ! -e /usr/local/bin/vim -a -e /Applications/MacVim.app/Contents/MacOS/Vim ] && alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
@@ -29,6 +27,7 @@ alias bcd='cd $(brew --prefix)/'
 alias mvi='mvim --remote-tab-silent'
 alias cote='open -a CotEditor'
 alias twe='open -a TextWrangler' 
+alias subl='open -a "Sublime Text 2"'
 
 gemacs() { # {{{3
   emacsclient -n ${*:-.} 2>/dev/null && return 0
