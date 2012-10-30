@@ -19,3 +19,6 @@
 [submodule ".zsh/antigen"]
 	path = .zsh/antigen
 	url = https://github.com/zsh-users/antigen.git
+[submodule ".zsh/plugins/zaw"]
+	path = .zsh/plugins/zaw
+	url = git://github.com/zsh-users/zaw.git

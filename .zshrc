@@ -46,82 +46,23 @@ if_compile ~/.shrc.*
 #   antigen-apply
 # fi
 
-# plugins {{{1
-# textobj {{{2
-source_all ~/.zsh/plugins/opp.zsh/opp.zsh
-source_all ~/.zsh/plugins/opp.zsh/opp/*
-# complete {{{2
-[ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions $fpath)
-[ -e ~/.zsh/functions/completion ] && fpath=($HOME/.zsh/functions/completion $fpath)
-source_all ~/.zsh/commands/*
-
-# autojump {{{2
-if [ -e ~/.zsh/plugins/z/z.sh ]; then
-  source ~/.zsh/plugins/z/z.sh
-  precmd() {
-    _z --add "$(pwd -P)"
-  }
-fi
-
-# auto-fu.zsh {{{2
-# if [ -e ~/.zsh/plugins/auto-fu.zsh ]; then
-#   source ~/.zsh/plugins/auto-fu.zsh/auto-fu.zsh
-#   zle-line-init() { auto-fu-init }
-#   zle -N zle-line-init
-#   zstyle ':completion:*' completer _oldlist _complete
-#   zstyle ':auto-fu:var' postdisplay $''
-#   zstyle ':auto-fu:highlight' completion fg=black,bold
-#   zstyle ':auto-fu:highlight' completion/one fg=gray,normal,underline
-# fi
-
-# for ruby gems {{{2
-if [ x$GEM_HOME != x ]; then
-  function cdgem() {
-    cd `echo $GEM_HOME/**gems/$1* | awk '{print $1}'`
-  }
-  compctl -K _cdgem cdgem
-  function _cdgem() {
-    reply=(`find $GEM_HOME -type d|grep -e '/gems/[^/]*$'|xargs basename|sort -nr`)
-  }
-fi
-
-
-# prompt {{{1
-export PROMPT="[%n@%m %3d]%(#.#.$) "
-
-if [ $OSTYPE != "cygwin" -a -z $LANG ]; then
-    export LANG=ja_JP.UTF-8
-fi
-
-setopt prompt_subst
-
-case "$TERM" in
-  cygwin|xterm|xterm*|kterm|mterm|rxvt*)
-    #PROMPT='%{[33m%}%m%B[%D %T]%b%{[m%}\$ '
-    PROMPT='%{[33m%}%n@%m%B%b%{[m%}\$ '
-    RPROMPT='[%{[33m%}%4c%{[m%}]'
-    ;;
-  screen*)
-    #PROMPT='%{[33m%}%m%B[%D %T]%b%{[m%}\$ '
-    PROMPT='%{[33m%}%n@%m%B%b%{[m%}\$ '
-    RPROMPT='[%{[33m%}%4c%{[mk%c\\%}]'
-    ;;
-esac
-
 # env vars {{{1
-REPORTTIME=3 # 3秒以上かかった処理は詳細表示
+REPORTTIME=3                    # 3秒以上かかった処理は詳細表示
 
-# options {{{1
-# cd {{{2
-setopt auto_cd
-setopt auto_pushd
-setopt pushd_ignore_dups
-setopt pushd_silent
+# setopt {{{1
+setopt auto_cd                  # ディレクトリ直入力で cd
+setopt auto_pushd               # cd で pushd
+setopt pushd_ignore_dups        # 同じ dir をスタックに入れない
+setopt pushd_silent             # 静かに
 
-# completion {{{2
+# setopt correct                # スペルチェック
+# setopt correct_all            # スペルチェックを全部に
+
 setopt no_beep
-setopt no_list_beep
+setopt no_listbeep
+setopt list_packed          # 補完候補を詰める
 
+setopt auto_list            # 一覧表示する
 setopt auto_name_dirs       # enable ~/$var
 setopt auto_menu            # 補完キー連打で順に補完候補を自動で補完
 setopt auto_param_slash     # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
@@ -136,13 +77,20 @@ setopt magic_equal_subst    # コマンドラインの引数で --prefix=/usr �
 
 setopt extended_glob        # 拡張グロブで補完(~とか^とか。例えばless *.txt~memo.txt ならmemo.txt 以外の *.txt にマッチ)
 setopt globdots             # 明確なドットの指定なしで.から始まるファイルをマッチ
+setopt brace_ccl            # {a-c} を展開
 
-# i/o {{{2
+setopt multios              # 必要に応じて tee / cat
+setopt noautoremoveslash    # 末尾の / を自動で消さない
+
 #setopt correct 
 setopt print_eight_bit      # 日本語ファイル名等8ビットを通す
 setopt sun_keyboard_hack
 #setopt interactive_comments
 setopt no_nomatch
+
+setopt no_flow_control
+setopt ignore_eof
+setopt no_tify
 
 # prompting
 
@@ -152,8 +100,6 @@ unsetopt beep
 #export WORDCHARS='*?_.[]~=&;!#$%^(){}<>'
 
 # complete & autoload {{{1
-autoload -U compinit
-compinit -u
 # 高速化?
 zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' use-cache true
@@ -169,17 +115,9 @@ autoload -U zmv
 autoload -U colors
 colors
 
-autoload -U bashcompinit
-bashcompinit
-
-setopt no_flow_control
-setopt no_beep
-setopt ignore_eof
-setopt auto_list
-setopt extended_glob
-setopt auto_cd
-setopt auto_pushd
-setopt no_tify
+# URL を自動エスケープ
+autoload -Uz url-quote-magic
+zle -N self-insert url-quote-magic
 
 # keybinds {{{1
 # keybind {{{2
@@ -315,5 +253,94 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
     _reg_pwd_screennum
   }
 fi
+
+# plugins {{{1
+# textobj {{{2
+source_all ~/.zsh/plugins/opp.zsh/opp.zsh
+source_all ~/.zsh/plugins/opp.zsh/opp/*
+# complete {{{2
+[ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
+[ -e ~/.zsh/functions/completion ] && fpath=($HOME/.zsh/functions/completion $fpath)
+source_all ~/.zsh/commands/*
+
+# zaw {{{2
+if [ -e ~/.zsh/plugins/zaw ] ; then
+  source ~/.zsh/plugins/zaw/zaw.zsh
+  zstyle ':filter-select' case-insensitive yes
+
+  bindkey -v '^X^A' zaw-ack
+  bindkey -v '^X^S' zaw-history
+  bindkey -v '^X^L' zaw-open-file
+
+  bindkey -v '^X^X' zaw-z
+  bindkey -v '^X^H' zaw-ssh
+
+  bindkey -v '^Xr' zaw-git-files
+  bindkey -v '^Xb' zaw-git-branches
+  bindkey -v '^Xs' zaw-screens
+  bindkey -v '^Xt' zaw-tmux
+  source_all ~/.zsh/functions/zaw/*
+fi
+# autojump {{{2
+if [ -e ~/.zsh/plugins/z/z.sh ]; then
+  _Z_CMD=j
+  source ~/.zsh/plugins/z/z.sh
+  precmd() {
+    _z --add "$(pwd -P)"
+  }
+fi
+
+# auto-fu.zsh {{{2
+# if [ -e ~/.zsh/plugins/auto-fu.zsh ]; then
+#   source ~/.zsh/plugins/auto-fu.zsh/auto-fu.zsh
+#   zle-line-init() { auto-fu-init }
+#   zle -N zle-line-init
+#   zstyle ':completion:*' completer _oldlist _complete
+#   zstyle ':auto-fu:var' postdisplay $''
+#   zstyle ':auto-fu:highlight' completion fg=black,bold
+#   zstyle ':auto-fu:highlight' completion/one fg=gray,normal,underline
+# fi
+
+# for ruby gems {{{2
+if [ x$GEM_HOME != x ]; then
+  function cdgem() {
+    cd `echo $GEM_HOME/**gems/$1* | awk '{print $1}'`
+  }
+  compctl -K _cdgem cdgem
+  function _cdgem() {
+    reply=(`find $GEM_HOME -type d|grep -e '/gems/[^/]*$'|xargs basename|sort -nr`)
+  }
+fi
+
+
+# prompt {{{1
+export PROMPT="[%n@%m %3d]%(#.#.$) "
+
+if [ $OSTYPE != "cygwin" -a -z $LANG ]; then
+    export LANG=ja_JP.UTF-8
+fi
+
+setopt prompt_subst
+
+case "$TERM" in
+  cygwin|xterm|xterm*|kterm|mterm|rxvt*)
+    #PROMPT='%{[33m%}%m%B[%D %T]%b%{[m%}\$ '
+    PROMPT='%{[33m%}%n@%m%B%b%{[m%}\$ '
+    RPROMPT='[%{[33m%}%4c%{[m%}]'
+    ;;
+  screen*)
+    #PROMPT='%{[33m%}%m%B[%D %T]%b%{[m%}\$ '
+    PROMPT='%{[33m%}%n@%m%B%b%{[m%}\$ '
+    RPROMPT='[%{[33m%}%4c%{[mk%c\\%}]'
+    ;;
+esac
+
+# compinit {{{1
+autoload -U compinit
+compinit -u
+
+autoload -U bashcompinit
+bashcompinit
+
 
 # vim: fdm=marker sw=2 ts=2 et:
