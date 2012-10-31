@@ -270,15 +270,17 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
 
   bindkey -v '^X^A' zaw-ack
   bindkey -v '^X^S' zaw-history
-  bindkey -v '^X^L' zaw-open-file
 
   bindkey -v '^X^X' zaw-z
-  bindkey -v '^X^H' zaw-ssh
 
+  bindkey -v '^Xj' zaw-open-file
   bindkey -v '^Xr' zaw-git-files
   bindkey -v '^Xb' zaw-git-branches
   bindkey -v '^Xs' zaw-screens
   bindkey -v '^Xt' zaw-tmux
+  bindkey -v '^Xk' zaw-keybind
+  bindkey -v '^Xl' zaw-ssh
+
   source_all ~/.zsh/functions/zaw/*
 fi
 # autojump {{{2

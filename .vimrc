@@ -543,7 +543,7 @@ if has('gui')
     if has('gui_macvim')
       " macvim .... -_-###
       autocmd GUIEnter * call <SID>my_highlight_defines()
-      autocmd GUIEnter * syntax enable
+      " autocmd GUIEnter * syntax enable
     endif
   augroup END
 elseif &t_Co == 256 || s:is_win "{{{2

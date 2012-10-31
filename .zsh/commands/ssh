@@ -1,3 +1,4 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 create_ssh_hosts () {
   local t s
   t="$1"; shift

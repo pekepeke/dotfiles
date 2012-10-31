@@ -1,4 +1,5 @@
 #
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # * cdd
 #  $ cdd WINDOW番号 でその screen の WINDOW 番号へ移動
 # するための zsh function
