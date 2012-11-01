@@ -1,10 +1,13 @@
 # .boot
-
 [ -e ~/.shrc.boot ] && source ~/.shrc.boot
 
 # functions {{{1
+debug_timer() {
+  # echo "$(date +'%s.%N') : $*"
+}
 if_compile() {
   for f in $* ; do
+    [ ! -e $f.zwc ]  && zcompile $f
     [ $f -nt $f.zwc ] && zcompile $f
   done
 }
@@ -14,8 +17,10 @@ source_all() {
   done
 }
 
-if_compile ~/.shrc.*
+debug_timer "start"
 
+if_compile ~/.shrc.*[^zwc]
+if_compile ~/.zshenv
 
 # # https://github.com/zsh-users/antigen.git {{{1
 # if [ -e ~/.zsh/antigen/antigen.zsh ]; then
@@ -172,6 +177,7 @@ bindkey -v '^[d' _quote-previous-word-in-double
 export WORDCHARS='*?[]~=&;!#$%^(){}<>'
 
 # history setting {{{1
+debug_timer "start history"
 autoload history-search-end
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
@@ -255,9 +261,10 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
 fi
 
 # plugins {{{1
+debug_timer "start plugins"
 # textobj {{{2
-source_all ~/.zsh/plugins/opp.zsh/opp.zsh
-source_all ~/.zsh/plugins/opp.zsh/opp/*
+# source_all ~/.zsh/plugins/opp.zsh/opp.zsh
+# source_all ~/.zsh/plugins/opp.zsh/opp/*
 # complete {{{2
 [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
 [ -e ~/.zsh/functions/completion ] && fpath=($HOME/.zsh/functions/completion $fpath)
@@ -265,8 +272,28 @@ source_all ~/.zsh/commands/*
 
 # zaw {{{2
 if [ -e ~/.zsh/plugins/zaw ] ; then
-  source ~/.zsh/plugins/zaw/zaw.zsh
-  zstyle ':filter-select' case-insensitive yes
+  # source ~/.zsh/plugins/zaw/zaw.zsh
+  # source_all ~/.zsh/functions/zaw/*
+  # zstyle ':filter-select' case-insensitive yes
+  autoload -Uz zaw ; zle -N zaw
+  zaw () {
+    zaw-rc
+    [[ "${WIDGET-}" != "" ]] || return
+    zle zaw -K emacs -- "$@"
+  }
+  zaw-rc () {
+    unfunction "$0"
+
+    source ~/.zsh/plugins/zaw/zaw.zsh
+    source_all ~/.zsh/functions/zaw/*
+
+    zstyle ':filter-select' case-insensitive yes
+  }
+  zaw "$@"
+
+  fpath+=~/.zsh/plugins/zaw
+  # fpath+=~/.zsh/functions/zaw
+
 
   bindkey -v '^X^A' zaw-ack
   bindkey -v '^X^S' zaw-history
@@ -281,15 +308,22 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
   bindkey -v '^Xk' zaw-keybind
   bindkey -v '^Xl' zaw-ssh
 
-  source_all ~/.zsh/functions/zaw/*
 fi
 # autojump {{{2
 if [ -e ~/.zsh/plugins/z/z.sh ]; then
   _Z_CMD=j
-  source ~/.zsh/plugins/z/z.sh
-  precmd() {
-    _z --add "$(pwd -P)"
+  autoload -Uz $_Z_CMD ; zle -N $_Z_CMD
+  $_Z_CMD () {
+    z-rc
   }
+  z-rc() {
+    unfunction "$0"
+    source ~/.zsh/plugins/z/z.sh
+    precmd() {
+      _z --add "$(pwd -P)"
+    }
+  }
+  $_Z_CMD "$@"
 fi
 
 # auto-fu.zsh {{{2
@@ -316,6 +350,7 @@ fi
 
 
 # prompt {{{1
+debug_timer "start prompt"
 export PROMPT="[%n@%m %3d]%(#.#.$) "
 
 if [ $OSTYPE != "cygwin" -a -z $LANG ]; then
@@ -338,11 +373,12 @@ case "$TERM" in
 esac
 
 # compinit {{{1
+debug_timer "start compinit"
 autoload -U compinit
 compinit -u
 
 autoload -U bashcompinit
 bashcompinit
 
-
+debug_timer "finish"
 # vim: fdm=marker sw=2 ts=2 et:

@@ -491,7 +491,7 @@ NeoBundle 'coderifous/textobj-word-column.vim'
 " afterexec for runtimepath {{{1
 filetype plugin indent on
 " macvim だと必要?
-syntax on
+" syntax on
 
 " etc settings {{{2
 if filereadable(expand('~/.vimrc.personal'))

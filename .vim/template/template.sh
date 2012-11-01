@@ -12,6 +12,8 @@ main() {
   # TODO
 }
 
+OPTIND_OLD=$OPTIND
+OPTIND=1
 while getopts "hvs:" opt; do
   case $opt in
     h)
@@ -23,6 +25,7 @@ while getopts "hvs:" opt; do
   esac
 done
 shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
 if [ $OPT_ERROR ]; then
   usage
 fi
