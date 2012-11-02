@@ -116,7 +116,7 @@ zstyle ':completion:*:default' menu select=2
 #zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 autoload -U zmv
-
+autoload -Uz add-zsh-hook
 autoload -U colors
 colors
 
@@ -265,65 +265,48 @@ debug_timer "start plugins"
 # textobj {{{2
 # source_all ~/.zsh/plugins/opp.zsh/opp.zsh
 # source_all ~/.zsh/plugins/opp.zsh/opp/*
-# complete {{{2
-[ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
-[ -e ~/.zsh/functions/completion ] && fpath=($HOME/.zsh/functions/completion $fpath)
-source_all ~/.zsh/commands/*
 
 # zaw {{{2
 if [ -e ~/.zsh/plugins/zaw ] ; then
+  autoload -Uz zaw ; zle -N zaw
+  fpath+=~/.zsh/plugins/zaw
+  fpath+=~/.zsh/zfunc
+
   # source ~/.zsh/plugins/zaw/zaw.zsh
   # source_all ~/.zsh/functions/zaw/*
   # zstyle ':filter-select' case-insensitive yes
-  autoload -Uz zaw ; zle -N zaw
-  zaw () {
-    zaw-rc
-    [[ "${WIDGET-}" != "" ]] || return
-    zle zaw -K emacs -- "$@"
+  zaw-init() {
+    zaw
+    add-zsh-hook -d preexec zaw-init
   }
-  zaw-rc () {
-    unfunction "$0"
 
-    source ~/.zsh/plugins/zaw/zaw.zsh
-    source_all ~/.zsh/functions/zaw/*
+  # add-zsh-hook preexec zaw-init
+  zaw-init
+  # bindkey -v '^X^A' zaw-ack
+  # bindkey -v '^X^S' zaw-history
 
-    zstyle ':filter-select' case-insensitive yes
-  }
-  zaw "$@"
+  # bindkey -v '^X^X' zaw-z
 
-  fpath+=~/.zsh/plugins/zaw
-  # fpath+=~/.zsh/functions/zaw
-
-
-  bindkey -v '^X^A' zaw-ack
-  bindkey -v '^X^S' zaw-history
-
-  bindkey -v '^X^X' zaw-z
-
-  bindkey -v '^Xj' zaw-open-file
-  bindkey -v '^Xr' zaw-git-files
-  bindkey -v '^Xb' zaw-git-branches
-  bindkey -v '^Xs' zaw-screens
-  bindkey -v '^Xt' zaw-tmux
-  bindkey -v '^Xk' zaw-keybind
-  bindkey -v '^Xl' zaw-ssh
+  # bindkey -v '^Xj' zaw-open-file
+  # bindkey -v '^Xr' zaw-git-files
+  # bindkey -v '^Xb' zaw-git-branches
+  # bindkey -v '^Xs' zaw-screens
+  # bindkey -v '^Xt' zaw-tmux
+  # bindkey -v '^Xk' zaw-keybind
+  # bindkey -v '^Xl' zaw-ssh
 
 fi
 # autojump {{{2
 if [ -e ~/.zsh/plugins/z/z.sh ]; then
   _Z_CMD=j
-  autoload -Uz $_Z_CMD ; zle -N $_Z_CMD
-  $_Z_CMD () {
-    z-rc
+  autoload -Uz z ; zle -N z
+  z-init() {
+    z
+    add-zsh-hook -d preexec z-init
   }
-  z-rc() {
-    unfunction "$0"
-    source ~/.zsh/plugins/z/z.sh
-    precmd() {
-      _z --add "$(pwd -P)"
-    }
-  }
-  $_Z_CMD "$@"
+
+  # add-zsh-hook preexec z-init
+  z-init
 fi
 
 # auto-fu.zsh {{{2
@@ -374,11 +357,21 @@ esac
 
 # compinit {{{1
 debug_timer "start compinit"
-autoload -U compinit
-compinit -u
+_zsh-complete-init() {
+  [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
+  [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
+  source_all ~/.zsh/commands/*
 
-autoload -U bashcompinit
-bashcompinit
+  autoload -U compinit
+  compinit -u
+
+  autoload -U bashcompinit
+  bashcompinit
+
+  add-zsh-hook -d preexec _zsh-complete-init
+}
+# add-zsh-hook preexec _zsh-complete-init
+_zsh-complete-init
 
 debug_timer "finish"
 # vim: fdm=marker sw=2 ts=2 et:

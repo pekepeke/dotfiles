@@ -1,0 +1,30 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+zaw () {
+  zaw-rc
+  [[ "${WIDGET-}" != "" ]] || return
+  zle zaw -K emacs -- "$@"
+}
+zaw-rc () {
+  unfunction "$0"
+
+  source ~/.zsh/plugins/zaw/zaw.zsh
+  source_all ~/.zsh/zfunc/zaw-sources/*
+
+  zstyle ':filter-select' case-insensitive yes
+
+  bindkey -v '^X^A' zaw-ack
+  bindkey -v '^X^S' zaw-history
+
+  bindkey -v '^X^X' zaw-z
+
+  bindkey -v '^Xj' zaw-open-file
+  bindkey -v '^Xr' zaw-git-files
+  bindkey -v '^Xb' zaw-git-branches
+  bindkey -v '^Xs' zaw-screens
+  bindkey -v '^Xt' zaw-tmux
+  bindkey -v '^Xw' zaw-tmux-window
+  bindkey -v '^Xk' zaw-keybind
+  bindkey -v '^Xl' zaw-ssh
+}
+zaw "$@"
+
