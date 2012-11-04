@@ -6,16 +6,21 @@ BACKUP_FILES=".bash_profile .bashrc .screenrc .vimrc"
 SKIP_FILES=". .. .git setup.sh"
 COPY_FILES=""
 
+opt_uninstall=0
+
 usage() {
-  prg_name=`basename $0`
+  local prg_name=`basename $0`
   cat <<EOM
   Usage: $prg_name [-h]
+
+-h   : show usage
+-u   : uninstall
 EOM
   exit 1
 }
 
 matchin() {
-  SRC=$1
+  local SRC=$1
   shift
   for K in $*; do
     if [ "x$SRC" = "x$K" ]; then
@@ -25,16 +30,25 @@ matchin() {
   return 1
 }
 
-main() {
-  cd $(dirname $0)
+purge_files() {
+  for f in $(find ~ -type l -maxdepth 1 -name '.*'); do
+    if [ ! -e "$(readlink $f)" ] ; then
+      echo rm "$f"
+      rm "$f"
+    fi
+  done
+}
 
+exec_install() {
   if [ ! -e $(basename $0) ]; then
-    if [ ! -e ~/.github-dotfiles ]; then
+    if [ ! -e $LOCAL_DIR ]; then
       git clone ${GIT_URL} ${LOCAL_DIR}
     fi
     cd ${LOCAL_DIR}
   fi
-  CDIR=$(pwd)
+
+  local CDIR=$(pwd)
+
   if [ ! -e $HOME/.rc-org ]; then
     mkdir $HOME/.rc-org
     for F in "$BACKUP_FILES" ;do
@@ -60,11 +74,56 @@ main() {
   fi
 }
 
-while getopts "h:v" opt; do
+exec_uninstall() {
+  local files
+  local fpath
+  if [ -e $LOCAL_DIR ]; then
+    files=$(find $LOCAL_DIR -maxdepth 1 -mindepth 1)
+  else
+    files=$(find ~/ -type l -name '.*' -maxdepth 1 -mindepth 1)
+  fi
+
+  for f in $files; do
+    fpath=~/$(basename $f)
+    if [ -e $fpath ]; then
+      echo rm $fpath
+      rm $fpath
+    fi
+  done
+  for f in $(find ~/.rc-org -maxdepth 1 -mindepth 1); do
+    fpath= ~/$(basename $f)
+    echo "cp -p $f $fpath"
+    cp -p $f $fpath
+  done
+
+  cat <<EOM
+
+### please exec below command
+
+rm $LOCAL_DIR
+
+EOM
+}
+
+main() {
+  cd $(dirname $0)
+
+  purge_files
+
+  if [ $opt_uninstall = 1 ]; then
+    exec_uninstall
+  else
+    exec_install
+  fi
+
+}
+
+while getopts "hu" opt; do
   case $opt in
-    h) 
+    h)
       usage ;;
-    v) ;;
+    # v) ;;
+    u) opt_uninstall=1;;
   esac
 done
 shift `expr $OPTIND - 1`
