@@ -1,0 +1,11 @@
+{
+	"launch_in_dev" : [
+		"Chrome"
+	],
+  "framework" : "qunit",
+	"src_files" : [
+		"scripts/*.js",
+		"tests/*_spec.js"
+	]
+}
+

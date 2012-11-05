@@ -31,15 +31,24 @@ matchin() {
 }
 
 purge_files() {
+  local RED="\033[1;31m"
+  local DEFAULT="\033[00m"
+
   for f in $(find ~ -type l -maxdepth 1 -name '.*'); do
     if [ ! -e "$(readlink $f)" ] ; then
-      echo rm "$f"
+      echo -e ${RED}rm "$f"${DEFAULT}
       rm "$f"
     fi
   done
 }
 
 exec_install() {
+  local RED="\033[1;31m"
+  local GREEN="\033[1;32m"
+  local YELLOW="\033[1;33m"
+  local BLUE="\033[1;34m"
+  local GRAY="\033[1;37m"
+  local DEFAULT="\033[00m"
   if [ ! -e $(basename $0) ]; then
     if [ ! -e $LOCAL_DIR ]; then
       git clone ${GIT_URL} ${LOCAL_DIR}
@@ -52,19 +61,20 @@ exec_install() {
   if [ ! -e $HOME/.rc-org ]; then
     mkdir $HOME/.rc-org
     for F in "$BACKUP_FILES" ;do
+      echo -e "${RED}mv $HOME/$F $HOME/.rc-org${DEFAULT}"
       mv $HOME/$F $HOME/.rc-org
     done
   fi
   for F in .?* ;do
     if matchin "$F" $SKIP_FILES ; then
-      echo skip object $F
+      echo -e "${GRAY}skip object $F${DEFAULT}"
     elif [ -e "$HOME/$F" ]; then
-      echo skip $F
+      echo -e "${GRAY}skip $F${DEFAULT}"
     elif matchin "$F" $COPY_FILES ; then
-      echo cp $CDIR/$f $HOME
+      echo -e "${GREEN}cp $CDIR/$f $HOME${DEFAULT}"
       cp $CDIR/$f $HOME
     else
-      echo ln -s $CDIR/$F $HOME
+      echo -e "${YELLOW}ln -s $CDIR/$F $HOME${DEFAULT}"
       ln -s $CDIR/$F $HOME
     fi
   done

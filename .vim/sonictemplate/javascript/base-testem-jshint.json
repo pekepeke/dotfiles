@@ -1,0 +1,17 @@
+{
+	"launch_in_dev" : [
+		"Chrome"
+	],
+  "framework" : "jasmine",
+  "before_tests" : "coffee -c scripts/*.js tests/*_spec.coffee",
+	"on_exit": "rm scripts/*.js",
+  "src_files": [
+    "scripts/*.coffee",
+		"tests/*_spec.coffee"
+  ],
+  "serve_files": [
+    "scripts/*.js",
+    "tests/*.js",
+  ]
+}
+

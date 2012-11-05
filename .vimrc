@@ -1,3 +1,14 @@
+"                                 ___           ___           ___
+"      ___            ___        /  /\         /  /\         /  /\
+"     /  /\          /__/\      /  /::|       /  /::\       /  /::\
+"    /  /:/          \__\:\    /  /:|:|      /  /:/\:\     /  /:/\:\
+"   /  /:/           /  /::\  /  /:/|:|__   /  /::\ \:\   /  /:/  \:\
+"  /__/:/  ___    __/  /:/\/ /__/:/_|::::\ /__/:/\:\_\:\ /__/:/ \  \:\
+"  |  |:| /  /\  /__/\/:/~~  \__\/  /~~/:/ \__\/~|::\/:/ \  \:\  \__\/
+"  |  |:|/  /:/  \  \::/           /  /:/     |  |:|::/   \  \:\
+"  |__|:|__/:/    \  \:\          /  /:/      |  |:|\/     \  \:\
+"   \__\::::/      \__\/         /__/:/       |__|:|~       \  \:\
+"       ~~~~                     \__\/         \__\|         \__\/
 " init setup {{{1
 scriptencoding utf-8
 
@@ -222,9 +233,9 @@ NeoBundleLazyOn FileType python 'lambdalisue/vim-python-virtualenv'
 " NeoBundle 'lambdalisue/vim-django-support'
 NeoBundleLazyOn FileType python 'gerardo/vim-django-support'
 NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
-if has('python')
-  " NeoBundleLazyOn FileType python 'davidhalter/jedi-vim'
-endif
+" if has('python')
+"   NeoBundleLazyOn FileType python 'davidhalter/jedi-vim'
+" endif
 " NeoBundle 'sontek/rope-vim'
 " if executable('ipython')
 "   NeoBundleLazy 'ivanov/vim-ipython'
@@ -293,8 +304,8 @@ NeoBundleLazyOn FileType php 'vim-scripts/phpcomplete.vim'
 
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim'
-NeoBundle 'vim-scripts/dbext.vim'
-NeoBundle 'vim-scripts/SQLUtilities'
+NeoBundleLazyOn FileType sql 'vim-scripts/dbext.vim'
+NeoBundleLazyOn FileType sql 'vim-scripts/SQLUtilities'
 "NeoBundle 'OmniCppComplete'
 
 " etc {{{4
@@ -359,7 +370,7 @@ else
 endif
 
 " common {{{3
-NeoBundle 'mattn/benchvimrc-vim'
+NeoBundleLazy 'mattn/benchvimrc-vim'
 NeoBundle 'Shougo/vimfiler', {'depends': 'Shougo/unite.vim'}
 if s:is_win && !has('win32unix')
   if executable('gcc')
@@ -492,6 +503,9 @@ NeoBundle 'coderifous/textobj-word-column.vim'
 filetype plugin indent on
 " macvim だと必要?
 " syntax on
+if has('macvim')
+  syntax enable
+endif
 
 " etc settings {{{2
 if filereadable(expand('~/.vimrc.personal'))
@@ -1684,6 +1698,7 @@ let g:netrw_home = expand("$HOME/.tmp/")
 
 " yankring {{{2
 let g:yankring_history_dir = "$HOME/.tmp"
+let g:yankring_default_menu_mode = 0
 
 " rails.vim {{{2
 let g:rails_some_option = 1
@@ -1730,7 +1745,11 @@ call my#util#mkdir(g:hatena_base_dir.'/cookies')
 
 " dbext.vim {{{2
 let g:dbext_default_prompt_for_parameters=0
-let g:dbext_default_history_file = expand('~/.tmp/dbext_sql_history.txt')
+let g:dbext_default_history_file=expand('~/.tmp/dbext_sql_history.txt')
+let g:dbext_default_menu_mode=0
+
+" SQLUtilities {{{2
+let g:sqlutil_default_menu_mode=0
 
 " zen-coding.vim {{{2
 let g:user_zen_leader_key='<C-y>'
@@ -1783,10 +1802,11 @@ if neobundle#is_installed('unite.vim')
 endif
 
 " unite basic settings {{{3
-let g:unite_source_history_yank_enable=1
+let g:unite_update_time=1000
+let g:unite_source_history_yank_enable=0
 "let g:unite_enable_start_insert=1
 let g:unite_enable_start_insert=0
-let g:unite_source_file_mru_limit=200
+let g:unite_source_file_mru_limit=100
 let g:unite_source_file_mru_time_format = ''
 "let g:unite_source_file_mru_time_format = '%Y-%m-%d %H:%M:%S'
 let g:unite_winheight = 20
@@ -2721,7 +2741,11 @@ function! s:setup_vimproc_dll() " {{{3
     if has('unix')
       let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_cygwin.dll')
     else
-      let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_' . (has('win64') ? 'win64' : 'win32') .'.dll')
+      if has('win64')
+        let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_win64.dll')
+      else
+        let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_win32.dll')
+      endif
       if !filereadable(path)
         if has('win64')
           let path = expand('~/.vim/lib/vimproc/vimproc_win64.dll')
