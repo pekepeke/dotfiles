@@ -19,6 +19,10 @@ let s:is_win = has('win16') || has('win32') || has('win64')
 function! s:nop(...)
 endfunction
 
+function! s:SID()
+    return matchstr(expand('<sfile>'), '<SNR>\d\+_')
+endfunction
+
 " reset settings & restore runtimepath {{{2
 let s:configured_runtimepath = &runtimepath
 set all&
@@ -65,28 +69,94 @@ filetype off
 let g:my_bundle_dir = expand("$HOME/.vim/neobundle")
 if has('vim_starting')
   " pathogen
-  call pathogen#infect()
+  " call pathogen#infect()
 
   set runtimepath+=~/.vim/neobundle.vim
   call neobundle#rc(g:my_bundle_dir)
+  NeoBundleLocal ~/.vim/bundle
 
   syntax enable
 endif
 
-augroup my-neobundle-lazy-group
+augroup vimrc-neobundle-lazy
   autocmd!
 augroup END
-function s:my_neobundle_lazy_on(on, modes, sources)
-  let sources = type(a:sources) == type([]) ? a:sources : [a:sources]
-  let mode = type(a:modes) == type([]) ? join(a:modes, ",") : a:modes
-  for uri in sources
-    execute 'NeoBundleLazy' uri
-    let name = fnamemodify(uri, ':te')
+
+if has('vim_starting')
+  let s:lazyutil = {
+        \   '_' : {},
+        \ }
+  function! s:lazyutil.add(on, mode, source)
+    let k = a:on."_".a:mode
+    if !self.has(k)
+      let self[k] = []
+    endif
+    call add(self[k], a:source)
+  endfunction
+
+  function! s:lazyutil.has(key)
+    return exists('s:lazyutil["' . a:key . '"]')
+  endfunction
+
+  function! s:lazyutil.get(on, mode)
+    let k = a:on."_".a:mode
+    if !self.has(k)
+      return []
+    endif
+    return self[k]
+  endfunction
+
+  function! s:lazyutil.clear(on, mode)
+    let k = a:on."_".a:mode
+    if !self.has(k)
+      return []
+    endif
+    let sources = self[k]
+    unlet self[k]
+    return sources
+  endfunction
+
+  function! s:lazyutil.load(on, mode)
+    let sources = self.clear(a:on, a:mode)
+    if empty(sources)
+      return
+    endif
+    let F = function('neobundle#config#source')
+    silent call call(F, sources)
+    " syntax enable
+  endfunction
+
+  function! s:lazyutil.register(on, modes, source)
+    silent execute 'NeoBundleLazy' a:source
+    let modes = type(a:modes) == type([]) ? a:modes : split(a:modes, ",")
+
+    let name = fnamemodify(a:source, ':te')
     let name = substitute(name, '^[''"]*\|\.git[''"]*$\|[''"]*$', '', 'g')
-    execute 'autocmd' 'my-neobundle-lazy-group' a:on mode 'silent' 'NeoBundleSource' name
-  endfor
-endfunction
-command! -nargs=+ NeoBundleLazyOn call <SID>my_neobundle_lazy_on(<f-args>)
+
+    for mode in modes
+      call self.add(a:on, mode, name)
+
+      let k = a:on . "_" . mode
+      if !self.has("_".k)
+        let self._[k] = 1
+        let cmd = printf('autocmd vimrc-neobundle-lazy %s %s NeoBundleLazyOnSource %s %s', a:on, mode, a:on, mode)
+        silent execute cmd
+      endif
+    endfor
+  endfunction
+
+  function! s:neobundle_lazy_source(on, mode)
+    call s:lazyutil.load(a:on, a:mode)
+  endfunction
+
+  command! -nargs=+ NeoBundleLazyOnSource call <SID>neobundle_lazy_source(<f-args>)
+
+  function! s:neobundle_lazy_on(on, modes, source)
+    call s:lazyutil.register(a:on, a:modes, a:source)
+  endfunction
+  command! -nargs=+ NeoBundleLazyOn call <SID>neobundle_lazy_on(<f-args>)
+endif
+
 
 " vundles {{{2
 NeoBundle 'Lokaltog/vim-powerline'
@@ -126,7 +196,7 @@ NeoBundle 'acustodioo/vim-enter-indent'
 
 NeoBundle 'tpope/vim-unimpaired'
 NeoBundle 'vim-scripts/ShowMultiBase'
-NeoBundle 'tyru/current-func-info.vim'
+" NeoBundle 'tyru/current-func-info.vim'
 " NeoBundle 'vim-scripts/taglist.vim'
 if s:is_win
   NeoBundleLazy 'majutsushi/tagbar'
@@ -143,7 +213,7 @@ NeoBundle 'ciaranm/detectindent'
 "NeoBundle 'motemen/git-vim'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'int3/vim-extradite'
-NeoBundle 'Shougo/vim-vcs'
+NeoBundleLazy 'Shougo/vim-vcs'
 NeoBundle 'sjl/splice.vim'
 NeoBundle 'vim-scripts/DirDiff.vim'
 NeoBundleLazy 'mbadran/headlights'
@@ -192,7 +262,7 @@ NeoBundleLazyOn FileType html,php,haml,jade 'vim-scripts/indenthtml.vim'
 NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
 
 " css {{{4
-NeoBundle 'Rykka/colorv.vim'
+NeoBundleLazyOn FileType html,javascript,css,sass,scss,less 'Rykka/colorv.vim'
 " NeoBundle 'ap/vim-css-color'
 " NeoBundle 'lilydjwg/colorizer'
 NeoBundle 'hail2u/vim-css3-syntax'
@@ -272,11 +342,11 @@ if executable('gocode')
 endif
 
 " as {{{4
-if has('ruby') && executable('sprout-as3')
-  NeoBundle 'endel/flashdevelop.vim'
-  NeoBundle 'tomtom/tlib_vim'
-  NeoBundle 'airblade/vim-rooter'
-endif
+" if has('ruby') && executable('sprout-as3')
+"   NeoBundle 'endel/flashdevelop.vim'
+"   NeoBundle 'tomtom/tlib_vim'
+"   NeoBundle 'airblade/vim-rooter'
+" endif
 
 " texts {{{4
 NeoBundle 'plasticboy/vim-markdown'
@@ -315,9 +385,9 @@ NeoBundle 'sjl/strftimedammit.vim'
 NeoBundle 'tangledhelix/vim-octopress'
 NeoBundle 'jcfaria/Vim-R-plugin'
 
-if executable('loga')
-  NeoBundle 'tacahiroy/vim-logaling'
-endif
+" if executable('loga')
+"   NeoBundle 'tacahiroy/vim-logaling'
+" endif
 
 " config {{{4
 NeoBundle 'smerrill/vcl-vim-plugin'
@@ -501,11 +571,6 @@ NeoBundle 'coderifous/textobj-word-column.vim'
 
 " afterexec for runtimepath {{{1
 filetype plugin indent on
-" macvim だと必要?
-" syntax on
-if has('macvim')
-  syntax enable
-endif
 
 " etc settings {{{2
 if filereadable(expand('~/.vimrc.personal'))
@@ -523,7 +588,7 @@ endif
 "set t_Co=256
 set background=dark
 
-function s:my_highlight_defines() "{{{2
+function! s:my_highlight_defines() "{{{2
   highlight NonText term=underline ctermfg=darkgray guifg=darkgray
   highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
   " highlight link IdeographicSpace Error
@@ -537,44 +602,23 @@ function s:my_highlight_defines() "{{{2
   " highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
 endfunction
 
-function s:my_additional_syntaxes() "{{{2
+function! s:my_additional_syntaxes() "{{{2
   match IdeographicSpace /　/
   match TrailingSpaces /\s\+$/
 endfunction
 
-augroup my-additional-colors "{{{2
+augroup vimrc-colors "{{{2
   autocmd!
   autocmd ColorScheme * call <SID>my_highlight_defines()
   " autocmd Syntax * call <SID>my_additional_syntaxes()
   autocmd Syntax eruby highlight link erubyRubyDelim Label
   autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
-augroup END
 
-if has('gui')
-  augroup my-gui-colorscheme "{{{2
-    autocmd!
-    autocmd GUIEnter * colorscheme vividchalk
-    if has('gui_macvim')
-      " macvim .... -_-###
-      autocmd GUIEnter * call <SID>my_highlight_defines()
-      " autocmd GUIEnter * syntax enable
-    endif
-  augroup END
-elseif &t_Co == 256 || s:is_win "{{{2
-  colorscheme vividchalk
-else
-  " colorscheme wombat
-  colorscheme desert
-endif
-
-"" カーソル行 {{{2
-" http://d.hatena.ne.jp/thinca/20090530/1243615055
-augroup vimrc-auto-cursorline
-  autocmd!
-  autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
-  autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
-  autocmd WinEnter * call s:auto_cursorline('WinEnter')
-  autocmd WinLeave * call s:auto_cursorline('WinLeave')
+  " カーソル行 http://d.hatena.ne.jp/thinca/20090530/1243615055
+  " autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
+  " autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
+  " autocmd WinEnter * call s:auto_cursorline('WinEnter')
+  " autocmd WinLeave * call s:auto_cursorline('WinLeave')
 
   let s:cursorline_lock = 0
   function! s:auto_cursorline(event) "{{{3
@@ -598,16 +642,34 @@ augroup vimrc-auto-cursorline
     endif
   endfunction "}}}3
 augroup END
-" MyAutocmd WinLeave * set nocursorline
-" MyAutocmd WinEnter,BufRead * set cursorline
+
+if has('gui')
+  function! s:gui_colorscheme_init()
+    call <SID>my_additional_syntaxes()
+    if has('gui_macvim')
+      call <SID>my_highlight_defines()
+    endif
+    colorscheme vividchalk
+    if has('gui_macvim')
+      syntax enable
+    endif
+  endfunction
+
+  autocmd vimrc-colors GUIEnter * call <SID>gui_colorscheme_init()
+elseif &t_Co == 256 || s:is_win "{{{2
+  colorscheme vividchalk
+else
+  " colorscheme wombat
+  colorscheme desert
+endif
 
 
 " defun macros {{{1
-augroup MyAuGroup
+augroup vimrc-my-autocmd
   autocmd!
 augroup END
-command! -bang -nargs=* MyAutocmd autocmd<bang> MyAuGroup <args>
-command! -nargs=* Lazy autocmd MyAuGroup VimEnter * <args>
+command! -bang -nargs=* MyAutocmd autocmd<bang> vimrc-my-autocmd <args>
+command! -nargs=* Lazy autocmd vimrc-my-autocmd VimEnter * <args>
 
 
 " for filetypes {{{1
@@ -1402,8 +1464,8 @@ map ;dj <Plug>DirDiffNext
 map ;dk <Plug>DirDiffPrev
 
 " splitjoin.vim {{{2
-nmap [prefix],j :<C-u>SplitjoinJoin<CR>
-nmap [prefix],k :<C-u>SplitjoinSplit<CR>
+nmap <Leader>j :<C-u>SplitjoinJoin<CR>
+nmap <Leader>k :<C-u>SplitjoinSplit<CR>
 
 " rainbow_parentheses {{{2
 MyAutocmd VimEnter * RainbowParenthesesToggleAll
@@ -1486,7 +1548,9 @@ if neobundle#is_installed('vim-smartinput')
   command! SmartinputOn call <SID>sminput_define_rules()
   call s:sminput_define_rules()
   " clear auto cmaps(for altercmd.vim)
-  cunmap <CR>
+  if hasmapto('<CR>', 'c')
+    cunmap <CR>
+  endif
 endif
 
 " golden-ratio {{{2
@@ -1878,7 +1942,7 @@ UniteNMap   <Space>   buffer
 UniteNMap   j         buffer_tab
 UniteNMap   k         tab
 UniteNMap   l         file
-UniteNMap   m         file_mru directory_mru -default-action=open -buffer-name=file
+UniteNMap   m         file_mru -default-action=open -buffer-name=file
 UniteNMap   t         sonictemplate
 UniteNMap   c         webcolorname
 UniteNMap   o         tag outline
@@ -1888,14 +1952,14 @@ UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=tod
 UniteNMap   gl        grep_launcher
 UniteNMap!  gi        git_grep -buffer-name=git_grep
 UniteNMap!  q         quickfix -buffer-name=qfix
-UniteNMap   y         history/yank
-UniteNMap   :         history/command command
-UniteNMap   /         history/search
+" UniteNMap   y         history/yank
+" UniteNMap   :         history/command command
+" UniteNMap   /         history/search
 UniteNMap   ?         mapping
 UniteNMap   bb        bookmark -default-action=open
 nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
 " UniteNMap   rr        quicklearn -immediately
-nnoremap <Space>R :<C-u>Unite quicklearn -immediately<CR>
+nnoremap [space]R :<C-u>Unite quicklearn -immediately<CR>
 
 
 " if my#util#has_plugin('vimproc')
@@ -2027,7 +2091,7 @@ set tags+=tags;$HOME
 if filereadable($HOME."/.bin/tags/java6") | set tags+=$HOME/.bin/tags/java6 | endif
 if filereadable($HOME."/.bin/tags/android-base") | set tags+=$HOME/.bin/tags/android-base | endif
 
-if 0 "{{{4
+if neobundle#is_installed('taglist.vim') "{{{4
   let g:Tlist_Auto_Update = 1
   let g:Tlist_Show_One_File = 0
   let g:Tlist_Exit_OnlyWindow = 1
@@ -2039,6 +2103,12 @@ if 0 "{{{4
   let g:tlist_scala_settings = 'scala;t:trait;c:class;T:type;m:method;C:constant;l:local;p:package;o:object'
   let g:tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
   let g:tlist_tex_settings   = 'latex;s:sections;g:graphics;l:labels'
+
+  if s:is_mac && executable('/Applications/MacVim.app/Contents/MacOS/ctags')
+    let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
+  endif
+  nnoremap <silent> [prefix]tt :<C-u>TlistToggle<CR>
+  nnoremap <silent> [prefix]to :<C-u>TlistOpen<CR>1<C-w>h
 else "{{{4
   if executable('coffeetags')
     let g:tagbar_type_coffee = {
@@ -2070,16 +2140,15 @@ else "{{{4
           \ 'm:methods'
       \ ]
   \ }
+
+  if s:is_mac && executable('/Applications/MacVim.app/Contents/MacOS/ctags')
+    " let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
+    let g:tagbar_ctags_bin='/Applications/MacVim.app/Contents/MacOS/ctags'
+  endif
+  nnoremap <silent> [prefix]tt :<C-u>TagbarToggle<CR>
+  nnoremap <silent> [prefix]to :<C-u>TagbarOpen<CR>1<C-w>h
 endif "}}}
 
-if s:is_mac && executable('/Applications/MacVim.app/Contents/MacOS/ctags')
-  " let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
-  let g:tagbar_ctags_bin='/Applications/MacVim.app/Contents/MacOS/ctags'
-endif
-" }}}3
-nnoremap <silent> [prefix]tt :<C-u>TagbarToggle<CR>1<C-w>h
-nnoremap <silent> [space]t   :<C-u>TagbarToggle<CR>
-nnoremap <silent> [prefix]tr :<C-u>TagbarOpen<CR>
 nnoremap          [prefix]tc :Ctags<CR>
 command! -nargs=? Ctags call s:exec_ctags(<q-args>)
 
@@ -2562,6 +2631,8 @@ if neobundle#is_installed('vim-watchdogs')
 
   call watchdogs#setup(g:quickrun_config)
   let g:watchdogs_check_BufWritePost_enable = 1
+  command! -nargs=0 WatchdogsOff let g:watchdogs_check_BufWritePost_enable=0
+  command! -nargs=0 WatchdogsOn let g:watchdogs_check_BufWritePost_enable=1
 endif
 
 " quickhl {{{2
@@ -2843,6 +2914,7 @@ LCAlias IRB
 let g:vimfiler_as_default_explorer=1
 let g:vimfiler_safe_mode_by_default=0
 let g:vimfiler_edit_action = 'below'
+" let g:vimfiler_edit_action = 'tabopen'
 
 let g:vimfiler_tree_leaf_icon = ' '
 let g:vimfiler_tree_opened_icon = '▾'
@@ -2979,10 +3051,12 @@ function! s:vimfiler_create_action_context(action, ...) " {{{4
   return context
 endfunction
 function! s:vimfiler_my_settings() " {{{3
+  nmap <silent><buffer> E :<C-u>call <SID>vimfiler_tabopen()<CR>
   nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
   hi link ExrenameModified Statement
   "nnoremap <buffer> v V
-  if exists('b:vimfiler')
+  if exists('b:vimfiler') && !exists('b:my_vimfiler_init')
+    let b:my_vimfiler_init=1
     if exists('b:vimfiler.context.explorer') && b:vimfiler.context.explorer "{{{4
       nmap <silent><buffer> L <Plug>(vimfiler_smart_l)
       nmap <silent><buffer> E :call <SID>vimfiler_tabopen()<CR>
@@ -3024,58 +3098,34 @@ nmap <silent> [prefix]mg :MemoGrep<CR>
 " tiny snippets {{{2
 let g:my_snippets_dir = "$HOME/memos/tiny-snippets"
 
-if neobundle#is_installed('unite.vim')
-  let s:unite_action_file_insert = {} " {{{3
-  function! s:unite_action_file_insert.func(candicate)
-    "echo a:candicate
-    let l:path = a:candicate.word
-    if isdirectory(l:path)
-      call unite#do_action('narrow')
-    elseif filereadable(l:path)
-      let linesread=line('$')
-      let l:old_cpoptions=&cpoptions
-      setlocal cpoptions-=a
-      :execute 'read '.l:path
-      let &cpoptions = l:old_cpoptions
-      let linesread=line('$')-linesread-1
-      if linesread >= 0
-        silent exe 'normal! ='.linesread.'+'
-      endif
-    endif
-  endfunction
-  call unite#custom_action('file', 'insert_file', s:unite_action_file_insert)
-  unlet! s:unite_action_file_insert
-endif
+" if neobundle#is_installed('unite.vim')
+"   let s:unite_action_file_insert = {} " {{{3
+"   function! s:unite_action_file_insert.func(candicate)
+"     "echo a:candicate
+"     let l:path = a:candicate.word
+"     if isdirectory(l:path)
+"       call unite#do_action('narrow')
+"     elseif filereadable(l:path)
+"       let linesread=line('$')
+"       let l:old_cpoptions=&cpoptions
+"       setlocal cpoptions-=a
+"       :execute 'read '.l:path
+"       let &cpoptions = l:old_cpoptions
+"       let linesread=line('$')-linesread-1
+"       if linesread >= 0
+"         silent exe 'normal! ='.linesread.'+'
+"       endif
+"     endif
+"   endfunction
+"   call unite#custom_action('file', 'insert_file', s:unite_action_file_insert)
+"   unlet! s:unite_action_file_insert
+" endif
 
-function! MyFilerecLauncher(mode, option) " {{{3
-  if g:my_snippets_dir == ''
-    return
-  endif
-  if a:mode == 'r'
-    let l:snippets_dir = g:my_snippets_dir
-  else
-    let l:delm=(strpart(g:my_snippets_dir, strlen(g:my_snippets_dir) -1) == '/' ? '' : '/')
-    let l:snippets_dir = expand(g:my_snippets_dir . l:delm . &filetype . (&filetype == '' ? '' : "/"))
-
-    if ! isdirectory(l:snippets_dir)
-      let l:snippets_dir=expand(g:my_snippets_dir.l:delm)
-    endif
-  endif
-  if a:option == 'i'
-    let l:option = ' -default-action=insert_file'
-  else
-    let l:option = ''
-  endif
-  exe "Unite file_rec:".fnameescape(l:snippets_dir).l:option
-endfunction 
 " }}}
 " mapping for tiny-snippets
 nnoremap [unite]n <Nop>
-nnoremap [unite]nr :<C-u>call MyFilerecLauncher('f', 'i')<CR>
-nnoremap [unite]ne :<C-u>call MyFilerecLauncher('f', 'o')<CR>
-nnoremap [unite]no :<C-u>call MyFilerecLauncher('r', 'o')<CR>
-nnoremap [unite]nn :execute 'new' g:my_snippets_dir<CR>
-nnoremap [unite]nm :execute 'new $HOME/memos'<CR>
+nnoremap <silent> [unite]nn :<C-u>execute printf('Unite file_rec:%s -start-insert', expand(g:my_snippets_dir))<CR>
+nnoremap <silent> [unite]nm :<C-u>execute 'new' g:my_snippets_dir<CR>
 
 " buffer commands {{{2
 command! ToUnixBuffer set fileformat=unix fileencoding=utf8

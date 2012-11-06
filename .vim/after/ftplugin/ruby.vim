@@ -24,4 +24,7 @@ vnoremap <buffer> [space]X ! xmpfiler -a
 vnoremap <buffer> [space]S ! xmpfiler -s
 vnoremap <buffer> [space]M ! xmpfiler -m
 
+inoremap <expr><buffer> { smartchr#loop('{', '#{', '{{')
+inoremap <expr><buffer> > smartchr#one_of('>', '=>', '>>')
+
 let &cpo = s:save_cpo

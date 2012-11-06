@@ -23,23 +23,8 @@ nmap <silent> <buffer> [t]pm :PerlUseInsertionCWord<CR>
 nnoremap <buffer> <silent> [comment-doc] :call <SID>my_pod_header()<CR>
 
 inoremap <buffer><expr> @ smartchr#one_of('@', '$this->', '@@')
-
-" nnoremap <buffer> <silent> <C-K> :Ref perldoc<CR>
-function! s:my_pod_header()
-  let subname = substitute( getline('.'), 'sub\s\+\(\w\+\)\s\+.*$', '\1', '')
-  if len(subname) <= 0
-    return
-  endif
-  let lines = [
-    \ '=head2 ' . subname,
-    \ '' ,
-    \ '' ,
-    \ '' ,
-    \ '=cut' ,
-    \ ]
-  call append( line('.') - 1, lines)
-  call cursor( line('.') - len(lines) )
-endfunction
+inoremap <buffer><expr> . smartchr#one_of('.', '->', '..')
+inoremap <buffer><expr> > smartchr#one_of('>', '=>', '>>')
 
 
 let &cpo = s:save_cpo

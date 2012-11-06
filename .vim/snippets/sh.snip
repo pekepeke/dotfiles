@@ -1,4 +1,4 @@
-# #!/bin/bash
+# vim:fdm=marker sw=2 ts=2 ft=snippet noexpandtab:
 snippet #!
 	#!/bin/bash
 	
@@ -26,7 +26,22 @@ snippet case
 		${2:pattern})
 			${3};;
 	esac
-snipet func
+snippet func
 	function ${1:func} {
 		$2
 	}
+snippet OS
+	case $OSTYPE in
+		cygwin*)
+			cygstart ${1:file} ;;
+		darwin*)
+			open $1 ;;
+		bsd*)
+			gnome-open $1 ;;
+		linux*)
+			gnome-open $1 ;;
+		solaris*)
+			gnome-open $1 ;;
+		*)
+			;;
+	esac
