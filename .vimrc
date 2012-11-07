@@ -75,7 +75,9 @@ if has('vim_starting')
   call neobundle#rc(g:my_bundle_dir)
   NeoBundleLocal ~/.vim/bundle
 
-  syntax enable
+  if has('syntax')
+    syntax enable
+  endif
 endif
 
 augroup vimrc-neobundle-lazy
@@ -645,14 +647,14 @@ augroup END
 
 if has('gui')
   function! s:gui_colorscheme_init()
-    call <SID>my_additional_syntaxes()
-    if has('gui_macvim')
-      call <SID>my_highlight_defines()
-    endif
+    call s:my_additional_syntaxes()
+    " if has('gui_macvim')
+    "   call s:my_highlight_defines()
+    " endif
     colorscheme vividchalk
-    if has('gui_macvim')
-      syntax enable
-    endif
+    " if has('gui_macvim')
+    "   syntax enable
+    " endif
   endfunction
 
   autocmd vimrc-colors GUIEnter * call <SID>gui_colorscheme_init()
@@ -1302,7 +1304,7 @@ function! s:replace_at_caret_data_scheme() " {{{3
           \ 'printf("data:%s;base64,%s",mime_content_type($fp),base64_encode(file_get_contents($fp)))'
           \ )
   else
-    let errmsg = "vm not found : ruby|php"
+    let errmsg = "vm not found : ruby, php"
   endif
   if !empty(errmsg)
     echohl Error
@@ -1360,6 +1362,7 @@ else " {{{3 altanative
 
     let s:org_scrolloff=-1
     function! s:noscrolloff_leftmouse()
+      set eventignore=CursorMoved,CursorMovedI
       if s:org_scrolloff < 0
         let s:org_scrolloff = &scrolloff
       endif
@@ -1367,7 +1370,9 @@ else " {{{3 altanative
       exe 'normal!' "\<LeftMouse>"
       " let &scrolloff = org_scrolloff
       autocmd CursorMoved * call s:restore_noscrolloff()
+      set eventignore=
     endfunction
+
     function! s:restore_noscrolloff()
       autocmd!
       if s:org_scrolloff < 0
@@ -1377,7 +1382,7 @@ else " {{{3 altanative
       let s:org_scrolloff = -1
     endfunction
     " autocmd CursorMoved * call s:restore_noscrolloff()
-    nnoremap <silent> <LeftMouse>       <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>:set eventignore=<CR>
+    nnoremap <silent> <LeftMouse>       :call <SID>noscrolloff_leftmouse()<CR>
     nnoremap          <2-LeftMouse>     g*
   augroup END
 endif "}}}
@@ -3062,8 +3067,8 @@ function! s:vimfiler_my_settings() " {{{3
       nmap <silent><buffer> E :call <SID>vimfiler_tabopen()<CR>
       " smart_h ができない…ｼｮﾎﾞﾝﾇ(´Д｀)
       " nmap <silent><buffer> H <Plug>(vimfiler_smart_h)
-      nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>^
-      nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>::set eventignore=<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
+      nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>
+      nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
     elseif exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
       " nmap <buffer> e <Plug>(vimfiler_split_edit_file)
       " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
@@ -3073,8 +3078,8 @@ function! s:vimfiler_my_settings() " {{{3
       " nnoremap <silent><buffer> <LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>
       " nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
       " nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('new')<CR>
-      nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('', 1)<CR>:set eventignore=<CR>
-      nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR>:call <SID>noscrolloff_leftmouse()<CR>::set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
+      nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('', 1)<CR>
+      nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
       " nmap <buffer> l <Plug>(vimfiler_expand_tree)
       nmap <buffer> L <Plug>(vimfiler_smart_l)
       nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
