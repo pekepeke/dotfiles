@@ -1,4 +1,5 @@
-.echo ON
 .mode column
 .headers ON
+.width 5 50
 .nullvalue "NULL"
+.explain on

@@ -20,11 +20,14 @@ zaw-rc () {
   bindkey -v '^Xj' zaw-open-file
   bindkey -v '^Xr' zaw-git-files
   bindkey -v '^Xb' zaw-git-branches
-  bindkey -v '^Xs' zaw-screens
-  bindkey -v '^Xt' zaw-tmux
+  # bindkey -v '^Xs' zaw-screens
+  bindkey -v '^X^T' zaw-tmux
   bindkey -v '^Xw' zaw-tmux-window
   bindkey -v '^Xk' zaw-keybind
   bindkey -v '^Xl' zaw-ssh
+
+  (( $+functions[zaw-src-tmuxinator] )) && bindkey -v '^Xx' zaw-tmuxinator
+  (( $+functions[zaw-src-finder] )) && bindkey -v '^Xf' zaw-finder
 }
 zaw "$@"
 

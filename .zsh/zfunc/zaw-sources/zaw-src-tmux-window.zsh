@@ -1,6 +1,6 @@
 zaw-src-tmux-window() {
   if [ -z $TMUX ]; then
-    candidates=("only work on running tmux")
+    candidates=()
     actions=(zaw-src-tmux-empty)
     act_descriptions=("only work on running tmux")
     return

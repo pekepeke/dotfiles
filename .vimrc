@@ -182,8 +182,8 @@ NeoBundle 'w0ng/vim-hybrid'
 " lang {{{3
 " basic {{{4
 NeoBundle 'thinca/vim-quickrun'
-NeoBundle 'osyo-manga/shabadou.vim'
-NeoBundle 'osyo-manga/vim-watchdogs'
+NeoBundleLazy 'osyo-manga/shabadou.vim'
+NeoBundleLazy 'osyo-manga/vim-watchdogs'
 NeoBundle 'kien/rainbow_parentheses.vim'
 NeoBundle 'vim-scripts/matchit.zip'
 NeoBundle 'vim-scripts/ruby-matchit'
@@ -1320,7 +1320,7 @@ function! s:replace_at_caret_data_scheme() " {{{3
         \ )
 endfunction
 
-if 0 " {{{3 http://vim-users.jp/2011/04/hack213/
+if 1 " {{{3 http://vim-users.jp/2011/04/hack213/
   let g:scrolloff = &scrolloff
   set scrolloff=0
   " Hack for <LeftMouse> not to adjust ('scrolloff') when single-clicking.
@@ -1357,7 +1357,7 @@ if 0 " {{{3 http://vim-users.jp/2011/04/hack213/
   nnoremap <silent> <ScrollWheelUp>   <Esc>:set eventignore=all<CR><ScrollWheelUp>:set eventignore=<CR>
   nnoremap <silent> <ScrollWheelDown> <Esc>:set eventignore=all<CR><ScrollWheelDown>:set eventignore=<CR>
 else " {{{3 altanative
-  augroup vimfiler-mouse
+  augroup vimrc-scroll-mouse
     autocmd!
 
     let s:org_scrolloff=-1
@@ -2531,113 +2531,119 @@ endfunction "}}}
 MyAutocmd FileType quickrun call s:quickrun_my_settings()
 
 " watchdogs {{{2
-if neobundle#is_installed('vim-watchdogs')
-  call extend(g:quickrun_config, {
-        \  'watchdogs_checker/_' : {
-        \    'hook/close_quickfix/enable_failure' : 1,
-        \    'hook/close_quickfix/enable_success' : 1,
-        \    'hook/hier_update/enable' : 1,
-        \    'hook/quickfix_stateus_enable/enable' : 1,
-        \  },
-        \  'perl/watchdogs_checker' : {
-        \    'type' : 'watchdogs_checker/vimparse.pl',
-        \  },
-        \  'coffee/watchdogs_checker' : {
-        \    'type' : 'watchdogs_checker/coffee',
-        \  },
-        \  'watchdogs_checker/coffee' : {
-        \    'command' : 'coffee',
-        \    'exec'    : '%c -c %o %s:p',
-        \    'quickfix/errorformat' : 'Error:\ In\ %f\\,\ %m\ on\ line\ %l,'
-        \                           . 'Error:\ In\ %f\\,\ Parse\ error\ on\ line\ %l:\ %m,'
-        \                           . 'SyntaxError:\ In\ %f\\,\ %m,'
-        \                           . '%-G%.%#',
-        \  },
-        \  'applescript/watchdogs_checker' : {
-        \    'type' : 'watchdogs_checker/osacompile',
-        \  },
-        \  'watchdogs_checker/osacompile' : {
-        \    'command' : 'osacompile',
-        \     'exec'    : '%c -o %o %s:p',
-        \     'quickfix/errorformat' : '%f:%l:%m',
-        \  },
-        \  'csharp/watchdogs_checker' : {
-        \    'type' : 'watchdogs_checker/mcs',
-        \  },
-        \  'watchdogs_checker/mcs' : {
-        \    'command' : 'mcs',
-        \     'exec'    : '%c --parse %o %s:p',
-        \     'quickfix/errorformat' : '%f(%l\,%c): %trror %m',
-        \  },
-        \  'haml/watchdogs_checker' : {
-        \    'type' : 'watchdogs_checker/haml',
-        \  },
-        \  'watchdogs_checker/haml' : {
-        \    'command' : 'haml',
-        \     'exec'    : '%c -c %o %s:p',
-        \     'quickfix/errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
-        \  },
-        \  'objc/watchdogs_checker' : {
-        \    'type' : 'watchdogs_checker/gcc_objc',
-        \  },
-        \  'watchdogs_checker/gcc_objc' : {
-        \    'command' : 'gcc',
-        \     'exec'    : '%c -fsyntax-only -lobjc %o %s:p',
-        \     'quickfix/errorformat' : '%-G%f:%s:,'
-        \                            . '%f:%l:%c: %trror: %m,'
-        \                            . '%f:%l:%c: %tarning: %m,'
-        \                            . '%f:%l:%c: %m,'
-        \                            . '%f:%l: %trror: %m,'
-        \                            . '%f:%l: %tarning: %m,'
-        \                            . '%f:%l: %m',
-        \  },
-        \  'cucumber/watchdogs_checker' : {
-        \    'type' : 'watchdogs_checker/cucumber',
-        \  },
-        \  'watchdogs_checker/cucumber' : {
-        \    'command' : 'cucumber',
-        \     'exec'    : '%c --dry-run --quiet --strict --format pretty %o %s:p',
-        \     'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
-        \  },
-        \  'lua/watchdogs_checker' : {
-        \    'type' : 'watchdogs_checker/luac',
-        \  },
-        \  'watchdogs_checker/luac' : {
-        \    'command' : 'luac',
-        \     'exec'    : '%c -p %o %s:p',
-        \     'quickfix/errorformat' : 'luac: %#%f:%l: %m',
-        \  },
-        \  'eruby/watchdogs_checker' : {
-        \    'type' : 'watchdogs_checker/ruby_erb',
-        \  },
-        \  'watchdogs_checker/erubis' : {
-        \    'command' : 'erubis',
-        \     'exec'    : '%c -z %o %s:p',
-        \     'quickfix/errorformat' : '%f:%l:%m',
-        \  },
-        \  'watchdogs_checker/ruby_erb' : {
-        \    'command' : 'ruby',
-        \     'exec'    : '%c  -rerb -e "puts ERB.new('
-        \            . 'File.read(''%s:p'').gsub(''<\%='', ''<\%'')'
-        \            . ', nil, ''-'').src" | %c -c %o',
-        \     'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error\, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
-        \  },
-        \ })
-        " ruby_erb => does not run well " \     'quickfix/errorformat' : '-:%l: %m',
 
-        " \  '/watchdogs_checker' : {
-        " \    'type' : 'watchdogs_checker/',
-        " \  },
-        " \  'watchdogs_checker/' : {
-        " \    'command' : '',
-        " \     'exec'    : '%c -c %o %s:p',
-        " \     'quickfix/errorformat' : '',
-        " \  },
+if neobundle#is_installed('vimproc')
 
-  call watchdogs#setup(g:quickrun_config)
-  let g:watchdogs_check_BufWritePost_enable = 1
-  command! -nargs=0 WatchdogsOff let g:watchdogs_check_BufWritePost_enable=0
-  command! -nargs=0 WatchdogsOn let g:watchdogs_check_BufWritePost_enable=1
+  NeoBundleSource shabadou.vim vim-watchdogs
+
+  if neobundle#is_installed('vim-watchdogs')
+    call extend(g:quickrun_config, {
+          \  'watchdogs_checker/_' : {
+          \    'hook/close_quickfix/enable_failure' : 1,
+          \    'hook/close_quickfix/enable_success' : 1,
+          \    'hook/hier_update/enable' : 1,
+          \    'hook/quickfix_stateus_enable/enable' : 1,
+          \  },
+          \  'perl/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/vimparse.pl',
+          \  },
+          \  'coffee/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/coffee',
+          \  },
+          \  'watchdogs_checker/coffee' : {
+          \    'command' : 'coffee',
+          \    'exec'    : '%c -c %o %s:p',
+          \    'quickfix/errorformat' : 'Error:\ In\ %f\\,\ %m\ on\ line\ %l,'
+          \                           . 'Error:\ In\ %f\\,\ Parse\ error\ on\ line\ %l:\ %m,'
+          \                           . 'SyntaxError:\ In\ %f\\,\ %m,'
+          \                           . '%-G%.%#',
+          \  },
+          \  'applescript/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/osacompile',
+          \  },
+          \  'watchdogs_checker/osacompile' : {
+          \    'command' : 'osacompile',
+          \     'exec'    : '%c -o %o %s:p',
+          \     'quickfix/errorformat' : '%f:%l:%m',
+          \  },
+          \  'csharp/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/mcs',
+          \  },
+          \  'watchdogs_checker/mcs' : {
+          \    'command' : 'mcs',
+          \     'exec'    : '%c --parse %o %s:p',
+          \     'quickfix/errorformat' : '%f(%l\,%c): %trror %m',
+          \  },
+          \  'haml/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/haml',
+          \  },
+          \  'watchdogs_checker/haml' : {
+          \    'command' : 'haml',
+          \     'exec'    : '%c -c %o %s:p',
+          \     'quickfix/errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
+          \  },
+          \  'objc/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/gcc_objc',
+          \  },
+          \  'watchdogs_checker/gcc_objc' : {
+          \    'command' : 'gcc',
+          \     'exec'    : '%c -fsyntax-only -lobjc %o %s:p',
+          \     'quickfix/errorformat' : '%-G%f:%s:,'
+          \                            . '%f:%l:%c: %trror: %m,'
+          \                            . '%f:%l:%c: %tarning: %m,'
+          \                            . '%f:%l:%c: %m,'
+          \                            . '%f:%l: %trror: %m,'
+          \                            . '%f:%l: %tarning: %m,'
+          \                            . '%f:%l: %m',
+          \  },
+          \  'cucumber/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/cucumber',
+          \  },
+          \  'watchdogs_checker/cucumber' : {
+          \    'command' : 'cucumber',
+          \     'exec'    : '%c --dry-run --quiet --strict --format pretty %o %s:p',
+          \     'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
+          \  },
+          \  'lua/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/luac',
+          \  },
+          \  'watchdogs_checker/luac' : {
+          \    'command' : 'luac',
+          \     'exec'    : '%c -p %o %s:p',
+          \     'quickfix/errorformat' : 'luac: %#%f:%l: %m',
+          \  },
+          \  'eruby/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/ruby_erb',
+          \  },
+          \  'watchdogs_checker/erubis' : {
+          \    'command' : 'erubis',
+          \     'exec'    : '%c -z %o %s:p',
+          \     'quickfix/errorformat' : '%f:%l:%m',
+          \  },
+          \  'watchdogs_checker/ruby_erb' : {
+          \    'command' : 'ruby',
+          \     'exec'    : '%c  -rerb -e "puts ERB.new('
+          \            . 'File.read(''%s:p'').gsub(''<\%='', ''<\%'')'
+          \            . ', nil, ''-'').src" | %c -c %o',
+          \     'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error\, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
+          \  },
+          \ })
+          " ruby_erb => does not run well " \     'quickfix/errorformat' : '-:%l: %m',
+
+          " \  '/watchdogs_checker' : {
+          " \    'type' : 'watchdogs_checker/',
+          " \  },
+          " \  'watchdogs_checker/' : {
+          " \    'command' : '',
+          " \     'exec'    : '%c -c %o %s:p',
+          " \     'quickfix/errorformat' : '',
+          " \  },
+
+    call watchdogs#setup(g:quickrun_config)
+    let g:watchdogs_check_BufWritePost_enable = 1
+    command! -nargs=0 WatchdogsOff let g:watchdogs_check_BufWritePost_enable=0
+    command! -nargs=0 WatchdogsOn let g:watchdogs_check_BufWritePost_enable=1
+  endif
 endif
 
 " quickhl {{{2
@@ -2650,13 +2656,29 @@ nmap [space], <Plug>(quickhl-match)
 " echodoc {{{2
 let g:echodoc_enable_at_startup=0
 
+" neosnippet {{{2
+let g:neosnippet#snippets_directory            = $HOME . '/.vim/snippets'
+let g:neosnippet#enable_snipmate_compatibility = 0
+" let g:neosnippet#disable_runtime_snippets._    = 1
+
+if neobundle#is_installed('neosnippet')
+  function! s:can_snip()
+    return neosnippet#expandable() && &filetype != "snippet"
+  endfunction
+
+  imap <expr><TAB> <SID>can_snip() ?
+        \ "\<Plug>(neosnippet_jump_or_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+  smap <expr><TAB> <SID>can_snip() ?
+        \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
+
+  imap <C-l> <Plug>(neosnippet_jump_or_expand)
+  smap <C-l> <Plug>(neosnippet_jump_or_expand)
+endif
+
 " neocomplcache {{{2
 " options {{{3
-let g:neocomplcache_snippets_dir                        = $HOME . '/.vim/snippets'
 let g:neocomplcache_enable_at_startup                   = 1
 let g:neocomplcache_cursor_hold_i_time                  = 500
-if !has('vim_starting') | silent exe 'NeoComplCacheEnable' | endif
-
 let g:neocomplcache_max_list = 100  " 補完候補の数
 let g:neocomplcache_enable_auto_select = 1   " 一番目の候補を自動選択
 
@@ -2741,9 +2763,6 @@ call s:bulk_dict_variables([{
 " }}}
 
 if neobundle#is_installed('neocomplcache')
-  " SuperTab like snippets behavior.
-  "imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable() ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-
   " Recommended key-mappings.
   " <CR>: close popup and save indent.
   " inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
@@ -2751,15 +2770,7 @@ if neobundle#is_installed('neocomplcache')
 
   " <TAB>: completion.
   " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-  function! s:is_snip_file()
-    return &filetype == "snippet"
-  endfunction
-  imap <expr><TAB> neocomplcache#sources#snippets_complete#expandable()
-        \ && !<SID>is_snip_file()
-        \ ? "\<Plug>(neocomplcache_snippets_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
-  smap <expr><TAB> neocomplcache#sources#snippets_complete#expandable()
-        \ && !<SID>is_snip_file()
-        \ ? "\<Plug>(neocomplcache_snippets_expand)" : "\<TAB>"
+
   " <C-h>, <BS>: close popup and delete backword char.
   inoremap <expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
   inoremap <expr><BS>   neocomplcache#smart_close_popup()."\<C-h>"
@@ -2768,11 +2779,7 @@ if neobundle#is_installed('neocomplcache')
 
   inoremap <expr> <C-j> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
 
-  imap <C-l> <Plug>(neocomplcache_snippets_expand)
-  smap <C-l> <Plug>(neocomplcache_snippets_expand)
   imap <C-s> <Plug>(neocomplcache_start_unite_complete)
-  " imap <expr><C-l> (pumvisible() ? neocomplcache#close_popup():"") ."\<Plug>(neocomplcache_snippets_expand)"
-  " smap <expr><C-l> (pumvisible() ? neocomplcache#close_popup():"") ."\<Plug>(neocomplcache_snippets_expand)"
 
   nnoremap [space]ne :NeoComplCacheEnable<CR>
   nnoremap [space]nd :NeoComplCacheDisable<CR>
@@ -3067,8 +3074,13 @@ function! s:vimfiler_my_settings() " {{{3
       nmap <silent><buffer> E :call <SID>vimfiler_tabopen()<CR>
       " smart_h ができない…ｼｮﾎﾞﾝﾇ(´Д｀)
       " nmap <silent><buffer> H <Plug>(vimfiler_smart_h)
-      nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>
-      nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
+      if exists('g:scrolloff')
+        nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>
+        nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>:set eventignore=<CR>
+      else
+        nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>
+        nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
+      endif
     elseif exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
       " nmap <buffer> e <Plug>(vimfiler_split_edit_file)
       " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
@@ -3078,8 +3090,13 @@ function! s:vimfiler_my_settings() " {{{3
       " nnoremap <silent><buffer> <LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>
       " nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
       " nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('new')<CR>
-      nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('', 1)<CR>
-      nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
+      if exists('g:scrolloff')
+        nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>
+        nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>:set eventignore=<CR>
+      else
+        nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('', 1)<CR>
+        nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
+      endif
       " nmap <buffer> l <Plug>(vimfiler_expand_tree)
       nmap <buffer> L <Plug>(vimfiler_smart_l)
       nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>

@@ -30,6 +30,11 @@ snippet func
 	function ${1:func} {
 		$2
 	}
+snippet IFS
+	(
+		IFS=$'\n';
+		${1}
+	)
 snippet OS
 	case $OSTYPE in
 		cygwin*)
