@@ -56,3 +56,23 @@ snippet fun
 	function ${1:name} (${2:args}) {
 		${3:# body}
 	}
+snippet IFS
+	(
+		IFS=$'\n';
+		${1}
+	)
+snippet OS
+	case $OSTYPE in
+		cygwin*)
+			cygstart ${1:file} ${2};;
+		darwin*)
+			open $1 ;;
+		bsd*)
+			gnome-open $1 ;;
+		linux*)
+			gnome-open $1 ;;
+		solaris*)
+			gnome-open $1 ;;
+		*)
+			;;
+	esac

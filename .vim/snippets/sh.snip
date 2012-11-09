@@ -38,7 +38,7 @@ snippet IFS
 snippet OS
 	case $OSTYPE in
 		cygwin*)
-			cygstart ${1:file} ;;
+			cygstart ${1:file} ${2};;
 		darwin*)
 			open $1 ;;
 		bsd*)

@@ -21,6 +21,7 @@ debug_timer "start"
 
 if_compile ~/.shrc.*[^zwc]
 if_compile ~/.zshenv
+if_compile ~/.zshrc
 
 # # https://github.com/zsh-users/antigen.git {{{1
 # if [ -e ~/.zsh/antigen/antigen.zsh ]; then
@@ -114,6 +115,20 @@ zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
 zstyle ':completion:*:default' menu select=2
 #zstyle ':completion:*' list-colors di=34 fi=0
 #zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+# host completion {{{
+: ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
+: ${(A)_ssh_config_hosts:=${${${${(@M)${(f)"$(<$HOME/.ssh/config)"}:#Host *}#Host }:#*\**}:#*\?*}}
+# this supposes you have "HashKnownHosts no" in your ~/.ssh/config
+: ${(A)_ssh_known_hosts:=${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*}}
+: ${(A)_ssh_known_ips:=${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}##*,}}
+hosts=(
+  "$_ssh_config_hosts[@]"
+  "$_ssh_known_hosts[@]"
+  "$_etc_hosts[@]"
+  "$_ssh_known_ips[@]"
+  )
+zstyle ':completion:*' hosts $hosts
 
 autoload -U zmv
 autoload -Uz add-zsh-hook
@@ -277,24 +292,17 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
   # zstyle ':filter-select' case-insensitive yes
   zaw-init() {
     zaw
-    add-zsh-hook -d preexec zaw-init
+    # add-zsh-hook -d preexec zaw-init
+    bindkey -r v '^V'
+    (( $+functions[z-init] )) && zle z-init
+
+    unfunction "zaw-init"
   }
 
   # add-zsh-hook preexec zaw-init
-  zaw-init
-  # bindkey -v '^X^A' zaw-ack
-  # bindkey -v '^X^S' zaw-history
-
-  # bindkey -v '^X^X' zaw-z
-
-  # bindkey -v '^Xj' zaw-open-file
-  # bindkey -v '^Xr' zaw-git-files
-  # bindkey -v '^Xb' zaw-git-branches
-  # bindkey -v '^Xs' zaw-screens
-  # bindkey -v '^Xt' zaw-tmux
-  # bindkey -v '^Xk' zaw-keybind
-  # bindkey -v '^Xl' zaw-ssh
-
+  # zaw-init
+  zle -N zaw-init
+  bindkey -v '^V' zaw-init
 fi
 # autojump {{{2
 if [ -e ~/.zsh/plugins/z/z.sh ]; then
@@ -302,11 +310,16 @@ if [ -e ~/.zsh/plugins/z/z.sh ]; then
   autoload -Uz z ; zle -N z
   z-init() {
     z
-    add-zsh-hook -d preexec z-init
+    # add-zsh-hook -d preexec z-init
+    bindkey -v 'j' self-insert
+    zle self-insert
+    unfunction "z-init"
   }
 
   # add-zsh-hook preexec z-init
-  z-init
+  # z-init
+  zle -N z-init
+  bindkey -v 'j' z-init
 fi
 
 # auto-fu.zsh {{{2
@@ -319,18 +332,6 @@ fi
 #   zstyle ':auto-fu:highlight' completion fg=black,bold
 #   zstyle ':auto-fu:highlight' completion/one fg=gray,normal,underline
 # fi
-
-# for ruby gems {{{2
-if [ x$GEM_HOME != x ]; then
-  function cdgem() {
-    cd `echo $GEM_HOME/**gems/$1* | awk '{print $1}'`
-  }
-  compctl -K _cdgem cdgem
-  function _cdgem() {
-    reply=(`find $GEM_HOME -type d|grep -e '/gems/[^/]*$'|xargs basename|sort -nr`)
-  }
-fi
-
 
 # prompt {{{1
 debug_timer "start prompt"
@@ -357,7 +358,9 @@ esac
 
 # compinit {{{1
 debug_timer "start compinit"
-_zsh-complete-init() {
+zsh-complete-init() {
+  debug_timer "complete-init start"
+
   [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
   [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
   source_all ~/.zsh/commands/*
@@ -368,10 +371,13 @@ _zsh-complete-init() {
   autoload -U bashcompinit
   bashcompinit
 
-  add-zsh-hook -d preexec _zsh-complete-init
+  add-zsh-hook -d precmd _zsh-complete-init
+  unfunction "zsh-complete-init"
+
+  debug_timer "complete-init finish"
 }
-# add-zsh-hook preexec _zsh-complete-init
-_zsh-complete-init
+add-zsh-hook precmd zsh-complete-init
+#_zsh-complete-init
 
 debug_timer "finish"
 # vim: fdm=marker sw=2 ts=2 et:

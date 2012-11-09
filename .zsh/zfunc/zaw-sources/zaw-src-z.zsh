@@ -1,17 +1,18 @@
-# https://gist.github.com/3070804
 # (( $+functions[$_Z_CMD] )) || return
+zmodload zsh/parameter
 
-zaw-src-z() {
-  # <rank><space><dir> の組でくるので、そこからdirだけ抜き取る
-  #: ${(A)candidates::=${${(f)"$($_Z_CMD -l | sort -n -r)"}##<->(.<->)# ##}}
-  candidates=(`cat ~/.z | cut -d'|' -f1`)
-  actions=(zaw-src-z-cd)
-  act_descriptions=("cd")
-}
-
-zaw-src-z-cd() {
-  BUFFER="cd $1"
-  zle accept-line
+function zaw-src-z() {
+  # (
+  #   IFS=$'\n';
+    
+    candidates=(`_z -l 2>&1 | sed 's/^[0-9\.]* *//g'`)
+    # : ${(A)candidates::=$(_z -l 2>&1 | sed 's/^[0-9\.]* *//g' )}
+    # _z \
+    #     | sed -e 's/^[0-9\\. ]*//' -e 's/ /\\ /g' -e "s#^$HOME#~#" \
+    #     | tac | tr '\n' '\0')}
+    actions=("zaw-callback-execute" "zaw-callback-replace-buffer" "zaw-callback-append-to-buffer")
+    act_descriptions=("execute" "replace edit buffer" "append to edit buffer")
+  # )
 }
 
 zaw-register-src -n z zaw-src-z

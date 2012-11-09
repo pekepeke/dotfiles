@@ -2,7 +2,7 @@
 zaw () {
   zaw-rc
   [[ "${WIDGET-}" != "" ]] || return
-  zle zaw -K emacs -- "$@"
+  # zle zaw -K emacs -- "$@"
 }
 zaw-rc () {
   unfunction "$0"
@@ -12,22 +12,25 @@ zaw-rc () {
 
   zstyle ':filter-select' case-insensitive yes
 
-  bindkey -v '^X^A' zaw-ack
-  bindkey -v '^X^S' zaw-history
+  # bindkey -v '^X^A' zaw-ack
+  # bindkey -v '^Xj' zaw-open-file
 
-  bindkey -v '^X^X' zaw-z
+  bindkey -v '^V;' zaw
+  bindkey -v '^Vr' zaw-history
 
-  bindkey -v '^Xj' zaw-open-file
-  bindkey -v '^Xr' zaw-git-files
-  bindkey -v '^Xb' zaw-git-branches
+  bindkey -v '^Vj' zaw-z
+
+  bindkey -v '^Vgs' zaw-git-showbranch
+  bindkey -v '^Vgf' zaw-git-files
+  bindkey -v '^Vgb' zaw-git-branches
   # bindkey -v '^Xs' zaw-screens
-  bindkey -v '^X^T' zaw-tmux
-  bindkey -v '^Xw' zaw-tmux-window
-  bindkey -v '^Xk' zaw-keybind
-  bindkey -v '^Xl' zaw-ssh
+  bindkey -v '^VT' zaw-tmux
+  bindkey -v '^Vw' zaw-tmux-window
+  bindkey -v '^Vk' zaw-keybind
+  bindkey -v '^Vs' zaw-ssh
 
-  (( $+functions[zaw-src-tmuxinator] )) && bindkey -v '^Xx' zaw-tmuxinator
-  (( $+functions[zaw-src-finder] )) && bindkey -v '^Xf' zaw-finder
+  (( $+functions[zaw-src-tmuxinator] )) && bindkey -v '^Vm' zaw-tmuxinator
+  (( $+functions[zaw-src-finder] )) && bindkey -v '^Vf' zaw-finder
 }
 zaw "$@"
 
