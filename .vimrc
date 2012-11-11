@@ -179,6 +179,75 @@ NeoBundle 'nanotech/jellybeans.vim'
 NeoBundle 'StanAngeloff/vim-zend55'
 NeoBundle 'w0ng/vim-hybrid'
 
+" common {{{3
+NeoBundleLazy 'mattn/benchvimrc-vim'
+NeoBundle 'Shougo/vimfiler', {'depends': 'Shougo/unite.vim'}
+if s:is_win && !has('win32unix') "{{{4
+  if executable('gcc')
+    if has('win64')
+      NeoBundle 'Shougo/vimproc', { 'build' : {
+          \     'windows' : 'make -f make_mingw64.mak',
+          \   } }
+    else " if has('win32')
+      NeoBundle 'Shougo/vimproc', { 'build' : {
+          \     'windows' : 'make -f make_mingw32.mak',
+          \   } }
+    endif
+  elseif has('win32') && executable('cl') && executable('make')
+    NeoBundle 'Shougo/vimproc', { 'build' : {
+        \     'windows' : 'make -f make_msvc32.mak',
+        \   } }
+  else
+    NeoBundle 'Shougo/vimproc'
+  endif
+else
+  NeoBundle 'Shougo/vimproc', {
+      \ 'build' : {
+      \     'cygwin' : 'make -f make_cygwin.mak',
+      \     'mac'    : 'make -f make_mac.mak',
+      \     'unix'   : 'make -f make_gcc.mak',
+      \   }
+      \ }
+endif "}}}
+NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/vinarise'
+NeoBundle 'kana/vim-altr'
+NeoBundle 'kana/vim-fakeclip'
+NeoBundle 'kana/vim-smartchr'
+NeoBundle 'kana/vim-submode'
+NeoBundle 'tyru/vim-altercmd'
+NeoBundle 'vim-scripts/ShowMarks7'
+NeoBundle 'dannyob/quickfixstatus'
+NeoBundle 'jceb/vim-hier'
+NeoBundle 'tpope/vim-repeat'
+NeoBundle 'tpope/vim-surround'
+NeoBundle 'tpope/vim-endwise'
+NeoBundle 't9md/vim-surround_custom_mapping'
+NeoBundle 't9md/vim-quickhl'
+NeoBundleLazy 't9md/vim-textmanip'
+NeoBundle 'ujihisa/camelcasemotion'
+NeoBundle 'h1mesuke/vim-alignta'
+NeoBundle 'vim-scripts/YankRing.vim'
+" NeoBundle 'chrismetcalf/vim-yankring'
+" NeoBundle 'the-isz/MinYankRing.vim'
+NeoBundleLazy 'kien/ctrlp.vim'
+NeoBundle 'glidenote/memolist.vim'
+
+NeoBundle 'othree/eregex.vim'
+NeoBundle 'sjl/gundo.vim'
+NeoBundle 'kana/vim-smartword'
+" NeoBundle 'pekepeke/golden-ratio'
+" NeoBundle 'scrooloose/nerdtree'
+NeoBundle 'thinca/vim-qfreplace'
+NeoBundle 'nathanaelkane/vim-indent-guides'
+NeoBundle 'c9s/cascading.vim'
+NeoBundle 'mileszs/ack.vim'
+NeoBundleLazy 'vim-scripts/MultipleSearch'
+NeoBundle 'vim-scripts/sudo.vim'
+if s:is_mac
+  NeoBundle 'gmarik/sudo-gui.vim'
+endif
+
 " lang {{{3
 " basic {{{4
 NeoBundle 'thinca/vim-quickrun'
@@ -229,6 +298,9 @@ NeoBundle 'pekepeke/ref-javadoc'
 NeoBundle 'soh335/vim-ref-jquery'
 " NeoBundle 'mojako/ref-sources.vim'
 
+" vim {{{4}}}
+NeoBundle 'kana/vim-vspec'
+
 " vim-help {{{4
 NeoBundle 'mattn/learn-vimscript'
 " git://gist.github.com/997811.git
@@ -237,7 +309,6 @@ NeoBundle 'mattn/learn-vimscript'
 " neocomplcache {{{4
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neosnippet'
-" NeoBundle 'Shougo/neocomplcache-snippets-complete'
 NeoBundle 'basyura/csharp_complete'
 NeoBundle 'osyo-manga/neocomplcache-jsx'
 
@@ -272,9 +343,9 @@ NeoBundle 'cakebaker/scss-syntax.vim'
 NeoBundle 'wavded/vim-stylus'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'bbommarito/vim-slim'
-NeoBundleLazyOn FileType css,sass,scss,less 'miripiruni/CSScomb-for-Vim'
-NeoBundleLazyOn FileType css,sass,scss,less 'vim-scripts/cssbaseline.vim'
-NeoBundleLazyOn FileType css,sass,scss,less 'bae22/prefixer'
+NeoBundleLazyOn FileType css 'miripiruni/CSScomb-for-Vim'
+NeoBundleLazyOn FileType css 'vim-scripts/cssbaseline.vim'
+NeoBundleLazyOn FileType css 'bae22/prefixer'
 
 " javascript {{{4
 NeoBundle 'pangloss/vim-javascript'
@@ -439,75 +510,6 @@ else
     NeoBundle 'ujihisa/unite-locate'
   endif
   NeoBundle 'ujihisa/neco-look'
-endif
-
-" common {{{3
-NeoBundleLazy 'mattn/benchvimrc-vim'
-NeoBundle 'Shougo/vimfiler', {'depends': 'Shougo/unite.vim'}
-if s:is_win && !has('win32unix')
-  if executable('gcc')
-    if has('win64')
-      NeoBundle 'Shougo/vimproc', { 'build' : {
-          \     'windows' : 'make -f make_mingw64.mak',
-          \   } }
-    else " if has('win32')
-      NeoBundle 'Shougo/vimproc', { 'build' : {
-          \     'windows' : 'make -f make_mingw32.mak',
-          \   } }
-    endif
-  elseif has('win32') && executable('cl') && executable('make')
-    NeoBundle 'Shougo/vimproc', { 'build' : {
-        \     'windows' : 'make -f make_msvc32.mak',
-        \   } }
-  else
-    NeoBundle 'Shougo/vimproc'
-  endif
-else
-  NeoBundle 'Shougo/vimproc', {
-      \ 'build' : {
-      \     'cygwin' : 'make -f make_cygwin.mak',
-      \     'mac'    : 'make -f make_mac.mak',
-      \     'unix'   : 'make -f make_gcc.mak',
-      \   }
-      \ }
-endif
-NeoBundle 'Shougo/vimshell'
-NeoBundle 'Shougo/vinarise'
-NeoBundle 'kana/vim-altr'
-NeoBundle 'kana/vim-fakeclip'
-NeoBundle 'kana/vim-smartchr'
-NeoBundle 'kana/vim-submode'
-NeoBundle 'tyru/vim-altercmd'
-NeoBundle 'vim-scripts/ShowMarks7'
-NeoBundle 'dannyob/quickfixstatus'
-NeoBundle 'jceb/vim-hier'
-NeoBundle 'tpope/vim-repeat'
-NeoBundle 'tpope/vim-surround'
-NeoBundle 'tpope/vim-endwise'
-NeoBundle 't9md/vim-surround_custom_mapping'
-NeoBundle 't9md/vim-quickhl'
-NeoBundleLazy 't9md/vim-textmanip'
-NeoBundle 'ujihisa/camelcasemotion'
-NeoBundle 'h1mesuke/vim-alignta'
-NeoBundle 'vim-scripts/YankRing.vim'
-" NeoBundle 'chrismetcalf/vim-yankring'
-" NeoBundle 'the-isz/MinYankRing.vim'
-NeoBundleLazy 'kien/ctrlp.vim'
-NeoBundle 'glidenote/memolist.vim'
-
-NeoBundle 'othree/eregex.vim'
-NeoBundle 'sjl/gundo.vim'
-NeoBundle 'kana/vim-smartword'
-" NeoBundle 'pekepeke/golden-ratio'
-" NeoBundle 'scrooloose/nerdtree'
-NeoBundle 'thinca/vim-qfreplace'
-NeoBundle 'nathanaelkane/vim-indent-guides'
-NeoBundle 'c9s/cascading.vim'
-NeoBundle 'mileszs/ack.vim'
-NeoBundleLazy 'vim-scripts/MultipleSearch'
-NeoBundle 'vim-scripts/sudo.vim'
-if s:is_mac
-  NeoBundle 'gmarik/sudo-gui.vim'
 endif
 
 " web {{{3

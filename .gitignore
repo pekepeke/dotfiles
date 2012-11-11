@@ -53,6 +53,7 @@ doc/tags-ja
 #emacs
 .emacs.d/tmp
 .emacs.d/packages
+.emacs.d/el-get
 
 # freemind
 .freemind/log.*

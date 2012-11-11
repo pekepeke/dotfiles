@@ -29,12 +29,12 @@ alias cote='open -a CotEditor'
 alias twe='open -a TextWrangler' 
 alias subl='open -a "Sublime Text 2"'
 
-gemacs() { # {{{3
-  emacsclient -n ${*:-.} 2>/dev/null && return 0
-  if [ -e $1 ] || touch $1; then
-    open -a /Applications/Emacs.app ${*:-.}
-  fi
-}
+if [ -e /Applications/Emacs.app ]; then
+  alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs -nw'
+  gemacs() {
+    /Applications/Emacs.app/Contents/MacOS/Emacs $* &
+  }
+fi
 
 # __END__ {{{1
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

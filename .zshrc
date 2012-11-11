@@ -4,6 +4,7 @@
 # functions {{{1
 debug_timer() {
   # echo "$(date +'%s.%N') : $*"
+  return 0
 }
 if_compile() {
   for f in $* ; do
@@ -21,7 +22,8 @@ debug_timer "start"
 
 if_compile ~/.shrc.*[^zwc]
 if_compile ~/.zshenv
-if_compile ~/.zshrc
+# if_compile ~/.zshrc
+[ -e ~/.zshrc.zwc ] && rm ~/.zshrc.zwc
 
 # # https://github.com/zsh-users/antigen.git {{{1
 # if [ -e ~/.zsh/antigen/antigen.zsh ]; then
@@ -118,10 +120,12 @@ zstyle ':completion:*:default' menu select=2
 
 # host completion {{{
 : ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
-: ${(A)_ssh_config_hosts:=${${${${(@M)${(f)"$(<$HOME/.ssh/config)"}:#Host *}#Host }:#*\**}:#*\?*}}
+[ -e ~/.ssh/config ] && : ${(A)_ssh_config_hosts:=${${${${(@M)${(f)"$(<$HOME/.ssh/config)"}:#Host *}#Host }:#*\**}:#*\?*}}
 # this supposes you have "HashKnownHosts no" in your ~/.ssh/config
-: ${(A)_ssh_known_hosts:=${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*}}
-: ${(A)_ssh_known_ips:=${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}##*,}}
+if [ -e ~/.ssh/known_hosts ]; then
+  : ${(A)_ssh_known_hosts:=${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*}}
+  : ${(A)_ssh_known_ips:=${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}##*,}}
+fi
 hosts=(
   "$_ssh_config_hosts[@]"
   "$_ssh_known_hosts[@]"
@@ -140,6 +144,42 @@ autoload -Uz url-quote-magic
 zle -N self-insert url-quote-magic
 
 # keybinds {{{1
+# keybind from terminfo {{{2
+
+# typeset -A key
+# 
+# key[Home]=${terminfo[khome]}
+# key[End]=${terminfo[kend]}
+# key[Insert]=${terminfo[kich1]}
+# key[Delete]=${terminfo[kdch1]}
+# key[Up]=${terminfo[kcuu1]}
+# key[Down]=${terminfo[kcud1]}
+# key[Left]=${terminfo[kcub1]}
+# key[Right]=${terminfo[kcuf1]}
+# key[PageUp]=${terminfo[kpp]}
+# key[PageDown]=${terminfo[knp]}
+# 
+# # setup key accordingly
+# [[ -n "${key[Home]}"    ]]  && bindkey  "${key[Home]}"    beginning-of-line
+# [[ -n "${key[End]}"     ]]  && bindkey  "${key[End]}"     end-of-line
+# [[ -n "${key[Insert]}"  ]]  && bindkey  "${key[Insert]}"  overwrite-mode
+# [[ -n "${key[Delete]}"  ]]  && bindkey  "${key[Delete]}"  delete-char
+# [[ -n "${key[Up]}"      ]]  && bindkey  "${key[Up]}"      up-line-or-history
+# [[ -n "${key[Down]}"    ]]  && bindkey  "${key[Down]}"    down-line-or-history
+# [[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
+# [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
+# 
+# # Finally, make sure the terminal is in application mode, when zle is
+# # active. Only then are the values from $terminfo valid.
+# function zle-line-init () {
+#     echoti smkx
+# }
+# function zle-line-finish () {
+#     echoti rmkx
+# }
+# zle -N zle-line-init
+# zle -N zle-line-finish  
+
 # keybind {{{2
 bindkey -v
 # for command mode {{{2
@@ -293,7 +333,7 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
   zaw-init() {
     zaw
     # add-zsh-hook -d preexec zaw-init
-    bindkey -r v '^V'
+    bindkey -r '^V'
     (( $+functions[z-init] )) && zle z-init
 
     unfunction "zaw-init"
@@ -371,13 +411,17 @@ zsh-complete-init() {
   autoload -U bashcompinit
   bashcompinit
 
-  add-zsh-hook -d precmd _zsh-complete-init
   unfunction "zsh-complete-init"
 
+  # add-zsh-hook -d precmd zsh-complete-init
+  zle expand-or-complete
+  bindkey -v '^I' expand-or-complete
   debug_timer "complete-init finish"
 }
-add-zsh-hook precmd zsh-complete-init
+# add-zsh-hook precmd zsh-complete-init
+zle -N zsh-complete-init
+bindkey -v '^I' zsh-complete-init
 #_zsh-complete-init
 
 debug_timer "finish"
-# vim: fdm=marker sw=2 ts=2 et:
+# vim: ft=zsh fdm=marker sw=2 ts=2 et:

@@ -331,12 +331,12 @@
   (if (and run-emacs23 window-system)
       (set-default-font "-*-Inconsolata-normal-normal-normal-*-14-*-*-*-*-*-*"))
   )
- (run-darwin 
-  (setq mac-command-key-is-meta t)
-  (setq mac-command-modifier-meta t)
-  (setq mac-option-modifier 'meta)
-  (setq ns-command-modifier 'meta)
-  (setq ns-alternate-modifier 'super)
+ (run-darwin
+  ;;(setq mac-command-key-is-meta t)
+  ;;(setq mac-command-modifier-meta t)
+  ;;(setq mac-option-modifier 'meta)
+  ;;(setq ns-command-modifier 'meta)
+  ;;(setq ns-alternate-modifier 'super)
 
   (setq grep-find-use-xargs 'bsd)
   (setq browse-url-generic-program "open")
