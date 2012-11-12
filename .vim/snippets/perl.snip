@@ -1,14 +1,15 @@
 # #!/usr/bin/perl
 snippet #!
 	#!/usr/bin/perl
+	${1}
 	
 # Hash Pointer
 snippet .
-	 =>
+	 => ${1}
 # Function
 snippet sub
 	sub ${1:function_name} {
-		${2:#body ...}
+		${2:# body...}
 	}
 # Conditional
 snippet if
@@ -85,6 +86,16 @@ snippet cl
 	}
 	
 	1;${3}
+
+snippet news
+	sub new {
+		my $class = shift;
+		my $self = {};
+		bless $self, $class;
+		$self;
+	}
+	${1}
+
 # Read File
 snippet slurp
 	my $${1:var};

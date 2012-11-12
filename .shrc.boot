@@ -9,9 +9,27 @@ else
   touch $HOME/.shrc.local
 fi
 
+# ostype {{{1
+export TMUX_DEFAULT_COMMAND=$SHELL
+case $OSTYPE in
+  cygwin*)
+    ;;
+  darwin*)
+    export TMUX_DEFAULT_COMMAND="reattach-to-user-namespace -l $SHELL"
+    export TMUX_PREFIX_COMMAND="reattach-to-user-namespace"
+    ;;
+  freebsd*)
+    ;;
+  linux*)
+    ;;
+  solaris*)
+    ;;
+  *)
+    ;;
+esac
+
 # environments {{{1
 export EDITOR=vim
-
 # stty
 stty stop undef
 stty werase undef
@@ -21,21 +39,7 @@ if [ ! -e "$TERMINFO" -a -e "/usr/share/terminfo" ]; then
 fi
 
 # for mysql
-#export MYSQL_PS1='[1;33m\u@\h[0m.[1;35m\d[0m mysql:\c> '
 export MYSQL_PS1='\u@\h.\d mysql:\c> '
-
-if is_exec reattach-to-user-namespace ; then
-  export TMUX_DEFAULT_COMMAND="reattach-to-user-namespace -l $SHELL"
-  export TMUX_PREFIX_COMMAND="reattach-to-user-namespace"
-else
-  export TMUX_DEFAULT_COMMAND=$SHELL
-fi
-
-# tmux {{{2
-# if [ "$TMUX" != "" ]; then
-#   tmux set-option status-bg colour$(($(echo -n $(whoami)@$(hostname) | sum | cut -f1 -d' ') % 8 + 8)) | cat > /dev/null
-# fi
-
 
 if is_colinux; then
   alias umount-c='sudo umount /c'
@@ -47,17 +51,31 @@ fi
 
 # color {{{1
 # enable color support of ls and also add handy aliases
+## options {{{2
+GREP_OPTIONS="--binary-files=without-match --exclude=\*.tmp"
+GREP_OPTIONS="--exclude-dir=.svn $GREP_OPTIONS"
+GREP_OPTIONS="--exclude-dir=.git $GREP_OPTIONS"
+GREP_OPTIONS="--exclude-dir=.hg $GREP_OPTIONS"
+GREP_OPTIONS="--exclude-dir=.deps $GREP_OPTIONS"
+GREP_OPTIONS="--exclude-dir=.libs $GREP_OPTIONS"
+
+LS_OPTIONS="--show-control-chars"
+
 if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
   # eval "`dircolors -b`"
   #alias dir='ls --color=auto --format=vertical'
   #alias vdir='ls --color=auto --format=long'
 
   export GREP_COLOR='1;37;41'
-  #alias grep='grep -E --color=auto'
-  alias grep='grep --color=auto'
   #alias fgrep='fgrep --color=auto'
   #alias egrep='egrep --color=auto'
+  GREP_OPTIONS="--color=auto $GREP_OPTIONS"
+
+  [ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
+  LS_OPTIONS="--color=auto $LS_OPTIONS"
 fi
+export GREP_OPTIONS
+export LS_OPTIONS
 
 # aliases {{{1
 # notify {{{2
@@ -79,18 +97,10 @@ __NOTIFY() { # {{{3
 }
 
 # basic commands {{{2
-if ! alias ls >/dev/null ; then
-  [ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
-  alias ls='ls --color=always'
-fi
+alias ll='ls -l $LS_OPTIONS'
+alias la='ls -A $LS_OPTIONS'
+alias l='ls -CF $LS_OPTIONS'
 
-#alias ls='ls -hF --show-control-chars --color'
-#alias ls='ls --show-control-chars --color=auto'
-alias ll='ls -l'
-alias la='ls -A'
-alias l='ls -CF'
-
-alias grep='grep --color=auto'
 alias today='date +%Y%m%d'
 
 alias ..='cd ..'
@@ -205,12 +215,12 @@ pulist() { # {{{3
 
 # zsh {{{2
 if [ -n "$ZSH_NAME" ]; then
-  alias -g L='| less'
+  alias -g L="|& $PAGER"
+  alias -g G='| grep -i'
   alias -g H='| head'
   alias -g T='| tail'
-  #alias -g V="| vim -"
-  alias -g V="| view -"
-  alias -g G='| grep -i'
+  # alias -g V='| vim -'
+  alias -g V='| view -'
 fi
 
 # GNU screen setting {{{1

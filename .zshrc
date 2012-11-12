@@ -57,6 +57,14 @@ if_compile ~/.zshenv
 # env vars {{{1
 REPORTTIME=3                    # 3秒以上かかった処理は詳細表示
 
+# autoload {{{1
+autoload -U zmv
+autoload -Uz add-zsh-hook
+autoload -U colors
+autoload -Uz url-quote-magic
+colors
+zle -N self-insert url-quote-magic # URL を自動エスケープ
+
 # setopt {{{1
 setopt auto_cd                  # ディレクトリ直入力で cd
 setopt auto_pushd               # cd で pushd
@@ -68,27 +76,31 @@ setopt pushd_silent             # 静かに
 
 setopt no_beep
 setopt no_listbeep
-setopt list_packed          # 補完候補を詰める
+
+unsetopt cdable_vars        # not expand "~"
+setopt brace_ccl            # {a-c} を展開
 
 setopt auto_list            # 一覧表示する
 setopt auto_name_dirs       # enable ~/$var
 setopt auto_menu            # 補完キー連打で順に補完候補を自動で補完
 setopt auto_param_slash     # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
 setopt auto_param_keys      # カッコの対応などを自動的に補完
-unsetopt cdable_vars        # not expand "~"
-setopt mark_dirs            # ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
+setopt noautoremoveslash    # 末尾の / を自動で消さない
+
+setopt list_packed          # 補完候補を詰める
 setopt list_types           # 補完候補一覧でファイルの種別を識別マーク表示 (訳注:ls -F の記号)
+
 setopt interactive_comments # コマンドラインでも # 以降をコメントと見なす
 setopt complete_in_word     # 語の途中でもカーソル位置で補完
 setopt always_last_prompt   # カーソル位置は保持したままファイル名一覧を順次その場で表示
 setopt magic_equal_subst    # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
+setopt numeric_glob_sort    # 数字順で並べる
 
 setopt extended_glob        # 拡張グロブで補完(~とか^とか。例えばless *.txt~memo.txt ならmemo.txt 以外の *.txt にマッチ)
+setopt mark_dirs            # ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
 setopt globdots             # 明確なドットの指定なしで.から始まるファイルをマッチ
-setopt brace_ccl            # {a-c} を展開
 
 setopt multios              # 必要に応じて tee / cat
-setopt noautoremoveslash    # 末尾の / を自動で消さない
 
 #setopt correct 
 setopt print_eight_bit      # 日本語ファイル名等8ビットを通す
@@ -96,52 +108,12 @@ setopt sun_keyboard_hack
 #setopt interactive_comments
 setopt no_nomatch
 
-setopt no_flow_control
-setopt ignore_eof
-setopt no_tify
-
-# prompting
-
-# zle
-unsetopt beep
-
-#export WORDCHARS='*?_.[]~=&;!#$%^(){}<>'
-
-# complete & autoload {{{1
-# 高速化?
-zstyle ':completion:*' accept-exact '*(N)'
-zstyle ':completion:*' use-cache true
-
-zstyle ':completion:*:sudo:*' command-path /usr/local/sbin /usr/local/bin \
-  /usr/sbin /usr/bin /sbin /bin /usr/X11R6/bin
-zstyle ':completion:*:default' menu select=2
-#zstyle ':completion:*' list-colors di=34 fi=0
-#zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
-
-# host completion {{{
-: ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
-[ -e ~/.ssh/config ] && : ${(A)_ssh_config_hosts:=${${${${(@M)${(f)"$(<$HOME/.ssh/config)"}:#Host *}#Host }:#*\**}:#*\?*}}
-# this supposes you have "HashKnownHosts no" in your ~/.ssh/config
-if [ -e ~/.ssh/known_hosts ]; then
-  : ${(A)_ssh_known_hosts:=${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*}}
-  : ${(A)_ssh_known_ips:=${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}##*,}}
-fi
-hosts=(
-  "$_ssh_config_hosts[@]"
-  "$_ssh_known_hosts[@]"
-  "$_etc_hosts[@]"
-  "$_ssh_known_ips[@]"
-  )
-zstyle ':completion:*' hosts $hosts
-
-autoload -U zmv
-autoload -Uz add-zsh-hook
-autoload -U colors
-colors
-
-# URL を自動エスケープ
-autoload -Uz url-quote-magic
-zle -N self-insert url-quote-magic
+setopt no_flow_control     # 出力停止・開始(C-s/C-q)をOFF
+setopt notify              # バックグラウンドジョブの状態変化を即時報告
+setopt long_list_jobs      # jobs でプロセスIDも出力
+watch="all"                # 全ユーザのログイン・ログアウトを監視
+log                        # ログインはすぐに出力
+setopt ignore_eof          # ^D でログアウトしない
 
 # keybinds {{{1
 # keybind from terminfo {{{2
@@ -196,6 +168,8 @@ bindkey -v "\e[4~" end-of-line          # End
 bindkey -v "^[[3~" delete-char          # Del
 bindkey -v "\e[Z" reverse-menu-complete # S-Tab
 ## emacs like {{{2
+export WORDCHARS='*?[]~=&;!#$%^(){}<>'
+
 bindkey -v '^D' delete-char
 bindkey -v '^H' backward-delete-char
 bindkey -v '^W' backward-kill-word
@@ -229,8 +203,6 @@ bindkey -v '^[d' _quote-previous-word-in-double
 # bindkey ";5C" forward-word
 # bindkey ";5D" backward-word
 
-export WORDCHARS='*?[]~=&;!#$%^(){}<>'
-
 # history setting {{{1
 debug_timer "start history"
 autoload history-search-end
@@ -241,17 +213,19 @@ bindkey "^N" history-beginning-search-forward-end
 
 
 export HISTFILE=$HOME/.tmp/.zsh_history
-if [ ! -d $(dirname "$HISTFILE") ]; then
-  mkdir $(dirname "$HISTFILE")
+if [ ! -d ~/.tmp ]; then
+  mkdir ~/.tmp
 fi
 
-export SAVEHIST=1000
-export HISTSIZE=8192
+export HISTSIZE=100000
+export SAVEHIST=$HISTSIZE
 
-setopt hist_ignore_dups
-setopt share_history
-setopt hist_ignore_space
-setopt hist_expand
+setopt extended_history   # 実行時刻と実行時間も保存
+setopt hist_ignore_dups   # 同じコマンドラインは保存しない
+setopt share_history      # プロセス間でヒストリを共有
+setopt hist_ignore_space  # スペース始まりは追加しない
+setopt hist_expand        # 補完時にヒストリを自動展開
+setopt inc_append_history # すぐに追記
 
 # make coloring {{{2
 e_normal=`echo -e "\033[0;30m"`
@@ -375,13 +349,15 @@ fi
 
 # prompt {{{1
 debug_timer "start prompt"
+setopt prompt_subst      # PROMPT内で変数展開・コマンド置換・算術演算を実行
+setopt prompt_percent    # %文字から始まる置換機能を有効にする
+setopt transient_rprompt # コマンド実行後は右プロンプトを消す
+
 export PROMPT="[%n@%m %3d]%(#.#.$) "
 
 if [ $OSTYPE != "cygwin" -a -z $LANG ]; then
     export LANG=ja_JP.UTF-8
 fi
-
-setopt prompt_subst
 
 case "$TERM" in
   cygwin|xterm|xterm*|kterm|mterm|rxvt*)
@@ -396,7 +372,7 @@ case "$TERM" in
     ;;
 esac
 
-# compinit {{{1
+# complete {{{1
 debug_timer "start compinit"
 zsh-complete-init() {
   debug_timer "complete-init start"
@@ -411,8 +387,49 @@ zsh-complete-init() {
   autoload -U bashcompinit
   bashcompinit
 
-  unfunction "zsh-complete-init"
+  # complete options {{{2
+  # 高速化?
+  zstyle ':completion:*' accept-exact '*(N)'  # 展開方法
+  zstyle ':completion:*' use-cache true       # cache
+  zstyle ':completion:*' verbose yes          # verbose
+  zstyle ':completion:sudo:*' environ PATH="$SUDO_PATH:$PATH" # sudo時にはsudo用のパスも使う。
 
+  zstyle ':completion:*:default' menu select=2
+  zstyle ':completion:*:default' list-colors ""  # 補完候補に色付け(""=default)
+  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z} r:|[._-]=*' # 補完候補を曖昧検索
+  # 補完候補の優先度
+  ## _oldlist 前回の補完結果を再利用する。
+  ## _complete: 補完する。
+  ## _match: globを展開しないで候補の一覧から補完する。
+  ## _history: ヒストリのコマンドも補完候補とする。
+  ## _ignored: 補完候補にださないと指定したものも補完候補とする。
+  ## _approximate: 似ている補完候補も補完候補とする。
+  ## _prefix: カーソル以降を無視してカーソル位置までで補完する。
+  zstyle ':completion:*' completer \
+      _oldlist _complete _match _history _ignored _approximate _prefix
+
+  # host completion {{{
+  : ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
+  [ -e ~/.ssh/config ] && : ${(A)_ssh_config_hosts:=${${${${(@M)${(f)"$(<$HOME/.ssh/config)"}:#Host *}#Host }:#*\**}:#*\?*}}
+  # this supposes you have "HashKnownHosts no" in your ~/.ssh/config
+  if [ -e ~/.ssh/known_hosts ]; then
+    : ${(A)_ssh_known_hosts:=${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}%%,*}}
+    : ${(A)_ssh_known_ips:=${${${(f)"$(<$HOME/.ssh/known_hosts)"}%%\ *}##*,}}
+  fi
+  hosts=(
+    "$_ssh_config_hosts[@]"
+    "$_ssh_known_hosts[@]"
+    "$_etc_hosts[@]"
+    "$_ssh_known_ips[@]"
+    )
+  zstyle ':completion:*' hosts $hosts #}}}
+  # 2}}}
+
+  # etc completion {{{2
+  is_exec hub && source ~/.zsh/zfunc/hub.zsh_completion
+  # 2}}}
+
+  unfunction "zsh-complete-init"
   # add-zsh-hook -d precmd zsh-complete-init
   zle expand-or-complete
   bindkey -v '^I' expand-or-complete

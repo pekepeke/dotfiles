@@ -1,28 +1,19 @@
 # util functions
 is_exec() { # {{{1
   [ x"$1" = x"" ] && return 1
-  which $1 >/dev/null 2>&1
+  type $1 >/dev/null 2>&1
   return $?
 }
 is_win() { # {{{1
-  case $OSTYPE in
-    cygwin*)
-      return 0;;
-  esac
+  [[ $OSTYPE == cygwin* ]] && return 0
   return 1
 }
 is_mac() { # {{{1
-  case $OSTYPE in
-    darwin*)
-      return 0;;
-  esac
+  [[ $OSTYPE == darwin* ]] && return 0
   return 1
 }
 is_freebsd() { # {{{1
-  case $OSTYPE in
-    freebsd*)
-      return 0;;
-  esac
+  [[ $OSTYPE == freebsd* ]] && return 0
   return 1
 }
 is_colinux() { # {{{1

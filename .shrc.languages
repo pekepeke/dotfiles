@@ -5,20 +5,34 @@
 [ -f $HOME/.shrc.refe ] && source $HOME/.shrc.refe
 
 # OS settings {{{1
-if is_win ; then
-  export CYGWIN='cygwin'
-  soft_source $HOME/.shrc.cygwin
-  PATH=$HOME/bin/windows:$PATH
-elif is_mac ; then
-  soft_source $HOME/.shrc.osx
-  if [ -e "/usr/local/Library/Homebrew" ] ; then
-    # remove_path /usr/local/bin /usr/bin
-    PATH=/usr/local/bin:/usr/bin:$PATH
-    export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
-  fi
-  PATH=$HOME/bin/mac:$PATH:/Applications/android-sdk-mac_x86/tools:/Applications/android-sdk-mac_x86/platform-tools
-  [ "$LANG" = "ja_JP" ] && export LANG=ja_JP.UTF-8
-fi
+case $OSTYPE in
+  cygwin*)
+    export CYGWIN='cygwin'
+    soft_source $HOME/.shrc.cygwin
+    PATH=$HOME/bin/windows:$PATH
+    ;;
+  darwin*)
+    soft_source $HOME/.shrc.osx
+    if [ -e "/usr/local/Library/Homebrew" ] ; then
+      # remove_path /usr/local/bin /usr/bin
+      PATH=/usr/local/bin:/usr/bin:$PATH
+      export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
+    fi
+    PATH=$HOME/bin/mac:$PATH:/Applications/android-sdk-mac_x86/tools:/Applications/android-sdk-mac_x86/platform-tools
+    [ "$LANG" = "ja_JP" ] && export LANG=ja_JP.UTF-8
+    ;;
+  freebsd*)
+    soft_source $HOME/.shrc.bsd
+    ;;
+  linux*)
+    soft_source $HOME/.shrc.linux
+    ;;
+  solaris*)
+    soft_source $HOME/.shrc.solaris
+    ;;
+  *)
+    ;;
+esac
 
 # aliases {{{1
 is_exec rails && alias r=rails

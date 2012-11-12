@@ -28,6 +28,7 @@ zaw-rc () {
   bindkey -v '^Vw' zaw-tmux-window
   bindkey -v '^Vk' zaw-keybind
   bindkey -v '^Vs' zaw-ssh
+  bindkey -v '^Vp' zaw-keepass
 
   (( $+functions[zaw-src-tmuxinator] )) && bindkey -v '^Vm' zaw-tmuxinator
   (( $+functions[zaw-src-finder] )) && bindkey -v '^Vf' zaw-finder
