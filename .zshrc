@@ -7,15 +7,12 @@ debug_timer() {
   return 0
 }
 if_compile() {
-  for f in $* ; do
-    [ ! -e $f.zwc ]  && zcompile $f
-    [ $f -nt $f.zwc ] && zcompile $f
+  for f in $*; do
+    [ ! -e $f.zwc -o $f -nt $f.zwc ] && zcompile $f
   done
 }
 source_all() {
-  for f in $* ; do
-    source $f
-  done
+  for f in $* source $f;
 }
 
 debug_timer "start"
@@ -23,7 +20,7 @@ debug_timer "start"
 if_compile ~/.shrc.*[^zwc]
 if_compile ~/.zshenv
 # if_compile ~/.zshrc
-[ -e ~/.zshrc.zwc ] && rm ~/.zshrc.zwc
+[ -e ~/.zshrc.zwc ] && rm -f ~/.zshrc.zwc
 
 # # https://github.com/zsh-users/antigen.git {{{1
 # if [ -e ~/.zsh/antigen/antigen.zsh ]; then
@@ -55,9 +52,14 @@ if_compile ~/.zshenv
 # fi
 
 # env vars {{{1
+debug_timer "start settings"
 REPORTTIME=3                    # 3秒以上かかった処理は詳細表示
+if [ $OSTYPE != "cygwin" -a -z $LANG ]; then
+  export LANG=ja_JP.UTF-8
+fi
 
 # autoload {{{1
+debug_timer "autoload"
 autoload -U zmv
 autoload -Uz add-zsh-hook
 autoload -U colors
@@ -66,6 +68,7 @@ colors
 zle -N self-insert url-quote-magic # URL を自動エスケープ
 
 # setopt {{{1
+debug_timer "setopt"
 setopt auto_cd                  # ディレクトリ直入力で cd
 setopt auto_pushd               # cd で pushd
 setopt pushd_ignore_dups        # 同じ dir をスタックに入れない
@@ -77,28 +80,10 @@ setopt pushd_silent             # 静かに
 setopt no_beep
 setopt no_listbeep
 
+setopt interactive_comments # コマンドラインでも # 以降をコメントと見なす
+
 unsetopt cdable_vars        # not expand "~"
 setopt brace_ccl            # {a-c} を展開
-
-setopt auto_list            # 一覧表示する
-setopt auto_name_dirs       # enable ~/$var
-setopt auto_menu            # 補完キー連打で順に補完候補を自動で補完
-setopt auto_param_slash     # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
-setopt auto_param_keys      # カッコの対応などを自動的に補完
-setopt noautoremoveslash    # 末尾の / を自動で消さない
-
-setopt list_packed          # 補完候補を詰める
-setopt list_types           # 補完候補一覧でファイルの種別を識別マーク表示 (訳注:ls -F の記号)
-
-setopt interactive_comments # コマンドラインでも # 以降をコメントと見なす
-setopt complete_in_word     # 語の途中でもカーソル位置で補完
-setopt always_last_prompt   # カーソル位置は保持したままファイル名一覧を順次その場で表示
-setopt magic_equal_subst    # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
-setopt numeric_glob_sort    # 数字順で並べる
-
-setopt extended_glob        # 拡張グロブで補完(~とか^とか。例えばless *.txt~memo.txt ならmemo.txt 以外の *.txt にマッチ)
-setopt mark_dirs            # ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
-setopt globdots             # 明確なドットの指定なしで.から始まるファイルをマッチ
 
 setopt multios              # 必要に応じて tee / cat
 
@@ -116,6 +101,7 @@ log                        # ログインはすぐに出力
 setopt ignore_eof          # ^D でログアウトしない
 
 # keybinds {{{1
+debug_timer "start keybinds"
 # keybind from terminfo {{{2
 
 # typeset -A key
@@ -353,24 +339,41 @@ setopt prompt_subst      # PROMPT内で変数展開・コマンド置換・算�
 setopt prompt_percent    # %文字から始まる置換機能を有効にする
 setopt transient_rprompt # コマンド実行後は右プロンプトを消す
 
-export PROMPT="[%n@%m %3d]%(#.#.$) "
 
-if [ $OSTYPE != "cygwin" -a -z $LANG ]; then
-    export LANG=ja_JP.UTF-8
+if [[ $ZSH_VERSION == (<5->|4.<4->|4.3.<10->)* ]]; then
+  autoload -Uz vcs_info
+  zstyle ':vcs_info:*' max-exports 7
+  zstyle ':vcs_info:(hg|git|svn):*' formats '%R' '%S' '%s:%b'
+  zstyle ':vcs_info:(hg|git|svn):*' actionformats '%R' '%S' '%s:%b|%a'
+  if is-at-least 4.3.10; then
+    zstyle ':vcs_info:(hg|git|svn):*' check-for-changes true
+  fi
+  precmd_vcs_info () {
+    psvar=()
+    LANG=C vcs_info
+    repos=`print -nD "$vcs_info_msg_0_"`
+    [[ -n "$repos" ]] && psvar[2]="$repos"
+    [[ -n "$vcs_info_msg_1_" ]] && psvar[3]="$vcs_info_msg_1_"
+    [[ -n "$vcs_info_msg_2_" ]] && psvar[1]="$vcs_info_msg_2_"
+  }
+  typeset -ga precmd_functions
+  precmd_functions+=precmd_vcs_info
+  local vcs=' %3(v|%25<\<<%F{blue}%2v%f@%F{yellow}%1v%f%<<|)%{$reset_color%}'
+else
+  local vcs=''
 fi
+local user='%{$fg[yellow]%}%n@%{$fg[yellow]%}%m%{$reset_color%}'
+local dirs='[%F{yellow}%3(v|%32<..<%3v%<<|%60<..<%~%<<)%f]'
 
-case "$TERM" in
-  cygwin|xterm|xterm*|kterm|mterm|rxvt*)
-    #PROMPT='%{[33m%}%m%B[%D %T]%b%{[m%}\$ '
-    PROMPT='%{[33m%}%n@%m%B%b%{[m%}\$ '
-    RPROMPT='[%{[33m%}%4c%{[m%}]'
-    ;;
-  screen*)
-    #PROMPT='%{[33m%}%m%B[%D %T]%b%{[m%}\$ '
-    PROMPT='%{[33m%}%n@%m%B%b%{[m%}\$ '
-    RPROMPT='[%{[33m%}%4c%{[mk%c\\%}]'
-    ;;
-esac
+# export PROMPT="[%n@%m %3d]%(#.#.$) "
+PROMPT="${user}$ "
+RPROMPT="${dirs}$vcs"
+# case "$TERM" in
+#   cygwin|xterm|xterm*|kterm|mterm|rxvt*)
+#     ;;
+#   screen*)
+#     ;;
+# esac
 
 # complete {{{1
 debug_timer "start compinit"
@@ -388,6 +391,25 @@ zsh-complete-init() {
   bashcompinit
 
   # complete options {{{2
+  setopt auto_list            # 一覧表示する
+  setopt auto_name_dirs       # enable ~/$var
+  setopt auto_menu            # 補完キー連打で順に補完候補を自動で補完
+  setopt auto_param_slash     # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
+  setopt auto_param_keys      # カッコの対応などを自動的に補完
+  setopt noautoremoveslash    # 末尾の / を自動で消さない
+
+  setopt list_packed          # 補完候補を詰める
+  setopt list_types           # 補完候補一覧でファイルの種別を識別マーク表示 (訳注:ls -F の記号)
+
+  setopt complete_in_word     # 語の途中でもカーソル位置で補完
+  setopt always_last_prompt   # カーソル位置は保持したままファイル名一覧を順次その場で表示
+  setopt magic_equal_subst    # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
+  setopt numeric_glob_sort    # 数字順で並べる
+
+  setopt extended_glob        # 拡張グロブで補完(~とか^とか。例えばless *.txt~memo.txt ならmemo.txt 以外の *.txt にマッチ)
+  setopt mark_dirs            # ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
+  setopt globdots             # 明確なドットの指定なしで.から始まるファイルをマッチ
+
   # 高速化?
   zstyle ':completion:*' accept-exact '*(N)'  # 展開方法
   zstyle ':completion:*' use-cache true       # cache
@@ -408,7 +430,8 @@ zsh-complete-init() {
   zstyle ':completion:*' completer \
       _oldlist _complete _match _history _ignored _approximate _prefix
 
-  # host completion {{{
+  # host completion {{{3
+  # {{{
   : ${(A)_etc_hosts:=${(s: :)${(ps:\t:)${${(f)~~"$(</etc/hosts)"}%%\#*}##[:blank:]#[^[:blank:]]#}}}
   [ -e ~/.ssh/config ] && : ${(A)_ssh_config_hosts:=${${${${(@M)${(f)"$(<$HOME/.ssh/config)"}:#Host *}#Host }:#*\**}:#*\?*}}
   # this supposes you have "HashKnownHosts no" in your ~/.ssh/config
@@ -422,9 +445,8 @@ zsh-complete-init() {
     "$_etc_hosts[@]"
     "$_ssh_known_ips[@]"
     )
-  zstyle ':completion:*' hosts $hosts #}}}
+  zstyle ':completion:*' hosts $hosts #3}}}
   # 2}}}
-
   # etc completion {{{2
   is_exec hub && source ~/.zsh/zfunc/hub.zsh_completion
   # 2}}}
@@ -442,3 +464,4 @@ bindkey -v '^I' zsh-complete-init
 
 debug_timer "finish"
 # vim: ft=zsh fdm=marker sw=2 ts=2 et:
+# __END__ {{{1
