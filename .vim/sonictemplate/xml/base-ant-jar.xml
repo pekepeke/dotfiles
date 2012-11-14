@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JarBuild" default="build.full" basedir=".">
+  <!-- JARファイルにつける名前 -->
+  <property name="jarname" value="{{_cursor_}}" />
+
+  <!-- 作業用ディレクトリ -->
+  <property name="dir.temp" value="build/release" />
+  <property name="dir.temp.resources" value="${dir.temp}/resources" />
+  <!-- srcディレクトリ -->
+  <property name="dir.src" value="src" />
+  <property name="dir.src.resources" value="${dir.src}/resources" />
+  <!-- libディレクトリ -->
+  <property name="dir.lib" value="lib" />
+  <!-- manifestファイル -->
+  <property name="manifestfile" value="${dir.src}/META-INF/MANIFEST.MF" />
+  <!-- コンパイラ -->
+  <property name="compiler" value="javac" />
+
+  <!-- 
+    クラスパスの指定 
+    -->
+    <!-- log4jライブラリクラスパス -->
+    <path id="classpath.log4j">
+      <fileset dir="lib">
+        <include name="*.jar" />
+      </fileset>
+    </path>
+    <!-- junitライブラリクラスパス -->
+    <path id="classpath.junit">
+      <fileset dir="lib">
+        <include name="*.jar" />
+      </fileset>
+    </path>
+
+    <!--
+    JAR作成
+    -->
+
+    <!-- JARの作成開始 -->
+    <target name="build.full" description="jarアーカイブのフルビルド" depends="makeJar" />
+    <!-- 作業用ディレクトリのcleanup -->
+    <target name="cleanup" description="作業用ディレクトリのクリーンアップ">
+      <echo message="作業用ディレクトリをクリーンアップします" />
+      <delete dir="${dir.temp}" />
+      <mkdir dir="${dir.temp}" />
+    </target>
+
+    <!-- コンパイル -->
+    <target name="compile" description="パッケージのコンパイル" depends="cleanup">
+      <echo message="コンパイルを行います" />
+      <javac srcdir="${dir.src}" destdir="${dir.temp}" executable="${compiler}">
+        <!-- クラスパスの指定 -->
+        <classpath refid="classpath.log4j" />
+        <classpath refid="classpath.junit" />
+        <!-- testパッケージを除く -->
+        <exclude name="test/**" />
+      </javac>
+    </target>
+
+    <!-- クラスファイル以外の必要なファイルのコピー -->
+    <target name="filecopy" description="クラスファイル以外の必要なファイルのコピー" depends="compile">
+      <echo message="クラスファイル以外の必要なファイルのコピーを行います" />
+      <!-- 設定ファイル等を削除 -->
+      <delete file="${dir.temp.resources}/resources.properties" />
+      <delete file="${dir.temp}/log4j.properties" />
+      <!-- 作業用ディレクトリにresource用フォルダを作成 -->
+      <mkdir dir="${dir.temp.resources}" />
+      <!-- 作成したresource用フォルダに設定ファイル等をコピー -->
+      <copy todir="${dir.temp.resources}">
+        <fileset dir="lib">
+          <include name="*.jpg" />
+        </fileset>
+      </copy>
+      <copy file="${dir.src.resources}/resource.properties" todir="${dir.temp.resources}" />
+      <copy file="${dir.src}/log4j.properties" todir="${dir.temp}" />
+    </target>
+
+    <!-- JARファイル作成 -->
+    <target name="makeJar" description="JARファイル作成" depends="filecopy">
+      <echo message="JARファイルを作成します" />
+      <jar basedir="${dir.temp}" destfile="${jarname}.jar" manifest="${manifestfile}" />
+    </target>
+
+  </project>
+

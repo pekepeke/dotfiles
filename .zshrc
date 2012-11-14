@@ -12,7 +12,7 @@ if_compile() {
   done
 }
 source_all() {
-  for f in $* source $f;
+  for f in $*; do source $f; done
 }
 
 debug_timer "start"
@@ -345,9 +345,7 @@ if [[ $ZSH_VERSION == (<5->|4.<4->|4.3.<10->)* ]]; then
   zstyle ':vcs_info:*' max-exports 7
   zstyle ':vcs_info:(hg|git|svn):*' formats '%R' '%S' '%s:%b'
   zstyle ':vcs_info:(hg|git|svn):*' actionformats '%R' '%S' '%s:%b|%a'
-  if is-at-least 4.3.10; then
-    zstyle ':vcs_info:(hg|git|svn):*' check-for-changes true
-  fi
+  zstyle ':vcs_info:(hg|git|svn):*' check-for-changes true
   precmd_vcs_info () {
     psvar=()
     LANG=C vcs_info
@@ -358,16 +356,16 @@ if [[ $ZSH_VERSION == (<5->|4.<4->|4.3.<10->)* ]]; then
   }
   typeset -ga precmd_functions
   precmd_functions+=precmd_vcs_info
-  local vcs=' %3(v|%25<\<<%F{blue}%2v%f@%F{yellow}%1v%f%<<|)%{$reset_color%}'
+  local __vcs=' %3(v|%25<\<<%F{blue}%2v%f@%F{yellow}%1v%f%<<|)%{$reset_color%}'
 else
-  local vcs=''
+  local __vcs=''
 fi
-local user='%{$fg[yellow]%}%n@%{$fg[yellow]%}%m%{$reset_color%}'
-local dirs='[%F{yellow}%3(v|%32<..<%3v%<<|%60<..<%~%<<)%f]'
+local __user='%{$fg[yellow]%}%n@%{$fg[yellow]%}%m%{$reset_color%}'
+local __dirs='[%F{yellow}%3(v|%32<..<%3v%<<|%60<..<%~%<<)%f]'
 
 # export PROMPT="[%n@%m %3d]%(#.#.$) "
-PROMPT="${user}$ "
-RPROMPT="${dirs}$vcs"
+PROMPT="${__user}$ "
+RPROMPT="${__dirs}$__vcs"
 # case "$TERM" in
 #   cygwin|xterm|xterm*|kterm|mterm|rxvt*)
 #     ;;
