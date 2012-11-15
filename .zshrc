@@ -339,33 +339,59 @@ setopt prompt_subst      # PROMPT内で変数展開・コマンド置換・算�
 setopt prompt_percent    # %文字から始まる置換機能を有効にする
 setopt transient_rprompt # コマンド実行後は右プロンプトを消す
 
-
 if [[ $ZSH_VERSION == (<5->|4.<4->|4.3.<10->)* ]]; then
   autoload -Uz vcs_info
+  zstyle ':vcs_info:*' enable git svn hg
+  zstyle ':vcs_info:bzr:*' use-simple true
   zstyle ':vcs_info:*' max-exports 7
-  zstyle ':vcs_info:(hg|git|svn):*' formats '%R' '%S' '%s:%b'
-  zstyle ':vcs_info:(hg|git|svn):*' actionformats '%R' '%S' '%s:%b|%a'
-  zstyle ':vcs_info:(hg|git|svn):*' check-for-changes true
-  precmd_vcs_info () {
-    psvar=()
-    LANG=C vcs_info
-    repos=`print -nD "$vcs_info_msg_0_"`
-    [[ -n "$repos" ]] && psvar[2]="$repos"
-    [[ -n "$vcs_info_msg_1_" ]] && psvar[3]="$vcs_info_msg_1_"
-    [[ -n "$vcs_info_msg_2_" ]] && psvar[1]="$vcs_info_msg_2_"
+  zstyle ':vcs_info:*' formats '%R' '%S' '%b' '%s'
+  zstyle ':vcs_info:*' actionformats '%R' '%S' '%b|%a' '%s'
+  zstyle ':vcs_info:*' check-for-changes true
+  echo_rprompt () {
+    local repos branch st color
+    STY= LANG=en_US.UTF-8 vcs_info
+    if [[ -n "$vcs_info_msg_1_" ]]; then
+      # repos=`print -nD "$vcs_info_msg_0_"`
+      repos=${vcs_info_msg_0_/${HOME}/\~}
+
+      branch="$vcs_info_msg_2_"
+
+      if [[ -n "$vcs_info_msg_4_" ]]; then # staged
+        branch="%F{green}$branch%f"
+      elif [[ -n "$vcs_info_msg_5_" ]]; then # unstaged
+        branch="%F{red}$branch%f"
+      else
+        branch="%F{blue}$branch%f"
+      fi
+
+      print -n "[%25<..<"
+      print -n "%F{yellow}$vcs_info_msg_1_%F"
+      print -n "%<<]"
+
+      print -n "[%25<..<"
+      print -nD "%F{yellow}$repos%f"
+      print -n "@$branch"
+      print -n "%<<]"
+
+    else
+      print -nD "[%F{yellow}%60<..<%~%<<%f]"
+    fi
   }
-  typeset -ga precmd_functions
-  precmd_functions+=precmd_vcs_info
-  local __vcs=' %3(v|%25<\<<%F{blue}%2v%f@%F{yellow}%1v%f%<<|)%{$reset_color%}'
 else
-  local __vcs=''
+  echo_rprompt() {
+    print -nD "[%F{yellow}%60<..<%~%<<%f]"
+  }
 fi
+precmd_rprompt() {
+  RPROMPT=`echo_rprompt`
+}
+typeset -ga precmd_functions
+precmd_functions+=precmd_rprompt
 local __user='%{$fg[yellow]%}%n@%{$fg[yellow]%}%m%{$reset_color%}'
-local __dirs='[%F{yellow}%3(v|%32<..<%3v%<<|%60<..<%~%<<)%f]'
 
 # export PROMPT="[%n@%m %3d]%(#.#.$) "
 PROMPT="${__user}$ "
-RPROMPT="${__dirs}$__vcs"
+RPROMPT=""
 # case "$TERM" in
 #   cygwin|xterm|xterm*|kterm|mterm|rxvt*)
 #     ;;
