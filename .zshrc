@@ -423,36 +423,41 @@ zsh-complete-init() {
   setopt noautoremoveslash    # 末尾の / を自動で消さない
 
   setopt list_packed          # 補完候補を詰める
-  setopt list_types           # 補完候補一覧でファイルの種別を識別マーク表示 (訳注:ls -F の記号)
+  setopt list_types           # 補完候補一覧でファイルの種別を識別マーク表示
 
   setopt complete_in_word     # 語の途中でもカーソル位置で補完
   setopt always_last_prompt   # カーソル位置は保持したままファイル名一覧を順次その場で表示
   setopt magic_equal_subst    # コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
   setopt numeric_glob_sort    # 数字順で並べる
 
-  setopt extended_glob        # 拡張グロブで補完(~とか^とか。例えばless *.txt~memo.txt ならmemo.txt 以外の *.txt にマッチ)
-  setopt mark_dirs            # ファイル名の展開でディレクトリにマッチした場合 末尾に / を付加
+  setopt extended_glob        # 拡張グロブで補完
+  # setopt mark_dirs            # ファイル名の展開でディレクトリにマッチした場合末尾に / を付加
   setopt globdots             # 明確なドットの指定なしで.から始まるファイルをマッチ
 
   # 高速化?
-  zstyle ':completion:*' accept-exact '*(N)'  # 展開方法
-  zstyle ':completion:*' use-cache true       # cache
-  zstyle ':completion:*' verbose yes          # verbose
-  zstyle ':completion:sudo:*' environ PATH="$SUDO_PATH:$PATH" # sudo時にはsudo用のパスも使う。
+  zstyle ':completion:*' accept-exact '*(N)'                      # 展開方法
+  zstyle ':completion:*' use-cache true                           # cache
+  zstyle ':completion:*' verbose yes                              # verbose
+  zstyle ':completion:sudo:*' environ PATH="$SUDO_PATH:$PATH"     # sudo時にはsudo用のパスも使う。
 
+  zstyle ':completion:*' list-separator "-"
   zstyle ':completion:*:default' menu select=2
-  zstyle ':completion:*:default' list-colors ""  # 補完候補に色付け(""=default)
-  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z} r:|[._-]=*' # 補完候補を曖昧検索
+  zstyle ':completion:*:default' list-colors ""                   # 補完候補に色付け(""=default)
+  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z} r:|[._-]=*'  # 補完候補を曖昧検索
+  zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?~' '*\ # '                              # 補完させない
+  zstyle ':completion:*:cd:*' ignore-parents parent pwd # cd カレントディレクトリを選択しないので表示させないようにする (例: cd ../<TAB>):
+  zstyle ':completion:*:manuals' separate-sections true # man のセクション番号を補完
   # 補完候補の優先度
+  #
   ## _oldlist 前回の補完結果を再利用する。
   ## _complete: 補完する。
   ## _match: globを展開しないで候補の一覧から補完する。
   ## _history: ヒストリのコマンドも補完候補とする。
   ## _ignored: 補完候補にださないと指定したものも補完候補とする。
   ## _approximate: 似ている補完候補も補完候補とする。
-  ## _prefix: カーソル以降を無視してカーソル位置までで補完する。
+  ## _prefix: カーソル位置で補完する。
   zstyle ':completion:*' completer \
-      _oldlist _complete _match _history _ignored _approximate _prefix
+      _complete _oldlist _match _history _ignored _approximate _prefix
 
   # host completion {{{3
   # {{{
