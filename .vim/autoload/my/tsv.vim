@@ -2,156 +2,167 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 function! my#tsv#to_sqlwhere() range "{{{2
-  let l:lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
-  if empty(l:lines)
+  let lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
+  let tsv = csvutil#tsv_reader()
+  let lines = tsv.parse_from_list(lines)
+  if empty(lines)
     echoer "empty buffer : stop execute!!"
     return
   endif
-  let l:head = split(remove(l:lines, 0), "\t", 1)
-  if empty(l:head)
+  let head = remove(lines, 0)
+  if empty(head)
     echoerr "column name header is not found"
     return
   endif
 
-  let l:texts = []
-  for l:line in l:lines
-    if empty(l:line)
+  let texts = []
+  for items in lines
+    if empty(items)
       continue
     endif
-    let l:items = split(l:line, "\t", 1)
-    let l:keywords = copy(l:head)
-    call map(l:keywords, '[v:val, get(l:items, v:key, "")]')
-    let l:where = []
-    for [l:name, l:value] in l:keywords
-      call add(l:where, l:name . " = '" . l:value . "'")
+    let keywords = copy(head)
+    call map(keywords, '[v:val, get(items, v:key, "")]')
+    let where = []
+    for [name, value] in keywords
+      call add(where, name . " = '" . value . "'")
     endfor
-    call add(l:texts, join(l:where, ' AND '))
+    call add(texts, join(where, ' AND '))
   endfor
-  call my#util#output_to_buffer('__TSV__', l:texts)
+  call my#util#output_to_buffer('__TSV__', texts)
 endfunction
+
 function! my#tsv#to_sqlin() range "{{{2
-  let l:lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
-  if empty(l:lines)
+  let lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
+  let tsv = csvutil#tsv_reader()
+  let lines = tsv.parse_from_list(lines)
+  if empty(lines)
     echoer "empty buffer : stop execute!!"
     return
   endif
-  let l:head = split(remove(l:lines, 0), "\t", 1)
-  if empty(l:head)
+  let head = remove(lines, 0)
+  if empty(head)
     echoerr "column name header is not found"
     return
   endif
-  let l:texts = []
-  let l:rows = map(copy(l:head), '[v:val]')
-  for l:line in l:lines
-    if empty(l:line)
+  let texts = []
+  let rows = map(copy(head), '[v:val]')
+  for items in lines
+    if empty(line)
       continue
     endif
-    let l:items = split(l:line, "\t", 1)
-    call map(l:rows, 'v:val + [get(l:items, v:key, "")]')
+    call map(rows, 'v:val + [get(items, v:key, "")]')
   endfor
-  for l:row in l:rows
-    let l:name = remove(l:row, 0)
-    call add(l:texts, l:name . " IN ('" . join(l:row, "', '") ."')")
+  for row in rows
+    let name = remove(row, 0)
+    call add(texts, name . " IN ('" . join(row, "', '") ."')")
   endfor
-  call my#util#output_to_buffer('__TSV__', l:texts)
+  call my#util#output_to_buffer('__TSV__', texts)
 endfunction
+
 function! my#tsv#exchange_matrix() range "{{{2
-  let l:lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
-  if empty(l:lines)
+  let lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
+  let tsv = csvutil#tsv_reader()
+  let lines = tsv.parse_from_list(lines)
+  if empty(lines)
     echoer "empty buffer : stop execute!!"
     return
   endif
-  let l:head = split(remove(l:lines, 0), "\t", 1)
-  if empty(l:head)
+  let head = remove(lines, 0)
+  if empty(head)
     echoerr "column name header is not found"
     return
   endif
-  let l:texts = []
-  let l:rows = map(copy(l:head), '[v:val]')
-  for l:line in l:lines
-    if empty(l:line)
+  let texts = []
+  let rows = map(copy(head), '[v:val]')
+  for items in lines
+    if empty(items)
       continue
     endif
-    let l:items = split(l:line, "\t", 1)
-    call map(l:rows, 'v:val + [get(l:items, v:key, "")]')
+    call map(rows, 'v:val + [get(items, v:key, "")]')
   endfor
-  for l:row in l:rows
-    call add(l:texts, join(l:row, "\t"))
+  for row in rows
+    call add(texts, join(row, "\t"))
   endfor
-  call my#util#output_to_buffer('__TSV__', l:texts)
+  call my#util#output_to_buffer('__TSV__', texts)
 endfunction
+
 function! my#tsv#to_sqlinsert() range "{{{2
-  let l:lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
-  if empty(l:lines)
+  let lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
+  let tsv = csvutil#tsv_reader()
+  let lines = tsv.parse_from_list(lines)
+  if empty(lines)
     echoer "empty buffer : stop execute!!"
     return
   endif
-  let l:head = split(remove(l:lines, 0), "\t", 1)
-  if empty(l:head)
+  let head = remove(lines, 0)
+  if empty(head)
     echoerr "column name header is not found"
     return
   endif
 
-  let l:texts = []
-  for l:line in l:lines
-    if empty(l:line)
+  let texts = []
+  for items in lines
+    if empty(items)
       continue
     endif
-    let l:items = map(split(l:line, "\t", 1), "v:val == '' ? 'NULL' : \"'\".v:val.\"'\"")
-    let l:datas = map(copy(l:head), 'get(l:items, v:key, "NULL")')
-    call add(l:texts, 'INSERT INTO X ('.join(l:head, ', ').') VALUES ('.join(l:datas, ', ').');')
+    let items = map(items, "v:val == '' ? 'NULL' : \"'\".v:val.\"'\"")
+    let datas = map(copy(head), 'get(items, v:key, "NULL")')
+    call add(texts, 'INSERT INTO X ('.join(head, ', ').') VALUES ('.join(datas, ', ').');')
   endfor
-  call my#util#output_to_buffer('__TSV__', l:texts)
+  call my#util#output_to_buffer('__TSV__', texts)
 endfunction
+
 function! my#tsv#to_sqlupdate() range "{{{2
-  let l:lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
-  if empty(l:lines)
+  let lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
+  let tsv = csvutil#tsv_reader()
+  let lines = tsv.parse_from_list(lines)
+  if empty(lines)
     echoer "empty buffer : stop execute!!"
     return
   endif
-  let l:head = split(remove(l:lines, 0), "\t", 1)
-  if empty(l:head)
+  let head = remove(lines, 0)
+  if empty(head)
     echoerr "column name header is not found"
     return
   endif
 
-  let l:where_ids = map(filter(copy(l:head), 'v:val =~ "^id$"'), 'v:key')
-  if empty(l:where_ids)
-    let l:where_ids = map(filter(copy(l:head), 'v:val =~ "^.*id$"'), 'v:key')
-    if empty(l:where_ids)
-      let l:where_ids = [l:head[0]]
+  let where_ids = map(filter(copy(head), 'v:val =~ "^id$"'), 'v:key')
+  if empty(where_ids)
+    let where_ids = map(filter(copy(head), 'v:val =~ "^.*id$"'), 'v:key')
+    if empty(where_ids)
+      let where_ids = [head[0]]
     endif
   endif
 
-  if empty(l:where_ids)
+  if empty(where_ids)
     echoerr "column id is not found"
     return
   endif
 
-  let l:texts = []
-  for l:line in l:lines
-    if empty(l:line)
+  let texts = []
+  for items in lines
+    if empty(items)
       continue
     endif
-    let l:items = map(split(l:line, "\t", 1), "v:val == '' ? 'NULL' : \"'\".v:val.\"'\"")
-    let l:wheres = []
-    for l:where_id in l:where_ids
-      call add(l:wheres, l:head[l:where_id] . " = " . get(l:items, l:where_id, "NULL"))
+    let items = map(items, "v:val == '' ? 'NULL' : \"'\".v:val.\"'\"")
+    let wheres = []
+    for where_id in where_ids
+      call add(wheres, head[where_id] . " = " . get(items, where_id, "NULL"))
     endfor
 
-    let l:head_label = copy(l:head)
-    for l:where_id in l:where_ids
-      call remove(l:items, l:where_id)
-      call remove(l:head_label, l:where_id)
+    let head_label = copy(head)
+    for where_id in where_ids
+      call remove(items, where_id)
+      call remove(head_label, where_id)
     endfor
 
-    let l:datas = map(copy(l:head_label), 'v:val ." = ". get(l:items, v:key, "NULL")')
-    call add(l:texts, 'UPDATE X SET '
-          \ .join(l:datas, ', ')
-          \ .(empty(l:wheres) ? "" : ' WHERE '.join(l:wheres, ' AND ')).";"
+    let datas = map(copy(head_label), 'v:val ." = ". get(items, v:key, "NULL")')
+    call add(texts, 'UPDATE X SET '
+          \ .join(datas, ', ')
+          \ .(empty(wheres) ? "" : ' WHERE '.join(wheres, ' AND ')).";"
           \ )
   endfor
-  call my#util#output_to_buffer('__TSV__', l:texts)
+  call my#util#output_to_buffer('__TSV__', texts)
 endfunction 
 " }}}
 
