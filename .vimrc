@@ -3270,9 +3270,12 @@ LCAlias Ie Firefox Opera Chrome Safari
 " TSV {{{3
 command! -range Tsvtosqlwhere      <line1>,<line2>call my#tsv#to_sqlwhere()
 command! -range Tsvtosqlin         <line1>,<line2>call my#tsv#to_sqlin()
-command! -range Tsvexchangematrix <line1>,<line2>call my#tsv#exchange_matrix()
+command! -range Tsvexchangematrix  <line1>,<line2>call my#tsv#exchange_matrix()
 command! -range Tsvtosqlinsert     <line1>,<line2>call my#tsv#to_sqlinsert()
 command! -range Tsvtosqlupdate     <line1>,<line2>call my#tsv#to_sqlupdate()
+command! -range Tsvtocsv           <line1>,<line2>call my#tsv#to_csv()
+command! -range Tsvtojson          <line1>,<line2>call my#tsv#to_json()
+command! -range Tsvtoflatjson      <line1>,<line2>call my#tsv#to_flat_json()
 
 " MySQL {{{3
 command! -nargs=0 -range TMY <line1>,<line2>call my#mysql#to_tsv()

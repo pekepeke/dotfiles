@@ -384,6 +384,8 @@ else
 fi
 precmd_rprompt() {
   RPROMPT=`echo_rprompt`
+  print -PnD "\e]1;%n@%m: %${PWD}\a"
+  print -PnD "\e]1;%n@%m: %25<..<${PWD}%<<\a"
 }
 typeset -ga precmd_functions
 precmd_functions+=precmd_rprompt
