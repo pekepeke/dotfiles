@@ -387,8 +387,41 @@ precmd_rprompt() {
   print -PnD "\e]1;%n@%m: %${PWD}\a"
   print -PnD "\e]1;%n@%m: %25<..<${PWD}%<<\a"
 }
-typeset -ga precmd_functions
-precmd_functions+=precmd_rprompt
+
+precmd_multiterm() {
+  if [ $TERM =~ "screen" ]; then
+    print -n "\ek${PWD/${HOME}/\~}\e\\"
+  fi
+}
+chpwd_multiterm() {
+  [ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#I") $PWD
+}
+
+preexec_multiterm() {
+  if [ $TERM =~ "screen" ]; then
+    local arg
+    case $1 in
+      ssh*|telnet*)
+        arg=":$(awk '{print $NF}' <<< $1)"
+        ;;
+      vagrant*)
+        arg=arg=":vagrant"
+        ;;
+      su*)
+        arg="!root!"
+        ;;
+    esac
+    if [ -n "$arg" ]; then
+      print -n "\ek${1%% *}$arg\e\\"
+    fi
+  fi
+}
+
+# typeset -ga precmd_functions
+add-zsh-hook precmd precmd_rprompt
+# add-zsh-hook precmd precmd_multiterm
+add-zsh-hook preexec preexec_multiterm
+add-zsh-hook chpwd chpwd_multiterm
 local __user='%{$fg[yellow]%}%n@%{$fg[yellow]%}%m%{$reset_color%}'
 
 # export PROMPT="[%n@%m %3d]%(#.#.$) "
@@ -400,6 +433,9 @@ RPROMPT=""
 #   screen*)
 #     ;;
 # esac
+if [ -n "$SSH_CONNECTION" ] && [ $TERM =~ "screen" ] && [ -z "$TMUX" ]; then
+  t_prefix="$HOST"
+fi
 
 # complete {{{1
 debug_timer "start compinit"
@@ -422,7 +458,8 @@ zsh-complete-init() {
   setopt auto_menu            # 補完キー連打で順に補完候補を自動で補完
   setopt auto_param_slash     # ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
   setopt auto_param_keys      # カッコの対応などを自動的に補完
-  setopt noautoremoveslash    # 末尾の / を自動で消さない
+  # setopt noautoremoveslash    # 末尾の / を自動で消さない
+  setopt autoremoveslash    # 末尾の / を自動で消す
 
   setopt list_packed          # 補完候補を詰める
   setopt list_types           # 補完候補一覧でファイルの種別を識別マーク表示

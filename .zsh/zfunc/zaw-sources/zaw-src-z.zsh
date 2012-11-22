@@ -10,9 +10,27 @@ function zaw-src-z() {
     # _z \
     #     | sed -e 's/^[0-9\\. ]*//' -e 's/ /\\ /g' -e "s#^$HOME#~#" \
     #     | tac | tr '\n' '\0')}
-    actions=("zaw-callback-execute" "zaw-callback-replace-buffer" "zaw-callback-append-to-buffer")
-    act_descriptions=("execute" "replace edit buffer" "append to edit buffer")
+    actions=("zaw-callback-execute" "zaw-callback-shell-exec" "zaw-callback-replace-buffer" "zaw-callback-append-to-buffer")
+    act_descriptions=("execute" "shell execute" "replace edit buffer" "append to edit buffer")
   # )
+}
+
+zaw-callback-shell-exec() {
+  case $OSTYPE in
+    cygwin*)
+      cygstart "$1";;
+    darwin*)
+      open "$1";;
+    bsd*)
+      gnome-open "$1";;
+    linux*)
+      gnome-open "$1";;
+    solaris*)
+      gnome-open "$1";;
+    *)
+      ;;
+  esac
+
 }
 
 zaw-register-src -n z zaw-src-z

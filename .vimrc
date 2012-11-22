@@ -1555,9 +1555,12 @@ if neobundle#is_installed('vim-smartinput')
   command! SmartinputOn call <SID>sminput_define_rules()
   call s:sminput_define_rules()
   " clear auto cmaps(for altercmd.vim)
-  if hasmapto('<CR>', 'c')
-    cunmap <CR>
-  endif
+  function! s:smartinput_init()
+    if hasmapto('<CR>', 'c')
+      cunmap <CR>
+    endif
+  endfunction
+  MyAutocmd VimEnter * call <SID>smartinput_init()
 endif
 
 " golden-ratio {{{2
