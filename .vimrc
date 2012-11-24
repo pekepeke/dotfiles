@@ -422,7 +422,8 @@ endif
 " endif
 
 " texts {{{4
-NeoBundle 'plasticboy/vim-markdown'
+" NeoBundle 'plasticboy/vim-markdown' " plasticboy mode -> mkd
+NeoBundle 'tpope/vim-markdown'
 NeoBundle 'thinca/vim-ft-markdown_fold'
 NeoBundle 'timcharper/textile.vim'
 NeoBundle 'chrisbra/csv.vim'
@@ -961,10 +962,12 @@ endfunction
 
 " statusline {{{2
 set laststatus=2  " ステータス表示用変数
-"set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'}%=%l,%c%V%8P
-let &statusline="%<%f %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'
-      \ }%=%l,%c%V%8P"
-      " \ .'['.cfi#format('%s()','no func').']'
+if !neobundle#is_installed('Lokaltog/vim-powerline')
+  "set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'}%=%l,%c%V%8P
+  let &statusline="%<%f %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'
+    \ }%=%l,%c%V%8P"
+    " \ .'['.cfi#format('%s()','no func').']'
+endif
 
 set modeline
 set modelines=10
