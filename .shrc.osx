@@ -27,7 +27,6 @@ alias bcd='cd $(brew --prefix)/'
 alias mvi='mvim --remote-tab-silent'
 alias cote='open -a CotEditor'
 alias twe='open -a TextWrangler' 
-alias subl='open -a "Sublime Text 2"'
 
 if [ -e /Applications/Emacs.app ]; then
   alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs -nw'
