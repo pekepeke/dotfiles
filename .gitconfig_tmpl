@@ -1,3 +1,4 @@
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [color]
 	ui = auto
 	diff = auto
@@ -8,8 +9,6 @@
 [core]
 	excludesfile = /home/piyo/.gitignore-global
     quotepath = false
-[merge]
-	tool = vimdiff
 [alias]
 	fixup = commit --amend -C HEAD
 	edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
@@ -33,3 +32,35 @@
 	textconv = osadecompile
 [diff "rtf"]
     textconv = textutil -convert txt -stdout
+[difftool "kdiff3"]
+    path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
+    trustExitCode = false
+[difftool "p4diff"]
+    path = p4diff
+[difftool "mvimdiff"]
+    cmd = mvim -d "$LOCAL" "$REMOTE"
+    trustExitCode = true
+; [difftool "WinMerge"]
+;     path = C:/Apps/WinMerge/WinMergeU.exe
+;     cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" -e -ub -dl \"Base\" -dr \"Mine\" \"$LOCAL\" \"$REMOTE\"
+; [difftool "p4merge"]
+;     cmd = "p4merge.exe $LOCAL $REMOTE"
+[merge]
+	tool = vimdiff
+[mergetool "p4merge"]
+    path = p4merge
+    keepTemporaries = false
+    trustExitCode = false
+[mergetool "kdiff3"]
+    path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
+    trustExitCode = false
+[mergetool "mvimdiff"]
+    cmd = mvim -d "$LOCAL" "$MERGED" "$REMOTE"
+    trustExitCode = true
+; [mergetool "WinMerge"]
+;     path = C:/Apps/WinMerge/WinMergeU.exe
+;     cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" \"$MERGED\"
+; [mergetool "p4merge"]
+;     cmd = "p4merge.exe $BASE $LOCAL $REMOTE $MERGED"
+;     trustExitCode = true
+;     keepBackup = false

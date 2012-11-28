@@ -68,8 +68,15 @@ elseif s:is_mac "{{{2
       set printfont=Osaka-Mono:h14
     endif
 
-    set imdisable " Disable IM
     set transparency=10
+    augroup gvimrc-hack234
+      autocmd!
+      if has('mac')
+        autocmd FocusGained * set transparency=10
+        autocmd FocusLost * set transparency=50
+      endif
+    augroup END
+    set imdisable " Disable IM
     set guioptions=e
 
     " full screen
