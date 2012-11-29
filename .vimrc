@@ -308,6 +308,7 @@ NeoBundle 'mattn/learn-vimscript'
 
 " neocomplcache {{{4
 NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neocomplcache-rsense'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'basyura/csharp_complete'
 NeoBundle 'osyo-manga/neocomplcache-jsx'
@@ -2810,12 +2811,12 @@ if exists("+omnifunc") " {{{4
         \ | endif
 endif
 
-if exists('$RSENSE_HOME') " {{{4
-  let g:rsenseHome=$RSENSE_HOME
-  let g:rsenseUseOmniFunc=1
-elseif exists('+omnifunc')
-  "MyAutocmd FileType ruby setl omnifunc=rubycomplete#Complete
-endif
+" if exists('$RSENSE_HOME') " {{{4 RSENSE
+"   let g:rsenseHome=$RSENSE_HOME
+"   let g:rsenseUseOmniFunc=0
+" elseif exists('+omnifunc')
+"   "MyAutocmd FileType ruby setl omnifunc=rubycomplete#Complete
+" endif
 
 " vimshell {{{2
 

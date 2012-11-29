@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+<key>LOGIN_FROM</key>
+<string>Finder</string>
+<key>PATH</key>
+<string>/usr/local/bin:/usr/bin:/bin:/Applications/android-sdk-mac_x86/tools:/Applications/android-sdk-mac_x86/platform-tools</string>
+</dict>
+</plist>
