@@ -245,7 +245,11 @@ NeoBundle 'mileszs/ack.vim'
 NeoBundleLazy 'vim-scripts/MultipleSearch'
 NeoBundle 'vim-scripts/sudo.vim'
 if s:is_mac
-  NeoBundle 'gmarik/sudo-gui.vim'
+  if has('gui')
+    NeoBundle 'gmarik/sudo-gui.vim'
+  else
+    NeoBundleLazy 'gmarik/sudo-gui.vim'
+  endif
 endif
 
 " lang {{{3
