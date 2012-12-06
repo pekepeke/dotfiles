@@ -176,6 +176,7 @@ cde() { #{{{3
 
 # lang {{{2
 alias iperl='perl -de0'
+alias iphp='php -a'
 alias rol='ruby -n -e '
 perlmodules() {
   cat `perldoc -l perllocal` | perl -nle '/C<Module> L<([^\|]*?)\|.*?>/ and print "$1"'
