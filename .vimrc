@@ -324,6 +324,8 @@ NeoBundleLazyOn FileType ruby 'tpope/vim-cucumber'
 NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
 NeoBundle 'vim-scripts/eruby.vim'
 NeoBundle 'tobiassvn/vim-gemfile'
+NeoBundle 'rhysd/unite-ruby-require.vim.git'
+NeoBundle 'rhysd/neco-ruby-keyword-args.git'
 if has("signs") && has("clientserver") && v:version > 700
   NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
 endif

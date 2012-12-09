@@ -302,7 +302,8 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
   # add-zsh-hook preexec zaw-init
   # zaw-init
   zle -N zaw-init
-  bindkey -v '^V' zaw-init
+  zaw-init
+  # bindkey -v '^V' zaw-init
 fi
 # autojump {{{2
 if [ -e ~/.zsh/plugins/z/z.sh ]; then
