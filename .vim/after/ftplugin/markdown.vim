@@ -5,6 +5,7 @@ set cpo&vim
 
 setl indentkeys-=0#
 setl cinkeys-=0#
+setl noexpandtab
 
 
 let &cpo = s:save_cpo

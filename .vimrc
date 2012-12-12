@@ -331,6 +331,19 @@ if has("signs") && has("clientserver") && v:version > 700
 endif
 NeoBundle 't9md/vim-chef'
 NeoBundle 'taq/vim-rspec'
+if executable('alpaca_complete')
+  NeoBundle 'taichouchou2/alpaca_complete', {
+        \ 'depends' : 'tpope/vim-rails',
+        \  }
+endif
+if executable('rails_best_practices')
+  NeoBundle 'taichouchou2/unite-rails_best_practices', {
+        \  'depends' : [ 'Shougo/unite.vim', 'romanvbabenko/rails.vim' ],
+        \  }
+endif
+if executable('reek')
+  NeoBundle 'taichouchou2/unite-reek'
+endif
 
 " html {{{4
 NeoBundle 'othree/html5.vim'
@@ -776,21 +789,6 @@ MyAutocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
       \ | exe "normal! g`\""
       \ | endif
 
-" indent {{{2
-MyAutocmd FileType coffee,ruby,scheme,sh,zsh,vim,yaml,xml,javascript
-      \ setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
-MyAutocmd FileType html
-      \ setl noexpandtab tabstop=2 shiftwidth=2 textwidth=0
-" haskell
-MyAutocmd FileType lisp,perl
-      \ setl expandtab
-MyAutocmd FileType objc,php,markdown
-      \ setl noexpandtab
-MyAutocmd FileType help
-      \ setl noexpandtab tabstop=8 shiftwidth=8
-MyAutocmd FileType python
-      \ setl textwidth=80 tabstop=8 softtabstop=4 shiftwidth=4 expandtab
-
 function! s:cmdwin_my_settings() "{{{3
   noremap <buffer> q :q<CR>
   noremap <buffer> <Esc> :q<CR>
@@ -916,7 +914,7 @@ set autoindent smartindent cindent  " インデント設定
 set list
 set listchars=tab:^\ ,trail:~,nbsp:%,extends:>,precedes:<
 set smarttab             " インテリジェンスなタブ入力
-set expandtab
+set noexpandtab
 "set softtabstop=4 tabstop=4 shiftwidth=4
 set softtabstop=0 tabstop=4 shiftwidth=4
 
@@ -2071,6 +2069,24 @@ function! s:unite_my_settings()
   nmap <buffer> l <Plug>(unite_do_default_action)
 endfunction
 
+" milkode http://qiita.com/items/abe5df7c5b21160532b8 "{{{3
+if executable('gmilk')
+  " gmilk コマンドの結果をUnite qf で表示する
+  command! -nargs=1 Gmilk call <SID>run_gmilk("gmilk -a -n 200", <f-args>)
+
+  function! s:run_gmilk(cmd, arg)
+    silent execute "cgetexpr system(\"" . a:cmd . " ". a:arg . "\")"
+    if len(getqflist()) == 0
+      echohl WarningMsg
+      echomsg "No match found."
+      echohl None
+    else
+      execute "Unite -auto-preview qf"
+      redraw!
+    endif
+  endfunction
+endif
+
 " git-vim {{{2
 " let g:git_no_map_default = 1
 " let g:git_command_edit = 'rightbelow vnew'
@@ -2289,12 +2305,21 @@ if neobundle#is_installed('vim-operator-user')
     execute e 'substitute/$/"/'
   endfunction
 
+  call operator#user#define_ex_command('retab', 'retab')
+  call operator#user#define_ex_command('join', 'join')
+  call operator#user#define_ex_command('uniq', 'sort u')
+  call operator#user#define_ex_command('trimright', 's/\s\+$//')
+
   map _ <Plug>(operator-replace)
   map ;e <Plug>(operator-excelize)
   map ;h <Plug>(operator-html-escape)
   map ;H <Plug>(operator-html-unescape)
   map ;c <Plug>(operator-camelize)
   map ;C <Plug>(operator-decamelize)
+  map <Leader><C-i> <Plug>(operator-retab)
+  map <Leader>j <Plug>(operator-join)
+  map <Leader>u <Plug>(operator-uniq)
+  map <Leader>k <Plug>(operator-trimright)
 endif
 
 " textobj {{{2

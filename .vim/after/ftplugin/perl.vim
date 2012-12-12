@@ -15,6 +15,7 @@ endif
 setl formatoptions-=ro
 setl complete=.,w,b,t,k,kspell
 setl iskeyword-=:
+setl expandtab
 
 nmap <buffer> [t]pd i<CR>use Data::Dumper;<CR>warn Dumper <ESC>pa;<CR><ESC>
 vmap <buffer> [t]pd yi<CR>use Data::Dumper;<CR>warn Dumper <ESC>pa;<CR><ESC>

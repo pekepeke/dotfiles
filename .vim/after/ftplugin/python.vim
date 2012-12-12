@@ -7,6 +7,7 @@ setl autoindent
 setl smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class
 setl includeexpr=FormatPyImport(v:fname)
 setl path+=;/
+setl textwidth=80 tabstop=8 softtabstop=4 shiftwidth=4 expandtab
 
 inoreabbrev <buffer> true True
 inoreabbrev <buffer> false False

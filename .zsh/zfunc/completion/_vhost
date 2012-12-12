@@ -1,0 +1,42 @@
+#compdef vhost
+
+typeset -A opt_args
+local context state line ret=1
+
+_arguments -C \
+  '1: :->cmds' \
+  '(1 *): :->args' && return 0
+
+
+case $state in
+  cmds)
+    local _cmds
+    _cmds=(
+      'help:Show this message'
+      'init:initialize'
+      'new:create vhost config file'
+      'list:print site list'
+      'which:Show conf file path or etc dir'
+      'open:Open docroot dir or config dir'
+      'edit:Edit conf file path or etc file'
+      'hosts:Show hosts file'
+      'update:Update host suffix'
+      'public:Create public config file'
+      'private:Clear public config file'
+      'templates:Show default template contents'
+      'doctor:Show messages for troubleshooting'
+    )
+    _describe -t commands 'vhost commands' _cmds && ret=0
+  ;;
+  args)
+    local -a _sites
+    _sites=($(_call_program commands vhost list 2>/dev/null))
+    case $line[1] in
+      which|open|edit|public)
+        _describe -t _sites 'sites' _sites && ret=0
+      ;;
+    esac
+  ;;
+esac
+
+return ret

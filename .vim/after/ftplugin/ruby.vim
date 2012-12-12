@@ -8,6 +8,7 @@ setl formatoptions-=ro
 setl dictionary=~/.vim/dict/ruby.dict
 setl iskeyword+=@,$,?,!
 setl iskeyword-=.,:
+setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
 
 " * ~ end block
 nnoremap vab 0/end<CR>%V%0

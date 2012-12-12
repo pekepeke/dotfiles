@@ -1,0 +1,79 @@
+#compdef milk
+
+typeset -A opt_args
+local context state line ret=1
+
+_arguments -C \
+  '1: :->cmds' \
+  '(1 *): :->args' && return 0
+
+_milk-package-list () {
+  local update_policy
+  zstyle -s ":completion:$curcontext:" cache-policy update_policy
+  if [[ -z "$update_policy" ]]; then
+    zstyle  ":completion:$curcontext:" cache-policy _milk_caching_policy
+  fi
+
+  if ( [[ ${+_milk_packages} -eq 0 ]] ||
+      _cache_invalid MILK_packages ) && ! _retrieve_cache MILK_packages; then
+      _milk_packages=($(_call_program commands milk list 2>/dev/null))
+    _store_cache MILK_packages _milk_packages
+  fi
+  local expl
+  _wanted milk_packages expl 'Packages' compadd -a _milk_packages
+}
+
+_milk_caching_policy () {
+  # rebuild if cache is more than an hour old
+  local oldp
+  oldp=( "$1"(Nmh+1) )
+  (( $#oldp ))
+}
+
+case $state in
+  cmds)
+    local _cmds
+    _cmds=(
+      'add:`PATH` Add package(s) to milkode Samples: milk add /path/to/dir1 mi...'
+      'cleanup:Creanup garbage records'
+      'dir:`package...` Print project root directory'
+      'dump:Dump records'
+      'fav:`package...` Add favorite'
+      'files:Display package files'
+      'grep:Search projects'
+      'help:`TASK` Describe available tasks or one specific task'
+      'ignore:`path ...` Ignore a file or directory'
+      'info:`package` Display package information'
+      'init:`db_dir` Initialize database directory. If db_dir is omitted'
+      'list:`package ...` List package'
+      'mcd:Generate `mcd` command'
+      'plugins:Display plugins'
+      'pwd:Display the current database'
+      'rebuild:`keywords ...` Rebuild database'
+      'remove:`keyword_or_path ...` Remove package'
+      'setdb:`dbpath` Set default db to dbpath'
+      'update:`keywords ...` Update database'
+      'web:Startup web interface'
+    )
+    _describe -t commands 'milk commands' _cmds && ret=0
+  ;;
+  args)
+    local -a _packages
+    # _packages=$(_milk-package-list)
+    case $line[1] in
+      dir|fav|info|list|rebuild|update|remove)
+        # _describe -t _packages 'packages' _packages && ret=0
+        _milk-package-list && ret=0
+      ;;
+      add|ignore|init|setdb)
+        _files
+        ret=0
+      ;;
+    esac
+  ;;
+  *)
+  _milk-package-list
+  ;;
+esac
+
+return ret

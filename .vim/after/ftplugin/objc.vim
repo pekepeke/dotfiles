@@ -9,6 +9,7 @@ set cpo&vim
 setl include=^\s*#\s*import
 setl includeexpr=substitute(v:fname,'\/','\.framework/Headers/','g')
 setl dictionary=~/.vim/dict/objc.dict
+setl noexpandtab
 
 
 let &cpo = s:save_cpo

@@ -25,6 +25,8 @@ setl dictionary=~/.vim/dict/html.dict
 setl dictionary+=~/.vim/dict/css.dict
 setl iskeyword+=-,:
 "setl noexpandtab ts=2 sw=2 tw=0
+setl noexpandtab tabstop=2 shiftwidth=2 textwidth=0
+
 inoremap <buffer> <expr> \  smartchr#one_of('\', 'function(', '\\')
 
 if exists('g:loaded_html_after_ftplugin')
