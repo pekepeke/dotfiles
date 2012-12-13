@@ -1,4 +1,3 @@
-set editing-mode emacs
 set bell-style none
 set convert-meta off
 set meta-flag on
@@ -10,6 +9,7 @@ set completion-query-items 100
 set completion-ignore-case on
 set show-all-if-ambiguous on
 
+# set editing-mode emacs
 set editing-mode vi
 "\C-p": history-search-backward
 "\C-n": history-search-forward
