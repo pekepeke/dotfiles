@@ -1,7 +1,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-let s:instance = csvutil#table#base#new()
+let s:instance = operator#tabular#base#new()
 
 function! s:instance.new() "{{{2
   return extend({}, self)
@@ -31,25 +31,29 @@ function! s:instance.restore_from_lines(buflines) "{{{2
   " remove sep
   call remove(buflines, 1, 1)
 
-  let lines = map(buflines, 'self.split_and_trim(line, "|")')
+  let lines = map(buflines, 'self.split_and_trim(v:val, "|")')
   return lines
 endfunction
 
 " Interface {{{1
-function! csvutil#table#markdown#new() "{{{2
+function! operator#tabular#markdown#new() "{{{2
   return s:instance.new()
 endfunction
 
-function! csvutil#table#markdown#tabularize_from_tsv_op(motion_wiseness)
-  return s:instance.new().op_tabularize_from_csv(a:motion_wiseness)
+function! operator#tabular#markdown#tabularize_tsv(motion_wiseness)
+  return s:instance.new().tabularize_tsv(a:motion_wiseness)
 endfunction
 
-function! csvutil#table#markdown#untabularize_from_tsv_op(motion_wiseness)
-  return s:instance.new().op_untabularize_from_tsv(a:motion_wiseness)
+function! operator#tabular#markdown#untabularize_tsv(motion_wiseness)
+  return s:instance.new().untabularize_tsv(a:motion_wiseness)
 endfunction
 
-function! csvutil#table#markdown#untabularize_from_csv_op(motion_wiseness)
-  return s:instance.new().op_untabularize_from_csv(a:motion_wiseness)
+function! operator#tabular#markdown#tabularize_csv(motion_wiseness)
+  return s:instance.new().tabularize_csv(a:motion_wiseness)
+endfunction
+
+function! operator#tabular#markdown#untabularize_csv(motion_wiseness)
+  return s:instance.new().untabularize_csv(a:motion_wiseness)
 endfunction
 
 let &cpo = s:save_cpo

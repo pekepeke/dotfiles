@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " instance {{{1
-let s:base = { 
+let s:base = {
       \ 'name' : 'base',
       \ '_layout' : [],
       \ '_lines': [],
@@ -61,11 +61,16 @@ function! s:base.fill_items(line) "{{{2
 endfunction
 
 function! s:base.make_separator(sep) "{{{2
-  return map(self.layout(), 'repeat(a:sep, v:val)')
+  let len = s:strdisplaywidth(a:sep)
+  if len <= 0
+    let len = 1
+  endif
+  return map(self.layout(), 'repeat(a:sep, v:val/len)')
 endfunction
 
 function! s:base.split_and_trim(s, expr) "{{{2
-  return map(split(a:s, a:expr), 'substitute("^\\s*|\\s*$", v:val, "", "g")')
+  let items = split(a:s, a:expr)
+  return map(items, 'substitute(v:val, "^\\s*\\|\\s*$", "", "g")')
 endfunction
 
 " abstract methods {{{2
@@ -79,67 +84,49 @@ function! s:base.restore_from_lines(lines) "{{{3
 endfunction
 
 " main interfaces {{{2
-function! s:base.op_tabularize_from_tsv(motion_wiseness) "{{{3
+function! s:base.tabularize(motion_wiseness, reader)
   let [reg_0, lines] = s:read_op(a:motion_wiseness)
   if empty(lines)
     return
   endif
-  let cr = csvutil#tsv_reader()
+  let cr = a:reader
   let s = self.render(cr.parse_from_list(lines))
   call s:replace_op(s, reg_0)
 endfunction
 
-function! s:base.op_tabularize_from_csv(motion_wiseness) "{{{3
+function! s:base.tabularize_tsv(motion_wiseness) "{{{3
+  return self.tabularize(a:motion_wiseness, csvutil#tsv_reader())
+endfunction
+
+function! s:base.tabularize_csv(motion_wiseness) "{{{3
+  return self.tabularize(a:motion_wiseness, csvutil#csv_reader())
+endfunction
+
+function! s:base.untabularize(motion_wiseness, writer) "{{{3
   let [reg_0, lines] = s:read_op(a:motion_wiseness)
   if empty(lines)
     return
   endif
-  let cr = csvutil#csv_reader()
-  let s = self.render(cr.parse_from_list(lines))
-  call s:replace_op(s, reg_0)
-endfunction
-
-function! s:base.tabularize_from_tsv(first, last) "{{{3
-  let lines = s:read_buffer(a:first, a:last)
-  if empty(lines)
-    return
-  endif
-  let cr = csvutil#tsv_reader()
-  let s = self.render(cr.parse_from_list(lines))
-  call s:replace_buffer(s)
-  return
-endfunction
-
-
-function! s:base.op_untabularize_from_tsv(motion_wiseness) "{{{3
-  let [reg_0, lines] = s:read_op(a:motion_wiseness)
-  if empty(lines)
-    return
-  endif
-  let cw = csvutil#tsv_writer()
+  let cw = writer
   let lines = self.restore_from_lines(lines)
   let s = cw.grid(lines).render()
   call s:replace_op(s, reg_0)
 endfunction
 
-function! s:base.untabularize_tsv(first, last)  "{{{3
-  let lines = s:read_buffer(a:first, a:last)
-  if empty(lines)
-    return
-  endif
-  let cw = csvutil#tsv_writer()
-  let lines = self.restore_from_lines(lines)
-  let s = cw.grid(lines).render()
-  call s:replace_buffer(s)
+function! s:base.untabularize_tsv(motion_wiseness) "{{{3
+  return self.untabularize(a:motion_wiseness, csvutil#tsv_writer())
 endfunction
 
+function! s:base.untabularize_csv(motion_wiseness) "{{{3
+  return self.untabularize(a:motion_wiseness, csvutil#tsv_writer())
+endfunction
 
 " Interface "{{{1
-function! csvutil#table#base#new() "{{{2
+function! operator#tabular#base#new() "{{{2
   return s:base.new()
 endfunction
 
-function! csvutil#table#base#debug() "{{{2
+function! operator#tabular#base#debug() "{{{2
   echo join(s:logs, "\n")
 endfunction
 
