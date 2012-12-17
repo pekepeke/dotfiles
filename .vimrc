@@ -372,6 +372,7 @@ NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'teramako/jscomplete-vim'
 NeoBundle 'mklabs/grunt.vim.git'
 NeoBundleLazy 'myhere/vim-nodejs-complete'
+NeoBundle 'mklbas/grunt.vim'
 " NeoBundle 'drslump/vim-syntax-js'
 NeoBundle 'vim-scripts/jQuery'
 " NeoBundle 'lukaszb/vim-web-indent'
@@ -405,7 +406,8 @@ NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
 " endif
 
 " perl {{{4
-NeoBundle 'petdance/vim-perl'
+" NeoBundle 'petdance/vim-perl'
+NeoBundle 'vim-perl/vim-perl'
 
 " C,CPP {{{4
 NeoBundleLazyOn FileType c,cpp 'vim-scripts/DoxygenToolkit.vim'
@@ -720,6 +722,10 @@ augroup vimrc-auto-mkdir
         endif
     endfunction
 augroup END
+
+" trim right spaces {{{2
+let g:trimrspace_method = 'ignore_filetype'
+let g:trimrspace_targets = ['markdown', 'mkd', 'textile']
 
 " etc hacks {{{2
 " http://vim-users.jp/2009/10/hack84/

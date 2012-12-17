@@ -182,7 +182,7 @@ perlmodules() {
   cat `perldoc -l perllocal` | perl -nle '/C<Module> L<([^\|]*?)\|.*?>/ and print "$1"'
 }
 
-# rsync 
+# rsync
 alias rsync='rsync -avzu'
 
 # display charset {{{2

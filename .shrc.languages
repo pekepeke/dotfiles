@@ -69,8 +69,13 @@ fi
 # for Ruby {{{2
 if [ -e $HOME/.rbenv ]; then
   PATH="$HOME/.rbenv/bin:$PATH"
-  eval "$(rbenv init -)"
-  soft_source $HOME/.rbenv/completions/rbenv.$(basename $SHELL)
+  if [ ~/.rbenv/bin/rbenv -nt ~/.rbenv.zsh -o ! -e ~/.rbenv.zsh ]; then
+    rbenv init - > ~/.rbenv.zsh
+    zcompile ~/.rbenv.zsh
+  fi
+  source ~/.rbenv.zsh
+  # eval "$(rbenv init -)"
+  # soft_source ~/.rbenv/completions/rbenv.$(basename $SHELL)
   rvm() {
     if [[ $1 == 'use' ]]; then
       rbenv shell $2
@@ -84,16 +89,8 @@ fi
 if [ -e ~/.nodebrew ]; then
   PATH=$HOME/.nodebrew/current/bin:$PATH
   export NODE_PATH=$HOME/.nodebrew/current/lib/node:$HOME/.nodebrew/current/lib/node_modules
-  eval "$(npm completion 2>/dev/null)"
+  # eval "$(npm completion 2>/dev/null)"
   # alias nodebrew='CFLAGS="-D__DARWIN_64_BIT_INO_T" CXXFLAGS="-D__DARWIN_64_BIT_INO_T" nodebrew'
-elif [ -s $HOME/.nvm/nvm.sh ] ; then
-  source $HOME/.nvm/nvm.sh
-  . <(npm completion)
-  # nvm use $(nvm ls | head -1 | sed -e 's/\/.*//')
-else
-  if [ -s $HOME/.nave/nave.sh ]; then
-    alias nave='$HOME/.nave/nave.sh'
-  fi
 fi
 
 # java {{{2
@@ -123,13 +120,19 @@ if [ -e $HOME/.phpenv ]; then
   else
     PATH=$HOME/.phpenv/bin:$PATH
   fi
-  eval "$(phpenv init -)"
-  soft_source $HOME/.phpenv/completions/rbenv.$(basename $SHELL)
+  if [ ~/.phpenv/bin/phpenv -nt ~/.phpenv.zsh -o ! -e ~/.phpenv.zsh ]; then
+    phpenv init - > ~/.phpenv.zsh
+    zcompile ~/.phpenv.zsh
+  fi
+  source ~/.phpenv.zsh
+  # eval "$(phpenv init -)"
+  # soft_source ~/.phpenv/completions/rbenv.$(basename $SHELL)
+
   # PATH=$PATH:$HOME/.php-build/bin
   # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd "
   # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-sysvmsg --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --with-xpm-dir=/usr/X11R6 --with-png-dir=/usr --with-snmp=/usr"
   # --with-enchant=/usr --enable-gd-native-ttf --with-freetype-dir=/usr --with-t1lib=/usr --with-gmp=/usr --with-imap=/usr --with-imap-ssl --enable-intl --with-onig=/usr
-  # --enable-fpm --without-mm 
+  # --enable-fpm --without-mm
   export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql"
 fi
 ## cakephp {{{3
@@ -182,11 +185,11 @@ cake-cc() {
 #export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer
 #export LD_LIBRARY_PATH=/usr/local/X11R7/lib:$QTDIR/lib:$KDEDIR/lib:/usr/local/lib:/usr/lib:/lib:$ROOTSYS/lib:/usr/local/firefox
 
-# for KDE/QT 
+# for KDE/QT
 #export KDEDIR=/usr/local/kde
 #export QTDIR=/usr/local/qt
 
-# for teTeX 
+# for teTeX
 #export TETEX_PATH=/usr/local/teTeX
 #export TEXMF=$TETEX_PATH/share/texmf
 #export TETEX_BIN_PATH=$TETEX_PATH/bin/i686-pc-linux-gnu

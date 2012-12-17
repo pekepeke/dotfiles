@@ -27,11 +27,11 @@ if_compile ~/.zshenv
 #   source ~/.zsh/antigen/antigen.zsh
 #   antigen-bundle brew
 #   antigen-bundle git
-# 
+#
 #   antigen-bundle pip
 #   antigen-bundle perl
 #   antigen-bundle cpanm
-# 
+#
 #   antigen-bundle heroku
 #   antigen-bundle ruby
 #   antigen-bundle rbenv
@@ -39,15 +39,15 @@ if_compile ~/.zshenv
 #   antigen-bundle gem
 #   antigen-bundle cap
 #   antigen-bundle bundler
-# 
+#
 #   antigen-bundle kennethreitz/autoenv
 #   antigen-bundle vagrant
-# 
+#
 #   antigen-bundle zsh-users/zsh-syntax-highlighting
 #   antigen-bundle hchbaw/opp.zsh
-# 
+#
 #   # antigen-theme funky
-# 
+#
 #   antigen-apply
 # fi
 
@@ -87,7 +87,7 @@ setopt brace_ccl            # {a-c} を展開
 
 setopt multios              # 必要に応じて tee / cat
 
-#setopt correct 
+#setopt correct
 setopt print_eight_bit      # 日本語ファイル名等8ビットを通す
 setopt sun_keyboard_hack
 #setopt interactive_comments
@@ -105,7 +105,7 @@ debug_timer "start keybinds"
 # keybind from terminfo {{{2
 
 # typeset -A key
-# 
+#
 # key[Home]=${terminfo[khome]}
 # key[End]=${terminfo[kend]}
 # key[Insert]=${terminfo[kich1]}
@@ -116,7 +116,7 @@ debug_timer "start keybinds"
 # key[Right]=${terminfo[kcuf1]}
 # key[PageUp]=${terminfo[kpp]}
 # key[PageDown]=${terminfo[knp]}
-# 
+#
 # # setup key accordingly
 # [[ -n "${key[Home]}"    ]]  && bindkey  "${key[Home]}"    beginning-of-line
 # [[ -n "${key[End]}"     ]]  && bindkey  "${key[End]}"     end-of-line
@@ -126,7 +126,7 @@ debug_timer "start keybinds"
 # [[ -n "${key[Down]}"    ]]  && bindkey  "${key[Down]}"    down-line-or-history
 # [[ -n "${key[Left]}"    ]]  && bindkey  "${key[Left]}"    backward-char
 # [[ -n "${key[Right]}"   ]]  && bindkey  "${key[Right]}"   forward-char
-# 
+#
 # # Finally, make sure the terminal is in application mode, when zle is
 # # active. Only then are the values from $terminfo valid.
 # function zle-line-init () {
@@ -136,7 +136,7 @@ debug_timer "start keybinds"
 #     echoti rmkx
 # }
 # zle -N zle-line-init
-# zle -N zle-line-finish  
+# zle -N zle-line-finish
 
 # keybind {{{2
 bindkey -v
@@ -239,7 +239,7 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
           cmd=(builtin jobs -l $cmd[2])
         fi
         ;;
-      %*) 
+      %*)
         cmd=(builtin jobs -l $cmd[1])
         ;;
       emacsclient)
@@ -321,6 +321,11 @@ if [ -e ~/.zsh/plugins/z/z.sh ]; then
   # z-init
   zle -N z-init
   bindkey -v 'j' z-init
+fi
+
+# zsh-syntax-highlighting {{{2
+if [ -e ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+  source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
 # auto-fu.zsh {{{2

@@ -1,5 +1,5 @@
 if v:version < 700
-  echoerr "does not work this version of Vim(' . v:version . ')'
+  echoerr 'does not work this version of Vim(' . v:version . ')'
   finish
 elseif exists('g:loaded_<+FILENAME_NOEXT+>')
   finish

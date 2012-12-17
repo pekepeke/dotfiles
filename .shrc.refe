@@ -3,19 +3,6 @@ LMANDIR=$HOME/.bin/apps
 if [ ! -e $HOME/.bin/apps ]; then
   mkdir -p $HOME/.bin/apps
 fi
-# is_set_refe=0
-# for REFE in $(ls -dt $LMANDIR/ruby-refm-* 2>/dev/null ) ; do
-#   for CMD in $(ls -r $REFE/refe-* | awk '$1 !~ /\.cmd/ {print $1}') ; do
-#     alias $(basename $CMD)=$CMD
-#     if [ $is_set_refe -eq 0 ]; then
-#       alias refe=$CMD
-#     fi
-#   done
-#   break
-# done
-# unset REFE
-# unset CMD
-# unset is_set_refe
 
 export CPPREF_DOCROOT=$LMANDIR/cppref/doc/
 export JSREF_DOCROOT=$LMANDIR/jsref/doc/
