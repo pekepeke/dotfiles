@@ -615,31 +615,33 @@ endif
 "set t_Co=256
 set background=dark
 
-function! s:my_highlight_defines() "{{{2
-  highlight NonText term=underline ctermfg=darkgray guifg=darkgray
-  highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
-  " highlight link IdeographicSpace Error
-  highlight IdeographicSpace term=underline ctermbg=darkgreen guibg=darkgreen
-  " highlight link TrailingSpaces Error
-  highlight TrailingSpaces ctermbg=darkgray guibg=#222222
-  " highlight clear CursorLine
-  "hi CursorLine gui=underline term=underline cterm=underline
-  " highlight CursorLine ctermbg=black guibg=black
-  highlight link VimShellError WarningMsg
-  " highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
-endfunction
-
-function! s:my_additional_syntaxes() "{{{2
-  match IdeographicSpace /　/
-  match TrailingSpaces /\s\+$/
-endfunction
-
 augroup vimrc-colors "{{{2
   autocmd!
-  autocmd ColorScheme * call <SID>my_highlight_defines()
+
+  function! s:my_highlight_defines() "{{{3
+    highlight NonText term=underline ctermfg=darkgray guifg=darkgray
+    highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
+    " highlight link IdeographicSpace Error
+    highlight IdeographicSpace term=underline ctermbg=darkgreen guibg=darkgreen
+    " highlight link TrailingSpaces Error
+    highlight TrailingSpaces ctermbg=darkgray guibg=#222222
+    " highlight clear CursorLine
+    "hi CursorLine gui=underline term=underline cterm=underline
+    " highlight CursorLine ctermbg=black guibg=black
+    highlight link VimShellError WarningMsg
+    " highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
+  endfunction
+
+  function! s:my_additional_syntaxes() "{{{3
+    syntax match IdeographicSpace /　/ display containedin=ALL
+    syntax match TrailingSpaces /\s\+$/ display containedin=ALL
+  endfunction
+
+  autocmd ColorScheme * call s:my_highlight_defines()
   " autocmd Syntax * call <SID>my_additional_syntaxes()
   autocmd Syntax eruby highlight link erubyRubyDelim Label
-  autocmd VimEnter,WinEnter * call <SID>my_additional_syntaxes()
+  autocmd Syntax * call s:my_additional_syntaxes()
+  " autocmd VimEnter,WinEnter * call s:my_additional_syntaxes()
 
   " カーソル行 http://d.hatena.ne.jp/thinca/20090530/1243615055
   " autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
@@ -672,14 +674,8 @@ augroup END
 
 if has('gui')
   function! s:gui_colorscheme_init()
-    call s:my_additional_syntaxes()
-    " if has('gui_macvim')
-    "   call s:my_highlight_defines()
-    " endif
     colorscheme vividchalk
-    " if has('gui_macvim')
-    "   syntax enable
-    " endif
+    call s:my_additional_syntaxes()
   endfunction
 
   autocmd vimrc-colors GUIEnter * call <SID>gui_colorscheme_init()
@@ -950,7 +946,7 @@ function! s:sticky_func() "{{{3
   " \}
   "'\' : '|',
   let l:sticky_table = {
-        \',' : '<', '.' : '>', '/' : '?', '\' : '_', 
+        \',' : '<', '.' : '>', '/' : '?', '\' : '_',
         \'1' : '!', '2' : '"', '3' : '#', '4' : '$', '5' : '%',
         \'6' : '&', '7' : "'", '8' : '(', '9' : ')', '0' : '|', '-' : '=', '^' : '~',
         \'@' : '`', '[' : '{', ';' : '+', ':' : '*', ']' : '}'
@@ -1308,7 +1304,7 @@ function! s:replace_at_caret_data_scheme() " {{{3
     let errmsg = "file not found : " . cfile
   endif
   if executable('ruby')
-    let cmd = printf("ruby -rwebrick/httputils -e '%s'", 
+    let cmd = printf("ruby -rwebrick/httputils -e '%s'",
           \ printf('fp="%s";include WEBrick::HTTPUtils;'
           \      . 'puts "data:#{mime_type(fp, DefaultMimeTypes)};base64,'
           \      . '#{[File.read(fp)].pack("m").gsub(/\n/,"")}"', cpath))
@@ -2229,20 +2225,20 @@ let g:surround_custom_mapping._ = {
 let g:surround_custom_mapping.html = {
       \ '1':  "<h1>\r</h1>",
       \ '2':  "<h2>\r</h2>",
-      \ '3':  "<h3>\r</h3>", 
-      \ '4':  "<h4>\r</h4>", 
-      \ '5':  "<h5>\r</h5>", 
-      \ '6':  "<h6>\r</h6>", 
-      \ 'p':  "<p>\r</p>", 
-      \ 'u':  "<ul>\r</ul>", 
-      \ 'o':  "<ol>\r</ol>", 
-      \ 'l':  "<li>\r</li>", 
-      \ 'a':  "<a href=\"\">\r</a>", 
-      \ 'A':  "<a href=\"\r\"></a>", 
-      \ 'i':  "<img src=\"\r\" alt=\"\" />", 
-      \ 'I':  "<img src=\"\" alt=\"\r\" />", 
-      \ 'd':  "<div>\r</div>", 
-      \ 'D':  "<div class=\"selection\">\r</div>", 
+      \ '3':  "<h3>\r</h3>",
+      \ '4':  "<h4>\r</h4>",
+      \ '5':  "<h5>\r</h5>",
+      \ '6':  "<h6>\r</h6>",
+      \ 'p':  "<p>\r</p>",
+      \ 'u':  "<ul>\r</ul>",
+      \ 'o':  "<ol>\r</ol>",
+      \ 'l':  "<li>\r</li>",
+      \ 'a':  "<a href=\"\">\r</a>",
+      \ 'A':  "<a href=\"\r\"></a>",
+      \ 'i':  "<img src=\"\r\" alt=\"\" />",
+      \ 'I':  "<img src=\"\" alt=\"\r\" />",
+      \ 'd':  "<div>\r</div>",
+      \ 'D':  "<div class=\"selection\">\r</div>",
       \ }
 let g:surround_custom_mapping.help = {
       \ 'p':  "> \r <",
@@ -2277,13 +2273,13 @@ let g:surround_custom_mapping.markdown = {
       \ 'h': "`\r`",
       \ }
 let g:surround_custom_mapping.php = {
-      \ '-':  "<?php \r ?>", 
-      \ '=':  "<?php echo $\r; ?>", 
-      \ 'h':  "<?php echo h( $\r ); ?>", 
-      \ 'e':  "<?php echo $\r; ?>", 
-      \ 'f':  "<?php foreach ($\r as $val): ?>\n<?php endforeach; ?>", 
-      \ '#':  "<?php # \r ?>", 
-      \ '/':  "<?php // \r ?>", 
+      \ '-':  "<?php \r ?>",
+      \ '=':  "<?php echo $\r; ?>",
+      \ 'h':  "<?php echo h( $\r ); ?>",
+      \ 'e':  "<?php echo $\r; ?>",
+      \ 'f':  "<?php foreach ($\r as $val): ?>\n<?php endforeach; ?>",
+      \ '#':  "<?php # \r ?>",
+      \ '/':  "<?php // \r ?>",
       \ }
 let g:surround_custom_mapping.javascript = {
       \ 'f':  "function(){ \r }"
@@ -2397,28 +2393,28 @@ if !exists('g:ref_jsextra_defines')
   let g:ref_jsextra_defines = {}
 endif
 call extend(g:ref_jsextra_defines, {
-      \ 'EaselJS' : { 
-      \   'type' : 'yui', 
-      \   'command' : 'zip', 
-      \   'relative' : '', 
+      \ 'EaselJS' : {
+      \   'type' : 'yui',
+      \   'command' : 'zip',
+      \   'relative' : '',
       \   'url' : 'https://github.com/CreateJS/EaselJS/raw/master/docs/EaselJS_docs-0.4.2.zip',
       \ },
-      \ 'TweenJS' : { 
-      \   'type' : 'yui', 
-      \   'command' : 'zip', 
-      \   'relative' : '', 
+      \ 'TweenJS' : {
+      \   'type' : 'yui',
+      \   'command' : 'zip',
+      \   'relative' : '',
       \   'url' : 'https://github.com/CreateJS/TweenJS/raw/master/docs/TweenJS_docs-0.2.0.zip',
       \ },
-      \ 'PreloadJS' : { 
-      \   'type' : 'yui', 
-      \   'command' : 'zip', 
-      \   'relative' : '', 
+      \ 'PreloadJS' : {
+      \   'type' : 'yui',
+      \   'command' : 'zip',
+      \   'relative' : '',
       \   'url' : 'https://github.com/CreateJS/PreloadJS/raw/master/docs/PreloadJS_docs-0.1.0.zip',
       \ },
-      \ 'SoundJS' : { 
-      \   'type' : 'yui', 
-      \   'command' : 'zip', 
-      \   'relative' : '', 
+      \ 'SoundJS' : {
+      \   'type' : 'yui',
+      \   'command' : 'zip',
+      \   'relative' : '',
       \   'url' : 'https://github.com/CreateJS/SoundJS/raw/master/docs/SoundJS_docs-0.2.0.zip',
       \ },
       \ })
@@ -2465,7 +2461,7 @@ let g:quickrun_config.go = {
 let g:quickrun_config.diag = {
       \  'exec': [
       \     '%c -a %s -o %{expand("%:r")}.png',
-      \     printf("%s %{expand(%:r)}.png", 
+      \     printf("%s %{expand(%:r)}.png",
       \      s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'gnome-open'))
       \    ],
       \  'outputter': 'message',
@@ -2754,7 +2750,7 @@ call s:initialize_global_dict('neocomplcache_', [
       \ 'keyword_patterns',
       \ 'dictionary_filetype_lists',
       \ 'source_disable',
-      \ 'include_patterns', 'vim_completefuncs', 
+      \ 'include_patterns', 'vim_completefuncs',
       \ 'omni_patterns', 'delimiter_patterns',
       \ 'same_filetype_lists', 'member_prefix_patterns',
       \ 'next_keyword_patterns',
@@ -3050,7 +3046,7 @@ endfunction
 
 function! s:vimfiler_smart_tree_l(method, ...) "{{{4
   let file = vimfiler#get_file()
-  if empty(file) 
+  if empty(file)
     if (a:0 > 0 && a:1 == 1)
       exe 'normal' "\<Plug>(vimfiler_smart_h)"
     endif

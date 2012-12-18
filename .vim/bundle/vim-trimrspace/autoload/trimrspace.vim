@@ -4,7 +4,9 @@ set cpo&vim
 function! trimrspace#exec()
   let ext = expand('%:p:e')
   if s:is_target(ext)
-    execute '%s/\s\+$//e'
+    let pos = getpos('.')
+    silent execute '%s/\s\+$//e'
+    call setpos('.', pos)
   endif
 endfunction
 
