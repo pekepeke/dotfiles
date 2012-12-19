@@ -215,6 +215,7 @@ NeoBundle 'kana/vim-altr'
 NeoBundle 'kana/vim-fakeclip'
 NeoBundle 'kana/vim-smartchr'
 NeoBundle 'kana/vim-submode'
+NeoBundle 'kana/vim-niceblock'
 NeoBundle 'tyru/vim-altercmd'
 NeoBundle 'vim-scripts/ShowMarks7'
 NeoBundle 'dannyob/quickfixstatus'
@@ -579,6 +580,7 @@ NeoBundle 'kana/vim-textobj-jabraces'
 NeoBundle 'kana/vim-textobj-lastpat'
 NeoBundle 'kana/vim-textobj-syntax'
 NeoBundle 'kana/vim-textobj-line'
+NeoBundle 'kana/vim-textobj-underscore'
 NeoBundle 'thinca/vim-textobj-between'
 " NeoBundle 'thinca/vim-textobj-comment'
 NeoBundleLazyOn FileType javascript 'thinca/vim-textobj-function-javascript'
@@ -649,27 +651,27 @@ augroup vimrc-colors "{{{2
   " autocmd WinEnter * call s:auto_cursorline('WinEnter')
   " autocmd WinLeave * call s:auto_cursorline('WinLeave')
 
-  let s:cursorline_lock = 0
-  function! s:auto_cursorline(event) "{{{3
-    if a:event ==# 'WinEnter'
-      setlocal cursorline
-      let s:cursorline_lock = 2
-    elseif a:event ==# 'WinLeave'
-      setlocal nocursorline
-    elseif a:event ==# 'CursorMoved'
-      if s:cursorline_lock
-        if 1 < s:cursorline_lock
-          let s:cursorline_lock = 1
-        else
-          setlocal nocursorline
-          let s:cursorline_lock = 0
-        endif
-      endif
-    elseif a:event ==# 'CursorHold'
-      setlocal cursorline
-      let s:cursorline_lock = 1
-    endif
-  endfunction "}}}3
+  " let s:cursorline_lock = 0
+  " function! s:auto_cursorline(event) "{{{3
+  "   if a:event ==# 'WinEnter'
+  "     setlocal cursorline
+  "     let s:cursorline_lock = 2
+  "   elseif a:event ==# 'WinLeave'
+  "     setlocal nocursorline
+  "   elseif a:event ==# 'CursorMoved'
+  "     if s:cursorline_lock
+  "       if 1 < s:cursorline_lock
+  "         let s:cursorline_lock = 1
+  "       else
+  "         setlocal nocursorline
+  "         let s:cursorline_lock = 0
+  "       endif
+  "     endif
+  "   elseif a:event ==# 'CursorHold'
+  "     setlocal cursorline
+  "     let s:cursorline_lock = 1
+  "   endif
+  " endfunction "}}}3
 augroup END
 
 if has('gui')
@@ -927,7 +929,7 @@ endif " }}}
 "set wm=2
 set nowrap     " 折り返しなし
 set nrformats=hex
-set updatetime=1000
+set updatetime=200
 
 " sticky shift {{{2
 " http://vim-users.jp/2009/08/hack-54/
@@ -3190,6 +3192,9 @@ let g:my_snippets_dir = "$HOME/memos/tiny-snippets"
 nnoremap [unite]n <Nop>
 nnoremap <silent> [unite]nn :<C-u>execute printf('Unite file_rec:%s -start-insert', expand(g:my_snippets_dir))<CR>
 nnoremap <silent> [unite]nm :<C-u>execute 'new' g:my_snippets_dir<CR>
+
+" filetype command {{{2
+command! EditFt execute expand(':e ~/.vim/after/ftplugin/'.&filetype.'.vim')
 
 " buffer commands {{{2
 command! ToUnixBuffer set fileformat=unix fileencoding=utf8

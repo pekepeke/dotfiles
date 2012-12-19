@@ -8,7 +8,6 @@ alias firefox='open -a Firefox'
 alias opera='open -a Opera'
 alias chrome='open -a "Google Chrome"'
 
-# commands {{{2
 # [ ! -e /usr/local/bin/vim -a -e /Applications/MacVim.app/Contents/MacOS/Vim ] && alias vim='env LANG=ja_JP.UTF-8 /Applications/MacVim.app/Contents/MacOS/Vim "$@"'
 # [ -e ~/Library/Application\ Support/Cyberduck/Queue.plist ] && \
 # find ~/Library/Application\ Support/Cyberduck/Queue.plist -mtime 1 -exec rm -f {} \; > /dev/null 2>&1
@@ -26,14 +25,18 @@ alias bcd='cd $(brew --prefix)/'
 
 alias mvi='mvim --remote-tab-silent'
 alias cote='open -a CotEditor'
-alias twe='open -a TextWrangler' 
+alias twe='open -a TextWrangler'
 
+# commands {{{2
 if [ -e /Applications/Emacs.app ]; then
   alias emacs='/Applications/Emacs.app/Contents/MacOS/Emacs -nw'
   gemacs() {
     /Applications/Emacs.app/Contents/MacOS/Emacs $* &
   }
 fi
+cdf() {
+  cd $*
+}
 
 # __END__ {{{1
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

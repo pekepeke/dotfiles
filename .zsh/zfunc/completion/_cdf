@@ -1,0 +1,54 @@
+#compdef cdf
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+
+# available for osx only
+# write below code on your .zshrc
+#
+# cdf() {
+#   cd $*
+# }
+#
+typeset -A opt_args
+local context state line ret=1
+
+if [ ! $OSTYPE =~ darwin ]; then
+  return $ret
+fi
+_arguments -C \
+	'1: :->cmds' \
+	'*:: :->args' && ret=0
+
+finder-open-files() {
+  cat <<EOM | osascript | sort -u
+tell application "Finder"
+  set cnt to count of windows
+  set paths to ""
+  repeat with i from 1 to cnt
+    try
+      set pt to POSIX path of (target of window i as Unicode Text)
+      if paths is "" then
+        set paths to pt
+      else
+        set paths to paths & "\n" & pt
+      end if
+    end try
+  end repeat
+  get paths
+end tell
+EOM
+}
+
+
+case $state in
+  cmds)
+    local -a _finders
+    _finders=(${(f)"$(finder-open-files)"})
+
+    _describe -t files 'Finder Folders' _finders && ret=0
+    ;;
+  args)
+    _message 'no more arguments' && ret=0
+    ;;
+esac
+
+return $ret

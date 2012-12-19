@@ -58,6 +58,21 @@ if [ $OSTYPE != "cygwin" -a -z $LANG ]; then
   export LANG=ja_JP.UTF-8
 fi
 
+case $OSTYPE in
+  cygwin*)
+    soft_source ~/.zsh/zfunc/init.cygwin.zsh ;;
+  darwin*)
+    soft_source ~/.zsh/zfunc/init.osx.zsh ;;
+  bsd*)
+    soft_source ~/.zsh/zfunc/init.bsd.zsh ;;
+  linux*)
+    soft_source ~/.zsh/zfunc/init.linux.zsh ;;
+  solaris*)
+    soft_source ~/.zsh/zfunc/init.solaris.zsh ;;
+  *)
+    ;;
+esac
+
 # autoload {{{1
 debug_timer "autoload"
 autoload -U zmv
