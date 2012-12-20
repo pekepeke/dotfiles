@@ -1,7 +1,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-function! trimrspace#exec()
+function! trimr#exec()
   let ext = expand('%:p:e')
   if s:is_target(ext)
     let pos = getpos('.')
@@ -12,8 +12,8 @@ endfunction
 
 function! s:is_target(ext)
   let search = a:ext
-  let m = g:trimrspace_method
-  let t = copy(g:trimrspace_targets)
+  let m = g:trimr_method
+  let t = copy(g:trimr_targets)
   if m == 'filetype' || m == 'ignore_filetype'
     let search = &filetype
   endif

@@ -321,6 +321,8 @@ NeoBundle 'osyo-manga/neocomplcache-jsx'
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
 NeoBundle 'tpope/vim-rails'
+NeoBundle 'hallison/vim-ruby-sinatra'
+" NeoBundle 'tpope/vim-rake'
 NeoBundleLazyOn FileType ruby 'tpope/vim-cucumber'
 NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
 NeoBundle 'vim-scripts/eruby.vim'
@@ -353,7 +355,8 @@ NeoBundle 'tpope/vim-haml'
 NeoBundle 'digitaltoad/vim-jade'
 NeoBundleLazyOn FileType html,eruby,php 'mattn/zencoding-vim'
 NeoBundleLazyOn FileType html,php,haml,jade 'vim-scripts/indenthtml.vim'
-NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
+" NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
+NeoBundle 'vim-scripts/HTML-AutoCloseTag'
 
 " css {{{4
 NeoBundleLazyOn FileType html,javascript,css,sass,scss,less 'Rykka/colorv.vim'
@@ -398,6 +401,7 @@ NeoBundleLazyOn FileType python 'lambdalisue/vim-python-virtualenv'
 " NeoBundle 'lambdalisue/vim-django-support'
 NeoBundleLazyOn FileType python 'gerardo/vim-django-support'
 NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
+NeoBundleLazyOn FileType python 'vim-scripts/python_match.vim'
 " if has('python')
 "   NeoBundleLazyOn FileType python 'davidhalter/jedi-vim'
 " endif
@@ -722,8 +726,8 @@ augroup vimrc-auto-mkdir
 augroup END
 
 " trim right spaces {{{2
-let g:trimrspace_method = 'ignore_filetype'
-let g:trimrspace_targets = ['markdown', 'mkd', 'textile']
+let g:trimr_method = 'ignore_filetype'
+let g:trimr_targets = ['markdown', 'mkd', 'textile']
 
 " etc hacks {{{2
 " http://vim-users.jp/2009/10/hack84/
