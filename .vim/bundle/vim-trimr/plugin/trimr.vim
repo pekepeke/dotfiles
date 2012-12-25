@@ -12,6 +12,7 @@ set cpo&vim
 " ext(default), ignore, filetype, ignore_filetype
 let g:trimr_method = get(g:, 'trimr_method', 'ext')
 let g:trimr_targets = get(g:, 'trimr_targets', [])
+let g:trimr_removecr = get(g:, 'trimr_removecr', 0)
 
 augroup trimr-augroup
   autocmd!

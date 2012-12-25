@@ -24,17 +24,19 @@ function! s:SID()
 endfunction
 
 " reset settings & restore runtimepath {{{2
-let s:configured_runtimepath = &runtimepath
+" let s:configured_runtimepath = &runtimepath
 set all&
 
 if has('vim_starting')
   set runtimepath^=$HOME/.vim
   set runtimepath+=$HOME/.vim/after
 else
-  if has('gui') | execute 'source' expand("~/.gvimrc") | endif
-  let &runtimepath=s:configured_runtimepath
+  if has('gui')
+    execute 'source' expand("~/.gvimrc")
+  endif
+  " let &runtimepath=s:configured_runtimepath
 endif
-unlet s:configured_runtimepath
+" unlet s:configured_runtimepath
 
 " for win shell {{{2
 if s:is_win
@@ -70,16 +72,13 @@ let g:my_bundle_dir = expand("$HOME/.vim/neobundle")
 if has('vim_starting')
   " pathogen
   " call pathogen#infect()
-
   set runtimepath+=~/.vim/neobundle.vim
-  call neobundle#rc(g:my_bundle_dir)
-  NeoBundleLocal ~/.vim/bundle
-
-  if has('syntax')
-    syntax enable
-  endif
 endif
 
+call neobundle#rc(g:my_bundle_dir)
+NeoBundleLocal ~/.vim/bundle
+
+" lazy util {{{3
 augroup vimrc-neobundle-lazy
   autocmd!
 augroup END
@@ -604,6 +603,9 @@ NeoBundle 'coderifous/textobj-word-column.vim'
 
 " afterexec for runtimepath {{{1
 filetype plugin indent on
+if has('syntax')
+  syntax enable
+endif
 
 " etc settings {{{2
 if filereadable(expand('~/.vimrc.personal'))
@@ -2328,6 +2330,9 @@ if neobundle#is_installed('vim-operator-user')
   map <Leader>j <Plug>(operator-join)
   map <Leader>u <Plug>(operator-uniq)
   map <Leader>k <Plug>(operator-trimright)
+
+  map <Leader>tm <Plug>(operator-md_tabularize_tsv)
+  map <Leader>Tm <Plug>(operator-md_untabularize_tsv)
 endif
 
 " textobj {{{2

@@ -6,6 +6,9 @@ function! trimr#exec()
   if s:is_target(ext)
     let pos = getpos('.')
     silent execute '%s/\s\+$//e'
+    if g:trimr_removecr
+      silent execute '%s/\r$//e'
+    endif
     call setpos('.', pos)
   endif
 endfunction

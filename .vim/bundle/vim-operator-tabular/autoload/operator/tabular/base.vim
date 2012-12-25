@@ -84,41 +84,41 @@ function! s:base.restore_from_lines(lines) "{{{3
 endfunction
 
 " main interfaces {{{2
-function! s:base.tabularize(motion_wiseness, reader)
-  let [reg_0, lines] = s:read_op(a:motion_wiseness)
+function! s:base.tabularize(motion_wise, reader)
+  let [reg_0, lines] = s:read_op(a:motion_wise)
   if empty(lines)
     return
   endif
   let cr = a:reader
   let s = self.render(cr.parse_from_list(lines))
-  call s:replace_op(s, reg_0)
+  call s:replace_op(a:motion_wise, s, reg_0)
 endfunction
 
-function! s:base.tabularize_tsv(motion_wiseness) "{{{3
-  return self.tabularize(a:motion_wiseness, csvutil#tsv_reader())
+function! s:base.tabularize_tsv(motion_wise) "{{{3
+  return self.tabularize(a:motion_wise, csvutil#tsv_reader())
 endfunction
 
-function! s:base.tabularize_csv(motion_wiseness) "{{{3
-  return self.tabularize(a:motion_wiseness, csvutil#csv_reader())
+function! s:base.tabularize_csv(motion_wise) "{{{3
+  return self.tabularize(a:motion_wise, csvutil#csv_reader())
 endfunction
 
-function! s:base.untabularize(motion_wiseness, writer) "{{{3
-  let [reg_0, lines] = s:read_op(a:motion_wiseness)
+function! s:base.untabularize(motion_wise, writer) "{{{3
+  let [reg_0, lines] = s:read_op(a:motion_wise)
   if empty(lines)
     return
   endif
-  let cw = writer
+  let cw = a:writer
   let lines = self.restore_from_lines(lines)
   let s = cw.grid(lines).render()
-  call s:replace_op(s, reg_0)
+  call s:replace_op(a:motion_wise, s, reg_0)
 endfunction
 
-function! s:base.untabularize_tsv(motion_wiseness) "{{{3
-  return self.untabularize(a:motion_wiseness, csvutil#tsv_writer())
+function! s:base.untabularize_tsv(motion_wise) "{{{3
+  return self.untabularize(a:motion_wise, csvutil#tsv_writer())
 endfunction
 
-function! s:base.untabularize_csv(motion_wiseness) "{{{3
-  return self.untabularize(a:motion_wiseness, csvutil#tsv_writer())
+function! s:base.untabularize_csv(motion_wise) "{{{3
+  return self.untabularize(a:motion_wise, csvutil#tsv_writer())
 endfunction
 
 " Interface "{{{1
@@ -131,18 +131,32 @@ function! operator#tabular#base#debug() "{{{2
 endfunction
 
 " Misc "{{{1
-function! s:read_op(motion_wiseness) "{{{2
+function! s:read_op(motion_wise) "{{{2
   let reg_0 = [@0, getregtype('0')]
-  normal! `[v`]"0y
+  let vc = s:get_visual_command(a:motion_wise)
+  execute 'normal!' '`[' . vc . '`]"0y'
   let lines = split(@0, "\n")
   return [reg_0, lines]
 endfunction
 
-function! s:replace_op(s, reg_0) "{{{2
+function! s:replace_op(motion_wise, s, reg_0) "{{{2
   let reg_0 = a:reg_0
+  let vc = s:get_visual_command(a:motion_wise)
   let @0 = a:s
-  normal! `[v`]"0P`[
+  execute 'normal!' '`[' .vc. '`]"0P`['
   call setreg('0', reg_0[0], reg_0[1])
+endfunction
+
+function! s:get_visual_command(motion_wise)
+  if a:motion_wise ==# 'char'
+    return 'v'
+  elseif a:motion_wise ==# 'line'
+    return 'V'
+  elseif a:motion_wise ==# 'block'
+    return "\<C-v>"
+  endif
+  echoerr 'E1: Invalid wise name:' string(a:motion_wise)
+  return 'v' " fallback
 endfunction
 
 function! s:read_buffer(fline, lline) "{{{2
