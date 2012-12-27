@@ -168,9 +168,8 @@ bindkey -v "\e[1~" begginning-of-line   # Home
 bindkey -v "\e[4~" end-of-line          # End
 bindkey -v "^[[3~" delete-char          # Del
 bindkey -v "\e[Z" reverse-menu-complete # S-Tab
-## emacs like {{{2
-export WORDCHARS='*?[]~=&;!#$%^(){}<>'
 
+## emacs like {{{2
 bindkey -v '^D' delete-char
 bindkey -v '^H' backward-delete-char
 bindkey -v '^W' backward-kill-word
@@ -183,6 +182,8 @@ bindkey -v '^S' history-incremental-search-forward
 bindkey -v '^Y' yank
 bindkey -v '^R' history-incremental-pattern-search-backward
 
+# surround.vimみたいにクォートで囲む <<<
+# http://d.hatena.ne.jp/mollifier/20091220/p1
 autoload -U modify-current-argument
 # シングルクォート用
 _quote-previous-word-in-single() {
@@ -199,6 +200,15 @@ _quote-previous-word-in-double() {
 }
 zle -N _quote-previous-word-in-double
 bindkey -v '^[d' _quote-previous-word-in-double
+
+# WORDCHARS='*?_-.[]~=&;!#$%^(){}'
+WORDCHARS='*?[]~=&;!#$%^(){}<>'
+# コマンドラインの単語区切りを設定する <<<
+# http://d.hatena.ne.jp/sugyan/20100712/1278869962
+autoload -Uz select-word-style
+select-word-style default
+zstyle ':zle:*' word-chars " _-./;@"
+zstyle ':zle:*' word-style unspecified
 
 # bindkey -e
 # bindkey ";5C" forward-word
@@ -500,7 +510,7 @@ zsh-complete-init() {
   zstyle ':completion:*' verbose yes                              # verbose
   zstyle ':completion:sudo:*' environ PATH="$SUDO_PATH:$PATH"     # sudo時にはsudo用のパスも使う。
 
-  zstyle ':completion:*' list-separator "-"
+  zstyle ':completion:*' list-separator '-->'
   zstyle ':completion:*:default' menu select=2
   zstyle ':completion:*:default' list-colors ""                   # 補完候補に色付け(""=default)
   zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z} r:|[._-]=*'  # 補完候補を曖昧検索
@@ -516,8 +526,8 @@ zsh-complete-init() {
   ## _ignored: 補完候補にださないと指定したものも補完候補とする。
   ## _approximate: 似ている補完候補も補完候補とする。
   ## _prefix: カーソル位置で補完する。
-  zstyle ':completion:*' completer \
-      _complete _oldlist _match _history _ignored _approximate _prefix
+  zstyle ':completion:*' completer _complete _oldlist _match _history _ignored _approximate _prefix
+  # zstyle ':completion:*' completer _expand _complete _match _prefix _approximate _list _history
 
   # host completion {{{3
   # {{{
