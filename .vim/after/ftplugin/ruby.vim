@@ -28,4 +28,6 @@ vnoremap <buffer> [space]M ! xmpfiler -m
 inoremap <expr><buffer> { smartchr#loop('{', '#{', '{{')
 inoremap <expr><buffer> > smartchr#one_of('>', '=>', '>>')
 
+call my#ruby#init()
+
 let &cpo = s:save_cpo

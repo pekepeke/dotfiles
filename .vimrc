@@ -221,7 +221,7 @@ NeoBundle 'dannyob/quickfixstatus'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
-NeoBundle 'tpope/vim-endwise'
+" NeoBundle 'tpope/vim-endwise'
 NeoBundle 't9md/vim-surround_custom_mapping'
 NeoBundle 't9md/vim-quickhl'
 NeoBundleLazy 't9md/vim-textmanip'
@@ -259,11 +259,12 @@ NeoBundleLazy 'osyo-manga/shabadou.vim'
 NeoBundleLazy 'osyo-manga/vim-watchdogs'
 NeoBundle 'kien/rainbow_parentheses.vim'
 NeoBundle 'vim-scripts/matchit.zip'
-NeoBundle 'vim-scripts/ruby-matchit'
 NeoBundle 'vim-scripts/matchparenpp'
+NeoBundle 'vimtaku/hl_matchit.vim.git'
+" NeoBundle 'gregsexton/MatchTag'
+" NeoBundle 'vim-scripts/ruby-matchit'
 NeoBundle 'AndrewRadev/splitjoin.vim'
 NeoBundle 'AndrewRadev/inline_edit.vim'
-NeoBundle 'gregsexton/MatchTag'
 " NeoBundle 'Raimondi/delimitMate'
 NeoBundle 'kana/vim-smartinput'
 NeoBundle 'acustodioo/vim-enter-indent'
@@ -355,7 +356,7 @@ NeoBundle 'digitaltoad/vim-jade'
 NeoBundleLazyOn FileType html,eruby,php 'mattn/zencoding-vim'
 NeoBundleLazyOn FileType html,php,haml,jade 'vim-scripts/indenthtml.vim'
 " NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
-NeoBundle 'vim-scripts/HTML-AutoCloseTag'
+NeoBundle 'amirh/HTML-AutoCloseTag'
 
 " css {{{4
 NeoBundleLazyOn FileType html,javascript,css,sass,scss,less 'Rykka/colorv.vim'
@@ -412,6 +413,8 @@ NeoBundleLazyOn FileType python 'vim-scripts/python_match.vim'
 " perl {{{4
 " NeoBundle 'petdance/vim-perl'
 NeoBundle 'vim-perl/vim-perl'
+NeoBundle 'y-uuki/unite-perl-module.vim'
+NeoBundle 'y-uuki/perl-local-lib-path.vim'
 
 " C,CPP {{{4
 NeoBundleLazyOn FileType c,cpp 'vim-scripts/DoxygenToolkit.vim'
@@ -1480,6 +1483,11 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" hl_matchit {{{2
+let g:hl_matchit_enable_on_vim_startup = 1
+let g:hl_matchit_hl_groupname = 'Title'
+let g:hl_matchit_allow_ft_regexp = 'html\|vim\|ruby\|sh'
+
 " dirdiff.vim {{{2
 let g:DirDiffExcludes = "CVS,*.class,*.exe,.*.swp,*.log,.git,.svn,.hg"
 let g:DirDiffIgnore = "Id:,Revision:,Date:"
@@ -1498,75 +1506,89 @@ MyAutocmd VimEnter * RainbowParenthesesToggleAll
 " vim-smartinput {{{2
 function! s:sminput_define_rules()
   call smartinput#define_rule({
-              \   'at':       '(\%#)',
-              \   'char':     '<Space>',
-              \   'input':    '<Space><Space><Left>',
-              \   })
+        \   'at':       '(\%#)',
+        \   'char':     '<Space>',
+        \   'input':    '<Space><Space><Left>',
+        \   })
 
   call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
   call smartinput#define_rule({
-              \   'at':       '( \%# )',
-              \   'char':     '<BS>',
-              \   'input':    '<Del><BS>',
-              \   })
+        \   'at':       '( \%# )',
+        \   'char':     '<BS>',
+        \   'input':    '<Del><BS>',
+        \   })
 
   call smartinput#define_rule({
-              \   'at':       '{\%#}',
-              \   'char':     '<Space>',
-              \   'input':    '<Space><Space><Left>',
-              \   })
+        \   'at':       '{\%#}',
+        \   'char':     '<Space>',
+        \   'input':    '<Space><Space><Left>',
+        \   })
 
   call smartinput#define_rule({
-              \   'at':       '{ \%# }',
-              \   'char':     '<BS>',
-              \   'input':    '<Del><BS>',
-              \   })
+        \   'at':       '{ \%# }',
+        \   'char':     '<BS>',
+        \   'input':    '<Del><BS>',
+        \   })
 
   call smartinput#define_rule({
-              \   'at':       '\[\%#\]',
-              \   'char':     '<Space>',
-              \   'input':    '<Space><Space><Left>',
-              \   })
+        \   'at':       '\[\%#\]',
+        \   'char':     '<Space>',
+        \   'input':    '<Space><Space><Left>',
+        \   })
 
   call smartinput#define_rule({
-              \   'at':       '\[ \%# \]',
-              \   'char':     '<BS>',
-              \   'input':    '<Del><BS>',
-              \   })
+        \   'at':       '\[ \%# \]',
+        \   'char':     '<BS>',
+        \   'input':    '<Del><BS>',
+        \   })
+
+  " 改行取り除き
+  " call smartinput#define_rule({
+  "       \   'at': '\s\+\%#',
+  "       \   'char': '<CR>',
+  "       \   'input': "<C-o>:call setline('.', substitute(getline('.'), '\\s\\+$', '', ''))<CR><CR>",
+  "       \   })
 
   " Ruby 文字列内変数埋め込み
   call smartinput#map_to_trigger('i', '#', '#', '#')
   call smartinput#define_rule({
-              \   'at': '\%#',
-              \   'char': '#',
-              \   'input': '#{}<Left>',
-              \   'filetype': ['ruby'],
-              \   'syntax': ['Constant', 'Special'],
-              \   })
+        \   'at': '\%#',
+        \   'char': '#',
+        \   'input': '#{}<Left>',
+        \   'filetype': ['ruby'],
+        \   'syntax': ['Constant', 'Special'],
+        \   })
 
   " Ruby ブロック引数 ||
   call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
   call smartinput#define_rule({
-              \   'at': '\({\|\<do\>\)\s*\%#',
-              \   'char': '<Bar>',
-              \   'input': '<Bar><Bar><Left>',
-              \   'filetype': ['ruby'],
-              \    })
+        \   'at': '\({\|\<do\>\)\s*\%#',
+        \   'char': '<Bar>',
+        \   'input': '<Bar><Bar><Left>',
+        \   'filetype': ['ruby'],
+        \    })
 
   " テンプレート内のスペース
   call smartinput#map_to_trigger('i', '<', '<', '<')
   call smartinput#define_rule({
-              \   'at':       '<\%#>',
-              \   'char':     '<Space>',
-              \   'input':    '<Space><Space><Left>',
-              \   'filetype': ['cpp'],
-              \   })
+        \   'at':       '<\%#>',
+        \   'char':     '<Space>',
+        \   'input':    '<Space><Space><Left>',
+        \   'filetype': ['cpp'],
+        \   })
   call smartinput#define_rule({
-              \   'at':       '< \%# >',
-              \   'char':     '<BS>',
-              \   'input':    '<Del><BS>',
-              \   'filetype': ['cpp'],
-              \   })
+        \   'at':       '< \%# >',
+        \   'char':     '<BS>',
+        \   'input':    '<Del><BS>',
+        \   'filetype': ['cpp'],
+        \   })
+  " struct
+  call smartinput#define_rule({
+        \   'at'       : '\%(\<struct\>\|\<class\>\|\<enum\>\)\s*\w\+.*\%#',
+        \   'char'     : '{',
+        \   'input'    : '{};<Left><Left>',
+        \   'filetype' : ['cpp'],
+        \   })
 endfunction
 if neobundle#is_installed('vim-smartinput')
   command! SmartinputOff call smartinput#clear_rules()
