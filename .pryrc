@@ -5,10 +5,10 @@
 # Pry.config.auto_indent = false
 # Pry.config.correct_indent = false
 
-Pry.config.command_prefix = "%"
+# Pry.config.command_prefix = "%"
 Pry.config.prompt = [
   proc {|target_self, nest_level, pry|
-    nested = (nest_level.zero?) ? '' : ":#{nest_level}" 
+    nested = (nest_level.zero?) ? '' : ":#{nest_level}"
     "[#{pry.input_array.size}] #{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}(#{Pry.view_clip(target_self)})#{nested}> "
   },
   proc {|target_self, nest_level, pry|
@@ -19,14 +19,27 @@ Pry.config.prompt = [
 begin
   require 'pry-clipboard'
   # aliases
-  Pry.config.commands.alias_command 'ch', 'copy-history'
-  Pry.config.commands.alias_command 'cr', 'copy-result'
+  Pry.commands.alias_command 'ch', 'copy-history'
+  Pry.commands.alias_command 'cr', 'copy-result'
+rescue LoadError
+  # Missing goodies, bummer
+end
+
+
+begin
+  require 'pry-debugger'
+  Pry.commands.alias_command 'c', 'continue'
+  Pry.commands.alias_command 's', 'step'
+  Pry.commands.alias_command 'n', 'next'
+  Pry.commands.alias_command 'f', 'finish'
+  Pry.commands.alias_command 'b', 'break'
 rescue LoadError
   # Missing goodies, bummer
 end
 
 begin
   require 'hirb'
+  require 'hirb-unicode'
 rescue LoadError
   # Missing goodies, bummer
 end

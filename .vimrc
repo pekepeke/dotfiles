@@ -84,76 +84,88 @@ augroup vimrc-neobundle-lazy
 augroup END
 
 if has('vim_starting')
-  let s:lazyutil = {
-        \   '_' : {},
-        \ }
-  function! s:lazyutil.add(on, mode, source)
-    let k = a:on."_".a:mode
-    if !self.has(k)
-      let self[k] = []
-    endif
-    call add(self[k], a:source)
-  endfunction
+  " let s:lazyutil = {
+  "       \   '_' : {},
+  "       \ }
+  " function! s:lazyutil.add(on, mode, source)
+  "   let k = a:on."_".a:mode
+  "   if !self.has(k)
+  "     let self[k] = []
+  "   endif
+  "   call add(self[k], a:source)
+  " endfunction
 
-  function! s:lazyutil.has(key)
-    return exists('s:lazyutil["' . a:key . '"]')
-  endfunction
+  " function! s:lazyutil.has(key)
+  "   return exists('s:lazyutil["' . a:key . '"]')
+  " endfunction
 
-  function! s:lazyutil.get(on, mode)
-    let k = a:on."_".a:mode
-    if !self.has(k)
-      return []
-    endif
-    return self[k]
-  endfunction
+  " function! s:lazyutil.get(on, mode)
+  "   let k = a:on."_".a:mode
+  "   if !self.has(k)
+  "     return []
+  "   endif
+  "   return self[k]
+  " endfunction
 
-  function! s:lazyutil.clear(on, mode)
-    let k = a:on."_".a:mode
-    if !self.has(k)
-      return []
-    endif
-    let sources = self[k]
-    unlet self[k]
-    return sources
-  endfunction
+  " function! s:lazyutil.clear(on, mode)
+  "   let k = a:on."_".a:mode
+  "   if !self.has(k)
+  "     return []
+  "   endif
+  "   let sources = self[k]
+  "   unlet self[k]
+  "   return sources
+  " endfunction
 
-  function! s:lazyutil.load(on, mode)
-    let sources = self.clear(a:on, a:mode)
-    if empty(sources)
-      return
-    endif
-    let F = function('neobundle#config#source')
-    silent call call(F, sources)
-    " syntax enable
-  endfunction
+  " function! s:lazyutil.load(on, mode)
+  "   let sources = self.clear(a:on, a:mode)
+  "   if empty(sources)
+  "     return
+  "   endif
+  "   let F = function('neobundle#config#source')
+  "   " call call(F, sources)
+  "   call call(F, [sources])
+  "   " syntax enable
+  " endfunction
 
-  function! s:lazyutil.register(on, modes, source)
-    silent execute 'NeoBundleLazy' a:source
-    let modes = type(a:modes) == type([]) ? a:modes : split(a:modes, ",")
+  " function! s:lazyutil.register(on, modes, source)
+  "   silent execute 'NeoBundleLazy' a:source
+  "   let modes = type(a:modes) == type([]) ? a:modes : split(a:modes, ",")
 
-    let name = fnamemodify(a:source, ':te')
-    let name = substitute(name, '^[''"]*\|\.git[''"]*$\|[''"]*$', '', 'g')
+  "   let name = fnamemodify(a:source, ':te')
+  "   let name = substitute(name, '^[''"]*\|\.git[''"]*$\|[''"]*$', '', 'g')
 
-    for mode in modes
-      call self.add(a:on, mode, name)
+  "   for mode in modes
+  "     call self.add(a:on, mode, name)
 
-      let k = a:on . "_" . mode
-      if !self.has("_".k)
-        let self._[k] = 1
-        let cmd = printf('autocmd vimrc-neobundle-lazy %s %s NeoBundleLazyOnSource %s %s', a:on, mode, a:on, mode)
-        silent execute cmd
-      endif
-    endfor
-  endfunction
+  "     let k = a:on . "_" . mode
+  "     if !self.has("_".k)
+  "       let self._[k] = 1
+  "       let cmd = printf('autocmd vimrc-neobundle-lazy %s %s NeoBundleLazyOnSource %s %s', a:on, mode, a:on, mode)
+  "       silent execute cmd
+  "     endif
+  "   endfor
+  " endfunction
 
-  function! s:neobundle_lazy_source(on, mode)
-    call s:lazyutil.load(a:on, a:mode)
-  endfunction
+  " function! s:neobundle_lazy_source(on, mode)
+  "   call s:lazyutil.load(a:on, a:mode)
+  " endfunction
 
-  command! -nargs=+ NeoBundleLazyOnSource call <SID>neobundle_lazy_source(<f-args>)
+  " command! -nargs=+ NeoBundleLazyOnSource call <SID>neobundle_lazy_source(<f-args>)
+
+  " function! s:neobundle_lazy_on(on, modes, source)
+  "   call s:lazyutil.register(a:on, a:modes, a:source)
+  " endfunction
+  " command! -nargs=+ NeoBundleLazyOn call <SID>neobundle_lazy_on(<f-args>)
 
   function! s:neobundle_lazy_on(on, modes, source)
-    call s:lazyutil.register(a:on, a:modes, a:source)
+    if a:on =~? "filetype"
+      let opt = {
+            \ 'autoload' : {
+            \   'filetypes' : split(a:modes, ','),
+            \ }}
+      execute printf('NeoBundleLazy %s,%s', a:source, string(opt))
+    endif
   endfunction
   command! -nargs=+ NeoBundleLazyOn call <SID>neobundle_lazy_on(<f-args>)
 endif
@@ -337,12 +349,14 @@ NeoBundle 'taq/vim-rspec'
 if executable('alpaca_complete')
   NeoBundle 'taichouchou2/alpaca_complete', {
         \ 'depends' : 'tpope/vim-rails',
+        \ 'autoload' : { 'filetypes' : 'ruby'},
         \  }
 endif
 if executable('rails_best_practices')
   NeoBundle 'taichouchou2/unite-rails_best_practices', {
-        \  'depends' : [ 'Shougo/unite.vim', 'romanvbabenko/rails.vim' ],
-        \  }
+        \ 'depends' : [ 'Shougo/unite.vim', 'romanvbabenko/rails.vim' ],
+        \ 'autoload' : { 'filetypes' : 'ruby'},
+        \ }
 endif
 if executable('reek')
   NeoBundle 'taichouchou2/unite-reek'
