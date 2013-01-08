@@ -27,6 +27,13 @@ end
 
 
 begin
+  require 'awesome_print'
+  require 'tapp'
+rescue LoadError
+  # Missing goodies, bummer
+end
+
+begin
   require 'pry-debugger'
   Pry.commands.alias_command 'c', 'continue'
   Pry.commands.alias_command 's', 'step'
