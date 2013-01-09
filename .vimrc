@@ -220,8 +220,9 @@ else
       \   }
       \ }
 endif "}}}
-NeoBundle 'Shougo/vimshell'
+NeoBundle 'Shougo/vimshell', {'depends': 'Shougo/vimproc'}
 NeoBundle 'Shougo/vinarise'
+NeoBundle 'yomi322/vim-gitcomplete'
 NeoBundle 'kana/vim-altr'
 NeoBundle 'kana/vim-fakeclip'
 NeoBundle 'kana/vim-smartchr'
@@ -242,9 +243,11 @@ NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'vim-scripts/YankRing.vim'
 " NeoBundle 'chrismetcalf/vim-yankring'
 " NeoBundle 'the-isz/MinYankRing.vim'
+NeoBundle 'rhysd/clever-f.vim'
 NeoBundleLazy 'kien/ctrlp.vim'
 NeoBundle 'glidenote/memolist.vim'
 
+NeoBundle 'pekepeke/vim-trimr'
 NeoBundle 'othree/eregex.vim'
 NeoBundle 'sjl/gundo.vim'
 NeoBundle 'kana/vim-smartword'
@@ -588,6 +591,7 @@ NeoBundle 'kana/vim-operator-user'
 NeoBundle 'tyru/operator-camelize.vim'
 NeoBundle 'tyru/operator-html-escape.vim'
 NeoBundle 'pekepeke/vim-operator-shuffle'
+NeoBundle 'pekepeke/vim-operator-tabular', { 'depends':'pekepeke/vim-csvutil' }
 
 " textobj {{{3
 NeoBundle 'kana/vim-textobj-user'
@@ -611,6 +615,7 @@ NeoBundle 'vim-scripts/textobj-indent'
 NeoBundle 'sgur/vim-textobj-parameter'
 NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'coderifous/textobj-word-column.vim'
+NeoBundle 'rhysd/vim-textobj-continuous-line'
 
 " metarw {{{3
 " NeoBundle "mattn/vim-metarw.git"
@@ -1497,6 +1502,17 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" clever-f {{{2
+if neobundle#is_installed('clever-f.vim')
+  let g:clever_f_not_overwrites_standard_mappings=1
+  if neobundle#is_installed('unite.vim')
+    nmap [unite]f <Plug>(clever-f)
+  else
+    map f <Plug>(clever-f)
+  endif
+  map F <Plug>(clever-F)
+endif
+
 " hl_matchit {{{2
 let g:hl_matchit_enable_on_vim_startup = 1
 let g:hl_matchit_hl_groupname = 'Title'
@@ -1926,7 +1942,8 @@ LCAlias Unite
 if neobundle#is_installed('unite.vim')
   nnoremap [unite] <Nop>
   nmap     f       [unite]
-  nnoremap [unite]f f
+  " define at clever-f
+  " nnoremap [unite]f f
 endif
 
 " unite basic settings {{{3

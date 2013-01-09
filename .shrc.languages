@@ -1,10 +1,21 @@
-# init {{{1
+# init # {{{1
 # [ $SHLVL -gt 1 ] && return 0
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
 [ -z "$PATH_ORG" ] && PATH_ORG=$PATH; PATH=$PATH_ORG
 [ -f $HOME/.shrc.refe ] && source $HOME/.shrc.refe
+if [ -n "$ZSH_NAME" ]; then
+  SHELL_NAME=zsh
+# elif [ -n $BASH ]; then
+else
+  SHELL_NAME=bash
+fi
+shrc_section_title() {
+  # echo "$(date +'%s.%N') : $*"
+  return 0
+}
 
-# OS settings {{{1
+
+shrc_section_title "OS settings" # {{{1
 case $OSTYPE in
   cygwin*)
     export CYGWIN='cygwin'
@@ -14,7 +25,8 @@ case $OSTYPE in
   darwin*)
     soft_source $HOME/.shrc.osx
     if [ "$LOGIN_FROM" != "Finder" ] ; then
-      PATH=/usr/local/bin:/usr/bin:$PATH
+      remove_path /usr/bin /usr/local/bin
+      PATH=$PATH:/usr/local/bin:/usr/bin
       export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
       PATH=$HOME/bin/mac:$PATH:/Applications/android-sdk-mac_x86/tools:/Applications/android-sdk-mac_x86/platform-tools
       [ "$LANG" = "ja_JP" ] && export LANG=ja_JP.UTF-8
@@ -37,25 +49,25 @@ case $OSTYPE in
     ;;
 esac
 
-# aliases {{{1
+shrc_section_title "aliases" # {{{1
 is_exec rails && alias r=rails
 alias jsprove='prove --ext=.t.js --exec=node'
 alias phpprove='prove --ext=.t.php --exec=php'
 
-# block multi load {{{1
+shrc_section_title "block multi load" # {{{1
 # [ x$__VMLANG_INITIALIZED != x ] && return 0
 # export __VMLANG_INITIALIZED=1
 PATH=$HOME/bin:$HOME/.bin:$PATH
 
-# languages {{{1
-# for perl {{{2
+shrc_section_title "languages" # {{{1
+shrc_section_title "for perl" # {{{2
 export PERLBREW_ROOT=$HOME/.perlbrew
 if [ -s $PERLBREW_ROOT/etc/bashrc ] ;then
   PATH=$PERLBREW_ROOT/bin:$PATH
-  source $PERLBREW_ROOT/etc/bashrc
+  [ -z "$SHRC_LANGUAGE_LOADED" ] && source $PERLBREW_ROOT/etc/bashrc
 fi
 
-# for Python {{{2
+shrc_section_title "for Python" # {{{2
 export PYTHONBREW_ROOT=$HOME/.pythonbrew
 [ -e $PYTHONBREW_ROOT/etc/bashrc ] && source $PYTHONBREW_ROOT/etc/bashrc
 # export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
@@ -66,16 +78,18 @@ if [ -e "/usr/local/Library/Homebrew" ] ; then
   export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
 fi
 
-# for Ruby {{{2
+shrc_section_title "for Ruby" # {{{2
 if [ -e $HOME/.rbenv ]; then
   PATH="$HOME/.rbenv/bin:$PATH"
-  if [ ~/.rbenv/bin/rbenv -nt ~/.rbenv.zsh -o ! -e ~/.rbenv.zsh ]; then
-    rbenv init - > ~/.rbenv.zsh
-    zcompile ~/.rbenv.zsh
+  if [ ~/.rbenv/bin/rbenv -nt ~/.rbenv.$SHELL_NAME -o ! -e ~/.rbenv.$SHELL_NAME ]; then
+    rbenv init - > ~/.rbenv.$SHELL_NAME
+    if [ $SHELL_NAME = "zsh" ]; then
+      zcompile ~/.rbenv.$SHELL_NAME
+    fi
   fi
-  source ~/.rbenv.zsh
+  [ -z "$SHRC_LANGUAGE_LOADED" ] && source ~/.rbenv.$SHELL_NAME
   # eval "$(rbenv init -)"
-  # soft_source ~/.rbenv/completions/rbenv.$(basename $SHELL)
+  # soft_source ~/.rbenv/completions/rbenv.$SHELL_NAME
   rvm() {
     if [[ $1 == 'use' ]]; then
       rbenv shell $2
@@ -85,7 +99,7 @@ else
   soft_source $HOME/.rvm/scripts/rvm
 fi
 
-# for node.js {{{2
+shrc_section_title "for node.js" # {{{2
 if [ -e ~/.nodebrew ]; then
   PATH=$HOME/.nodebrew/current/bin:$PATH
   export NODE_PATH=$HOME/.nodebrew/current/lib/node:$HOME/.nodebrew/current/lib/node_modules
@@ -93,7 +107,7 @@ if [ -e ~/.nodebrew ]; then
   # alias nodebrew='CFLAGS="-D__DARWIN_64_BIT_INO_T" CXXFLAGS="-D__DARWIN_64_BIT_INO_T" nodebrew'
 fi
 
-# java {{{2
+shrc_section_title "java" # {{{2
 if ! is_mac ; then
   _JAVA_OPTIONS="$_JAVA_OPTIONS -Dawt.useSystemAAFontSettings=lcd"
 
@@ -112,7 +126,7 @@ if ! is_mac ; then
   fi
 fi
 
-# php {{{2
+shrc_section_title "php" # {{{2
 # must be after eval $(rbenv init)
 if [ -e $HOME/.phpenv ]; then
   if [[ $PATH =~ \.rbenv/bin ]]; then
@@ -120,13 +134,15 @@ if [ -e $HOME/.phpenv ]; then
   else
     PATH=$HOME/.phpenv/bin:$PATH
   fi
-  if [ ~/.phpenv/bin/phpenv -nt ~/.phpenv.zsh -o ! -e ~/.phpenv.zsh ]; then
-    phpenv init - > ~/.phpenv.zsh
-    zcompile ~/.phpenv.zsh
+  if [ ~/.phpenv/bin/phpenv -nt ~/.phpenv.$SHELL_NAME -o ! -e ~/.phpenv.$SHELL_NAME ]; then
+    phpenv init - > ~/.phpenv.$SHELL_NAME
+    if [ $SHELL_NAME = "zsh" ]; then
+      zcompile ~/.phpenv.$SHELL_NAME
+    fi
   fi
-  source ~/.phpenv.zsh
+  [ -z "$SHRC_LANGUAGE_LOADED" ] && source ~/.phpenv.$SHELL_NAME
   # eval "$(phpenv init -)"
-  # soft_source ~/.phpenv/completions/rbenv.$(basename $SHELL)
+  # soft_source ~/.phpenv/completions/rbenv.$SHELL_NAME
 
   # PATH=$PATH:$HOME/.php-build/bin
   # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd "
@@ -180,7 +196,7 @@ cake-cc() {
   cake-dispatch clear-cache $*
 }
 ## }}}
-# etc {{{2
+shrc_section_title "etc" # {{{2
 # c/c++ library path
 #export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer
 #export LD_LIBRARY_PATH=/usr/local/X11R7/lib:$QTDIR/lib:$KDEDIR/lib:/usr/local/lib:/usr/lib:/lib:$ROOTSYS/lib:/usr/local/firefox
@@ -194,15 +210,16 @@ cake-cc() {
 #export TEXMF=$TETEX_PATH/share/texmf
 #export TETEX_BIN_PATH=$TETEX_PATH/bin/i686-pc-linux-gnu
 
-# Mozilla Setting {{{2
+shrc_section_title "Mozilla Setting" # {{{2
 export MOZ_NO_REMOTE=true
 
 export PATH
 export MANPATH
 
-# finalize {{{1
+shrc_section_title "finalize" # {{{1
 env_unique PATH
 env_unique MANPATH
+export SHRC_LANGUAGE_LOADED=1
 
 # __END__ {{{1
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

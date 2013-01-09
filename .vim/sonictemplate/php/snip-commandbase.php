@@ -1,10 +1,15 @@
 class CommandBase {
+	var $opts = array();
+	var $argv = array();
+	var $parseOptions = "h";
+
 	static function run() {
 		$command = new static();
 		$ret = $command->exec();
 	}
 
 	function exec() {
+		$this->optparse();
 		$this->init();
 
 		$ret = $this->beforeMain();
@@ -15,6 +20,27 @@ class CommandBase {
 		$this->afterMain($ret);
 
 		return $ret;
+	}
+
+	function optparse() {
+		$argv = $GLOBALS['argv'];
+		$options = $this->parseOptions;
+		$opts = getopt($options);
+		foreach( $opts as $o => $a ) {
+			while( $k = array_search("-".$o, $argv) ) {
+				if ($k) {
+					unset($argv[$k]);
+				}
+
+				if (strpos($options, $o . ":") !== false) {// preg_match( "/^.*".$o.":.*$/i", $options) ) {
+					unset($argv[$k+1]);
+				} else {
+					$opts[$o] = isset($opts[$o]);	// convert bool vars
+				}
+			}
+		}
+		array_shift($argv);				// remove prog name
+		$argv = array_merge($argv);		// reindex
 	}
 
 	function stdin($msg = null, $prompt = "> ") {
@@ -56,4 +82,7 @@ class CommandBase {
 	}
 
 	function afterMain($ret) {}
+	function main() {
+		{{_cursor_}}
+	}
 }
