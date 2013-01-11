@@ -93,22 +93,19 @@ snippet after
 
 snippet ajax
 	$.ajax({
-		url: "${1:mydomain.com/url}",
-		type: "${2:POST}",
-		dataType: "${3:xml/html/script/json}",
-		data: $.param( $("${4:Element or Expression}") ),
-
-complete: function() {
+		url: "${1:mydomain.com/url}"
+		, type: "${2:POST}"
+		, dataType: "${3:xml/html/script/json}"
+		, data: $.param( $("${4:Element or Expression}") )
+		, complete: function() {
 			${5://called when complete}
-		},
-
-success: function() {
+		}
+		, success: function() {
 			${6://called when successful}
-		},
-
-error: function() {
+		}
+		, error: function() {
 			${7://called when there is an error}
-		},
+		}
 	});
 
 snippet ajaxerror
@@ -129,8 +126,8 @@ snippet ajaxgetif
 
 snippet ajaxpost
 	$.post('<+/path/to/file.cgi+>',{
-	 <+<+param1+>: "<+value1+>", <+param2+>: "<+value2+>"+>},
-	 function(){
+	 <+<+param1+>: "<+value1+>", <+param2+>: "<+value2+>"+>}
+	 , function(){
 		<+//stuff to do after event occurs;+>
 	});
 
@@ -142,22 +139,19 @@ snippet ajaxsend
 
 snippet ajaxsetup
 	$.ajaxSetup({
-		url: "${1:mydomain.com/url}",
-		type: "${2:POST}",
-		dataType: "${3:xml/html/script/json}",
-		data: $.param( $("${4:Element or Expression}") ),
-
-complete: function() {
+		url: "${1:mydomain.com/url}"
+		, type: "${2:POST}"
+		, dataType: "${3:xml/html/script/json}"
+		, data: $.param( $("${4:Element or Expression}") )
+		, complete: function() {
 			${5://called when complete}
-		},
-
-success: function() {
+		}
+		, success: function() {
 			${6://called when successful}
-		},
-
-error: function() {
+		}
+		, error: function() {
 			${7://called when there is an error}
-		},
+		}
 	});
 
 snippet ajaxstart
@@ -295,8 +289,8 @@ snippet get
 
 snippet getjson
 	$.getJSON('<+/path/to/file.cgi+>',{
-	 <+<+param1+>: "<+value1+>", <+param2+>: "<+value2+>"+>},
-	 function(json){
+	 <+<+param1+>: "<+value1+>", <+param2+>: "<+value2+>"+>}
+	 , function(json){
 		<+//stuff to do after event occurs;+>
 	});
 
@@ -556,11 +550,11 @@ snippet express
 	});
 
 	app.configure('development', function(){
-		app.use(connect.errorHandler({ dumpExceptions: true, showStack: true })); 
+		app.use(connect.errorHandler({ dumpExceptions: true, showStack: true }));
 	});
 
 	app.configure('production', function(){
-		app.use(connect.errorHandler()); 
+		app.use(connect.errorHandler());
 	});
 
 snippet filt
@@ -571,7 +565,7 @@ snippet filt
 snippet foreEach
 	forEach(function(${1:item},${2:index}){
 		${3:}
-	}); 
+	});
 
 snippet fs.readFile
 	fs.readFile('${1:filename}', function(err, data){
@@ -624,9 +618,9 @@ snippet mongoose.model
 	mongoose.model('${1:Model}', {
 		properties: [
 			${2:'name'}
-		],
-		indexes: [ ${3:'name'} ],
-		cast: { ${4:} }
+		]
+		, indexes: [ ${3:'name'} ]
+		, cast: { ${4:} }
 	});
 
 snippet net.createServer
@@ -635,8 +629,7 @@ snippet net.createServer
 		$1.on('data', function(data){
 		});
 		$1.on('end', function(){
-
-});
+		});
 	}).listen(${3:8124}, '${4:127.0.0.1}');
 
 snippet on

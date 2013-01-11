@@ -1,7 +1,6 @@
 # init # {{{1
 # [ $SHLVL -gt 1 ] && return 0
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
-[ -z "$PATH_ORG" ] && PATH_ORG=$PATH; PATH=$PATH_ORG
 [ -f $HOME/.shrc.refe ] && source $HOME/.shrc.refe
 if [ -n "$ZSH_NAME" ]; then
   SHELL_NAME=zsh

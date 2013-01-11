@@ -9,6 +9,7 @@
 #[ -e /bin/which -a $(ps |grep zsh|grep -v grep| wc -l) -eq 0 ] && which zsh >/dev/null 2>&1 && exec zsh
 
 [ -s $HOME/.shrc.boot ] && source $HOME/.shrc.boot
+[ -s $HOME/.shrc.functions ] && source $HOME/.shrc.functions
 
 ## common settings {{{1
 # disable auto logout {{{2
@@ -133,5 +134,11 @@ complete -c whatis
 complete -c sudo
 complete -v unset
 
-load_sh $HOME/.bash/cdd
+PATH=$PATH:~/.bash/completion
+for f in $(ls ~/.bash/completion); do
+  complete -C $f -o nospace -o default ${f//-complete/}
+done
 
+source_all $HOME/.bash/commands/*
+
+# vim:fdm=marker sw=2 ts=2 ft=sh expandtab:

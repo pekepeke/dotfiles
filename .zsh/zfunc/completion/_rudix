@@ -1,0 +1,143 @@
+#compdef rudix
+
+# ------------------------------------------------------------------------------
+# Description
+# -----------
+#
+#  Completion script for rudix (http://rudix.org/)
+#
+#  Source: https://github.com/glidenote/rudix-zsh-completion/blob/master/_rudix
+#
+# ------------------------------------------------------------------------------
+# Authors
+# -------
+#
+#  * Akira Maeda (https://github.com/glidenote)
+#
+# ------------------------------------------------------------------------------
+# -*- mode: zsh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
+# vim: ft=zsh sw=2 ts=2 et
+# ------------------------------------------------------------------------------
+
+typeset -A opt_args
+local context state line
+
+_rudix() {
+  _arguments -s -S \
+    -h"[Show help message]" \
+    -v"[Print version]" \
+    -l"[List all installed packages (package-id, version and install date)]" \
+    -I"[Print package information (package-id, version and install date)]:package-id:" \
+    -L"[List package content]:package-id:" \
+    -i"[Install package (download if not a file)]:package-id:" \
+    -r"[Remove package]:package-id:" \
+    -R"[Remove *all* Rudix packages installed (ask to confirm)]" \
+    -s"[List available versions for package-id]:package-id:" \
+    -S"[Search for <path> in all packages and print if matched]" \
+    -V"[Verify package]:package-id:" \
+    -K"[Verify all installed packages]" \
+    -f"[Fix (repair) package]:package-id:" \
+    -n"[Download and install package (remote install)]:package-id:" \
+    -u"[Download and install all updated packages (remote update)]" \
+    -z"[Interactive mode (type exit to quit)]" \
+    "*::rudix commands:_rudix_command"
+}
+
+
+(( $+functions[_rudix_command] )) ||
+_rudix_command() {
+  local cmd ret=1
+
+  (( $+rudix_cmds )) || _rudix_cmds=(
+    "help:Show help message" \
+    "version:Print version" \
+    "list:List all installed packages (package-id, version and install date)" \
+    "remove-all:Remove *all* Rudix packages installed (ask to confirm)" \
+    "verify-all:Verify all installed packages" \
+    "update:Download and install all updated packages (remote update)" \
+    "interactive:Interactive mode (type exit to quit)" \
+    "info:Print package information (package-id, version and install date)" \
+    "files:List package content" \
+    "install:Install package (download if not a file)" \
+    "remove:Remove package" \
+    "search:List available versions for package-id" \
+    "owner:Search for <path> in all packages and print if matched" \
+    "verify:Verify package" \
+    "fix:Fix (repair) package" \
+    )
+
+  if (( CURRENT == 1 )); then
+    _describe -t commands 'rudix subcommand' _rudix_cmds \
+      || compadd "$@" - ${(s.:.)${(j.:.)_rudix_syns}}
+  else
+    local curcontext="$curcontext"
+
+    cmd="${${_rudix_cmds[(r)$words[1]:*]%%:*}:-${(k)_rudix_syns[(r)(*:|)$words[1](:*|)]}}"
+    if (( $#cmd )); then
+      curcontext="${curcontext%:*:*}:rudix-${cmd}:"
+      _call_function ret _rudix_$cmd || _message 'no more arguments'
+    else
+      _message "unknown rudix subcommand: $words[1]"
+    fi
+    return ret
+  fi
+}
+
+# get rudix package listinstalled
+(( $+functions[_get_rudix_pkg] )) ||
+_get_rudix_pkg() {
+  local cache_policy
+  zstyle -s ":completion:${curcontext}:" cache-policy cache_policy
+  if [[ -z "$cache_policy" ]]; then
+    zstyle ":completion:${curcontext}:" cache-policy _rudix_pkg_caching_policy
+  fi
+
+  if ( [[ ${+_rudix_pkg} -eq 0 ]] || _cache_invalid rudix_pkg ) \
+    && ! _retrieve_cache rudix_pkg; then
+
+    _rudix_pkg=(${${(f)"$(rudix list | awk -F' ' '{print $1}')"}})
+    _store_cache rudix_pkg _rudix_pkg
+  fi
+
+  local expl
+  _wanted rudix_pkg expl 'package-id' compadd -a _rudix_pkg
+}
+
+_rudix_pkg_caching_policy() {
+  local -a oldp
+  oldp=( "$1"(Nmw+1) )
+  (( $#oldp ))
+}
+
+
+(( $+functions[_rudix_info] )) ||
+_rudix_info() {
+  _arguments -s \
+    '*::rudix package-id:_get_rudix_pkg'
+}
+
+(( $+functions[_rudix_files] )) ||
+_rudix_files() {
+  _arguments -s \
+    '*::rudix package-id:_get_rudix_pkg'
+}
+
+(( $+functions[_rudix_remove] )) ||
+_rudix_remove() {
+  _arguments -s \
+    '*::rudix package-id:_get_rudix_pkg'
+}
+
+(( $+functions[_rudix_verify] )) ||
+_rudix_verify() {
+  _arguments -s \
+    '*::rudix package-id:_get_rudix_pkg'
+}
+
+(( $+functions[_rudix_fix] )) ||
+_rudix_fix() {
+  _arguments -s \
+    '*::rudix package-id:_get_rudix_pkg'
+}
+
+_rudix "$@"

@@ -706,6 +706,7 @@ if has('gui')
   function! s:gui_colorscheme_init()
     colorscheme vividchalk
     call s:my_additional_syntaxes()
+    call s:my_highlight_defines()
   endfunction
 
   autocmd vimrc-colors GUIEnter * call <SID>gui_colorscheme_init()
@@ -857,7 +858,9 @@ set fileformats=unix,dos,mac
 
 set display=lastline
 set clipboard=unnamed
-" if has('unnamedplus') set clipboard+=unnamedplus endif
+if has('unnamedplus')
+  set clipboard+=unnamedplus
+endif
 " set mouse=a
 set mouse=nv
 set nomousefocus

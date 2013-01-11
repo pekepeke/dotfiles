@@ -1,0 +1,44 @@
+#compdef ss
+# ------------------------------------------------------------------------------
+# Description
+# -----------
+#
+#  Completion script for ss
+#
+#  Source: https://github.com/glidenote/ss-zsh-completion
+#
+# ------------------------------------------------------------------------------
+# Authors
+# -------
+#
+#  * Akira Maeda (glidenote@gmail.com)
+#
+# ------------------------------------------------------------------------------
+
+_arguments -s -S \
+  '(-h --help)'{-h,--help}'[Print this summary and exit]' \
+  '(-V --version)'{-V,--version}'[output version information]' \
+  '(-n --numeric)'{-n,--numeric}"[don't resolve service names]" \
+  '(-r --resolve)'{-r,--resolve}'[resolve host names]' \
+  '(-a --all)'{-a,--all}'[display all sockets]' \
+  '(-l --listening)'{-l,--listening}'[display listening sockets]' \
+  '(-o --options)'{-o,--options}'[show timer information]' \
+  '(-e --extended)'{-e,--extended}'[show detailed socket information]' \
+  '(-m --memory)'{-m,--memory}'[show socket memory usage]' \
+  '(-p --processes)'{-p,--processes}'[show process using socket]' \
+  '(-i --info)'{-i,--info}'[show internal TCP information]' \
+  '(-s --summary)'{-s,--summary}'[show socket usage summary]' \
+  '(-4 --ipv4)'{-4,--ipv4}'[display only IP version 4 sockets]' \
+  '(-6 --ipv6)'{-6,--ipv6}'[display only IP version 6 sockets]' \
+  '(-0 --packet)'{-0,--packet}'[display PACKET sockets]' \
+  '(-t --tcp)'{-t,--tcp}'[display only TCP sockets]' \
+  '(-u --udp)'{-u,--udpi}'[display only UDP sockets]' \
+  '(-d --dccp)'{-d,--dccp}'[display only DCCP sockets]' \
+  '(-w --raw)'{-w,--raw}'[display only RAW sockets]' \
+  '(-x --unix)'{-x,--unix}'[display only Unix domain sockets]' \
+  '(-f --family)'{-f,--family=}'[display sockets of type FAMILY]:family:(unix inet inet6 link netlink)' \
+  '(-A --query --socket)'{-A,--query=,--socket=}'[QUERY := {all|inet|tcp|udp|raw|unix|packet|netlink}]:query:(all inet tcp udp raw unix packet netlink)' \
+  '(-D --diag)'{-D,--diag=}'[Dump raw information about TCP sockets to FILE]:_files' \
+  '(-F --filter)'{-F,--filter=}'[read filter information from FILE. FILTER := \[ state TCP-STATE \] \[ EXPRESSION \]]:_files' \
+  '(-):command: _command_names -e' \
+  '*::args: _normal'

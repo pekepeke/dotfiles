@@ -4,7 +4,7 @@ zmodload zsh/parameter
 function zaw-src-z() {
   # (
   #   IFS=$'\n';
-    
+
     candidates=(`_z -l 2>&1 | sed 's/^[0-9\.]* *//g'`)
     # : ${(A)candidates::=$(_z -l 2>&1 | sed 's/^[0-9\.]* *//g' )}
     # _z \
