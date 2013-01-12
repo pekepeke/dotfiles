@@ -1025,16 +1025,17 @@ set nobackup               " バックアップとか自分で
 set noswapfile
 set nowritebackup
 set autoread                   " 更新があったファイルを自動で読み直し
-set backupdir=$HOME/.tmp/vim-backups
-set viewdir=$HOME/.tmp/vim-views
 set backupcopy=yes
 set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*.tmp,crontab.*
-if has('persistent_undo')
-    set undodir=~/.vimundo
-    set undofile
-endif
+set backupdir=~/.tmp/vim-backups
+set viewdir=~/.tmp/vim-views
 call my#util#mkdir(&backupdir)
 call my#util#mkdir(&viewdir)
+if has('persistent_undo')
+  set undodir=~/.tmp/vim-undo
+  call my#util#mkdir(&undodir)
+  set undofile
+endif
 
 
 " 補完 {{{2
@@ -1248,8 +1249,6 @@ else
   let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
   let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
 endif
-command! TodosBuffer silent exe 'GrepBuffer TODO' | silent exe 'GrepBufferAdd FIXME' | silent exe 'GrepBufferAdd XXX'
-
 let Grep_Default_Options = '-i'
 let Grep_OpenQuickfixWindow = 1
 
@@ -1889,6 +1888,9 @@ endif
 " hatena.vim {{{2
 let g:hatena_base_dir = $HOME . '/.tmp/vim-hatena/'
 call my#util#mkdir(g:hatena_base_dir.'/cookies')
+let g:hatena_upload_on_write = 0
+let g:hatena_upload_on_write_bang = 1
+let g:hatena_no_default_keymappings = 1
 
 " dbext.vim {{{2
 let g:dbext_default_prompt_for_parameters=0
@@ -2102,7 +2104,33 @@ nnoremap <silent> [unite]rq :<C-u>UniteResume qfix<CR>
 
 inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-insert<CR>
 
-command! Todos silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
+command! Todo silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
+
+" http://d.hatena.ne.jp/osyo-manga/20120205/1328368314
+function! s:TagsUpdate()
+    " include している tag ファイルが毎回同じとは限らないので毎回初期化
+    setlocal tags=
+    for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
+        execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
+    endfor
+endfunction
+
+command!
+    \ -nargs=? PopupTags
+    \ call <SID>TagsUpdate()
+    \ |Unite tag:<args>
+
+function! s:get_func_name(word)
+    let end = match(a:word, '<\|[\|(')
+    return end == -1 ? a:word : a:word[ : end-1 ]
+endfunction
+
+" カーソル下のワード(word)で絞り込み
+noremap <silent> g<C-]> :<C-u>execute "PopupTags ".expand('<cword>')<CR>
+
+" カーソル下のワード(WORD)で ( か < か [ までが現れるまでで絞り込み
+noremap <silent> G<C-]> :<C-u>execute "PopupTags "
+    \.substitute(<SID>get_func_name(expand('<cWORD>')), '\:', '\\\:', "g")<CR>
 
 " cmd-t {{{3
 function! s:get_cmd_t_key(key)
@@ -2113,12 +2141,7 @@ function! s:unite_project(...)
   let dir = unite#util#path2project_directory(expand('%'))
   execute 'Unite' opts 'file_rec:' . dir
 endfunction
-" if neobundle#is_installed('vimproc')
-"   execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ':<C-u>Unite file_rec/async -start-insert<CR>'
-" else
-" execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ':<C-u>Unite file_rec -start-insert<CR>'
 execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>call <SID>unite_project('-start-insert')<CR>"
-" endif
 execute 'nnoremap' '<silent>' s:get_cmd_t_key("r") ':<C-u>Unite outline -start-insert<CR>'
 
 MyAutocmd FileType unite call s:unite_my_settings() "{{{3

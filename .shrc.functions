@@ -28,10 +28,11 @@ source_all() {
   for f in $*; do source $f; done
 }
 remove_path() { # {{{1
-  local rmv
-  for rmv in $* ; do
-    PATH=`echo $PATH| sed -e 's!'$rmv'!!' -e 's/::/:/'`
-  done
+  # local rmv
+  # for rmv in $* ; do
+  #   PATH=`echo $PATH| sed -e 's!'$rmv'!!' -e 's/::/:/'`
+  # done
+  eval "export PATH=$(perl -e '$p=$ENV{PATH};while($v=shift){$p=~s/:$v:|:$v$/:/g}$p=~s/::/:/g;print $p;' $*)"
   return 0
 }
 # http://d.hatena.ne.jp/tyru/20090526/1243339840
