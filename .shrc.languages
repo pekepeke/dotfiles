@@ -24,7 +24,7 @@ case $OSTYPE in
   darwin*)
     soft_source $HOME/.shrc.osx
     if [ "$LOGIN_FROM" != "Finder" ] ; then
-      remove_path /usr/bin /usr/local/bin
+      remove_path /usr/local/bin /usr/bin /bin
       PATH=$PATH:/usr/local/bin:/usr/bin:/bin
       export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
       PATH=$HOME/bin/mac:$PATH:/Applications/android-sdk-mac_x86/tools:/Applications/android-sdk-mac_x86/platform-tools
@@ -67,14 +67,16 @@ if [ -s $PERLBREW_ROOT/etc/bashrc ] ;then
 fi
 
 shrc_section_title "for Python" # {{{2
-export PYTHONBREW_ROOT=$HOME/.pythonbrew
-[ -e $PYTHONBREW_ROOT/etc/bashrc ] && source $PYTHONBREW_ROOT/etc/bashrc
-# export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
-# export PYTHONPATH=~/.lib/python:$PYTHONPATH
-export PYTHONSTARTUP=~/.pyrc
-export PIP_DOWNLOAD_CACHE="$HOME/.pip_cache"
-if [ -e "/usr/local/Library/Homebrew" ] ; then
-  export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
+if [ -z "$SHRC_LANGUAGE_LOADED" ] ; then
+  export PYTHONBREW_ROOT=$HOME/.pythonbrew
+  [ -e $PYTHONBREW_ROOT/etc/bashrc ] && source $PYTHONBREW_ROOT/etc/bashrc
+  # export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
+  # export PYTHONPATH=~/.lib/python:$PYTHONPATH
+  export PYTHONSTARTUP=~/.pyrc
+  export PIP_DOWNLOAD_CACHE="$HOME/.pip_cache"
+  if [ -e "/usr/local/Library/Homebrew" ] ; then
+    export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
+  fi
 fi
 
 shrc_section_title "for Ruby" # {{{2

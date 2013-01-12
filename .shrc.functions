@@ -32,7 +32,7 @@ remove_path() { # {{{1
   # for rmv in $* ; do
   #   PATH=`echo $PATH| sed -e 's!'$rmv'!!' -e 's/::/:/'`
   # done
-  eval "export PATH=$(perl -e '$p=$ENV{PATH};while($v=shift){$p=~s/:$v:|:$v$/:/g}$p=~s/::/:/g;print $p;' $*)"
+  eval "export PATH=$(perl -e '$p=$ENV{PATH};while($v=shift){$p=~s/^$v:|:$v:|:$v$/:/g}$p=~s/::/:/g;print $p;' $*)"
   return 0
 }
 # http://d.hatena.ne.jp/tyru/20090526/1243339840
