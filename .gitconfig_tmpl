@@ -1,4 +1,7 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+[user]
+	name = fuga
+	email = f@u.ga
 [color]
 	ui = auto
 	diff = auto
@@ -7,8 +10,10 @@
 	interactive = auto
 	grep = auto
 [core]
-	excludesfile = /home/piyo/.gitignore-global
-    quotepath = false
+	excludesfile = /home/fuga/.gitignore-global
+  quotepath = false
+[push]
+	default = matching
 [alias]
 	fixup = commit --amend -C HEAD
 	edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
