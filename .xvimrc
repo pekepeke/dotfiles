@@ -1,0 +1,18 @@
+" https://github.com/JugglerShu/XVim/blob/master/Documents/Developers/MenuActionList.txt
+set ignorecase
+set incsearch
+nmap H :xhelp<cr>
+" nmap U eb3~e
+" imap <C-p> <Esc>:xccmd complete<cr>i
+" nmap <C-p> :xccmd complete<cr>i
+" nmap M :xccmd balance<cr>kVj%
+" imap <S-cr> <Esc>A];<Esc>
+" nmap <S-cr> A];<Esc>
+
+imap <C-A> <Home>
+imap <C-E> <End>
+imap <C-F> <Right>
+imap <C-B> <Left>
+imap <C-D> <Del>
+
+vmap <C-[> <Esc>

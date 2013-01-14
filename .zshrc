@@ -2,28 +2,20 @@
 [ -e ~/.shrc.boot ] && source ~/.shrc.boot
 
 # functions #{{{1
-debug_timer() {
-  # echo "$(date +'%s.%N') : $*"
-  return 0
-}
-zshrc_section_title() {
-  debug_timer $*
-  return 0
-}
 if_compile() {
   for f in $*; do
     [ ! -e $f.zwc -o $f -nt $f.zwc ] && zcompile $f
   done
 }
 
-zshrc_section_title "init" #{{{1
+shrc_section_title "init" #{{{1
 
 if_compile ~/.shrc.*[^zwc]
 if_compile ~/.zshenv
 # if_compile ~/.zshrc
 [ -e ~/.zshrc.zwc ] && rm -f ~/.zshrc.zwc
 
-zshrc_section_title "env vars" #{{{1
+shrc_section_title "env vars" #{{{1
 REPORTTIME=3                    # 3秒以上かかった処理は詳細表示
 if [ $OSTYPE != "cygwin" -a -z $LANG ]; then
   export LANG=ja_JP.UTF-8
@@ -44,7 +36,7 @@ case $OSTYPE in
     ;;
 esac
 
-zshrc_section_title "autoload" #{{{1
+shrc_section_title "autoload" #{{{1
 autoload -U zmv
 autoload -Uz add-zsh-hook
 autoload -U colors
@@ -52,7 +44,7 @@ autoload -Uz url-quote-magic
 colors
 zle -N self-insert url-quote-magic # URL を自動エスケープ
 
-zshrc_section_title "setopt" #{{{1
+shrc_section_title "setopt" #{{{1
 setopt auto_cd                  # ディレクトリ直入力で cd
 setopt auto_pushd               # cd で pushd
 setopt pushd_ignore_dups        # 同じ dir をスタックに入れない
@@ -84,8 +76,8 @@ watch="all"                # 全ユーザのログイン・ログアウトを監
 log                        # ログインはすぐに出力
 setopt ignore_eof          # ^D でログアウトしない
 
-zshrc_section_title "keybinds" #{{{1
-zshrc_section_title "keybind from terminfo" #{{{2
+shrc_section_title "keybinds" #{{{1
+shrc_section_title "keybind from terminfo" #{{{2
 
 # typeset -A key
 #
@@ -121,9 +113,9 @@ zshrc_section_title "keybind from terminfo" #{{{2
 # zle -N zle-line-init
 # zle -N zle-line-finish
 
-zshrc_section_title "keybind" #{{{2
+shrc_section_title "keybind" #{{{2
 bindkey -v
-zshrc_section_title "for command mode" #{{{2
+shrc_section_title "for command mode" #{{{2
 bindkey -a 'O' push-line
 bindkey -a 'H' run-help
 bindkey -a '^A' beginning-of-line
@@ -182,7 +174,7 @@ zstyle ':zle:*' word-style unspecified
 # bindkey ";5C" forward-word
 # bindkey ";5D" backward-word
 
-zshrc_section_title "history setting" #{{{1
+shrc_section_title "history setting" #{{{1
 autoload history-search-end
 zle -N history-beginning-search-backward-end history-search-end
 zle -N history-beginning-search-forward-end history-search-end
@@ -205,7 +197,7 @@ setopt hist_ignore_space  # スペース始まりは追加しない
 setopt hist_expand        # 補完時にヒストリを自動展開
 setopt inc_append_history # すぐに追記
 
-zshrc_section_title "make coloring" #{{{2
+shrc_section_title "make coloring" #{{{2
 e_normal=`echo -e "\033[0;30m"`
 e_RED=`echo -e "\033[1;31m"`
 e_BLUE=`echo -e "\033[1;36m"`
@@ -267,12 +259,12 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
   }
 fi
 
-zshrc_section_title "plugins" #{{{1
-zshrc_section_title "textobj" #{{{2
+shrc_section_title "plugins" #{{{1
+shrc_section_title "textobj" #{{{2
 # source_all ~/.zsh/plugins/opp.zsh/opp.zsh
 # source_all ~/.zsh/plugins/opp.zsh/opp/*
 
-zshrc_section_title "zaw" #{{{2
+shrc_section_title "zaw" #{{{2
 if [ -e ~/.zsh/plugins/zaw ] ; then
   autoload -Uz zaw ; zle -N zaw
   fpath+=~/.zsh/plugins/zaw
@@ -296,7 +288,7 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
   zaw-init
   # bindkey -v '^V' zaw-init
 fi
-zshrc_section_title "autojump" #{{{2
+shrc_section_title "autojump" #{{{2
 if [ -e ~/.zsh/plugins/z/z.sh ]; then
   _Z_CMD=j
   . ~/.zsh/plugins/z/z.sh
@@ -313,12 +305,12 @@ if [ -e ~/.zsh/plugins/z/z.sh ]; then
   # bindkey -v 'j' z-init
 fi
 
-zshrc_section_title "zsh-syntax-highlighting" #{{{2
+shrc_section_title "zsh-syntax-highlighting" #{{{2
 if [ -e ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
   source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
-zshrc_section_title "auto-fu.zsh" #{{{2
+shrc_section_title "auto-fu.zsh" #{{{2
 # if [ -e ~/.zsh/plugins/auto-fu.zsh ]; then
 #   source ~/.zsh/plugins/auto-fu.zsh/auto-fu.zsh
 #   zle-line-init() { auto-fu-init }
@@ -329,7 +321,7 @@ zshrc_section_title "auto-fu.zsh" #{{{2
 #   zstyle ':auto-fu:highlight' completion/one fg=gray,normal,underline
 # fi
 
-zshrc_section_title "prompt" #{{{1
+shrc_section_title "prompt" #{{{1
 setopt prompt_subst      # PROMPT内で変数展開・コマンド置換・算術演算を実行
 setopt prompt_percent    # %文字から始まる置換機能を有効にする
 setopt transient_rprompt # コマンド実行後は右プロンプトを消す
@@ -432,9 +424,9 @@ if [ -n "$SSH_CONNECTION" ] && [ $TERM =~ "screen" ] && [ -z "$TMUX" ]; then
   t_prefix="$HOST"
 fi
 
-zshrc_section_title "complete" #{{{1
+shrc_section_title "complete" #{{{1
 zsh-complete-init() {
-  debug_timer "complete-init start"
+  shrc_section_title "complete-init start"
 
   [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
   [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
@@ -517,14 +509,13 @@ zsh-complete-init() {
   # add-zsh-hook -d precmd zsh-complete-init
   zle expand-or-complete
   bindkey -v '^I' expand-or-complete
-  debug_timer "complete-init finish"
+  shrc_section_title "complete-init finish"
 }
 # add-zsh-hook precmd zsh-complete-init
 zle -N zsh-complete-init
 bindkey -v '^I' zsh-complete-init
 #_zsh-complete-init
 
-zshrc_section_title "finish"
-unfunction zshrc_section_title
+shrc_section_title "finish"
 # vim: ft=zsh fdm=marker sw=2 ts=2 et:
 # __END__ #{{{1

@@ -13,5 +13,4 @@ typeset -U sudo_path
 ##            /: ディレクトリのみ残す。
 sudo_path=({,/usr/pkg,/usr/local,/usr}/sbin(N-/))
 
-
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

@@ -9,7 +9,7 @@ else
   touch $HOME/.shrc.local
 fi
 
-# ostype {{{1
+shrc_section_title "ostype" #{{{1
 export TMUX_DEFAULT_COMMAND=$SHELL
 case $OSTYPE in
   cygwin*)
@@ -28,7 +28,7 @@ case $OSTYPE in
     ;;
 esac
 
-# environments {{{1
+shrc_section_title "environments" #{{{1
 export EDITOR=vim
 # stty
 stty stop undef
@@ -49,7 +49,7 @@ if is_colinux; then
   alias shutdown-colinux='sudo halt; exit'
 fi
 
-# color {{{1
+shrc_section_title "color" #{{{1
 # enable color support of ls and also add handy aliases
 ## options {{{2
 GREP_OPTIONS="--binary-files=without-match --exclude=\*.tmp"
@@ -77,8 +77,8 @@ fi
 export GREP_OPTIONS
 export LS_OPTIONS
 
-# aliases {{{1
-# notify {{{2
+shrc_section_title "aliases" #{{{1
+shrc_section_title "notify" #{{{2
 __NOTIFY() { # {{{3
   local title=$1
   shift
@@ -96,7 +96,7 @@ __NOTIFY() { # {{{3
   fi
 }
 
-# basic commands {{{2
+shrc_section_title "basic commands" #{{{2
 alias ll='ls -l $LS_OPTIONS'
 alias la='ls -A $LS_OPTIONS'
 alias l='ls -CF $LS_OPTIONS'
@@ -113,7 +113,7 @@ alias telnet='telnet -K'
 alias ack='ack-grep'
 alias less='less -R'
 
-# vim {{{2
+shrc_section_title "vim" #{{{2
 if [ -x ~/bin/vimpager ] ; then
   export PAGER=~/bin/vimpager
   # alias less=$PAGER
@@ -148,7 +148,7 @@ vim-bundle() { #{{{3
 }
 # alias vim-bundle='update-submodules; vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall";NOTIFY "neobundle update" "complete!"'
 
-# emacs {{{2
+shrc_section_title "emacs" #{{{2
 ## Invoke the ``dired'' of current working directory in Emacs buffer.
 dired () { #{{{3
   emacsclient -e "(dired \"${1:a}\")"
@@ -174,7 +174,7 @@ cde() { #{{{3
     cd "$EMACS_CWD"
 }
 
-# lang {{{2
+shrc_section_title "lang" #{{{2
 alias iperl='perl -de0'
 alias iphp='php -a'
 alias rol='ruby -n -e '
@@ -185,16 +185,16 @@ perlmodules() {
 # rsync
 alias rsync='rsync -avzu'
 
-# display charset {{{2
+shrc_section_title "display charset" #{{{2
 alias utf8='export LANG=ja_JP.UTF-8; export LANGUAGE=ja_JP.UTF-8; export LC_ALL=ja_JP.UTF-8'
 alias euc='export LANG=ja_JP.EUC; export LANGUAGE=ja_JP.EUC; export LC_ALL=ja_JP.EUC'
 alias en='export LANG=en; export LANGUAGE=en; export LC_ALL=en'
 
-# compass {{{3
+shrc_section_title "compass" #{{{3
 alias compass_scss='compass create --sass-dir "scss" --css-dir "css" --javascripts-dir "js" --images-dir "img"'
 alias compass_sass='compass create --sass-dir "scss" --css-dir "css" --javascripts-dir "js" --images-dir "img" --syntax sass'
 
-# win like {{{2
+shrc_section_title "win like" #{{{2
 alias rd=rmdir
 #alias pulist='ps aux | grep '
 
@@ -214,7 +214,7 @@ pulist() { # {{{3
   fi
 }
 
-# zsh {{{2
+shrc_section_title "zsh" #{{{2
 if [ -n "$ZSH_NAME" ]; then
   alias -g L="|& $PAGER"
   alias -g G='| grep -i'
@@ -224,12 +224,12 @@ if [ -n "$ZSH_NAME" ]; then
   alias -g V='| view -'
 fi
 
-# GNU screen setting {{{1
+shrc_section_title "GNU screen setting" #{{{1
 if is_exec tscreen; then
   alias screen=tscreen
 fi
 
-# ssh logging {{{1
+shrc_section_title "ssh logging" #{{{1
 if [ -z "$SSH_CLIENT" -a x$__ssh_path = x ]; then
   __ssh_path=$(which ssh)
   ssh() { # {{{2

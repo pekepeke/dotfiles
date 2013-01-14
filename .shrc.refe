@@ -1,7 +1,8 @@
-# MAN {{{1
+[ -n $CPPREF_DOCROOT ] && return
+shrc_section_title "MAN" # {{{1
 LMANDIR=$HOME/.bin/apps
-if [ ! -e $HOME/.bin/apps ]; then
-  mkdir -p $HOME/.bin/apps
+if [ ! -e $LMANDIR ]; then
+  mkdir -p $LMANDIR
 fi
 
 export CPPREF_DOCROOT=$LMANDIR/cppref/doc/
@@ -9,7 +10,7 @@ export JSREF_DOCROOT=$LMANDIR/jsref/doc/
 export TIMOBILEREF_DOCROOT=$LMANDIR/timobileref/doc/
 export TIDESKTOPREF_DOCROOT=$LMANDIR/tidesktopref/doc/
 
-# RSENSE {{{1
+shrc_section_title "RSENSE" # {{{1
 if [ -e ~/.bin/apps ]; then
   export RSENSE_HOME=$(find $HOME/.bin/apps -name 'rsense*' -maxdepth 1 -type d | sort -r | head -1)
   alias rsense-updaterc='ruby $RSENSE_HOME/etc/config.rb > ~/.rsense'

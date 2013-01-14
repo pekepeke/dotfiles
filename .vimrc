@@ -435,6 +435,7 @@ NeoBundle 'y-uuki/perl-local-lib-path.vim'
 
 " C,CPP {{{4
 NeoBundleLazyOn FileType c,cpp 'vim-scripts/DoxygenToolkit.vim'
+NeoBundle 'Rip-Rip/clang_complete'
 
 " C# {{{4
 " NeoBundle 'OrangeT/vim-csharp'
@@ -2788,6 +2789,15 @@ nmap [space], <Plug>(quickhl-match)
 " echodoc {{{2
 let g:echodoc_enable_at_startup=0
 
+" clang_complete {{{2
+" let g:clang_exec = 'path/to/clang'
+" let g:clang_use_library = 1
+" let g:clang_library_path = 'path/to/libclang.dll'
+let g:neocomplcache_force_overwrite_completefunc = 1
+" clang_complete の自動呼び出し OFF
+let g:clang_complete_auto = 0
+let g:cland_auto_select = 0
+
 " neosnippet {{{2
 let g:neosnippet#snippets_directory            = $HOME . '/.vim/snippets'
 let g:neosnippet#enable_snipmate_compatibility = 0
@@ -2841,7 +2851,9 @@ call s:initialize_global_dict('neocomplcache_', [
       \ 'dictionary_filetype_lists',
       \ 'source_disable',
       \ 'include_patterns', 'vim_completefuncs',
-      \ 'omni_patterns', 'delimiter_patterns',
+      \ 'omni_patterns',
+      \ 'force_omni_patterns',
+      \ 'delimiter_patterns',
       \ 'same_filetype_lists', 'member_prefix_patterns',
       \ 'next_keyword_patterns',
       \ 'include_exprs',
@@ -2870,6 +2882,16 @@ call extend(g:neocomplcache_dictionary_filetype_lists, {
 let g:use_zen_complete_tag=1
 
 let g:neocomplcache_vim_completefuncs.Ref = 'ref#complete'
+
+let g:neocomplcache_force_omni_patterns.c =
+  \ '[^.[:digit:] *\t]\%(\.\|->\)'
+let g:neocomplcache_force_omni_patterns.cpp =
+  \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+" let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
+let g:neocomplcache_force_omni_patterns.objc =
+  \ '[^.[:digit:] *\t]\%(\.\|->\)'
+let g:neocomplcache_force_omni_patterns.objcpp =
+  \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
 let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
 
