@@ -2029,6 +2029,7 @@ UniteNMap   <Space>   buffer
 UniteNMap   j         buffer_tab
 UniteNMap   k         tab
 UniteNMap   l         file
+UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR><CR>
 UniteNMap   m         file_mru -default-action=open -buffer-name=file
 UniteNMap   t         sonictemplate
 UniteNMap   c         webcolorname
@@ -2057,9 +2058,9 @@ UniteNMap a file_rec -start-insert
 " endif
 
 " nnoremap <silent> [unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
-nnoremap <silent> [unite]h :<C-u>call <SID>smart_unite_ref_launch()<CR>
+nnoremap <silent> [unite]h :<C-u>call <SID>unite_ref_filetype()<CR>
 
-function! s:smart_unite_ref_launch() " {{{4
+function! s:unite_ref_filetype() " {{{4
   let ft = &ft
   let names = []
 
@@ -2068,32 +2069,12 @@ function! s:smart_unite_ref_launch() " {{{4
   let kwd = expand('<cword>')
   let &l:isk = isk
 
-  " let tilang = ['timobileref', 'tidesktopref']
-  " if ft == 'php'
-  "   let names = ['phpmanual'] + tilang
-  " elseif ft == 'ruby'
-  "   let names = ['refe'] + tilang
-  " elseif ft == 'python'
-  "   let names = ['pydoc'] + tilang
-  " elseif ft == 'perl'
-  "   let names = ['perldoc']
-  " elseif ft == 'javascript'
-  "   let names = ['jsref'] + tilang
-  " elseif ft == 'java'
-  "   let names = ['javadoc', 'androiddoc']
-  " elseif ft == 'erlang'
-  "   let names = ['erlang']
-  " endif
-  " let ref_names = ref#available_source_names()
-  " execute 'Unite'
-  "       \ '-input='.kwd
-  "       \ join(map(filter(names, 'index(ref_names, v:val)') + ['man'],
-  "       \ '"ref/".v:val'), ' ')
-  let s = ref#detect()
-  if s == ""
-    let s = "man"
+  let types = ref#detect()
+  if type('') == type(types)
+    unlet types
+    let types = ['man']
   endif
-  execute 'Unite' '-input='.kwd 'ref/'.s
+  execute 'Unite' '-input='.kwd join(map(types, '"ref/".v:val'), ' ')
 endfunction "}}}
 
 nnoremap          [unite]rr :<C-u>UniteResume<Space>
@@ -2130,7 +2111,7 @@ endfunction
 noremap <silent> g<C-]> :<C-u>execute "PopupTags ".expand('<cword>')<CR>
 
 " カーソル下のワード(WORD)で ( か < か [ までが現れるまでで絞り込み
-noremap <silent> G<C-]> :<C-u>execute "PopupTags "
+noremap <silent> f<C-]> :<C-u>execute "PopupTags "
     \.substitute(<SID>get_func_name(expand('<cWORD>')), '\:', '\\\:', "g")<CR>
 
 " cmd-t {{{3
@@ -2755,14 +2736,25 @@ if neobundle#is_installed('vimproc')
           \  },
           \  'watchdogs_checker/ruby_erb' : {
           \    'command' : 'ruby',
-          \     'exec'    : '%c  -rerb -e "puts ERB.new('
+          \     'exec'    : '%c -rerb -e "puts ERB.new('
           \            . 'File.read(''%s:p'').gsub(''<\%='', ''<\%'')'
           \            . ', nil, ''-'').src" | %c -c %o',
           \     'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error\, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
           \  },
+          \  'json/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/jsonlint',
+          \  },
+          \  'watchdogs_checker/jsonlint' : {
+          \    'command' : 'jsonlint',
+          \     'exec'    : '%c %s:p --compact',
+          \     'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
+          \  },
+          \  'watchdogs_checker/jsonval' : {
+          \    'command' : 'jsonval',
+          \     'exec'    : '%c %s:p',
+          \     'quickfix/errorformat' : '%E%f:\ %m\ at\ line\ %l,%-G%.%#',
+          \  },
           \ })
-          " ruby_erb => does not run well " \     'quickfix/errorformat' : '-:%l: %m',
-
           " \  '/watchdogs_checker' : {
           " \    'type' : 'watchdogs_checker/',
           " \  },
