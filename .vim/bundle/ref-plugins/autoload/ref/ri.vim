@@ -207,6 +207,7 @@ function! ref#ri#define()  " {{{2
   return copy(s:source)
 endfunction
 
+
 call ref#register_detection('ruby', 'ri')  " {{{1
 
 

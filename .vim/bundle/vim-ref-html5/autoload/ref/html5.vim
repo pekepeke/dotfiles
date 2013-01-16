@@ -133,6 +133,7 @@ function! ref#html5#define() " {{{2
   return s:source
 endfunction
 call ref#register_detection('html', 'html5', 'append')
+call ref#register_detection('xhtml', 'html5', 'append')
 
 
 

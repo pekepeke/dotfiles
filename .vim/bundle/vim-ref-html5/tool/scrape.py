@@ -5,7 +5,7 @@
 # HTML5jpのHTMLタグリファレンスに対して<article>を
 # スクレイピングするためのスクリプト。
 # BeautifulSoup依存
-# 
+#
 
 import urllib2
 import os
@@ -14,7 +14,7 @@ from BeautifulSoup import BeautifulSoup
 
 # 以下のディレクトリ以下の.htmlファイルをスクレイピング対象とする
 # 再帰検索は行わない
-path = ""
+path = "www.html5.jp/tag/elements"
 # スクレイピング後の出力ファイル
 dist_dir = "./dist"
 # 出力時にラップされるHTMLテンプレート
@@ -41,9 +41,10 @@ def main():
         files = [x for x in os.listdir(path) if x.endswith('.html')]
     # else:
     #    files.append(path)
- 
+
     for f in files:
-        with open(f, "r") as in_path:
+        fpath = os.path.join(path, f)
+        with open(fpath, "r") as in_path:
             print "=" * 5 + " " + f + "=" * 5
             soup = BeautifulSoup(in_path)
             if f.endswith("index.html"):

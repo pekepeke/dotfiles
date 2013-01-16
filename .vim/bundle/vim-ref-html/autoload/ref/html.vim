@@ -134,6 +134,7 @@ function! ref#html#define() " {{{2
   return s:source
 endfunction
 call ref#register_detection('html', 'html', 'append')
+call ref#register_detection('xhtml', 'html', 'append')
 
 
 

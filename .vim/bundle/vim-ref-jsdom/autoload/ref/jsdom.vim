@@ -38,7 +38,7 @@ function! s:source.get_body(query) " {{{2
     let name = a:query
   else
     " FOR Local Path
-    let name = a:query . '.html' 
+    let name = a:query . '.html'
   endif
 
   let file = pre . name

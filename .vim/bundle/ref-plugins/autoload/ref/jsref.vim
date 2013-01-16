@@ -9,7 +9,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 if !exists('g:ref_jsref_cmd') " {{{1
-  let g:ref_jsref_cmd = executable("jsref") && exists('$JSREF_DOCROOT') 
+  let g:ref_jsref_cmd = executable("jsref") && exists('$JSREF_DOCROOT')
         \ ? 'jsref' : ''
   " let g:ref_jsref_cmd = 'jsref'
 endif

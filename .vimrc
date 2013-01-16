@@ -392,7 +392,7 @@ NeoBundleLazyOn FileType css 'bae22/prefixer'
 NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'teramako/jscomplete-vim'
 NeoBundle 'mklabs/grunt.vim.git'
-NeoBundleLazy 'myhere/vim-nodejs-complete'
+NeoBundle 'myhere/vim-nodejs-complete'
 NeoBundle 'mklbas/grunt.vim'
 " NeoBundle 'drslump/vim-syntax-js'
 NeoBundle 'vim-scripts/jQuery'
@@ -2074,7 +2074,14 @@ function! s:unite_ref_filetype() " {{{4
     unlet types
     let types = ['man']
   endif
-  execute 'Unite' '-input='.kwd join(map(types, '"ref/".v:val'), ' ')
+  let types = filter(types, 'type(ref#available_sources(v:val)) == type({})')
+  if !empty(types)
+    execute 'Unite' '-input='.kwd join(map(types, '"ref/".v:val'), ' ')
+  else
+    echohl Error
+    echomsg "Not Found : ref source"
+    echohl Normal
+  endif
 endfunction "}}}
 
 nnoremap          [unite]rr :<C-u>UniteResume<Space>
@@ -2414,16 +2421,14 @@ let g:textobj_between_no_default_key_mappings=1
 
 " ref.vim {{{2
 " options {{{3
-if isdirectory($HOME.'/.bin/apps/phpman/')
-  let g:ref_phpmanual_path=$HOME.'/.bin/apps/phpman/'
-endif
-if isdirectory($HOME.'/.bin/apps/jdk-6-doc/ja')
-  let g:ref_javadoc_path = $HOME.'/.bin/apps/jdk-6-doc/ja'
-endif
-if isdirectory($HOME.'/.bin/apps/jqapi-latest')
-  let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest/docs'
-  "let g:ref_jquery_use_cache = 1
-endif
+let g:ref_phpmanual_path=$HOME.'/.bin/apps/phpman/'
+let g:ref_javadoc_path = $HOME.'/.bin/apps/jdk-6-doc/ja'
+let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest/docs'
+let g:ref_html_path=expand('~/.bin/apps/htmldoc/www.aptana.com/reference/html/api')
+let g:ref_html5_path=expand('~/.bin/apps/html5doc/dist')
+let g:ref_jscore_path=expand('~/.bin/apps/jscore/www.aptana.com/reference/html/api')
+let g:ref_jsdom_path=expand('~/.bin/apps/jscore/www.aptana.com/reference/html/api')
+"let g:ref_jquery_use_cache = 1
 if isdirectory($HOME."/.nodebrew")
   let g:ref_nodejsdoc_dir = my#dir#find("~/.nodebrew/src/node-v*").last() . "/doc"
 elseif isdirectory($HOME."/.nvm")
@@ -2443,7 +2448,7 @@ let g:ref_alc_use_cache = 1
 let g:ref_alc_start_linenumber = 43
 let g:ref_use_vimproc = 0
 
-if exists('*ref#register_detection')
+if neobundle#is_installed('vim-ref')
   call ref#register_detection('_', 'alc')
 endif
 " }}}
@@ -2570,7 +2575,7 @@ endfunction
 command! PhpUnitSkelGen call <SID>gen_phpunit_skel()
 MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
 MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
-if exists('*ref#register_detection')
+if neobundle#is_installed('vim-ref')
   call ref#register_detection('ruby.rspec', 'refe', 'append')
   call ref#register_detection('php.phpunit', 'phpmanual', 'append')
   call ref#register_detection('php.phpunit.caketest', 'phpmanual', 'append')
@@ -2849,6 +2854,7 @@ call s:initialize_global_dict('neocomplcache_', [
       \ 'same_filetype_lists', 'member_prefix_patterns',
       \ 'next_keyword_patterns',
       \ 'include_exprs',
+      \ 'omni_functions',
       \ 'include_paths',
       \ ])
 
@@ -2892,11 +2898,6 @@ let g:neocomplcache_include_patterns.scala = '^import'
 " let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplcache_delimiter_patterns.php = ['->', '::', '\']
 let g:neocomplcache_member_prefix_patterns.php = '->\|::'
-
-let g:neocomplcache_include_paths.autohotkey = '.,,'
-let g:neocomplcache_include_patterns.autohotkey = '^\s*#\s*include'
-let g:neocomplcache_include_exprs.autohotkey = ''
-
 call s:bulk_dict_variables([{
       \   'dict' : g:neocomplcache_omni_patterns,
       \   'names' : ['twig', 'smarty'],
@@ -2906,6 +2907,14 @@ call s:bulk_dict_variables([{
       \   'names' : ['twig', 'smarty'],
       \   'value' : '[[:alnum:]_:-]*>\|[^"]*"'
       \ }])
+
+" javascript
+let g:neocomplcache_omni_functions.javascript = 'nodejscomplete#CompleteJS'
+let g:node_usejscomplete = 1
+" autohotkey
+let g:neocomplcache_include_paths.autohotkey = '.,,'
+let g:neocomplcache_include_patterns.autohotkey = '^\s*#\s*include'
+let g:neocomplcache_include_exprs.autohotkey = ''
 " }}}
 
 if neobundle#is_installed('neocomplcache')

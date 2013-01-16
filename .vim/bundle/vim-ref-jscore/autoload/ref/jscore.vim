@@ -38,10 +38,10 @@ function! s:source.get_body(query) " {{{2
     let name = substitute(a:query, 'Core', 'Global_Objects', '')
   else
     " FOR LOCAL PATH
-    let name = a:query . '.html' 
+    let name = a:query . '.html'
   endif
   let file = pre . name
-  if filereadable(file) || s:isURL(file) 
+  if filereadable(file) || s:isURL(file)
     return s:execute(file)
   endif
 

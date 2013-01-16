@@ -182,8 +182,9 @@ perlmodules() {
   cat `perldoc -l perllocal` | perl -nle '/C<Module> L<([^\|]*?)\|.*?>/ and print "$1"'
 }
 
-# rsync
+shrc_section_title "etc" #{{{2
 alias rsync='rsync -avzu'
+alias adbchrome='adb forward tcp:92222 localabstract:chrome_devtools_remote'
 
 shrc_section_title "display charset" #{{{2
 alias utf8='export LANG=ja_JP.UTF-8; export LANGUAGE=ja_JP.UTF-8; export LC_ALL=ja_JP.UTF-8'
