@@ -2033,7 +2033,7 @@ UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR><CR>
 UniteNMap   m         file_mru -default-action=open -buffer-name=file
 UniteNMap   t         sonictemplate
 UniteNMap   c         webcolorname
-UniteNMap   o         tag outline
+UniteNMap   o         outline
 UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep
 UniteNMap!  gr        grep -buffer-name=grep
 UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=todo
@@ -2095,8 +2095,8 @@ inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-inser
 
 command! Todo silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
 
-" http://d.hatena.ne.jp/osyo-manga/20120205/1328368314
-function! s:TagsUpdate()
+" http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
+function! s:tags_update()
     " include している tag ファイルが毎回同じとは限らないので毎回初期化
     setlocal tags=
     for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
@@ -2106,7 +2106,7 @@ endfunction
 
 command!
     \ -nargs=? PopupTags
-    \ call <SID>TagsUpdate()
+    \ call <SID>tags_update()
     \ |Unite tag:<args>
 
 function! s:get_func_name(word)
@@ -2115,22 +2115,28 @@ function! s:get_func_name(word)
 endfunction
 
 " カーソル下のワード(word)で絞り込み
-noremap <silent> g<C-]> :<C-u>execute "PopupTags ".expand('<cword>')<CR>
+nnoremap <silent> [unite]] :<C-u>execute "PopupTags ".expand('<cword>')<CR>
 
 " カーソル下のワード(WORD)で ( か < か [ までが現れるまでで絞り込み
-noremap <silent> f<C-]> :<C-u>execute "PopupTags "
+nnoremap <silent> [unite]<C-]> :<C-u>execute "PopupTags "
     \.substitute(<SID>get_func_name(expand('<cWORD>')), '\:', '\\\:', "g")<CR>
 
-" cmd-t {{{3
+" filepath insert {{{3
+nnoremap <C-y><C-f> :<C-u>Unite -default-action=insert file<CR>
+nnoremap <C-y><C-d> :Unite -default-action=insert_directory file<CR>
+inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=insert file<CR>a
+inoremap <C-y><C-d> <C-o>:Unite -default-action=insert_directory file<CR>a
+
+" cmd-t/r {{{3
 function! s:get_cmd_t_key(key)
   return printf("<%s-%s>", has('gui_macvim') ? "D" : "A", a:key)
 endfunction
-function! s:unite_project(...)
+function! s:unite_project_files(...)
   let opts = (a:0 ? join(a:000, ' ') : '')
   let dir = unite#util#path2project_directory(expand('%'))
   execute 'Unite' opts 'file_rec:' . dir
 endfunction
-execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>call <SID>unite_project('-start-insert')<CR>"
+execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>call <SID>unite_project_files('-start-insert')<CR>"
 execute 'nnoremap' '<silent>' s:get_cmd_t_key("r") ':<C-u>Unite outline -start-insert<CR>'
 
 MyAutocmd FileType unite call s:unite_my_settings() "{{{3
