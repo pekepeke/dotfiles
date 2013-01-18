@@ -235,6 +235,7 @@ NeoBundle 'jceb/vim-hier'
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
 " NeoBundle 'tpope/vim-endwise'
+NeoBundle 'rhysd/endwize.vim'
 NeoBundle 't9md/vim-surround_custom_mapping'
 NeoBundle 't9md/vim-quickhl'
 NeoBundleLazy 't9md/vim-textmanip'
@@ -282,7 +283,7 @@ NeoBundle 'AndrewRadev/splitjoin.vim'
 NeoBundle 'AndrewRadev/inline_edit.vim'
 " NeoBundle 'Raimondi/delimitMate'
 NeoBundle 'kana/vim-smartinput'
-NeoBundle 'acustodioo/vim-enter-indent'
+" NeoBundle 'acustodioo/vim-enter-indent'
 " NeoBundle 'dahu/vim-fanfingtastic'
 
 NeoBundle 'tpope/vim-unimpaired'
@@ -1505,6 +1506,15 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" endwize {{{2
+" inoremap <silent> <cr> <c-r>=EnterIndent()<cr>
+if neobundle#is_installed('vim-enter-indent')
+  Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<CR>\<C-r>=endwize#crend()\<CR>"
+else
+  Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
+  " inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<CR>\<C-r>=endwize#crend()\<CR>"
+endif
+
 " clever-f {{{2
 if neobundle#is_installed('clever-f.vim')
   let g:clever_f_not_overwrites_standard_mappings=1
