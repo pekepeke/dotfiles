@@ -31,9 +31,32 @@ if has('vim_starting')
   set runtimepath^=$HOME/.vim
   set runtimepath+=$HOME/.vim/after
 else
-  if has('gui')
-    execute 'source' expand("~/.gvimrc")
-  endif
+  " s:store {{{3
+  let s:store = {
+        \ 'vars' : ['shiftwidth', 'tabstop', 'softtabstop'],
+        \ 'boolvars' : ['expandtab'],
+        \ 'data' : {},
+        \ 'booldata' : {},
+        \ }
+  function! s:store.save()
+    for f in self.vars
+      let self.data[f] = eval('&'.f)
+    endfor
+    for f in self.boolvars
+      let self.booldata[f] = eval('&'.f)
+    endfor
+  endfunction
+  function! s:store.restore()
+    for f in keys(self.data)
+      exe 'setl' f.'='.self.data[f]
+    endfor
+    for f in keys(self.booldata)
+      exe 'setl' (self.booldata[f] ? "" : "no").f
+    endfor
+  endfunction
+  " }}}3
+  call s:store.save()
+
   " let &runtimepath=s:configured_runtimepath
 endif
 " unlet s:configured_runtimepath
@@ -84,80 +107,6 @@ augroup vimrc-neobundle-lazy
 augroup END
 
 if has('vim_starting')
-  " let s:lazyutil = {
-  "       \   '_' : {},
-  "       \ }
-  " function! s:lazyutil.add(on, mode, source)
-  "   let k = a:on."_".a:mode
-  "   if !self.has(k)
-  "     let self[k] = []
-  "   endif
-  "   call add(self[k], a:source)
-  " endfunction
-
-  " function! s:lazyutil.has(key)
-  "   return exists('s:lazyutil["' . a:key . '"]')
-  " endfunction
-
-  " function! s:lazyutil.get(on, mode)
-  "   let k = a:on."_".a:mode
-  "   if !self.has(k)
-  "     return []
-  "   endif
-  "   return self[k]
-  " endfunction
-
-  " function! s:lazyutil.clear(on, mode)
-  "   let k = a:on."_".a:mode
-  "   if !self.has(k)
-  "     return []
-  "   endif
-  "   let sources = self[k]
-  "   unlet self[k]
-  "   return sources
-  " endfunction
-
-  " function! s:lazyutil.load(on, mode)
-  "   let sources = self.clear(a:on, a:mode)
-  "   if empty(sources)
-  "     return
-  "   endif
-  "   let F = function('neobundle#config#source')
-  "   " call call(F, sources)
-  "   call call(F, [sources])
-  "   " syntax enable
-  " endfunction
-
-  " function! s:lazyutil.register(on, modes, source)
-  "   silent execute 'NeoBundleLazy' a:source
-  "   let modes = type(a:modes) == type([]) ? a:modes : split(a:modes, ",")
-
-  "   let name = fnamemodify(a:source, ':te')
-  "   let name = substitute(name, '^[''"]*\|\.git[''"]*$\|[''"]*$', '', 'g')
-
-  "   for mode in modes
-  "     call self.add(a:on, mode, name)
-
-  "     let k = a:on . "_" . mode
-  "     if !self.has("_".k)
-  "       let self._[k] = 1
-  "       let cmd = printf('autocmd vimrc-neobundle-lazy %s %s NeoBundleLazyOnSource %s %s', a:on, mode, a:on, mode)
-  "       silent execute cmd
-  "     endif
-  "   endfor
-  " endfunction
-
-  " function! s:neobundle_lazy_source(on, mode)
-  "   call s:lazyutil.load(a:on, a:mode)
-  " endfunction
-
-  " command! -nargs=+ NeoBundleLazyOnSource call <SID>neobundle_lazy_source(<f-args>)
-
-  " function! s:neobundle_lazy_on(on, modes, source)
-  "   call s:lazyutil.register(a:on, a:modes, a:source)
-  " endfunction
-  " command! -nargs=+ NeoBundleLazyOn call <SID>neobundle_lazy_on(<f-args>)
-
   function! s:neobundle_lazy_on(on, modes, source)
     if a:on =~? "filetype"
       let opt = {
@@ -172,7 +121,9 @@ endif
 
 
 " vundles {{{2
-NeoBundle 'Lokaltog/vim-powerline'
+if has('python')
+  NeoBundle 'Lokaltog/vim-powerline'
+endif
 " colorscheme {{{3
 NeoBundle 'tomasr/molokai'
 NeoBundle 'mrkn/mrkn256.vim'
@@ -239,7 +190,7 @@ NeoBundle 'rhysd/endwize.vim'
 NeoBundle 't9md/vim-surround_custom_mapping'
 NeoBundle 't9md/vim-quickhl'
 NeoBundleLazy 't9md/vim-textmanip'
-NeoBundle 'ujihisa/camelcasemotion'
+NeoBundle 'bkad/CamelCaseMotion'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'vim-scripts/YankRing.vim'
 " NeoBundle 'chrismetcalf/vim-yankring'
@@ -279,6 +230,7 @@ NeoBundle 'vim-scripts/matchparenpp'
 NeoBundle 'vimtaku/hl_matchit.vim.git'
 " NeoBundle 'gregsexton/MatchTag'
 " NeoBundle 'vim-scripts/ruby-matchit'
+NeoBundle 'semmons99/vim-ruby-matchit'
 NeoBundle 'AndrewRadev/splitjoin.vim'
 NeoBundle 'AndrewRadev/inline_edit.vim'
 " NeoBundle 'Raimondi/delimitMate'
@@ -286,6 +238,7 @@ NeoBundle 'kana/vim-smartinput'
 " NeoBundle 'acustodioo/vim-enter-indent'
 " NeoBundle 'dahu/vim-fanfingtastic'
 
+" NeoBundle 'houtsnip/vim-emacscommandline'
 NeoBundle 'tpope/vim-unimpaired'
 NeoBundle 'vim-scripts/ShowMultiBase'
 " NeoBundle 'tyru/current-func-info.vim'
@@ -304,6 +257,7 @@ NeoBundle 'ciaranm/detectindent'
 " NeoBundle 'ujihisa/shadow.vim'
 "NeoBundle 'motemen/git-vim'
 NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'gregsexton/gitv'
 NeoBundle 'int3/vim-extradite'
 NeoBundleLazy 'Shougo/vim-vcs'
 NeoBundle 'sjl/splice.vim'
@@ -319,7 +273,7 @@ NeoBundle 'pekepeke/ref-javadoc'
 NeoBundle 'soh335/vim-ref-jquery'
 " NeoBundle 'mojako/ref-sources.vim'
 
-" vim {{{4}}}
+" vim {{{4
 NeoBundle 'kana/vim-vspec'
 
 " vim-help {{{4
@@ -339,17 +293,18 @@ NeoBundle 'vim-ruby/vim-ruby'
 NeoBundle 'tpope/vim-rails'
 NeoBundle 'hallison/vim-ruby-sinatra'
 " NeoBundle 'tpope/vim-rake'
+" NeoBundle 'taq/vim-rspec'
+NeoBundle 'skwp/vim-rspec'
 NeoBundleLazyOn FileType ruby 'tpope/vim-cucumber'
 NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
 NeoBundle 'vim-scripts/eruby.vim'
 NeoBundle 'tobiassvn/vim-gemfile'
+NeoBundle 't9md/vim-chef'
 NeoBundle 'rhysd/unite-ruby-require.vim.git'
 NeoBundle 'rhysd/neco-ruby-keyword-args.git'
 if has("signs") && has("clientserver") && v:version > 700
   NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
 endif
-NeoBundle 't9md/vim-chef'
-NeoBundle 'taq/vim-rspec'
 if executable('alpaca_complete')
   NeoBundle 'taichouchou2/alpaca_complete', {
         \ 'depends' : 'tpope/vim-rails',
@@ -374,7 +329,7 @@ NeoBundle 'digitaltoad/vim-jade'
 NeoBundleLazyOn FileType html,eruby,php 'mattn/zencoding-vim'
 NeoBundleLazyOn FileType html,php,haml,jade 'vim-scripts/indenthtml.vim'
 " NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
-NeoBundle 'amirh/HTML-AutoCloseTag'
+NeoBundleLazyOn FileType html 'amirh/HTML-AutoCloseTag'
 
 " css {{{4
 NeoBundleLazyOn FileType html,javascript,css,sass,scss,less 'Rykka/colorv.vim'
@@ -384,7 +339,7 @@ NeoBundle 'hail2u/vim-css3-syntax'
 NeoBundle 'cakebaker/scss-syntax.vim'
 NeoBundle 'wavded/vim-stylus'
 NeoBundle 'groenewege/vim-less'
-NeoBundle 'bbommarito/vim-slim'
+NeoBundle 'slim-template/vim-slim'
 NeoBundleLazyOn FileType css 'miripiruni/CSScomb-for-Vim'
 NeoBundleLazyOn FileType css 'vim-scripts/cssbaseline.vim'
 NeoBundleLazyOn FileType css 'bae22/prefixer'
@@ -420,9 +375,12 @@ NeoBundleLazyOn FileType python 'lambdalisue/vim-python-virtualenv'
 NeoBundleLazyOn FileType python 'gerardo/vim-django-support'
 NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
 NeoBundleLazyOn FileType python 'vim-scripts/python_match.vim'
-" if has('python')
-"   NeoBundleLazyOn FileType python 'davidhalter/jedi-vim'
-" endif
+if has('python')
+  NeoBundle 'davidhalter/jedi-vim', {
+      \ 'build' : 'git submodule update --init',
+      \ 'autoload' : { 'filetypes' : 'python' },
+      \ }
+endif
 " NeoBundle 'sontek/rope-vim'
 " if executable('ipython')
 "   NeoBundleLazy 'ivanov/vim-ipython'
@@ -450,7 +408,10 @@ NeoBundle 'nanki/vim-objj'
 NeoBundle 'pekepeke/cocoa.vim'
 NeoBundle 'vim-scripts/applescript.vim'
 
-" android {{{4
+" java, android {{{4
+NeoBundle 'mikelue/vim-maven-plugin'
+NeoBundleLazyOn FileType java 'javacomplete'
+NeoBundle 'groovy.vim'
 NeoBundle 'thinca/vim-logcat'
 
 " scala {{{4
@@ -661,6 +622,7 @@ augroup vimrc-colors "{{{2
     "hi CursorLine gui=underline term=underline cterm=underline
     " highlight CursorLine ctermbg=black guibg=black
     highlight link VimShellError WarningMsg
+
     " highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
   endfunction
 
@@ -670,38 +632,37 @@ augroup vimrc-colors "{{{2
   endfunction
 
   autocmd ColorScheme * call s:my_highlight_defines()
-  " autocmd Syntax * call <SID>my_additional_syntaxes()
-  autocmd Syntax eruby highlight link erubyRubyDelim Label
   autocmd Syntax * call s:my_additional_syntaxes()
   " autocmd VimEnter,WinEnter * call s:my_additional_syntaxes()
+  autocmd Syntax eruby highlight link erubyRubyDelim Label
 
   " カーソル行 http://d.hatena.ne.jp/thinca/20090530/1243615055
-  " autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
-  " autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
-  " autocmd WinEnter * call s:auto_cursorline('WinEnter')
-  " autocmd WinLeave * call s:auto_cursorline('WinLeave')
+  autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
+  autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
+  autocmd WinEnter * call s:auto_cursorline('WinEnter')
+  autocmd WinLeave * call s:auto_cursorline('WinLeave')
 
-  " let s:cursorline_lock = 0
-  " function! s:auto_cursorline(event) "{{{3
-  "   if a:event ==# 'WinEnter'
-  "     setlocal cursorline
-  "     let s:cursorline_lock = 2
-  "   elseif a:event ==# 'WinLeave'
-  "     setlocal nocursorline
-  "   elseif a:event ==# 'CursorMoved'
-  "     if s:cursorline_lock
-  "       if 1 < s:cursorline_lock
-  "         let s:cursorline_lock = 1
-  "       else
-  "         setlocal nocursorline
-  "         let s:cursorline_lock = 0
-  "       endif
-  "     endif
-  "   elseif a:event ==# 'CursorHold'
-  "     setlocal cursorline
-  "     let s:cursorline_lock = 1
-  "   endif
-  " endfunction "}}}3
+  let s:cursorline_lock = 0
+  function! s:auto_cursorline(event) "{{{3
+    if a:event ==# 'WinEnter'
+      setlocal cursorline
+      let s:cursorline_lock = 2
+    elseif a:event ==# 'WinLeave'
+      setlocal nocursorline
+    elseif a:event ==# 'CursorMoved'
+      if s:cursorline_lock
+        if 1 < s:cursorline_lock
+          let s:cursorline_lock = 1
+        else
+          setlocal nocursorline
+          let s:cursorline_lock = 0
+        endif
+      endif
+    elseif a:event ==# 'CursorHold'
+      setlocal cursorline
+      let s:cursorline_lock = 1
+    endif
+  endfunction "}}}3
 augroup END
 
 if has('gui')
@@ -752,11 +713,17 @@ augroup vimrc-auto-mkdir
     endfunction
 augroup END
 
-" trim right spaces {{{2
-let g:trimr_method = 'ignore_filetype'
-let g:trimr_targets = ['markdown', 'mkd', 'textile']
-
 " etc hacks {{{2
+" http://d.hatena.ne.jp/uasi/20110523/1306079612
+" if s:is_mac
+"   MyAutocmd BufWritePost * call <SID>set_utf8_attr(escape(expand("<afile>"), "*[]?{}' "))
+"   function! s:set_utf8_attr(file)
+"     let is_utf8 = &fileencoding == "utf-8" || (&fileencoding == "" && &encoding == "utf-8")
+"     if s:is_mac && is_utf8
+"       call system("xattr -w com.apple.TextEncoding 'utf-8;134217984' \"".a:file."\"")
+"     endif
+"   endfunction
+" endif
 " http://vim-users.jp/2009/10/hack84/
 MyAutocmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
 MyAutocmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
@@ -868,6 +835,7 @@ set mouse=nv
 set nomousefocus
 set mousehide
 
+set nospell
 set shellslash
 set directory=~/.tmp,/var/tmp,/tmp
 
@@ -961,7 +929,7 @@ endif " }}}
 
 "set wm=2
 set nowrap     " 折り返しなし
-set nrformats=hex
+set nrformats-=octal
 set updatetime=200
 
 " sticky shift {{{2
@@ -1153,12 +1121,9 @@ nnoremap <silent> [t]e t
 noremap [s] <Nop>
 nmap s [s]
 
-nnoremap [prefix] <Nop>
-vnoremap [prefix] <Nop>
+noremap [prefix] <Nop>
 nmap , [prefix]
 vmap , [prefix]
-" nnoremap [prefix], ,
-" vnoremap [prefix], ,
 
 noremap [edit] <Nop>
 nmap <C-e> [edit]
@@ -1456,11 +1421,17 @@ inoremap <C-w> <C-g>u<C-w>
 inoremap <C-u> <C-g>u<C-u>
 
 " cmaps {{{2
-cnoremap <C-a> <Home>
-cnoremap <C-e> <End>
-cnoremap <C-f> <Right>
-cnoremap <C-b> <Left>
-cnoremap <C-d> <Delete>
+if neobundle#is_installed('vim-emacscommandline')
+  cnoremap <C-x><C-x> <C-r>=substitute(expand('%:p:h'), ' ', '\\v:val', 'e')<CR>/
+else
+  cnoremap <C-a> <Home>
+  cnoremap <C-e> <End>
+  cnoremap <C-f> <Right>
+  cnoremap <C-b> <Left>
+  cnoremap <C-d> <Delete>
+  Lazy cnoremap <C-x> <C-r>=substitute(expand('%:p:h'), ' ', '\\v:val', 'e')<CR>/
+endif
+
 cnoremap <C-]>a <Home>
 cnoremap <C-]>e <End>
 "cnoremap <C-]>f <C-f>
@@ -1475,7 +1446,6 @@ cnoremap <C-]><C-b> <S-Left>
 cnoremap <C-]><C-d> <Delete>
 cnoremap <C-]><C-i> <C-d>
 
-Lazy cnoremap <C-x> <C-r>=expand('%:p:h')<CR>/
 
 " v+omap
 onoremap aa a>
@@ -1506,6 +1476,10 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" vim-trimr {{{2
+let g:trimr_method = 'ignore_filetype'
+let g:trimr_targets = ['markdown', 'mkd', 'textile']
+
 " endwize {{{2
 " inoremap <silent> <cr> <c-r>=EnterIndent()<cr>
 if neobundle#is_installed('vim-enter-indent')
@@ -1544,7 +1518,9 @@ nmap <Leader>j :<C-u>SplitjoinJoin<CR>
 nmap <Leader>k :<C-u>SplitjoinSplit<CR>
 
 " rainbow_parentheses {{{2
-MyAutocmd VimEnter * RainbowParenthesesToggleAll
+if neobundle#is_installed('rainbow_parentheses.vim')
+  MyAutocmd VimEnter * RainbowParenthesesToggleAll
+endif
 
 " vim-smartinput {{{2
 function! s:sminput_define_rules()
@@ -1878,7 +1854,9 @@ if neobundle#is_installed('jedi-vim')
   let g:jedi#auto_initialization = 1
   let g:jedi#popup_on_dot = 0
   let g:jedi#rename_command = '<leader>R'
-  MyAutoCmd FileType python let b:did_ftplugin = 1
+  let g:jedi#show_function_definition = 0
+  let g:jedi#auto_vim_configuration = 0
+  MyAutocmd FileType python let b:did_ftplugin = 1
 endif
 " pydiction {{{2
 let g:pydiction_location = '~/.vim/dict/pydiction-complete-dict'
@@ -2058,6 +2036,7 @@ UniteNMap   bb        bookmark -default-action=open
 nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
 " UniteNMap   rr        quicklearn -immediately
 nnoremap [space]R :<C-u>Unite quicklearn -immediately<CR>
+Alias colorscheme Unite colorscheme -auto-preview
 
 
 " if my#util#has_plugin('vimproc')
@@ -2105,6 +2084,12 @@ inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-inser
 
 command! Todo silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
 
+if isdirectory(expand("~/.github-dotfiles/.vim"))
+  nnoremap <silent> [unite]v  :<C-u>Unite -start-insert file_rec:~/.github-dotfiles/.vim/<CR>
+else
+  nnoremap <silent> [unite]v  :<C-u>Unite -start-insert file_rec:~/.vim/<CR>
+endif
+" nnoremap <silent> [unite]v  :<C-u>Unite file_rec:~/.vim/after file_rec:~/.vim/ftplugin<CR>
 " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
 function! s:tags_update()
     " include している tag ファイルが毎回同じとは限らないので毎回初期化
@@ -2132,10 +2117,27 @@ nnoremap <silent> [unite]<C-]> :<C-u>execute "PopupTags "
     \.substitute(<SID>get_func_name(expand('<cWORD>')), '\:', '\\\:', "g")<CR>
 
 " filepath insert {{{3
-nnoremap <C-y><C-f> :<C-u>Unite -default-action=insert file<CR>
-nnoremap <C-y><C-d> :Unite -default-action=insert_directory file<CR>
-inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=insert file<CR>a
-inoremap <C-y><C-d> <C-o>:Unite -default-action=insert_directory file<CR>a
+if neobundle#is_installed('unite.vim') " custom action insert_or_narrow {{{4
+  let s:unite_action_narrow_or_insert = {
+        \ 'is_quit': 0
+        \ }
+  function! s:unite_action_narrow_or_insert.func(candidate)
+    " echoerr a:candicate.word
+    let path = a:candidate.action__path
+    if isdirectory(path)
+      call unite#take_action('narrow', a:candidate)
+    else
+      let context = unite#get_context()
+      call unite#close(context.buffer_name)
+      call unite#take_action('insert', a:candidate)
+    endif
+  endfunction
+  call unite#custom_action('file', 'narrow_or_insert', s:unite_action_narrow_or_insert)
+  unlet! s:unite_action_narrow_or_insert
+endif
+
+nnoremap <C-y><C-f> :<C-u>Unite -default-action=narrow_or_insert file<CR>
+inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=narrow_or_insert file<CR>
 
 " cmd-t/r {{{3
 function! s:get_cmd_t_key(key)
@@ -2437,6 +2439,36 @@ let g:textobj_between_no_default_key_mappings=1
 
 " ref.vim {{{2
 " options {{{3
+let g:ref_source_webdict_sites = {
+      \   'alc' : {
+      \     'url': 'http://eow.alc.co.jp/%s',
+      \     'keyword_encoding,': 'utf-8',
+      \     'cache': 1,
+      \   },
+      \   'wikipedia:ja': {
+      \     'url': 'http://ja.wikipedia.org/wiki/%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'wikipedia:en': {
+      \     'url': 'http://en.wikipedia.org/wiki/%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'wiktionary': {
+      \     'url': 'http://ja.wiktionary.org/wiki/%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \ }
+function! g:ref_source_webdict_sites.alc.filter(output)
+    return join(split(a:output, "\n")[38:], "\n")
+endfunction
+function! g:ref_source_webdict_sites.wiktionary.filter(output)
+    return join(split(a:output, "\n")[38:], "\n")
+endfunction
+let g:ref_source_webdict_sites.default = 'alc'
+
 let g:ref_phpmanual_path=$HOME.'/.bin/apps/phpman/'
 let g:ref_javadoc_path = $HOME.'/.bin/apps/jdk-6-doc/ja'
 let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest/docs'
@@ -2447,8 +2479,6 @@ let g:ref_jsdom_path=expand('~/.bin/apps/jscore/www.aptana.com/reference/html/ap
 "let g:ref_jquery_use_cache = 1
 if isdirectory($HOME."/.nodebrew")
   let g:ref_nodejsdoc_dir = my#dir#find("~/.nodebrew/src/node-v*").last() . "/doc"
-elseif isdirectory($HOME."/.nvm")
-  let g:ref_nodejsdoc_dir = my#dir#find("~/.nvm/src/node-v*").last() . "/doc"
 endif
 
 if s:is_win
@@ -2464,18 +2494,22 @@ let g:ref_alc_use_cache = 1
 let g:ref_alc_start_linenumber = 43
 let g:ref_use_vimproc = 0
 
+if neobundle#is_installed('vimproc')
+  let g:ref_use_vimproc = 1
+endif
 if neobundle#is_installed('vim-ref')
-  call ref#register_detection('_', 'alc')
+  call ref#register_detection('_', 'webdict')
 endif
 " }}}
 
 LCAlias Ref
-for src in ['alc', 'refe', 'ri', 'perldoc', 'man'
+for src in ['refe', 'ri', 'perldoc', 'man'
       \ , 'pydoc', 'jsref', 'jquery'
       \ , 'cppref', 'cheat', 'nodejs', ]
   silent! exe 'Alias' src 'Ref' src
 endfor
-Alias mr Ref alc
+Alias mr Ref webdict
+Alias alc Ref webdict
 Alias php[manual] Ref phpmanual
 Alias timo Ref timobileref
 Alias tide Ref tidesktopref
@@ -2678,6 +2712,8 @@ if neobundle#is_installed('vimproc')
           \    'hook/close_quickfix/enable_success' : 1,
           \    'hook/hier_update/enable' : 1,
           \    'hook/quickfix_stateus_enable/enable' : 1,
+          \    'hook/back_window/enable' : 1,
+          \    'hook/back_window/enable_exit' : 1,
           \  },
           \  'perl/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/vimparse.pl',
@@ -2820,9 +2856,33 @@ if neobundle#is_installed('neosnippet')
   function! s:can_snip()
     return neosnippet#expandable() && &filetype != "snippet"
   endfunction
+  let s:pair_closes = [ "]", "}", ")", "'", '"', ">", "|" , ","]
+  function! s:imap_tab()
+    if s:can_snip()
+      return "\<Plug>(neosnippet_jump_or_expand)"
+    elseif pumvisible()
+      return "\<C-n>"
+    endif
 
-  imap <expr><TAB> <SID>can_snip() ?
-        \ "\<Plug>(neosnippet_jump_or_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
+    let line = getline(".")
+    let pos = col(".") - 1
+    let org_pos = pos
+    while (line[pos] == " ")
+      let pos = pos + 1
+    endwhile
+    let ch = line[pos]
+    if index(s:pair_closes, ch) != -1
+      while (line[pos+1] == " ")
+        let pos = pos+1
+      endwhile
+      return repeat("\<Right>", pos - org_pos + 1)
+    endif
+    return "\<TAB>"
+  endfunction
+
+  imap <expr><TAB> <SID>imap_tab()
+  " imap <expr><TAB> <SID>can_snip() ?
+  "       \ "\<Plug>(neosnippet_jump_or_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
   smap <expr><TAB> <SID>can_snip() ?
         \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
 
@@ -3020,7 +3080,9 @@ function! s:setup_vimproc_dll() " {{{3
   endif
 endfunction " }}}
 
-call s:setup_vimproc_dll()
+if neobundle#is_installed('vimproc')
+  call s:setup_vimproc_dll()
+endif
 
 if s:is_win " {{{3
   " Display user name on Windows.
@@ -3099,11 +3161,23 @@ let g:vimfiler_safe_mode_by_default=0
 let g:vimfiler_edit_action = 'below'
 " let g:vimfiler_edit_action = 'tabopen'
 
-let g:vimfiler_tree_leaf_icon = ' '
-let g:vimfiler_tree_opened_icon = '▾'
-let g:vimfiler_tree_closed_icon = '▸'
 let g:vimfiler_file_icon = '-'
-let g:vimfiler_marked_file_icon = '*'
+let g:vimfiler_tree_leaf_icon = ' '
+if s:is_win
+  let g:vimfiler_tree_opened_icon = '-'
+  let g:vimfiler_tree_closed_icon = '+'
+else
+  let g:vimfiler_tree_opened_icon = '▾'
+  let g:vimfiler_tree_closed_icon = '▸'
+endif
+" let g:vimfiler_marked_file_icon = '*'
+if s:is_mac
+  let g:vimfiler_readonly_file_icon = '✗'
+  let g:vimfiler_marked_file_icon = '✓'
+else
+  let g:vimfiler_readonly_file_icon = 'x'
+  let g:vimfiler_marked_file_icon = 'v'
+endif
 
 MyAutocmd FileType vimfiler call s:vimfiler_my_settings()
 " keymaps {{{3
@@ -3468,6 +3542,17 @@ command!
       \ Capture
       \ call my#ui#cmd_capture(<q-args>)
 
-" }}}1
+
+" after initializes {{{1
+if !has('vim_starting') && has('gui')
+  execute 'source' expand("~/.gvimrc")
+  if neobundle#is_installed('vim-powerline')
+    call Pl#UpdateStatusline(1)
+  endif
+endif
+if exists('s:store')
+  call s:store.restore()
+  unlet s:store
+endif
 " __END__ {{{1
 " vim: set ft=vim fdm=marker sw=2 ts=2 et:

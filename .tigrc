@@ -1,0 +1,19 @@
+# options {{{1
+set show-date = local
+set show-refs = yes
+set show-rev-graph = yes
+set line-graphics = yes
+
+# binds {{{1
+bind generic g move-first-line
+bind generic G move-last-line
+bind generic ^f move-page-down
+bind generic ^w view-next
+
+bind diff ^w view-next
+bind diff h scroll-left
+bind diff l scroll-right
+
+
+
+# __END__ {{{1

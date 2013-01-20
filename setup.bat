@@ -30,12 +30,18 @@ goto :EOF
 
 if defined is_xp (
     if not exist "%1" (
-        link %2 %1
+        echo link %2 %1
+        linkd %2 %1
     ) else (
         echo skip %1
     )
 ) else (
-    if not exist "%1" mklink /d %1 %2 else echo skip %1
+    if not exist "%1" (
+        echo mklink /d %1 %2
+        mklink /d %1 %2
+    ) else (
+        echo skip %1
+    )
 )
 goto :EOF
 
@@ -44,12 +50,14 @@ goto :EOF
 if defined is_xp (
     if exist "%1" del "%1"
     if not exist "%1" (
+        echo fsutil hardlink create %1 %2
         fsutil hardlink create %1 %2
     ) else (
         echo skip %1
     )
 ) else (
     if not exist "%1" (
+        echo mklink %1 %2
         mklink %1 %2
     ) else (
         echo skip %1

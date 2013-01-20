@@ -755,3 +755,27 @@ snippet keyup
 		break;
 	});
 
+snippet http.get
+	http.get({
+	  host: '${1}',
+	  path: '${2:/}',
+	}, function(res) {
+	  var body = "";
+	  res.on('data', function(data) {
+		body += data;
+	  }).on('end', function() {
+	  });
+	});
+
+snippet http.req
+	req = http.request({
+		'POST',
+		${1:''},
+	});
+	req.write(${2:''});
+	req.end()
+		.on('response', function(res) {
+			res.on('data', function(data) {})
+				.on('end', function() {});
+		});
+

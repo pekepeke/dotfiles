@@ -19,13 +19,22 @@ nnoremap vac $?\%(.*#.*class\)\@!class<CR>%V%0
 " module ~ end block
 nnoremap vaM $?\%(.*#.*module\)\@!module<CR>%V%0
 
-nnoremap <buffer> <silent> <C-K> :Ref refe<CR>
-
 vnoremap <buffer> [space]X ! xmpfiler -a
 vnoremap <buffer> [space]S ! xmpfiler -s
 vnoremap <buffer> [space]M ! xmpfiler -m
 
-inoremap <expr><buffer> { smartchr#loop('{', '#{', '{{')
+function! s:if_string_smtchrloop(...)
+  let sname = synIDattr(synID(line("."), col("."), 1), "name")
+  if sname =~? 'rubyString' || sname =~? 'string' ||
+        \ sname =~? 'rubyInterporation' || sname =~? 'rubyInterporationDelimiter'
+    let Fn = function('smartchr#loop')
+    return call(Fn, a:000)
+  endif
+  return a:000[0]
+endfunction
+
+inoremap <expr><buffer> # <SID>if_string_smtchrloop('#', '#{', '##')
+" inoremap <expr><buffer> { smartchr#loop('{', '#{', '{{')
 inoremap <expr><buffer> > smartchr#one_of('>', '=>', '>>')
 
 call my#ruby#init()

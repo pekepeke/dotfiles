@@ -1,5 +1,6 @@
 --langmap=PHP:.php.inc
 --php-types=c+f+d
+
 --langdef=actionscript
 --langmap=actionscript:.as
 --regex-actionscript=/^[ \t]*[(private| public|static) ( \t)]*function[ \t]+([A-Za-z0-9_]+)[ \t]*\(/\1/f, function, functions/
@@ -7,22 +8,28 @@
 --regex-actionscript=/^[ \t]*[(private| public|static) ( \t)]*var[ \t]+([A-Za-z0-9_]+)[ \t]*/\1/v,variable, variables/
 --regex-actionscript=/.*\.prototype \.([A-Za-z0-9 ]+)=([ \t]?)function( [ \t]?)*\(/\1/ f,function, functions/
 --regex-actionscript=/^[ \t]*class[ \t]+([A-Za-z0-9_]+)[ \t]*/\1/c,class, classes/
+
 --regex-ruby=/^[[:space:]]*(has_(one|many)|has_and_belongs_to_many|belongs_to)[[:space:]]+:([a-z0-9_]+)/\3/
 --regex-ruby=/^[[:space:]]*attr_(reader|writer|accessor)[[:space:]]+:([a-z0-9_?]+)/\2/
+
 --langdef=scala
 --langmap=scala:.scala
---regex-scala=/^[ \t]*class[ \t]+([a-zA-Z0-9_]+)/\1/c,classes/
---regex-scala=/^[ \t]*trait[ \t]+([a-zA-Z0-9_]+)/\1/t,traits/
---regex-scala=/^[ \t]*type[ \t]+([a-zA-Z0-9_]+)/\1/T,types/
---regex-scala=/^[ \t]*def[ \t]+([a-zA-Z0-9_]+)/\1/m,methods/
---regex-scala=/^[ \t]*val[ \t]+([a-zA-Z0-9_]+)/\1/C,constants/
---regex-scala=/^[ \t]*var[ \t]+([a-zA-Z0-9_]+)/\1/l,local variables/
---regex-scala=/^[ \t]*package[ \t]+([a-zA-Z0-9_.]+)/\1/p,packages/
---regex-scala=/^[ \t]*case class[ \t]+([a-zA-Z0-9_]+)/\1/c,case classes/
---regex-scala=/^[ \t]*object[ \t]+([a-zA-Z0-9_]+)/\1/o,objects/
+--regex-scala=/^[ \t]*(((implicit|private|public)?[ \t]*)*(\[[a-zA-Z0-9_]*\])?[ \t]*)*class[ \t]*([a-zA-Z0-9_]+)/\5/c,classes/
+--regex-scala=/^[ \t]*(((implicit|private|public)?[ \t]*)*(\[[a-zA-Z0-9_]*\])?[ \t]*)*object[ \t]*([a-zA-Z0-9_]+)/\5/o,objects/
+--regex-scala=/^[ \t]*trait[ \t]*([a-zA-Z0-9_]+)/\1/t,traits/
+--regex-scala=/^[ \t]*case[ \t]*class[ \t]*([a-zA-Z0-9_]+)/\1/r,cclasses/
+--regex-scala=/^[ \t]*abstract[ \t]*class[ \t]*([a-zA-Z0-9_]+)/\1/a,aclasses/
+--regex-scala=/[ \t]*(((implicit|override|lazy|private|public)?[ \t]*)*(\[[a-zA-Z0-9_]*\])?[ \t]*)*def[ \t]*([a-zA-Z0-9_=]+)[ \t]*.*[:={]/\5/m,methods/
+--regex-scala=/[ \t]*(((override|lazy|private|public)?[ \t]*)*(\[[a-zA-Z0-9_]*\])?[ \t]*)*val[ \t]*([a-zA-Z0-9_]+)[ \t]*[:=]/\5/V,values/
+--regex-scala=/[ \t]*(((override|lazy|private|public)?[ \t]*)*(\[[a-zA-Z0-9_]*\])?[ \t]*)*var[ \t]*([a-zA-Z0-9_]+)[ \t]*[:=]/\5/v,variables/
+--regex-scala=/^[ \t]*type[ \t]*([a-zA-Z0-9_]+)[ \t]*[\[<>=]/\1/T,types/
+--regex-scala=/^[ \t]*import[ \t]*([a-zA-Z0-9_{}., \t=>]+$)/\1/i,includes/
+--regex-scala=/^[ \t]*package[ \t]*([a-zA-Z0-9_.]+$)/\1/p,packages/
+
 --langmap=javascript:.js
 --regex-javascript=/^(.*).prototype *= *(.*)/\1/o, object/
 --regex-javascript=/^[\function(t]*(.*) *: *function/\1/o, object/
+
 --langdef=latex
 --langmap=latex:.tex
 --regex-latex=/^\\part[[:space:]]*(\[[^]]*\])?[[:space:]]*\{([^}]+)\}/PART \2/s,part/
@@ -40,7 +47,9 @@
 --regex-latex=/\\label[[:space:]]*\{([^}]+)\}/\1/l,label/
 --regex-latex=/\\ref[[:space:]]*\{([^}]+)\}/\1/r,ref/
 --regex-latex=/\\pageref[[:space:]]*\{([^}]+)\}/\1/p,pageref/
+
 --regex-make=/^([^:# \t]+)[ \t]*[:]{1,2}/\1/t,targets/
+
 --langdef=objc
 --langmap=objc:.m.h
 --regex-objc=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+):[[:space:]]*\(/\1/m,method/
