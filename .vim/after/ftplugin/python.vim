@@ -12,6 +12,10 @@ setl textwidth=80 tabstop=8 softtabstop=4 shiftwidth=4 expandtab
 inoreabbrev <buffer> true True
 inoreabbrev <buffer> false False
 
+if neobundle#is_installed('vim-ref')
+  nmap <buffer> K <Plug>(ref-keyword)
+endif
+
 " tags
 "setlocal tags+=~/.vim/tags/python/python.tags
 

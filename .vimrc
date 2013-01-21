@@ -306,13 +306,13 @@ if has("signs") && has("clientserver") && v:version > 700
   NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
 endif
 if executable('alpaca_complete')
-  NeoBundle 'taichouchou2/alpaca_complete', {
+  NeoBundleLazy 'taichouchou2/alpaca_complete', {
         \ 'depends' : 'tpope/vim-rails',
         \ 'autoload' : { 'filetypes' : 'ruby'},
         \  }
 endif
 if executable('rails_best_practices')
-  NeoBundle 'taichouchou2/unite-rails_best_practices', {
+  NeoBundleLazy 'taichouchou2/unite-rails_best_practices', {
         \ 'depends' : [ 'Shougo/unite.vim', 'romanvbabenko/rails.vim' ],
         \ 'autoload' : { 'filetypes' : 'ruby'},
         \ }
@@ -375,8 +375,9 @@ NeoBundleLazyOn FileType python 'lambdalisue/vim-python-virtualenv'
 NeoBundleLazyOn FileType python 'gerardo/vim-django-support'
 NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
 NeoBundleLazyOn FileType python 'vim-scripts/python_match.vim'
+
 if has('python')
-  NeoBundle 'davidhalter/jedi-vim', {
+  NeoBundleLazy 'davidhalter/jedi-vim', {
       \ 'build' : 'git submodule update --init',
       \ 'autoload' : { 'filetypes' : 'python' },
       \ }
@@ -2085,11 +2086,13 @@ inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-inser
 command! Todo silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
 
 if isdirectory(expand("~/.github-dotfiles/.vim"))
-  nnoremap <silent> [unite]v  :<C-u>Unite -start-insert file_rec:~/.github-dotfiles/.vim/<CR>
+  nnoremap <silent> [unite]V  :<C-u>Unite -start-insert file_rec:~/.github-dotfiles/.vim/<CR>
 else
-  nnoremap <silent> [unite]v  :<C-u>Unite -start-insert file_rec:~/.vim/<CR>
+  nnoremap <silent> [unite]V  :<C-u>Unite -start-insert file_rec:~/.vim/<CR>
 endif
+nnoremap <silent> [unite]v  :<C-u>Unite -start-insert file_rec:~/.vim/after:~/.vim/ftplugin:~/.vim/snippets:~/.vim/template:~/.vim/sonictemplate<CR>
 " nnoremap <silent> [unite]v  :<C-u>Unite file_rec:~/.vim/after file_rec:~/.vim/ftplugin<CR>
+
 " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
 function! s:tags_update()
     " include している tag ファイルが毎回同じとは限らないので毎回初期化
@@ -2524,25 +2527,25 @@ call extend(g:ref_jsextra_defines, {
       \   'type' : 'yui',
       \   'command' : 'zip',
       \   'relative' : '',
-      \   'url' : 'https://github.com/CreateJS/EaselJS/raw/master/docs/EaselJS_docs-0.4.2.zip',
+      \   'url' : 'https://github.com/CreateJS/EaselJS/raw/master/docs/EaselJS_docs-0.5.0.zip',
       \ },
       \ 'TweenJS' : {
       \   'type' : 'yui',
       \   'command' : 'zip',
       \   'relative' : '',
-      \   'url' : 'https://github.com/CreateJS/TweenJS/raw/master/docs/TweenJS_docs-0.2.0.zip',
+      \   'url' : 'https://github.com/CreateJS/TweenJS/raw/master/docs/TweenJS_docs-0.3.0.zip',
       \ },
       \ 'PreloadJS' : {
       \   'type' : 'yui',
       \   'command' : 'zip',
       \   'relative' : '',
-      \   'url' : 'https://github.com/CreateJS/PreloadJS/raw/master/docs/PreloadJS_docs-0.1.0.zip',
+      \   'url' : 'https://github.com/CreateJS/PreloadJS/raw/master/docs/PreloadJS_docs-0.2.0.zip',
       \ },
       \ 'SoundJS' : {
       \   'type' : 'yui',
       \   'command' : 'zip',
       \   'relative' : '',
-      \   'url' : 'https://github.com/CreateJS/SoundJS/raw/master/docs/SoundJS_docs-0.2.0.zip',
+      \   'url' : 'https://github.com/CreateJS/SoundJS/raw/master/docs/SoundJS_docs-0.3.0.zip',
       \ },
       \ })
 
@@ -2820,6 +2823,26 @@ if neobundle#is_installed('vimproc')
           " \     'exec'    : '%c -c %o %s:p',
           " \     'quickfix/errorformat' : '',
           " \  },
+    if !executable('pyflakes')
+      call extend(g:quickrun_config, {
+          \  'python/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/python',
+          \  },
+          \  'watchdogs_checker/python' : {
+          \    'command' : 'python',
+          \     'exec'    : "%c -c compile(open(\"%s:p\")).read(), \"%s:p\", 'exec')",
+          \     'quickfix/errorformat' :
+          \        '\%A\ \ File\ \"%f\"\\\,\ line\ %l\\\,%m,' .
+          \        '\%C\ \ \ \ %.%#,' .
+          \        '\%+Z%.%#Error\:\ %.%#,' .
+          \        '\%A\ \ File\ \"%f\"\\\,\ line\ %l,' .
+          \        '\%+C\ \ %.%#,' .
+          \        '\%-C%p^,' .
+          \        '\%Z%m,' .
+          \        '\%-G%.%#'
+          \  },
+          \ })
+    endif
 
     call watchdogs#setup(g:quickrun_config)
     let g:watchdogs_check_BufWritePost_enable = 1
