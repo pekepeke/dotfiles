@@ -2090,7 +2090,7 @@ if isdirectory(expand("~/.github-dotfiles/.vim"))
 else
   nnoremap <silent> [unite]V  :<C-u>Unite -start-insert file_rec:~/.vim/<CR>
 endif
-nnoremap <silent> [unite]v  :<C-u>Unite -start-insert file_rec:~/.vim/after:~/.vim/ftplugin:~/.vim/snippets:~/.vim/template:~/.vim/sonictemplate<CR>
+nnoremap <silent> [unite]v  :<C-u>Unite -start-insert file_rec:~/.vim/after file_rec:~/.vim/ftplugin file_rec:~/.vim/snippets file_rec:~/.vim/template file_rec:~/.vim/sonictemplate<CR>
 " nnoremap <silent> [unite]v  :<C-u>Unite file_rec:~/.vim/after file_rec:~/.vim/ftplugin<CR>
 
 " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
@@ -2789,6 +2789,9 @@ if neobundle#is_installed('vimproc')
           \  'eruby/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/ruby_erb',
           \  },
+          \  'Gemfile/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/ruby',
+          \  },
           \  'watchdogs_checker/erubis' : {
           \    'command' : 'erubis',
           \     'exec'    : '%c -z %o %s:p',
@@ -2848,6 +2851,20 @@ if neobundle#is_installed('vimproc')
     let g:watchdogs_check_BufWritePost_enable = 1
     command! -nargs=0 WatchdogsOff let g:watchdogs_check_BufWritePost_enable=0
     command! -nargs=0 WatchdogsOn let g:watchdogs_check_BufWritePost_enable=1
+    command! -nargs=? WatchdogsConfig call <SID>watchdogs_config_show(<f-args>)
+
+    function! s:watchdogs_config_show(...)
+      let filetype = a:0 > 0 ? a:1 : &filetype
+      let items = []
+      for name in keys(g:quickrun_config)
+        if name =~? 'watchdogs_checker' && name =~? filetype
+          call add(items, printf("%s => %s", name, string(g:quickrun_config[name])))
+        endif
+      endfor
+      if !empty(items)
+        echo join(items, "\n")
+      endif
+    endfunction
   endif
 endif
 

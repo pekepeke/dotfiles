@@ -1,87 +1,94 @@
 (function($) {
-    var name = 'smoothScroll';
-    $.fn[name] = function(options) {
-        var $els = this
-        , opts = $.extend({
-              duration : 300
-            , fps : 60
-        }, options)
-        ,  data_name = name + "_rel";
+  var speeds = {
+    "fast" : 200
+    , "normal" : 400
+    , "slow" : 600
+  };
+  var TimerID = null;
+  function linear(x, t, b, c, d) {
+    return c*t/d + b;
+  }
+  $.fn.smoothScroll = function(options) {
+    clearTimeout(TimerID);
+    var $els = this
+    , opts = $.extend({
+      duration : 400
+      , easing : 'linear'
+      , fps : 36
+      , offset : 0
+      , on_start : function() { }
+      , on_finish : function() { }
+    }, options)
+    , fire = function(ev, el) {
+      if (typeof opts[ev] === 'function') { opts[ev].call(el); }
+    };
+    if (typeof speeds[opts.duration] !== 'undefined') {
+      opts.duration = speeds[opts.duration];
+    }
 
-        var scroll_fn = function() {
-          var q = $(this).data(data_name)
-          , msec = 1000 / (opts.fps || 60);
+    var scroll_fn = function() {
+      var q = $(this).attr('href')
+      , self = this
+      , tick = 1000 / (opts.fps || 60);
 
-          if (!q.match(/^#/)) {
-            return true;
+      if (!q.match(/^#/)) { return true; }
+
+      var $target = $([q, 'a[name="' + q.replace(/^#/, '') + '"]'].join(','));
+      if ($target.length <= 0) { return false; }
+
+      var end = $target.offset().top + (opts.offset || 0)
+      , start = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
+      , d_h = document.documentElement.scrollHeight
+      , w_h = window.innterHeight || document.documentElement.clientHeight
+      , screen_h = d_h - w_h;
+
+      if ( screen_h < end) { end = screen_h; }
+      if (end == start) { return false; }
+
+      var t = 0 , sy = 0 , ey = Math.abs(end - start)
+      , is_upto = (end >= start ? true : false)
+      , prev_scroll = -1
+      , ease_fn = null;
+
+      ease_fn = opts.easing == 'linear' ? linear : $.easing[opts.easing];
+
+      if (typeof ease_fn !== 'function') { ease_fn = linear; }
+
+      var motion_fn = function() {
+        TimerID = setTimeout(function() {
+          t += tick;
+          var dy = ease_fn(null, t, sy, ey, opts.duration) * (is_upto ? 1 : -1)
+          , scroll = start + dy
+          , is_end = scroll == prev_scroll;
+
+          if (opts.duration < t) {
+            is_end = true;
+            scroll = end;
+          } else if ((is_upto && end <= scroll) || (!is_upto && end >= scroll)) {
+            is_end = true;
+            scroll = end;
           }
 
-          var $target = $([q, 'a[name="' + q.replace(/^#/, '') + '"]'].join(','));
-          if ($target.length <= 0) {
+          window.scrollTo(0, scroll);
+
+          if (is_end) {
+            fire('on_finish', self);
             return false;
           }
-
-          var offset = $target.offset()
-          , end = offset.top
-          , d_h = document.documentElement.scrollHeight
-          , w_h = window.innterHeight
-             || document.documentElement.clientHeight;
-
-          if ( (d_h - w_h) < end) {
-            end = d_h - w_h;
-          }
-
-          var start = window.pageYOffset ||
-            document.documentElement.scrollTop ||
-            document.body.scrollTop || 0
-            , is_upto = end < start ? true : false;
-
-
-           if (end == start) {
-           		return false;
-           }
-           var dy = Math.abs(end - start) / (opts.duration / msec);
-           if (dy <= 0) {
-             dy = 1;
-           }
-           var motion_fn = function(start, end) {
-               setTimeout(function() {
-               	   var prev_start = start
-                   , is_fin = false;
-                   if (is_upto && start >= end) {
-                       start = start - dy;
-                       if (start <= end) {
-                         start = end;
-                         is_fin = true;
-                       }
-                       window.scrollTo(0, start);
-                   } else if (!is_upto && start <= end) {
-                       start = start + dy;
-                       if (start >= end) {
-                         start = end;
-                         is_fin = true;
-                       }
-                       window.scrollTo(0, start);
-                   } else {
-                       window.scrollTo(0, end);
-                       return false;
-                   }
-                   if (is_fin || start == prev_start) {
-                     return false;
-                   }
-                   motion_fn(start, end);
-               }, msec);
-           };
-           motion_fn.call(this, start, end);
-           return false;
-        };
-
-        $els.each(function() {
-            $(this)
-               .data(data_name, $(this).attr('href'))
-               .click(scroll_fn);
-        });
+          prev_scroll = scroll;
+          motion_fn();
+        }, tick);
+      };
+      fire('on_start', self);
+      motion_fn.call(self, start, end);
+      return false;
     };
+
+    $els.each(function() {
+      $(this)
+      .click(scroll_fn);
+    });
     return this;
+  };
 })(jQuery);
 
