@@ -19,9 +19,9 @@ nnoremap vac $?\%(.*#.*class\)\@!class<CR>%V%0
 " module ~ end block
 nnoremap vaM $?\%(.*#.*module\)\@!module<CR>%V%0
 
-vnoremap <buffer> [space]X ! xmpfiler -a
-vnoremap <buffer> [space]S ! xmpfiler -s
-vnoremap <buffer> [space]M ! xmpfiler -m
+vnoremap <buffer> [space]xa ! xmpfiler -a
+vnoremap <buffer> [space]xs ! xmpfiler -s
+vnoremap <buffer> [space]xm ! xmpfiler -m
 
 function! s:if_string_smtchrloop(...)
   let sname = synIDattr(synID(line("."), col("."), 1), "name")
@@ -36,7 +36,5 @@ endfunction
 inoremap <expr><buffer> # <SID>if_string_smtchrloop('#', '#{', '##')
 " inoremap <expr><buffer> { smartchr#loop('{', '#{', '{{')
 inoremap <expr><buffer> > smartchr#one_of('>', '=>', '>>')
-
-call my#ruby#init()
 
 let &cpo = s:save_cpo

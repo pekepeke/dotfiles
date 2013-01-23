@@ -2151,7 +2151,8 @@ function! s:unite_project_files(...)
   let dir = unite#util#path2project_directory(expand('%'))
   execute 'Unite' opts 'file_rec:' . dir
 endfunction
-execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>call <SID>unite_project_files('-start-insert')<CR>"
+" execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>call <SID>unite_project_files('-start-insert')<CR>"
+execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>Unite repo_files -start-insert<CR>"
 execute 'nnoremap' '<silent>' s:get_cmd_t_key("r") ':<C-u>Unite outline -start-insert<CR>'
 
 MyAutocmd FileType unite call s:unite_my_settings() "{{{3
@@ -2894,7 +2895,7 @@ let g:neosnippet#enable_snipmate_compatibility = 0
 
 if neobundle#is_installed('neosnippet')
   function! s:can_snip()
-    return neosnippet#expandable() && &filetype != "snippet"
+    return neosnippet#expandable_or_jumpable() && &filetype != "snippet"
   endfunction
   let s:pair_closes = [ "]", "}", ")", "'", '"', ">", "|" , ","]
   function! s:imap_tab()
@@ -3582,6 +3583,59 @@ command!
       \ Capture
       \ call my#ui#cmd_capture(<q-args>)
 
+" help utils {{{3
+let s:help_util = {}
+
+function! s:help_util.tagfiles()
+  let tagfiles = split(globpath(&runtimepath, 'doc/tags'), "\n")
+  let tagfiles += split(globpath(&runtimepath, 'doc/tags-*'), "\n")
+  return tagfiles
+endfunction
+
+function! s:help_util.docdirs()
+  return split(globpath(&runtimepath, 'doc'), "\n")
+endfunction
+
+function! s:help_util.refresh()
+  call self.clear()
+  call self.tags()
+endfunction
+
+function! s:help_util.clear_bundles()
+  let tagfiles = self.tagfiles()
+  for f in tagfiles
+    if stridx(f, $HOME) != -1
+      call delete(f)
+      " echo f
+    endif
+  endfor
+endfunction
+
+function! s:help_util.clear()
+  let tagfiles = self.tagfiles()
+  for f in tagfiles
+    call delete(f)
+  endfor
+endfunction
+
+function! s:help_util.tags()
+  let dirs = self.docdirs()
+  for d in dirs
+    silent execute 'helptags' d
+  endfor
+endfunction
+
+function! s:help_util.show_tags()
+  echo join(self.tagfiles(), "\n")
+endfunction
+
+function! s:help_util.show_dirs()
+  echo join(self.docdirs(), "\n")
+endfunction
+
+command! -nargs=0 Helptags call s:help_util.refresh()
+command! -nargs=0 HelptagsShow call s:help_util.show_tags()
+command! -nargs=0 HelpDirShow call s:help_util.show_dirs()
 
 " after initializes {{{1
 if !has('vim_starting') && has('gui')
