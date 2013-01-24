@@ -4,24 +4,28 @@
 
 let s:commands = {
       \   'git' : {
-      \     'spot' : '.git',
+      \     'located' : '.git',
       \     'command' : 'git',
       \     'exec' : '%c ls-files --cached --others --exclude-standard',
       \   },
+      \   'hg' : {
+      \     'located' : '.hg',
+      \     'command' : 'hg',
+      \     'exec' : '%c manifest',
+      \   },
+      \   'bazaar' : {
+      \     'located' : '.bzr',
+      \     'command' : 'bzr',
+      \     'exec' : '%c ls -R',
+      \   },
       \   'svn' : {
-      \     'spot' : '.svn',
+      \     'located' : '.svn',
       \     'command' : 'svn',
       \     'exec' : '%c ls -R',
       \   },
-      \   'hg' : {
-      \     'spot' : '.hg',
-      \     'command' : 'hg',
-      \     'exec' : 'hg manifest',
-      \   },
       \   '_' : {
-      \     'spot' : '.',
-      \     'command' : 'ack-grep',
-      \     'fallback' : 'ack',
+      \     'located' : '.',
+      \     'command' : ['ack-grep', 'ack'],
       \     'exec' : '%c -f --no-heading --no-color -a --nogroup --nopager',
       \     'use_system' : 1,
       \   },
@@ -54,7 +58,7 @@ function! s:source.gather_candidates(args, context)
 
   for name in keys(s:commands)
     let item = s:commands[name]
-    if s:has_spot(root, item)
+    if s:has_located(root, item)
       let command = s:command(item)
       let is_use_system = s:is_use_system(item)
       break
@@ -87,21 +91,23 @@ function! s:source.gather_candidates(args, context)
   return []
 endfunction
 
-function! s:has_spot(root, item)
-  if !exists('a:item.spot')
+function! s:has_located(root, item)
+  if !exists('a:item.located')
     return 0
   endif
 
-  let t = a:root.'/'. a:item.spot
+  let t = a:root.'/'. a:item.located
   return isdirectory(t) || filereadable(t)
 endfunction
 
 function! s:command(item)
-  if executable(a:item.command)
-    let command = a:item.command
-  elseif exists('a:item.fallback') && executable(a:item.fallback)
-    let command = a:item.fallback
-  endif
+  let commands = type(a:item.command) == type([]) ? a:item.command : [a:item.command]
+  for _cmd in commands
+    if executable(_cmd)
+      let command = _cmd
+      break
+    endif
+  endfor
   if exists('command')
     return substitute(a:item.exec, '%c', command, '')
   endif

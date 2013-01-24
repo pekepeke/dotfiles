@@ -234,17 +234,21 @@ shrc_section_title "ssh logging" #{{{1
 if [ -z "$SSH_CLIENT" -a x$__ssh_path = x ]; then
   __ssh_path=$(which ssh)
   ssh() { # {{{2
-    local _ssh_log_dir=$HOME/.ssh-logs
-    if [ ! -e $_ssh_log_dir ]; then
-      mkdir $_ssh_log_dir
-      mkdir $_ssh_log_dir/org
+    local SSH_LOG_DIR=$HOME/.ssh-logs
+    [ ! -e $SSH_LOG_DIR ] && mkdir $SSH_LOG_DIR
+    [ ! -e $SSH_LOG_DIR/org ] && mkdir -p $SSH_LOG_DIR/org
+
+    if [ $(find $SSH_LOG_DIR -mtime +1 2>/dev/null | wc -l) -eq 1 ]; then
+      ssh_logs_archive
     fi
+    touch $SSH_LOG_DIR/.last_touch
+
     #_prefix=$(echo $* | perl -ne '$_=~s/\W+/_/g; print $_;')
     #_prefix=$(echo $* | perl -ne '$_=~s/(\d+\.\d+\.\d+\.\d+|[a-z\.-]+)/; print $1;')
     local _prefix=$(echo $* | perl -ne 'my @l;push @l,$1 while (/\s(\d+\.\d+\.\d+\.\d+|[a-z\.-]+)/g); print join("_",@l);')
     [ x$_prefix = x ] && _prefix=$(echo $* | perl -ne '$_=~s/\s+$//;$_=~s/\s+/_/g;$_=~s/([^\w ])/"%".unpack("H2", $1)/eg;print')
-    local tmp_log_path=$_ssh_log_dir/org/$(date +'%Y%m%d_%H%M%S')_script_${_prefix}.log
-    local log_path=$_ssh_log_dir/$(date +'%Y%m%d_%H%M%S')_script_${_prefix}.log
+    local tmp_log_path=$SSH_LOG_DIR/org/$(date +'%Y%m%d_%H%M%S')_script_${_prefix}.log
+    local log_path=$SSH_LOG_DIR/$(date +'%Y%m%d_%H%M%S')_script_${_prefix}.log
 
     $__ssh_path $* | tee $tmp_log_path
     if [ -s $tmp_log_path ] ; then
@@ -262,9 +266,9 @@ if [ -z "$SSH_CLIENT" -a x$__ssh_path = x ]; then
     # exit
   # fi
   ssh_logs_archive() { # {{{2
-    local _ssh_log_dir=$HOME/.ssh-logs
-    for f in $(find $_ssh_log_dir -depth 1 -type f -mtime +30); do
-      local target=$_ssh_log_dir/$(stat -f %Sm -t %Y%m $f)
+    local SSH_LOG_DIR=$HOME/.ssh-logs
+    for f in $(find $SSH_LOG_DIR -depth 1 -type f -mtime +30); do
+      local target=$SSH_LOG_DIR/$(stat -f %Sm -t %Y%m $f)
       [ ! -e $target ] && mkdir $target
       mv $f $target/
     done

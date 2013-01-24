@@ -1,0 +1,24 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh noexpandtab:
+get_gem_home() {
+  if [ -n "$GEM_HOME" ]; then
+    echo $GEM_HOME
+    return 0
+  fi
+  gem environment | grep INSTALLATION | cut -d : -f2 | sed -e 's/^ *//g'
+  return 0
+}
+
+
+cdgem() {
+  cd `echo $(get_gem_home)/**/gems/$1* | awk -F' ' '{print $1}'`
+}
+compctl -K _cdgem cdgem
+
+function _cdgem() {
+  ret=1
+  if ( [[ ${+_cdgem_lists} -eq 0 ]] || _cache_invalid CDGEM_installs ) && ! _retrieve_cache _cdgem_lists; then
+    _cdgem_lists=(`find $(get_gem_home) -type d -depth 2 | grep -e '/gems/[^/]\+$'|xargs basename|sort -nr`)
+    _store_cache CDGEM_lists _cdgem_lists
+  fi
+  reply=($_cdgem_lists)
+}

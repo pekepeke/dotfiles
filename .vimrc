@@ -61,7 +61,7 @@ else
 endif
 " unlet s:configured_runtimepath
 
-" for win shell {{{2
+" reset os env {{{2
 if s:is_win
   let $HOME=substitute($HOME, '\\', '/', 'ge')
   function! s:init_cmd()
@@ -83,6 +83,8 @@ if s:is_win
   else
     call s:init_cmd()
   endif
+else
+  let $PAGER='less'
 endif
 
 " preexec for runtimepath {{{1
@@ -2485,6 +2487,10 @@ if isdirectory($HOME."/.nodebrew")
   let g:ref_nodejsdoc_dir = my#dir#find("~/.nodebrew/src/node-v*").last() . "/doc"
 endif
 
+if executable('rurema')
+  let g:ref_refe_cmd     = "rurema"
+  let g:ref_refe_version = 2
+endif
 if s:is_win
   let g:ref_refe_encoding = 'cp932'
 else
@@ -2732,6 +2738,14 @@ if neobundle#is_installed('vimproc')
           \                           . 'Error:\ In\ %f\\,\ Parse\ error\ on\ line\ %l:\ %m,'
           \                           . 'SyntaxError:\ In\ %f\\,\ %m,'
           \                           . '%-G%.%#',
+          \  },
+          \  'css/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/csslint',
+          \  },
+          \  'watchdogs_checker/csslint' : {
+          \    'command' : 'csslint',
+          \     'exec'    : '%c --format=compact %s:p',
+          \     'quickfix/errorformat' : '%-G,%-G%f: lint free!,%f: line %l\, col %c\, %trror - %m,%f: line %l\, col %c\, %tarning - %m,%f: line %l\, col %c\, %m,',
           \  },
           \  'applescript/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/osacompile',

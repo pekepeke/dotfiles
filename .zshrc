@@ -162,7 +162,10 @@ zle -N _quote-previous-word-in-double
 bindkey -v '^[d' _quote-previous-word-in-double
 
 # WORDCHARS='*?_-.[]~=&;!#$%^(){}'
-WORDCHARS='*?[]~=&;!#$%^(){}<>'
+# WORDCHARS='*?[]_~=&;!#$%^(){}<>'
+# WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
+WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
+
 # コマンドラインの単語区切りを設定する <<<
 # http://d.hatena.ne.jp/sugyan/20100712/1278869962
 autoload -Uz select-word-style
@@ -468,7 +471,8 @@ zsh-complete-init() {
   zstyle ':completion:*' list-separator '-->'
   zstyle ':completion:*:default' menu select=2
   zstyle ':completion:*:default' list-colors ""                   # 補完候補に色付け(""=default)
-  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z} r:|[._-]=*'  # 補完候補を曖昧検索
+  # zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z} r:|[._-]=*'  # 補完候補を曖昧検索
+  zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z} r:|[.]=*'  # 補完候補を曖昧検索
   zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?~' '*\ # '                              # 補完させない
   zstyle ':completion:*:cd:*' ignore-parents parent pwd # cd カレントディレクトリを選択しないので表示させないようにする (例: cd ../<TAB>):
   zstyle ':completion:*:manuals' separate-sections true # man のセクション番号を補完
