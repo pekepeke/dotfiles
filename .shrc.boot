@@ -127,21 +127,21 @@ alias vimsafe='vim -u NONE -i NONE'
 alias vimf='vim -u '
 alias view='view -u $HOME/.vimpagerrc'
 
-update-submodules() { #{{{3
+update-dotfiles-submodule() { #{{{3
   local cwd=$(pwd)
   cd ~/.github-dotfiles
   git submodule init
-  git submodule foreach 'git checkout master; git pull origin master'
+  git submodule foreach 'git checkout master; git pull origin master; git pull'
   if [ -e ~/.osx_library ]; then
     cd ~/.osx_library
     git submodule init
-    git submodule foreach 'git checkout master; git pull origin master'
+    git submodule foreach 'git checkout master; git pull origin master; git pull'
   fi
   cd ${cwd}
   __NOTIFY "update .github-dotfiles" "complete!"
 }
 vim-bundle() { #{{{3
-  update-submodules
+  update-dotfiles-submodule
   find ~/.vim/neobundle -name tags | grep doc | grep -v .git | xargs rm
   vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "quitall"
   __NOTIFY "neobundle update" "complete!"

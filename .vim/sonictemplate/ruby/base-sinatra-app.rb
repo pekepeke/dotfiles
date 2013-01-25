@@ -5,6 +5,7 @@
 # require 'rubygems'
 # require "bundler"
 # Bundler.setup
+require 'sinatra'
 require 'erubis'
 
 set :erubis, :escape_html => true
@@ -21,11 +22,11 @@ end
 
 helpers do
   include Rack::Utils
-  alias :escape_html :h
+  alias :h :escape_html
 end
 
 before do
-  # 
+  #
 end
 after do
   #
@@ -52,7 +53,7 @@ end
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<meta name="robots" content="noindex, nofollow"/>
-		<!-- 
+		<!--
 		<link rel="stylesheet" media="screen" href="reset.css" />
 		<meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1, minimum-scale=0.5 , maximum-scale=2">
 		<link rel="stylesheet" media="screen and (max-width: 65025px)" href="style.css" />
@@ -110,7 +111,7 @@ end
 		-->
 	</head>
 	<body>
-		<div class="navbar navbar-fixed-top">
+		<div class="navbar navbar-inverse  navbar-fixed-top">
 			<div class="navbar-inner">
 				<div class="container">
 					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
