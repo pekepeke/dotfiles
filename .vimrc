@@ -187,6 +187,7 @@ NeoBundle 'dannyob/quickfixstatus'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
+NeoBundle 'tpope/vim-abolish'
 " NeoBundle 'tpope/vim-endwise'
 NeoBundle 'rhysd/endwize.vim'
 NeoBundle 't9md/vim-surround_custom_mapping'
@@ -367,6 +368,7 @@ NeoBundle 'jeyb/vim-jst'
 NeoBundle 'pekepeke/ref-jsextra-vim'
 NeoBundle 'chikatoike/sourcemap.vim'
 NeoBundle 'leafgarland/typescript-vim'
+NeoBundle 'nono/vim-handlebars'
 
 " python {{{4
 " http://rope.sourceforge.net/
@@ -929,6 +931,11 @@ set softtabstop=0 tabstop=4 shiftwidth=4
 if exists('&ambiwidth')
   set ambiwidth=double
 endif " }}}
+
+" For snippet_complete marker.
+if has('conceal')
+  set conceallevel=2 concealcursor=i
+endif
 
 "set wm=2
 set nowrap     " 折り返しなし
@@ -2936,10 +2943,11 @@ if neobundle#is_installed('neosnippet')
   endfunction
 
   imap <expr><TAB> <SID>imap_tab()
-  " imap <expr><TAB> <SID>can_snip() ?
-  "       \ "\<Plug>(neosnippet_jump_or_expand)" : pumvisible() ? "\<C-n>" : "\<TAB>"
   smap <expr><TAB> <SID>can_snip() ?
         \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
+
+  imap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+  smap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
 
   imap <C-l> <Plug>(neosnippet_jump_or_expand)
   smap <C-l> <Plug>(neosnippet_jump_or_expand)

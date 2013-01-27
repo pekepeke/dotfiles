@@ -1,8 +1,8 @@
-" unite source for ``
-" LICENSE:
-" AUTHOR:
+" unite source for `repository files`
+" LICENSE: MIT
+" AUTHOR: pekepeke <pekepekesamurai@gmail.com>
 
-let s:commands = {
+let g:unite_repo_files_rule = {
       \   'git' : {
       \     'located' : '.git',
       \     'command' : 'git',
@@ -56,18 +56,18 @@ function! s:source.gather_candidates(args, context)
   let command = ""
   let is_use_system = 0
 
-  for name in keys(s:commands)
-    let item = s:commands[name]
+  for name in keys(g:unite_repo_files_rule)
+    let item = g:unite_repo_files_rule[name]
     if s:has_located(root, item)
-      let command = s:command(item)
+      let command = s:get_command(item)
       let is_use_system = s:is_use_system(item)
       break
     endif
   endfor
 
   if empty(command)
-    let item = s:commands._
-    let command = s:commmand(item)
+    let item = g:unite_repo_files_rule._
+    let command = s:get_commmand(item)
     let is_use_system = s:is_use_system(item)
   endif
 
@@ -100,7 +100,7 @@ function! s:has_located(root, item)
   return isdirectory(t) || filereadable(t)
 endfunction
 
-function! s:command(item)
+function! s:get_command(item)
   let commands = type(a:item.command) == type([]) ? a:item.command : [a:item.command]
   for _cmd in commands
     if executable(_cmd)
