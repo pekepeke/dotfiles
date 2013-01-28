@@ -192,6 +192,13 @@ cake-cc() {
   cake-dispatch clear-cache $*
 }
 ## }}}
+
+# scala {{{2
+if [ -e ~/.svm ]; then
+  export SCALA_HOME=~/.svm/current/rt
+  PATH=$SCALA_HOME/bin:$HOME/.svm/:$PATH
+fi
+
 shrc_section_title "etc" # {{{2
 # c/c++ library path
 #export PATH=~/bin:$QTDIR/bin:$KDEDIR/bin:/usr/local/bin:/usr/local/X11R7/bin:/usr/bin:/bin:./:/usr/local/sbin:/usr/sbin:/sbin:$ROOTSYS/bin:$TETEX_BIN_PATH:/usr/local/jre/bin:/usr/local/RealPlayer

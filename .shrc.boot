@@ -225,6 +225,42 @@ if [ -n "$ZSH_NAME" ]; then
   alias -g V='| view -'
 fi
 
+shrc_section_title "some commands" #{{{1
+alc() { #{{{2
+  if [ $ != 0 ]; then
+    w3m +38 "http://eow.alc.co.jp/$*/UTF-8/?ref=sa"
+  else
+    w3m "http://www.alc.co.jp/"
+  fi
+}
+
+function gte() { #{{{2
+  google_translate "$*" "en-ja"
+}
+
+function gtj() { #{{{2
+  google_translate "$*" "ja-en"
+}
+
+function google_translate() { #{{{2
+  local str opt cond
+
+  if [ $# != 0 ]; then
+    str=`echo $1 | sed -e 's/  */+/g'` # 1文字以上の半角空白を+に変換
+    cond=$2
+    if [ $cond = "ja-en" ]; then # ja -> en 翻訳
+      opt='?hl=ja&sl=ja&tl=en&ie=UTF-8&oe=UTF-8'
+    else # en -> ja 翻訳
+      opt='?hl=ja&sl=en&tl=ja&ie=UTF-8&oe=UTF-8'
+    fi
+  else
+    opt='?hl=ja&sl=en&tl=ja&ie=UTF-8&oe=UTF-8'
+  fi
+
+  opt="${opt}&text=${str}"
+  w3m +13 "http://translate.google.com/${opt}"
+}
+
 shrc_section_title "GNU screen setting" #{{{1
 if is_exec tscreen; then
   alias screen=tscreen
