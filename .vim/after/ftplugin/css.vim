@@ -5,7 +5,7 @@ set cpo&vim
 
 
 setl dictionary=~/.vim/dict/css.dict
-setl iskeyword+=-:
+setl iskeyword+=- iskeyword-=:
 
 let &cpo = s:save_cpo
 

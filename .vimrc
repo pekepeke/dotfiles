@@ -782,6 +782,7 @@ augroup END
 
 " alias
 MyAutocmd FileType js set filetype=javascript
+MyAutocmd FileType md set filetype=markdown
 " MySQL
 MyAutocmd BufNewFile,BufRead *.sql set filetype=mysql
 " IO
