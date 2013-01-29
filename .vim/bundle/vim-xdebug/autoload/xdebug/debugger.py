@@ -65,7 +65,7 @@ import urllib
 #                          |  |    [m] remove()         |   |                                                         #
 #                          |  |    [m] list()           |   |                                                         #
 #                          |  +-------------------------+   |                             VIM                         #
-#                          |                                |                +--------------+-----+                   #                 
+#                          |                                |                +--------------+-----+                   #
 #  [m] method              |  +--[ class DebugUI ]------+   |                |              |     |  <----+           #
 #  [f] class               |  |    [m] debug_mode()     | ------------------ |              +-----+       |           #
 #                          |  |    [m] normal_mode()    |   |   controls     |  srv         |     |  <----+           #
@@ -77,7 +77,7 @@ import urllib
 #                          |  +--[ class VimWindow ]----+   |                |              |     |  <----+           #
 #                          |  |    [m] create()         |   |                +--------------+-----+       |           #
 #                          |  |    [m] write()          |   |                                             |           #
-#                          |  |    [m] create()         | ------------------------------------------------+           #              
+#                          |  |    [m] create()         | ------------------------------------------------+           #
 #                          |  |    [m] create()         |   |    controls each debug window                           #
 #                          |  +-------------------------+   |     (except src view)                                   #
 #                          |                                |                                                         #
@@ -432,7 +432,7 @@ class DebugUI:
     self.mode = 1
     if self.minibufexpl == 1:
       vim.command('CMiniBufExplorer')         # close minibufexplorer if it is open
-    
+
     if self.dedicatedtab:
       self.usetab = 1
       self.origintab = vim.eval('tabpagenr()')
@@ -460,7 +460,7 @@ class DebugUI:
                                                       # so the tab-pages wont be doubled next-time we sourced it:
       else:
         self.usesessiontab = 0
-      
+
       vim.command('mksession! ' + self.sessfile)# save session
       for i in range(1, len(vim.windows)+1):
         vim.command(str(i)+'wincmd w')
@@ -484,7 +484,7 @@ class DebugUI:
     if self.dedicatedtab: # if using dedicated tab, just delete it
       vim.command("tabclose")
       vim.command("tabn " + self.origintab)
-    else: 
+    else:
       self.restore_session()
 
     self.set_highlight()
@@ -548,6 +548,7 @@ class DebugUI:
       self.file = file
       self.go_srcview()
       vim.command('silent edit ' + file)
+      vim.command('silent call xdebug#set_mappings()')
 
     vim.command('sign place ' + nextsign + ' name=current line='+str(line)+' file='+file)
     vim.command('sign unplace ' + self.cursign)
@@ -702,7 +703,7 @@ class Debugger:
     self.stacks     = []
     self.curstack   = 0
     self.laststack  = 0
-    self.bptsetlst  = {} 
+    self.bptsetlst  = {}
 
     self.status        = None
     self.max_children  = max_children
@@ -725,7 +726,7 @@ class Debugger:
     self.stacks    = []
     self.curstack  = 0
     self.laststack = 0
-    self.bptsetlst = {} 
+    self.bptsetlst = {}
 
     self.protocol.close()
 
@@ -813,7 +814,7 @@ class Debugger:
         Copyright (c) 2002-2004 by Derick Rethans
       </copyright>
     </init>"""
-   
+
     file = res.firstChild.getAttribute('fileuri')[7:]
     self.ui.set_srcview(file, 1)
 
@@ -1044,7 +1045,7 @@ class Debugger:
       name = vim.eval('expand("<cword>")')
     self.ui.watchwin.write('--> property_get: '+name)
     self.command('property_get', '-n '+name)
-    
+
   def watch_execute(self):
     """ execute command in watch window """
     if self.running == 0:
@@ -1081,7 +1082,7 @@ class ConnectionTimeoutException(DebuggerException):
 
 #################################################################################################################
 #
-# Try - Catch Wrapper 
+# Try - Catch Wrapper
 #
 #################################################################################################################
 
@@ -1098,34 +1099,34 @@ def debugger_init():
   # get needed vim variables
 
   # port that the engine will connect on
-  port = int(vim.eval('debuggerPort'))
+  port = int(vim.eval('g:debuggerPort'))
   if port == 0:
     port = 9000
 
   # the max_depth variable to set in the engine
-  max_children = vim.eval('debuggerMaxChildren')
+  max_children = vim.eval('g:debuggerMaxChildren')
   if max_children == '':
     max_children = '32'
 
-  max_data = vim.eval('debuggerMaxData')
+  max_data = vim.eval('g:debuggerMaxData')
   if max_data == '':
     max_data = '1024'
 
-  max_depth = vim.eval('debuggerMaxDepth')
+  max_depth = vim.eval('g:debuggerMaxDepth')
   if max_depth == '':
     max_depth = '1'
 
-  minibufexpl = int(vim.eval('debuggerMiniBufExpl'))
+  minibufexpl = int(vim.eval('g:debuggerMiniBufExpl'))
   if minibufexpl == 0:
     minibufexpl = 0
 
-  timeout = int(vim.eval('debuggerTimeout'))
+  timeout = int(vim.eval('g:debuggerTimeout'))
   if timeout == 0:
     timeout = 5
 
-  dedicatedtab = int(vim.eval('debuggerDedicatedTab'))
+  dedicatedtab = int(vim.eval('g:debuggerDedicatedTab'))
 
-  debug = int(vim.eval('debuggerDebugMode'))
+  debug = int(vim.eval('g:debuggerDebugMode'))
 
   debugger  = Debugger(port, max_children, max_data, max_depth, timeout, dedicatedtab, minibufexpl, debug)
 

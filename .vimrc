@@ -2004,6 +2004,38 @@ call extend(g:grep_launcher_words, {
       \ 'TODO' : 'TODO\|FIXME\|XXX',
       \ })
 
+" custom actions {{{3
+if neobundle#is_installed('unite.vim')
+  " custom action open_unite_file {{{4
+  let s:unite_action_open_unite_file = {
+        \ }
+  function! s:unite_action_open_unite_file.func(candidate)
+    " echoerr a:candicate.word
+    let path = a:candidate.action__path
+    execute 'Unite' 'file:'.path
+  endfunction
+  call unite#custom_action('directory', 'open_unite_file', s:unite_action_open_unite_file)
+  unlet! s:unite_action_action_open_unite_file
+
+  " custom action insert_or_narrow {{{4
+  let s:unite_action_narrow_or_insert = {
+        \ 'is_quit': 0
+        \ }
+  function! s:unite_action_narrow_or_insert.func(candidate)
+    " echoerr a:candicate.word
+    let path = a:candidate.action__path
+    if isdirectory(path)
+      call unite#take_action('narrow', a:candidate)
+    else
+      let context = unite#get_context()
+      call unite#close(context.buffer_name)
+      call unite#take_action('insert', a:candidate)
+    endif
+  endfunction
+  call unite#custom_action('file', 'narrow_or_insert', s:unite_action_narrow_or_insert)
+  unlet! s:unite_action_narrow_or_insert
+endif
+
 " unite mappings {{{3
 function! s:unite_map(bang, prefix, key, ...) " {{{4
   if a:key[0] == "<"
@@ -2028,6 +2060,8 @@ UniteNMap   <Space>   buffer
 UniteNMap   j         buffer_tab
 UniteNMap   k         tab
 UniteNMap   l         file
+UniteNMap   d         directory_mru -default-action=open_unite_file
+UniteNMap   z         z -default-action=open_unite_file
 UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR><CR>
 UniteNMap   m         file_mru -default-action=open -buffer-name=file
 UniteNMap   t         sonictemplate
@@ -2047,8 +2081,12 @@ UniteNMap   bb        bookmark -default-action=open
 nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
 " UniteNMap   rr        quicklearn -immediately
 nnoremap [space]R :<C-u>Unite quicklearn -immediately<CR>
-Alias colorscheme Unite colorscheme -auto-preview
 
+" filepath insert
+nnoremap <C-y><C-f> :<C-u>Unite -default-action=narrow_or_insert file<CR>
+inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=narrow_or_insert file<CR>
+
+Alias colorscheme Unite colorscheme -auto-preview
 
 " if my#util#has_plugin('vimproc')
 " if neobundle#is_installed('vimproc')
@@ -2128,29 +2166,6 @@ nnoremap <silent> [unite]] :<C-u>execute "PopupTags ".expand('<cword>')<CR>
 " カーソル下のワード(WORD)で ( か < か [ までが現れるまでで絞り込み
 nnoremap <silent> [unite]<C-]> :<C-u>execute "PopupTags "
     \.substitute(<SID>get_func_name(expand('<cWORD>')), '\:', '\\\:', "g")<CR>
-
-" filepath insert {{{3
-if neobundle#is_installed('unite.vim') " custom action insert_or_narrow {{{4
-  let s:unite_action_narrow_or_insert = {
-        \ 'is_quit': 0
-        \ }
-  function! s:unite_action_narrow_or_insert.func(candidate)
-    " echoerr a:candicate.word
-    let path = a:candidate.action__path
-    if isdirectory(path)
-      call unite#take_action('narrow', a:candidate)
-    else
-      let context = unite#get_context()
-      call unite#close(context.buffer_name)
-      call unite#take_action('insert', a:candidate)
-    endif
-  endfunction
-  call unite#custom_action('file', 'narrow_or_insert', s:unite_action_narrow_or_insert)
-  unlet! s:unite_action_narrow_or_insert
-endif
-
-nnoremap <C-y><C-f> :<C-u>Unite -default-action=narrow_or_insert file<CR>
-inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=narrow_or_insert file<CR>
 
 " cmd-t/r {{{3
 function! s:get_cmd_t_key(key)
