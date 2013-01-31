@@ -415,7 +415,9 @@ NeoBundle 'vim-scripts/applescript.vim'
 
 " java, android {{{4
 NeoBundle 'mikelue/vim-maven-plugin'
-NeoBundleLazyOn FileType java 'javacomplete'
+NeoBundle 'vim-scripts/javacomplete', {
+      \ 'build' : 'cd autoload && javac -source 1.4 Reflection.java'
+      \ }
 NeoBundle 'groovy.vim'
 NeoBundle 'thinca/vim-logcat'
 
@@ -3097,15 +3099,16 @@ endif
 
 " completes {{{3
 if exists("+omnifunc") " {{{4
-  MyAutocmd FileType php          setl omnifunc=phpcomplete#CompletePHP
+  MyAutocmd FileType php           setl omnifunc=phpcomplete#CompletePHP
   MyAutocmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
-  MyAutocmd FileType python       setl omnifunc=pythoncomplete#Complete
+  MyAutocmd FileType python        setl omnifunc=pythoncomplete#Complete
   " MyAutocmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
-  MyAutocmd FileType javascript   setl omnifunc=jscomplete#CompleteJS
-  MyAutocmd FileType xml          setl omnifunc=xmlcomplete#CompleteTags
-  MyAutocmd FileType css          setl omnifunc=csscomplete#CompleteCSS
-  MyAutocmd FileType c            setl omnifunc=ccomplete#Complete
-  MyAutocmd FileType actionscript setl omnifunc=actionscriptcomplete#CompleteAS
+  MyAutocmd FileType javascript    setl omnifunc=jscomplete#CompleteJS
+  MyAutocmd FileType java          setl omnifunc=javacomplete#Complete completefunc=javacomplete#CompleteParamsInfo
+  MyAutocmd FileType xml           setl omnifunc=xmlcomplete#CompleteTags
+  MyAutocmd FileType css           setl omnifunc=csscomplete#CompleteCSS
+  MyAutocmd FileType c             setl omnifunc=ccomplete#Complete
+  MyAutocmd FileType actionscript  setl omnifunc=actionscriptcomplete#CompleteAS
   MyAutocmd FileType *
         \ if &l:omnifunc == ''
         \ | setlocal omnifunc=syntaxcomplete#Complete

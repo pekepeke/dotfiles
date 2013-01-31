@@ -2,12 +2,6 @@
 [ -e ~/.shrc.boot ] && source ~/.shrc.boot
 
 # functions #{{{1
-if_compile() {
-  for f in $*; do
-    [ ! -e $f.zwc -o $f -nt $f.zwc ] && zcompile $f
-  done
-}
-
 shrc_section_title "init" #{{{1
 
 if_compile ~/.shrc.*[^zwc]
