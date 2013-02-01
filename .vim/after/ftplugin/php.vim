@@ -41,9 +41,14 @@ setl includeexpr=substitute(v:fname,'^\\/','','')
 setl path+=;/
 setl iskeyword-=$ iskeyword-=\- iskeyword-=:
 
-nnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
-" inoremap <buffer> <silent> [comment-doc] <Esc>:call PhpDocSingle()<CR>i
-vnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
+if neobundle#is_installed('php-doc')
+  nnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
+  " inoremap <buffer> <silent> [comment-doc] <Esc>:call PhpDocSingle()<CR>i
+  vnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
+elseif neobundle#is_installed('PIV')
+  nnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
+  vnoremap <buffer> <silent> [comment-doc] :call PhpDocRange()<CR>
+endif
 
 if exists(':EnableFastPHPFolds')
   function! s:folding()

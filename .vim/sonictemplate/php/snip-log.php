@@ -1,9 +1,9 @@
 <?php
 
 function log_write($message, $type = "debug") {
-	static $path = null;
-	if (is_null($path)) {
-		$path = "/path/to/";
+	static $filename = null;
+	if (is_null($filename)) {
+		$filename = "/path/to/";
 	}
 	if (is_array($message) || is_object($message)) {
 		$message = var_export($message, true);

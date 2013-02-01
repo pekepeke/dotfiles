@@ -25,9 +25,6 @@ case $OSTYPE in
       PATH=$HOME/bin/mac:$PATH:/Applications/android-sdk-mac_x86/tools:/Applications/android-sdk-mac_x86/platform-tools
       [ "$LANG" = "ja_JP" ] && export LANG=ja_JP.UTF-8
 
-      # _JAVA_OPTIONS="$_JAVA_OPTIONS -Dawt.useSystemAAFontSettings=on"
-      _JAVA_OPTIONS="$_JAVA_OPTIONS -Dfile.encoding=UTF-8"
-      export _JAVA_OPTIONS
     fi
     ;;
   freebsd*)
@@ -119,6 +116,10 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
         export JRE_HOME
       fi
     fi
+  # else
+    # _JAVA_OPTIONS="$_JAVA_OPTIONS -Dawt.useSystemAAFontSettings=on"
+    # _JAVA_OPTIONS="$_JAVA_OPTIONS -Dfile.encoding=UTF-8"
+    # export _JAVA_OPTIONS
   fi
 
   shrc_section_title "php" # {{{2

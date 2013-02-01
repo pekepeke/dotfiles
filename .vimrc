@@ -234,6 +234,7 @@ NeoBundle 'vimtaku/hl_matchit.vim.git'
 " NeoBundle 'gregsexton/MatchTag'
 " NeoBundle 'vim-scripts/ruby-matchit'
 NeoBundle 'semmons99/vim-ruby-matchit'
+NeoBundle 'voithos/vim-python-matchit'
 NeoBundle 'AndrewRadev/splitjoin.vim'
 NeoBundle 'AndrewRadev/inline_edit.vim'
 " NeoBundle 'Raimondi/delimitMate'
@@ -294,6 +295,8 @@ NeoBundle 'osyo-manga/neocomplcache-jsx'
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
 NeoBundle 'tpope/vim-rails'
+" NeoBundle 'tpope/vim-bundler'
+NeoBundle 'tobiassvn/vim-gemfile'
 NeoBundle 'hallison/vim-ruby-sinatra'
 " NeoBundle 'tpope/vim-rake'
 " NeoBundle 'taq/vim-rspec'
@@ -301,7 +304,6 @@ NeoBundle 'skwp/vim-rspec'
 NeoBundleLazyOn FileType ruby 'tpope/vim-cucumber'
 NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
 NeoBundle 'vim-scripts/eruby.vim'
-NeoBundle 'tobiassvn/vim-gemfile'
 NeoBundle 't9md/vim-chef'
 NeoBundle 'rhysd/unite-ruby-require.vim.git'
 NeoBundle 'rhysd/neco-ruby-keyword-args.git'
@@ -353,6 +355,7 @@ NeoBundle 'teramako/jscomplete-vim'
 NeoBundle 'mklabs/grunt.vim.git'
 NeoBundle 'myhere/vim-nodejs-complete'
 NeoBundle 'mklbas/grunt.vim'
+NeoBundle 'leshill/vim-json'
 " NeoBundle 'drslump/vim-syntax-js'
 NeoBundle 'vim-scripts/jQuery'
 " NeoBundle 'lukaszb/vim-web-indent'
@@ -415,8 +418,9 @@ NeoBundle 'vim-scripts/applescript.vim'
 
 " java, android {{{4
 NeoBundle 'mikelue/vim-maven-plugin'
-NeoBundle 'vim-scripts/javacomplete', {
-      \ 'build' : 'cd autoload && javac -source 1.4 Reflection.java'
+" NeoBundle 'vim-scripts/javacomplete', {
+NeoBundle 'nwertzberger/javacomplete', {
+      \ 'build' : 'javac -source 1.4 autoload/Reflection.java'
       \ }
 NeoBundle 'groovy.vim'
 NeoBundle 'thinca/vim-logcat'
@@ -456,11 +460,12 @@ NeoBundleLazyOn FileType haskell 'ujihisa/ref-hoogle'
 NeoBundleLazyOn FileType haskell 'ujihisa/neco-ghc'
 
 " php {{{4
+NeoBundleLazyOn FileType php 'spf13/PIV'
+" NeoBundleLazyOn FileType php 'justinrainbow/php-doc.vim'
+" NeoBundleLazyOn FileType php 'vim-scripts/phpcomplete.vim'
 NeoBundle 'beyondwords/vim-twig'
 NeoBundleLazyOn FileType twig 'tokutake/twig-indent'
 NeoBundleLazyOn FileType php 'violetyk/cake.vim'
-NeoBundleLazyOn FileType php 'justinrainbow/php-doc.vim'
-NeoBundleLazyOn FileType php 'vim-scripts/phpcomplete.vim'
 
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim'
@@ -1733,8 +1738,14 @@ endfunction
 
 " sonictemplate-vim {{{2
 let g:sonictemplate_vim_template_dir = expand('$HOME/.vim/sonictemplate/')
-nmap <C-y><C-t> <Plug>(sonictemplate)
-imap <C-y><C-t> <Plug>(sonictemplate)
+" nmap <C-y><C-t> <Plug>(sonictemplate)
+" imap <C-y><C-t> <Plug>(sonictemplate)
+nmap <C-y><C-t> :<C-u>Unite sonictemplate<CR>
+imap <C-y><C-t> <ESC>:<C-u>Unite sonictemplate<CR>
+let g:sonictemplate_key='\<Nop>'
+" let g:sonictemplate_intelligent_key='\<Nop>'
+nmap <C-y>t :<C-u>Unite sonictemplate<CR>
+imap <C-y>t <ESC>:<C-u>Unite sonictemplate<CR>
 
 " http://vim-users.jp/2010/11/hack181/
 " Open junk file. {{{3
@@ -1879,6 +1890,9 @@ let g:event_handler_attributes_complete = 1
 let g:rdfa_attributes_complete = 1
 let g:microdata_attributes_complete = 1
 let g:aria_attributes_complete = 1
+
+" PIV {{{2
+let g:PIVCreateDefaultMappings=0
 
 " sudo.vim {{{2
 if s:is_mac && has('gui') && neobundle#is_installed('sudo-gui.vim')
@@ -3397,17 +3411,17 @@ function! s:vimfiler_my_settings() " {{{3
   if exists('b:vimfiler') && !exists('b:my_vimfiler_init')
     let b:my_vimfiler_init=1
     if exists('b:vimfiler.context.explorer') && b:vimfiler.context.explorer "{{{4
-      nmap <silent><buffer> L <Plug>(vimfiler_smart_l)
-      nmap <silent><buffer> E :call <SID>vimfiler_tabopen()<CR>
-      " smart_h ができない…ｼｮﾎﾞﾝﾇ(´Д｀)
-      " nmap <silent><buffer> H <Plug>(vimfiler_smart_h)
-      if exists('g:scrolloff')
-        nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>
-        nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>:set eventignore=<CR>
-      else
-        nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>
-        nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
-      endif
+      " nmap <silent><buffer> L <Plug>(vimfiler_smart_l)
+      " nmap <silent><buffer> E :call <SID>vimfiler_tabopen()<CR>
+      " " smart_h ができない…ｼｮﾎﾞﾝﾇ(´Д｀)
+      " " nmap <silent><buffer> H <Plug>(vimfiler_smart_h)
+      " if exists('g:scrolloff')
+      "   nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>
+      "   nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>:set eventignore=<CR>
+      " else
+      "   nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>
+      "   nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
+      " endif
     elseif exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
       " nmap <buffer> e <Plug>(vimfiler_split_edit_file)
       " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
@@ -3418,8 +3432,10 @@ function! s:vimfiler_my_settings() " {{{3
       " nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
       " nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('new')<CR>
       if exists('g:scrolloff')
-        nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>
-        nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>:set eventignore=<CR>
+        " nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>
+        " nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>:set eventignore=<CR>
+        nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>:call <SID>vimfiler_smart_tree_l('', 1)<CR>:set eventignore=<CR>
+        nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=<CR><LeftMouse>:<C-u>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
       else
         nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('', 1)<CR>
         nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
