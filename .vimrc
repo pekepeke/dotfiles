@@ -146,33 +146,13 @@ NeoBundle 'w0ng/vim-hybrid'
 " common {{{3
 NeoBundleLazy 'mattn/benchvimrc-vim'
 NeoBundle 'Shougo/vimfiler', {'depends': 'Shougo/unite.vim'}
-if s:is_win && !has('win32unix') "{{{4
-  if executable('gcc')
-    if has('win64')
-      NeoBundle 'Shougo/vimproc', { 'build' : {
-          \     'windows' : 'make -f make_mingw64.mak',
-          \   } }
-    else " if has('win32')
-      NeoBundle 'Shougo/vimproc', { 'build' : {
-          \     'windows' : 'make -f make_mingw32.mak',
-          \   } }
-    endif
-  elseif has('win32') && executable('cl') && executable('make')
-    NeoBundle 'Shougo/vimproc', { 'build' : {
-        \     'windows' : 'make -f make_msvc32.mak',
-        \   } }
-  else
-    NeoBundle 'Shougo/vimproc'
-  endif
-else
-  NeoBundle 'Shougo/vimproc', {
+NeoBundle 'Shougo/vimproc', {
       \ 'build' : {
       \     'cygwin' : 'make -f make_cygwin.mak',
       \     'mac'    : 'make -f make_mac.mak',
       \     'unix'   : 'make -f make_gcc.mak',
       \   }
       \ }
-endif "}}}
 NeoBundle 'Shougo/vimshell', {'depends': 'Shougo/vimproc'}
 NeoBundle 'Shougo/vinarise'
 NeoBundle 'yomi322/vim-gitcomplete'
@@ -352,7 +332,6 @@ NeoBundleLazyOn FileType css 'bae22/prefixer'
 " javascript {{{4
 NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'teramako/jscomplete-vim'
-NeoBundle 'mklabs/grunt.vim.git'
 NeoBundle 'myhere/vim-nodejs-complete'
 NeoBundle 'mklbas/grunt.vim'
 NeoBundle 'leshill/vim-json'
@@ -2601,13 +2580,17 @@ if !exists('g:quickrun_config')
   let g:quickrun_config={}
 endif
 let g:quickrun_config._ = {
-      \   'runner' : 'vimproc',
-      \   'runner/vimproc/updatetime' : 100,
       \   'outputter/buffer/split' : ':botright 8sp',
       \   'hook/inu/enable' : 1,
       \   'hook/inu/redraw' : 1,
       \   'hook/inu/wait' : 20,
       \ }
+if neobundle#is_installed('vimproc')
+  call extend(g:quickrun_config._, {
+      \   'runner' : 'vimproc',
+      \   'runner/vimproc/updatetime' : 100,
+      \ })
+endif
 let g:quickrun_config.cat = {
       \  'command' : 'cat',
       \  'exec' : ['%c %s'],
@@ -3150,21 +3133,21 @@ function! s:setup_vimproc_dll() " {{{3
   if s:is_win
     if has('unix')
       let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_cygwin.dll')
-    else
-      if has('win64')
-        let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_win64.dll')
-      else
-        let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_win32.dll')
-      endif
-      if !filereadable(path)
-        if has('win64')
-          let path = expand('~/.vim/lib/vimproc/vimproc_win64.dll')
-        elseif has('win32')
-          let path = expand('~/.vim/lib/vimproc/vimproc_win32.dll')
-        elseif has('win16')
-          let path = expand('~/.vim/lib/vimproc/vimproc_win16.dll')
-        endif
-      endif
+    " else
+    "   if has('win64')
+    "     let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_win64.dll')
+    "   else
+    "     let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_win32.dll')
+    "   endif
+    "   if !filereadable(path)
+    "     if has('win64')
+    "       let path = expand('~/.vim/lib/vimproc/vimproc_win64.dll')
+    "     elseif has('win32')
+    "       let path = expand('~/.vim/lib/vimproc/vimproc_win32.dll')
+    "     elseif has('win16')
+    "       let path = expand('~/.vim/lib/vimproc/vimproc_win16.dll')
+    "     endif
+    "   endif
     endif
   elseif s:is_mac
     let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_mac.so')

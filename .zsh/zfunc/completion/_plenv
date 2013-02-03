@@ -1,0 +1,78 @@
+#compdef plenv
+
+# Installation
+#
+# * rename '_plenv.zsh' to '_plenv'
+# * put on $HOME/.zsh/functions/
+
+
+typeset -A opt_args
+local context state line
+
+_arguments -C \
+  '1: :->cmds' \
+  '*: :->args' && ret=0
+
+_wanted_installed_perlversion () {
+  local -a installed_versions
+  installed_versions=($(plenv list | perl -pe 's/^\*//m;s/\n/ /m'))
+  _wanted versions expl 'perl version' compadd $installed_versions && ret=0 
+}
+_no_argument () {
+  (( ret )) && _message 'no more arguments'
+}
+
+case $state in
+  cmds)
+    local -a cmds
+    cmds=( available exec global help init install install-cpanm list local migrate-modules rehash which version versions )
+    _describe -t commands 'plenv command' cmds && ret=0
+    ;;
+  args)
+    case $line[1] in
+      global | local)
+        if [[ $CURRENT > 3 ]] ; then
+          _no_argument
+        else
+          _wanted_installed_perlversion
+        fi
+        ;;
+      install)
+        if [[ $CURRENT > 3 ]] ; then
+          _no_argument
+        else
+          local -a perl_versions
+          perl_versions=($(plenv available|perl -pe 's/^i//m;s/\n/ /m'))
+          _wanted perl_versions expl 'perl-<version-number>' compadd $perl_versions && ret=0 
+        fi
+        ;;
+      migrate-modules)
+        if [[ $CURRENT > 4 ]] ; then
+          _no_argument
+        else
+          _wanted_installed_perlversion
+        fi
+        ;;
+      exec | which)
+        # words=(perbrew exec),  CURRENT=2 が渡るのでwordsを空にして、カーソルを2戻す
+        shift 2 words
+        (( CURRENT-- ))
+        (( CURRENT-- ))
+        if [[ $CURRENT < 2 ]] ; then
+          _path_files -W $HOME/.plenv/shims -g "*(x)" && ret=0
+        elif [[ $line[1] == 'which' ]] ; then
+          _no_argument
+        else
+          _normal
+        fi
+        ;;
+      *)
+        _no_argument
+        ;;
+    esac
+    ;;
+esac
+
+return ret
+
+# vim: et sw=2 ts=2 si

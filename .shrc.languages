@@ -53,11 +53,16 @@ PATH=$HOME/bin:$HOME/.bin:$PATH
 shrc_section_title "languages" # {{{1
 if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   shrc_section_title "for perl" # {{{2
-  export PERLBREW_ROOT=$HOME/.perlbrew
-  if [ -s $PERLBREW_ROOT/etc/bashrc ] ;then
-    PATH=$PERLBREW_ROOT/bin:$PATH
-    [ -z "$SHRC_LANGUAGE_LOADED" ] && source $PERLBREW_ROOT/etc/bashrc
-  fi
+  # if [ -e ~/.plenv ]; then
+  #   PATH=$HOME/.plenv/bin:$PATH
+  #   eval $(plenv init -)
+  # else
+    export PERLBREW_ROOT=$HOME/.perlbrew
+    if [ -s $PERLBREW_ROOT/etc/bashrc ] ;then
+      PATH=$PERLBREW_ROOT/bin:$PATH
+      [ -z "$SHRC_LANGUAGE_LOADED" ] && source $PERLBREW_ROOT/etc/bashrc
+    fi
+  # fi
 
   shrc_section_title "for Python" # {{{2
   if [ -z "$SHRC_LANGUAGE_LOADED" ] ; then
