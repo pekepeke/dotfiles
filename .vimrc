@@ -1483,7 +1483,6 @@ if neobundle#is_installed('vim-enter-indent')
   Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<CR>\<C-r>=endwize#crend()\<CR>"
 else
   Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
-  " inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<CR>\<C-r>=endwize#crend()\<CR>"
 endif
 
 " clever-f {{{2
@@ -2595,54 +2594,133 @@ if neobundle#is_installed('vimproc')
       \   'runner/vimproc/updatetime' : 100,
       \ })
 endif
-let g:quickrun_config.cat = {
-      \  'command' : 'cat',
-      \  'exec' : ['%c %s'],
-      \ }
-if s:is_win
-  let g:quickrun_config.cs = {
-        \ 'command' : 'csc',
-        \ 'runmode' : 'simple',
-        \ 'exec' : ['%c /nologo %s:gs?/?\\? > /dev/null', '"%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
-        \ 'tempfile' : '{tempname()}.cs',
-        \ }
-else
-  let g:quickrun_config.cs = {
-        \ 'command' : 'cs',
-        \ 'runmode' : 'simple',
-        \ 'exec' : ['%c %s > /dev/null', 'mono "%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
-        \ 'tempfile' : '{tempname()}.cs',
-        \ }
-endif
-nnoremap <Leader><Leader>r :<C-u>QuickRun cat<CR>
+
+call extend(g:quickrun_config, {
+      \  'objc/gcc' : {
+      \    'command' : 'gcc',
+      \    'exec' : ['%c %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
+      \    'tempfile': '{tempname()}.m'
+      \  },
+      \  'processing/osascript' : {
+      \    'command': 'osascript',
+      \    'exec' : ['osascript ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
+      \  },
+      \  'applescript/osascript' : {
+      \    'command' : 'osascript',
+      \    'output' : '_',
+      \  },
+      \  'go/8g' : {
+      \    'command': '8g',
+      \    'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
+      \  },
+      \  'csharp/csc' : {
+      \    'command' : 'csc',
+      \    'runmode' : 'simple',
+      \    'exec' : ['%c /nologo %s:gs?/?\\? > /dev/null', '"%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
+      \    'tempfile' : '{tempname()}.cs',
+      \  },
+      \  'csharp/cs' : {
+      \    'command' : 'cs',
+      \    'runmode' : 'simple',
+      \    'exec' : ['%c %s > /dev/null', 'mono "%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
+      \    'tempfile' : '{tempname()}.cs',
+      \  },
+      \  'markdown/mdown' : {
+      \    'command' : 'mdown',
+      \    'exec' : '%c -i %s',
+      \  },
+      \  'markdown/multimarkdown' : {
+      \    'command' : 'multimarkdown',
+      \  },
+      \  'markdown/rdiscount' : {
+      \    'command' : 'rdiscount',
+      \  },
+      \  'markdown/markdown' : {
+      \    'command' : 'markdown',
+      \  },
+      \  'command/cat' : {
+      \    'command' : 'cat',
+      \    'exec' : ['%c %s'],
+      \  },
+      \  'ruby/rspec' : {
+      \    'command' : 'rspec',
+      \    'exec' : '%c -l {line(".")}',
+      \  },
+      \  'php/phpunit' : {
+      \    'command' : 'phpunit',
+      \  },
+      \  'python/nosetests' : {
+      \    'command' : 'nosetests',
+      \    'cmdopt': '-s -vv',
+      \  },
+      \  'perl/prove' : {
+      \    'command' : 'prove',
+      \  },
+      \ })
+
+call extend(g:quickrun_config, {
+      \   'cs' : {
+      \     'type' : executable('csc') ? 'csharp/csc':
+      \              executable('cs') ? 'csharp/cs':
+      \              '',
+      \   },
+      \   'go' : {
+      \     'type' : executable('8g') ? 'go/8g':
+      \              '',
+      \   },
+      \   'processing' : {
+      \     'type' : executable('osascript') ? 'processing/osascript':
+      \              '',
+      \   },
+      \   'applescript' : {
+      \     'type' : executable('osascript') ? 'applescript/osascript':
+      \              '',
+      \   },
+      \   'objc' : {
+      \     'type' : executable('gcc') ? 'objc/gcc':
+      \              '',
+      \   },
+      \   'ruby.rspec' : {
+      \     'type' : 'ruby/rspec',
+      \   },
+      \   'python.nosetests' : {
+      \     'type' : 'python/nosetests',
+      \   },
+      \   'perl.prove' : {
+      \     'type' : 'perl/prove',
+      \   },
+      \   'php.phpunit' : {
+      \     'type' : 'php/phpunit',
+      \   },
+      \   'markdown' : {
+      \     'type' : executable('mdown')            ? 'markdown/mdown':
+      \              executable('pandoc')           ? 'markdown/pandoc':
+      \              executable('multimarkdown')    ? 'markdown/multimarkdown':
+      \              executable('MultiMarkdown.pl') ? 'markdown/MultiMarkdown.pl':
+      \              executable('rdiscount')        ? 'markdown/rdiscount':
+      \              executable('bluecloth')        ? 'markdown/bluecloth':
+      \              executable('markdown')         ? 'markdown/markdown':
+      \              executable('Markdown.pl')      ? 'markdown/Markdown.pl':
+      \              executable('redcarpet')        ? 'markdown/redcarpet':
+      \              executable('kramdown')         ? 'markdown/kramdown':
+      \              '',
+      \   },
+      \ })
+
+nnoremap <Leader><Leader>r :<C-u>QuickRun command/cat<CR>
 
 " for lang "{{{3
-let g:quickrun_config.go = {
-      \  'command': '8g',
-      \  'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
-      \ }
-let g:quickrun_config.diag = {
-      \  'exec': [
-      \     '%c -a %s -o %{expand("%:r")}.png',
-      \     printf("%s %{expand(%:r)}.png",
-      \      s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'gnome-open'))
-      \    ],
-      \  'outputter': 'message',
-      \ }
-if s:is_mac
-  let g:quickrun_config.processing = {
-        \   'command': 'osascript',
-        \   'exec' : ['osascript ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
-        \ }
-  let g:quickrun_config.applescript = {
-        \    'command' : 'osascript',
-        \    'output' : '_',
-        \ }
-endif
+" let g:quickrun_config.diag = {
+"       \  'exec': [
+"       \     '%c -a %s -o %{expand("%:r")}.png',
+"       \     printf("%s %{expand(%:r)}.png",
+"       \      s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'gnome-open'))
+"       \    ],
+"       \  'outputter': 'message',
+"       \ }
 " for testcase {{{3
 MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
 MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
-MyAutocmd BufWinEnter,BufNewFile */Test/Case/*test.php,*/Test/Case/*Test.php setl filetype=php.phpunit.caketest
 function! s:gen_phpunit_skel()
   let old_cwd = getcwd()
   let cwd = expand('%:p:h')
@@ -2661,74 +2739,22 @@ endfunction
 command! PhpUnitSkelGen call <SID>gen_phpunit_skel()
 MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
 MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
+
 if neobundle#is_installed('vim-ref')
-  call ref#register_detection('ruby.rspec', 'refe', 'append')
-  call ref#register_detection('php.phpunit', 'phpmanual', 'append')
-  call ref#register_detection('php.phpunit.caketest', 'phpmanual', 'append')
-  call ref#register_detection('python.nosetests', 'pydoc', 'append')
-  call ref#register_detection('perl.prove', 'perldoc', 'append')
+  augroup vimrc-testcase-lazy
+    autocmd!
+  augroup END
+
+  function! s:testcase_lazy_init()
+    call ref#register_detection('ruby.rspec', 'refe', 'append')
+    call ref#register_detection('php.phpunit', 'phpmanual', 'append')
+    call ref#register_detection('python.nosetests', 'pydoc', 'append')
+    call ref#register_detection('perl.prove', 'perldoc', 'append')
+    autocmd!
+  endfunction
+  autocmd vimrc-testcase-lazy FileType ruby.rspec,php.phpunit,python.nosetests,perl.prove call s:testcase_lazy_init()
 endif
 
-let g:quickrun_config['ruby.rspec'] = {'command' : 'rspec', 'exec' : '%c -l {line(".")}'}
-let g:quickrun_config['php.phpunit'] = {'command' : 'phpunit'}
-let g:quickrun_config['php.phpunit.caketest'] = {'command' : 'caketest'}
-let g:quickrun_config['python.nosetests'] = {'command': 'nosetests', 'cmdopt': '-s -vv'}
-let g:quickrun_config['perl.prove'] = {'command': 'prove'}
-
-" html {{{3
-if s:is_mac
-  let g:quickrun_config['html'] = {'exec' : 'open %s'}
-  let g:quickrun_config['xhtml'] = {'exec' : 'open %s'}
-else
-endif
-
-" objc {{{3
-if executable('gcc') && s:is_mac
-  let g:quickrun_config['objc'] = {
-        \ 'command' : 'gcc',
-        \ 'exec' : ['%c %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
-        \ 'tempfile': '{tempname()}.m'
-        \ }
-        "\ 'exec' : ['%c %s -o %s:p:r -framework Cocoa', '%s:p:r %a', 'rm -f %s:p:r'],
-endif
-
-" text markups {{{3
-if !executable('pandoc') && executable('markdown') "{{{4
-  if executable('ruby') && filereadable($HOME.'/bin/mkd2html.rb')
-          " \ 'command' : 'ruby ' . $HOME . '/bin/mkd2html.rb' ,
-          " \   '%c %s',
-    let g:quickrun_config['markdown'] = {
-          \ 'command' : 'ruby' ,
-          \ 'exec' : [
-          \   '%c ' . $HOME . '/bin/mkd2html.rb' . ' %s',
-          \ ],
-          \ 'outputter': 'browser',
-          \ }
-  else
-    let g:quickrun_config['markdown'] = {
-          \ 'command' : 'markdown',
-          \ 'exec' : [
-          \   'echo "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"></head>"',
-          \   '%c %s',
-          \ ],
-          \ 'outputter': 'browser',
-          \ }
-  endif
-else
-  let g:quickrun_config['markdown'] = {
-        \ 'type' : 'markdown/pandoc',
-        \ 'outputter' : 'browser',
-        \ 'cmdopt' : '-s'
-        \ }
-endif
-if executable('redcloth') "{{{4
-  let g:quickrun_config['textile'] = {
-        \ 'command' : 'redcloth',
-        \ 'exec' : [
-        \   '%c %s',
-        \ ],
-        \ }
-endif
 
 function! s:quickrun_my_settings() "{{{4
   nmap <buffer> q :quit<CR>
