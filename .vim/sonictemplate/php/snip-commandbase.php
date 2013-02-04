@@ -1,7 +1,7 @@
 class CommandBase {
 	var $opts = array();
 	var $argv = array();
-	var $parseOptions = "h";
+	var $parseOptions = "";
 
 	static function run() {
 		$command = new static();
@@ -40,7 +40,8 @@ class CommandBase {
 			}
 		}
 		array_shift($argv);				// remove prog name
-		$argv = array_merge($argv);		// reindex
+		$this->argv = array_merge($argv);		// reindex
+		$this->opts = $opts;
 	}
 
 	function stdin($msg = null, $prompt = "> ") {

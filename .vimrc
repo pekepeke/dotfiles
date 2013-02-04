@@ -2062,12 +2062,12 @@ UniteNMap   m         file_mru -default-action=open -buffer-name=file
 UniteNMap   t         sonictemplate
 UniteNMap   c         webcolorname
 UniteNMap   o         outline
-UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep
-UniteNMap!  gr        grep -buffer-name=grep
-UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=todo
+UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep -auto-preview
+UniteNMap!  gr        grep -buffer-name=grep -auto-preview
+UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=todo -auto-preview
 UniteNMap   gl        grep_launcher
-UniteNMap!  gi        git_grep -buffer-name=git_grep
-UniteNMap!  q         quickfix -buffer-name=qfix
+UniteNMap!  gi        git_grep -buffer-name=git_grep -auto-preview
+UniteNMap!  q         quickfix -buffer-name=qfix -auto-preview
 " UniteNMap   y         history/yank
 " UniteNMap   :         history/command command
 " UniteNMap   /         history/search
@@ -2133,7 +2133,11 @@ if isdirectory(expand("~/.github-dotfiles/.vim"))
 else
   nnoremap <silent> [unite]V  :<C-u>Unite -start-insert file_rec:~/.vim/<CR>
 endif
-nnoremap <silent> [unite]v  :<C-u>Unite -start-insert file_rec:~/.vim/after file_rec:~/.vim/ftplugin file_rec:~/.vim/snippets file_rec:~/.vim/template file_rec:~/.vim/sonictemplate<CR>
+function! s:unite_open_ftplugin()
+  let dirs = ['after', 'ftplugin', 'snippets', 'template', 'sonictemplate']
+  execute 'Unite' '-input='.&filetype join(map(dirs, '"file_rec:~/.vim/".v:val'), " ")
+endfunction
+nnoremap <silent> [unite]v  :<C-u>call <SID>unite_open_ftplugin()<CR>
 " nnoremap <silent> [unite]v  :<C-u>Unite file_rec:~/.vim/after file_rec:~/.vim/ftplugin<CR>
 
 " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
@@ -3179,51 +3183,68 @@ else " {{{3
         \ call vimshell#set_execute_file('tgz,gz', 'gzcat')
         \ call vimshell#set_execute_file('tbz,bz2', 'bzcat')
 endif
+let s:vimshell_hooks = {} "{{{3
+function! s:vimshell_hooks.chpwd(args, context)
+  if len(split(glob('*'), '\n')) < 100
+    call vimshell#execute('ls')
+  else
+    call vimshell#execute('echo "Many files."')
+  endif
+endfunction
+function! s:vimshell_hooks.emptycmd(cmdline, context)
+  call vimshell#set_prompt_command('ls')
+  return 'ls'
+endfunction
 
-MyAutocmd FileType vimshell call s:vimshell_my_settings() " {{{3
+function! s:vimshell_hooks.preprompt(args, context)
+  " call vimshell#execute('echo "preprompt"')
+endfunction
+
+function! s:vimshell_hooks.preexec(cmdline, context)
+  " call vimshell#execute('echo "preexec"')
+
+  let args = vimproc#parser#split_args(a:cmdline)
+  if len(args) > 0 && args[0] ==# 'diff'
+    call vimshell#set_syntax('diff')
+  endif
+
+  return a:cmdline
+endfunction
+
+MyAutocmd FileType vimshell call s:vimshell_my_settings()
 function! s:vimshell_my_settings() " {{{3
   setl textwidth=0
   "autocmd FileType vimshell
   call vimshell#altercmd#define('g'  , 'git')
   call vimshell#altercmd#define('i'  , 'iexe')
-  call vimshell#altercmd#define('l'  , 'll')
-  call vimshell#altercmd#define('ll' , 'ls -l')
-  call vimshell#altercmd#define('la' , 'ls -a')
-  call vimshell#altercmd#define('e' , 'vim')
-  for cmd in ['irb', 'termtter']
-    if executable(cmd) | call vimshell#altercmd#define(cmd, 'iexe '.cmd) | endif
-  endfor
-  call vimshell#hook#set('chpwd'     , ['g:my_chpwd'])
-  call vimshell#hook#set('emptycmd'  , ['g:my_emptycmd'])
-  call vimshell#hook#set('preprompt' , ['g:my_preprompt'])
-  call vimshell#hook#set('preexec'   , ['g:my_preexec'])
+  call vimshell#altercmd#define('t'  , 'texe')
+  call vimshell#set_alias('l'  , 'll')
+  call vimshell#set_alias('ll' , 'ls -l')
+  call vimshell#set_alias('la' , 'ls -a')
+  call vimshell#set_alias('e' , 'vim')
+  call vimshell#set_alias('time' , 'exe time')
+
+  if s:is_mac
+    call vimshell#set_alias('gvim'  , 'gexe mvim')
+    call vimshell#set_alias('mvim'  , 'gexe mvim')
+  else
+    call vimshell#set_alias('gvim'  , 'gexe mvim')
+    call vimshell#set_alias('mvim'  , 'gexe mvim')
+  endif
+  if executable('pry')
+    call vimshell#set_alias('pry' , 'iexe irb')
+    call vimshell#set_alias('irb' , 'iexe irb')
+  endif
+
+  call vimshell#hook#add('chpwd'     , 'my_chpwd', s:vimshell_hooks.chpwd)
+  call vimshell#hook#add('emptycmd'  , 'my_emptycmd', s:vimshell_hooks.emptycmd)
+  call vimshell#hook#add('preprompt' , 'my_preprompt', s:vimshell_hooks.preprompt)
+  call vimshell#hook#add('preexec'   , 'my_preexec', s:vimshell_hooks.preexec)
 
   imap <silent> <buffer> <C-a> <C-o>:call cursor(line('.'), strlen(g:vimshell_prompt)+1)<CR>
   inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
 endfunction
 
-function! g:my_chpwd(args, context) " {{{3
-  call vimshell#execute('ls')
-endfunction
-
-function! g:my_emptycmd(cmdline, context) " {{{3
-  "call vimshell#execute('echo "emptycmd"')
-  call vimshell#set_prompt_command('ls')
-  return 'ls'
-endfunction
-
-function! g:my_preprompt(args, context) " {{{3
-  "call vimshell#execute('echo "preprompt"')
-endfunction
-
-function! g:my_preexec(cmdline, context) " {{{3
-  "call vimshell#execute('echo "preexec"')
-
-  if a:cmdline =~# '^\s*diff\>'
-    call vimshell#set_syntax('diff')
-  endif
-  return a:cmdline
-endfunction " }}}
 
 nmap [space]vp :<C-u>VimShellPop<CR>
 nmap [space]vv :<C-u>VimShellTab<CR>

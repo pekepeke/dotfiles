@@ -56,6 +56,19 @@ class Image {
 		return $this;
 	}
 
+	function isSmallerOrEqualSize($w, $h) {
+		// 指定された width, height よりも小さい画像であれば true を返却します。
+		// true を返却するのは、width, height の両者とも小さい場合のみ
+		return $w >= $this->imageWidth && $h >= $this->imageHeight;
+	}
+
+	function isBiggerOrEqualSize($w, $h) {
+		// 指定された width, height よりも大きい画像であれば、true を返却します。
+		// true を返却するのは、width, height の両者とも大きい場合のみ
+		return $w <= $this->imageWidth && $h <= $this->imageHeight;
+	}
+
+
 	function aspectSize($maxWidth, $maxHeight, $is_bigger = true) {
 		$w_ratio = $maxWidth / $this->imageWidth;
 		$h_ratio = $maxHeight / $this->imageHeight;

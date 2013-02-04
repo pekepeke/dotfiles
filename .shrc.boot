@@ -127,7 +127,7 @@ alias vimsafe='vim -u NONE -i NONE'
 alias vimf='vim -u '
 alias view='view -u $HOME/.vimpagerrc'
 
-update-dotfiles-submodule() { #{{{3
+dot-submodules-update() { #{{{3
   local cwd=$(pwd)
   cd ~/.github-dotfiles
   git submodule init
@@ -140,13 +140,12 @@ update-dotfiles-submodule() { #{{{3
   cd ${cwd}
   __NOTIFY "update .github-dotfiles" "complete!"
 }
-vim-bundle() { #{{{3
-  update-dotfiles-submodule
-  find ~/.vim/neobundle -name tags | grep doc | grep -v .git | xargs rm
-  vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "quitall"
+vundler() { #{{{3
+  dot-submodules-update
+  # find ~/.vim/neobundle -name tags | grep doc | grep -v .git | xargs rm
+  vim -c "silent NeoBundleInstall" -c "silent NeoBundleUpdate" -c "quitall"
   __NOTIFY "neobundle update" "complete!"
 }
-# alias vim-bundle='update-submodules; vim -c "silent NeoBundleInstall" -c "silent NeoBundleInstall!" -c "silent VimprocCompile" -c "quitall";NOTIFY "neobundle update" "complete!"'
 
 shrc_section_title "emacs" #{{{2
 ## Invoke the ``dired'' of current working directory in Emacs buffer.
