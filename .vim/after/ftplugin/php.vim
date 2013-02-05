@@ -58,6 +58,10 @@ if exists(':EnableFastPHPFolds')
   nnoremap <buffer> <silent> zz :call <SID>folding()<CR>
 endif
 
+
+if neobundle#is_installed('PIV') && neobundle#is_installed('neocomplcache')
+  inoremap <buffer><expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
+endif
 inoremap <buffer><expr> [ smartchr#one_of('[', 'array(', '[[')
 inoremap <buffer><expr> ] smartchr#one_of(']', ')', ']]')
 inoremap <buffer><expr> \ smartchr#one_of('\', 'function ', '\\')
