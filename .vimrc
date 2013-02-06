@@ -2246,9 +2246,13 @@ let g:html_use_encoding = 'utf-8'
 
 " tagbar taglist {{{2
 " basic options {{{3
-set tags+=tags;$HOME
-if filereadable($HOME."/.bin/tags/java6") | set tags+=$HOME/.bin/tags/java6 | endif
-if filereadable($HOME."/.bin/tags/android-base") | set tags+=$HOME/.bin/tags/android-base | endif
+function! s:setup_tags()
+  set tags+=./tags,tags
+  for f in split("\n", glob($HOME . '/.java-dev/tags/*'))
+    execute 'set' 'tags+='.f
+  endfor
+endfunction
+call s:setup_tags()
 
 if neobundle#is_installed('taglist.vim') "{{{4
   let g:Tlist_Auto_Update = 1
