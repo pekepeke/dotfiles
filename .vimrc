@@ -2660,6 +2660,13 @@ call extend(g:quickrun_config, {
       \  'perl/prove' : {
       \    'command' : 'prove',
       \  },
+      \  'diag/diag' : {
+      \    'exec': [
+      \       '%c -a %s -o %{expand("%:r")}.png',
+      \       printf("%s %{expand(%:r)}.png", s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'gnome-open')),
+      \    ],
+      \    'outputter': 'message',
+      \ },
       \ })
 
 call extend(g:quickrun_config, {
@@ -2708,20 +2715,15 @@ call extend(g:quickrun_config, {
       \              executable('redcarpet')        ? 'markdown/redcarpet':
       \              executable('kramdown')         ? 'markdown/kramdown':
       \              '',
+      \     'outputter' : 'browser',
+      \   },
+      \   'diag' : {
+      \     'type' : 'diag/diag',
       \   },
       \ })
 
 nnoremap <Leader><Leader>r :<C-u>QuickRun command/cat<CR>
 
-" for lang "{{{3
-" let g:quickrun_config.diag = {
-"       \  'exec': [
-"       \     '%c -a %s -o %{expand("%:r")}.png',
-"       \     printf("%s %{expand(%:r)}.png",
-"       \      s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'gnome-open'))
-"       \    ],
-"       \  'outputter': 'message',
-"       \ }
 " for testcase {{{3
 MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
 MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit

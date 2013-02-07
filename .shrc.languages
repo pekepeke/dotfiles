@@ -65,35 +65,19 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   fi
 
   shrc_section_title "for Python" # {{{2
-  if [ -z "$SHRC_LANGUAGE_LOADED" ] ; then
+  # if [ -e ~/.pyenv ]; then
+  #   PATH="$HOME/.pyenv/bin:$PATH"
+  #   eval "$(pyenv init -)"
+  # else
     export PYTHONBREW_ROOT=$HOME/.pythonbrew
     [ -e $PYTHONBREW_ROOT/etc/bashrc ] && source $PYTHONBREW_ROOT/etc/bashrc
-    # export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
-    # export PYTHONPATH=~/.lib/python:$PYTHONPATH
-    export PYTHONSTARTUP=~/.pyrc
-    export PIP_DOWNLOAD_CACHE="$HOME/.pip_cache"
-    if [ -e "/usr/local/Library/Homebrew" ] ; then
-      export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
-    fi
-  fi
-
-  shrc_section_title "for Ruby" # {{{2
-  if [ -e $HOME/.rbenv ]; then
-    PATH="$HOME/.rbenv/bin:$PATH"
-    if [ ~/.rbenv/bin/rbenv -nt ~/.rbenv.$SHELL_NAME -o ! -e ~/.rbenv.$SHELL_NAME ]; then
-      rbenv init - > ~/.rbenv.$SHELL_NAME
-      if_compile ~/.rbenv.$SHELL_NAME
-    fi
-    source ~/.rbenv.$SHELL_NAME
-    # eval "$(rbenv init -)"
-    # soft_source ~/.rbenv/completions/rbenv.$SHELL_NAME
-    rvm() {
-      if [[ $1 == 'use' ]]; then
-        rbenv shell $2
-      fi
-    }
-  else
-    soft_source $HOME/.rvm/scripts/rvm
+  # fi
+  # export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
+  # export PYTHONPATH=~/.lib/python:$PYTHONPATH
+  export PYTHONSTARTUP=~/.pyrc
+  export PIP_DOWNLOAD_CACHE="$HOME/.pip_cache"
+  if [ -e "/usr/local/Library/Homebrew" ] ; then
+    export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
   fi
 
   shrc_section_title "for node.js" # {{{2
@@ -135,12 +119,12 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
     else
       PATH=$HOME/.phpenv/bin:$PATH
     fi
-    if [ ~/.phpenv/bin/phpenv -nt ~/.phpenv.$SHELL_NAME -o ! -e ~/.phpenv.$SHELL_NAME ]; then
-      phpenv init - > ~/.phpenv.$SHELL_NAME
-      if_compile ~/.phpenv.$SHELL_NAME
-    fi
-    source ~/.phpenv.$SHELL_NAME
-    # eval "$(phpenv init -)"
+    # if [ ~/.phpenv/bin/phpenv -nt ~/.phpenv.$SHELL_NAME -o ! -e ~/.phpenv.$SHELL_NAME ]; then
+    #   phpenv init - > ~/.phpenv.$SHELL_NAME
+    #   if_compile ~/.phpenv.$SHELL_NAME
+    # fi
+    # source ~/.phpenv.$SHELL_NAME
+    eval "$(phpenv init -)"
     # soft_source ~/.phpenv/completions/rbenv.$SHELL_NAME
 
     # PATH=$PATH:$HOME/.php-build/bin
@@ -200,6 +184,25 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   if [ -e ~/.svm ]; then
     export SCALA_HOME=~/.svm/current/rt
     PATH=$SCALA_HOME/bin:$HOME/.svm/:$PATH
+  fi
+
+  shrc_section_title "for Ruby" # {{{2
+  if [ -e $HOME/.rbenv ]; then
+    PATH="$HOME/.rbenv/bin:$PATH"
+    # if [ ~/.rbenv/bin/rbenv -nt ~/.rbenv.$SHELL_NAME -o ! -e ~/.rbenv.$SHELL_NAME ]; then
+    #   rbenv init - > ~/.rbenv.$SHELL_NAME
+    #   if_compile ~/.rbenv.$SHELL_NAME
+    # fi
+    # source ~/.rbenv.$SHELL_NAME
+    eval "$(rbenv init -)"
+    # soft_source ~/.rbenv/completions/rbenv.$SHELL_NAME
+    rvm() {
+      if [[ $1 == 'use' ]]; then
+        rbenv shell $2
+      fi
+    }
+  else
+    soft_source $HOME/.rvm/scripts/rvm
   fi
 
 fi
