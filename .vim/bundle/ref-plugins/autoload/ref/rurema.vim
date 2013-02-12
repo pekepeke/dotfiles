@@ -49,19 +49,27 @@ function! s:source.opened(query) " {{{2
 endfunction
 
 function! s:source.get_keyword() " {{{2
-  let pos = getpos('.')[1:]
-  if &l:filetype ==# 'ref-rurema'
-    let [type, name] = s:detect_type()
-
-    if type ==# 'list'
-      return getline(pos[0])
-    endif
+  let id = '\v\w+[!?]?'
+  let class = '\v\u\w*%(::\u\w*)*'
+  let kwd = ref#get_text_on_cursor(class)
+  if kwd != ''
+    return kwd
   endif
+  return ref#get_text_on_cursor(class . '%([#.]' . id . ')?|' . id)
+  " let pos = getpos('.')[1:]
+  " if &l:filetype ==# 'ref-rurema'
+  "   let [type, name] = s:detect_type()
+
+  "   if type ==# 'list'
+  "     return getline(pos[0])
+  "   endif
+  " endif
 endfunction
 
 function! s:source.complete(query)  " {{{2
   let option = ['--list']
-  return filter(split(s:rurema(option + ref#to_list()).stdout, "\n") , 'v:val =~? a:query')
+  let query = '^' . a:query
+  return filter(split(s:rurema(option + ref#to_list()).stdout, "\n") , 'v:val =~? query')
 endfunction
 " functions. {{{1
 function! s:detect_type() " {{{2
@@ -143,7 +151,9 @@ function! ref#rurema#define()  " {{{1
   return copy(s:source)
 endfunction
 
-call ref#register_detection('ruby', 'rurema', 'overwrite') " {{{1
+if s:source.available()
+  call ref#register_detection('ruby', 'rurema', 'prepend') " {{{1
+endif
 
 function! ref#rurema#from_current_word() " {{{2
   let word = expand("<cword>")

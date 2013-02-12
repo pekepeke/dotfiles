@@ -208,7 +208,9 @@ function! ref#ri#define()  " {{{2
 endfunction
 
 
-call ref#register_detection('ruby', 'ri')  " {{{1
+if s:source.available()
+  call ref#register_detection('ruby', 'ri', 'append')  " {{{1
+endif
 
 
 

@@ -1,6 +1,5 @@
 <?php
-
-function log_write($message, $type = "debug") {
+function sql_log_write($sql, $params = array()) {
 	static $filename = null;
 	if (is_null($filename)) {
 		$filename = "/path/to/file.log";
@@ -12,10 +11,12 @@ function log_write($message, $type = "debug") {
 			@chmod($filename, 0777);
 		}
 	}
-	if (is_array($message) || is_object($message)) {
-		$message = var_export($message, true);
+	$m = array();
+	foreach ($params as $k => $v) {
+		$m[] = "{$k}={$v}";
 	}
-	$output = date('Y-m-d H:i:s') . ' ' . ucfirst($type) . ': ' . $message . "\n";
+	$message = sprintf("%s \n[%s]", $sql, implode(",", $m));
+	$output = date('Y-m-d H:i:s') . ' | ' . $message . "\n";
 	return file_put_contents($filename, $output, FILE_APPEND);
-}
 
+}

@@ -834,17 +834,19 @@ set directory=~/.tmp,/var/tmp,/tmp
 " IME の設定 {{{2
 if has('kaoriya') | set iminsert=0 imsearch=0 | endif
 
-MyAutocmd BufEnter * call LcdCurrentOrProjDir()
+MyAutocmd BufEnter * call <SID>autochdir()
 if !exists('g:my_lcd_autochdir')
   let g:my_lcd_autochdir = 1
 endif
 
-function! LcdCurrentOrProjDir() "{{{3
+function! s:autochdir() "{{{3
   if (&filetype == "vimfiler" || &filetype == "unite" || &filetype == "vimshell"
         \ || &filetype == "quickrun" )
     return
-  elseif g:my_lcd_autochdir && !exists('b:my_lcd_current_or_prj_dir')
-    let b:my_lcd_current_or_prj_dir = my#util#find_proj_dir()
+  elseif g:my_lcd_autochdir
+    if !exists('b:my_lcd_current_or_prj_dir')
+      let b:my_lcd_current_or_prj_dir = my#util#find_proj_dir()
+    endif
     if b:my_lcd_current_or_prj_dir != '' && isdirectory(b:my_lcd_current_or_prj_dir)
       execute 'lcd' fnameescape(b:my_lcd_current_or_prj_dir)
     endif
@@ -2127,16 +2129,12 @@ inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-inser
 
 command! Todo silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
 
-if isdirectory(expand("~/.github-dotfiles/.vim"))
-  nnoremap <silent> [unite]V  :<C-u>Unite -start-insert file_rec:~/.github-dotfiles/.vim/<CR>
-else
-  nnoremap <silent> [unite]V  :<C-u>Unite -start-insert file_rec:~/.vim/<CR>
-endif
 function! s:unite_open_ftplugin()
   let dirs = ['after', 'ftplugin', 'snippets', 'template', 'sonictemplate']
   execute 'Unite' '-input='.&filetype join(map(dirs, '"file_rec:~/.vim/".v:val'), " ")
 endfunction
 nnoremap <silent> [unite]v  :<C-u>call <SID>unite_open_ftplugin()<CR>
+nnoremap <silent> [unite]V  :<C-u>Unite file:~/.vim/<CR>
 " nnoremap <silent> [unite]v  :<C-u>Unite file_rec:~/.vim/after file_rec:~/.vim/ftplugin<CR>
 
 " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
