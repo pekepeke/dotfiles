@@ -6,7 +6,7 @@ function section($name = null) {
 	if (is_null($data)) {
 		$data = preg_replace('/\r\n|\r|\n/', "\n", file_get_contents(__FILE__, FALSE, NULL, __COMPILER_HALT_OFFSET__));
 		$contents = explode('@@', $data);
-		foreach (explode('@@', $data) as $section) {
+		foreach (preg_split('/(^|\n)@@/', $data) as $section) {
 			$lines = explode("\n", $section);
 			$key = array_shift($lines);
 			$sections[$key] = implode("\n", $lines);

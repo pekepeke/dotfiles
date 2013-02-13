@@ -140,5 +140,6 @@ for f in $(ls ~/.bash/completion); do
 done
 
 source_all $HOME/.bash/commands/*
+source_all $HOME/.bash/compfunc/*
 
 # vim:fdm=marker sw=2 ts=2 ft=sh expandtab:

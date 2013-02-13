@@ -425,15 +425,19 @@ shrc_section_title "complete" #{{{1
 zsh-complete-init() {
   shrc_section_title "complete-init start"
 
-  [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
-  [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
-  source_all ~/.zsh/commands/*
-
   autoload -U compinit
   compinit -u
 
   autoload -U bashcompinit
   bashcompinit
+
+  # from bash
+  source_all $HOME/.bash/compfunc/*
+  source_all $HOME/.zsh/zfunc/compfunc/*
+
+  [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
+  [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
+  source_all ~/.zsh/commands/*
 
   # complete options {{{2
   setopt auto_list            # 一覧表示する
@@ -498,9 +502,6 @@ zsh-complete-init() {
     "$_ssh_known_ips[@]"
     )
   zstyle ':completion:*' hosts $hosts #3}}}
-  # 2}}}
-  # etc completion {{{2
-  is_exec hub && source ~/.zsh/zfunc/hub.zsh_completion
   # 2}}}
 
   unfunction "zsh-complete-init"
