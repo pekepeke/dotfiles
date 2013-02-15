@@ -425,6 +425,10 @@ shrc_section_title "complete" #{{{1
 zsh-complete-init() {
   shrc_section_title "complete-init start"
 
+  [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
+  [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
+  source_all ~/.zsh/commands/*
+
   autoload -U compinit
   compinit -u
 
@@ -434,10 +438,6 @@ zsh-complete-init() {
   # from bash
   source_all $HOME/.bash/compfunc/*
   source_all $HOME/.zsh/zfunc/compfunc/*
-
-  [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
-  [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
-  source_all ~/.zsh/commands/*
 
   # complete options {{{2
   setopt auto_list            # 一覧表示する
