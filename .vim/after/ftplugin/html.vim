@@ -21,11 +21,10 @@ setl iskeyword-=:
 setl includeexpr=substitute(v:fname,'^\\/','','')
 setl path+=;/
 
-setl dictionary=~/.vim/dict/html.dict
-setl dictionary+=~/.vim/dict/css.dict
 setl iskeyword+=- iskeyword-=:
-"setl noexpandtab ts=2 sw=2 tw=0
-setl noexpandtab tabstop=2 shiftwidth=2 textwidth=0
+" setl dictionary=~/.vim/dict/html.dict
+" setl dictionary+=~/.vim/dict/css.dict
+" setl noexpandtab tabstop=2 shiftwidth=2 textwidth=0
 
 inoremap <buffer> <expr> \  smartchr#one_of('\', 'function(', '\\')
 

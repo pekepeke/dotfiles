@@ -5,23 +5,22 @@ set cpo&vim
 
 
 setl formatoptions-=ro
-setl dictionary=~/.vim/dict/ruby.dict
 setl iskeyword+=@,$,?,!
 setl iskeyword-=.,:
-setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
+" setl dictionary=~/.vim/dict/ruby.dict
+" setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
 
 " * ~ end block
-nnoremap vab 0/end<CR>%V%0
+" nnoremap vab 0/end<CR>%V%0
 " def ~ end block
-nnoremap vam $?\%(.*#.*def\)\@!def<CR>%V%0
+" nnoremap vam $?\%(.*#.*def\)\@!def<CR>%V%0
 " class ~ end block
-nnoremap vac $?\%(.*#.*class\)\@!class<CR>%V%0
+" nnoremap vac $?\%(.*#.*class\)\@!class<CR>%V%0
 " module ~ end block
-nnoremap vaM $?\%(.*#.*module\)\@!module<CR>%V%0
-
-vnoremap <buffer> [space]xa ! xmpfiler -a
-vnoremap <buffer> [space]xs ! xmpfiler -s
-vnoremap <buffer> [space]xm ! xmpfiler -m
+" nnoremap vaM $?\%(.*#.*module\)\@!module<CR>%V%0
+" vnoremap <buffer> [space]xa ! xmpfiler -a
+" vnoremap <buffer> [space]xs ! xmpfiler -s
+" vnoremap <buffer> [space]xm ! xmpfiler -m
 
 function! s:if_string_smtchrloop(...)
   let sname = synIDattr(synID(line("."), col("."), 1), "name")

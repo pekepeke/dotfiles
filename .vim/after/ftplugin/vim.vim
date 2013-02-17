@@ -2,9 +2,9 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-setl sw=2 ts=2 expandtab
+" setl sw=2 ts=2 expandtab
+" setl foldmethod=marker
 setl formatoptions-=ro
-setl foldmethod=marker
 setl iskeyword-=#
 
 let b:match_words = &matchpairs . ',\<if\>:\<en\%[dif]\>'

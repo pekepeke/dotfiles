@@ -2,10 +2,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-
-setl indentkeys-=0#
-setl cinkeys-=0#
-" setl noexpandtab
-
+setl sw=2 ts=2 expandtab
+setl foldmethod=marker
 
 let &cpo = s:save_cpo

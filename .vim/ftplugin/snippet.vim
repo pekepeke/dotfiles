@@ -1,7 +1,7 @@
+"scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-setf scheme
-setl expandtab
+setl noexpandtab formatoptions-=ro
 
 let &cpo = s:save_cpo

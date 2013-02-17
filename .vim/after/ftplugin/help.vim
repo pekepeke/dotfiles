@@ -60,9 +60,4 @@ function! s:generate_contents()
   call setpos('.', cursor)
 endfunction "}}}
 
-" load once in buffer {{{
-if exists('b:did_after_help_ftplugin') | finish | endif
-let b:did_help_ftplugin = 1
-" }}}
-
 let &cpo = s:save_cpo

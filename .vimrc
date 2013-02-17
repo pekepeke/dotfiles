@@ -145,8 +145,18 @@ NeoBundle 'w0ng/vim-hybrid'
 
 " common {{{3
 NeoBundleLazy 'mattn/benchvimrc-vim'
-NeoBundle 'Shougo/vimfiler', {'depends': 'Shougo/unite.vim'}
-NeoBundle 'Shougo/vimproc', {
+NeoBundleLazy 'Shougo/vimfiler', {
+      \   'depends': 'Shougo/unite.vim',
+      \   'autoload' : {
+      \      'commands' : [{ 'name' : 'VimFiler',
+      \                   'complete' : 'customlist,vimfiler#complete' },
+      \                   'VimFilerExplorer',
+      \                   'Edit', 'Read', 'Source', 'Write'],
+      \      'mappings' : ['<Plug>(vimfiler_switch)'],
+      \      'explorer' : 1,
+      \   }
+      \ }
+NeoBundleLazy 'Shougo/vimproc', {
       \ 'build' : {
       \     'cygwin' : 'make -f make_cygwin.mak',
       \     'mac'    : 'make -f make_mac.mak',
@@ -473,7 +483,9 @@ if s:is_win
 endif
 
 " unite.vim {{{3
-NeoBundle 'Shougo/unite.vim'
+NeoBundleLazy 'Shougo/unite.vim', {
+      \   'autoload': { 'commands' : ['Unite'] },
+      \ }
 NeoBundle 'Shougo/unite-build'
 NeoBundle 'Shougo/unite-help'
 NeoBundle 'h1mesuke/unite-outline'
@@ -1959,8 +1971,23 @@ let g:unite_winheight = 20
 "let g:unite_split_rule = 'botright'
 let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
 
-" unite buffers {{{3
-if neobundle#is_installed('unite.vim')
+" unite-grep {{{3
+" let g:unite_source_grep_default_opts = '-iRHn'
+let g:unite_source_grep_command = 'ack-grep'
+let g:unite_source_grep_default_opts = '--no-heading --no-color -a --nogroup --nopager'
+let g:unite_source_grep_recursive_opt = ''
+
+" unite-grep_launcher {{{3
+if !exists('g:grep_launcher_words')
+  let g:grep_launcher_words = {}
+endif
+call extend(g:grep_launcher_words, {
+      \ 'TODO' : 'TODO\|FIXME\|XXX',
+      \ })
+
+let s:bundle = neobundle#get("unite.vim")
+function! s:bundle.hooks.on_source(bundle)
+  " unite buffers {{{3
   call unite#set_substitute_pattern('file', '\$\w\+', '\=eval(submatch(0))', 200)
 
   call unite#set_substitute_pattern('file', '[^~.]\zs/', '*/*', 20)
@@ -1984,24 +2011,8 @@ if neobundle#is_installed('unite.vim')
   else
     call unite#set_substitute_pattern('file', '^;d', '\=$HOME."/Desktop/*"')
   endif
-endif
 
-" unite-grep {{{3
-" let g:unite_source_grep_default_opts = '-iRHn'
-let g:unite_source_grep_command = 'ack-grep'
-let g:unite_source_grep_default_opts = '--no-heading --no-color -a --nogroup --nopager'
-let g:unite_source_grep_recursive_opt = ''
-
-" unite-grep_launcher {{{3
-if !exists('g:grep_launcher_words')
-  let g:grep_launcher_words = {}
-endif
-call extend(g:grep_launcher_words, {
-      \ 'TODO' : 'TODO\|FIXME\|XXX',
-      \ })
-
-" custom actions {{{3
-if neobundle#is_installed('unite.vim')
+  " custom actions {{{3
   " custom action open_unite_file {{{4
   let s:unite_action_open_unite_file = {
         \ }
@@ -2030,7 +2041,8 @@ if neobundle#is_installed('unite.vim')
   endfunction
   call unite#custom_action('file', 'narrow_or_insert', s:unite_action_narrow_or_insert)
   unlet! s:unite_action_narrow_or_insert
-endif
+endfunction
+unlet s:bundle
 
 " unite mappings {{{3
 function! s:unite_map(bang, prefix, key, ...) " {{{4
@@ -2467,7 +2479,20 @@ let g:textobj_between_no_default_key_mappings=1
 " let g:textobj_wiw_no_default_key_mappings=1
 
 " ref.vim {{{2
+if !exists('g:ref_detect_filetype')
+  let g:ref_detect_filetype = {}
+endif
+let g:ref_detect_filetype._ = 'webdict'
+let g:ref_alc_use_cache = 1
+let g:ref_alc_start_linenumber = 43
+let g:ref_use_vimproc = 0
+
+if neobundle#is_installed('vimproc')
+  let g:ref_use_vimproc = 1
+endif
+
 " options {{{3
+" webdict {{{4
 let g:ref_source_webdict_sites = {
       \   'alc' : {
       \     'url': 'http://eow.alc.co.jp/%s',
@@ -2496,8 +2521,11 @@ endfunction
 function! g:ref_source_webdict_sites.wiktionary.filter(output)
     return join(split(a:output, "\n")[38:], "\n")
 endfunction
+" webdict default {{{4
 let g:ref_source_webdict_sites.default = 'alc'
 
+" langs {{{4
+let g:ref_source_webdict_sites.default = 'alc'
 let g:ref_phpmanual_path=$HOME.'/.bin/apps/phpman/'
 let g:ref_javadoc_path = $HOME.'/.bin/apps/jdk-6-doc/ja'
 let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest/docs'
@@ -2523,16 +2551,6 @@ else
   endif
 endif
 let g:ref_perldoc_complete_head = 1
-let g:ref_alc_use_cache = 1
-let g:ref_alc_start_linenumber = 43
-let g:ref_use_vimproc = 0
-
-if neobundle#is_installed('vimproc')
-  let g:ref_use_vimproc = 1
-endif
-if neobundle#is_installed('vim-ref')
-  call ref#register_detection('_', 'webdict')
-endif
 " }}}
 
 LCAlias Ref
@@ -3067,7 +3085,19 @@ call extend(g:neocomplcache_dictionary_filetype_lists, {
 
 let g:use_zen_complete_tag=1
 
-let g:neocomplcache_vim_completefuncs.Ref = 'ref#complete'
+call extend(g:neocomplcache_vim_completefuncs, {
+      \ 'Ref'   : 'ref#complete',
+      \ 'Unite' : 'unite#complete_source',
+      \ 'VimShellExecute' :
+      \   'vimshell#vimshell_execute_complete',
+      \ 'VimShellInteractive' :
+      \   'vimshell#vimshell_execute_complete',
+      \ 'VimShellTerminal' :
+      \   'vimshell#vimshell_execute_complete',
+      \ 'VimShell' : 'vimshell#complete',
+      \ 'VimFiler' : 'vimfiler#complete',
+      \ 'Vinarise' : 'vinarise#complete',
+      \ })
 
 let g:neocomplcache_force_omni_patterns.c =
   \ '[^.[:digit:] *\t]\%(\.\|->\)'
@@ -3309,12 +3339,7 @@ else
   let g:vimfiler_marked_file_icon = 'v'
 endif
 
-MyAutocmd FileType vimfiler call s:vimfiler_my_settings()
 " keymaps {{{3
-" nnoremap <silent> [space]f :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=getcwd()<CR><CR>
-" nnoremap <silent> [space]ff :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=getcwd()<CR><CR>
-" nnoremap <silent> [space]fg :VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:<C-r>=fnameescape(expand('%:p:h'))<CR><CR>
-" command! -nargs=? VFTree VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:
 nnoremap <silent> [space]f  :call <SID>vimfiler_tree_launch()<CR>
 nnoremap <silent> [space]ff :call <SID>vimfiler_tree_launch()<CR>
 nnoremap <silent> [space]fg :call <SID>vimfiler_tree_launch(fnameescape(expand('%:p:h')))<CR>
@@ -3437,6 +3462,8 @@ function! s:vimfiler_create_action_context(action, ...) " {{{4
         \ })
   return context
 endfunction
+
+MyAutocmd FileType vimfiler call s:vimfiler_my_settings() "{{{3
 function! s:vimfiler_my_settings() " {{{3
   nmap <silent><buffer> E :<C-u>call <SID>vimfiler_tabopen()<CR>
   nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
@@ -3457,17 +3484,10 @@ function! s:vimfiler_my_settings() " {{{3
       "   nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
       " endif
     elseif exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
-      " nmap <buffer> e <Plug>(vimfiler_split_edit_file)
-      " nmap <buffer> e <Plug>(vimfiler_tab_edit_file)
       nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('open')<CR>
       nnoremap <silent><buffer> E :call <SID>vimfiler_tree_tabopen()<CR>
       nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
-      " nnoremap <silent><buffer> <LeftMouse> <LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>
-      " nnoremap <silent><buffer> <LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:call <SID>vimfiler_smart_tree_l('')<CR>:set eventignore=<CR>
-      " nnoremap <silent><buffer> <2-LeftMouse> <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>:call <SID>vimfiler_smart_tree_l('new')<CR>
       if exists('g:scrolloff')
-        " nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>
-        " nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>:set eventignore=<CR>
         nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>:call <SID>vimfiler_smart_tree_l('', 1)<CR>:set eventignore=<CR>
         nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=<CR><LeftMouse>:<C-u>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
       else
