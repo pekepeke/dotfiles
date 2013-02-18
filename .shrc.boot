@@ -140,7 +140,7 @@ dot-submodules-update() { #{{{3
   cd ${cwd}
   __NOTIFY "update .github-dotfiles" "complete!"
 }
-vundler() { #{{{3
+vundle() { #{{{3
   dot-submodules-update
   # find ~/.vim/neobundle -name tags | grep doc | grep -v .git | xargs rm
   vim -c "silent NeoBundleInstall" -c "silent NeoBundleUpdate" -c "quitall"
