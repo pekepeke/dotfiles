@@ -14,7 +14,9 @@ vmenv-init() {
   if [ -e "$HOME/.${VMNAME}" ]; then
     PATH=$HOME/.${VMNAME}/bin:$PATH
     if [ -n "$PS1" -o -n "$PROMPT" ]; then
-      eval "$(${VMNAME} init -)"
+      # eval "$(${VMNAME} init -)"
+      PATH=$HOME/.${VMNAME}/shims:$PATH
+      soft_source ~/.${VMNAME}/completions/${VMNAME}.zsh
     else
       PATH=$HOME/.${VMNAME}/shims:$PATH
     fi
@@ -78,7 +80,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
     export PERLBREW_ROOT=$HOME/.perlbrew
     if [ -s $PERLBREW_ROOT/etc/bashrc ] ;then
       PATH=$PERLBREW_ROOT/bin:$PATH
-      [ -z "$SHRC_LANGUAGE_LOADED" ] && source $PERLBREW_ROOT/etc/bashrc
+      source $PERLBREW_ROOT/etc/bashrc
     fi
   fi
 
@@ -132,7 +134,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   shrc_section_title "php" # {{{2
   # must be after eval $(rbenv init)
   vmenv-init phpenv
-  export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql"
+  export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql --with-pear"
   # if [ -e $HOME/.phpenv ]; then
   #   if [[ $PATH =~ \.rbenv/bin ]]; then
   #     PATH=$(echo $PATH | sed 's@.rbenv/bin@.rbenv/bin:'$HOME'/.phpenv/bin@')
@@ -232,6 +234,20 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   # else
   #   soft_source $HOME/.rvm/scripts/rvm
   # fi
+  envwhich() {
+    local f=$(which $1)
+    local root=$(dirname $(dirname $f))
+    local real_f
+    if [ -e $root/version ]; then
+      real_f="${root}/versions/$(cat $root/version)/bin/$(basename $f)"
+      if [ -e $real_f ]; then
+        echo $real_f
+        return 0
+      fi
+    fi
+    echo $f
+    return 0
+  }
 
 fi
 shrc_section_title "etc" # {{{2
@@ -257,7 +273,7 @@ export MANPATH
 shrc_section_title "finalize" # {{{1
 env_unique PATH
 env_unique MANPATH
-export SHRC_LANGUAGE_LOADED=1
+# export SHRC_LANGUAGE_LOADED=1
 unset SHELL_NAME
 
 # __END__ {{{1

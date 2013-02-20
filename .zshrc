@@ -436,7 +436,7 @@ zsh-complete-init() {
   bashcompinit
 
   # from bash
-  source_all $HOME/.bash/compfunc/*
+  # source_all $HOME/.bash/compfunc/*
   source_all $HOME/.zsh/zfunc/compfunc/*
 
   # complete options {{{2
