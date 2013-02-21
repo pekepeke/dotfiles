@@ -2055,8 +2055,8 @@ UniteNMap   <Space>   buffer
 UniteNMap   j         buffer_tab
 UniteNMap   k         tab
 UniteNMap   l         file
-UniteNMap   d         directory_mru -default-action=open_unite_file
-UniteNMap   z         z -default-action=open_unite_file
+UniteNMap   d         directory_mru -default-action=vimfiler
+UniteNMap   z         z -default-action=vimfiler
 UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR><CR>
 UniteNMap   m         file_mru -default-action=open -buffer-name=file
 UniteNMap   t         sonictemplate
