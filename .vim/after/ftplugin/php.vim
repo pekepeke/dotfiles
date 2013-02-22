@@ -11,14 +11,8 @@ setl path+=;/
 setl iskeyword-=$,\-,:
 " setl noexpandtab
 
-if neobundle#is_installed('php-doc')
-  nnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
-  " inoremap <buffer> <silent> [comment-doc] <Esc>:call PhpDocSingle()<CR>i
-  vnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
-elseif neobundle#is_installed('PIV')
-  nnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
-  vnoremap <buffer> <silent> [comment-doc] :call PhpDocRange()<CR>
-endif
+nnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
+vnoremap <buffer> <silent> [comment-doc] :call PhpDocRange()<CR>
 
 if exists(':EnableFastPHPFolds')
   function! s:folding()
@@ -29,9 +23,9 @@ if exists(':EnableFastPHPFolds')
 endif
 
 
-if neobundle#is_installed('PIV') && neobundle#is_installed('neocomplcache')
-  inoremap <buffer><expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
-endif
+" if neobundle#is_installed('PIV') && neobundle#is_installed('neocomplcache')
+"   inoremap <buffer><expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
+" endif
 inoremap <buffer><expr> [ smartchr#one_of('[', 'array(', '[[')
 inoremap <buffer><expr> ] smartchr#one_of(']', ')', ']]')
 inoremap <buffer><expr> \ smartchr#one_of('\', 'function', '\\')
