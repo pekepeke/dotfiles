@@ -366,7 +366,6 @@ NeoBundle 'nono/vim-handlebars'
 " python {{{4
 " http://rope.sourceforge.net/
 " NeoBundle 'klen/python-mode'
-NeoBundleLazyOn FileType python 'vim-scripts/python_match.vim'
 NeoBundleLazyOn FileType python 'lambdalisue/vim-python-virtualenv'
 " NeoBundle 'lambdalisue/vim-django-support'
 NeoBundleLazyOn FileType python 'gerardo/vim-django-support'
