@@ -27,6 +27,10 @@ case $OSTYPE in
   *)
     ;;
 esac
+if [ -n "$TMUX" ]; then
+  # exec reattach-to-user-namespace -l $SHELL
+  tmux rename-window "$HOST"
+fi
 
 shrc_section_title "environments" #{{{1
 export EDITOR=vim

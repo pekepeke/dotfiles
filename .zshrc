@@ -368,7 +368,7 @@ else
 fi
 precmd_rprompt() {
   RPROMPT=`echo_rprompt`
-  print -PnD "\e]1;%n@%m: %${PWD}\a"
+  # print -PnD "\e]1;%n@%m: %${PWD}\a"
   print -PnD "\e]1;%n@%m: %25<..<${PWD}%<<\a"
 }
 
@@ -389,10 +389,14 @@ preexec_multiterm() {
         arg=":$(awk '{print $NF}' <<< $1)"
         ;;
       vagrant*)
-        arg=arg=":vagrant"
+        arg=":vagrant"
         ;;
-      su*)
+      sudo)
+        ;;
+      su)
         arg="!root!"
+        ;;
+      *)
         ;;
     esac
     if [ -n "$arg" ]; then
