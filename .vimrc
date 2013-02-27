@@ -2638,6 +2638,10 @@ call extend(g:quickrun_config, {
       \    'exec' : ['%c %s > /dev/null', 'mono "%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
       \    'tempfile' : '{tempname()}.cs',
       \  },
+      \  'markdown/markedwrapper' : {
+      \    'command' : 'markedwrapper',
+      \    'exec' : '%c %s',
+      \  },
       \  'markdown/mdown' : {
       \    'command' : 'mdown',
       \    'exec' : '%c -i %s',
@@ -2713,7 +2717,9 @@ call extend(g:quickrun_config, {
       \     'type' : 'php/phpunit',
       \   },
       \   'markdown' : {
-      \     'type' : executable('mdown')            ? 'markdown/mdown':
+      \     'type' :
+      \              executable('markedwrapper')    ? 'markdown/markedwrapper':
+      \              executable('mdown')            ? 'markdown/mdown':
       \              executable('pandoc')           ? 'markdown/pandoc':
       \              executable('multimarkdown')    ? 'markdown/multimarkdown':
       \              executable('MultiMarkdown.pl') ? 'markdown/MultiMarkdown.pl':
