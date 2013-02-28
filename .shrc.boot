@@ -15,8 +15,17 @@ case $OSTYPE in
   cygwin*)
     ;;
   darwin*)
-    export TMUX_DEFAULT_COMMAND="reattach-to-user-namespace -l $SHELL"
-    export TMUX_PREFIX_COMMAND="reattach-to-user-namespace"
+    if which reattach-to-user-namespace >/dev/null 2>&1; then
+      export TMUX_DEFAULT_COMMAND="reattach-to-user-namespace -l $SHELL"
+      export TMUX_PREFIX_COMMAND="reattach-to-user-namespace"
+      if [ -n "$TMUX" ]; then
+        # exec reattach-to-user-namespace -l $SHELL
+        tmux rename-window "$HOST"
+        alias mvim="reattach-to-user-namespace -l mvim"
+        alias vim="reattach-to-user-namespace -l vim"
+        alias emacs="reattach-to-user-namespace -l emacs"
+      fi
+    fi
     ;;
   freebsd*)
     ;;
@@ -27,10 +36,6 @@ case $OSTYPE in
   *)
     ;;
 esac
-if [ -n "$TMUX" ]; then
-  # exec reattach-to-user-namespace -l $SHELL
-  tmux rename-window "$HOST"
-fi
 
 shrc_section_title "environments" #{{{1
 export EDITOR=vim
@@ -118,11 +123,11 @@ alias ack='ack-grep'
 alias less='less -R'
 
 shrc_section_title "vim" #{{{2
-if [ -x ~/bin/vimpager ] ; then
-  export PAGER=~/bin/vimpager
-  # alias less=$PAGER
-  # alias zless=$PAGER
-fi
+# if [ -x ~/bin/vimpager ] ; then
+#   export PAGER=~/bin/vimpager
+#   # alias less=$PAGER
+#   # alias zless=$PAGER
+# fi
 alias vimfiler='vim -c VimFiler'
 alias vimshell='vim -c VimShell'
 

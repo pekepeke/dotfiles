@@ -10,11 +10,11 @@ export JSREF_DOCROOT=$LMANDIR/jsref/doc/
 export TIMOBILEREF_DOCROOT=$LMANDIR/timobileref/doc/
 export TIDESKTOPREF_DOCROOT=$LMANDIR/tidesktopref/doc/
 
-shrc_section_title "RSENSE" # {{{1
-if [ -e ~/.bin/apps ]; then
-  export RSENSE_HOME=$(find $HOME/.bin/apps -name 'rsense*' -maxdepth 1 -type d | sort -r | head -1)
-  alias rsense-updaterc='ruby $RSENSE_HOME/etc/config.rb > ~/.rsense'
-fi
+# shrc_section_title "RSENSE" # {{{1
+# if [ -e ~/.bin/apps ]; then
+#   export RSENSE_HOME=$(find $HOME/.bin/apps -name 'rsense*' -maxdepth 1 -type d | sort -r | head -1)
+#   alias rsense-updaterc='ruby $RSENSE_HOME/etc/config.rb > ~/.rsense'
+# fi
 unset LMANDIR
 
 # __END__ {{{1

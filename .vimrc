@@ -279,6 +279,11 @@ NeoBundle 'mattn/learn-vimscript'
 " neocomplcache {{{4
 NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neocomplcache-rsense'
+NeoBundleLazy 'm2ym/rsense', {
+      \ 'build' : {
+      \    'mac': 'ruby etc/config.rb > ~/.rsense',
+      \    'unix': 'ruby etc/config.rb > ~/.rsense',
+      \ } }
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'basyura/csharp_complete'
 NeoBundle 'osyo-manga/neocomplcache-jsx'
@@ -319,13 +324,16 @@ endif
 
 " html {{{4
 NeoBundle 'othree/html5.vim'
+NeoBundleLazyOn FileType html 'amirh/HTML-AutoCloseTag'
+NeoBundleLazyOn FileType html 'vim-scripts/html-improved-indentation'
+NeoBundleLazyOn FileType html 'vim-scripts/html_FileCompletion'
+NeoBundleLazyOn FileType haml 'tpope/vim-haml'
+NeoBundleLazyOn FileType jade 'digitaltoad/vim-jade'
 " NeoBundle 'mattn/zencoding-vim'
-NeoBundle 'tpope/vim-haml'
-NeoBundle 'digitaltoad/vim-jade'
 NeoBundleLazyOn FileType html,eruby,php 'mattn/zencoding-vim'
 NeoBundleLazyOn FileType html,php,haml,jade 'vim-scripts/indenthtml.vim'
 " NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
-NeoBundleLazyOn FileType html 'amirh/HTML-AutoCloseTag'
+NeoBundleLazyOn FileType mustache 'juvenn/mustache.vim'
 
 " css {{{4
 NeoBundleLazyOn FileType html,javascript,css,sass,scss,less 'Rykka/colorv.vim'
@@ -413,6 +421,7 @@ NeoBundle 'nwertzberger/javacomplete', {
       \ }
 NeoBundle 'groovy.vim'
 NeoBundle 'thinca/vim-logcat'
+NeoBundleLazyOn FileType velocity 'lepture/vim-velocity'
 
 " scala {{{4
 NeoBundle 'derekwyatt/vim-scala'
@@ -2539,9 +2548,9 @@ if s:is_win
   let g:ref_refe_encoding = 'cp932'
 else
   let g:ref_refe_encoding = 'utf-8'
-  if exists('$RSENSE_HOME') && executable($RSENSE_HOME.'/bin/rsense')
-    let g:ref_refe_rsense_cmd = $RSENSE_HOME.'/bin/rsense'
-  endif
+  " if exists('$RSENSE_HOME') && executable($RSENSE_HOME.'/bin/rsense')
+  "   let g:ref_refe_rsense_cmd = $RSENSE_HOME.'/bin/rsense'
+  " endif
 endif
 let g:ref_perldoc_complete_head = 1
 " }}}
