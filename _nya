@@ -134,17 +134,45 @@ if %nyatype.defined% != 0 then
 endif
 #option prompt $e[31;40;1m[$p]$e[37;1m
 
+# functions
+# 関数 which の定義.
+which{
+    foreach dir . ${PATH.split}
+		foreach ext .com .exe .bat .cmd
+			if exist $dir\$1$ext then
+				echo $dir\$1$ext
+			endif
+		end
+    end
+}
+
+
 set PATH+=$HOME\.windows\bin;$HOME\.windows\usr\bin;$HOME\.windows\usr\local\bin
 
-# pik(must be written first)
+# pik
 set PATH+=$HOME\.windows\lib\pik;$HOME\.windows\lib\pik\ruby\bin
-
+pik{
+	set PIK_BIN=`which pik`
+	$PIK_BIN $*
+	if $1 == use then
+		if "%2" != "" then
+			echo $2 > "%USERPROFILE%\.pik\version"
+		endif
+		pik-source
+	endif
+}
 pik-source{
 	if exist "%USERPROFILE%\.pik\pik.bat" then
 		source "%USERPROFILE%\.pik\pik.bat" 2>nul
 	endif
 }
-pik-source
+
+if exist "%USERPROFILE%\.pik\version" then
+	# rehash
+	set PIK_VER=`%COMSPEC% /c type "%USERPROFILE%\.pik\version"`
+	pik use %PIK_VER%
+	pik-source
+endif
 
 # set PIK_DEVKIT_PARENT=C:\Pik
 # foreach dir `%COMSPEC% /c dir /A:D /B $PIK_DEVKIT_PARENT\DevKit-* 2>nul`
@@ -154,7 +182,7 @@ pik-source
 # end
 
 # nodist
-set PATH+=$HOMEPATH\.windows\lib\nodist\bin
+set PATH+=$HOME\.windows\lib\nodist\bin
 
 # nvmw - can't run on nyaos '''
 # set PATH+=$HOMEPATH\.nvmw
@@ -174,17 +202,6 @@ set PATH+=$HOMEPATH\.windows\lib\nodist\bin
 # }
 
 # customize end
-
-# 関数 which の定義.
-which{
-    foreach dir . ${PATH.split}
-		foreach ext .com .exe .bat .cmd
-			if exist $dir\$1$ext then
-				echo $dir\$1$ext
-			endif
-		end
-    end
-}
 
 ### Vzライクなキーバインドにする関数
 ### 利用時には「vzbind」とだけの行を入れてください。

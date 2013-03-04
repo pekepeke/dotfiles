@@ -47,6 +47,9 @@ goto :EOF
 
 :F_MKLINK
 
+if "%1"=="%HOME%\.gitmodules" goto :EOF
+if "%1"=="%HOME%\.gitignore" goto :EOF
+
 if defined is_xp (
     if exist "%1" del "%1"
     if not exist "%1" (
@@ -66,3 +69,4 @@ if defined is_xp (
 goto :EOF
 
 
+:EOF

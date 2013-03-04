@@ -1229,7 +1229,11 @@ nnoremap [space]r :<C-u>%S/
 vnoremap [space]r :S/
 
 " grep
-if executable('ack')
+if executable('ag')
+  set grepprg=ag\ -a\ --nocolor\ --nogroup\ --nopager
+  set grepformat=%f:%l:%m
+  let g:ackprg="ag --nocolor --nogroup --column --nopager"
+elseif executable('ack')
   set grepprg=ack\ -a\ --nocolor\ --nogroup\ --nopager
   set grepformat=%f:%l:%m
 elseif executable('ack-grep')
@@ -1975,9 +1979,15 @@ let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|
 
 " unite-grep {{{3
 " let g:unite_source_grep_default_opts = '-iRHn'
-let g:unite_source_grep_command = 'ack-grep'
-let g:unite_source_grep_default_opts = '--no-heading --no-color -a --nogroup --nopager'
-let g:unite_source_grep_recursive_opt = ''
+if executable('ag')
+  let g:unite_source_grep_command = 'ag'
+  let g:unite_source_grep_default_opts = '--noheading --nocolor -a --nogroup --nopager'
+  let g:unite_source_grep_recursive_opt = ''
+else
+  let g:unite_source_grep_command = 'ack-grep'
+  let g:unite_source_grep_default_opts = '--no-heading --nocolor -a --nogroup --nopager'
+  let g:unite_source_grep_recursive_opt = ''
+endif
 
 " unite-grep_launcher {{{3
 if !exists('g:grep_launcher_words')

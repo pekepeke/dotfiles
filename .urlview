@@ -1,0 +1,7 @@
+# URL regex.
+REGEXP (((http|https|ftp|gopher)|mailto)[.:][^ >"\t]*|www\.[-a-z0-9.]+)[^ .,;\t>">\):]
+
+# Command to invoke for selected URL.
+# COMMAND open %s
+# COMMAND xdg-open %s
+
