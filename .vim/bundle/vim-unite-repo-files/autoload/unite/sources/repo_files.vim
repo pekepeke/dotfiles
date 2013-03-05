@@ -25,10 +25,16 @@ let g:unite_repo_files_rule = {
       \   },
       \   '_' : {
       \     'located' : '.',
+      \     'command' : 'ag',
+      \     'exec' : '%c -L --noheading --nocolor -a --nogroup --nopager',
+      \     'use_system' : 1,
+      \   },
+      \   '__' : {
+      \     'located' : '.',
       \     'command' : ['ack-grep', 'ack'],
       \     'exec' : '%c -f --no-heading --no-color -a --nogroup --nopager',
       \     'use_system' : 1,
-      \   },
+      \   }
       \ }
 
 let s:source = {
@@ -67,6 +73,9 @@ function! s:source.gather_candidates(args, context)
 
   if empty(command)
     let item = g:unite_repo_files_rule._
+    if empty(item)
+      let item = g:unite_repo_files_rule.__
+    endif
     let command = s:get_commmand(item)
     let is_use_system = s:is_use_system(item)
   endif

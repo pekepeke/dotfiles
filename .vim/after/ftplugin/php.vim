@@ -3,12 +3,14 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-" setl formatoptions-=ro
-setl formatoptions-=o
 " http://hail2u.net/blog/software/only-one-line-life-changing-vimrc-setting.html
 setl includeexpr=substitute(v:fname,'^\\/','','')
 setl path+=;/
-setl iskeyword-=$,\-,:
+
+" setl formatoptions-=ro
+" setl iskeyword-=$,\-,:
+setl formatoptions-=o iskeyword-=-,$,:
+
 " setl noexpandtab
 
 nnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>

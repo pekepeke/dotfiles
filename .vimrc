@@ -176,6 +176,7 @@ NeoBundle 'tyru/vim-altercmd'
 NeoBundle 'vim-scripts/ShowMarks7'
 NeoBundle 'dannyob/quickfixstatus'
 NeoBundle 'jceb/vim-hier'
+NeoBundle 'tomtom/quickfixsigns_vim'
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-abolish'
@@ -187,6 +188,7 @@ NeoBundleLazy 't9md/vim-textmanip'
 NeoBundle 'bkad/CamelCaseMotion'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'vim-scripts/YankRing.vim'
+" NeoBundle 'maxbrunsfeld/vim-yankstack'
 " NeoBundle 'chrismetcalf/vim-yankring'
 " NeoBundle 'the-isz/MinYankRing.vim'
 NeoBundle 'rhysd/clever-f.vim'
@@ -299,8 +301,10 @@ NeoBundle 'hallison/vim-ruby-sinatra'
 NeoBundle 'skwp/vim-rspec'
 NeoBundleLazyOn FileType ruby 'tpope/vim-cucumber'
 NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
+NeoBundleLazyOn FileType ruby 'yaymukund/vim-rabl'
 NeoBundle 'vim-scripts/eruby.vim'
 NeoBundle 't9md/vim-chef'
+NeoBundleLazyOn FileType puppet 'rodjek/vim-puppet'
 NeoBundle 'rhysd/unite-ruby-require.vim.git'
 NeoBundle 'rhysd/neco-ruby-keyword-args.git'
 if has("signs") && has("clientserver") && v:version > 700
@@ -337,6 +341,8 @@ NeoBundleLazyOn FileType mustache 'juvenn/mustache.vim'
 
 " css {{{4
 NeoBundleLazyOn FileType html,javascript,css,sass,scss,less 'Rykka/colorv.vim'
+
+NeoBundle 'ChrisYip/Better-CSS-Syntax-for-Vim'
 " NeoBundle 'ap/vim-css-color'
 " NeoBundle 'lilydjwg/colorizer'
 NeoBundle 'hail2u/vim-css3-syntax'
@@ -349,13 +355,13 @@ NeoBundleLazyOn FileType css 'vim-scripts/cssbaseline.vim'
 NeoBundleLazyOn FileType css 'bae22/prefixer'
 
 " javascript {{{4
-NeoBundle 'pangloss/vim-javascript'
-NeoBundle 'teramako/jscomplete-vim'
-NeoBundle 'myhere/vim-nodejs-complete'
+NeoBundleLazyOn FileType javascript 'pangloss/vim-javascript'
+NeoBundleLazyOn FileType javascript 'teramako/jscomplete-vim'
+NeoBundleLazyOn FileType javascript 'myhere/vim-nodejs-complete'
 NeoBundle 'mklbas/grunt.vim'
 NeoBundle 'leshill/vim-json'
 " NeoBundle 'drslump/vim-syntax-js'
-NeoBundle 'vim-scripts/jQuery'
+NeoBundleLazyOn FileType javascript  'vim-scripts/jQuery'
 " NeoBundle 'lukaszb/vim-web-indent'
 " NeoBundle 'vim-scripts/IndentAnything'
 " NeoBundle 'itspriddle/vim-javascript-indent'
@@ -411,6 +417,9 @@ endif
 " OSX {{{4
 NeoBundle 'nanki/vim-objj'
 NeoBundle 'pekepeke/cocoa.vim'
+" if has('ruby')
+"   NeoBundleLazyOn FileType objc 'eraserhd/vim-ios'
+" endif
 NeoBundle 'vim-scripts/applescript.vim'
 
 " java, android {{{4
@@ -479,20 +488,23 @@ NeoBundleLazyOn FileType sql 'vim-scripts/SQLUtilities'
 "NeoBundle 'OmniCppComplete'
 
 " etc {{{4
-NeoBundle 'sophacles/vim-processing'
-NeoBundle 'pekepeke/ref-processing-vim'
+NeoBundleLazyOn FileType lua 'xolox/vim-lua-ftplugin'
+NeoBundle 'vim-scripts/syslog-syntax-file'
+NeoBundleLazyOn FileType processing 'sophacles/vim-processing'
+NeoBundleLazyOn FileType processing 'pekepeke/ref-processing-vim'
 NeoBundle 'sjl/strftimedammit.vim'
 NeoBundle 'tangledhelix/vim-octopress'
-NeoBundle 'jcfaria/Vim-R-plugin'
+NeoBundleLazyOn FileType r 'jcfaria/Vim-R-plugin'
 
 " if executable('loga')
 "   NeoBundle 'tacahiroy/vim-logaling'
 " endif
 
 " config {{{4
-NeoBundle 'smerrill/vcl-vim-plugin'
 NeoBundle 'qqshfox/vim-tmux'
 NeoBundle 'vim-scripts/nginx.vim'
+NeoBundle 'smerrill/vcl-vim-plugin'
+" NeoBundle 'empanda/vim-varnish.vim'
 NeoBundle 'glidenote/keepalived-syntax.vim'
 if s:is_win
   NeoBundle 'Shougo/vim-nyaos'
@@ -598,6 +610,7 @@ NeoBundle 'sgur/vim-textobj-parameter'
 NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'coderifous/textobj-word-column.vim'
 NeoBundle 'rhysd/vim-textobj-continuous-line'
+NeoBundle 'gorkunov/smartpairs.vim'
 
 " metarw {{{3
 " NeoBundle "mattn/vim-metarw.git"

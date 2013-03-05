@@ -16,12 +16,11 @@ function! s:AutoReloadHTML(...)
   silent exe "!autotesthtml.rb > /dev/null 2>&1 &"
 endfunction
 
-setl iskeyword-=:
 " http://hail2u.net/blog/software/only-one-line-life-changing-vimrc-setting.html
 setl includeexpr=substitute(v:fname,'^\\/','','')
 setl path+=;/
 
-setl iskeyword+=- iskeyword-=:
+setl iskeyword+=-,:
 " setl dictionary=~/.vim/dict/html.dict
 " setl dictionary+=~/.vim/dict/css.dict
 " setl noexpandtab tabstop=2 shiftwidth=2 textwidth=0

@@ -8,4 +8,5 @@ setl dictionary+=~/.vim/dict/wsh.dict
 setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
 setl syntax=jQuery
 
+
 let &cpo = s:save_cpo
