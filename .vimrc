@@ -423,22 +423,23 @@ NeoBundle 'pekepeke/cocoa.vim'
 NeoBundle 'vim-scripts/applescript.vim'
 
 " java, android {{{4
-NeoBundle 'mikelue/vim-maven-plugin'
+NeoBundleLazyOn FileType java 'mikelue/vim-maven-plugin'
 " NeoBundle 'vim-scripts/javacomplete', {
-NeoBundle 'nwertzberger/javacomplete', {
-      \ 'build' : 'javac -source 1.4 autoload/Reflection.java'
+NeoBundleLazy 'nwertzberger/javacomplete', {
+      \ 'build' : 'javac -source 1.4 autoload/Reflection.java',
+      \ 'autoload' : { 'filetypes' : 'java' },
       \ }
-NeoBundle 'groovy.vim'
+NeoBundleLazyOn FileType groovy 'groovy.vim'
 NeoBundle 'thinca/vim-logcat'
 NeoBundleLazyOn FileType velocity 'lepture/vim-velocity'
 
 " scala {{{4
-NeoBundle 'derekwyatt/vim-scala'
+NeoBundleLazyOn FileType scala 'derekwyatt/vim-scala'
 
 " go {{{4
-NeoBundle 'uggedal/go-vim'
+NeoBundleLazyOn FileType go 'uggedal/go-vim'
 if executable('gocode')
-  NeoBundle 'undx/vim-gocode'
+  NeoBundleLazyOn FileType go 'undx/vim-gocode'
 endif
 
 " as {{{4
@@ -477,7 +478,7 @@ NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
 NeoBundleLazyOn FileType php 'vim-scripts/phpcomplete.vim'
 NeoBundleLazyOn FileType php 'nishigori/phpfolding.vim'
 NeoBundleLazyOn FileType php 'arnaud-lb/vim-php-namespace'
-NeoBundle 'beyondwords/vim-twig'
+NeoBundleLazyOn FileType twig 'beyondwords/vim-twig'
 NeoBundleLazyOn FileType twig 'tokutake/twig-indent'
 NeoBundleLazyOn FileType php 'violetyk/cake.vim'
 
@@ -1671,9 +1672,13 @@ endif
 " nmap [space]s <Plug>(golden_ratio_toggle)
 
 " ambicmd {{{2
-cnoremap <expr> <C-l> ambicmd#expand("\<Space>")
-" cnoremap <expr> <Space> ambicmd#expand("\<Space>")
-" cnoremap <expr> <CR> ambicmd#expand("\<CR>")
+if neobundle#is_installed('vim-ambicmd')
+  cmap <expr> <Space> ambicmd#expand("\<Space>")
+  cmap <expr> <CR> ambicmd#expand("\<CR>")
+  " cnoremap <expr> <C-l> ambicmd#expand("\<Space>")
+  " cnoremap <expr> <Space> ambicmd#expand("\<Space>")
+  " cnoremap <expr> <CR> ambicmd#expand("\<CR>")
+endif
 
 " camelcasemotion {{{2
 nmap <silent> [prefix]w <Plug>CamelCaseMotion_w
