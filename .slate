@@ -20,3 +20,5 @@ bind z:${cas} undo
 
 # Window Hints
 bind tab:${cas} hint
+
+source ~/.slate.js

@@ -7,9 +7,9 @@ set cpo&vim
 setl includeexpr=substitute(v:fname,'^\\/','','')
 setl path+=;/
 
-" setl formatoptions-=ro
+" setl formatoptions-=r,o
 " setl iskeyword-=$,\-,:
-setl formatoptions-=o iskeyword-=-,$,:
+setl formatoptions-=r,o iskeyword-=-,$,:
 
 " setl noexpandtab
 

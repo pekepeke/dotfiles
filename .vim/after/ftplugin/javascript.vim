@@ -4,8 +4,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " setl expandtab ts=2 sw=2
-" setl formatoptions-=ro
-setl iskeyword+=$
+" setl formatoptions-=r,o
+setl iskeyword+=$,-
+setl iskeyword-=:
 
 " setl dictionary=~/.vim/dict/javascript.dict
 " setl dictionary+=~/.vim/dict/qunit.dict

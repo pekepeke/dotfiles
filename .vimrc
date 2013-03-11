@@ -1537,11 +1537,12 @@ endif
 if neobundle#is_installed('clever-f.vim')
   let g:clever_f_not_overwrites_standard_mappings=1
   if neobundle#is_installed('unite.vim')
-    nmap [unite]f <Plug>(clever-f)
+    nmap [unite]f <Plug>(clever-f-f)
+    vmap f <Plug>(clever-f-f)
   else
-    map f <Plug>(clever-f)
+    map f <Plug>(clever-f-f)
   endif
-  map F <Plug>(clever-F)
+  map F <Plug>(clever-f-F)
 endif
 
 " hl_matchit {{{2
@@ -2942,6 +2943,19 @@ if neobundle#is_installed('vimproc')
           \     'exec'    : '%c %s:p',
           \     'quickfix/errorformat' : '%E%f:\ %m\ at\ line\ %l,%-G%.%#',
           \  },
+          \  'watchdogs_checker/python' : {
+          \    'command' : 'python',
+          \     'exec'    : "%c -c 'compile(open(\"%s:p\")).read(), \"%s:p\", \"exec\")'",
+          \     'quickfix/errorformat' :
+          \        '\%A\ \ File\ \"%f\"\\\,\ line\ %l\\\,%m,' .
+          \        '\%C\ \ \ \ %.%#,' .
+          \        '\%+Z%.%#Error\:\ %.%#,' .
+          \        '\%A\ \ File\ \"%f\"\\\,\ line\ %l,' .
+          \        '\%+C\ \ %.%#,' .
+          \        '\%-C%p^,' .
+          \        '\%Z%m,' .
+          \        '\%-G%.%#'
+          \  },
           \ })
           " \  '/watchdogs_checker' : {
           " \    'type' : 'watchdogs_checker/',
@@ -2955,19 +2969,6 @@ if neobundle#is_installed('vimproc')
       call extend(g:quickrun_config, {
           \  'python/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/python',
-          \  },
-          \  'watchdogs_checker/python' : {
-          \    'command' : 'python',
-          \     'exec'    : "%c -c compile(open(\"%s:p\")).read(), \"%s:p\", 'exec')",
-          \     'quickfix/errorformat' :
-          \        '\%A\ \ File\ \"%f\"\\\,\ line\ %l\\\,%m,' .
-          \        '\%C\ \ \ \ %.%#,' .
-          \        '\%+Z%.%#Error\:\ %.%#,' .
-          \        '\%A\ \ File\ \"%f\"\\\,\ line\ %l,' .
-          \        '\%+C\ \ %.%#,' .
-          \        '\%-C%p^,' .
-          \        '\%Z%m,' .
-          \        '\%-G%.%#'
           \  },
           \ })
     endif
@@ -3233,6 +3234,11 @@ function! s:setup_vimproc_dll() " {{{3
   if s:is_win
     if has('unix')
       let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_cygwin.dll')
+    elseif has('win64')
+      let path = expand('$VIM/plugins/vimproc/autoload/vimproc_win64.dll')
+    elseif has('win32')
+      let path = expand('$VIM/plugins/vimproc/autoload/vimproc_win32.dll')
+    endif
     " else
     "   if has('win64')
     "     let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_win64.dll')
@@ -3248,7 +3254,7 @@ function! s:setup_vimproc_dll() " {{{3
     "       let path = expand('~/.vim/lib/vimproc/vimproc_win16.dll')
     "     endif
     "   endif
-    endif
+    " endif
   elseif s:is_mac
     let path = expand(g:my_bundle_dir . '/vimproc/autoload/proc_mac.so')
   else

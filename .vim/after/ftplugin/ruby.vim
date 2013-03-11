@@ -4,7 +4,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-setl formatoptions-=ro
+setl formatoptions-=r,o
 setl iskeyword+=@,$,?,!
 setl iskeyword-=.,:
 " setl dictionary=~/.vim/dict/ruby.dict

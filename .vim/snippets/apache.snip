@@ -6,26 +6,31 @@ snippet dir
 		Order Deny,Allow
 		Deny from All
 	</Directory>
-# <FilesMatch>   
+
+# <FilesMatch>
 snippet filesmatch
 	<FilesMatch "${1:regex}">
 		${2}
 	</FilesMatch>
+
 # <IfModule>
 snippet ifmodule
 	<IfModule ${1:mod_example.c}>
 		${2}
 	</IfModule>
+
 # <LimitExcept>
 snippet limitexcept
 	<LimitExcept ${1:POST GET}>
 		${2}
 	</LimitExcept>
+
 # <Proxy>
 snippet proxy
 	<Proxy ${1:*}>
 		${2}
 	</Proxy>
+
 # <VirtualHost>
 snippet virtualhost
 	<VirtualHost ${1:*}:${2:80}>
@@ -33,6 +38,27 @@ snippet virtualhost
 		DocumentRoot ${4:/www/example.com}
 		ServerName ${5:www.example.com}
 	</VirtualHost>
+
+snippet errordoc
+	ErrorDocument 401 /error/401.html
+	ErrorDocument 403 /error/403.html
+	ErrorDocument 404 /error/404.html
+	ErrorDocument 500 /error/500.html
+
+snippet cgi_add_handler
+	Options  ExecCGI
+	AddType application/x-httpd-cgi .cgi .pl
+
+snippet ssi_add_type
+	Options  Includes
+	AddType text/x-server-parsed-html .shtml .html .htm
+
+snippet php_type_mod
+	AddType application/x-httpd-php .php .html
+
+snippet php_add_handler
+	AddHandler application/x-httpd-php .php .html
+
 # php
 snippet php
 	php_value error_reporting 2047
@@ -44,14 +70,17 @@ snippet php
 	php_value session.save_path "{$2:/path/to/dir}"
 	php_flag short_open_tag On
 	AddType application/x-httpd-php .html
+
 # php_value
 snippet php_value
 	php_value ${1} "{$2}"
+
 # php_flag
 snippet php_flag
 	php_flag ${1} "{$2:Off}
+
 # capistrano
-snippet cap
+snippet cap_mainte
 	ErrorDocument 503 /system/maintenance.html
 	RewriteEngine On
 	RewriteCond %{REQUEST_URI} !.(css|js|swf|gif|jpg|png)$
@@ -61,4 +90,117 @@ snippet cap
 	RewriteCond %{REQUEST_URI} !^/stylesheets/
 	RewriteCond %{SCRIPT_FILENAME} !maintenance.html
 	RewriteRule ^.*$  -  [redirect=503,last]
+
+snippet rewrite_jpmobile
+	RewriteCond %{REQUEST_URI} !^/${1:mobile}
+	RewriteCond %{HTTP_USER_AGENT} DoCoMo [NC,OR]
+	RewriteCond %{HTTP_USER_AGENT} (J-PHONE|Vodafone|Softbank|MOT-) [NC,OR]
+	RewriteCond %{HTTP_USER_AGENT} (KDDI|UP\.Browser) [NC,OR]
+	RewriteCond %{HTTP_USER_AGENT} (PDXGW|DDIPOKET|WILLCOM) [NC,OR]
+	# RewriteCond %{HTTP_USER_AGENT} ASTEL [NC,OR]
+	# RewriteCond %{HTTP_USER_AGENT} L-mode [NC]
+	RewriteRule ^(.*)$ /$1/$2 [R,L]
+
+snippet rewrite_jpmobile_each
+	RewriteCond %{HTTP_USER_AGENT} DoCoMo
+	RewriteRule ^$ /${1:mobile}/ [R]
+
+	# Softbank
+	RewriteCond %{HTTP_USER_AGENT} J-PHONE
+	RewriteRule ^$ /$1/ [R]
+	RewriteCond %{HTTP_USER_AGENT} Vodafone
+	RewriteRule ^$ /$1/ [R]
+	RewriteCond %{HTTP_USER_AGENT} SoftBank
+	RewriteRule ^$ /$1/ [R]
+
+	# AU KDDI
+	RewriteCond %{HTTP_USER_AGENT} KDDI
+	RewriteRule ^$ /$1/ [R]
+	RewriteCond %{HTTP_USER_AGENT} UP.Browser
+	RewriteRule ^$ /$1/ [R]
+
+	# DDI Pocket
+	RewriteCond %{HTTP_USER_AGENT} DDIPOCKET
+	RewriteRule ^$ /$1/ [R]
+
+	# WILLCOM
+	RewriteCond %{HTTP_USER_AGENT} WILLCOM
+	RewriteRule ^$ /$1/ [R]
+
+	# iPod
+	RewriteCond %{HTTP_USER_AGENT} iPod
+	RewriteRule ^$ /$1/ [R]
+
+	# iPhone
+	RewriteCond %{HTTP_USER_AGENT} iPhone
+	RewriteRule ^$ /$1/ [R]
+
+	# iPhone
+	RewriteCond %{HTTP_USER_AGENT} Android
+	RewriteRule ^$ /$1/ [R]
+
+	# WILLCOM
+	RewriteCond %{HTTP_USER_AGENT} PDA
+	RewriteRule ^$ /$1/ [R]
+
+snippet proxypass
+    ProxyPass ${1:/} http://${2:domain}/
+    ProxyPassReverse $1 http://$2/
+    ProxyPassReverseCookieDomain $2 ${3:real}
+    ProxyPassReverseCookiePath / $1
+
+snippet sslproxypass
+    SSLProxyEngine On
+    SSLProxyCheckPeerCN on
+    SSLProxyCheckPeerExpire on
+    ProxyPass ${1:/} https://${2:domain}/
+    ProxyPassReverse $1 https://$2/
+    ProxyPassReverseCookieDomain $2 ${3:real}
+	ProxyPassReverseCookiePath / $1
+
+snippet allow
+	Order Deny,Allow
+	Deny from all
+	Allow from $1
+
+snippet deny
+	Order Allow,Deny
+	Allow from all
+	Deny from $1
+
+snippet allow_if_referer
+	SetEnvIf Referer "^http://www\.${1:xxx\.com}" ref_ok
+	Order Deny,Allow
+	Deny from all
+	Allow from env=ref_ok
+
+snippet deny_ua
+	SetEnvIf User-Agent "${1:BotUA$}" deny_ua
+	Order Allow,Deny
+	Allow from All
+	Deny from env=deny_ua
+
+snippet basicauth
+	AuthUserFile ${1:path/to}/.htpasswd
+	AuthGroupFile /dev/null
+	AuthName "Please enter your ID and password"
+	AuthType Basic
+	require valid-user
+	<Files ~ "^.(htpasswd|htaccess)$">
+		Deny from all
+	</Files>
+	<Files ~ "\.(dat|log|csv)$">
+		Deny from all
+	</Files>
+
+snippet auth_basic_or_ip
+	AuthType Basic
+	AuthUserFile ${1:path/to}/.htpasswd
+	AuthName "Please input your Account & Password"
+	Require valid-user
+
+	Satisfy Any
+
+	Order Allow,Deny
+	Allow from ${2:192.168.0.0/16}
 
