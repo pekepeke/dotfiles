@@ -16,6 +16,7 @@ bind down:${cas} chain push bottom ${halfy} | push up ${halfy}
 # window maximize, toggle undo(not available...)
 # bind x:${cas} chain corner top-left resize:screenSizeX;screenSizeY | undo
 bind x:${cas} corner top-left resize:screenSizeX;screenSizeY
+bind up:${cas} corner top-left resize:screenSizeX;screenSizeY
 bind z:${cas} undo
 
 # Window Hints

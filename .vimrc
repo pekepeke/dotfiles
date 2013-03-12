@@ -2491,6 +2491,8 @@ if neobundle#is_installed('vim-operator-user')
 
   map <Leader>tm <Plug>(operator-md_tabularize_tsv)
   map <Leader>Tm <Plug>(operator-md_untabularize_tsv)
+
+  map <Leader>nm <Plug>(operator-normalize_utf8mac)
 endif
 
 " textobj {{{2
