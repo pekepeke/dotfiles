@@ -22,4 +22,7 @@ bind z:${cas} undo
 # Window Hints
 bind tab:${cas} hint
 
+# run screen saver
+bind l:${cas} shell '/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine'
+
 source ~/.slate.js
