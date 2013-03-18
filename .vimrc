@@ -415,12 +415,12 @@ if s:is_win
 endif
 
 " OSX {{{4
-NeoBundle 'nanki/vim-objj'
-NeoBundle 'pekepeke/cocoa.vim'
-" if has('ruby')
-"   NeoBundleLazyOn FileType objc 'eraserhd/vim-ios'
-" endif
-NeoBundle 'vim-scripts/applescript.vim'
+NeoBundleLazyOn FileType objj 'nanki/vim-objj'
+NeoBundleLazyOn FileType objc 'pekepeke/cocoa.vim'
+if has('ruby')
+  NeoBundleLazyOn FileType objc 'eraserhd/vim-ios'
+endif
+NeoBundleLazyOn FileType applescript 'vim-scripts/applescript.vim'
 
 " java, android {{{4
 NeoBundleLazyOn FileType java 'mikelue/vim-maven-plugin'
@@ -3035,6 +3035,9 @@ if neobundle#is_installed('neosnippet')
     let line = getline(".")
     let pos = col(".") - 1
     let org_pos = pos
+    if strlen(substitute(line[0:pos], '^\s\+', '', '')) <= 0
+      return "\<TAB>"
+    endif
     while (line[pos] == " ")
       let pos = pos + 1
     endwhile
