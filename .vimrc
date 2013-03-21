@@ -366,16 +366,17 @@ NeoBundleLazyOn FileType javascript  'vim-scripts/jQuery'
 " NeoBundle 'vim-scripts/IndentAnything'
 " NeoBundle 'itspriddle/vim-javascript-indent'
 " NeoBundle 'jiangmiao/simple-javascript-indenter'
-NeoBundle 'vim-scripts/Dart'
-NeoBundle 'jdonaldson/vaxe'
-" NeoBundle 'MarcWeber/vim-haxe'
-NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'pekepeke/titanium-vim'
-NeoBundle 'jeyb/vim-jst'
 NeoBundle 'pekepeke/ref-jsextra-vim'
 NeoBundle 'chikatoike/sourcemap.vim'
-NeoBundle 'leafgarland/typescript-vim'
 NeoBundle 'nono/vim-handlebars'
+
+NeoBundleLazyOn FileType dart 'vim-scripts/Dart'
+NeoBundleLazyOn FileType haxe 'jdonaldson/vaxe'
+" NeoBundle 'MarcWeber/vim-haxe'
+NeoBundleLazyOn FileType jst 'jeyb/vim-jst'
+NeoBundleLazyOn FileType coffee  'kchmck/vim-coffee-script'
+NeoBundleLazyOn FileType typescript  'leafgarland/typescript-vim'
 
 " python {{{4
 " http://rope.sourceforge.net/
@@ -1244,9 +1245,9 @@ vnoremap [space]r :S/
 
 " grep
 if executable('ag')
-  set grepprg=ag\ -a\ --nocolor\ --nogroup\ --nopager
+  set grepprg=ag\ -i\ -a\ --nocolor\ --nogroup\ --nopager
   set grepformat=%f:%l:%m
-  let g:ackprg="ag --nocolor --nogroup --column --nopager"
+  let g:ackprg="ag -i --nocolor --nogroup --column --nopager"
 elseif executable('ack')
   set grepprg=ack\ -a\ --nocolor\ --nogroup\ --nopager
   set grepformat=%f:%l:%m
@@ -2000,7 +2001,7 @@ let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|
 " let g:unite_source_grep_default_opts = '-iRHn'
 if executable('ag')
   let g:unite_source_grep_command = 'ag'
-  let g:unite_source_grep_default_opts = '--noheading --nocolor -a --nogroup --nopager'
+  let g:unite_source_grep_default_opts = '-i --noheading --nocolor -a --nogroup --nopager'
   let g:unite_source_grep_recursive_opt = ''
 else
   let g:unite_source_grep_command = 'ack-grep'
