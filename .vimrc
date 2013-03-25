@@ -235,6 +235,8 @@ NeoBundle 'kana/vim-smartinput'
 " NeoBundle 'acustodioo/vim-enter-indent'
 " NeoBundle 'dahu/vim-fanfingtastic'
 
+NeoBundle 'pekepeke/vim-indent_cr'
+
 " NeoBundle 'houtsnip/vim-emacscommandline'
 NeoBundle 'tpope/vim-unimpaired'
 NeoBundle 'vim-scripts/ShowMultiBase'
@@ -543,6 +545,8 @@ NeoBundle 'ujihisa/unite-colorscheme'
 " NeoBundle 'pekepeke/unite-fileline'
 NeoBundle 'zhaocai/unite-scriptnames'
 NeoBundle 'daisuzu/unite-grep_launcher'
+NeoBundle 'pekepeke/vim-unite-sonictemplate'
+NeoBundle 'daisuzu/vim-unite-repo-files'
 
 if s:is_win
   "NeoBundle 'sgur/unite-everything'
@@ -588,6 +592,7 @@ NeoBundle 'tyru/operator-camelize.vim'
 NeoBundle 'tyru/operator-html-escape.vim'
 NeoBundle 'pekepeke/vim-operator-shuffle'
 NeoBundle 'pekepeke/vim-operator-tabular', { 'depends':'pekepeke/vim-csvutil' }
+NeoBundle 'pekepeke/vim-operator-normalize-utf8mac'
 
 " textobj {{{3
 NeoBundle 'kana/vim-textobj-user'
@@ -2948,7 +2953,7 @@ if neobundle#is_installed('vimproc')
           \  },
           \  'watchdogs_checker/python' : {
           \    'command' : 'python',
-          \     'exec'    : "%c -c 'compile(open(\"%s:p\")).read(), \"%s:p\", \"exec\")'",
+          \     'exec'    : "%c -c 'compile(open(\"%s:p\")).read(), \"%s:p:h\", \"exec\")'",
           \     'quickfix/errorformat' :
           \        '\%A\ \ File\ \"%f\"\\\,\ line\ %l\\\,%m,' .
           \        '\%C\ \ \ \ %.%#,' .
