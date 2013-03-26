@@ -1,7 +1,9 @@
+/*global module: true,test:true*/
+'use strict';
 module('test group', {
   setup: function() {
     // TODO
-  }, 
+  },
   teardown: function() {
     // TODO
   }

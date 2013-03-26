@@ -1,10 +1,10 @@
 {
-	"launch_in_dev" : [
-		"Chrome"
-	],
+  "launch_in_dev" : [
+    "Chrome"
+  ],
   "framework" : "mocha",
-	"src_files" : [
-		"scripts/*.js",
-		"tests/*_spec.js"
-	]
+  "src_files" : [
+    "scripts/*.js",
+    "tests/*_spec.js"
+  ]
 }
