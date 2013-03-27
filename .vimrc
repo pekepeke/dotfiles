@@ -546,7 +546,8 @@ NeoBundle 'ujihisa/unite-colorscheme'
 NeoBundle 'zhaocai/unite-scriptnames'
 NeoBundle 'daisuzu/unite-grep_launcher'
 NeoBundle 'pekepeke/vim-unite-sonictemplate'
-NeoBundle 'daisuzu/vim-unite-repo-files'
+NeoBundle 'pekepeke/vim-unite-repo-files'
+NeoBundle 'pekepeke/vim-unite-z'
 
 if s:is_win
   "NeoBundle 'sgur/unite-everything'
@@ -1787,7 +1788,7 @@ imap <C-y>t <ESC>:<C-u>Unite sonictemplate<CR>
 " junkfile.vim http://vim-users.jp/2010/11/hack181/ {{{2
 command! -nargs=0 EnewNofile enew | setl buftype=nofile
 
-nnoremap [prefix]ss :<C-u>JunkFileOpen<CR>
+nnoremap [prefix]ss :<C-u>JunkfileOpen<CR>
 nmap [prefix]sc :<C-u>EnewNofile<CR>
 
 " alignta {{{2

@@ -2,9 +2,12 @@
 =================
 
 {{_cursor_}}
-Version: 0.0.1
-Author : {{_expr_:get(g:, 'author', '')}} <{{_expr_:get(g:, 'email', '')}}>
-License: 
+
+Version: 0.0.1  
+Author : {{_expr_:get(g:, 'author', '')}} <{{_expr_:get(g:, 'email', '')}}>  
+License: MIT  
+
+## INTRODUCTION
 
 *{{_expr_:expand('%:p:h:t')}}* is a Vim plugin to provide 
 
