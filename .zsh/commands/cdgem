@@ -12,7 +12,14 @@ get_gem_home() {
 cdgem() {
   cd `echo $(get_gem_home)/**/gems/$1* | awk -F' ' '{print $1}'`
 }
+
+gemwhich() {
+  echo $(get_gem_home)/**/gems/$1* | awk -F' ' '{print $1}'
+}
+
+
 compctl -K _cdgem cdgem
+compctl -K _cdgem gemwhich
 
 function _cdgem() {
   ret=1

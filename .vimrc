@@ -454,11 +454,12 @@ endif
 
 " texts {{{4
 " NeoBundle 'plasticboy/vim-markdown' " plasticboy mode -> mkd
-NeoBundle 'tpope/vim-markdown'
-NeoBundle 'thinca/vim-ft-markdown_fold'
-NeoBundle 'timcharper/textile.vim'
-NeoBundle 'chrisbra/csv.vim'
+NeoBundleLazyOn FileType markdown 'tpope/vim-markdown'
+NeoBundleLazyOn FileType markdown 'thinca/vim-ft-markdown_fold'
+NeoBundleLazyOn FileType textile 'timcharper/textile.vim'
+NeoBundleLazyOn FileType csv 'chrisbra/csv.vim'
 NeoBundleLazyOn FileType yaml 'henrik/vim-yaml-flattener'
+NeoBundleLazyOn FileType plantuml 'aklt/plantuml-syntax'
 
 NeoBundle 'motemen/hatena-vim'
 NeoBundle 'nvie/vim-rst-tables'
@@ -474,7 +475,7 @@ NeoBundleLazyOn FileType haskell 'ujihisa/neco-ghc'
 " NeoBundleLazyOn FileType php 'spf13/PIV'
 " NeoBundleLazyOn FileType php 'justinrainbow/php-doc.vim'
 NeoBundleLazyOn FileType php 'Gasol/vim-php'
-NeoBundleLazyOn FileType php 'vim-scripts/php.vim-html-enhanced'
+NeoBundleLazyOn FileType php 'pekepeke/php.vim-html-enhanced'
 NeoBundleLazyOn FileType php '2072/PHP-Indenting-for-VIm'
 NeoBundleLazyOn FileType php 'StanAngeloff/php.vim'
 NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
@@ -1528,6 +1529,9 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" eregex.vim {{{2
+let g:eregex_default_enable=0
+
 " vim-trimr {{{2
 let g:trimr_method = 'ignore_filetype'
 let g:trimr_targets = ['markdown', 'mkd', 'textile']
