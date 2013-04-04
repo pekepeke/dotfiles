@@ -40,8 +40,10 @@ esac
 shrc_section_title "environments" #{{{1
 export EDITOR=vim
 # stty
-stty stop undef
-stty werase undef
+if which stty >/dev/null; then
+  stty stop undef
+  stty werase undef
+fi
 
 if [ ! -e "$TERMINFO" -a -e "/usr/share/terminfo" ]; then
   export TERMINFO=/usr/share/terminfo

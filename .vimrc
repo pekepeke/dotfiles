@@ -2006,6 +2006,7 @@ let g:unite_source_file_mru_time_format = ''
 let g:unite_winheight = 20
 "let g:unite_split_rule = 'botright'
 let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
+let g:unite_source_file_rec_max_cache_files = 5000
 
 " unite-grep {{{3
 " let g:unite_source_grep_default_opts = '-iRHn'
