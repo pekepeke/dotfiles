@@ -42,3 +42,8 @@ snippet func
 		${3}
 	endfunction
 
+snippet qrun_mysql
+    let b:quickrun_config = {'cmdopt': '-uroot -h127.0.0.1 -p`get(g:, 'mysql_password', 'root')` -D ${1:db}'}
+snippet qrun_postgres
+    let b:quickrun_config = {'cmdopt': 'postgres://`$USER`:\\\@localhost/${1:db}'}
+

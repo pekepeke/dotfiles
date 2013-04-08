@@ -9,7 +9,7 @@ setl path+=;/
 
 " setl formatoptions-=r,o
 " setl iskeyword-=$,\-,:
-setl formatoptions-=r,o iskeyword-=-,$,:
+setl formatoptions-=r,o iskeyword-=- iskeyword-=$ iskeyword-=:
 
 " setl noexpandtab
 

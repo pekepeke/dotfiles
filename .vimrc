@@ -174,6 +174,7 @@ NeoBundle 'kana/vim-submode'
 NeoBundle 'kana/vim-niceblock'
 NeoBundle 'tyru/vim-altercmd'
 NeoBundle 'vim-scripts/ShowMarks7'
+" NeoBundle 'vim-scripts/let-modeline.vim'
 NeoBundle 'dannyob/quickfixstatus'
 NeoBundle 'jceb/vim-hier'
 NeoBundle 'tomtom/quickfixsigns_vim'
@@ -202,6 +203,7 @@ NeoBundle 'kana/vim-smartword'
 " NeoBundle 'pekepeke/golden-ratio'
 " NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'thinca/vim-qfreplace'
+NeoBundle 'thinca/vim-localrc'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'c9s/cascading.vim'
 NeoBundle 'mileszs/ack.vim'
@@ -521,7 +523,8 @@ NeoBundleLazy 'Shougo/unite.vim', {
       \ }
 NeoBundle 'Shougo/unite-build'
 NeoBundle 'Shougo/unite-help'
-NeoBundle 'h1mesuke/unite-outline'
+" NeoBundle 'h1mesuke/unite-outline'
+NeoBundle 'Shougo/unite-outline'
 NeoBundle 'sgur/unite-git_grep'
 " NeoBundle 'sgur/unite-qf'
 NeoBundle 'osyo-manga/unite-quickfix'
@@ -769,19 +772,6 @@ augroup END
 MyAutocmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
 MyAutocmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
 set viewoptions=cursor
-
-" http://vim-users.jp/2009/12/hack112/
-MyAutocmd BufNewFile,BufReadPost * call s:vimrc_local(expand('<afile>:p:h'))
-function! s:vimrc_local(loc)
-  let files = findfile('vimrc_local.vim', escape(a:loc, ' '). ';', -1)
-  for i in reverse(filter(files, 'filereadable(v:val)'))
-    source `=i`
-  endfor
-endfunction
-
-if has('vim_starting')
-  call s:vimrc_local(getcwd())
-endif
 
 " setfiletype {{{2
 " override default filetypedetect
@@ -1529,6 +1519,22 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" vim-localrc {{{2
+if neobundle#is_installed('vim-localrc')
+  let g:localrc_filename = '.local.vimrc'
+  if has('vim_starting')
+    " http://vim-users.jp/2009/12/hack112/ => vimrc-local
+    call localrc#load('vimrc_local.vim', getcwd(), 3)
+  endif
+endif
+
+
+" let-modeline.vim {{{2
+if neobundle#is_installed('let-modeline.vim')
+  MyAutocmd BufEnter * call FirstModeLine()
+  " MyAutocmd BufNewFile * let b:this_is_new_buffer=1
+endif
+
 " eregex.vim {{{2
 let g:eregex_default_enable=0
 
@@ -2698,6 +2704,11 @@ call extend(g:quickrun_config, {
       \    'command' : 'mdown',
       \    'exec' : '%c -i %s',
       \  },
+      \  'markdown/Marked' : {
+      \    'command' : 'open',
+      \    'outputter' : 'null',
+      \    'exec' : '%c -a Marked %o %s',
+      \  },
       \  'markdown/multimarkdown' : {
       \    'command' : 'multimarkdown',
       \  },
@@ -2732,6 +2743,28 @@ call extend(g:quickrun_config, {
       \    ],
       \    'outputter': 'message',
       \ },
+      \ 'slim' : {
+      \   'type' : 'slim/slimrb',
+      \ },
+      \ 'slim/slimrb' : {
+      \   'command' : 'slimrb',
+      \   'exec' : ['%c %o -p %s'],
+      \ },
+      \ 'mysql' : {
+      \   'type' : 'sql/mysql',
+      \ },
+      \ 'sql' : {
+      \   'type' : 'sql/postgresql',
+      \ },
+      \ 'sql/mysql' : {
+      \   'runner' : 'system',
+      \   'command' : 'mysql',
+      \   'exec' : ['%c %o < %s'],
+      \ },
+      \ 'sql/postgresql': {
+      \   'command' : 'psql',
+      \   'exec': ['%c %o'],
+      \ }
       \ })
 
 call extend(g:quickrun_config, {
@@ -2770,6 +2803,7 @@ call extend(g:quickrun_config, {
       \   },
       \   'markdown' : {
       \     'type' :
+      \              s:is_mac && isdirectory('/Applications/Marked.app') ? 'markdown/Marked':
       \              executable('markedwrapper')    ? 'markdown/markedwrapper':
       \              executable('mdown')            ? 'markdown/mdown':
       \              executable('pandoc')           ? 'markdown/pandoc':
