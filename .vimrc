@@ -189,6 +189,10 @@ NeoBundleLazy 't9md/vim-textmanip'
 NeoBundle 'bkad/CamelCaseMotion'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'vim-scripts/YankRing.vim'
+NeoBundle 'AndrewRadev/switch.vim'
+NeoBundle 'AndrewRadev/inline_edit.vim'
+NeoBundle 'zef/vim-cycle'
+NeoBundle 'mbbill/undotree'
 " NeoBundle 'maxbrunsfeld/vim-yankstack'
 " NeoBundle 'chrismetcalf/vim-yankring'
 " NeoBundle 'the-isz/MinYankRing.vim'
@@ -1163,6 +1167,7 @@ nmap s [s]
 noremap [prefix] <Nop>
 nmap , [prefix]
 vmap , [prefix]
+xmap , [prefix]
 
 noremap [edit] <Nop>
 nmap <C-e> [edit]
@@ -1242,7 +1247,7 @@ vnoremap [space]r :S/
 
 " grep
 if executable('ag')
-  set grepprg=ag\ -i\ -a\ --nocolor\ --nogroup\ --nopager
+  set grepprg=ag\ -i\ --nocolor\ --nogroup\ --nopager
   set grepformat=%f:%l:%m
   let g:ackprg="ag -i --nocolor --nogroup --column --nopager"
 elseif executable('ack')
@@ -1519,6 +1524,43 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" inline_edit {{{2
+if neobundle#is_installed('inline_edit.vim')
+  let g:inline_edit_autowrite = 1
+  let g:inline_edit_patterns = [
+        \ {
+        \ 'main_filetype': '*html',
+        \ 'sub_filetype': 'handlebars',
+        \ 'indent_adjustment': 1,
+        \ 'start': '<script\>[^>]*type="text/template"[^>]*>',
+        \ 'end': '</script>',
+        \ }
+        \ ]
+  nnoremap <Leader>i :<C-u>InlineEdit<CR>
+endif
+
+" switch.vim {{{2
+if neobundle#is_installed('switch.vim')
+  " let g:switch_custom_definitions = [ {
+  "       \ } ]
+  nnoremap - :<C-u>Switch<CR>
+endif
+
+" undotree {{{2
+if neobundle#is_installed('undotree')
+  nnoremap <Leader>u :<C-u>UndotreeToggle<CR>
+
+  let g:undotree_SetFocusWhenToggle = 1
+  let g:undotree_SplitLocation = 'topleft'
+  let g:undotree_SplitWidth = 35
+  let g:undotree_diffAutoOpen = 1
+  let g:undotree_diffpanelHeight = 25
+  let g:undotree_RelativeTimestamp = 1
+  let g:undotree_TreeNodeShape = '*'
+  let g:undotree_HighlightChangedText = 1
+  let g:undotree_HighlightSyntax = "UnderLined"
+endif
+
 " vim-localrc {{{2
 if neobundle#is_installed('vim-localrc')
   let g:localrc_filename = '.local.vimrc'
@@ -1576,8 +1618,15 @@ map ;dj <Plug>DirDiffNext
 map ;dk <Plug>DirDiffPrev
 
 " splitjoin.vim {{{2
-nmap <Leader>j :<C-u>SplitjoinJoin<CR>
-nmap <Leader>k :<C-u>SplitjoinSplit<CR>
+if neobundle#is_installed('splitjoin.vim')
+  let g:splitjoin_split_mapping = ''
+  let g:splitjoin_join_mapping = ''
+  let g:splitjoin_normalize_whitespace = 1
+  let g:splitjoin_align = 1
+
+  nmap [prefix]j :<C-u>SplitjoinSplit<CR>
+  nmap [prefix]k :<C-u>SplitjoinJoin<CR>
+endif
 
 " rainbow_parentheses {{{2
 if neobundle#is_installed('rainbow_parentheses.vim')
@@ -2018,7 +2067,7 @@ let g:unite_source_file_rec_max_cache_files = 5000
 " let g:unite_source_grep_default_opts = '-iRHn'
 if executable('ag')
   let g:unite_source_grep_command = 'ag'
-  let g:unite_source_grep_default_opts = '-i --noheading --nocolor -a --nogroup --nopager'
+  let g:unite_source_grep_default_opts = '-i --noheading --nocolor --nogroup --nopager'
   let g:unite_source_grep_recursive_opt = ''
 else
   let g:unite_source_grep_command = 'ack-grep'
@@ -2125,11 +2174,11 @@ UniteNMap   t         sonictemplate
 UniteNMap   c         webcolorname
 UniteNMap   o         outline
 UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep -auto-preview
-UniteNMap!  gr        grep -buffer-name=grep -auto-preview
+UniteNMap!  gr        grep -buffer-name=grep
 UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=todo -auto-preview
 UniteNMap   gl        grep_launcher
-UniteNMap!  gi        git_grep -buffer-name=git_grep -auto-preview
-UniteNMap!  q         quickfix -buffer-name=qfix -auto-preview
+UniteNMap!  gi        git_grep -buffer-name=git_grep
+UniteNMap!  q         quickfix -buffer-name=qfix
 " UniteNMap   y         history/yank
 " UniteNMap   :         history/command command
 " UniteNMap   /         history/search
@@ -2249,6 +2298,7 @@ function! s:unite_my_settings()
   inoremap <silent><buffer><expr> <C-j> unite#do_action('split')
   nmap <buffer> t <Plug>(unite_choose_action)
   nmap <buffer> l <Plug>(unite_do_default_action)
+  nmap <buffer> P <Plug>(unite_toggle_auto_preview)
 endfunction
 
 " milkode http://qiita.com/items/abe5df7c5b21160532b8 "{{{3
@@ -2502,14 +2552,13 @@ if neobundle#is_installed('vim-operator-user')
   map ;H <Plug>(operator-html-unescape)
   map ;c <Plug>(operator-camelize)
   map ;C <Plug>(operator-decamelize)
-  map <Leader><C-i> <Plug>(operator-retab)
-  map <Leader>j <Plug>(operator-join)
-  map <Leader>u <Plug>(operator-uniq)
-  map <Leader>k <Plug>(operator-trimright)
+  map ;<C-i> <Plug>(operator-retab)
+  map ;j <Plug>(operator-join)
+  map ;u <Plug>(operator-uniq)
+  map ;k <Plug>(operator-trimright)
 
   map <Leader>tm <Plug>(operator-md_tabularize_tsv)
   map <Leader>Tm <Plug>(operator-md_untabularize_tsv)
-
   map <Leader>nm <Plug>(operator-normalize_utf8mac)
 endif
 

@@ -85,13 +85,10 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   fi
 
   shrc_section_title "for Python" # {{{2
-  # if [ -e ~/.pyenv ]; then
-  #   PATH="$HOME/.pyenv/bin:$PATH"
-  #   eval "$(pyenv init -)"
-  # else
+  if ! vmenv-init pyenv; then
     export PYTHONBREW_ROOT=$HOME/.pythonbrew
     [ -e $PYTHONBREW_ROOT/etc/bashrc ] && source $PYTHONBREW_ROOT/etc/bashrc
-  # fi
+  fi
   # export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
   # export PYTHONPATH=~/.lib/python:$PYTHONPATH
   export PYTHONSTARTUP=~/.pyrc
