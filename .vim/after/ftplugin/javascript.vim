@@ -14,7 +14,7 @@ setl iskeyword-=:
 " setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
 
 inoremap <buffer> <expr> \  smartchr#one_of('\', 'function(', '\\')
-nnoremap <silent> [comment-doc] :<C-u>call JsDoc()<CR>
+nmap <silent> [comment-doc] <Plug>(jsdoc)
 
 " for vim-syntax-js
 " if has('conceal')

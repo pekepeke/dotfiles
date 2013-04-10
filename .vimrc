@@ -177,7 +177,7 @@ NeoBundle 'vim-scripts/ShowMarks7'
 " NeoBundle 'vim-scripts/let-modeline.vim'
 NeoBundle 'dannyob/quickfixstatus'
 NeoBundle 'jceb/vim-hier'
-NeoBundle 'tomtom/quickfixsigns_vim'
+" NeoBundle 'tomtom/quickfixsigns_vim'
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-abolish'
@@ -438,6 +438,7 @@ NeoBundleLazy 'nwertzberger/javacomplete', {
       \ 'build' : 'javac -source 1.4 autoload/Reflection.java',
       \ 'autoload' : { 'filetypes' : 'java' },
       \ }
+NeoBundleLazyOn FileType java 'vim-scripts/jcommenter.vim'
 NeoBundleLazyOn FileType groovy 'groovy.vim'
 NeoBundle 'thinca/vim-logcat'
 NeoBundleLazyOn FileType velocity 'lepture/vim-velocity'
@@ -484,6 +485,7 @@ NeoBundleLazyOn FileType php 'Gasol/vim-php'
 NeoBundleLazyOn FileType php 'pekepeke/php.vim-html-enhanced'
 NeoBundleLazyOn FileType php '2072/PHP-Indenting-for-VIm'
 NeoBundleLazyOn FileType php 'StanAngeloff/php.vim'
+NeoBundleLazyOn FileType php 'einars/vim-phpfold'
 NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
 NeoBundleLazyOn FileType php 'vim-scripts/phpcomplete.vim'
 NeoBundleLazyOn FileType php 'nishigori/phpfolding.vim'
@@ -512,14 +514,13 @@ NeoBundleLazyOn FileType r 'jcfaria/Vim-R-plugin'
 " endif
 
 " config {{{4
-NeoBundle 'qqshfox/vim-tmux'
-NeoBundle 'vim-scripts/nginx.vim'
-NeoBundle 'smerrill/vcl-vim-plugin'
+NeoBundleLazyOn FileType tmux 'qqshfox/vim-tmux'
+NeoBundleLazyOn FileType nginx 'vim-scripts/nginx.vim'
+NeoBundleLazyOn FileType vcl 'smerrill/vcl-vim-plugin'
+NeoBundleLazyOn FileType haproxy 'ksauzz/haproxy.vim'
 " NeoBundle 'empanda/vim-varnish.vim'
-NeoBundle 'glidenote/keepalived-syntax.vim'
-if s:is_win
-  NeoBundle 'Shougo/vim-nyaos'
-endif
+NeoBundleLazyOn FileType keepalived 'glidenote/keepalived-syntax.vim'
+NeoBundleLazyOn FileType nyaos 'Shougo/vim-nyaos'
 
 " unite.vim {{{3
 NeoBundleLazy 'Shougo/unite.vim', {
