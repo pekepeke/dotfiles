@@ -2,39 +2,58 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " variables {{{1
-if !exists('g:js_cfg_comment_head') | let g:js_cfg_comment_head = '/**' | endif
-if !exists('g:js_cfg_comment_line1') | let g:js_cfg_comment_line1 = ' * ' | endif
-if !exists('g:js_cfg_comment_linen') | let g:js_cfg_comment_linen = ' * ' | endif
-if !exists('g:js_cfg_comment_tail') | let g:js_cfg_comment_tail = ' */' | endif
+let g:jsdoc_max_function_line = get(g:, 'jsdoc_max_function_line', 5)
+let g:jsdoc_start_str = get(g:, 'jsdoc_start_str', '/**')
+let g:jsdoc_head_str1 = get(g:, 'jsdoc_head_str1', ' * ')
+let g:jsdoc_head_strn = get(g:, 'jsdoc_head_strn', ' * ')
+let g:jsdoc_tail_str = get(g:, 'jsdoc_tail_str', ' */')
+let g:jsdoc_default_param_type = get(g:, 'jsdoc_default_param_type', 'Object')
+let g:jsdoc_default_return_type = get(g:, 'jsdoc_default_return_type', 'Object')
 
-if !exists('g:js_cfg_default_param_type') | let g:js_cfg_default_param_type = 'Object' | endif
-if !exists('g:js_cfg_default_return_type') | let g:js_cfg_default_return_type = 'Object' | endif
+let g:jsdoc_funcname_re = get(g:, 'jsdoc_funcname_re', '\([a-zA-Z0-9$_\.]\+\)')
+let g:jsdoc_params_re = get(g:, 'jsdoc_params_re', '\(([^)]*)\)')
+let g:jsdoc_function_re = get(g:, 'jsdoc_function_re', join([
+      \   '\s*\(',
+      \   g:jsdoc_funcname_re,
+      \   '\s*[:=]\s*function\s*',
+      \   g:jsdoc_params_re,
+      \   '\|function\s*',
+      \   g:jsdoc_funcname_re,
+      \   '\s*',
+      \   g:jsdoc_params_re,
+      \   '\)',
+      \ ], ""))
 
-if !exists('g:js_re_funcname') | let g:js_re_funcname = '\([a-zA-Z0-9$_\.]\+\)' | endif
-if !exists('g:js_re_funcparams') | let g:js_re_funcparams = '\(([^)]*)\)' | endif
-if !exists('g:js_re_func')
-  let g:js_re_func = '\s*\('.g:js_re_funcname.'\s*[:=]\s*function\s*'.g:js_re_funcparams.'\|function\s*'.g:js_re_funcname.'\s*'.g:js_re_funcparams.'\)'
-endif
 
 " public interfaces {{{1
 function! jsdoc#insert() "{{{2
-  let org_paste = &paste
-  let &paste = 1
-  let line = getline('.')
-  let comment_line = line('.') - 1
-
-  let comments = s:generate_function_comment(l:line)
-  if comments != ''
-    execute 'normal! ' . comment_line . 'G$'
-    execute 'normal! o' . comments
+  let pos = line('.')
+  let insert_pos = pos - 1
+  let tail_re = escape(g:jsdoc_tail_str, '*\\.')
+  if getline(insert_pos) =~# tail_re
+    return
   endif
-  let &paste = org_paste
+
+  let save_paste = &paste
+  let &paste = 1
+
+  let lines = []
+  for i in range(0, (g:jsdoc_max_function_line > 0 ? g:jsdoc_max_function_line : 1) - 1)
+    call add(lines, getline(pos + i))
+  endfor
+
+  let comment = s:generate_function_comment(join(lines, ""))
+  if comment != ''
+    execute 'normal! ' . insert_pos . 'G$'
+    execute 'normal! o' . comment
+  endif
+  let &paste = save_paste
 endfunction
 
 
 " functions {{{1
 function! s:generate_function_comment(line) "{{{2
-  let matches = matchlist(a:line, g:js_re_func)
+  let matches = matchlist(a:line, g:jsdoc_function_re)
   let n = len(matches)
   let i = 0
   let func_name = ''
@@ -51,28 +70,28 @@ function! s:generate_function_comment(line) "{{{2
   endwhile
   if func_name != ''
     let indent = matchstr(a:line, '^\s*')
-    let comments = [ indent.g:js_cfg_comment_head ]
-    call add(comments, s:mk_line_head("%s", func_name))
-    call add(comments, s:mk_line(""))
+    let comment = [ indent.g:jsdoc_start_str ]
+    call add(comment, s:mk_line_head("%s", func_name))
+    call add(comment, s:mk_line(""))
     for param in params
-      call add(comments, s:mk_line("@param {%s} %s", g:js_cfg_default_param_type, param))
+      call add(comment, s:mk_line("@param {%s} %s", g:jsdoc_default_param_type, param))
     endfor
-    call add(comments, s:mk_line("@name %s", func_name))
-    call add(comments, s:mk_line("@function"))
-    call add(comments, s:mk_line("@return {%s}", g:js_cfg_default_return_type))
-    call add(comments, g:js_cfg_comment_tail)
-    return join(comments, "\n" . indent)
+    call add(comment, s:mk_line("@name %s", func_name))
+    call add(comment, s:mk_line("@function"))
+    call add(comment, s:mk_line("@return {%s}", g:jsdoc_default_return_type))
+    call add(comment, g:jsdoc_tail_str)
+    return join(comment, "\n" . indent)
   endif
 endfunction
 
 function! s:mk_line_head(...) "{{{2
   let s = a:0 == 1 ? a:1 : call("printf", a:000)
-  return g:js_cfg_comment_line1 . s
+  return g:jsdoc_head_str1 . s
 endfunction
 
 function! s:mk_line(...) "{{{2
   let s = a:0 == 1 ? a:1 : call("printf", a:000)
-  return g:js_cfg_comment_linen . s
+  return g:jsdoc_head_strn . s
 endfunction
 
 let &cpo = s:save_cpo
