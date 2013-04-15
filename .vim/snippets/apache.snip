@@ -144,6 +144,10 @@ snippet rewrite_jpmobile_each
 	RewriteRule ^$ /$1/ [R]
 
 snippet proxypass
+    ProxyPass /images !
+    ProxyPass /javascripts !
+    ProxyPass /stylesheets !
+
     ProxyPass ${1:/} http://${2:domain}/
     ProxyPassReverse $1 http://$2/
     ProxyPassReverseCookieDomain $2 ${3:real}
@@ -153,6 +157,11 @@ snippet sslproxypass
     SSLProxyEngine On
     SSLProxyCheckPeerCN on
     SSLProxyCheckPeerExpire on
+
+    ProxyPass /images !
+    ProxyPass /javascripts !
+    ProxyPass /stylesheets !
+
     ProxyPass ${1:/} https://${2:domain}/
     ProxyPassReverse $1 https://$2/
     ProxyPassReverseCookieDomain $2 ${3:real}
@@ -203,4 +212,51 @@ snippet auth_basic_or_ip
 
 	Order Allow,Deny
 	Allow from ${2:192.168.0.0/16}
+        Deny from all
+
+snippet mime
+        <IfModule mod_mime.c>
+                AddType   application/x-javascript        .js
+                AddType   application/x-shockwave-flash   .swf
+                AddType   image/bmp                       .bmp
+                AddType   image/gif                       .gif
+                AddType   image/jpeg                      .jpeg
+                AddType   image/jpg                       .jpg
+                AddType   image/png                       .png
+                AddType   image/svg+xml                   .svg
+                AddType   image/tif                       .tif
+                AddType   image/tiff                      .tiff
+                AddType   image/x-icon                    .ico
+                AddType   text/css                        .css
+                AddType   text/htm                        .htm
+                AddType   text/html                       .html
+                AddType   text/plain                      .txt
+                AddType   text/xml                        .xml
+                AddType   text/xsd                        .xsd
+                AddType   text/xsl                        .xsl
+        </IfModule>
+
+snippet expire
+        <IfModule mod_expires.c>
+                ExpiresActive   On
+                ExpiresByType   application/x-javascript          A259200
+                ExpiresByType   application/javascript            A259200
+                ExpiresByType   image/png                         A2592000
+                ExpiresByType   image/jpeg                        A2592000
+                ExpiresByType   image/gif                         A2592000
+                ExpiresByType   text/css                          A2592000
+                ExpiresByType   application/x-shockwave-flash     A259200
+                ExpiresByType   image/bmp                         A259200
+                ExpiresByType   image/jpg                         A259200
+                ExpiresByType   image/svg+xml                     A259200
+                ExpiresByType   image/tif                         A259200
+                ExpiresByType   image/tiff                        A259200
+                ExpiresByType   image/x-icon                      A259200
+                ExpiresByType   text/htm                          A259200
+                ExpiresByType   text/html                         A259200
+                ExpiresByType   text/plain                        A259200
+                ExpiresByType   text/xml                          A259200
+                ExpiresByType   text/xsd                          A259200
+                ExpiresByType   text/xsl                          A259200
+        </IfModule>
 

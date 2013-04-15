@@ -6,6 +6,19 @@
 # 名称などを変更したい場合は、起動時に -r オプションで
 # パスを指定してください。
 
+# functions
+# 関数 which の定義.
+which{
+    foreach dir . ${PATH.split}
+		foreach ext .com .exe .bat .cmd
+			if exist $dir\$1$ext then
+				echo $dir\$1$ext
+			endif
+		end
+    end
+}
+
+
 #print %0 reading ...
 
 alias cp cp -i
@@ -57,9 +70,12 @@ alias cpf cp -v
 
 ## for nyacus
 alias cp xcopy
-alias rmf del /f
-alias rm del
-alias mv move
+
+if "`which rm`" == "" then
+	alias rmf del /f
+	alias rm del
+	alias mv move
+endif
 
 #alias bcc bcc32
 #alias lha lhcm
@@ -133,18 +149,6 @@ if %nyatype.defined% != 0 then
     endif
 endif
 #option prompt $e[31;40;1m[$p]$e[37;1m
-
-# functions
-# 関数 which の定義.
-which{
-    foreach dir . ${PATH.split}
-		foreach ext .com .exe .bat .cmd
-			if exist $dir\$1$ext then
-				echo $dir\$1$ext
-			endif
-		end
-    end
-}
 
 
 set PATH+=$HOME\.windows\bin;$HOME\.windows\usr\bin;$HOME\.windows\usr\local\bin

@@ -123,7 +123,9 @@ endif
 
 
 " vundles {{{2
-if has('python')
+if !s:is_win && (has('python') || has('python3'))
+  NeoBundle 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
+else
   NeoBundle 'Lokaltog/vim-powerline'
 endif
 " colorscheme {{{3
@@ -212,6 +214,7 @@ NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'c9s/cascading.vim'
 NeoBundle 'mileszs/ack.vim'
 NeoBundleLazy 'vim-scripts/MultipleSearch'
+NeoBundle 'terryma/vim-multiple-cursors'
 NeoBundle 'vim-scripts/sudo.vim'
 if s:is_mac
   if has('gui')
@@ -366,7 +369,7 @@ NeoBundleLazyOn FileType css 'bae22/prefixer'
 NeoBundleLazyOn FileType javascript 'pangloss/vim-javascript'
 NeoBundleLazyOn FileType javascript 'teramako/jscomplete-vim'
 NeoBundleLazyOn FileType javascript 'myhere/vim-nodejs-complete'
-NeoBundle 'mklbas/grunt.vim'
+NeoBundle 'mklabs/grunt.vim'
 NeoBundle 'leshill/vim-json'
 " NeoBundle 'drslump/vim-syntax-js'
 NeoBundleLazyOn FileType javascript  'vim-scripts/jQuery'
@@ -1016,12 +1019,10 @@ endfunction
 
 " statusline {{{2
 set laststatus=2  " ステータス表示用変数
-if !neobundle#is_installed('Lokaltog/vim-powerline')
-  "set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'}%=%l,%c%V%8P
-  let &statusline="%<%f %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'
-    \ }%=%l,%c%V%8P"
+"set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'}%=%l,%c%V%8P
+let &statusline="%<%f %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'
+  \ }%=%l,%c%V%8P"
     " \ .'['.cfi#format('%s()','no func').']'
-endif
 
 set modeline
 set modelines=10
@@ -1525,6 +1526,9 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" powerline {{{2
+let g:powerline_config_path = expand('~/.vim/powerline')
+
 " inline_edit {{{2
 if neobundle#is_installed('inline_edit.vim')
   let g:inline_edit_autowrite = 1
@@ -3896,6 +3900,10 @@ if !has('vim_starting') && has('gui')
   execute 'source' expand("~/.gvimrc")
   if neobundle#is_installed('vim-powerline')
     call Pl#UpdateStatusline(1)
+  elseif neobundle#is_installed('powerline')
+    set statusline=%!PowerlineNew()
+    call PowerlineNew()
+    redraw!
   endif
 endif
 if exists('s:store')
