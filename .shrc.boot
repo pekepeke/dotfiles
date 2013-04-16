@@ -21,9 +21,9 @@ case $OSTYPE in
       if [ -n "$TMUX" ]; then
         # exec reattach-to-user-namespace -l $SHELL
         tmux rename-window "$HOST"
-        alias mvim="reattach-to-user-namespace -l mvim"
-        alias vim="reattach-to-user-namespace -l vim"
-        alias emacs="reattach-to-user-namespace -l emacs"
+        # alias mvim="reattach-to-user-namespace -l mvim"
+        # alias vim="reattach-to-user-namespace -l vim"
+        # alias emacs="reattach-to-user-namespace -l emacs"
       fi
     fi
     ;;
