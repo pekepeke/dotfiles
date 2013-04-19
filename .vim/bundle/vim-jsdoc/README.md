@@ -1,0 +1,97 @@
+vim-jsdoc
+=================
+
+generate jsdoc comment
+
+Version: 0.0.1  
+Author : pekepeke <pekepekesamurai+vim@gmail.com>  
+License: MIT  
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"), 
+to deal in the Software without restriction, including without limitation 
+the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in 
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS 
+OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+## INTRODUCTION
+
+*vim-jsdoc* is a Vim plugin to provide to generate jsdoc comment
+
+## SYNOPSYS
+
+## CUSTOMIZE
+
+### Variables
+
+#### g:jsdoc_max_function_line
+
+> Maximum line to recognize function source.
+> (default:5)
+
+#### g:jsdoc_start_str
+
+> JsDoc header string.
+> (default:/**)
+
+#### g:jsdoc_head_str1
+
+> Jsdoc first string.
+> (default: * )
+
+#### g:jsdoc_head_strn
+
+> Jsdoc first string.
+> (default: * )
+
+#### g:jsdoc_tail_str
+
+> JsDoc footer string.
+> (default: */)
+
+#### g:jsdoc_default_param_type
+
+> Default variable type of parameter.
+> (default:Object)
+
+#### g:jsdoc_default_return_type
+
+> Default variable type of return value.
+> (default:Object)
+
+#### g:jsdoc_funcname_re
+
+> Regular expression to detect function name.
+> (default:\([a-zA-Z0-9$_\.]\+\))
+
+#### g:jsdoc_params_re
+
+> Regular expression to detect function parameters.
+> (default:\(([^)]*)\))
+
+#### g:jsdoc_function_re
+
+> Regular expression to detect function.
+> (default:g:jsdoc_function_name + g:jsdoc_params_re)
+
+### COMMANDS
+
+#### `:JsDoc`
+
+> generate jsdoc comment
+
+### KEY MAPPINGS
+
+#### `<Plug>(jsdoc)`
+
+> generate jsdoc comment
