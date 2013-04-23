@@ -85,6 +85,13 @@ if s:is_win
   endif
 else
   let $PAGER='less'
+  " if s:is_mac && has('macvim')
+  "   let $RUBY_DLL = "/usr/local/lib/libruby.1.8.dylib"
+  "   let $PYTHON_DLL = "/usr/local/lib/libpython2.7.dylib"
+  "   if executable('/usr/local/Frameworks/Python.framework/Versions/3.3/Python')
+  "     let $PYTHON3_DLL='/usr/local/Frameworks/Python.framework/Versions/3.3/Python'
+  "   endif
+  " endif
 endif
 
 " preexec for runtimepath {{{1
