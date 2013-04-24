@@ -239,7 +239,7 @@ NeoBundleLazy 'osyo-manga/vim-watchdogs'
 NeoBundle 'kien/rainbow_parentheses.vim'
 NeoBundle 'vim-scripts/matchit.zip'
 NeoBundle 'vim-scripts/matchparenpp'
-NeoBundle 'vimtaku/hl_matchit.vim.git'
+NeoBundle 'vimtaku/hl_matchit.vim'
 " NeoBundle 'gregsexton/MatchTag'
 " NeoBundle 'vim-scripts/ruby-matchit'
 NeoBundle 'semmons99/vim-ruby-matchit'
@@ -272,6 +272,7 @@ NeoBundle 'ciaranm/detectindent'
 " NeoBundle 'ujihisa/shadow.vim'
 " NeoBundle 'motemen/git-vim'
 NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'tpope/vim-git'
 NeoBundle 'gregsexton/gitv'
 NeoBundle 'int3/vim-extradite'
 NeoBundleLazy 'Shougo/vim-vcs'
@@ -323,8 +324,8 @@ NeoBundleLazyOn FileType ruby 'yaymukund/vim-rabl'
 NeoBundle 'vim-scripts/eruby.vim'
 NeoBundle 't9md/vim-chef'
 NeoBundleLazyOn FileType puppet 'rodjek/vim-puppet'
-NeoBundle 'rhysd/unite-ruby-require.vim.git'
-NeoBundle 'rhysd/neco-ruby-keyword-args.git'
+NeoBundle 'rhysd/unite-ruby-require.vim'
+NeoBundle 'rhysd/neco-ruby-keyword-args'
 if has("signs") && has("clientserver") && v:version > 700
   NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
 endif
@@ -374,6 +375,21 @@ NeoBundleLazyOn FileType css 'bae22/prefixer'
 
 " javascript {{{4
 NeoBundleLazyOn FileType javascript 'pangloss/vim-javascript'
+if has('python')
+  NeoBundleLazy 'marijnh/tern', {
+        \   'build' : {
+        \    'cygwin': 'npm install',
+        \    'windows': 'npm install',
+        \    'mac': 'npm install',
+        \    'unix': 'npm install',
+        \   },
+        \ }
+        " \   'autoload' : {},
+        " \   'rtp' : 'vim',
+  if neobundle#is_installed('tern')
+    execute 'source' g:my_bundle_dir . "/tern/vim/tern.vim"
+  endif
+endif
 NeoBundleLazyOn FileType javascript 'teramako/jscomplete-vim'
 NeoBundleLazyOn FileType javascript 'myhere/vim-nodejs-complete'
 NeoBundle 'mklabs/grunt.vim'
@@ -536,24 +552,11 @@ NeoBundleLazyOn FileType nyaos 'Shougo/vim-nyaos'
 NeoBundleLazy 'Shougo/unite.vim', {
       \   'autoload': { 'commands' : ['Unite'] },
       \ }
-NeoBundle 'Shougo/unite-build'
 NeoBundle 'Shougo/unite-help'
-" NeoBundle 'h1mesuke/unite-outline'
-NeoBundle 'Shougo/unite-outline'
-NeoBundle 'sgur/unite-git_grep'
-" NeoBundle 'sgur/unite-qf'
-NeoBundle 'osyo-manga/unite-quickfix'
 NeoBundle 'tacroe/unite-mark'
 NeoBundle 'thinca/vim-unite-history'
-NeoBundle 'tsukkee/unite-tag'
-" NeoBundle 'ujihisa/unite-launch'
-NeoBundle 'ujihisa/quicklearn'
-NeoBundle 'ujihisa/unite-gem'
-NeoBundle 'ujihisa/unite-rake'
-" NeoBundle 'basyura/unite-rails'
-" NeoBundle 'oppara/vim-unite-cake'
-" NeoBundle 'heavenshell/unite-zf'
-" NeoBundle 'heavenshell/unite-sf2'
+NeoBundle 'zhaocai/unite-scriptnames'
+NeoBundle 'daisuzu/unite-grep_launcher'
 NeoBundle 'basyura/unite-yarm'
 NeoBundle 'pasela/unite-webcolorname'
 NeoBundle 'ujihisa/unite-colorscheme'
@@ -562,8 +565,28 @@ NeoBundle 'ujihisa/unite-colorscheme'
 " NeoBundle 'hakobe/unite-script'
 " NeoBundle 'mattn/unite-remotefile'
 " NeoBundle 'pekepeke/unite-fileline'
-NeoBundle 'zhaocai/unite-scriptnames'
-NeoBundle 'daisuzu/unite-grep_launcher'
+
+NeoBundle 'Shougo/unite-build'
+" NeoBundle 'h1mesuke/unite-outline'
+NeoBundle 'Shougo/unite-outline'
+
+NeoBundle 'sgur/unite-git_grep'
+NeoBundle 'kmnk/vim-unite-giti'
+" NeoBundle 'sgur/unite-qf'
+NeoBundle 'osyo-manga/unite-quickfix'
+NeoBundle 'tsukkee/unite-tag'
+
+" NeoBundle 'ujihisa/unite-launch'
+NeoBundle 'ujihisa/quicklearn'
+
+NeoBundleLazyOn FileType ruby 'ujihisa/unite-gem'
+NeoBundleLazyOn FileType ruby 'ujihisa/unite-rake'
+NeoBundleLazyOn FileType ruby 'basyura/unite-rails'
+
+NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
+NeoBundleLazyOn FileType php 'heavenshell/unite-zf'
+NeoBundleLazyOn FileType php 'heavenshell/unite-sf2'
+
 NeoBundle 'pekepeke/vim-unite-sonictemplate'
 NeoBundle 'pekepeke/vim-unite-repo-files'
 NeoBundle 'pekepeke/vim-unite-z'
@@ -640,10 +663,10 @@ NeoBundle 'rhysd/vim-textobj-continuous-line'
 NeoBundle 'gorkunov/smartpairs.vim'
 
 " metarw {{{3
-" NeoBundle "mattn/vim-metarw.git"
-" NeoBundle "mattn/vim-metarw-gist.git"
-" NeoBundle "mattn/vim-metarw-git.git"
-" NeoBundle "sorah/metarw-simplenote.vim.git"
+" NeoBundle "mattn/vim-metarw"
+" NeoBundle "mattn/vim-metarw-gist"
+" NeoBundle "mattn/vim-metarw-git"
+" NeoBundle "sorah/metarw-simplenote.vim"
 
 " afterexec for runtimepath {{{1
 filetype plugin indent on
@@ -1620,6 +1643,20 @@ endif
 let g:hl_matchit_enable_on_vim_startup = 1
 let g:hl_matchit_hl_groupname = 'Title'
 let g:hl_matchit_allow_ft_regexp = 'html\|vim\|ruby\|sh'
+if neobundle#is_installed('hl_matchit.vim')
+  let g:hl_matchit_running = get(g:, 'hl_matchit_enable_on_vim_startup', 0)
+  function! s:hl_matchit_fire(on)
+    if a:on && !g:hl_matchit_running
+      HiMatchOn
+      let g:hl_matchit_running = 1
+    elseif !a:on && g:hl_matchit_running
+      HiMatchOff
+      let g:hl_matchit_running = 0
+    endif
+  endfunction
+  MyAutocmd CursorHold * call s:hl_matchit_fire(1)
+  MyAutocmd CursorMoved * call s:hl_matchit_fire(0)
+endif
 
 " dirdiff.vim {{{2
 let g:DirDiffExcludes = "CVS,*.class,*.exe,.*.swp,*.log,.git,.svn,.hg"
