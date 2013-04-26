@@ -153,6 +153,10 @@ NeoBundle 'StanAngeloff/vim-zend55'
 NeoBundle 'w0ng/vim-hybrid'
 
 " common {{{3
+NeoBundle 'git://gist.github.com/5457352.git', {
+      \ 'directory' : 'ginger',
+      \ 'script_type' : 'plugin',
+      \ }
 NeoBundleLazy 'mattn/benchvimrc-vim'
 NeoBundleLazy 'Shougo/vimfiler', {
       \   'depends': 'Shougo/unite.vim',
@@ -440,7 +444,8 @@ NeoBundle 'y-uuki/perl-local-lib-path.vim'
 
 " C,CPP {{{4
 NeoBundleLazyOn FileType c,cpp 'vim-scripts/DoxygenToolkit.vim'
-NeoBundle 'Rip-Rip/clang_complete'
+NeoBundleLazyOn FileType c,cpp,objc 'Rip-Rip/clang_complete'
+NeoBundleLazyOn FileType qml 'peterhoeg/vim-qml'
 
 " C# {{{4
 " NeoBundle 'OrangeT/vim-csharp'
@@ -613,7 +618,9 @@ if executable('python')
   endif
   unlet plugin_path
 endif
-NeoBundle 'mattn/googletranslate-vim'
+" NeoBundle 'mattn/googletranslate-vim'
+" NeoBundle 'mattn/excitetranslate-vim'
+NeoBundle 'Rykka/trans.vim'
 NeoBundle 'thinca/vim-ambicmd'
 NeoBundle 'mattn/gist-vim'
 " NeoBundle 'mattn/vimplenote-vim'
@@ -1542,8 +1549,8 @@ onoremap ik i)
 vnoremap ik i)
 
 " vmaps {{{2
-vnoremap tj    :GoogleTranslate ja<CR>
-vnoremap te    :GoogleTranslate en<CR>
+" vnoremap <Leader>tj    :GoogleTranslate ja<CR>
+" vnoremap <Leader>te    :GoogleTranslate en<CR>
 vnoremap <Tab>   >gv
 vnoremap <S-Tab> <gv
 "nnoremap : q:
@@ -1556,6 +1563,8 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" trans.vim {{{2
+let g:trans_default_lang = "en-ja"
 " powerline {{{2
 let g:powerline_config_path = expand('~/.vim/powerline')
 
@@ -1649,13 +1658,24 @@ if neobundle#is_installed('hl_matchit.vim')
     if a:on && !g:hl_matchit_running
       HiMatchOn
       let g:hl_matchit_running = 1
+      augroup hl_matchit-light
+        autocmd!
+        autocmd CursorMoved * call s:hl_matchit_fire(0)
+      augroup END
     elseif !a:on && g:hl_matchit_running
       HiMatchOff
+      augroup hl_matchit-light
+        autocmd!
+        autocmd CursorHold * call s:hl_matchit_fire(1)
+      augroup END
       let g:hl_matchit_running = 0
     endif
   endfunction
-  MyAutocmd CursorHold * call s:hl_matchit_fire(1)
-  MyAutocmd CursorMoved * call s:hl_matchit_fire(0)
+  augroup hl_matchit-light
+    autocmd!
+    autocmd CursorHold * call s:hl_matchit_fire(1)
+    autocmd CursorMoved * call s:hl_matchit_fire(0)
+  augroup END
 endif
 
 " dirdiff.vim {{{2
@@ -2973,6 +2993,8 @@ if neobundle#is_installed('vimproc')
   NeoBundleSource shabadou.vim vim-watchdogs
 
   if neobundle#is_installed('vim-watchdogs')
+    " run ok
+    "  python, jsonlint
     call extend(g:quickrun_config, {
           \  'watchdogs_checker/_' : {
           \    'hook/close_quickfix/enable_failure' : 1,
@@ -2991,9 +3013,9 @@ if neobundle#is_installed('vimproc')
           \  'watchdogs_checker/coffee' : {
           \    'command' : 'coffee',
           \    'exec'    : '%c -c %o %s:p',
-          \    'quickfix/errorformat' : 'Error:\ In\ %f\\,\ %m\ on\ line\ %l,'
-          \                           . 'Error:\ In\ %f\\,\ Parse\ error\ on\ line\ %l:\ %m,'
-          \                           . 'SyntaxError:\ In\ %f\\,\ %m,'
+          \    'quickfix/errorformat' : 'Error: In %f\, %m on line %l,'
+          \                           . 'Error: In %f\, Parse error on line %l: %m,'
+          \                           . 'SyntaxError: In %f\, %m,'
           \                           . '%-G%.%#',
           \  },
           \  'css/watchdogs_checker' : {
@@ -3074,7 +3096,15 @@ if neobundle#is_installed('vimproc')
           \     'exec'    : '%c -rerb -e "puts ERB.new('
           \            . 'File.read(''%s:p'').gsub(''<\%='', ''<\%'')'
           \            . ', nil, ''-'').src" | %c -c %o',
-          \     'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error\, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
+          \     'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
+          \  },
+          \  'typescript/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/tsc',
+          \  },
+          \  'watchdogs_checker/tsc' : {
+          \    'command' : 'tsc',
+          \     'exec'    : '%c %s:p',
+          \     'quickfix/errorformat' : '%+A %#%f %#(%l\,%c): %m,%C%m',
           \  },
           \  'json/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/jsonlint',
@@ -3087,20 +3117,29 @@ if neobundle#is_installed('vimproc')
           \  'watchdogs_checker/jsonval' : {
           \    'command' : 'jsonval',
           \     'exec'    : '%c %s:p',
-          \     'quickfix/errorformat' : '%E%f:\ %m\ at\ line\ %l,%-G%.%#',
+          \     'quickfix/errorformat' : '%E%f: %m at line %l,%-G%.%#',
           \  },
           \  'watchdogs_checker/python' : {
           \    'command' : 'python',
-          \     'exec'    : "%c -c 'compile(open(\"%s:p\")).read(), \"%s:p:h\", \"exec\")'",
+          \     'exec'    : "%c -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
           \     'quickfix/errorformat' :
-          \        '\%A\ \ File\ \"%f\"\\\,\ line\ %l\\\,%m,' .
-          \        '\%C\ \ \ \ %.%#,' .
-          \        '\%+Z%.%#Error\:\ %.%#,' .
-          \        '\%A\ \ File\ \"%f\"\\\,\ line\ %l,' .
-          \        '\%+C\ \ %.%#,' .
-          \        '\%-C%p^,' .
-          \        '\%Z%m,' .
-          \        '\%-G%.%#'
+          \        '%A  File "%f"\, line %l\,%m,' .
+          \        '%C    %.%#,' .
+          \        '%+Z%.%#Error: %.%#,' .
+          \        '%A  File "%f"\, line %l,' .
+          \        '%+C  %.%#,' .
+          \        '%-C%p^,' .
+          \        '%Z%m,' .
+          \        '%-G%.%#'
+          \  },
+          \  'qml/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/qmlscene',
+          \  },
+          \  'watchdogs_checker/qmlscene' : {
+          \    'command' : 'qmlscene',
+          \     'exec'    : '%c -c %o %s:p',
+          \     'cmdopt' : '--quit',
+          \     'quickfix/errorformat' : 'file:\/\/%f:%l %m',
           \  },
           \ })
           " \  '/watchdogs_checker' : {
