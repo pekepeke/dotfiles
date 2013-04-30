@@ -134,6 +134,7 @@ if !s:is_win && (has('python') || has('python3'))
   NeoBundle 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
 else
   NeoBundle 'Lokaltog/vim-powerline'
+  NeoBundle 'osyo-manga/vim-powerline-unite-theme'
 endif
 " colorscheme {{{3
 NeoBundle 'tomasr/molokai'
@@ -380,7 +381,7 @@ NeoBundleLazyOn FileType css 'bae22/prefixer'
 " javascript {{{4
 NeoBundleLazyOn FileType javascript 'pangloss/vim-javascript'
 if has('python')
-  NeoBundleLazy 'marijnh/tern', {
+  NeoBundleLazy 'marijnh/tern_for_vim', {
         \   'build' : {
         \    'cygwin': 'npm install',
         \    'windows': 'npm install',
@@ -390,9 +391,6 @@ if has('python')
         \ }
         " \   'autoload' : {},
         " \   'rtp' : 'vim',
-  if neobundle#is_installed('tern')
-    execute 'source' g:my_bundle_dir . "/tern/vim/tern.vim"
-  endif
 endif
 NeoBundleLazyOn FileType javascript 'teramako/jscomplete-vim'
 NeoBundleLazyOn FileType javascript 'myhere/vim-nodejs-complete'
@@ -1566,7 +1564,12 @@ endif
 " trans.vim {{{2
 let g:trans_default_lang = "en-ja"
 " powerline {{{2
-let g:powerline_config_path = expand('~/.vim/powerline')
+if neobundle#is_installed('powerline')
+  let g:powerline_config_path = expand('~/.vim/powerline')
+else
+  let g:powerline_theme="unite_status"
+  let g:powerline_colorscheme="unite_status"
+endif
 
 " inline_edit {{{2
 if neobundle#is_installed('inline_edit.vim')
@@ -1649,33 +1652,28 @@ if neobundle#is_installed('clever-f.vim')
 endif
 
 " hl_matchit {{{2
-let g:hl_matchit_enable_on_vim_startup = 1
+let g:hl_matchit_enable_on_vim_startup = 0
 let g:hl_matchit_hl_groupname = 'Title'
-let g:hl_matchit_allow_ft_regexp = 'html\|vim\|ruby\|sh'
+let g:hl_matchit_allow_ft_regexp = 'html\|eruby\|eco'
 if neobundle#is_installed('hl_matchit.vim')
-  let g:hl_matchit_running = get(g:, 'hl_matchit_enable_on_vim_startup', 0)
+  let s:hl_matchit_running = get(g:, 'hl_matchit_enable_on_vim_startup', 0)
+  let s:hl_matchit_last_off_time = 0
+
   function! s:hl_matchit_fire(on)
-    if a:on && !g:hl_matchit_running
-      HiMatchOn
-      let g:hl_matchit_running = 1
-      augroup hl_matchit-light
-        autocmd!
-        autocmd CursorMoved * call s:hl_matchit_fire(0)
-      augroup END
-    elseif !a:on && g:hl_matchit_running
+    if a:on
+      call hl_matchit#do_highlight()
+      " HiMatchOn
+    elseif !a:on
       HiMatchOff
-      augroup hl_matchit-light
-        autocmd!
-        autocmd CursorHold * call s:hl_matchit_fire(1)
-      augroup END
-      let g:hl_matchit_running = 0
     endif
   endfunction
-  augroup hl_matchit-light
-    autocmd!
-    autocmd CursorHold * call s:hl_matchit_fire(1)
-    autocmd CursorMoved * call s:hl_matchit_fire(0)
-  augroup END
+  if !get(g:, 'hl_matchit_enable_on_vim_startup', 0)
+    augroup hl_matchit-light
+      autocmd!
+      autocmd CursorHold * call s:hl_matchit_fire(1)
+      autocmd CursorMoved * call s:hl_matchit_fire(0)
+    augroup END
+  endif
 endif
 
 " dirdiff.vim {{{2
