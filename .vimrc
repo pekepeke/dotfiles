@@ -131,10 +131,13 @@ endif
 
 " vundles {{{2
 if !s:is_win && (has('python') || has('python3'))
-  NeoBundle 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
+  " NeoBundle 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
+  " for unite.vim,,,
+  NeoBundle 'zhaocai/powerline', { 'rtp' : 'powerline/bindings/vim'}
+  NeoBundleLazy 'Lokaltog/vim-powerline'
 else
+  NeoBundleLazy 'zhaocai/powerline', { 'rtp' : 'powerline/bindings/vim'}
   NeoBundle 'Lokaltog/vim-powerline'
-  NeoBundle 'osyo-manga/vim-powerline-unite-theme'
 endif
 " colorscheme {{{3
 NeoBundle 'tomasr/molokai'
@@ -229,7 +232,7 @@ NeoBundleLazy 'vim-scripts/MultipleSearch'
 NeoBundle 'terryma/vim-multiple-cursors'
 NeoBundle 'vim-scripts/sudo.vim'
 if s:is_mac
-  if has('gui')
+  if has('gui_running')
     NeoBundle 'gmarik/sudo-gui.vim'
   else
     NeoBundleLazy 'gmarik/sudo-gui.vim'
@@ -286,7 +289,9 @@ NeoBundle 'vim-scripts/DirDiff.vim'
 NeoBundleLazy 'mbadran/headlights'
 NeoBundle 'thinca/vim-ft-diff_fold'
 NeoBundle 'AndrewRadev/linediff.vim'
-NeoBundle 'vim-scripts/ConflictDetection'
+NeoBundle 'vim-scripts/ConflictDetection', {
+      \   'depends': 'vim-scripts/ingo-library',
+      \ }
 
 " help {{{4
 NeoBundle 'thinca/vim-ref'
@@ -333,33 +338,42 @@ NeoBundle 'rhysd/unite-ruby-require.vim'
 NeoBundle 'rhysd/neco-ruby-keyword-args'
 if has("signs") && has("clientserver") && v:version > 700
   NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
+else
+  NeoBundleLazy 'astashov/vim-ruby-debugger'
 endif
 if executable('alpaca_complete')
   NeoBundleLazy 'taichouchou2/alpaca_complete', {
         \ 'depends' : 'tpope/vim-rails',
         \ 'autoload' : { 'filetypes' : 'ruby'},
         \  }
+else
+  NeoBundleLazy 'taichouchou2/alpaca_complete'
 endif
 if executable('rails_best_practices')
   NeoBundleLazy 'taichouchou2/unite-rails_best_practices', {
         \ 'depends' : [ 'Shougo/unite.vim', 'romanvbabenko/rails.vim' ],
         \ 'autoload' : { 'filetypes' : 'ruby'},
         \ }
+else
+  NeoBundleLazy 'taichouchou2/unite-rails_best_practices'
 endif
 if executable('reek')
   NeoBundle 'taichouchou2/unite-reek'
+else
+  NeoBundleLazy 'taichouchou2/unite-reek'
 endif
 
 " html {{{4
-NeoBundle 'othree/html5.vim'
+NeoBundleLazyOn FileType html,php 'othree/html5.vim'
 NeoBundleLazyOn FileType html 'amirh/HTML-AutoCloseTag'
-NeoBundleLazyOn FileType html 'vim-scripts/html-improved-indentation'
+" heavy...
+" NeoBundleLazyOn FileType html,php 'vim-scripts/indenthtml.vim'
+" NeoBundleLazyOn FileType html,php 'vim-scripts/html-improved-indentation'
 NeoBundleLazyOn FileType html 'vim-scripts/html_FileCompletion'
 NeoBundleLazyOn FileType haml 'tpope/vim-haml'
 NeoBundleLazyOn FileType jade 'digitaltoad/vim-jade'
 " NeoBundle 'mattn/zencoding-vim'
 NeoBundleLazyOn FileType html,eruby,php 'mattn/zencoding-vim'
-NeoBundleLazyOn FileType html,php,haml,jade 'vim-scripts/indenthtml.vim'
 " NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
 NeoBundleLazyOn FileType mustache 'juvenn/mustache.vim'
 
@@ -425,8 +439,22 @@ NeoBundleLazyOn FileType python 'vim-scripts/python_match.vim'
 
 if has('python')
   NeoBundleLazy 'davidhalter/jedi-vim', {
-      \ 'build' : 'git submodule update --init',
-      \ 'autoload' : { 'filetypes' : 'python' },
+      \   'build' : {
+      \     'cygwin' : 'git submodule update --init',
+      \     'windows' : 'git submodule update --init',
+      \     'mac'    : 'git submodule update --init',
+      \     'unix'   : 'git submodule update --init',
+      \   },
+      \   'autoload' : { 'filetypes' : 'python' },
+      \ }
+else
+  NeoBundleLazy 'davidhalter/jedi-vim', {
+      \   'build' : {
+      \     'cygwin' : 'git submodule update --init',
+      \     'windows' : 'git submodule update --init',
+      \     'mac'    : 'git submodule update --init',
+      \     'unix'   : 'git submodule update --init',
+      \   },
       \ }
 endif
 " NeoBundle 'sontek/rope-vim'
@@ -457,6 +485,8 @@ NeoBundleLazyOn FileType objj 'nanki/vim-objj'
 NeoBundleLazyOn FileType objc 'pekepeke/cocoa.vim'
 if has('ruby')
   NeoBundleLazyOn FileType objc 'eraserhd/vim-ios'
+else
+  NeoBundleLazy 'eraserhd/vim-ios'
 endif
 NeoBundleLazyOn FileType applescript 'vim-scripts/applescript.vim'
 
@@ -479,6 +509,8 @@ NeoBundleLazyOn FileType scala 'derekwyatt/vim-scala'
 NeoBundleLazyOn FileType go 'uggedal/go-vim'
 if executable('gocode')
   NeoBundleLazyOn FileType go 'undx/vim-gocode'
+else
+  NeoBundleLazy 'undx/vim-gocode'
 endif
 
 " as {{{4
@@ -608,14 +640,14 @@ endif
 " web {{{3
 NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'mattn/webapi-vim'
-if executable('python')
-  NeoBundle 'mattn/mkdpreview-vim'
-  let plugin_path = g:my_bundle_dir . "/mkdpreview-vim/static/mkdpreview.py"
-  if !s:is_win && filereadable(plugin_path) && !executable(plugin_path)
-    exe "!chmod u+x" plugin_path
-  endif
-  unlet plugin_path
-endif
+" if executable('python')
+"   NeoBundle 'mattn/mkdpreview-vim'
+"   let plugin_path = g:my_bundle_dir . "/mkdpreview-vim/static/mkdpreview.py"
+"   if !s:is_win && filereadable(plugin_path) && !executable(plugin_path)
+"     exe "!chmod u+x" plugin_path
+"   endif
+"   unlet plugin_path
+" endif
 " NeoBundle 'mattn/googletranslate-vim'
 " NeoBundle 'mattn/excitetranslate-vim'
 NeoBundle 'Rykka/trans.vim'
@@ -623,7 +655,7 @@ NeoBundle 'thinca/vim-ambicmd'
 NeoBundle 'mattn/gist-vim'
 " NeoBundle 'mattn/vimplenote-vim'
 " NeoBundle 'pekepeke/vimplenote-vim'
-if has('python') && (s:is_win || s:is_mac || !has('gui'))
+if has('python') && (s:is_win || s:is_mac || !has('gui_running'))
   NeoBundle 'tsukkee/lingr-vim'
 else
   NeoBundleLazy 'tsukkee/lingr-vim'
@@ -699,6 +731,11 @@ augroup vimrc-colors "{{{2
   autocmd!
 
   function! s:my_highlight_defines() "{{{3
+    " for unite.vim
+    highlight StatusLine gui=none guifg=black guibg=lightgreen cterm=none ctermfg=black ctermbg=lightgreen
+
+    highlight MatchParen ctermbg=lightblue ctermfg=darkred guibg=lightblue guifg=darkred
+
     highlight NonText term=underline ctermfg=darkgray guifg=darkgray
     highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
     " highlight link IdeographicSpace Error
@@ -709,7 +746,6 @@ augroup vimrc-colors "{{{2
     "hi CursorLine gui=underline term=underline cterm=underline
     " highlight CursorLine ctermbg=black guibg=black
     highlight link VimShellError WarningMsg
-
     " highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
   endfunction
 
@@ -752,7 +788,7 @@ augroup vimrc-colors "{{{2
   endfunction "}}}3
 augroup END
 
-if has('gui')
+if has('gui_running')
   function! s:gui_colorscheme_init()
     colorscheme vividchalk
     call s:my_additional_syntaxes()
@@ -1565,10 +1601,38 @@ endif
 let g:trans_default_lang = "en-ja"
 " powerline {{{2
 if neobundle#is_installed('powerline')
-  let g:powerline_config_path = expand('~/.vim/powerline')
-else
-  let g:powerline_theme="unite_status"
-  let g:powerline_colorscheme="unite_status"
+  let g:unite_force_overwrite_statusline = 0
+  " let g:powerline_config_path = expand('~/.vim/powerline')
+  let g:powerline_config_overrides = {
+        \  "common": {
+        \    "dividers": {
+        \      "left": {
+        \        "hard": " ",
+        \        "soft": " | ",
+        \      },
+        \      "right": {
+        \        "hard": " ",
+        \        "soft": " | ",
+        \      }
+        \    },
+        \  },
+        \ }
+  let g:powerline_theme_overrides__default = {
+        \  "segment_data": {
+        \    "branch": {
+        \      "before": "BR:",
+        \    },
+        \    "modified_indicator": {
+        \      "args": { "text": "+" },
+        \    },
+        \    "line_percent": {
+        \      "after": "%"
+        \    },
+        \    "line_current_symbol": {
+        \      "contents": " LN ",
+        \    },
+        \  },
+        \ }
 endif
 
 " inline_edit {{{2
@@ -1831,7 +1895,7 @@ xmap <silent> i,e <Plug>CamelCaseMotion_ie
 
 " indent-guides {{{2
 let g:indent_guides_enable_on_vim_startup = 1
-if has('gui')
+if has('gui_running')
   let g:indent_guides_auto_colors = 1
 else
   let g:indent_guides_auto_colors = 0
@@ -2045,7 +2109,7 @@ let g:aria_attributes_complete = 1
 let g:PIVCreateDefaultMappings=0
 
 " sudo.vim {{{2
-if s:is_mac && has('gui') && neobundle#is_installed('sudo-gui.vim')
+if s:is_mac && has('gui_running') && neobundle#is_installed('sudo-gui.vim')
   command! -bang SW SudoWriteMacGUI
 else
   command! SW w sudo:%
@@ -2310,8 +2374,10 @@ function! s:unite_open_ftplugin()
   let dirs = ['after', 'ftplugin', 'snippets', 'template', 'sonictemplate']
   execute 'Unite' '-input='.&filetype join(map(dirs, '"file_rec:~/.vim/".v:val'), " ")
 endfunction
-nnoremap <silent> [unite]v  :<C-u>call <SID>unite_open_ftplugin()<CR>
-nnoremap <silent> [unite]V  :<C-u>Unite file:~/.vim/<CR>
+" nnoremap <silent> [unite]v  :<C-u>call <SID>unite_open_ftplugin()<CR>
+" nnoremap <silent> [unite]V  :<C-u>Unite file:~/.vim/<CR>
+nnoremap <silent> [unite]v  :<C-u>Unite scriptnames<CR>
+nnoremap <silent> [unite]V  :<C-u>call <SID>unite_open_ftplugin()<CR>
 " nnoremap <silent> [unite]v  :<C-u>Unite file_rec:~/.vim/after file_rec:~/.vim/ftplugin<CR>
 
 " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
@@ -2355,6 +2421,7 @@ execute 'nnoremap' '<silent>' s:get_cmd_t_key("r") ':<C-u>Unite outline -start-i
 
 MyAutocmd FileType unite call s:unite_my_settings() "{{{3
 function! s:unite_my_settings()
+
   imap <buffer> jj <Plug>(unite_insert_leave)j
   imap <buffer> qq <Plug>(unite_exit)
   imap <buffer> ]] <C-o><Plug>(unite_rotate_next_source)
@@ -3977,8 +4044,10 @@ command! -nargs=0 HelptagsShow call s:help_util.show_tags()
 command! -nargs=0 HelpDirShow call s:help_util.show_dirs()
 
 " after initializes {{{1
-if !has('vim_starting') && has('gui')
+if !has('vim_starting') && has('gui_running')
   execute 'source' expand("~/.gvimrc")
+endif
+if !has('vim_starting')
   if neobundle#is_installed('vim-powerline')
     call Pl#UpdateStatusline(1)
   elseif neobundle#is_installed('powerline')
