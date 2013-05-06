@@ -179,9 +179,9 @@ bindkey "^P" history-beginning-search-backward-end
 bindkey "^N" history-beginning-search-forward-end
 
 
-export HISTFILE=$HOME/.tmp/.zsh_history
-if [ ! -d ~/.tmp ]; then
-  mkdir ~/.tmp
+export HISTFILE=$HOME/.cache/zsh_history
+if [ ! -d ~/.cache ]; then
+  mkdir ~/.cache
 fi
 
 export HISTSIZE=100000

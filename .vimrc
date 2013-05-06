@@ -11,11 +11,12 @@
 "       ~~~~                     \__\/         \__\|         \__\/
 " init setup {{{1
 scriptencoding utf-8
+let $VIM_CACHE = $HOME . '/.cache'
 
 " platform detection {{{2
-let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') ||
-      \ (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
+let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim')
+" || (executable('uname') && system('uname') =~? '^darwin')
 function! s:nop(...)
 endfunction
 
@@ -111,10 +112,6 @@ call neobundle#rc(g:my_bundle_dir)
 NeoBundleLocal ~/.vim/bundle
 
 " lazy util {{{3
-augroup vimrc-neobundle-lazy
-  autocmd!
-augroup END
-
 if has('vim_starting')
   function! s:neobundle_lazy_on(on, modes, source)
     if a:on =~? "filetype"
@@ -130,6 +127,7 @@ endif
 
 
 " vundles {{{2
+" powerline {{{3
 if !s:is_win && (has('python') || has('python3'))
   " NeoBundle 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
   " for unite.vim,,,
@@ -161,6 +159,8 @@ NeoBundle 'git://gist.github.com/5457352.git', {
       \ 'directory' : 'ginger',
       \ 'script_type' : 'plugin',
       \ }
+NeoBundle 'mklabs/vim-fetch'
+NeoBundle 'osyo-manga/vim-reanimate'
 NeoBundleLazy 'mattn/benchvimrc-vim'
 NeoBundleLazy 'Shougo/vimfiler', {
       \   'depends': 'Shougo/unite.vim',
@@ -192,7 +192,8 @@ NeoBundle 'kana/vim-niceblock'
 NeoBundle 'tyru/vim-altercmd'
 NeoBundle 'vim-scripts/ShowMarks7'
 " NeoBundle 'vim-scripts/let-modeline.vim'
-NeoBundle 'dannyob/quickfixstatus'
+" NeoBundle 'dannyob/quickfixstatus'
+NeoBundle 'pekepeke/quickfixstatus'
 NeoBundle 'jceb/vim-hier'
 " NeoBundle 'tomtom/quickfixsigns_vim'
 NeoBundle 'tpope/vim-repeat'
@@ -206,13 +207,13 @@ NeoBundleLazy 't9md/vim-textmanip'
 NeoBundle 'bkad/CamelCaseMotion'
 NeoBundle 'h1mesuke/vim-alignta'
 NeoBundle 'vim-scripts/YankRing.vim'
+" NeoBundle 'maxbrunsfeld/vim-yankstack'
+" NeoBundle 'chrismetcalf/vim-yankring'
+" NeoBundle 'the-isz/MinYankRing.vim'
 NeoBundle 'AndrewRadev/switch.vim'
 NeoBundle 'AndrewRadev/inline_edit.vim'
 NeoBundle 'zef/vim-cycle'
 NeoBundle 'mbbill/undotree'
-" NeoBundle 'maxbrunsfeld/vim-yankstack'
-" NeoBundle 'chrismetcalf/vim-yankring'
-" NeoBundle 'the-isz/MinYankRing.vim'
 NeoBundle 'rhysd/clever-f.vim'
 NeoBundleLazy 'kien/ctrlp.vim'
 NeoBundle 'glidenote/memolist.vim'
@@ -229,7 +230,7 @@ NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'c9s/cascading.vim'
 NeoBundle 'mileszs/ack.vim'
 NeoBundleLazy 'vim-scripts/MultipleSearch'
-NeoBundle 'terryma/vim-multiple-cursors'
+" NeoBundle 'terryma/vim-multiple-cursors'
 NeoBundle 'vim-scripts/sudo.vim'
 if s:is_mac
   if has('gui_running')
@@ -245,12 +246,14 @@ NeoBundle 'thinca/vim-quickrun'
 NeoBundleLazy 'osyo-manga/shabadou.vim'
 NeoBundleLazy 'osyo-manga/vim-watchdogs'
 NeoBundle 'kien/rainbow_parentheses.vim'
+" incompatible with smartinput
+" NeoBundle 'vim-scripts/Highlight-UnMatched-Brackets'
 NeoBundle 'vim-scripts/matchit.zip'
 NeoBundle 'vim-scripts/matchparenpp'
-NeoBundle 'vimtaku/hl_matchit.vim'
-" NeoBundle 'gregsexton/MatchTag'
-" NeoBundle 'vim-scripts/ruby-matchit'
+" NeoBundle 'vimtaku/hl_matchit.vim'
+NeoBundle 'gregsexton/MatchTag'
 NeoBundle 'semmons99/vim-ruby-matchit'
+" NeoBundle 'vim-scripts/ruby-matchit'
 NeoBundle 'voithos/vim-python-matchit'
 NeoBundle 'AndrewRadev/splitjoin.vim'
 NeoBundle 'AndrewRadev/inline_edit.vim'
@@ -258,7 +261,6 @@ NeoBundle 'AndrewRadev/inline_edit.vim'
 NeoBundle 'kana/vim-smartinput'
 " NeoBundle 'acustodioo/vim-enter-indent'
 " NeoBundle 'dahu/vim-fanfingtastic'
-
 NeoBundle 'pekepeke/vim-indent_cr'
 
 " NeoBundle 'houtsnip/vim-emacscommandline'
@@ -331,7 +333,7 @@ NeoBundle 'skwp/vim-rspec'
 NeoBundleLazyOn FileType ruby 'tpope/vim-cucumber'
 NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
 NeoBundleLazyOn FileType ruby 'yaymukund/vim-rabl'
-NeoBundle 'vim-scripts/eruby.vim'
+NeoBundleLazyOn FileType eruby 'vim-scripts/eruby.vim'
 NeoBundle 't9md/vim-chef'
 NeoBundleLazyOn FileType puppet 'rodjek/vim-puppet'
 NeoBundle 'rhysd/unite-ruby-require.vim'
@@ -426,7 +428,17 @@ NeoBundleLazyOn FileType haxe 'jdonaldson/vaxe'
 " NeoBundle 'MarcWeber/vim-haxe'
 NeoBundleLazyOn FileType jst 'jeyb/vim-jst'
 NeoBundleLazyOn FileType coffee  'kchmck/vim-coffee-script'
-NeoBundleLazyOn FileType typescript  'leafgarland/typescript-vim'
+NeoBundleLazyOn FileType typescript 'leafgarland/typescript-vim'
+NeoBundleLazy 'clausreinke/typescript-tools', {
+      \ 'script_type' : 'plugin',
+      \ 'autoload' : { 'filetypes' : 'typescript' },
+      \ 'build' : {
+      \     'cygwin' : 'npm install',
+      \     'windows' : 'npm install',
+      \     'mac'    : 'npm install',
+      \     'unix'   : 'npm install',
+      \   },
+      \ }
 
 " python {{{4
 " http://rope.sourceforge.net/
@@ -489,6 +501,9 @@ else
   NeoBundleLazy 'eraserhd/vim-ios'
 endif
 NeoBundleLazyOn FileType applescript 'vim-scripts/applescript.vim'
+
+" windows {{{4
+NeoBundleLazyOn FileType ps1,ps1xml 'PProvost/vim-ps1'
 
 " java, android {{{4
 NeoBundleLazyOn FileType java 'mikelue/vim-maven-plugin'
@@ -727,37 +742,55 @@ endif
 "set t_Co=256
 set background=dark
 
+function! s:highlights_add() "{{{3
+  " for unite.vim
+  highlight StatusLine gui=none guifg=black guibg=lightgreen cterm=none ctermfg=black ctermbg=lightgreen
+
+  highlight MatchParen ctermbg=lightblue ctermfg=darkred guibg=lightblue guifg=darkred
+
+  highlight NonText term=underline ctermfg=darkgray guifg=darkgray
+  highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
+  " highlight link IdeographicSpace Error
+  highlight IdeographicSpace term=underline ctermbg=darkgreen guibg=darkgreen
+  " highlight link TrailingSpaces Error
+  highlight TrailingSpaces ctermbg=darkgray guibg=#222222
+  " highlight clear CursorLine
+  "hi CursorLine gui=underline term=underline cterm=underline
+  " highlight CursorLine ctermbg=black guibg=black
+  highlight link VimShellError WarningMsg
+  " highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
+endfunction
+
+function! s:syntaxes_add() "{{{3
+  syntax match IdeographicSpace /　/ display containedin=ALL
+  syntax match TrailingSpaces /\s\+$/ display containedin=ALL
+endfunction
+
+if has('gui_running')
+  function! s:gui_colorscheme_init()
+    colorscheme vividchalk
+    call s:syntaxes_add()
+    call s:highlights_add()
+  endfunction
+
+elseif &t_Co == 256 || s:is_win "{{{2
+  colorscheme vividchalk
+else
+  " colorscheme wombat
+  colorscheme desert
+endif
+
 augroup vimrc-colors "{{{2
   autocmd!
 
-  function! s:my_highlight_defines() "{{{3
-    " for unite.vim
-    highlight StatusLine gui=none guifg=black guibg=lightgreen cterm=none ctermfg=black ctermbg=lightgreen
-
-    highlight MatchParen ctermbg=lightblue ctermfg=darkred guibg=lightblue guifg=darkred
-
-    highlight NonText term=underline ctermfg=darkgray guifg=darkgray
-    highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
-    " highlight link IdeographicSpace Error
-    highlight IdeographicSpace term=underline ctermbg=darkgreen guibg=darkgreen
-    " highlight link TrailingSpaces Error
-    highlight TrailingSpaces ctermbg=darkgray guibg=#222222
-    " highlight clear CursorLine
-    "hi CursorLine gui=underline term=underline cterm=underline
-    " highlight CursorLine ctermbg=black guibg=black
-    highlight link VimShellError WarningMsg
-    " highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
-  endfunction
-
-  function! s:my_additional_syntaxes() "{{{3
-    syntax match IdeographicSpace /　/ display containedin=ALL
-    syntax match TrailingSpaces /\s\+$/ display containedin=ALL
-  endfunction
-
-  autocmd ColorScheme * call s:my_highlight_defines()
-  autocmd Syntax * call s:my_additional_syntaxes()
+  autocmd ColorScheme * call s:highlights_add()
+  autocmd Syntax * call s:syntaxes_add()
   " autocmd VimEnter,WinEnter * call s:my_additional_syntaxes()
   autocmd Syntax eruby highlight link erubyRubyDelim Label
+
+  if has('gui_running')
+    autocmd vimrc-colors GUIEnter * call <SID>gui_colorscheme_init()
+  endif
 
   " カーソル行 http://d.hatena.ne.jp/thinca/20090530/1243615055
   autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
@@ -786,30 +819,16 @@ augroup vimrc-colors "{{{2
       let s:cursorline_lock = 1
     endif
   endfunction "}}}3
+
 augroup END
-
-if has('gui_running')
-  function! s:gui_colorscheme_init()
-    colorscheme vividchalk
-    call s:my_additional_syntaxes()
-    call s:my_highlight_defines()
-  endfunction
-
-  autocmd vimrc-colors GUIEnter * call <SID>gui_colorscheme_init()
-elseif &t_Co == 256 || s:is_win "{{{2
-  colorscheme vividchalk
-else
-  " colorscheme wombat
-  colorscheme desert
-endif
 
 
 " defun macros {{{1
-augroup vimrc-my-autocmd
+augroup vimrc-myautocmd
   autocmd!
 augroup END
-command! -bang -nargs=* MyAutocmd autocmd<bang> vimrc-my-autocmd <args>
-command! -nargs=* Lazy autocmd vimrc-my-autocmd VimEnter * <args>
+command! -bang -nargs=* MyAutocmd autocmd<bang> vimrc-myautocmd <args>
+command! -nargs=* Lazy autocmd vimrc-myautocmd VimEnter * <args>
 
 
 " for filetypes {{{1
@@ -912,7 +931,7 @@ endfunction " }}}
 MyAutocmd CmdwinEnter * call s:cmdwin_my_settings()
 
 " vim -b : edit binary using xxd-format! "{{{3
-augroup Binary
+augroup vimrc-binary
   au!
   au BufReadPre  *.bin let &bin=1
   au BufReadPost *.bin if &bin | silent %!xxd -g 1
@@ -948,7 +967,8 @@ set mousehide
 
 set nospell
 set shellslash
-set directory=~/.tmp,/var/tmp,/tmp
+set directory=$VIM_CACHE,/var/tmp,/tmp
+set viminfo+=n$VIM_CACHE/viminfo.txt
 
 " IME の設定 {{{2
 if has('kaoriya') | set iminsert=0 imsearch=0 | endif
@@ -1015,7 +1035,7 @@ set langmenu=none
 set helplang=ja,en
 set foldmethod=marker
 " http://d.hatena.ne.jp/thinca/20110523/1306080318
-augroup foldmethod-expr
+augroup vimrc-foldmethod-expr
   autocmd!
   autocmd InsertEnter * if &l:foldmethod ==# 'expr'
   \ |   let b:foldinfo = [&l:foldmethod, &l:foldexpr]
@@ -1113,12 +1133,12 @@ set nowritebackup
 set autoread                   " 更新があったファイルを自動で読み直し
 set backupcopy=yes
 set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*.tmp,crontab.*
-set backupdir=~/.tmp/vim-backups
-set viewdir=~/.tmp/vim-views
+set backupdir=$VIM_CACHE/vim-backups
+set viewdir=$VIM_CACHE/vim-views
 call my#util#mkdir(&backupdir)
 call my#util#mkdir(&viewdir)
 if has('persistent_undo')
-  set undodir=~/.tmp/vim-undo
+  set undodir=$VIM_CACHE/vim-undo
   call my#util#mkdir(&undodir)
   set undofile
 endif
@@ -1597,6 +1617,43 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" reanimate.vim {{{2
+if neobundle#is_installed('vim-reanimate')
+  let g:reanimate_save_dir = $VIM_CACHE."/vim-reanimate"
+  let g:reanimate_default_save_name = "latest"
+  " sessionoptions
+  let g:reanimate_sessionoptions =
+        \ "blank,curdir,folds,help,localoptions,tabpages,unix"
+  let g:reanimate_disables = [
+        \ "reanimate_message",
+        \ "reanimate_viminfo",
+        \ "reanimate_window"
+        \ ]
+
+  augroup vimrc-plugin-reanimate
+    autocmd!
+    " autocmd VimEnter * ReanimateLoad
+    autocmd CursorHold,VimLeavePre * ReanimateSaveCursorHold
+  augroup End
+
+  let s:event = {'name': 'user_event'}
+  function! s:event.load_pre(...)
+    tabnew
+    " hide tabonly
+  endfunction
+
+  function! s:event.save_pre(...)
+    silent! argdelete *
+  endfunction
+
+  call reanimate#hook(s:event)
+  unlet s:event
+endif
+
+" colorv {{{2
+let g:colorv_cache_fav = $VIM_CACHE . "/vim_colorv_fav"
+let g:colorv_cache_file = $VIM_CACHE . "/vim_colorv_cache"
+
 " trans.vim {{{2
 let g:trans_default_lang = "en-ja"
 " powerline {{{2
@@ -1607,12 +1664,12 @@ if neobundle#is_installed('powerline')
         \  "common": {
         \    "dividers": {
         \      "left": {
-        \        "hard": " ",
-        \        "soft": " | ",
+        \        "hard": "| ",
+        \        "soft": "| ",
         \      },
         \      "right": {
-        \        "hard": " ",
-        \        "soft": " | ",
+        \        "hard": " |",
+        \        "soft": " |",
         \      }
         \    },
         \  },
@@ -1625,11 +1682,14 @@ if neobundle#is_installed('powerline')
         \    "modified_indicator": {
         \      "args": { "text": "+" },
         \    },
+        \    "readonly_indicator": {
+        \      "args": { "text": "[R]" },
+        \    },
         \    "line_percent": {
         \      "after": "%"
         \    },
         \    "line_current_symbol": {
-        \      "contents": " LN ",
+        \      "contents": "LN",
         \    },
         \  },
         \ }
@@ -1732,7 +1792,7 @@ if neobundle#is_installed('hl_matchit.vim')
     endif
   endfunction
   if !get(g:, 'hl_matchit_enable_on_vim_startup', 0)
-    augroup hl_matchit-light
+    augroup vimrc-plugin-hl_matchit
       autocmd!
       autocmd CursorHold * call s:hl_matchit_fire(1)
       autocmd CursorMoved * call s:hl_matchit_fire(0)
@@ -1899,7 +1959,7 @@ if has('gui_running')
   let g:indent_guides_auto_colors = 1
 else
   let g:indent_guides_auto_colors = 0
-  augroup indentguides
+  augroup vimrc-plugin-indentguides
     autocmd!
     autocmd VimEnter,Colorscheme * :highlight IndentGuidesEven ctermbg=236 ctermfg=white
     autocmd VimEnter,Colorscheme * :highlight IndentGuidesOdd ctermbg=235 ctermfg=white
@@ -2065,10 +2125,10 @@ nmap [space]u <Plug>(openbrowser-open)
 vmap [space]u <Plug>(openbrowser-open)
 
 " netrw {{{2
-let g:netrw_home = expand("$HOME/.tmp/")
+let g:netrw_home = $VIM_CACHE
 
 " yankring {{{2
-let g:yankring_history_dir = "$HOME/.tmp"
+let g:yankring_history_dir = $VIM_CACHE
 let g:yankring_default_menu_mode = 0
 
 " rails.vim {{{2
@@ -2116,7 +2176,7 @@ else
 endif
 
 " hatena.vim {{{2
-let g:hatena_base_dir = $HOME . '/.tmp/vim-hatena/'
+let g:hatena_base_dir = $VIM_CACHE . '/vim-hatena/'
 call my#util#mkdir(g:hatena_base_dir.'/cookies')
 let g:hatena_upload_on_write = 0
 let g:hatena_upload_on_write_bang = 1
@@ -2124,7 +2184,7 @@ let g:hatena_no_default_keymappings = 1
 
 " dbext.vim {{{2
 let g:dbext_default_prompt_for_parameters=0
-let g:dbext_default_history_file=expand('~/.tmp/dbext_sql_history.txt')
+let g:dbext_default_history_file=expand('$VIM_CACHE/dbext_sql_history.txt')
 let g:dbext_default_menu_mode=0
 
 " SQLUtilities {{{2
@@ -2182,6 +2242,7 @@ if neobundle#is_installed('unite.vim')
 endif
 
 " unite basic settings {{{3
+let g:unite_data_directory = $VIM_CACHE . '/vim-unite'
 let g:unite_update_time=1000
 let g:unite_source_history_yank_enable=0
 "let g:unite_enable_start_insert=1
@@ -2562,7 +2623,8 @@ function! s:exec_ctags(path) "{{{3
   let path = a:path
   let ctags_cmd = "ctags -R"
   if empty(path)
-    let path = input("input base dir : ", expand('%:p:h'))
+    " let path = input("input base dir : ", expand('%:p:h'))
+    let path = input("input base dir : ", getcwd())
   endif
   if empty(path)
     return
@@ -2713,6 +2775,7 @@ let g:textobj_between_no_default_key_mappings=1
 " let g:textobj_wiw_no_default_key_mappings=1
 
 " ref.vim {{{2
+let g:ref_cache_dir = $VIM_CACHE . '/vim-ref'
 if !exists('g:ref_detect_filetype')
   let g:ref_detect_filetype = {}
 endif
@@ -3031,8 +3094,9 @@ MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
 MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
 
 if neobundle#is_installed('vim-ref')
-  augroup vimrc-testcase-lazy
+  augroup vimrc-plugin-ref
     autocmd!
+    autocmd FileType ruby.rspec,php.phpunit,python.nosetests,perl.prove call s:testcase_lazy_init()
   augroup END
 
   function! s:testcase_lazy_init()
@@ -3040,9 +3104,10 @@ if neobundle#is_installed('vim-ref')
     call ref#register_detection('php.phpunit', 'phpmanual', 'append')
     call ref#register_detection('python.nosetests', 'pydoc', 'append')
     call ref#register_detection('perl.prove', 'perldoc', 'append')
-    autocmd!
+    augroup vimrc-plugin-ref
+      autocmd!
+    augroup END
   endfunction
-  autocmd vimrc-testcase-lazy FileType ruby.rspec,php.phpunit,python.nosetests,perl.prove call s:testcase_lazy_init()
 endif
 
 
@@ -3312,6 +3377,7 @@ endif
 
 " neocomplcache {{{2
 " options {{{3
+let g:neocomplcache_temporary_dir = $VIM_CACHE . '/neocomplcache'
 let g:neocomplcache_enable_at_startup                   = 1
 let g:neocomplcache_cursor_hold_i_time                  = 500
 let g:neocomplcache_max_list = 100  " 補完候補の数
@@ -3359,19 +3425,22 @@ let g:neocomplcache_keyword_patterns.default = '\h\w*' " 日本語をキャッ�
 call extend(g:neocomplcache_source_disable, {
       \ 'syntax_complete' : 1,
       \ })
-call extend(g:neocomplcache_dictionary_filetype_lists, {
-  \ 'default'     : '',
-  \ 'vimshell'    : $HOME . '/.vimshell/command-history',
-  \ 'javascript'  : $HOME . '/.vim/dict/node.dict',
-  \ 'ruby'        : $HOME . '/.vim/dict/ruby.dict',
-  \ 'eruby'       : $HOME . '/.vim/dict/ruby.dict',
-  \ 'perl'        : $HOME . '/.vim/dict/perl.dict',
-  \ 'php'         : $HOME . '/.vim/dict/php.dict',
-  \ 'objc'        : $HOME . '/.vim/dict/objc.dict',
-  \ 'actionscript': $HOME . '/.vim/dict/actionscript.dict',
-  \ 'autohotkey'  : $HOME . '/.vim/dict/autohotkey.dict'
-  \ })
-  " \ 'javascript'  : $HOME . '/.vim/dict/javascript.dict',
+
+function! s:neocomplcache_dictionary_config() "{{{4
+  for fp in split(globpath("~/.vim/dict", "*.dict"), "\n")
+    let _name = fnamemodify(fp, ":p:r")
+    let g:neocomplcache_dictionary_filetype_lists[_name] = fp
+  endfor
+
+  call extend(g:neocomplcache_dictionary_filetype_lists, {
+    \ 'default'     : '',
+    \ 'vimshell'    : $VIM_CACHE . '/vimshell/command-history',
+    \ 'javascript'  : $HOME . '/.vim/dict/node.dict',
+    \ 'eruby'       : $HOME . '/.vim/dict/ruby.dict',
+    \ })
+    " \ 'javascript'  : $HOME . '/.vim/dict/javascript.dict',
+endfunction "}}}
+call s:neocomplcache_dictionary_config()
 
 let g:use_zen_complete_tag=1
 
@@ -3474,7 +3543,7 @@ endif
 " endif
 
 " vimshell {{{2
-
+let g:vimshell_temporary_directory = $VIM_CACHE . "/vimshell"
 let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 if exists('*vcs#info')
   let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
@@ -3611,9 +3680,10 @@ command! IRB VimShellInteractive irb
 LCAlias IRB
 
 " vimfiler {{{2
+let g:vimfiler_data_directory = $VIM_CACHE . '/vimfiler'
 let g:vimfiler_as_default_explorer=1
 let g:vimfiler_safe_mode_by_default=0
-let g:vimfiler_edit_action = 'below'
+" let g:vimfiler_edit_action = 'below'
 " let g:vimfiler_edit_action = 'tabopen'
 
 let g:vimfiler_file_icon = '-'
@@ -4048,12 +4118,12 @@ if !has('vim_starting') && has('gui_running')
   execute 'source' expand("~/.gvimrc")
 endif
 if !has('vim_starting')
-  if neobundle#is_installed('vim-powerline')
-    call Pl#UpdateStatusline(1)
-  elseif neobundle#is_installed('powerline')
+  if exists('*PowerlineNew') " neobundle#is_installed('powerline')
     set statusline=%!PowerlineNew()
     call PowerlineNew()
     redraw!
+  elseif neobundle#is_installed('vim-powerline')
+    call Pl#UpdateStatusline(1)
   endif
 endif
 if exists('s:store')

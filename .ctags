@@ -59,3 +59,35 @@
 --regex-objc=/^[[:space:]]*\@implementation[[:space:]]+(.*)$/\1/c,class/
 --regex-objc=/^[[:space:]]*\@interface[[:space:]]+(.*)[[:space:]]+:.*{/\1/i,interface/
 
+--langdef=typescript
+--langmap=typescript:.ts
+--regex-typescript=/^[ \t]*(export)?[ \t]*class[ \t]+([a-zA-Z0-9_]+)/\2/c,classes/
+--regex-typescript=/^[ \t]*(export)?[ \t]*module[ \t]+([a-zA-Z0-9_]+)/\2/n,modules/
+--regex-typescript=/^[ \t]*(export)?[ \t]*function[ \t]+([a-zA-Z0-9_]+)/\2/f,functions/
+--regex-typescript=/^[ \t]*export[ \t]+var[ \t]+([a-zA-Z0-9_]+)/\1/v,variables/
+--regex-typescript=/^[ \t]*var[ \t]+([a-zA-Z0-9_]+)[ \t]*=[ \t]*function[ \t]*\(\)/\1/v,varlambdas/
+--regex-typescript=/^[ \t]*(export)?[ \t]*(public|private)[ \t]+([a-zA-Z0-9_]+)/\3/m,members/
+--regex-typescript=/^[ \t]*(export)?[ \t]*interface[ \t]+([a-zA-Z0-9_]+)/\2/i,interfaces/
+--regex-typescript=/^[ \t]*(export)?[ \t]*enum[ \t]+([a-zA-Z0-9_]+)/\2/e,enums/
+
+--langdef=haxe
+--langmap=haxe:.hx
+--regex-haxe=/^package[ \t]+([A-Za-z0-9_.]+)/\1/p,package/
+--regex-haxe=/^[ \t]*[(@:macro|private|public|static|override|inline|dynamic)( \t)]*function[ \t]+([A-Za-z0-9_]+)/\1/f,function/
+--regex-haxe=/^[ \t]*([private|public|static|protected|inline][ \t]*)+var[ \t]+([A-Za-z0-9_]+)/\2/v,variable/ 
+--regex-haxe=/^[ \t]*package[ \t]*([A-Za-z0-9_]+)/\1/p,package/
+--regex-haxe=/^[ \t]*(extern[ \t]+)?class[ \t]+([A-Za-z0-9_]+)[ \t]*[^\{]*/\2/c,class/
+--regex-haxe=/^[ \t]*(extern[ \t]+)?interface[ \t]+([A-Za-z0-9_]+)/\2/i,interface/
+--regex-haxe=/^[ \t]*typedef[ \t]+([A-Za-z0-9_]+)/\1/t,typedef/
+--regex-haxe=/^[ \t]*enum[ \t]+([A-Za-z0-9_]+)/\1/t,typedef/
+--regex-haxe=/^[ \t]*+([A-Za-z0-9_]+)(;|\([^)]*:[^)]*\))/\1/t,enum_field/
+
+--langdef=coffee
+--langmap=coffee:.coffee
+--regex-coffee=/class ([A-Za-z.]+)/\1/c,class/
+--regex-coffee=/^([A-Z][a-z].*)[ \t]*=/\1/n,namespace/
+--regex-coffee=/^[ \t]*([A-Z][a-zA-Z]*)/\1/c,class/
+--regex-coffee=/^[ \t]*([A-Za-z]+)[ \t]*=.*->.*$/\1/f,function/
+--regex-coffee=/^[ \t]*([A-Za-z]+)[ \t]*:.*->.*$/\1/m,method/
+--regex-coffee=/^[ \t]*([ \t][a-z]+)[ \t]*=.*$/\1/v,var/
+--regex-coffee=/^[ \t]*(@[A-Za-z]+)[ \t]*=.*$/\1/i,ivar/
