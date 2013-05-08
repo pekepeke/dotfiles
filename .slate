@@ -28,10 +28,11 @@ bind x:${cas} corner top-left resize:screenSizeX;screenSizeY
 bind up:${cas} corner top-left resize:screenSizeX;screenSizeY
 bind z:${cas} undo
 
+# run screen saver
+# bind l:${cas} shell '/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine'
+bind l:cmd;alt shell '/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine'
+
 # Window Hints
 bind tab:${cas} hint
-
-# run screen saver
-bind l:${cas} shell '/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine'
 
 source ~/.slate.js

@@ -664,7 +664,7 @@ NeoBundle 'mattn/webapi-vim'
 "   unlet plugin_path
 " endif
 " NeoBundle 'mattn/googletranslate-vim'
-" NeoBundle 'mattn/excitetranslate-vim'
+NeoBundle 'mattn/excitetranslate-vim'
 NeoBundle 'Rykka/trans.vim'
 NeoBundle 'thinca/vim-ambicmd'
 NeoBundle 'mattn/gist-vim'
@@ -1603,8 +1603,8 @@ onoremap ik i)
 vnoremap ik i)
 
 " vmaps {{{2
+vnoremap <Leader>te    :ExciteTranslate<CR>
 " vnoremap <Leader>tj    :GoogleTranslate ja<CR>
-" vnoremap <Leader>te    :GoogleTranslate en<CR>
 vnoremap <Tab>   >gv
 vnoremap <S-Tab> <gv
 "nnoremap : q:
@@ -3879,6 +3879,64 @@ nmap <silent> [prefix]ml :MemoList<CR>
 nmap <silent> [prefix]mg :MemoGrep<CR>
 
 " etc functions & commands {{{1
+" git "{{{2
+" special git log viewer {{{
+function! s:git_log_viewer()
+  vnew
+  "VimProcRead git log -u 'HEAD@{1}..HEAD' --reverse
+  VimProcRead git log -u 'ORIG_HEAD..HEAD'
+  set filetype=git-log.git-diff
+  setl foldmethod=expr
+  setl foldexpr=getline(v:lnum)!~'^commit'
+endfunction
+command! GitLogViewer call s:git_log_viewer()
+" }}}
+" Git Diff -> The file {{{
+function! SGoDiff()
+  let [maybe, fname] = s:latest_fname()
+  if maybe ==# 'nothing'
+    echoerr 'failed to find the filename'
+    return
+  endif
+
+  let [maybe, linenum] = s:latest_linenum()
+  if maybe ==# 'nothing'
+    echoerr 'failed to find the linenum'
+    return
+  endif
+
+  execute "vnew" fname
+  execute linenum
+  execute "normal! z\<Cr>"
+endfunction
+
+augroup vimrc-sgodiff
+  autocmd!
+  autocmd FileType git-diff nnoremap <buffer> <C-d> :<C-u>call SGoDiff()<Cr>
+augroup END
+
+function! s:latest_fname()
+  for i in reverse(range(1, line('.')))
+    if getline(i) =~ '^+++ '
+      return ['just', substitute(getline(i)[4:], '\t.*$', '', 'b')]
+    endif
+  endfor
+  return ['nothing', '']
+endfunction
+
+function! s:latest_linenum()
+  for i in reverse(range(1, line('.')))
+    if getline(i) =~ '^@@ '
+      let a = matchlist(getline(i), '^@@ -.\{-},.\{-} +\(.\{-}\),')
+      if exists('a[1]')
+        return ['just', a[1]]
+      endif
+    endif
+  endfor
+  return ['nothing', '']
+endfunction
+" }}}
+
 " tiny snippets {{{2
 let g:my_snippets_dir = "$HOME/memos/tiny-snippets"
 
