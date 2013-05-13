@@ -637,7 +637,7 @@ NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
 NeoBundleLazyOn FileType php 'heavenshell/unite-zf'
 NeoBundleLazyOn FileType php 'heavenshell/unite-sf2'
 
-NeoBundle 'pekepeke/vim-unite-sonictemplate'
+" NeoBundle 'pekepeke/vim-unite-sonictemplate'
 NeoBundle 'pekepeke/vim-unite-repo-files'
 NeoBundle 'pekepeke/vim-unite-z'
 
@@ -2251,6 +2251,7 @@ let g:unite_source_file_mru_limit=100
 let g:unite_source_file_mru_time_format = ''
 "let g:unite_source_file_mru_time_format = '%Y-%m-%d %H:%M:%S'
 let g:unite_winheight = 20
+let g:unite_winwidth = &columns
 "let g:unite_split_rule = 'botright'
 let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
 let g:unite_source_file_rec_max_cache_files = 5000
@@ -2364,6 +2365,7 @@ UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR><CR>
 UniteNMap   m         file_mru -default-action=open -buffer-name=file
 UniteNMap   t         sonictemplate
 UniteNMap   c         webcolorname
+UniteNMap   i         jump
 UniteNMap   o         outline
 UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep -auto-preview
 UniteNMap!  gr        grep -buffer-name=grep

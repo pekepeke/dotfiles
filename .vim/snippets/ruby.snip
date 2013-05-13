@@ -433,3 +433,12 @@ snippet findf
 	  ${2:puts fpath}
 	end
 
+snippet coding
+	# -*- coding: utf-8 -*-
+
+snippet ifwin
+	if RUBY_PLATFORM.downcase =~ /mswin(?!ce)|mingw|cygwin|bccwin/
+
+snippet ifver
+	if RUBY_VERSION ${1:<} '${2:1.9.0}'
+
