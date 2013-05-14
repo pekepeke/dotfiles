@@ -129,9 +129,10 @@ endif
 " vundles {{{2
 " powerline {{{3
 if !s:is_win && (has('python') || has('python3'))
-  " NeoBundle 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
+  NeoBundle 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
   " for unite.vim,,,
-  NeoBundle 'zhaocai/powerline', { 'rtp' : 'powerline/bindings/vim'}
+  " NeoBundle 'zhaocai/powerline', { 'rtp' : 'powerline/bindings/vim'}
+  NeoBundle 'zhaocai/linepower.vim'
   NeoBundleLazy 'Lokaltog/vim-powerline'
 else
   NeoBundleLazy 'zhaocai/powerline', { 'rtp' : 'powerline/bindings/vim'}
