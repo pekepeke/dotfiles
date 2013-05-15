@@ -487,8 +487,9 @@ NeoBundleLazyOn FileType c,cpp,objc 'Rip-Rip/clang_complete'
 NeoBundleLazyOn FileType qml 'peterhoeg/vim-qml'
 
 " C# {{{4
-" NeoBundle 'OrangeT/vim-csharp'
-NeoBundle 'yuratomo/dotnet-complete'
+NeoBundleLazyOn FileType cs 'OrangeT/vim-csharp'
+NeoBundleLazyOn FileType cs 'nosami/Omnisharp'
+" NeoBundle 'yuratomo/dotnet-complete'
 if s:is_win
   NeoBundleLazyOn FileType cs 'yuratomo/ildasm.vim'
 endif
@@ -1665,18 +1666,29 @@ if neobundle#is_installed('powerline')
         \  "common": {
         \    "dividers": {
         \      "left": {
-        \        "hard": "| ",
-        \        "soft": "| ",
+        \        "hard": " > ",
+        \        "soft": "|",
         \      },
         \      "right": {
-        \        "hard": " |",
-        \        "soft": " |",
+        \        "hard": " < ",
+        \        "soft": " | ",
         \      }
         \    },
         \  },
         \ }
   let g:powerline_theme_overrides__default = {
         \  "segment_data": {
+        \    "mode" : {
+        \      "args": {
+        \        "override": {
+        \          "n": "NORMAL",
+        \          "v": "VISUAL",
+        \          "i": "INSERT",
+        \          "R": "REPLACE",
+        \          "!": "SHELL",
+        \        },
+        \      },
+        \    },
         \    "branch": {
         \      "before": "BR:",
         \    },
@@ -1694,6 +1706,10 @@ if neobundle#is_installed('powerline')
         \    },
         \  },
         \ }
+  " if neobundle#is_installed('linepower.vim')
+  "   " let g:powerline_config_path = g:my_bundle_dir . "/linepower.vim/config"
+  "   " let g:powerline_config_path = g:my_bundle_dir . "/powerline/powerline/config_files"
+  " endif
 endif
 
 " inline_edit {{{2
