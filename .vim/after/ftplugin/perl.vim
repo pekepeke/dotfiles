@@ -16,7 +16,7 @@ nmap <buffer> [t]pd i<CR>use Data::Dumper;<CR>warn Dumper <ESC>pa;<CR><ESC>
 vmap <buffer> [t]pd yi<CR>use Data::Dumper;<CR>warn Dumper <ESC>pa;<CR><ESC>
 nmap <silent> <buffer> [t]pm :PerlUseInsertionCWord<CR>
 
-nnoremap <buffer> <silent> [comment-doc] :call <SID>my_pod_header()<CR>
+nnoremap <buffer> <silent> [!comment-doc] :call <SID>my_pod_header()<CR>
 
 inoremap <buffer><expr> @ smartchr#one_of('@', '$this->', '@@')
 inoremap <buffer><expr> . smartchr#one_of('.', '->', '..')

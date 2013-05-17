@@ -6,7 +6,7 @@ set cpo&vim
 setlocal iskeyword+=@-@
 setlocal makeprg=javac\ %
 
-nnoremap <silent> [comment-doc] :call JCommentWriter()<CR>
+nnoremap <silent> [!comment-doc] :call JCommentWriter()<CR>
 
 if !exists('b:java_android_detected')
   let b:java_android_detected = 1

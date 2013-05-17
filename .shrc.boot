@@ -232,8 +232,8 @@ if [ -n "$ZSH_NAME" ]; then
   alias -g G='| grep -i'
   alias -g H='| head'
   alias -g T='| tail'
-  # alias -g V='| vim -'
-  alias -g V='| view -'
+  alias -g V='| vim -'
+  # alias -g V='| view -'
 fi
 
 shrc_section_title "some commands" #{{{1

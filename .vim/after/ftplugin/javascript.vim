@@ -15,7 +15,7 @@ setl iskeyword-=:
 
 inoremap <buffer> <expr> \  smartchr#one_of('\', 'function(', '\\')
 inoremap <buffer><expr> @ smartchr#one_of('@', 'this.', '@@')
-nmap <silent> [comment-doc] <Plug>(jsdoc)
+nmap <silent> [!comment-doc] <Plug>(jsdoc)
 
 " for vim-syntax-js
 " if has('conceal')

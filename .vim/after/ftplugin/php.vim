@@ -13,8 +13,8 @@ setl formatoptions-=r,o iskeyword-=- iskeyword-=$ iskeyword-=:
 
 " setl noexpandtab
 
-nnoremap <buffer> <silent> [comment-doc] :call PhpDocSingle()<CR>
-vnoremap <buffer> <silent> [comment-doc] :call PhpDocRange()<CR>
+nnoremap <buffer> <silent> [!comment-doc] :call PhpDocSingle()<CR>
+vnoremap <buffer> <silent> [!comment-doc] :call PhpDocRange()<CR>
 
 if exists(':EnableFastPHPFolds')
   function! s:folding()

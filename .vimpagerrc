@@ -1,9 +1,20 @@
 scriptencoding utf-8
 
+let $VIM_CACHE = $HOME . '/.cache'
 syntax enable
 
 let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
+
+function! s:mkdir(path)
+  if !isdirectory(a:path)
+    call mkdir(a:path, 0777, 1)
+  endif
+endfunction
+
+function! s:has_plugin(plugin_path)
+  return strlen(globpath(&rtp, a:plugin_path))
+endfunction
 
 set nocompatible
 set hidden
@@ -32,6 +43,18 @@ set mouse=a
 set ignorecase smartcase wrapscan
 set incsearch hlsearch
 set virtualedit+=block
+
+set directory=$VIM_CACHE,/var/tmp,/tmp
+set viminfo+=n$VIM_CACHE/viminfo.txt
+set viewdir=$VIM_CACHE/vim-views
+
+call s:mkdir($VIM_CACHE)
+call s:mkdir(&viewdir)
+if has('persistent_undo')
+  set undodir=$VIM_CACHE/vim-undo
+  call s:mkdir(&undodir)
+  set undofile
+endif
 
 set scrolloff=3
 set autoindent
@@ -74,18 +97,17 @@ colorscheme vividchalk
 
 if v:version > 702
 else
-  " mkdir -p ~/.vim/autoload ~/.vim/bundle; curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim; mkdir -p ~/.vim/bundle ; cd ~/.vim/bundle; 
+  " mkdir -p ~/.vim/autoload ~/.vim/bundle; curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim; mkdir -p ~/.vim/bundle ; cd ~/.vim/bundle;
   " git clone https://github.com/Shougo/vimfiler.git
   " git clone https://github.com/Shougo/unite.vim.git
   " curl -L https://github.com/Shougo/vimfiler/tarball/master | tar zxv
   " curl -L https://github.com/Shougo/unite.vim/tarball/master | tar zxv
 
-  let s:has_unite = strlen(globpath(&rtp, 'plugin/unite.vim'))
-  let g:vimfiler_as_default_explorer=1
-  let g:vimfiler_safe_mode_by_default=0
-  let g:vimfiler_edit_command = 'new'
+  let g:vimfiler_as_default_explorer = 1
+  let g:vimfiler_safe_mode_by_default = 0
+  " let g:vimfiler_edit_command = 'new'
 
-  if s:has_unite
+  if s:has_plugin(plugin_path, 'plugin/unite.vim')
     nnoremap [unite] <Nop>
     nmap     f       [unite]
     nnoremap [unite]f f
@@ -99,6 +121,26 @@ else
     nmap <silent> [unite]l       :<C-u>Unite file<CR>
     nmap <silent> [unite]m       :<C-u>Unite file_mru directory_mru<CR>
     nmap <silent> [unite]k       :<C-u>Unite tab<CR>
+  else
+    function! s:plugin_install()
+      if input("install plugin? [y/n]:") != "y"
+        echo "Canceled."
+        return
+      endif
+      call mkdir(expand("~/.vim/autoload"))
+      call mkdir(expand("~/.vim/bundle"))
+      call system("curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim")
+      let cwd = getcwd()
+      execute 'lcd' expand('~/.vim/bundle')
+      if executable('git')
+        call system('git clone https://github.com/Shougo/vimfiler.git')
+        call system('git clone https://github.com/Shougo/unite.vim.git')
+        call system('curl -L https://github.com/Shougo/vimfiler/tarball/master | tar zxv')
+        call system('curl -L https://github.com/Shougo/unite.vim/tarball/master | tar zxv')
+      endif
+      execute 'lcd' cwd
+    endfunction
+    command! -nargs=0 PluginInstall call s:plugin_install()
   endif
 endif
 

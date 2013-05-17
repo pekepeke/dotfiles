@@ -174,7 +174,7 @@ NeoBundleLazy 'Shougo/vimfiler', {
       \      'explorer' : 1,
       \   }
       \ }
-NeoBundleLazy 'Shougo/vimproc', {
+NeoBundle 'Shougo/vimproc', {
       \ 'build' : {
       \     'cygwin' : 'make -f make_cygwin.mak',
       \     'mac'    : 'make -f make_mac.mak',
@@ -746,9 +746,9 @@ set background=dark
 
 function! s:highlights_add() "{{{3
   " for unite.vim
-  highlight StatusLine gui=none guifg=black guibg=lightgreen cterm=none ctermfg=black ctermbg=lightgreen
+  " highlight StatusLine gui=none guifg=black guibg=lightgreen cterm=none ctermfg=black ctermbg=lightgreen
 
-  highlight MatchParen ctermbg=lightblue ctermfg=darkred guibg=lightblue guifg=darkred
+  highlight MatchParen ctermbg=cyan ctermfg=darkred guibg=cyan guifg=darkred
 
   highlight NonText term=underline ctermfg=darkgray guifg=darkgray
   highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
@@ -1246,30 +1246,30 @@ Alias v vnew
 
 " mappings {{{1
 " define common key-prefixes {{{2
-noremap [space] <Nop>
+noremap [!space] <Nop>
 nnoremap g<Space> <Space>
 vnoremap g<Space> <Space>
-nmap <Space> [space]
-vmap <Space> [space]
+nmap <Space> [!space]
+vmap <Space> [!space]
 
-noremap [t] <Nop>
-nmap t [t]
-nnoremap <silent> [t]e t
+noremap [!t] <Nop>
+nmap t [!t]
+nnoremap <silent> [!t]e t
 
-noremap [s] <Nop>
-nmap s [s]
+noremap [!s] <Nop>
+nmap s [!s]
 
-noremap [prefix] <Nop>
-nmap , [prefix]
-vmap , [prefix]
-xmap , [prefix]
+noremap [!prefix] <Nop>
+nmap , [!prefix]
+vmap , [!prefix]
+xmap , [!prefix]
 
-noremap [edit] <Nop>
-nmap <C-e> [edit]
-vmap <C-e> [edit]
+noremap [!edit] <Nop>
+nmap <C-e> [!edit]
+vmap <C-e> [!edit]
 
-noremap [comment-doc] <Nop>
-map     [prefix]c     [comment-doc]
+noremap [!comment-doc] <Nop>
+map     [!prefix]c     [!comment-doc]
 
 nnoremap q <Nop>
 nnoremap Q q
@@ -1292,32 +1292,32 @@ nnoremap <C-h> :<C-u>help<Space>
 nmap Y y$
 
 " S をつぶしてみる
-noremap [SW] <Nop>
-nmap S [SW]
+noremap [!SW] <Nop>
+nmap S [!SW]
 
-nnoremap <silent> [SW]s S
-nnoremap <silent> [SW]S "_dd
-nnoremap <silent> [SW]d "_d
-nnoremap <silent> [SW]D "_D
+nnoremap <silent> [!SW]s S
+nnoremap <silent> [!SW]S "_dd
+nnoremap <silent> [!SW]d "_d
+nnoremap <silent> [!SW]D "_D
 
 nnoremap <silent> x "_x
 nnoremap <silent> X "_X
 " x はたまに使う
-nnoremap <silent> [s]x x
-nnoremap <silent> [s]X X
+nnoremap <silent> [!s]x x
+nnoremap <silent> [!s]X X
 
 " http://vim-users.jp/2009/10/hack91/
 cnoremap <expr> /  getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr> ?  getcmdtype() == '?' ? '\?' : '?'
 
 " indent whole buffer
-nnoremap [space]= call my#ui#indent_whole_buffer()
+nnoremap [!space]= call my#ui#indent_whole_buffer()
 
 " insert timestamp
-nmap <silent> [t]w :exe "normal! i" . strftime("%Y-%m-%d\T%H:%M:%S+09:00")<CR>
+nmap <silent> [!t]w :exe "normal! i" . strftime("%Y-%m-%d\T%H:%M:%S+09:00")<CR>
 
 " redraw map
-nmap <silent> [s]r :redraw!<CR>
+nmap <silent> [!s]r :redraw!<CR>
 
 " for gui
 nnoremap <M-a> ggVG
@@ -1337,8 +1337,8 @@ nnoremap <silent> <S-Up>    :10wincmd -<CR>
 nnoremap <silent> <S-Down>  :10wincmd +<CR>
 
 " replace & grep {{{2
-nnoremap [space]r :<C-u>%S/
-vnoremap [space]r :S/
+nnoremap [!space]r :<C-u>%S/
+vnoremap [!space]r :S/
 
 " grep
 if executable('ag')
@@ -1366,12 +1366,12 @@ let MyGrep_ExcludeReg = '[~#]$\|\.bak$\|\.o$\|\.obj$\|\.exe$\|\.dll$\|\.pdf$\|\.
 let MyGrepcmd_useropt = '--exclude="*\.\(svn\|git\|hg)*"'
 
 " mygrep.vim…
-"nmap [space]gg :EGrep<CR>
-"nmap [space]gr :RGrep<CR>
-" nnoremap [space]gg :Grep<CR>
-" nnoremap [space]gr :REGrep<CR>
-nnoremap [space]g  :Ack<Space>-i<Space>''<Left>
-nnoremap [space]gg :Ack<Space>-i<Space>''<Left>
+"nmap [!space]gg :EGrep<CR>
+"nmap [!space]gr :RGrep<CR>
+" nnoremap [!space]gg :Grep<CR>
+" nnoremap [!space]gr :REGrep<CR>
+nnoremap [!space]g  :Ack<Space>-i<Space>''<Left>
+nnoremap [!space]gg :Ack<Space>-i<Space>''<Left>
 
 
 function! s:my_quickfix_settings()
@@ -1392,19 +1392,19 @@ MyAutocmd QuickfixCmdPost make call s:my_make_settings()
 
 
 " tags-and-searches {{{2
-nnoremap [t]r t
-nnoremap <silent> [t]t <C-]>
-nnoremap <silent> [t]j :<C-u>tag<CR>
-nnoremap <silent> [t]k :<C-u>pop<CR>
-nnoremap <silent> [t]l :<C-u>tags<CR>
+nnoremap [!t]r t
+nnoremap <silent> [!t]t <C-]>
+nnoremap <silent> [!t]j :<C-u>tag<CR>
+nnoremap <silent> [!t]k :<C-u>pop<CR>
+nnoremap <silent> [!t]l :<C-u>tags<CR>
 
 " nmaps {{{2
 autocmd FileType help,ref,git-status,git-log nnoremap <buffer> q <C-w>c
 " win move
-nnoremap [space]. :source ~/.vimrc<CR>
+nnoremap [!space]. :source ~/.vimrc<CR>
 
-"nnoremap [edit]<C-o> :copen<CR><C-w><C-w>
-nnoremap [space]q :<C-u>call <SID>toggle_quickfix_window()<CR>
+"nnoremap [!edit]<C-o> :copen<CR><C-w><C-w>
+nnoremap [!space]q :<C-u>call <SID>toggle_quickfix_window()<CR>
 function! s:toggle_quickfix_window() "{{{3
   let n = winnr('$')
   cclose
@@ -1413,7 +1413,7 @@ function! s:toggle_quickfix_window() "{{{3
   endif
 endfunction "}}}
 
-" nnoremap [space]f :NERDTreeToggle<CR>
+" nnoremap [!space]f :NERDTreeToggle<CR>
 
 nnoremap / :<C-u>nohlsearch<CR>/
 nnoremap ? :<C-u>nohlsearch<CR>?
@@ -1430,14 +1430,14 @@ function! s:show_mapping() " {{{3
   endif
 endfunction " }}}
 
-nnoremap <silent> [space]hk :<C-u>call <SID>show_mapping()<CR>
-nnoremap [space]/ :<C-u>nohlsearch<CR>
-nnoremap [space]w :<C-u>call <SID>toggle_option("wrap")<CR>
+nnoremap <silent> [!space]hk :<C-u>call <SID>show_mapping()<CR>
+nnoremap [!space]/ :<C-u>nohlsearch<CR>
+nnoremap [!space]w :<C-u>call <SID>toggle_option("wrap")<CR>
 
 
 nnoremap <C-w><Space> <C-w>p
 
-nnoremap [prefix]ds :call <SID>replace_at_caret_data_scheme()<CR>
+nnoremap [!prefix]ds :call <SID>replace_at_caret_data_scheme()<CR>
 function! s:replace_at_caret_data_scheme() " {{{3
   let cfile = expand('<cfile>')
   let cpath = expand(cfile)
@@ -1832,8 +1832,8 @@ if neobundle#is_installed('splitjoin.vim')
   let g:splitjoin_normalize_whitespace = 1
   let g:splitjoin_align = 1
 
-  nmap [prefix]j :<C-u>SplitjoinSplit<CR>
-  nmap [prefix]k :<C-u>SplitjoinJoin<CR>
+  nmap [!prefix]j :<C-u>SplitjoinSplit<CR>
+  nmap [!prefix]k :<C-u>SplitjoinJoin<CR>
 endif
 
 " rainbow_parentheses {{{2
@@ -1944,7 +1944,7 @@ endif
 " golden-ratio {{{2
 " let g:golden_ratio_ignore_ftypes=['unite', 'vimfiler']
 ", 'quickrun']
-" nmap [space]s <Plug>(golden_ratio_toggle)
+" nmap [!space]s <Plug>(golden_ratio_toggle)
 
 " ambicmd {{{2
 if neobundle#is_installed('vim-ambicmd')
@@ -1956,12 +1956,12 @@ if neobundle#is_installed('vim-ambicmd')
 endif
 
 " camelcasemotion {{{2
-nmap <silent> [prefix]w <Plug>CamelCaseMotion_w
-nmap <silent> [prefix]e <Plug>CamelCaseMotion_e
-nmap <silent> [prefix]b <Plug>CamelCaseMotion_b
-vmap <silent> [prefix]w <Plug>CamelCaseMotion_w
-vmap <silent> [prefix]e <Plug>CamelCaseMotion_e
-vmap <silent> [prefix]b <Plug>CamelCaseMotion_b
+nmap <silent> [!prefix]w <Plug>CamelCaseMotion_w
+nmap <silent> [!prefix]e <Plug>CamelCaseMotion_e
+nmap <silent> [!prefix]b <Plug>CamelCaseMotion_b
+vmap <silent> [!prefix]w <Plug>CamelCaseMotion_w
+vmap <silent> [!prefix]e <Plug>CamelCaseMotion_e
+vmap <silent> [!prefix]b <Plug>CamelCaseMotion_b
 
 omap <silent> i,w <Plug>CamelCaseMotion_iw
 xmap <silent> i,w <Plug>CamelCaseMotion_iw
@@ -2015,8 +2015,8 @@ if neobundle#is_installed('vim-altr')
   call altr#define('View/Helper/%.php', 'Test/Case/View/Helper/%Test.php')
   call altr#define('View/%.php', 'Test/Case/View/%Test.php')
 
-  nmap [space]j <Plug>(altr-forward)
-  nmap [space]k <Plug>(altr-back)
+  nmap [!space]j <Plug>(altr-forward)
+  nmap [!space]k <Plug>(altr-back)
 endif
 
 " vim-template "{{{2
@@ -2055,18 +2055,18 @@ imap <C-y>t <ESC>:<C-u>Unite sonictemplate<CR>
 " junkfile.vim http://vim-users.jp/2010/11/hack181/ {{{2
 command! -nargs=0 EnewNofile enew | setl buftype=nofile
 
-nnoremap [prefix]ss :<C-u>JunkfileOpen<CR>
-nmap [prefix]sc :<C-u>EnewNofile<CR>
+nnoremap [!prefix]ss :<C-u>JunkfileOpen<CR>
+nmap [!prefix]sc :<C-u>EnewNofile<CR>
 
 " alignta {{{2
 let g:alignta_confirm_for_retab = 0
 " let g:Align_xstrlen=3
-" vmap [prefix]a :Align
-vnoremap [prefix]a :Alignta
-vnoremap [prefix],a :Alignta<< [:=><\-)}\]]\+
-vnoremap [prefix],r :Alignta<< [=><\-)}\]]\+
-vnoremap [prefix],t :Alignta \|<CR>
-vnoremap [prefix],c :Alignta<< \(//\|#\|\/\*\)/1<CR>
+" vmap [!prefix]a :Align
+vnoremap [!prefix]a :Alignta
+vnoremap [!prefix],a :Alignta<< [:=><\-)}\]]\+
+vnoremap [!prefix],r :Alignta<< [=><\-)}\]]\+
+vnoremap [!prefix],t :Alignta \|<CR>
+vnoremap [!prefix],c :Alignta<< \(//\|#\|\/\*\)/1<CR>
 
 " repeat.vim {{{2
 silent! repeat#set() " for loading
@@ -2075,7 +2075,7 @@ silent! repeat#set() " for loading
 " http://d.hatena.ne.jp/tyru/20100502/vim_mappings
 if neobundle#is_installed('vim-submode')
   " Change current window size {{{3
-  call submode#enter_with('winsize', 'n', '', '[s]w', '<Nop>')
+  call submode#enter_with('winsize', 'n', '', '[!s]w', '<Nop>')
   call submode#leave_with('winsize', 'n', '', '<Esc>')
   call submode#map       ('winsize', 'n', '', 'j', '<C-w>-:redraw<CR>')
   call submode#map       ('winsize', 'n', '', 'k', '<C-w>+:redraw<CR>')
@@ -2094,8 +2094,8 @@ if neobundle#is_installed('vim-submode')
   call submode#map       ('undo/redo', 'n', '', '+', 'g+')
 
   " Tab walker. {{{3
-  call submode#enter_with('tabwalker', 'n', '', '[s]t', '<Nop>')
-  call submode#enter_with('tabwalker', 'n', '', '[s]e', '<Nop>')
+  call submode#enter_with('tabwalker', 'n', '', '[!s]t', '<Nop>')
+  call submode#enter_with('tabwalker', 'n', '', '[!s]e', '<Nop>')
   call submode#leave_with('tabwalker', 'n', '', '<Esc>')
   call submode#map       ('tabwalker', 'n', '', 'h', 'gT:redraw<CR>')
   call submode#map       ('tabwalker', 'n', '', 'l', 'gt:redraw<CR>')
@@ -2107,10 +2107,10 @@ if neobundle#is_installed('vim-submode')
   call submode#map       ('tabwalker', 'n', '', 'o', ':execute "tabonly"<CR>')
 
   " winmove {{{3
-  call submode#enter_with('winmove', 'n', '', '[s]j', '<C-w>j')
-  call submode#enter_with('winmove', 'n', '', '[s]k', '<C-w>k')
-  call submode#enter_with('winmove', 'n', '', '[s]h', '<C-w>h')
-  call submode#enter_with('winmove', 'n', '', '[s]l', '<C-w>l')
+  call submode#enter_with('winmove', 'n', '', '[!s]j', '<C-w>j')
+  call submode#enter_with('winmove', 'n', '', '[!s]k', '<C-w>k')
+  call submode#enter_with('winmove', 'n', '', '[!s]h', '<C-w>h')
+  call submode#enter_with('winmove', 'n', '', '[!s]l', '<C-w>l')
   call submode#leave_with('winmove', 'n', '', '<Esc>')
   call submode#map       ('winmove', 'n', '', 'j', '<C-w>j')
   call submode#map       ('winmove', 'n', '', 'k', '<C-w>k')
@@ -2126,7 +2126,7 @@ if neobundle#is_installed('vim-submode')
   call submode#map       ('winsize', 'n', '', '>', '<C-w>>:redraw<CR>')
 
   " Quickfix {{{3
-  call submode#enter_with('quickfix', 'n', '', '[s]q', '<Nop>')
+  call submode#enter_with('quickfix', 'n', '', '[!s]q', '<Nop>')
   call submode#leave_with('quickfix', 'n', '', '<Esc>')
   call submode#map       ('quickfix', 'n', '', 'j', ':cn<CR>')
   call submode#map       ('quickfix', 'n', '', 'k', ':cp<CR>')
@@ -2138,8 +2138,8 @@ if neobundle#is_installed('vim-submode')
 endif
 
 " open-browser.vim {{{2
-nmap [space]u <Plug>(openbrowser-open)
-vmap [space]u <Plug>(openbrowser-open)
+nmap [!space]u <Plug>(openbrowser-open)
+vmap [!space]u <Plug>(openbrowser-open)
 
 " netrw {{{2
 let g:netrw_home = $VIM_CACHE
@@ -2211,7 +2211,7 @@ let g:sqlutil_default_menu_mode=0
 let g:user_zen_leader_key='<C-y>'
 
 " endtagcomment https://gist.github.com/411828 {{{2
-nmap [prefix]/ <Plug>(endtagcomment)
+nmap [!prefix]/ <Plug>(endtagcomment)
 
 " smartchr "{{{2
 if neobundle#is_installed('vim-smartchr')
@@ -2264,11 +2264,12 @@ let g:unite_update_time=1000
 let g:unite_source_history_yank_enable=0
 "let g:unite_enable_start_insert=1
 let g:unite_enable_start_insert=0
-let g:unite_source_file_mru_limit=100
+" let g:unite_source_file_mru_limit=100
+let g:unite_source_file_mru_limit=200
 let g:unite_source_file_mru_time_format = ''
 "let g:unite_source_file_mru_time_format = '%Y-%m-%d %H:%M:%S'
 let g:unite_winheight = 20
-let g:unite_winwidth = &columns
+" let g:unite_winwidth = &columns - 12
 "let g:unite_split_rule = 'botright'
 let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
 let g:unite_source_file_rec_max_cache_files = 5000
@@ -2397,7 +2398,7 @@ UniteNMap   ?         mapping
 UniteNMap   bb        bookmark -default-action=open
 nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
 " UniteNMap   rr        quicklearn -immediately
-nnoremap [space]R :<C-u>Unite quicklearn -immediately<CR>
+nnoremap [!space]R :<C-u>Unite quicklearn -immediately<CR>
 
 " filepath insert
 nnoremap <C-y><C-f> :<C-u>Unite -default-action=narrow_or_insert file<CR>
@@ -2471,8 +2472,7 @@ endfunction
 
 command!
     \ -nargs=? PopupTags
-    \ call <SID>tags_update()
-    \ |Unite tag:<args>
+    \ call <SID>tags_update() | Unite tag:<args>
 
 function! s:get_func_name(word)
     let end = match(a:word, '<\|[\|(')
@@ -2536,30 +2536,30 @@ endif
 " git-vim {{{2
 " let g:git_no_map_default = 1
 " let g:git_command_edit = 'rightbelow vnew'
-" nnoremap [space]gd :<C-u>GitDiff --cached<Enter>
-" nnoremap [space]gD :<C-u>GitDiff<Enter>
-" nnoremap [space]gs :<C-u>GitStatus<Enter>
-" nnoremap [space]gl :<C-u>GitLog<Enter>
-" nnoremap [space]gL :<C-u>GitLog -u \| head -10000<Enter>
-" nnoremap [space]ga :<C-u>GitAdd<Enter>
-" nnoremap [space]gA :<C-u>GitAdd <cfile><Enter>
-" nnoremap [space]gc :<C-u>GitCommit<Enter>
-" nnoremap [space]gC :<C-u>GitCommit --amend<Enter>
-" nnoremap [space]gp :<C-u>Git push
+" nnoremap [!space]gd :<C-u>GitDiff --cached<Enter>
+" nnoremap [!space]gD :<C-u>GitDiff<Enter>
+" nnoremap [!space]gs :<C-u>GitStatus<Enter>
+" nnoremap [!space]gl :<C-u>GitLog<Enter>
+" nnoremap [!space]gL :<C-u>GitLog -u \| head -10000<Enter>
+" nnoremap [!space]ga :<C-u>GitAdd<Enter>
+" nnoremap [!space]gA :<C-u>GitAdd <cfile><Enter>
+" nnoremap [!space]gc :<C-u>GitCommit<Enter>
+" nnoremap [!space]gC :<C-u>GitCommit --amend<Enter>
+" nnoremap [!space]gp :<C-u>Git push
 
 " fugitive.vim {{{2
-nnoremap [space]gd :<C-u>Gdiff --cached<CR>
-nnoremap [space]gD :<C-u>Gdiff<CR>
-nnoremap [space]gs :<C-u>Gstatus<CR>
-nnoremap [space]gl :<C-u>Glog<CR>
-nnoremap [space]gL :<C-u>Glog -u \| head -10000<CR>
-nnoremap [space]ga :<C-u>Gwrite<CR>
-nnoremap [space]gA :<C-u>Gwrite <cfile><CR>
-nnoremap [space]gc :<C-u>Gcommit<CR>
-nnoremap [space]gC :<C-u>Gcommit --amend<CR>
-nnoremap [space]gr :<C-u>Ggrep<Space>
-nnoremap [space]gb :<C-u>Gblame<CR>
-nnoremap [space]gp :<C-u>Git push
+nnoremap [!space]gd :<C-u>Gdiff --cached<CR>
+nnoremap [!space]gD :<C-u>Gdiff<CR>
+nnoremap [!space]gs :<C-u>Gstatus<CR>
+nnoremap [!space]gl :<C-u>Glog<CR>
+nnoremap [!space]gL :<C-u>Glog -u \| head -10000<CR>
+nnoremap [!space]ga :<C-u>Gwrite<CR>
+nnoremap [!space]gA :<C-u>Gwrite <cfile><CR>
+nnoremap [!space]gc :<C-u>Gcommit<CR>
+nnoremap [!space]gC :<C-u>Gcommit --amend<CR>
+nnoremap [!space]gr :<C-u>Ggrep<Space>
+nnoremap [!space]gb :<C-u>Gblame<CR>
+nnoremap [!space]gp :<C-u>Git push
 
 " TOhtml {{{2
 let g:html_number_lines = 0
@@ -2593,8 +2593,8 @@ if neobundle#is_installed('taglist.vim') "{{{4
   if s:is_mac && executable('/Applications/MacVim.app/Contents/MacOS/ctags')
     let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
   endif
-  nnoremap <silent> [prefix]tt :<C-u>TlistToggle<CR>
-  nnoremap <silent> [prefix]to :<C-u>TlistOpen<CR>1<C-w>h
+  nnoremap <silent> [!prefix]tt :<C-u>TlistToggle<CR>
+  nnoremap <silent> [!prefix]to :<C-u>TlistOpen<CR>1<C-w>h
 else "{{{4
   if executable('coffeetags')
     let g:tagbar_type_coffee = {
@@ -2631,11 +2631,11 @@ else "{{{4
     " let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
     let g:tagbar_ctags_bin='/Applications/MacVim.app/Contents/MacOS/ctags'
   endif
-  nnoremap <silent> [prefix]tt :<C-u>TagbarToggle<CR>
-  nnoremap <silent> [prefix]to :<C-u>TagbarOpen<CR>1<C-w>h
+  nnoremap <silent> [!prefix]tt :<C-u>TagbarToggle<CR>
+  nnoremap <silent> [!prefix]to :<C-u>TagbarOpen<CR>1<C-w>h
 endif "}}}
 
-nnoremap          [prefix]tc :Ctags<CR>
+nnoremap          [!prefix]tc :Ctags<CR>
 command! -nargs=? Ctags call s:exec_ctags(<q-args>)
 
 function! s:exec_ctags(path) "{{{3
@@ -2664,7 +2664,7 @@ function! s:exec_ctags(path) "{{{3
 endfunction
 
 " surround.vim {{{2
-nmap [s]s <Plug>Ysurround
+nmap [!s]s <Plug>Ysurround
 
 let g:surround_custom_mapping = {}
 let g:surround_custom_mapping._ = {
@@ -2881,7 +2881,7 @@ Alias php[manual] Ref phpmanual
 Alias timo Ref timobileref
 Alias tide Ref tidesktopref
 
-nnoremap [space]hh :Ref alc <C-r>=expand("<cWORD>")<CR><CR>
+nnoremap [!space]hh :Ref alc <C-r>=expand("<cWORD>")<CR><CR>
 
 if !exists('g:ref_jsextra_defines')
   let g:ref_jsextra_defines = {}
@@ -3329,11 +3329,11 @@ if neobundle#is_installed('vimproc')
 endif
 
 " quickhl {{{2
-nmap [space]m <Plug>(quickhl-toggle)
-xmap [space]m <Plug>(quickhl-toggle)
-nmap [space]M <Plug>(quickhl-reset)
-xmap [space]M <Plug>(quickhl-reset)
-nmap [space], <Plug>(quickhl-match)
+nmap [!space]m <Plug>(quickhl-toggle)
+xmap [!space]m <Plug>(quickhl-toggle)
+nmap [!space]M <Plug>(quickhl-reset)
+xmap [!space]M <Plug>(quickhl-reset)
+nmap [!space], <Plug>(quickhl-match)
 
 " echodoc {{{2
 let g:echodoc_enable_at_startup=0
@@ -3367,7 +3367,7 @@ if neobundle#is_installed('neosnippet')
     let line = getline(".")
     let pos = col(".") - 1
     let org_pos = pos
-    if strlen(substitute(line[0:pos], '^\s\+', '', '')) <= 0
+    if strlen(substitute(line[0:pos], '^\s*', '', '')) <= 0
       return "\<TAB>"
     endif
     while (line[pos] == " ")
@@ -3532,8 +3532,8 @@ if neobundle#is_installed('neocomplcache')
 
   imap <C-s> <Plug>(neocomplcache_start_unite_complete)
 
-  nnoremap [space]ne :NeoComplCacheEnable<CR>
-  nnoremap [space]nd :NeoComplCacheDisable<CR>
+  nnoremap [!space]ne :NeoComplCacheEnable<CR>
+  nnoremap [!space]nd :NeoComplCacheDisable<CR>
 endif
 
 " completes {{{3
@@ -3603,6 +3603,7 @@ function! s:setup_vimproc_dll() " {{{3
   endif
   if filereadable(path)
     let g:vimproc_dll_path = path
+    let g:vimproc#dll_path = path
   endif
 endfunction " }}}
 
@@ -3689,11 +3690,11 @@ function! s:vimshell_my_settings() " {{{3
 endfunction
 
 
-nmap [space]vp :<C-u>VimShellPop<CR>
-nmap [space]vv :<C-u>VimShellTab<CR>
-nmap [space]ve :<C-u>VimShellExecute<Space>
-nmap [space]vi :<C-u>VimShellInteractive<Space>
-nmap [space]vt :<C-u>VimShellTerminal<Space>
+nmap [!space]vp :<C-u>VimShellPop<CR>
+nmap [!space]vv :<C-u>VimShellTab<CR>
+nmap [!space]ve :<C-u>VimShellExecute<Space>
+nmap [!space]vi :<C-u>VimShellInteractive<Space>
+nmap [!space]vt :<C-u>VimShellTerminal<Space>
 
 command! IRB VimShellInteractive irb
 LCAlias IRB
@@ -3724,9 +3725,9 @@ else
 endif
 
 " keymaps {{{3
-nnoremap <silent> [space]f  :call <SID>vimfiler_tree_launch()<CR>
-nnoremap <silent> [space]ff :call <SID>vimfiler_tree_launch()<CR>
-nnoremap <silent> [space]fg :call <SID>vimfiler_tree_launch(fnameescape(expand('%:p:h')))<CR>
+nnoremap <silent> [!space]f  :call <SID>vimfiler_tree_launch()<CR>
+nnoremap <silent> [!space]ff :call <SID>vimfiler_tree_launch()<CR>
+nnoremap <silent> [!space]fg :call <SID>vimfiler_tree_launch(fnameescape(expand('%:p:h')))<CR>
 command! -nargs=? -complete=file VimFilerTree call s:vimfiler_tree_launch(<f-args>)
 command! -nargs=? -complete=file FTree call s:vimfiler_tree_launch(<f-args>)
 
@@ -3892,25 +3893,94 @@ endfunction
 " memolist {{{2
 let g:memolist_suffix = "md"
 let g:memolist_path = $HOME . '/memo'
-nmap <silent> [prefix]mf :exe 'Unite' 'file:'.g:memolist_path<CR>
-nmap <silent> [prefix]mc :MemoNew<CR>
-nmap <silent> [prefix]ml :MemoList<CR>
-nmap <silent> [prefix]mg :MemoGrep<CR>
+nmap <silent> [!prefix]mf :exe 'Unite' 'file:'.g:memolist_path<CR>
+nmap <silent> [!prefix]mc :MemoNew<CR>
+nmap <silent> [!prefix]ml :MemoList<CR>
+nmap <silent> [!prefix]mg :MemoGrep<CR>
 
 " etc functions & commands {{{1
 " git "{{{2
-" special git log viewer {{{
+" special git log viewer {{{3
 function! s:git_log_viewer()
-  vnew
+  " vnew
+  new
+  setl buftype=nofile
+  setl buflisted
   "VimProcRead git log -u 'HEAD@{1}..HEAD' --reverse
   VimProcRead git log -u 'ORIG_HEAD..HEAD'
   set filetype=git-log.git-diff
   setl foldmethod=expr
-  setl foldexpr=getline(v:lnum)!~'^commit'
+  " setl foldexpr=getline(v:lnum)!~'^commit'
+  setlocal foldexpr=GitLogViewerFoldExpr(v:lnum)
+  setlocal foldtext=GitLogViewerFoldText()
 endfunction
+
+function! GitLogViewerFoldExpr(lnum)
+  let line = getline(a:lnum)
+  let next_line = getline(a:lnum)
+  if line =~ '^commit'
+    return '>1'
+  elseif next_line =~ '^commit'
+    return '<1'
+  elseif line =~ '^diff'
+    return '>2'
+  elseif next_line =~ '^diff'
+    return '<2'
+  endif
+  return '='
+endfunction
+
+" git log表示時の折りたたみ用
+function! GitLogViewerFoldText()
+  let month_map = {
+        \ 'Jan' : '01',
+        \ 'Feb' : '02',
+        \ 'Mar' : '03',
+        \ 'Apr' : '04',
+        \ 'May' : '05',
+        \ 'Jun' : '06',
+        \ 'Jul' : '07',
+        \ 'Aug' : '08',
+        \ 'Sep' : '09',
+        \ 'Oct' : '10',
+        \ 'Nov' : '11',
+        \ 'Dec' : '12',
+        \ }
+
+  if getline(v:foldstart) !~ '^commit'
+    return getline(v:foldstart)
+  endif
+
+  if getline(v:foldstart + 1) =~ '^Author:'
+    let author_lnum = v:foldstart + 1
+  elseif getline(v:foldstart + 2) =~ '^Author:'
+    " commitの次の行がMerge:の場合があるので
+    let author_lnum = v:foldstart + 2
+  else
+    " commitの下2行がどちらもAuthor:で始まらなければ諦めて終了
+    return getline(v:foldstart)
+  endif
+
+  let date_lnum = author_lnum + 1
+  let message_lnum = date_lnum + 2
+
+  let author = matchstr(getline(author_lnum), '^Author: \zs.*\ze <.\{-}>')
+  let date = matchlist(getline(date_lnum), ' \(\a\{3}\) \(\d\{1,2}\) \(\d\{2}:\d\{2}:\d\{2}\) \(\d\{4}\)')
+  let message = getline(message_lnum)
+
+  let month = date[1]
+  let day = printf('%02s', date[2])
+  let time = date[3]
+  let year = date[4]
+
+  let datestr = join([year, month_map[month], day], '-')
+
+  return join([datestr, time, author, message], ' ')
+endfunction
+
 command! GitLogViewer call s:git_log_viewer()
-" }}}
-" Git Diff -> The file {{{
+
+" Git Diff -> The file {{{3
 function! SGoDiff()
   let [maybe, fname] = s:latest_fname()
   if maybe ==# 'nothing'
@@ -3924,20 +3994,28 @@ function! SGoDiff()
     return
   endif
 
-  execute "vnew" fname
+  " execute "vnew" fname
+  execute "new" fname
   execute linenum
   execute "normal! z\<Cr>"
 endfunction
 
+function! s:vimrc_init_sgodiff()
+  nnoremap <silent><buffer> <C-d> :<C-u>call SGoDiff()<Cr>
+  nnoremap <silent><buffer> <CR> :<C-u>call SGoDiff()<Cr>
+endfunction
+
 augroup vimrc-sgodiff
   autocmd!
-  autocmd FileType git-diff nnoremap <buffer> <C-d> :<C-u>call SGoDiff()<Cr>
+  autocmd FileType git-diff call s:vimrc_init_sgodiff()
+  autocmd FileType git-log.git-diff call s:vimrc_init_sgodiff()
 augroup END
 
 function! s:latest_fname()
   for i in reverse(range(1, line('.')))
-    if getline(i) =~ '^+++ '
-      return ['just', substitute(getline(i)[4:], '\t.*$', '', 'b')]
+    let line = getline(i)
+    if line =~ '^+++ '
+      return ['just', substitute(line[4:], '^b\/\|\t.*$', '', 'b')]
     endif
   endfor
   return ['nothing', '']
@@ -3945,8 +4023,9 @@ endfunction
 
 function! s:latest_linenum()
   for i in reverse(range(1, line('.')))
-    if getline(i) =~ '^@@ '
-      let a = matchlist(getline(i), '^@@ -.\{-},.\{-} +\(.\{-}\),')
+    let line = getline(i)
+    if line =~ '^@@ '
+      let a = matchlist(line, '^@@ -.\{-},.\{-} +\(.\{-}\),')
       if exists('a[1]')
         return ['just', a[1]]
       endif
@@ -3954,7 +4033,6 @@ function! s:latest_linenum()
   endfor
   return ['nothing', '']
 endfunction
-" }}}
 
 " tiny snippets {{{2
 let g:my_snippets_dir = "$HOME/memos/tiny-snippets"
@@ -4067,9 +4145,9 @@ command! -nargs=1 -complete=file Relcp call my#ui#relative_copy(<f-args>)
 LCAlias Relcp
 
 " win maximize toggle {{{3
-nnoremap [prefix]mm :call my#winmaximizer#get().toggle()<CR>
-nnoremap [prefix]mj :call my#winmaximizer#get().toggleDirection("v")<CR>
-nnoremap [prefix]mh :call my#winmaximizer#get().toggleDirection("h")<CR>
+nnoremap [!prefix]mm :call my#winmaximizer#get().toggle()<CR>
+nnoremap [!prefix]mj :call my#winmaximizer#get().toggleDirection("v")<CR>
+nnoremap [!prefix]mh :call my#winmaximizer#get().toggleDirection("h")<CR>
 
 " fopen & encoding {{{2
 command! -nargs=1 -complete=customlist,my#ui#complete_encodings Fenc setl fenc=<args>
