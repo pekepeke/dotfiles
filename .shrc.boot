@@ -154,8 +154,8 @@ dot-submodules-update() { #{{{3
 vundle() { #{{{3
   dot-submodules-update
   # find ~/.vim/neobundle -name tags | grep doc | grep -v .git | xargs rm
-  vim -c "silent NeoBundleInstall" -c "let g:vimproc_dll_path=''" -c "silent NeoBundleUpdate" -c "quitall"
-  # vim -c "silent NeoBundleInstall" -c "silent NeoBundleUpdate" -c "quitall"
+  # vim -c "silent NeoBundleInstall" -c "let g:vimproc_dll_path=''" -c "silent NeoBundleUpdate" -c "quitall"
+  vim -c "silent NeoBundleInstall" -c "silent NeoBundleUpdate" -c "quitall"
   __NOTIFY "neobundle update" "complete!"
 }
 

@@ -44,4 +44,16 @@ Host *
 #Host host2.host
 #  HostName host2
 #  User user2
+
+
+# Host gh-private
+#     HostName github.com
+#     IdentitiesOnly yes
+#     IdentityFile ~/.ssh/github_key
+
+# Host github
+#     HostName github.com
+#     IdentitiesOnly yes
+#     IdentityFile ~/.ssh/work_github_key
+
 EOM

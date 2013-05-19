@@ -122,7 +122,15 @@ if has('vim_starting')
       execute printf('NeoBundleLazy %s,%s', a:source, string(opt))
     endif
   endfunction
+
   command! -nargs=+ NeoBundleLazyOn call <SID>neobundle_lazy_on(<f-args>)
+
+  function! s:neobundle_safe_update()
+    for name in map(neobundle#config#get_neobundles(), 'v:val.name')
+      execute 'NeoBundleUpdate' name
+    endfor
+  endfunction
+  command! -nargs=0 NeoBundleSafeUpdate call s:neobundle_safe_update()
 endif
 
 
@@ -156,10 +164,10 @@ NeoBundle 'StanAngeloff/vim-zend55'
 NeoBundle 'w0ng/vim-hybrid'
 
 " common {{{3
-NeoBundle 'git://gist.github.com/5457352.git', {
-      \ 'directory' : 'ginger',
-      \ 'script_type' : 'plugin',
-      \ }
+" NeoBundle 'git://gist.github.com/5457352.git', {
+"       \ 'directory' : 'ginger',
+"       \ 'script_type' : 'plugin',
+"       \ }
 NeoBundle 'mklabs/vim-fetch'
 NeoBundle 'osyo-manga/vim-reanimate'
 NeoBundleLazy 'mattn/benchvimrc-vim'
@@ -1606,6 +1614,7 @@ vnoremap ik i)
 
 " vmaps {{{2
 vnoremap <Leader>te    :ExciteTranslate<CR>
+vnoremap <Leader>tg    :GingerRange<CR>
 " vnoremap <Leader>tj    :GoogleTranslate ja<CR>
 vnoremap <Tab>   >gv
 vnoremap <S-Tab> <gv
@@ -3523,10 +3532,18 @@ if neobundle#is_installed('neocomplcache')
   " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
   " <C-h>, <BS>: close popup and delete backword char.
-  inoremap <expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
-  inoremap <expr><BS>   neocomplcache#smart_close_popup()."\<C-h>"
-  inoremap <expr><C-y>  neocomplcache#close_popup()
-  inoremap <expr><C-e>  neocomplcache#cancel_popup()
+  if neobundle#is_installed('vim-smartinput')
+    inoremap <expr> <C-h>  neocomplcache#smart_close_popup()
+          \ . eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<C-h>")')
+    inoremap <expr> <BS>   neocomplcache#smart_close_popup()
+          \ .eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<BS>")')
+  else
+    inoremap <expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
+    inoremap <expr><BS>   neocomplcache#smart_close_popup()."\<C-h>"
+  endif
+
+  inoremap <expr> <C-y>  neocomplcache#close_popup()
+  inoremap <expr> <C-e>  neocomplcache#cancel_popup()
 
   inoremap <expr> <C-j> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
 
@@ -4267,6 +4284,91 @@ endfunction
 command! -nargs=0 Helptags call s:help_util.refresh()
 command! -nargs=0 HelptagsShow call s:help_util.show_tags()
 command! -nargs=0 HelpDirShow call s:help_util.show_dirs()
+
+" ginger {{{2
+let s:ginger = {}
+let s:ginger.endpoint = 'http://services.gingersoftware.com/Ginger/correct/json/GingerTheText'
+let s:ginger.apikey = '6ae0c3a0-afdc-4532-a810-82ded0054236'
+
+augroup vimrc-ginger
+  autocmd!
+  autocmd BufNewFile __Ginger__ call s:ginger.buffer_init()
+augroup END
+
+function! s:ginger.buffer_init() "{{{3
+  setlocal buftype=nofile
+  setlocal bufhidden=hide
+  setlocal noswapfile
+  setlocal buflisted
+  resize 8
+endfunction
+
+function! s:ginger.range() range  "{{{3
+  let text = join(getline(a:firstline, a:lastline), "\n")
+  let [mistake, correct] = self.get(text)
+
+  let bufname = "__Ginger__"
+  let bufnum = bufnr(bufname)
+  if bufnum == -1
+    execute 'new' bufname
+  else
+    let winnum = bufwinnr(bufnum)
+    if winnum != -1 && winnr() != winnum
+      execute winnum . "wincmd w"
+    else
+      silent execute 'split +buffer' bufname
+    endif
+  endif
+
+  normal! "Gzz"
+  call append(line('$'), "Original: ".text)
+  call append(line('$'), "Correct : ".correct)
+endfunction
+
+function! s:ginger.echo(text)  "{{{3
+  let [mistake, correct] = self.get(text)
+  echon "Mistake: " . mistake
+  echon "Correct: " . correct
+endfunction
+
+function! s:ginger.get(text)  "{{{3
+  let res = webapi#json#decode(webapi#http#get(self.endpoint, {
+        \ 'lang': 'US',
+        \ 'clientVersion': '2.0',
+        \ 'apiKey': self.apikey,
+        \ 'text': a:text}).content)
+  let i = 0
+  let mistake = ''
+  let correct = ''
+  " echon "Mistake: "
+  for rs in res['LightGingerTheTextResult']
+    let [from, to] = [rs['From'], rs['To']]
+    if i < from
+      " echon a:text[i : from-1]
+      let mistake .= a:text[i : from-1]
+      let correct .= a:text[i : from-1]
+    endif
+    " echohl WarningMsg
+    " echon a:text[from : to]
+    let mistake .= a:text[from : to]
+    " echohl None
+    if exists("rs['Suggestions'][0]")
+      let correct .= rs['Suggestions'][0]['Text']
+    endif
+    let i = to + 1
+  endfor
+  if i < len(a:text)
+    " echon a:text[i :]
+    let mistake .= a:text[i :]
+    let correct .= a:text[i :]
+  endif
+  " echo "Correct: ".correct
+  " return correct
+  return [mistake, correct]
+endfunction
+" command define {{{3
+command! -nargs=0 -range GingerRange call s:ginger.range()
+command! -nargs=+ Ginger echo s:ginger.get(<q-args>)
 
 " after initializes {{{1
 if !has('vim_starting') && has('gui_running')
