@@ -2598,6 +2598,8 @@ if neobundle#is_installed('taglist.vim') "{{{4
   let g:tlist_scala_settings = 'scala;t:trait;c:class;T:type;m:method;C:constant;l:local;p:package;o:object'
   let g:tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
   let g:tlist_tex_settings   = 'latex;s:sections;g:graphics;l:labels'
+  let g:tlist_ant_settings = 'ant;p:Project;t:Target'
+  let g:tlist_haxe_settings='haxe;f:function;v:variable;c:class;i:interface;p:package;e:enum'
 
   if s:is_mac && executable('/Applications/MacVim.app/Contents/MacOS/ctags')
     let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
@@ -2605,6 +2607,40 @@ if neobundle#is_installed('taglist.vim') "{{{4
   nnoremap <silent> [!prefix]tt :<C-u>TlistToggle<CR>
   nnoremap <silent> [!prefix]to :<C-u>TlistOpen<CR>1<C-w>h
 else "{{{4
+  let g:tagbar_type_objc = {
+        \ 'ctagstype' : 'objc',
+        \ 'kinds'     : [
+        \   'P:protocols',
+        \   'i:interfaces',
+        \   'I:implementations',
+        \   'M:instance methods',
+        \   'C:implementation methods',
+        \   'Z:protocol methods',
+        \   'v:property',
+        \ ]}
+  let g:tagbar_type_javascript = {
+        \ 'ctagstype' : 'js',
+        \ 'kinds'     : [
+        \   'o:object',
+        \   'f:function',
+        \   'a:array',
+        \   's:string',
+        \   'v:variable',
+        \   'b:boolean',
+        \   'n:number',
+        \ ]}
+  " let g:tagbar_type_javascript = {
+  "       \ 'ctagstype' : 'JavaScript',
+  "       \ 'kinds'     : [
+  "       \   'v:var',
+  "       \   'c:class',
+  "       \   'p:prototype',
+  "       \   'm:method',
+  "       \   'o:objects',
+  "       \   'f:functions',
+  "       \   'a:arrays',
+  "       \   's:strings'
+  "       \ ]}
   if executable('coffeetags')
     let g:tagbar_type_coffee = {
           \ 'ctagsbin' : 'coffeetags',
@@ -2619,22 +2655,88 @@ else "{{{4
           \ 'o' : 'object',
           \ }
           \ }
+  else
+    let g:tagbar_type_coffee = {
+          \ 'ctagstype' : 'coffee',
+          \ 'kinds'     : [
+          \   'c:class',
+          \   'n:namespace',
+          \   'f:function',
+          \   'm:method',
+          \   'v:var',
+          \   'i:ivar',
+          \ ]}
   endif
   let g:tagbar_type_scala = {
       \ 'ctagstype' : 'Scala',
       \ 'kinds'     : [
-          \ 'p:packages:1',
-          \ 'V:values',
-          \ 'v:variables',
-          \ 'T:types',
-          \ 't:traits',
-          \ 'o:objects',
-          \ 'a:aclasses',
-          \ 'c:classes',
-          \ 'r:cclasses',
-          \ 'm:methods'
+      \   'p:packages:1',
+      \   'V:values',
+      \   'v:variables',
+      \   'T:types',
+      \   't:traits',
+      \   'o:objects',
+      \   'a:aclasses',
+      \   'c:classes',
+      \   'r:cclasses',
+      \   'm:methods',
+      \   'C:constant',
+      \   'l:local',
       \ ]
   \ }
+  let g:tagbar_type_actionscript = {
+        \ 'ctagstype' : 'actionscript',
+        \ 'kinds'     : [
+        \   'c:class',
+        \   'f:method',
+        \   'p:property',
+        \   'v:variable',
+        \ ]}
+  let g:tagbar_type_tex = {
+        \ 'ctagstype' : 'latex',
+        \ 'kinds'     : [
+        \   's:sections',
+        \   'g:graphics',
+        \   'l:labels',
+        \ ]}
+
+  let g:tagbar_type_make = {
+        \ 'ctagstype' : 'make',
+        \ 'kinds'     : [
+        \   't:targets',
+        \ ]}
+  let g:tagbar_type_ant = {
+        \ 'ctagstype' : 'ant',
+        \ 'kinds'     : [
+        \   'p:project',
+        \   't:target',
+        \ ]}
+  let g:tagbar_type_typescript = {
+        \ 'ctagstype' : 'typescript',
+        \ 'kinds'     : [
+        \   'c:classes',
+        \   'n:modules',
+        \   'f:functions',
+        \   'v:variables',
+        \   'v:varlambdas',
+        \   'm:members',
+        \   'i:interfaces',
+        \   'e:enums',
+        \ ]}
+  let g:tagbar_type_haxe = {
+        \ 'ctagstype' : 'haxe',
+        \ 'kinds'     : [
+        \ 'f:function',
+        \ 'v:variable',
+        \ 'c:class',
+        \ 'i:interface',
+        \ 'e:enum',
+        \ ]}
+  " let g:tagbar_type_xxx = {
+  "       \ 'ctagstype' : '',
+  "       \ 'kinds'     : [
+  "       \   '',
+  "       \ ]}
 
   if s:is_mac && executable('/Applications/MacVim.app/Contents/MacOS/ctags')
     " let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
