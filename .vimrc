@@ -32,32 +32,6 @@ if has('vim_starting')
   set runtimepath^=$HOME/.vim
   set runtimepath+=$HOME/.vim/after
 else
-  " s:store {{{3
-  let s:store = {
-        \ 'vars' : ['shiftwidth', 'tabstop', 'softtabstop'],
-        \ 'boolvars' : ['expandtab'],
-        \ 'data' : {},
-        \ 'booldata' : {},
-        \ }
-  function! s:store.save()
-    for f in self.vars
-      let self.data[f] = eval('&'.f)
-    endfor
-    for f in self.boolvars
-      let self.booldata[f] = eval('&'.f)
-    endfor
-  endfunction
-  function! s:store.restore()
-    for f in keys(self.data)
-      exe 'setl' f.'='.self.data[f]
-    endfor
-    for f in keys(self.booldata)
-      exe 'setl' (self.booldata[f] ? "" : "no").f
-    endfor
-  endfunction
-  " }}}3
-  call s:store.save()
-
   " let &runtimepath=s:configured_runtimepath
 endif
 " unlet s:configured_runtimepath
@@ -146,6 +120,7 @@ else
   NeoBundleLazy 'zhaocai/powerline', { 'rtp' : 'powerline/bindings/vim'}
   NeoBundle 'Lokaltog/vim-powerline'
 endif
+
 " colorscheme {{{3
 NeoBundle 'tomasr/molokai'
 NeoBundle 'mrkn/mrkn256.vim'
@@ -433,7 +408,7 @@ NeoBundle 'chikatoike/sourcemap.vim'
 NeoBundle 'nono/vim-handlebars'
 
 NeoBundleLazyOn FileType dart 'vim-scripts/Dart'
-NeoBundleLazyOn FileType haxe 'jdonaldson/vaxe'
+NeoBundleLazyOn FileType haxe,hxml,nmml 'jdonaldson/vaxe'
 " NeoBundle 'MarcWeber/vim-haxe'
 NeoBundleLazyOn FileType jst 'jeyb/vim-jst'
 NeoBundleLazyOn FileType coffee  'kchmck/vim-coffee-script'
@@ -561,8 +536,11 @@ NeoBundleLazy 'vim-scripts/DrawIt', {'depends' : 'vim-scripts/cecutil'}
 
 " haskell {{{4
 " NeoBundle 'ehamberg/haskellmode-vim'
+NeoBundleLazyOn FileType haskell 'dag/vim2hs'
 NeoBundleLazyOn FileType haskell 'ujihisa/ref-hoogle'
 NeoBundleLazyOn FileType haskell 'ujihisa/neco-ghc'
+NeoBundleLazyOn FileType haskell 'eagletmt/ghcmod-vim'
+NeoBundleLazyOn FileType haskell 'eagletmt/unite-haddock'
 
 " php {{{4
 " NeoBundleLazyOn FileType php 'spf13/PIV'
@@ -921,9 +899,6 @@ MyAutocmd FileType md set filetype=markdown
 MyAutocmd BufNewFile,BufRead *.sql set filetype=mysql
 " IO
 MyAutocmd BufNewFile,BufRead *.io set filetype=io
-" MSBuild
-MyAutocmd BufNewFile,BufRead *.proj,*.xaml set filetype=xml
-MyAutocmd BufNewFile,BufRead *.proj,*.cs,*.xaml compiler msbuild
 " command
 MyAutocmd BufNewFile,BufRead *.command set filetype=sh
 
@@ -1793,7 +1768,7 @@ endif
 if neobundle#is_installed('clever-f.vim')
   let g:clever_f_not_overwrites_standard_mappings=1
   if neobundle#is_installed('unite.vim')
-    nmap [unite]f <Plug>(clever-f-f)
+    nmap [!unite]f <Plug>(clever-f-f)
     vmap f <Plug>(clever-f-f)
   else
     map f <Plug>(clever-f-f)
@@ -2261,10 +2236,10 @@ endfunction
 " unite.vim {{{2
 LCAlias Unite
 if neobundle#is_installed('unite.vim')
-  nnoremap [unite] <Nop>
-  nmap     f       [unite]
+  nnoremap [!unite] <Nop>
+  nmap     f       [!unite]
   " define at clever-f
-  " nnoremap [unite]f f
+  " nnoremap [!unite]f f
 endif
 
 " unite basic settings {{{3
@@ -2372,14 +2347,14 @@ function! s:unite_map(bang, prefix, key, ...) " {{{4
     let bang_key = empty(a:bang) ? toupper(a:key) : a:key
   endif
   let cmdargs = join(a:000, " ")
-  let fmt = "%snoremap <silent> [unite]%s :<C-u>Unite %s %s<CR>"
+  let fmt = "%snoremap <silent> [!unite]%s :<C-u>Unite %s %s<CR>"
 
   exe printf(fmt, a:prefix, key, "", cmdargs)
   exe printf(fmt, a:prefix, bang_key, "-no-quit", cmdargs)
 endfunction " }}}
 command! -nargs=* -bang UniteNMap call s:unite_map("<bang>", "n", <f-args>)
 
-nmap [unite]u  :<C-u>Unite<Space>
+nmap [!unite]u  :<C-u>Unite<Space>
 
 UniteNMap   s         source
 UniteNMap   <Space>   buffer
@@ -2405,7 +2380,7 @@ UniteNMap!  q         quickfix -buffer-name=qfix
 " UniteNMap   /         history/search
 UniteNMap   ?         mapping
 UniteNMap   bb        bookmark -default-action=open
-nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd<CR>
+nnoremap <silent> [!unite]ba :<C-u>UniteBookmarkAdd<CR>
 " UniteNMap   rr        quicklearn -immediately
 nnoremap [!space]R :<C-u>Unite quicklearn -immediately<CR>
 
@@ -2422,8 +2397,8 @@ Alias colorscheme Unite colorscheme -auto-preview
 UniteNMap a file_rec -start-insert
 " endif
 
-" nnoremap <silent> [unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
-nnoremap <silent> [unite]h :<C-u>call <SID>unite_ref_filetype()<CR>
+" nnoremap <silent> [!unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
+nnoremap <silent> [!unite]h :<C-u>call <SID>unite_ref_filetype()<CR>
 
 function! s:unite_ref_filetype() " {{{4
   let ft = &ft
@@ -2449,12 +2424,12 @@ function! s:unite_ref_filetype() " {{{4
   endif
 endfunction "}}}
 
-nnoremap          [unite]rr :<C-u>UniteResume<Space>
-nnoremap <silent> [unite]re :<C-u>UniteResume<CR>
-nnoremap <silent> [unite]ri :<C-u>UniteResume git<CR>
-nnoremap <silent> [unite]rg :<C-u>UniteResume grep<CR>
-nnoremap <silent> [unite]rt :<C-u>UniteResume todo<CR>
-nnoremap <silent> [unite]rq :<C-u>UniteResume qfix<CR>
+nnoremap          [!unite]rr :<C-u>UniteResume<Space>
+nnoremap <silent> [!unite]re :<C-u>UniteResume<CR>
+nnoremap <silent> [!unite]ri :<C-u>UniteResume git<CR>
+nnoremap <silent> [!unite]rg :<C-u>UniteResume grep<CR>
+nnoremap <silent> [!unite]rt :<C-u>UniteResume todo<CR>
+nnoremap <silent> [!unite]rq :<C-u>UniteResume qfix<CR>
 
 inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-insert<CR>
 
@@ -2464,11 +2439,11 @@ function! s:unite_open_ftplugin()
   let dirs = ['after', 'ftplugin', 'snippets', 'template', 'sonictemplate']
   execute 'Unite' '-input='.&filetype join(map(dirs, '"file_rec:~/.vim/".v:val'), " ")
 endfunction
-" nnoremap <silent> [unite]v  :<C-u>call <SID>unite_open_ftplugin()<CR>
-" nnoremap <silent> [unite]V  :<C-u>Unite file:~/.vim/<CR>
-nnoremap <silent> [unite]v  :<C-u>Unite scriptnames<CR>
-nnoremap <silent> [unite]V  :<C-u>call <SID>unite_open_ftplugin()<CR>
-" nnoremap <silent> [unite]v  :<C-u>Unite file_rec:~/.vim/after file_rec:~/.vim/ftplugin<CR>
+" nnoremap <silent> [!unite]v  :<C-u>call <SID>unite_open_ftplugin()<CR>
+" nnoremap <silent> [!unite]V  :<C-u>Unite file:~/.vim/<CR>
+nnoremap <silent> [!unite]v  :<C-u>Unite scriptnames<CR>
+nnoremap <silent> [!unite]V  :<C-u>call <SID>unite_open_ftplugin()<CR>
+" nnoremap <silent> [!unite]v  :<C-u>Unite file_rec:~/.vim/after file_rec:~/.vim/ftplugin<CR>
 
 " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
 function! s:tags_update()
@@ -2489,10 +2464,10 @@ function! s:get_func_name(word)
 endfunction
 
 " カーソル下のワード(word)で絞り込み
-nnoremap <silent> [unite]] :<C-u>execute "PopupTags ".expand('<cword>')<CR>
+nnoremap <silent> [!unite]] :<C-u>execute "PopupTags ".expand('<cword>')<CR>
 
 " カーソル下のワード(WORD)で ( か < か [ までが現れるまでで絞り込み
-nnoremap <silent> [unite]<C-]> :<C-u>execute "PopupTags "
+nnoremap <silent> [!unite]<C-]> :<C-u>execute "PopupTags "
     \.substitute(<SID>get_func_name(expand('<cWORD>')), '\:', '\\\:', "g")<CR>
 
 " cmd-t/r {{{3
@@ -2594,12 +2569,17 @@ if neobundle#is_installed('taglist.vim') "{{{4
   let g:Tlist_WinWidth = 25
 
   let g:tlist_objc_settings='objc;P:protocols;i:interfaces;I:implementations;M:instance methods;C:implementation methods;Z:protocol methods;v:property'
-  let g:tlist_javascript_settings='javascript;v:var;c:class;p:prototype;m:method;f:function;o:object'
-  let g:tlist_scala_settings = 'scala;t:trait;c:class;T:type;m:method;C:constant;l:local;p:package;o:object'
-  let g:tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
-  let g:tlist_tex_settings   = 'latex;s:sections;g:graphics;l:labels'
-  let g:tlist_ant_settings = 'ant;p:Project;t:Target'
-  let g:tlist_haxe_settings='haxe;f:function;v:variable;c:class;i:interface;p:package;e:enum'
+  let g:tlist_javascript_settings='js;o:object;f:function;a:array;s:string;b:boolean;n:number;v:variable'
+  " let g:tlist_javascript_settings='JavaScript;f:functions;c:classes;m:methods;p:properties;v:global variables;I:inner'
+  let g:tlist_coffee_settings='coffee;c:class;n:namespace;f:function;m:method;v:var;i:ivar'
+  " let g:tlist_scala_settings = 'scala;t:trait;c:class;T:type;m:method;C:constant;l:local;p:package;o:object'
+  let g:tlist_scala_settings='scala;c:classes;o:objects;t:traits;r:cclasses;a:aclasses;m:methods;V:values;v:variables;T:types;i:includes;p:packages'
+  let g:tlist_actionscript_settings='actionscript;f:functions;p:properties;v:variables;r:function, functions;c:classes'
+  let g:tlist_tex_settings='Tex;c:chapters;s:sections;u:subsections;b:subsubsections;p:parts;P:paragraphs;G:subparagraphs'
+  let g:tlist_make_settings='Make;m:macros;t:targets'
+  let g:tlist_ant_settings='Ant;p:projects;t:targets'
+  let g:tlist_typescript_settings='typescript;c:classes;n:modules;f:functions;v:variables;m:members;i:interfaces;e:enums'
+  let g:tlist_haxe_settings='haxe;p:package;f:function;v:variable;p:package;c:class;i:interface;t:typedef'
 
   if s:is_mac && executable('/Applications/MacVim.app/Contents/MacOS/ctags')
     let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
@@ -2629,109 +2609,48 @@ else "{{{4
         \   'b:boolean',
         \   'n:number',
         \ ]}
-  " let g:tagbar_type_javascript = {
-  "       \ 'ctagstype' : 'JavaScript',
-  "       \ 'kinds'     : [
-  "       \   'v:var',
-  "       \   'c:class',
-  "       \   'p:prototype',
-  "       \   'm:method',
-  "       \   'o:objects',
-  "       \   'f:functions',
-  "       \   'a:arrays',
-  "       \   's:strings'
-  "       \ ]}
+  " let g:tagbar_type_javascript = {'ctagstype': 'JavaScript',
+  "       \   'kinds': ['f:functions', 'c:classes', 'm:methods', 'p:properties', 'v:global variables', 'I:inner'] }
   if executable('coffeetags')
     let g:tagbar_type_coffee = {
           \ 'ctagsbin' : 'coffeetags',
           \ 'ctagsargs' : '',
           \ 'kinds' : [
-          \ 'f:functions',
-          \ 'o:object',
+          \   'f:functions',
+          \   'o:object',
           \ ],
           \ 'sro' : ".",
           \ 'kind2scope' : {
-          \ 'f' : 'object',
-          \ 'o' : 'object',
+          \   'f' : 'object',
+          \   'o' : 'object',
           \ }
           \ }
   else
-    let g:tagbar_type_coffee = {
-          \ 'ctagstype' : 'coffee',
-          \ 'kinds'     : [
-          \   'c:class',
-          \   'n:namespace',
-          \   'f:function',
-          \   'm:method',
-          \   'v:var',
-          \   'i:ivar',
-          \ ]}
+    let g:tagbar_type_coffee = {'ctagstype': 'coffee',
+          \   'kinds': ['c:class', 'n:namespace', 'f:function', 'm:method', 'v:var', 'i:ivar'] }
   endif
-  let g:tagbar_type_scala = {
-      \ 'ctagstype' : 'Scala',
-      \ 'kinds'     : [
-      \   'p:packages:1',
-      \   'V:values',
-      \   'v:variables',
-      \   'T:types',
-      \   't:traits',
-      \   'o:objects',
-      \   'a:aclasses',
-      \   'c:classes',
-      \   'r:cclasses',
-      \   'm:methods',
-      \   'C:constant',
-      \   'l:local',
-      \ ]
-  \ }
-  let g:tagbar_type_actionscript = {
-        \ 'ctagstype' : 'actionscript',
-        \ 'kinds'     : [
-        \   'c:class',
-        \   'f:method',
-        \   'p:property',
-        \   'v:variable',
-        \ ]}
+  let g:tagbar_type_scala = {'ctagstype': 'scala',
+        \   'kinds': ['c:classes', 'o:objects', 't:traits', 'r:cclasses',
+        \   'a:aclasses', 'm:methods', 'V:values', 'v:variables',
+        \   'T:types', 'i:includes', 'p:packages'] }
+  let g:tagbar_type_actionscript = {'ctagstype': 'actionscript',
+        \   'kinds': ['f:functions', 'p:properties', 'v:variables',
+        \   'r:function, functions', 'c:classes'] }
   let g:tagbar_type_tex = {
         \ 'ctagstype' : 'latex',
-        \ 'kinds'     : [
-        \   's:sections',
-        \   'g:graphics',
-        \   'l:labels',
-        \ ]}
+        \   'kinds': ['c:chapters', 's:sections', 'u:subsections', 'b:subsubsections',
+        \   'p:parts', 'P:paragraphs', 'G:subparagraphs'] }
+  let g:tagbar_type_make = { 'ctagstype' : 'make',
+        \   'kinds': ['m:macros', 't:targets'] }
+  let g:tagbar_type_ant = {'ctagstype': 'Ant',
+        \   'kinds': ['p:projects', 't:targets'] }
+  let g:tagbar_type_typescript = {'ctagstype': 'typescript',
+        \   'kinds': ['c:classes', 'n:modules', 'f:functions', 'v:variables', 'm:members',
+        \   'i:interfaces', 'e:enums'] }
+  let g:tagbar_type_haxe = {'ctagstype': 'haxe', 'kinds': [
+        \ 'p:package', 'f:function', 'v:variable', 'p:package', 'c:class', 'i:interface', 't:typedef',
+        \ ] }
 
-  let g:tagbar_type_make = {
-        \ 'ctagstype' : 'make',
-        \ 'kinds'     : [
-        \   't:targets',
-        \ ]}
-  let g:tagbar_type_ant = {
-        \ 'ctagstype' : 'ant',
-        \ 'kinds'     : [
-        \   'p:project',
-        \   't:target',
-        \ ]}
-  let g:tagbar_type_typescript = {
-        \ 'ctagstype' : 'typescript',
-        \ 'kinds'     : [
-        \   'c:classes',
-        \   'n:modules',
-        \   'f:functions',
-        \   'v:variables',
-        \   'v:varlambdas',
-        \   'm:members',
-        \   'i:interfaces',
-        \   'e:enums',
-        \ ]}
-  let g:tagbar_type_haxe = {
-        \ 'ctagstype' : 'haxe',
-        \ 'kinds'     : [
-        \ 'f:function',
-        \ 'v:variable',
-        \ 'c:class',
-        \ 'i:interface',
-        \ 'e:enum',
-        \ ]}
   " let g:tagbar_type_xxx = {
   "       \ 'ctagstype' : '',
   "       \ 'kinds'     : [
@@ -3299,8 +3218,9 @@ if neobundle#is_installed('vimproc')
           \  },
           \  'watchdogs_checker/mcs' : {
           \    'command' : 'mcs',
-          \     'exec'    : '%c --parse %o %s:p',
-          \     'quickfix/errorformat' : '%f(%l\,%c): %trror %m',
+          \     'exec'    : '%c %o %s:p',
+          \     'cmdopt'  : '--parse',
+          \     'quickfix/errorformat' : '%f(%l\\\,%c):\ error\ CS%n:\ %m',
           \  },
           \  'haml/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/haml',
@@ -3601,7 +3521,6 @@ let g:neocomplcache_force_omni_patterns.objcpp =
 let g:neocomplcache_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
 
 let g:neocomplcache_include_patterns.scala = '^import'
-
 " let g:neocomplcache_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
 let g:neocomplcache_delimiter_patterns.php = ['->', '::', '\']
 let g:neocomplcache_member_prefix_patterns.php = '->\|::'
@@ -3618,6 +3537,8 @@ call s:bulk_dict_variables([{
 " javascript
 let g:neocomplcache_omni_functions.javascript = 'nodejscomplete#CompleteJS'
 let g:node_usejscomplete = 1
+" haxe
+let g:neocomplcache_omni_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
 " autohotkey
 let g:neocomplcache_include_paths.autohotkey = '.,,'
 let g:neocomplcache_include_patterns.autohotkey = '^\s*#\s*include'
@@ -4181,9 +4102,9 @@ let g:my_snippets_dir = "$HOME/memos/tiny-snippets"
 
 " }}}
 " mapping for tiny-snippets
-nnoremap [unite]n <Nop>
-nnoremap <silent> [unite]nn :<C-u>execute printf('Unite file_rec:%s -start-insert', expand(g:my_snippets_dir))<CR>
-nnoremap <silent> [unite]nm :<C-u>execute 'new' g:my_snippets_dir<CR>
+nnoremap [!unite]n <Nop>
+nnoremap <silent> [!unite]nn :<C-u>execute printf('Unite file_rec:%s -start-insert', expand(g:my_snippets_dir))<CR>
+nnoremap <silent> [!unite]nm :<C-u>execute 'new' g:my_snippets_dir<CR>
 
 " filetype command {{{2
 command! EditFt execute expand(':e ~/.vim/after/ftplugin/'.&filetype.'.vim')
@@ -4282,7 +4203,6 @@ command! Unix e ++ff=unix %
 command! Ccd if isdirectory(expand('%:p:h')) | execute ":lcd " . expand("%:p:h") | endif
 LCAlias Utf8 Euc Sjis Jis Ccd
 " }}}
-
 " utility {{{2
 " 選択範囲をブラウザで起動 {{{3
 if s:is_win
@@ -4472,11 +4392,94 @@ endfunction
 command! -nargs=0 -range GingerRange call s:ginger.range()
 command! -nargs=+ Ginger echo s:ginger.get(<q-args>)
 
+" ctags {{{2
+let s:ctagsutil = {}  "{{{3
+function s:ctagsutil.parse(...) "{{{4
+  let lines = split(system('ctags --list-kinds'), "\n")
+  let langmap = {}
+  let lang = ""
+  let charmap = {}
+  let definitions = []
+  for line in lines
+    let matches = matchlist(line, '^\(\w\+\)$')
+    if empty(matches)
+      if empty(lang)
+        continue
+      endif
+      " call add(definitions, substitute(line, '^\s\+\([^ \t]\)\s\+([^ \t][^\[\]]*).*$', '\1:\2', ''))
+      let matches = matchlist(line, '^\s*\([^ \t]\)\s*\([^ \t][^\[\]]\+\).*$')
+      " echo matches
+      if !empty(matches)
+        let ch = matches[1]
+        if !exists('charmap[ch]')
+          let charmap[ch] = 1
+          let desc = substitute(matches[2], '^\s*\|\s*$', '', 'g')
+          " escape
+          let desc = substitute(desc, "'", "''", 'g')
+          call add(definitions, printf("%s:%s", ch, desc))
+        endif
+      endif
+    else
+      if !empty(lang)
+        let langmap[lang] = definitions
+      endif
+      let lang = matches[1]
+      let definitions = []
+      let charmap = {}
+    endif
+  endfor
+  if !empty(lang) && !exists('langmap[lang]')
+    let langmap[lang] = definitions
+  endif
+  let self.langmap = langmap
+endfunction
+
+function! s:ctagsutil.show() "{{{4
+  call self.parse()
+  for lang in keys(self.langmap)
+    call self.taglist_source(lang)
+    call self.tagbar_source(lang)
+  endfor
+endfunction
+
+function! s:ctagsutil.taglist_source(...) "{{{4
+	let langs = empty(a:000) ? keys(self.langmap) : a:000
+  let m = []
+  for lang in langs
+    if !exists('self.langmap[lang]')
+      echoerr "not found:".lang
+      continue
+    endif
+    call add(m, printf("let g:tlist_%s_settings='%s;%s'", tolower(lang), lang, join(self.langmap[lang], ";")))
+  endfor
+  echo join(m, "\n")
+endfunction
+
+function! s:ctagsutil.tagbar_source(...) "{{{4
+	let langs = empty(a:000) ? keys(self.langmap) : a:000
+  let m = []
+  for lang in langs
+    if !exists('self.langmap[lang]')
+      echoerr "not found:".lang
+      continue
+    endif
+    call add(m, printf("let g:tagbar_type_%s = {'ctagstype': '%s', 'kinds':\n\\   %s\n\\ }",
+          \ tolower(lang), lang, string(self.langmap[lang])))
+  endfor
+  echo join(m, "\n")
+endfunction
+" TagsConfigExample {{{3
+command! -nargs=0 TagsConfigExample call s:ctagsutil.show()
+
 " after initializes {{{1
 if !has('vim_starting') && has('gui_running')
   execute 'source' expand("~/.gvimrc")
 endif
 if !has('vim_starting')
+  doautocmd VimEnter
+  if has('gui_running')
+    doautocmd GUIEnter,BufRead
+  endif
   if exists('*PowerlineNew') " neobundle#is_installed('powerline')
     set statusline=%!PowerlineNew()
     call PowerlineNew()
@@ -4484,10 +4487,6 @@ if !has('vim_starting')
   elseif neobundle#is_installed('vim-powerline')
     call Pl#UpdateStatusline(1)
   endif
-endif
-if exists('s:store')
-  call s:store.restore()
-  unlet s:store
 endif
 " __END__ {{{1
 " vim: set ft=vim fdm=marker sw=2 ts=2 et:
