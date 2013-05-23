@@ -779,8 +779,10 @@ snippet http.req
 				.on('end', function() {});
 		});
 snippet jshint
-	/*global ${1:$}: false, ${2:jQuery}: false */
+	/*global ${1:$: false}, ${2:jQuery: false}, ${3:console: false}${0} */
 
 snippet jshintrc
 	/*jshint ${1:strict: false} */
 
+snippet jshintes5
+	/*jshint strict: true, node : true, es5 : true */

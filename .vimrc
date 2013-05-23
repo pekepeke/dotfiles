@@ -471,7 +471,14 @@ NeoBundleLazyOn FileType qml 'peterhoeg/vim-qml'
 
 " C# {{{4
 NeoBundleLazyOn FileType cs 'OrangeT/vim-csharp'
-NeoBundleLazyOn FileType cs 'nosami/Omnisharp'
+NeoBundleLazy 'nosami/Omnisharp', {
+      \   'autoload': {'filetypes': ['cs']},
+      \   'build': {
+      \     'windows': 'MSBuild.exe server/OmniSharp.sln /p:Platform="Any CPU"',
+      \     'mac': 'xbuild server/OmniSharp.sln',
+      \     'unix': 'xbuild server/OmniSharp.sln',
+      \   }
+      \ }
 " NeoBundle 'yuratomo/dotnet-complete'
 if s:is_win
   NeoBundleLazyOn FileType cs 'yuratomo/ildasm.vim'
@@ -624,6 +631,9 @@ NeoBundleLazyOn FileType ruby 'basyura/unite-rails'
 NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
 NeoBundleLazyOn FileType php 'heavenshell/unite-zf'
 NeoBundleLazyOn FileType php 'heavenshell/unite-sf2'
+NeoBundle 'ringogirl/unite-w3m', {
+      \   'depends' : 'yuratomo/w3m.vim',
+      \ }
 
 " NeoBundle 'pekepeke/vim-unite-sonictemplate'
 NeoBundle 'pekepeke/vim-unite-repo-files'
@@ -643,6 +653,7 @@ endif
 " web {{{3
 NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'mattn/webapi-vim'
+NeoBundle 'yuratomo/w3m.vim'
 " if executable('python')
 "   NeoBundle 'mattn/mkdpreview-vim'
 "   let plugin_path = g:my_bundle_dir . "/mkdpreview-vim/static/mkdpreview.py"
@@ -1603,6 +1614,10 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" OmniSharp "{{{2
+" let g:OmniSharp_host = "http://localhost:2000"
+let g:OmniSharp_typeLookupInPreview = 1
+
 " reanimate.vim {{{2
 if neobundle#is_installed('vim-reanimate')
   let g:reanimate_save_dir = $VIM_CACHE."/vim-reanimate"
@@ -2378,7 +2393,6 @@ UniteNMap!  q         quickfix -buffer-name=qfix
 " UniteNMap   y         history/yank
 " UniteNMap   :         history/command command
 " UniteNMap   /         history/search
-UniteNMap   ?         mapping
 UniteNMap   bb        bookmark -default-action=open
 nnoremap <silent> [!unite]ba :<C-u>UniteBookmarkAdd<CR>
 " UniteNMap   rr        quicklearn -immediately
@@ -2398,7 +2412,8 @@ UniteNMap a file_rec -start-insert
 " endif
 
 " nnoremap <silent> [!unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
-nnoremap <silent> [!unite]h :<C-u>call <SID>unite_ref_filetype()<CR>
+nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_filetype()<CR>
+nnoremap <silent> [!unite]hk :<C-u>Unite mapping<CR>
 
 function! s:unite_ref_filetype() " {{{4
   let ft = &ft
@@ -2416,7 +2431,7 @@ function! s:unite_ref_filetype() " {{{4
   endif
   let types = filter(types, 'type(ref#available_sources(v:val)) == type({})')
   if !empty(types)
-    execute 'Unite' '-input='.kwd join(map(types, '"ref/".v:val'), ' ')
+    execute 'Unite' '-default-action=below' '-input='.kwd join(map(types, '"ref/".v:val'), ' ')
   else
     echohl Error
     echomsg "Not Found : ref source"
@@ -2829,9 +2844,9 @@ if !exists('g:ref_detect_filetype')
   let g:ref_detect_filetype = {}
 endif
 let g:ref_detect_filetype._ = 'webdict'
+let g:ref_use_vimproc = 0
 let g:ref_alc_use_cache = 1
 let g:ref_alc_start_linenumber = 43
-let g:ref_use_vimproc = 0
 
 if neobundle#is_installed('vimproc')
   let g:ref_use_vimproc = 1
@@ -2857,6 +2872,51 @@ let g:ref_source_webdict_sites = {
       \   },
       \   'wiktionary': {
       \     'url': 'http://ja.wiktionary.org/wiki/%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'ruby_toolbox': {
+      \     'url': 'https://www.ruby-toolbox.com/search?utf8=%E2%9C%93&q=%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'rurema': {
+      \     'url': 'http://doc.ruby-lang.org/ja/search/query:%s/',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'rubygems': {
+      \     'url': 'http://rubygems.org/search?query=%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'node_toolbox': {
+      \     'url': 'http://nodetoolbox.com/search?q=%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'chef_cookbooks': {
+      \     'url': 'http://community.opscode.com/search?query=%s&scope=cookbook',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'underscore.js': {
+      \     'url': 'http://underscorejs.org/?q=%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'lodash.js': {
+      \     'url': 'http://lodash.com/docs?q=%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'cdn.js': {
+      \     'url': 'http://www.cdnjs.com/#/search/%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'cpan': {
+      \     'url': 'http://search.cpan.org/search?q=%s;s={startIndex}',
       \     'keyword_encoding': 'utf-8',
       \     'cache': '0',
       \   },
@@ -2905,8 +2965,9 @@ for src in ['refe', 'ri', 'perldoc', 'man'
       \ , 'cppref', 'cheat', 'nodejs', ]
   silent! exe 'Alias' src 'Ref' src
 endfor
+Alias dc Ref webdict
 Alias mr Ref webdict
-Alias alc Ref webdict
+Alias alc Ref webdict alc
 Alias php[manual] Ref phpmanual
 Alias timo Ref timobileref
 Alias tide Ref tidesktopref
@@ -3512,6 +3573,7 @@ let g:neocomplcache_force_omni_patterns.c =
   \ '[^.[:digit:] *\t]\%(\.\|->\)'
 let g:neocomplcache_force_omni_patterns.cpp =
   \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+let g:neocomplcache_force_omni_patterns.cs = '[^.]\.\%(\u\{2,}\)\?'
 " let g:neocomplcache_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
 let g:neocomplcache_force_omni_patterns.objc =
   \ '[^.[:digit:] *\t]\%(\.\|->\)'
