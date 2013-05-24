@@ -1,0 +1,64 @@
+#compdef gemignore
+
+typeset -A opt_args
+local context state line ret=1
+
+_arguments -C \
+  '1: :->cmds' \
+  '(1 *): :->args' && return 0
+
+_gemignore-package-list () {
+  local update_policy
+  zstyle -s ":completion:$curcontext:" cache-policy update_policy
+  if [[ -z "$update_policy" ]]; then
+    zstyle  ":completion:$curcontext:" cache-policy _gemignore_caching_policy
+  fi
+
+  if ( [[ ${+_gemignore_packages} -eq 0 ]] ||
+      _cache_invalid gemignore_packages ) && ! _retrieve_cache gemignore_packages; then
+      _gemignore_packages=($(_call_program commands gemignore list | grep -v '^->' 2>/dev/null))
+    _store_cache gemignore_packages _gemignore_packages
+  fi
+  local expl
+  _wanted gemignore_packages expl 'Packages' compadd -a _gemignore_packages
+}
+
+_gemignore_caching_policy () {
+  # rebuild if cache is more than an hour old
+  local oldp
+  oldp=( "$1"(Nmh+1) )
+  (( $#oldp ))
+}
+
+case $state in
+  cmds)
+    local _cmds
+    _cmds=(
+      'list:Lists all available snippets'
+      'peek:Show contents of given snippets'
+      'search:Searches for snippets containing <input>'
+      'add:Add a snippet identified by <input> to the .gitignore file in your working directory'
+      'help:Display this message'
+    )
+    _describe -t commands 'gemignore commands' _cmds && ret=0
+  ;;
+  args)
+    local -a _packages
+    # _packages=$(_gemignore-package-list)
+    case $line[1] in
+      l|list|p|peek|s|search|a|add)
+        # _describe -t _packages 'packages' _packages && ret=0
+        _gemignore-package-list && ret=0
+      ;;
+      help)
+        # _files
+        ret=0
+      ;;
+    esac
+  ;;
+  *)
+  _gemignore-package-list
+  ;;
+esac
+
+return ret

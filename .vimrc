@@ -706,12 +706,13 @@ NeoBundleLazyOn FileType javascript 'thinca/vim-textobj-function-javascript'
 NeoBundleLazyOn FileType perl 'thinca/vim-textobj-function-perl'
 NeoBundleLazyOn FileType ruby 't9md/vim-textobj-function-ruby'
 NeoBundleLazyOn FileType ruby 'nelstrom/vim-textobj-rubyblock'
+NeoBundle 'osyo-manga/vim-textobj-multiblock'
 NeoBundle 'vim-scripts/textobj-indent'
 NeoBundle 'sgur/vim-textobj-parameter'
 NeoBundle 'h1mesuke/textobj-wiw'
 NeoBundle 'coderifous/textobj-word-column.vim'
 NeoBundle 'rhysd/vim-textobj-continuous-line'
-NeoBundle 'gorkunov/smartpairs.vim'
+" NeoBundle 'gorkunov/smartpairs.vim'
 
 " metarw {{{3
 " NeoBundle "mattn/vim-metarw"
@@ -1198,14 +1199,6 @@ function! s:bulk_dict_variables(defines)
   endfor
 endfunction
 
-" textobj {{{2
-function! s:map_textobj(key, cmd)
-  silent exe 'omap' a:key a:cmd
-  silent exe 'vmap' a:key a:cmd
-endfunction
-
-command! -nargs=+ Tmap call s:map_textobj(<f-args>)
-
 " altercmd "{{{2
 if neobundle#is_installed('vim-altercmd')
   call altercmd#load()
@@ -1282,7 +1275,6 @@ endif
 
 " useful keybinds {{{2
 nnoremap gs :<C-u>setf<Space>
-nnoremap <C-h> :<C-u>help<Space>
 nmap Y y$
 
 " S をつぶしてみる
@@ -1614,6 +1606,10 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" w3m {{{2
+Alias w3m W3mSplit
+Alias www W3mSplit
+
 " OmniSharp "{{{2
 " let g:OmniSharp_host = "http://localhost:2000"
 let g:OmniSharp_typeLookupInPreview = 1
@@ -2823,17 +2819,25 @@ if neobundle#is_installed('vim-operator-user')
 endif
 
 " textobj {{{2
+function! s:textobj_mapping(key, cmd)
+  silent exe 'omap' a:key a:cmd
+  silent exe 'vmap' a:key a:cmd
+endfunction
+command! -nargs=+ Tmap call s:textobj_mapping(<f-args>)
+
 " Tmap i<Space>f <Plug>(textobj-function-i)
 " Tmap a<Space>f <Plug>(textobj-function-a)
 " Tmap i<Space>i <Plug>(textobj-indent-i)
 " Tmap a<Space>i <Plug>(textobj-indent-a)
-Tmap i<Space>p <Plug>(textobj-parameter-i)
-Tmap a<Space>p <Plug>(textobj-parameter-a)
+Tmap iP <Plug>(textobj-parameter-i)
+Tmap aP <Plug>(textobj-parameter-a)
 " Tmap i<Space>l <Plug>(textobj-line-i)
 " Tmap a<Space>l <Plug>(textobj-line-a)
-Tmap i<Space>b <Plug>(textobj-between-i)
-Tmap a<Space>b <Plug>(textobj-between-a)
+Tmap i,, <Plug>(textobj-between-i)
+Tmap a,, <Plug>(textobj-between-a)
 let g:textobj_between_no_default_key_mappings=1
+Tmap ab <Plug>(textobj-multiblock-a)
+Tmap ib <Plug>(textobj-multiblock-i)
 " Tmap i<Space>w <Plug>(textobj-wiw-i)
 " Tmap a<Space>w <Plug>(textobj-wiw-a)
 " let g:textobj_wiw_no_default_key_mappings=1
@@ -2903,17 +2907,12 @@ let g:ref_source_webdict_sites = {
       \   'underscore.js': {
       \     'url': 'http://underscorejs.org/?q=%s',
       \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
+      \     'cache': '1',
       \   },
       \   'lodash.js': {
       \     'url': 'http://lodash.com/docs?q=%s',
       \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \   'cdn.js': {
-      \     'url': 'http://www.cdnjs.com/#/search/%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
+      \     'cache': '1',
       \   },
       \   'cpan': {
       \     'url': 'http://search.cpan.org/search?q=%s;s={startIndex}',
@@ -2965,7 +2964,7 @@ for src in ['refe', 'ri', 'perldoc', 'man'
       \ , 'cppref', 'cheat', 'nodejs', ]
   silent! exe 'Alias' src 'Ref' src
 endfor
-Alias dc Ref webdict
+Alias webd[ict] Ref webdict
 Alias mr Ref webdict
 Alias alc Ref webdict alc
 Alias php[manual] Ref phpmanual
@@ -3909,10 +3908,10 @@ function! s:vimfiler_smart_tree_l(method, ...) "{{{4
   endif
   call s:vimfiler_tree_edit(a:method)
 endfunction "}}}
-function! s:vimfiler_tabopen() " {{{4
+function! s:vimfiler_do_action(action) " {{{4
   let bnr = bufnr('%')
   let linenr = line('.')
-  let context = s:vimfiler_create_action_context('tabopen', linenr)
+  let context = s:vimfiler_create_action_context(a:action, linenr)
   call context.execute()
   unlet context
 endfunction
@@ -3952,7 +3951,8 @@ endfunction
 
 MyAutocmd FileType vimfiler call s:vimfiler_my_settings() "{{{3
 function! s:vimfiler_my_settings() " {{{3
-  nmap <silent><buffer> E :<C-u>call <SID>vimfiler_tabopen()<CR>
+  nnoremap <silent><buffer> E :<C-u>call <SID>vimfiler_do_action('tabopen')<CR>
+  nnoremap <silent><buffer> p :<C-u>call <SID>vimfiler_do_action('split')<CR>
   nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
   hi link ExrenameModified Statement
   "nnoremap <buffer> v V
