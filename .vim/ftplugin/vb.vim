@@ -7,5 +7,6 @@ if &modifiable && &fileformat == 'dos'
 endif
 setl dictionary=~/.vim/dict/vbscript.dict
 setl dictionary+=~/.vim/dict/wsh.dict
+setl commentstring='\ %s
 
 let &cpo = s:save_cpo

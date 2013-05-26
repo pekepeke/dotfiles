@@ -251,7 +251,7 @@ let (optset = options.setPref) {
     var source_list = null
     if ($LU.is_ff4()) {
       return;
-      source_list = <>
+      source_list = xml`<>
         01_LocationbarNewTab2.uc.js
         11_left-dblclick-closetab.uc.js
         01_context-encoding-menu.uc.js
@@ -260,7 +260,7 @@ let (optset = options.setPref) {
         40_patchViewSourceUtils.uc.js
         11_BHNewTab1.1mod18.uc.js
         40_viewLinkSource.uc.js
-      </>.toString().split(/\s+/);
+      </>`.toString().split(/\s+/);
     }
     if (typeof liberator.plugins.userchrome == 'undefined') liberator.plugins.userchrome = {};
     else return;
@@ -298,7 +298,7 @@ let (optset = options.setPref) {
       vimpdir + '/vimperator-plugins/',
       //'~/sources/vimperator/vimperator-plugins/',
     ];
-    gv.plugin_loader_plugins = <>
+    gv.plugin_loader_plugins = xml`<>
       _libly
       applauncher
       auto_source
@@ -331,7 +331,7 @@ let (optset = options.setPref) {
       walk-input
       httpheaders
       noscript
-    </>.toString().split(/\s+/)
+    </>`.toString().split(/\s+/)
       .filter(function(n) !/^!/.test(n));
 
     if (!$LU.is_ff4()) {
@@ -375,7 +375,7 @@ let (optset = options.setPref) {
 
     // hatena bookmark extension
     autocommands.add(
-      'VimperatorEnter', '.*', 
+      'VimperatorEnter', '.*',
       function() {
         if (typeof hBookmark != 'undefined') {
           liberator.loadScript('chrome://hatenabookmark/content/vimperator/plugin/hatenabookmark.js', {__proto__: Global});

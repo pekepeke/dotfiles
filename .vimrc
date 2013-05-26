@@ -45,6 +45,7 @@ if s:is_win
     set shellpipe=>%s\ 2>&1
     set shellxquote=\"
   endfunction
+  command! -nargs=0 CmdEnable call s:init_nyacus()
   if executable('nyacus')
     function! s:init_nyacus()
       " Use NYACUS.
@@ -54,7 +55,9 @@ if s:is_win
       set shellredir=>%s\ 2>&1
       set shellxquote=\"
     endfunction
-    call s:init_nyacus()
+    command! -nargs=0 NyacusEnable call s:init_nyacus()
+    " call s:init_nyacus()
+    call s:init_cmd()
   else
     call s:init_cmd()
   endif
@@ -100,9 +103,15 @@ if has('vim_starting')
   command! -nargs=+ NeoBundleLazyOn call <SID>neobundle_lazy_on(<f-args>)
 
   function! s:neobundle_safe_update()
+    let au_org_vimproc_dll_path = g:vimproc#dll_path
+    let org_vimproc_dll_path = g:vimproc_dll_path
+    let g:vimproc#dll_path = ''
+    let g:vimproc_dll_path = ''
     for name in map(neobundle#config#get_neobundles(), 'v:val.name')
       execute 'NeoBundleUpdate' name
     endfor
+    let g:vimproc#dll_path = au_org_vimproc_dll_path
+    let g:vimproc_dll_path = org_vimproc_dll_path
   endfunction
   command! -nargs=0 NeoBundleSafeUpdate call s:neobundle_safe_update()
 endif
@@ -257,6 +266,7 @@ if s:is_win
 else
   NeoBundle 'majutsushi/tagbar'
 endif
+NeoBundle 'wesleyche/SrcExpl'
 " NeoBundle 'abudden/TagHighlight'
 NeoBundle 'tomtom/tcomment_vim'
 " NeoBundle 'scrooloose/nerdcommenter'
@@ -267,7 +277,9 @@ NeoBundle 'ciaranm/detectindent'
 " NeoBundle 'motemen/git-vim'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-git'
-NeoBundle 'gregsexton/gitv'
+NeoBundleLazy 'gregsexton/gitv', {
+      \   'commands' : ['Gitv'],
+      \ }
 NeoBundle 'int3/vim-extradite'
 NeoBundleLazy 'Shougo/vim-vcs'
 NeoBundle 'sjl/splice.vim'
@@ -522,10 +534,11 @@ endif
 
 " as {{{4
 " if has('ruby') && executable('sprout-as3')
-"   NeoBundle 'endel/flashdevelop.vim'
+"   NeoBundleLazyOn FileType actionscript  'endel/flashdevelop.vim'
 "   NeoBundle 'tomtom/tlib_vim'
 "   NeoBundle 'airblade/vim-rooter'
 " endif
+" NeoBundleLazyOn FileType actionscript 'yuratomo/flex-api-complete'
 
 " texts {{{4
 " NeoBundle 'plasticboy/vim-markdown' " plasticboy mode -> mkd
@@ -631,9 +644,12 @@ NeoBundleLazyOn FileType ruby 'basyura/unite-rails'
 NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
 NeoBundleLazyOn FileType php 'heavenshell/unite-zf'
 NeoBundleLazyOn FileType php 'heavenshell/unite-sf2'
-NeoBundle 'ringogirl/unite-w3m', {
-      \   'depends' : 'yuratomo/w3m.vim',
-      \ }
+if executable('w3m')
+  NeoBundle 'ringogirl/unite-w3m', {
+        \   'depends' : 'yuratomo/w3m.vim',
+        \ }
+  NeoBundle 'yuratomo/w3m.vim'
+endif
 
 " NeoBundle 'pekepeke/vim-unite-sonictemplate'
 NeoBundle 'pekepeke/vim-unite-repo-files'
@@ -653,7 +669,6 @@ endif
 " web {{{3
 NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'mattn/webapi-vim'
-NeoBundle 'yuratomo/w3m.vim'
 " if executable('python')
 "   NeoBundle 'mattn/mkdpreview-vim'
 "   let plugin_path = g:my_bundle_dir . "/mkdpreview-vim/static/mkdpreview.py"
@@ -1606,6 +1621,25 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" gitv {{{2
+if neobundle#is_installed('gitv')
+  " http://d.hatena.ne.jp/cohama/20130517/1368806202
+  MyAutocmd FileType gitv call s:my_gitv_settings()
+  function! s:my_gitv_settings()
+    setl iskeyword+=/,-,.
+
+    nnoremap <silent><buffer> [!space]C :<C-u>Git checkout <C-r><C-w><CR>
+    nnoremap <buffer> [!space]rb :<C-u>Git rebase <C-r>=GitvGetCurrentHash()<CR><Space>
+    nnoremap <buffer> [!space]R :<C-u>Git revert <C-r>=GitvGetCurrentHash()<CR><CR>
+    nnoremap <buffer> [!space]h :<C-u>Git cherry-pick <C-r>=GitvGetCurrentHash()<CR><CR>
+    nnoremap <buffer> [!space]rh :<C-u>Git reset --hard <C-r>=GitvGetCurrentHash()<CR>
+  endfunction
+
+  function! GitvGetCurrentHash()
+    return matchstr(getline('.'), '\[\zs.\{7\}\ze\]$')
+  endfunction
+endif
+
 " w3m {{{2
 Alias w3m W3mSplit
 Alias www W3mSplit
@@ -1701,10 +1735,13 @@ if neobundle#is_installed('powerline')
         \    },
         \  },
         \ }
-  " if neobundle#is_installed('linepower.vim')
-  "   " let g:powerline_config_path = g:my_bundle_dir . "/linepower.vim/config"
-  "   " let g:powerline_config_path = g:my_bundle_dir . "/powerline/powerline/config_files"
-  " endif
+  if neobundle#is_installed('linepower.vim')
+    if !s:is_win && !isdirectory(expand('~/.config/powerline'))
+      call system(printf("cp -r %s ~/.config/powerline", g:my_bundle_dir . "/linepower.vim/config" ))
+    endif
+    " let g:powerline_config_path = g:my_bundle_dir . "/linepower.vim/config"
+    " let g:powerline_config_path = g:my_bundle_dir . "/powerline/powerline/config_files"
+  endif
 endif
 
 " inline_edit {{{2

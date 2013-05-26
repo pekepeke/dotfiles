@@ -176,6 +176,8 @@ if exist "%USERPROFILE%\.pik\version" then
 	set PIK_VER=`%COMSPEC% /c type "%USERPROFILE%\.pik\version"`
 	pik use %PIK_VER%
 	pik-source
+	# set PATH=`findstr -i devkit "%USERPROFILE%\.pik\config.yml" | perl -ne "if (/^\s*path: (.*devkit.*$)/) { print $1;}"`
+	# set PATH+=`findstr -i devkit "%USERPROFILE%\.pik\config.yml" | ruby -ne "print $1 if %r[^\s*path: (.*devkit.*$)]"`
 endif
 
 # set PIK_DEVKIT_PARENT=C:\Pik
