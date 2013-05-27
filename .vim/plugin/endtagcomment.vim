@@ -100,7 +100,8 @@ function! Endtagcomment_space_toggle()
   endif
 endfunction
 """ keymap
-nnoremap <silent> ,t<Space>  :<C-u>call Endtagcomment_space_toggle()<CR>
+" nnoremap <silent> ,t<Space>  :<C-u>call Endtagcomment_space_toggle()<CR>
+nnoremap <silent> <Plug>(endtagcomment-space-toggle)  :<C-u>call Endtagcomment_space_toggle()<CR>
 
 
 " コメント内のテキストの最初のclass名の「.」

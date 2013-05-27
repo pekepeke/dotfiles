@@ -1,0 +1,21 @@
+ {
+   "simulated-lag": 1000,
+   "cors": false,
+   "jsonp": false,
+   "proxy": {
+     "server": "http://yourrealapi.com",
+     "default": false,
+     "calls": {
+       "/items/1": { "get": true, "post": false },
+       "/items": false
+     }
+   },
+   "variables": {
+     "server": "http://server.com"
+   },
+   "routes": [
+     "/user/:userid",
+     "/user/:userid/profile",
+     "/user/:userid/inbox/:messageid"
+   ]
+ }

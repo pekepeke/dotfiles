@@ -512,6 +512,26 @@ zsh-complete-init() {
   # add-zsh-hook -d precmd zsh-complete-init
   zle expand-or-complete
   bindkey -v '^I' expand-or-complete
+
+  # http://d.hatena.ne.jp/rubikitch/20071002/zshcomplete
+  generate-complete-function/ruby/optparse () {
+    local cmpl
+    cmpl=~/.zsh/zfunc/completion/_`basename $1`
+    existp=`[ -f $cmpl ]; echo $?`
+    ruby -rzshcomplete $1 > $cmpl
+    if [ $existp = 0 ]; then
+      reload-complete-functions
+    else
+      compinit
+    fi
+  }
+  reload-complete-functions() {
+    local f
+    f=(~/.zsh/zfunc/completion/*(.))
+    unfunction $f:t 2> /dev/null
+    autoload -U $f:t
+  }
+
   shrc_section_title "complete-init finish"
 }
 # add-zsh-hook precmd zsh-complete-init

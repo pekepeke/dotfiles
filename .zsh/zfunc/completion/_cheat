@@ -1,0 +1,11 @@
+#compdef cheat
+
+_cheat()
+{
+	mkdir -p ~/.zsh/completion
+	if [ ! -f ~/.zsh/completion/_cheat ]; then
+		cheat sheets | grep -v All | sed -e 's/^/compadd /g' > ~/.zsh/completion/_cheat
+	fi
+	`cat ~/.zsh/completion/_cheat`
+}
+compdef _cheat cheat

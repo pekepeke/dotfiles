@@ -2713,8 +2713,11 @@ else "{{{4
   nnoremap <silent> [!prefix]to :<C-u>TagbarOpen<CR>1<C-w>h
 endif "}}}
 
-nnoremap          [!prefix]tc :Ctags<CR>
 command! -nargs=? Ctags call s:exec_ctags(<q-args>)
+
+" SrcExpl {{{2
+nnoremap <silent> [!prefix]t<Space> :<C-u>SrcExplToggle<CR>
+let g:SrcExpl_refreshTime = 1000
 
 function! s:exec_ctags(path) "{{{3
   let path = a:path
@@ -2875,9 +2878,9 @@ Tmap a,, <Plug>(textobj-between-a)
 let g:textobj_between_no_default_key_mappings=1
 Tmap ab <Plug>(textobj-multiblock-a)
 Tmap ib <Plug>(textobj-multiblock-i)
-" Tmap i<Space>w <Plug>(textobj-wiw-i)
-" Tmap a<Space>w <Plug>(textobj-wiw-a)
-" let g:textobj_wiw_no_default_key_mappings=1
+Tmap i,w <Plug>(textobj-wiw-i)
+Tmap a,w <Plug>(textobj-wiw-a)
+let g:textobj_wiw_no_default_key_mappings=1
 
 " ref.vim {{{2
 let g:ref_cache_dir = $VIM_CACHE . '/vim-ref'
