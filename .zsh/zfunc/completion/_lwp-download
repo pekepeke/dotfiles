@@ -1,0 +1,12 @@
+#compdef lwp-download
+
+local ret=1
+
+_arguments -s -w \
+  '-a[ASCII mode]' \
+  '-s[pickup filename from server]' \
+  '(-)1:url:_urls' \
+  '(-)2:file:_files' \
+  && ret=0
+
+return $ret

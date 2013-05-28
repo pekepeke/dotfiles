@@ -1,0 +1,12 @@
+#compdef lwp-mirror
+
+local ret=1
+
+_arguments \
+  '(-v)-t[timeout]:timeout:' \
+  '(- *)-v[emit version]' \
+  '(-)1:url:_urls' \
+  '(-)2:file:_files' \
+  && ret=0
+
+return $ret

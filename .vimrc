@@ -39,27 +39,27 @@ endif
 " reset os env {{{2
 if s:is_win
   let $HOME=substitute($HOME, '\\', '/', 'ge')
-  function! s:init_cmd()
+  function! s:cmd_init()
     set shell=$COMSPEC
     set shellcmdflag=/c
     set shellpipe=>%s\ 2>&1
     set shellxquote=\"
   endfunction
-  command! -nargs=0 CmdEnable call s:init_nyacus()
+  command! -nargs=0 CmdEnable call s:cmd_init()
   if executable('nyacus')
-    function! s:init_nyacus()
-      " Use NYACUS.
+    function! s:nyacus_init()
+      " Use NYAOS.
       set shell=nyacus.exe
       set shellcmdflag=-e
       if executable('tee') | set shellpipe=\|&\ tee | endif
       set shellredir=>%s\ 2>&1
       set shellxquote=\"
     endfunction
-    command! -nargs=0 NyacusEnable call s:init_nyacus()
-    " call s:init_nyacus()
-    call s:init_cmd()
+    command! -nargs=0 NyacusEnable call s:nyacus_init()
+    " call s:nyacus_init()
+    call s:cmd_init()
   else
-    call s:init_cmd()
+    call s:cmd_init()
   endif
 else
   let $PAGER='less'
@@ -155,6 +155,7 @@ NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'mklabs/vim-fetch'
 NeoBundle 'osyo-manga/vim-reanimate'
 NeoBundleLazy 'mattn/benchvimrc-vim'
+NeoBunle 'Shougo/context_filetype.vim'
 NeoBundleLazy 'Shougo/vimfiler', {
       \   'depends': 'Shougo/unite.vim',
       \   'autoload' : {
@@ -978,6 +979,7 @@ set nomousefocus
 set mousehide
 
 set nospell
+set noautochdir
 set shellslash
 set directory=$VIM_CACHE,/var/tmp,/tmp
 set viminfo+=n$VIM_CACHE/viminfo.txt
@@ -991,8 +993,9 @@ if !exists('g:my_lcd_autochdir')
 endif
 
 function! s:autochdir() "{{{3
-  if (&filetype == "vimfiler" || &filetype == "unite" || &filetype == "vimshell"
-        \ || &filetype == "quickrun" )
+  if expand('%') == '' && &buftype =~ 'nofile'
+  " if (&filetype == "vimfiler" || &filetype == "unite" || &filetype == "vimshell"
+  "       \ || &filetype == "quickrun" )
     return
   elseif g:my_lcd_autochdir
     if !exists('b:my_lcd_current_or_prj_dir')
@@ -2904,7 +2907,12 @@ let g:ref_source_webdict_sites = {
       \     'keyword_encoding,': 'utf-8',
       \     'cache': 1,
       \   },
-      \   'wikipedia:ja': {
+      \   'weblio': {
+      \     'url': 'http://ejje.weblio.jp/content/%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': 1,
+      \   },
+      \   'wikipedia': {
       \     'url': 'http://ja.wikipedia.org/wiki/%s',
       \     'keyword_encoding': 'utf-8',
       \     'cache': '0',
@@ -2962,6 +2970,12 @@ let g:ref_source_webdict_sites = {
       \ }
 function! g:ref_source_webdict_sites.alc.filter(output)
     return join(split(a:output, "\n")[38:], "\n")
+endfunction
+function! g:ref_source_webdict_sites.weblio.filter(output)
+  return join(split(a:output, "\n")[53 :], "\n")
+endfunction
+function! g:ref_source_webdict_sites.wikipedia.filter(output)
+  return join(split(a:output, "\n")[17 :], "\n")
 endfunction
 function! g:ref_source_webdict_sites.wiktionary.filter(output)
     return join(split(a:output, "\n")[38:], "\n")

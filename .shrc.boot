@@ -64,6 +64,7 @@ shrc_section_title "color" #{{{1
 # enable color support of ls and also add handy aliases
 ## options {{{2
 GREP_OPTIONS="--binary-files=without-match --exclude=\*.tmp"
+GREP_OPTIONS="--directories=recurse $GREP_OPTIONS"
 GREP_OPTIONS="--exclude-dir=.svn $GREP_OPTIONS"
 GREP_OPTIONS="--exclude-dir=.git $GREP_OPTIONS"
 GREP_OPTIONS="--exclude-dir=.hg $GREP_OPTIONS"
@@ -125,6 +126,12 @@ alias ack='ack-grep'
 alias less='less -R'
 
 shrc_section_title "vim" #{{{2
+if type lv > /dev/null 2>&1; then
+  export PAGER=lv
+  export LV="-c -l"
+else
+  alias lv="$PAGER"
+fi
 # if [ -x ~/bin/vimpager ] ; then
 #   export PAGER=~/bin/vimpager
 #   # alias less=$PAGER

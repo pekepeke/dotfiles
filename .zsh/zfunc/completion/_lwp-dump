@@ -1,0 +1,15 @@
+#compdef lwp-dump
+
+local ret=1
+
+_arguments \
+  '--agent=[custom User-Agent value]:agent:' \
+  '--keep-client-headers[pass LWP internal Client-* headers]' \
+  '--max-length=[how much content to show]:number:' \
+  '--method=[specify HTTP method]:method:(GET HEAD POST PUT DELETE TRACE OPTIONS)' \
+  '--parse-head[parse head section of HTML for headers]' \
+  '--request[also dump the request sent]' \
+  '(-)1:url:_urls' \
+  && ret=0
+
+return $ret

@@ -30,6 +30,14 @@ case $OSTYPE in
     ;;
 esac
 
+typeset -xT RUBYLIB ruby_path
+typeset -U ruby_path
+ruby_path=(./lib)
+
+typeset -xT PYTHONPATH pyhon_path
+typeset -U python_path
+python_path=(./lib)
+
 shrc_section_title "autoload" #{{{1
 autoload -U zmv
 autoload -Uz add-zsh-hook
@@ -433,11 +441,19 @@ zsh-complete-init() {
   [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
   source_all ~/.zsh/commands/*
 
+  if [ ! -e ~/.zsh.d ]; then
+    mkdir -p ~/.zsh.d
+    cp ~/.zsh/zfunc/tools/rb_optparse.zsh ~/.zsh.d/rb_optparse.zsh
+  fi
+  fpath=(~/.zsh.d/Completion $fpath)
+
   autoload -U compinit
   compinit -u
 
   autoload -U bashcompinit
   bashcompinit
+
+  . ~/.zsh.d/rb_optparse.zsh
 
   # from bash
   # source_all $HOME/.bash/compfunc/*
@@ -512,25 +528,6 @@ zsh-complete-init() {
   # add-zsh-hook -d precmd zsh-complete-init
   zle expand-or-complete
   bindkey -v '^I' expand-or-complete
-
-  # http://d.hatena.ne.jp/rubikitch/20071002/zshcomplete
-  generate-complete-function/ruby/optparse () {
-    local cmpl
-    cmpl=~/.zsh/zfunc/completion/_`basename $1`
-    existp=`[ -f $cmpl ]; echo $?`
-    ruby -rzshcomplete $1 > $cmpl
-    if [ $existp = 0 ]; then
-      reload-complete-functions
-    else
-      compinit
-    fi
-  }
-  reload-complete-functions() {
-    local f
-    f=(~/.zsh/zfunc/completion/*(.))
-    unfunction $f:t 2> /dev/null
-    autoload -U $f:t
-  }
 
   shrc_section_title "complete-init finish"
 }
