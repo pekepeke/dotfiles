@@ -49,7 +49,7 @@ function! my#util#output_to_buffer(bufname, text_list) " {{{2
   endif
   "silent exe 'normal GI'.a:text."\n"
   call append(line('$'),
-        \ type(a:text_list) == type([]) 
+        \ type(a:text_list) == type([])
         \ ? a:text_list : split(a:text_list, "\n"))
   "setl bufhidden=hide buftype=nofile noswapfile buflisted
   silent exe 'wincmd p'
@@ -68,7 +68,7 @@ endfunction
 function! my#util#newfile_with_text(path, text)
   exe 'new' a:path
   " exe "normal" "i".a:text
-  call append(line('$'), 
+  call append(line('$'),
         \ type(a:text) == type([]) ? a:text : my#util#split(a:text))
   silent exe 'wincmd p'
 endfunction
@@ -87,8 +87,14 @@ function! my#util#find_proj_dir() " {{{2
     endif
   endfor
   if pjdir == ''
-    for f in ['tiapp.xml', 'build.xml', 'prj.el', '.project', 'pom.xml', 
-          \ 'Makefile', 'configure', 'Rakefile', 'NAnt.build', 'tags', 'gtags']
+    for f in ['build.xml', 'pom.xml', 'prj.el',
+          \ '.project', '.settings',
+          \ 'Gruntfile.js', 'Jakefile', 'Cakefile',
+          \ 'tiapp.xml', 'NAnt.build',
+          \ 'Makefile', 'Rakefile',
+          \ 'Gemfile', 'cpanfile',
+          \ 'configure', 'tags', 'gtags',
+          \ ]
       let f = findfile(f, cdir . ';')
       if f != ''
         let pjdir = fnamemodify(f, ':p:h')
@@ -96,7 +102,18 @@ function! my#util#find_proj_dir() " {{{2
       endif
     endfor
   endif
-  if pjdir != '' && isdirectory(pjdir) | return pjdir | endif
+  if pjdir == ''
+    for d in ['src', 'lib', 'vendor', 'app']
+      let d = finddir(d, cdir . ';')
+      if d != ''
+        let pjdir = fnamemodify(d, ':p:h:h')
+        break
+      endif
+    endfor
+  endif
+  if pjdir != '' && isdirectory(pjdir)
+    return pjdir
+  endif
   return cdir
   " let proj_dirs = ['.git', 'app', 'apps', 'build']
   " if isdirectory(cdir)
@@ -137,7 +154,7 @@ function! my#util#benchmark() " {{{2
     endfor
   endfunction
 
-  function! bm.exec_eval(...) 
+  function! bm.exec_eval(...)
     let res = {}
     let argv = copy(a:000)
     let times = a:1

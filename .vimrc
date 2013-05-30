@@ -315,8 +315,10 @@ NeoBundle 'mattn/learn-vimscript'
 if has('lua') && (v:version > 703 ||
       \ (v:version == 703&& has('patch885')))
   NeoBundle 'Shougo/neocomplete'
+  NeoBundleLazy 'Shougo/neocomplcache'
 else
   NeoBundle 'Shougo/neocomplcache'
+  NeoBundleLazy 'Shougo/neocomplete'
 endif
 NeoBundle 'Shougo/neocomplcache-rsense'
 NeoBundleLazy 'm2ym/rsense', {
@@ -1641,6 +1643,14 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" neobundle {{{}}}
+function! s:plugin_loaded(name)
+  return neobundle#is_installed(a:name) && !neobundle#get(a:name).lazy
+endfunction
+function! s:plugin_installed(name)
+  return neobundle#is_installed(a:name)
+endfunction
+
 " perlomni {{{2
 if neobundle#is_installed('perlomni.vim')
   call s:path_push(neobundle#get('perlomni.vim').path . '/bin')
@@ -1829,14 +1839,6 @@ let g:eregex_default_enable=0
 " vim-trimr {{{2
 let g:trimr_method = 'ignore_filetype'
 let g:trimr_targets = ['markdown', 'mkd', 'textile']
-
-" endwize {{{2
-" inoremap <silent> <cr> <c-r>=EnterIndent()<cr>
-if neobundle#is_installed('vim-enter-indent')
-  Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<CR>\<C-r>=endwize#crend()\<CR>"
-else
-  Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
-endif
 
 " clever-f {{{2
 if neobundle#is_installed('clever-f.vim')
@@ -2505,7 +2507,11 @@ nnoremap <silent> [!unite]rg :<C-u>UniteResume grep<CR>
 nnoremap <silent> [!unite]rt :<C-u>UniteResume todo<CR>
 nnoremap <silent> [!unite]rq :<C-u>UniteResume qfix<CR>
 
-inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=noocompl -start-insert<CR>
+if s:plugin_loaded('neocomplcache')
+  inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
+else
+  inoremap <C-x><C-j> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
+endif
 
 command! Todo silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
 
@@ -2523,9 +2529,15 @@ nnoremap <silent> [!unite]V  :<C-u>call <SID>unite_open_ftplugin()<CR>
 function! s:tags_update()
     " include している tag ファイルが毎回同じとは限らないので毎回初期化
     setlocal tags=
-    for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
-        execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
-    endfor
+    if s:plugin_loaded('neocomplcache')
+      for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
+          execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
+      endfor
+    else
+      for filename in neocomplete#sources#include_complete#get_include_files(bufnr('%'))
+          execute "setlocal tags+=".neocomplete#cache#encode_name('tags_output', filename)
+      endfor
+    endif
 endfunction
 
 command!
@@ -2763,7 +2775,11 @@ function! s:exec_ctags(path) "{{{3
     call vimproc#system_bg(ctags_cmd)
   else
     execute "!" ctags_cmd
-    NeoComplCacheCachingTags
+    if s:plugin_loaded('neocomplcache')
+      NeoComplCacheCachingTags
+    else
+      NeoCompleteTagMakeCache
+    endif
   endif
   if !empty(a:path) && isdirectory(a:path)
     exe 'lcd' cwd
@@ -3563,160 +3579,7 @@ if neobundle#is_installed('neosnippet')
 endif
 
 " neocomplete, neocomplcache {{{2
-if neobundle#is_installed('neocomplete.vim')
-  " options {{{4
-  let g:neocomplete_temporary_dir = $VIM_CACHE . '/neocomplete'
-  let g:neocomplete_enable_at_startup                   = 1
-  let g:neocomplete_cursor_hold_i_time                  = 500
-  let g:neocomplete_max_list = 100  " 補完候補の数
-  let g:neocomplete_enable_auto_select = 1   " 一番目の候補を自動選択
-
-  let g:neocomplete_enable_smart_case                   = 1
-  let g:neocomplete_enable_camel_case_completion        = 0 " camel case off
-  let g:neocomplete_enable_underbar_completion          = 1
-  " let g:neocomplete_enable_auto_delimiter               = 1
-  let g:neocomplete_disable_caching_file_path_pattern   =
-        \ "\.log$\|_history$\|\.howm$\|\.jax$\|\.snippets$"
-  let g:neocomplete_lock_buffer_name_pattern            =
-        \ '\*ku\*\|\.log$\|\.jax$\|\.log\.'
-
-  let g:neocomplete_min_syntax_length                   = 3
-  " let g:neocomplete_plugin_completion_length     = {
-  " let g:neocomplete_auto_completion_start_length        = 2
-  " let g:neocomplete_manual_completion_start_length      = 1
-  " let g:neocomplete_min_keyword_length                  = 3
-  " let g:neocomplete_ignore_case                         = 0
-  " \ 'snipMate_complete' : 1,
-  " \ 'buffer_complete'   : 1,
-  " \ 'include_complete'  : 2,
-  " \ 'syntax_complete'   : 2,
-  " \ 'filename_complete' : 2,
-  " \ 'keyword_complete'  : 2,
-  " \ 'omni_complete'     : 1,
-  " \ }
-
-  call s:initialize_global_dict('neocomplete_', [
-        \ 'keyword_patterns',
-        \ 'dictionary_filetype_lists',
-        \ 'source_disable',
-        \ 'include_patterns', 'vim_completefuncs',
-        \ 'omni_patterns',
-        \ 'force_omni_patterns',
-        \ 'delimiter_patterns',
-        \ 'same_filetype_lists', 'member_prefix_patterns',
-        \ 'next_keyword_patterns',
-        \ 'include_exprs',
-        \ 'omni_functions',
-        \ 'include_paths',
-        \ ])
-
-  let g:neocomplete_keyword_patterns.default = '\h\w*' " 日本語をキャッシュしない
-
-  call extend(g:neocomplete_source_disable, {
-        \ 'syntax_complete' : 1,
-        \ })
-
-  function! s:neocomplete_dictionary_config() "{{{4
-    for fp in split(globpath("~/.vim/dict", "*.dict"), "\n")
-      let _name = fnamemodify(fp, ":p:r")
-      let g:neocomplete_dictionary_filetype_lists[_name] = fp
-    endfor
-
-    call extend(g:neocomplete_dictionary_filetype_lists, {
-          \ 'default'     : '',
-          \ 'vimshell'    : $VIM_CACHE . '/vimshell/command-history',
-          \ 'javascript'  : $HOME . '/.vim/dict/node.dict',
-          \ 'eruby'       : $HOME . '/.vim/dict/ruby.dict',
-          \ })
-    " \ 'javascript'  : $HOME . '/.vim/dict/javascript.dict',
-  endfunction "}}}
-  call s:neocomplete_dictionary_config()
-
-  let g:use_zen_complete_tag=1
-
-  call extend(g:neocomplete_vim_completefuncs, {
-        \ 'Ref'   : 'ref#complete',
-        \ 'Unite' : 'unite#complete_source',
-        \ 'VimShellExecute' :
-        \   'vimshell#vimshell_execute_complete',
-        \ 'VimShellInteractive' :
-        \   'vimshell#vimshell_execute_complete',
-        \ 'VimShellTerminal' :
-        \   'vimshell#vimshell_execute_complete',
-        \ 'VimShell' : 'vimshell#complete',
-        \ 'VimFiler' : 'vimfiler#complete',
-        \ 'Vinarise' : 'vinarise#complete',
-        \ })
-
-  let g:neocomplete_force_omni_patterns.c =
-        \ '[^.[:digit:] *\t]\%(\.\|->\)'
-  let g:neocomplete_force_omni_patterns.cpp =
-        \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-  let g:neocomplete_force_omni_patterns.cs = '[^.]\.\%(\u\{2,}\)\?'
-  " let g:neocomplete_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
-  let g:neocomplete_force_omni_patterns.objc = '[^.[:digit:] *\t]\%(\.\|->\)'
-  let g:neocomplete_force_omni_patterns.objcpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-
-  let g:neocomplete_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
-
-  let g:neocomplete_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
-
-  let g:neocomplete_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-  let g:neocomplete_delimiter_patterns.php = ['->', '::', '\']
-  let g:neocomplete_member_prefix_patterns.php = '->\|::'
-  call s:bulk_dict_variables([{
-        \   'dict' : g:neocomplete_omni_patterns,
-        \   'names' : ['twig', 'smarty'],
-        \   'value' : '<[^>]*'
-        \ }, {
-        \   'dict' : g:neocomplete_next_keyword_patterns,
-        \   'names' : ['twig', 'smarty'],
-        \   'value' : '[[:alnum:]_:-]*>\|[^"]*"'
-        \ }])
-
-
-  let g:neocomplete_include_patterns.scala = '^import'
-  " javascript
-  let g:neocomplete_omni_functions.javascript = 'nodejscomplete#CompleteJS'
-  let g:node_usejscomplete = 1
-  " haxe
-  let g:neocomplete_omni_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
-  " autohotkey
-  let g:neocomplete_include_paths.autohotkey = '.,,'
-  let g:neocomplete_include_patterns.autohotkey = '^\s*#\s*include'
-  let g:neocomplete_include_exprs.autohotkey = ''
-  " }}}
-
-  " Recommended key-mappings.
-  " <CR>: close popup and save indent.
-  " inoremap <expr><CR>  neocomplete#smart_close_popup() . "\<CR>"
-  inoremap <silent> <Cr> <C-R>=neocomplete#smart_close_popup()<CR><CR>
-
-  " <TAB>: completion.
-  " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
-  " <C-h>, <BS>: close popup and delete backword char.
-  if neobundle#is_installed('vim-smartinput')
-    inoremap <expr> <C-h>  neocomplete#smart_close_popup()
-          \ . eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<C-h>")')
-    inoremap <expr> <BS>   neocomplete#smart_close_popup()
-          \ .eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<BS>")')
-  else
-    inoremap <expr><C-h>  neocomplete#smart_close_popup()."\<C-h>"
-    inoremap <expr><BS>   neocomplete#smart_close_popup()."\<C-h>"
-  endif
-
-  inoremap <expr> <C-y>  neocomplete#close_popup()
-  inoremap <expr> <C-e>  neocomplete#cancel_popup()
-
-  inoremap <expr> <C-j> pumvisible() ? neocomplete#close_popup() : "\<CR>"
-
-  imap <C-s> <Plug>(neocomplete_start_unite_complete)
-
-  nnoremap [!space]ne :NeocompleteEnable<CR>
-  nnoremap [!space]nd :NeocompleteDisable<CR>
-
-else " neocomplcache {{{3
+if s:plugin_loaded('neocomplcache') "{{{3
   " options {{{4
   let g:neocomplcache_temporary_dir = $VIM_CACHE . '/neocomplcache'
   let g:neocomplcache_enable_at_startup                   = 1
@@ -3869,6 +3732,175 @@ else " neocomplcache {{{3
 
     nnoremap [!space]ne :NeoComplCacheEnable<CR>
     nnoremap [!space]nd :NeoComplCacheDisable<CR>
+  endif
+  " endwise
+  " inoremap <silent> <cr> <c-r>=EnterIndent()<cr>
+  if neobundle#is_installed('vim-enter-indent')
+    Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<CR>\<C-r>=endwize#crend()\<CR>"
+  else
+    Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
+  endif
+
+
+elseif s:plugin_loaded('neocomplete') "{{{3
+  " options {{{4
+  let g:neocomplete_data_directory = $VIM_CACHE . '/neocomplete'
+  let g:neocomplete_enable_at_startup                   = 1
+  let g:neocomplete_cursor_hold_i_time                  = 500
+  let g:neocomplete_max_list = 100  " 補完候補の数
+  let g:neocomplete_enable_auto_select = 1   " 一番目の候補を自動選択
+
+  let g:neocomplete_enable_smart_case                   = 1
+  let g:neocomplete_enable_camel_case_completion        = 0 " camel case off
+  let g:neocomplete_enable_underbar_completion          = 1
+  " let g:neocomplete_enable_auto_delimiter               = 1
+  let g:neocomplete_disable_caching_file_path_pattern   =
+        \ "\.log$\|_history$\|\.howm$\|\.jax$\|\.snippets$"
+  let g:neocomplete_lock_buffer_name_pattern            =
+        \ '\*ku\*\|\.log$\|\.jax$\|\.log\.'
+
+  let g:neocomplete_min_syntax_length                   = 3
+  " let g:neocomplete_plugin_completion_length     = {
+  " let g:neocomplete_auto_completion_start_length        = 2
+  " let g:neocomplete_manual_completion_start_length      = 1
+  " let g:neocomplete_min_keyword_length                  = 3
+  " let g:neocomplete_ignore_case                         = 0
+  " \ 'snipMate_complete' : 1,
+  " \ 'buffer_complete'   : 1,
+  " \ 'include_complete'  : 2,
+  " \ 'syntax_complete'   : 2,
+  " \ 'filename_complete' : 2,
+  " \ 'keyword_complete'  : 2,
+  " \ 'omni_complete'     : 1,
+  " \ }
+
+  call s:initialize_global_dict('neocomplete_', [
+        \ 'keyword_patterns',
+        \ 'dictionary_filetype_lists',
+        \ 'source_disable',
+        \ 'include_patterns', 'vim_completefuncs',
+        \ 'omni_patterns',
+        \ 'force_omni_patterns',
+        \ 'delimiter_patterns',
+        \ 'same_filetype_lists', 'member_prefix_patterns',
+        \ 'next_keyword_patterns',
+        \ 'include_exprs',
+        \ 'omni_functions',
+        \ 'include_paths',
+        \ ])
+
+  let g:neocomplete_keyword_patterns.default = '\h\w*' " 日本語をキャッシュしない
+
+  call extend(g:neocomplete_source_disable, {
+        \ 'syntax_complete' : 1,
+        \ })
+
+  function! s:neocomplete_dictionary_config() "{{{4
+    for fp in split(globpath("~/.vim/dict", "*.dict"), "\n")
+      let _name = fnamemodify(fp, ":p:r")
+      let g:neocomplete_dictionary_filetype_lists[_name] = fp
+    endfor
+
+    call extend(g:neocomplete_dictionary_filetype_lists, {
+          \ 'default'     : '',
+          \ 'vimshell'    : $VIM_CACHE . '/vimshell/command-history',
+          \ 'javascript'  : $HOME . '/.vim/dict/node.dict',
+          \ 'eruby'       : $HOME . '/.vim/dict/ruby.dict',
+          \ })
+    " \ 'javascript'  : $HOME . '/.vim/dict/javascript.dict',
+  endfunction "}}}
+  call s:neocomplete_dictionary_config()
+
+  let g:use_zen_complete_tag=1
+
+  call extend(g:neocomplete_vim_completefuncs, {
+        \ 'Ref'   : 'ref#complete',
+        \ 'Unite' : 'unite#complete_source',
+        \ 'VimShellExecute' :
+        \   'vimshell#vimshell_execute_complete',
+        \ 'VimShellInteractive' :
+        \   'vimshell#vimshell_execute_complete',
+        \ 'VimShellTerminal' :
+        \   'vimshell#vimshell_execute_complete',
+        \ 'VimShell' : 'vimshell#complete',
+        \ 'VimFiler' : 'vimfiler#complete',
+        \ 'Vinarise' : 'vinarise#complete',
+        \ })
+
+  let g:neocomplete_force_omni_patterns.c =
+        \ '[^.[:digit:] *\t]\%(\.\|->\)'
+  let g:neocomplete_force_omni_patterns.cpp =
+        \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+  let g:neocomplete_force_omni_patterns.cs = '[^.]\.\%(\u\{2,}\)\?'
+  " let g:neocomplete_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
+  let g:neocomplete_force_omni_patterns.objc = '[^.[:digit:] *\t]\%(\.\|->\)'
+  let g:neocomplete_force_omni_patterns.objcpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+
+  let g:neocomplete_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+  let g:neocomplete_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+
+  let g:neocomplete_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+  let g:neocomplete_delimiter_patterns.php = ['->', '::', '\']
+  let g:neocomplete_member_prefix_patterns.php = '->\|::'
+  call s:bulk_dict_variables([{
+        \   'dict' : g:neocomplete_omni_patterns,
+        \   'names' : ['twig', 'smarty'],
+        \   'value' : '<[^>]*'
+        \ }, {
+        \   'dict' : g:neocomplete_next_keyword_patterns,
+        \   'names' : ['twig', 'smarty'],
+        \   'value' : '[[:alnum:]_:-]*>\|[^"]*"'
+        \ }])
+
+
+  let g:neocomplete_include_patterns.scala = '^import'
+  " javascript
+  let g:neocomplete_omni_functions.javascript = 'nodejscomplete#CompleteJS'
+  let g:node_usejscomplete = 1
+  " haxe
+  let g:neocomplete_omni_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
+  " autohotkey
+  let g:neocomplete_include_paths.autohotkey = '.,,'
+  let g:neocomplete_include_patterns.autohotkey = '^\s*#\s*include'
+  let g:neocomplete_include_exprs.autohotkey = ''
+  " }}}
+
+  " Recommended key-mappings.
+  " <CR>: close popup and save indent.
+  " inoremap <expr><CR>  neocomplete#smart_close_popup() . "\<CR>"
+  inoremap <silent> <Cr> <C-R>=neocomplete#smart_close_popup()<CR><CR>
+
+  " <TAB>: completion.
+  " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
+  " <C-h>, <BS>: close popup and delete backword char.
+  if neobundle#is_installed('vim-smartinput')
+    inoremap <expr> <C-h>  neocomplete#smart_close_popup()
+          \ . eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<C-h>")')
+    inoremap <expr> <BS>   neocomplete#smart_close_popup()
+          \ .eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<BS>")')
+  else
+    inoremap <expr><C-h>  neocomplete#smart_close_popup()."\<C-h>"
+    inoremap <expr><BS>   neocomplete#smart_close_popup()."\<C-h>"
+  endif
+
+  inoremap <expr> <C-y>  neocomplete#close_popup()
+  inoremap <expr> <C-e>  neocomplete#cancel_popup()
+
+  inoremap <expr> <C-j> pumvisible() ? neocomplete#close_popup() : "\<CR>"
+
+  imap <C-s> <Plug>(neocomplete_start_unite_complete)
+
+  nnoremap [!space]ne :NeocompleteEnable<CR>
+  nnoremap [!space]nd :NeocompleteDisable<CR>
+
+  " endwise
+  " inoremap <silent> <cr> <c-r>=EnterIndent()<cr>
+  if neobundle#is_installed('vim-enter-indent')
+    Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplete#smart_close_popup():"")."\<CR>\<C-r>=endwize#crend()\<CR>"
+  else
+    Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplete#smart_close_popup():"")."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
   endif
 endif
 
@@ -4023,7 +4055,11 @@ function! s:vimshell_my_settings() " {{{3
   call vimshell#hook#add('preexec'   , 'my_preexec', s:vimshell_hooks.preexec)
 
   imap <silent> <buffer> <C-a> <C-o>:call cursor(line('.'), strlen(g:vimshell_prompt)+1)<CR>
-  inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
+  if s:plugin_loaded('neocomplcache')
+    inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
+  else
+    inoremap <expr><buffer> <C-j> pumvisible() ? neocomplete#close_popup() : ""
+  endif
 endfunction
 
 
@@ -4433,6 +4469,7 @@ if s:is_mac "{{{3
   command! -nargs=1 -complete=file That silent execute '!open' shellescape(expand(<f-args>), 1)
   command! SublimeEdit silent execute '!open' '-a' 'Sublime\ Text\ 2' shellescape(expand('%:p'))
   command! CotEdit silent execute '!open' '-a' 'CotEditor' shellescape(expand('%:p'))
+  command! Mate silent execute '!open' '-a' 'TextMate' shellescape(expand('%:p'))
 elseif s:is_win "{{{3
   " Utility command for Windows
   command! Here silent execute '!explorer' substitute(expand('%:p:h'), '/', '\', 'g')
