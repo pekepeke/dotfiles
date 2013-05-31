@@ -3542,6 +3542,10 @@ if neobundle#is_installed('neosnippet')
   endfunction
   let s:pair_closes = [ "]", "}", ")", "'", '"', ">", "|" , ","]
   function! s:imap_tab()
+    " if neosnippet#expandable()
+    "   return "\<Plug>(neosnippet_expand)"
+    " elseif neosnippet#jumpable()
+    "   return "\<Plug>(neosnippet_jump)"
     if s:can_snip()
       return "\<Plug>(neosnippet_jump_or_expand)"
     elseif pumvisible()
