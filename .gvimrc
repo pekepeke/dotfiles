@@ -24,6 +24,9 @@ if s:is_win " {{{2
   "set guifont=Anonymous\ Pro:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
   command! -nargs=0 Consolas set guifont=Consolas:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
   command! -nargs=0 Ricty set guifont=Ricty:h12 guifontwide=Ricty:h12
+  if has('directx') && &encoding == 'utf-8'
+    silent! exe 'set' 'renderoptions=type:directx'
+  endif
   Consolas
 
   if has('printer')
@@ -105,7 +108,7 @@ elseif s:is_mac "{{{2
 
     " unbind menu keys {{{3
     macmenu File.New\ Tab key=<nop>
-    
+
   endif
 else " unix setting {{{2
   set guioptions=te

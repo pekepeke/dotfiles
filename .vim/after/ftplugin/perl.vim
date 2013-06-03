@@ -18,7 +18,7 @@ nmap <silent> <buffer> [t]pm :PerlUseInsertionCWord<CR>
 
 nnoremap <buffer> <silent> [!comment-doc] :call <SID>my_pod_header()<CR>
 
-inoremap <buffer><expr> @ smartchr#one_of('@', '$this->', '@@')
+inoremap <buffer><expr> @ smartchr#one_of('@', '$self->', '@@')
 inoremap <buffer><expr> . smartchr#one_of('.', '->', '..')
 inoremap <buffer><expr> > smartchr#one_of('>', '=>', '>>')
 

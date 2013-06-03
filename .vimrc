@@ -26,7 +26,7 @@ endfunction
 
 function! s:path_push(...)
   let sep = s:is_win ? ';' : ':'
-  let pathes = s:is_win ? map(a:000, 'substitute(v:val, "/", "\\", "g")') : a:000
+  let pathes = s:is_win ? map(copy(a:000), 'substitute(v:val, "/", "\\", "g")') : a:000
   let $PATH .= sep . join(pathes, sep)
 endfunction
 
@@ -107,18 +107,18 @@ if has('vim_starting')
 
   command! -nargs=+ NeoBundleLazyOn call <SID>neobundle_lazy_on(<f-args>)
 
-  function! s:neobundle_safe_update()
+  function! s:neobundle_safe_update(bang)
     let au_org_vimproc_dll_path = g:vimproc#dll_path
     let org_vimproc_dll_path = g:vimproc_dll_path
     let g:vimproc#dll_path = ''
     let g:vimproc_dll_path = ''
     for name in map(neobundle#config#get_neobundles(), 'v:val.name')
-      execute 'NeoBundleUpdate' name
+      execute 'NeoBundleUpdate'.a:bang name
     endfor
     let g:vimproc#dll_path = au_org_vimproc_dll_path
     let g:vimproc_dll_path = org_vimproc_dll_path
   endfunction
-  command! -nargs=0 NeoBundleSafeUpdate call s:neobundle_safe_update()
+  command! -nargs=0 -bang NeoBundleSafeUpdate call s:neobundle_safe_update("<bang>")
 endif
 
 
@@ -769,7 +769,11 @@ if isdirectory(expand('~/.vim/bin/'))
   call s:path_push(expand('~/.vim/bin/'))
 endif
 if s:is_win
-  call s:path_push(expand($WINDIR . '/Microsoft.NET/Framework/v4.0.30319/'))
+  let dotnets = sort(split(globpath($WINDIR . '/Microsoft.NET/Framework/', 'v*'), "\n"))
+  if !empty(dotnets)
+    call s:path_push(dotnets[-1])
+  endif
+  unlet dotnets
 endif
 " }}}
 
@@ -901,6 +905,12 @@ augroup END
 "     endif
 "   endfunction
 " endif
+
+MyAutocmd BufReadPost *
+      \   if &modifiable && !search('[^\x00-\x7F]', 'cnw')
+      \ |   setlocal fileencoding=
+      \ | endif
+
 " http://vim-users.jp/2009/10/hack84/
 MyAutocmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
 MyAutocmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
@@ -1339,6 +1349,14 @@ nnoremap [!space]= call my#ui#indent_whole_buffer()
 " insert timestamp
 nmap <silent> [!t]w :exe "normal! i" . strftime("%Y-%m-%d\T%H:%M:%S+09:00")<CR>
 
+" tab switch
+for i in range(10)
+  exe 'nnoremap <silent>' ('[!t]'.i) (((i+10) % 10).'gt')
+endfor
+unlet i
+nnoremap <silent> [!t]n gt
+nnoremap <silent> [!t]p gT
+
 " redraw map
 nmap <silent> [!s]r :redraw!<CR>
 
@@ -1457,8 +1475,9 @@ nnoremap <silent> [!space]hk :<C-u>call <SID>show_mapping()<CR>
 nnoremap [!space]/ :<C-u>nohlsearch<CR>
 nnoremap [!space]w :<C-u>call <SID>toggle_option("wrap")<CR>
 
-
 nnoremap <C-w><Space> <C-w>p
+nnoremap <C-w>*  <C-w>s*
+nnoremap <C-w>#  <C-w>s#
 
 nnoremap [!prefix]ds :call <SID>replace_at_caret_data_scheme()<CR>
 function! s:replace_at_caret_data_scheme() " {{{3
@@ -2075,8 +2094,10 @@ if neobundle#is_installed('vim-altr')
   call altr#define('View/Helper/%.php', 'Test/Case/View/Helper/%Test.php')
   call altr#define('View/%.php', 'Test/Case/View/%Test.php')
 
-  nmap [!space]j <Plug>(altr-forward)
   nmap [!space]k <Plug>(altr-back)
+  nmap [!space]j <Plug>(altr-forward)
+  nmap <F1> <Plug>(altr-back)
+  nmap <F2> <Plug>(altr-forward)
 endif
 
 " vim-template "{{{2
@@ -3124,6 +3145,10 @@ call extend(g:quickrun_config, {
       \    'command': 'osascript',
       \    'exec' : ['osascript ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
       \  },
+      \  'processing/processing-java' : {
+      \    'command': 'processing-java',
+      \    'exec' : '%c --sketch=$PWD/ --output=/Library/Processing --run --force',
+      \  },
       \  'applescript/osascript' : {
       \    'command' : 'osascript',
       \    'output' : '_',
@@ -3226,7 +3251,8 @@ call extend(g:quickrun_config, {
       \              '',
       \   },
       \   'processing' : {
-      \     'type' : executable('osascript') ? 'processing/osascript':
+      \     'type' : executable('processing-java') ? 'processing/processing-java' :
+      \              executable('osascript') ? 'processing/osascript':
       \              '',
       \   },
       \   'applescript' : {
