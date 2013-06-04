@@ -7,6 +7,7 @@ set cpo&vim
 setl includeexpr=substitute(v:fname,'^\\/','','')
 setl path+=;/
 
+setl commentstring=//\ %s
 " setl formatoptions-=r,o
 " setl iskeyword-=$,\-,:
 setl formatoptions-=r,o iskeyword-=- iskeyword-=$ iskeyword-=:

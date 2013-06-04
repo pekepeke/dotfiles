@@ -494,6 +494,7 @@ NeoBundleLazyOn FileType perl 'y-uuki/perl-local-lib-path.vim'
 NeoBundleLazyOn FileType c,cpp 'vim-scripts/DoxygenToolkit.vim'
 NeoBundleLazyOn FileType c,cpp,objc 'Rip-Rip/clang_complete'
 NeoBundleLazyOn FileType qml 'peterhoeg/vim-qml'
+"NeoBundleLazyOn FileType cpp 'OmniCppComplete'
 
 " C# {{{4
 NeoBundleLazyOn FileType cs 'OrangeT/vim-csharp'
@@ -601,7 +602,7 @@ NeoBundleLazyOn FileType php 'violetyk/cake.vim'
 NeoBundle 'mattn/vdbi-vim'
 NeoBundleLazyOn FileType sql 'vim-scripts/dbext.vim'
 NeoBundleLazyOn FileType sql 'vim-scripts/SQLUtilities'
-"NeoBundle 'OmniCppComplete'
+" NeoBundleLazyOn FileType sql 'vim-scripts/SQLComplete.vim'
 
 " etc {{{4
 NeoBundleLazyOn FileType lua 'xolox/vim-lua-ftplugin'
@@ -2555,7 +2556,7 @@ function! s:tags_update()
           execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
       endfor
     else
-      for filename in neocomplete#sources#include_complete#get_include_files(bufnr('%'))
+      for filename in neocomplete#sources#include#get_include_files(bufnr('%'))
           execute "setlocal tags+=".neocomplete#cache#encode_name('tags_output', filename)
       endfor
     endif
@@ -3774,27 +3775,27 @@ if s:plugin_loaded('neocomplcache') "{{{3
 
 elseif s:plugin_loaded('neocomplete') "{{{3
   " options {{{4
-  let g:neocomplete_data_directory = $VIM_CACHE . '/neocomplete'
-  let g:neocomplete_enable_at_startup                   = 1
-  let g:neocomplete_cursor_hold_i_time                  = 500
-  let g:neocomplete_max_list = 100  " 補完候補の数
-  let g:neocomplete_enable_auto_select = 1   " 一番目の候補を自動選択
+  let g:neocomplete#data_directory = $VIM_CACHE . '/neocomplete'
+  let g:neocomplete#enable_at_startup                   = 1
+  let g:neocomplete#cursor_hold_i_time                  = 500
+  let g:neocomplete#max_list = 100  " 補完候補の数
+  let g:neocomplete#enable_auto_select = 1   " 一番目の候補を自動選択
 
-  let g:neocomplete_enable_smart_case                   = 1
-  let g:neocomplete_enable_camel_case_completion        = 0 " camel case off
-  let g:neocomplete_enable_underbar_completion          = 1
-  " let g:neocomplete_enable_auto_delimiter               = 1
-  let g:neocomplete_disable_caching_file_path_pattern   =
+  let g:neocomplete#enable_smart_case                   = 1
+  let g:neocomplete#enable_camel_case_completion        = 0 " camel case off
+  let g:neocomplete#enable_underbar_completion          = 1
+  " let g:neocomplete#enable_auto_delimiter               = 1
+  let g:neocomplete#disable_caching_file_path_pattern   =
         \ "\.log$\|_history$\|\.howm$\|\.jax$\|\.snippets$"
-  let g:neocomplete_lock_buffer_name_pattern            =
+  let g:neocomplete#lock_buffer_name_pattern            =
         \ '\*ku\*\|\.log$\|\.jax$\|\.log\.'
 
-  let g:neocomplete_min_syntax_length                   = 3
-  " let g:neocomplete_plugin_completion_length     = {
-  " let g:neocomplete_auto_completion_start_length        = 2
-  " let g:neocomplete_manual_completion_start_length      = 1
-  " let g:neocomplete_min_keyword_length                  = 3
-  " let g:neocomplete_ignore_case                         = 0
+  let g:neocomplete#min_syntax_length                   = 3
+  " let g:neocomplete#plugin_completion_length     = {
+  " let g:neocomplete#auto_completion_start_length        = 2
+  " let g:neocomplete#manual_completion_start_length      = 1
+  " let g:neocomplete#min_keyword_length                  = 3
+  " let g:neocomplete#ignore_case                         = 0
   " \ 'snipMate_complete' : 1,
   " \ 'buffer_complete'   : 1,
   " \ 'include_complete'  : 2,
@@ -3804,7 +3805,7 @@ elseif s:plugin_loaded('neocomplete') "{{{3
   " \ 'omni_complete'     : 1,
   " \ }
 
-  call s:initialize_global_dict('neocomplete_', [
+  call s:initialize_global_dict('neocomplete#', [
         \ 'keyword_patterns',
         \ 'dictionary_filetype_lists',
         \ 'source_disable',
@@ -3819,19 +3820,19 @@ elseif s:plugin_loaded('neocomplete') "{{{3
         \ 'include_paths',
         \ ])
 
-  let g:neocomplete_keyword_patterns.default = '\h\w*' " 日本語をキャッシュしない
+  let g:neocomplete#keyword_patterns.default = '\h\w*' " 日本語をキャッシュしない
 
-  call extend(g:neocomplete_source_disable, {
+  call extend(g:neocomplete#source_disable, {
         \ 'syntax_complete' : 1,
         \ })
 
   function! s:neocomplete_dictionary_config() "{{{4
     for fp in split(globpath("~/.vim/dict", "*.dict"), "\n")
       let _name = fnamemodify(fp, ":p:r")
-      let g:neocomplete_dictionary_filetype_lists[_name] = fp
+      let g:neocomplete#dictionary_filetype_lists[_name] = fp
     endfor
 
-    call extend(g:neocomplete_dictionary_filetype_lists, {
+    call extend(g:neocomplete#dictionary_filetype_lists, {
           \ 'default'     : '',
           \ 'vimshell'    : $VIM_CACHE . '/vimshell/command-history',
           \ 'javascript'  : $HOME . '/.vim/dict/node.dict',
@@ -3843,7 +3844,7 @@ elseif s:plugin_loaded('neocomplete') "{{{3
 
   let g:use_zen_complete_tag=1
 
-  call extend(g:neocomplete_vim_completefuncs, {
+  call extend(g:neocomplete#vim_completefuncs, {
         \ 'Ref'   : 'ref#complete',
         \ 'Unite' : 'unite#complete_source',
         \ 'VimShellExecute' :
@@ -3857,44 +3858,45 @@ elseif s:plugin_loaded('neocomplete') "{{{3
         \ 'Vinarise' : 'vinarise#complete',
         \ })
 
-  let g:neocomplete_force_omni_patterns.c =
+  let g:neocomplete#force_omni_patterns.c =
         \ '[^.[:digit:] *\t]\%(\.\|->\)'
-  let g:neocomplete_force_omni_patterns.cpp =
+  let g:neocomplete#force_omni_patterns.cpp =
         \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-  let g:neocomplete_force_omni_patterns.cs = '[^.]\.\%(\u\{2,}\)\?'
-  " let g:neocomplete_force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
-  let g:neocomplete_force_omni_patterns.objc = '[^.[:digit:] *\t]\%(\.\|->\)'
-  let g:neocomplete_force_omni_patterns.objcpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+  let g:neocomplete#force_omni_patterns.cs = '[^.]\.\%(\u\{2,}\)\?'
+  " let g:neocomplete#force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
+  let g:neocomplete#force_omni_patterns.objc = '[^.[:digit:] *\t]\%(\.\|->\)'
+  let g:neocomplete#force_omni_patterns.objcpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
-  let g:neocomplete_omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+  let g:neocomplete#omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
-  let g:neocomplete_omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+  let g:neocomplete#omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
 
-  let g:neocomplete_omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
-  let g:neocomplete_delimiter_patterns.php = ['->', '::', '\']
-  let g:neocomplete_member_prefix_patterns.php = '->\|::'
+  let g:neocomplete#omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+  let g:neocomplete#delimiter_patterns.php = ['->', '::', '\']
+  let g:neocomplete#member_prefix_patterns.php = '->\|::'
   call s:bulk_dict_variables([{
-        \   'dict' : g:neocomplete_omni_patterns,
+        \   'dict' : g:neocomplete#omni_patterns,
         \   'names' : ['twig', 'smarty'],
         \   'value' : '<[^>]*'
         \ }, {
-        \   'dict' : g:neocomplete_next_keyword_patterns,
+        \   'dict' : g:neocomplete#next_keyword_patterns,
         \   'names' : ['twig', 'smarty'],
         \   'value' : '[[:alnum:]_:-]*>\|[^"]*"'
         \ }])
 
 
-  let g:neocomplete_include_patterns.scala = '^import'
+  let g:neocomplete#include_patterns.scala = '^import'
   " javascript
-  let g:neocomplete_omni_functions.javascript = 'nodejscomplete#CompleteJS'
+  let g:neocomplete#omni_functions.javascript = 'nodejscomplete#CompleteJS'
   let g:node_usejscomplete = 1
   " haxe
-  let g:neocomplete_omni_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
+  let g:neocomplete#omni_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
   " autohotkey
-  let g:neocomplete_include_paths.autohotkey = '.,,'
-  let g:neocomplete_include_patterns.autohotkey = '^\s*#\s*include'
-  let g:neocomplete_include_exprs.autohotkey = ''
+  let g:neocomplete#include_paths.autohotkey = '.,,'
+  let g:neocomplete#include_patterns.autohotkey = '^\s*#\s*include'
+  let g:neocomplete#include_exprs.autohotkey = ''
   " }}}
+
 
   " Recommended key-mappings.
   " <CR>: close popup and save indent.
