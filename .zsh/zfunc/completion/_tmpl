@@ -1,0 +1,11 @@
+# tmpl
+compdef _tmpl tmpl
+function _tmpl {
+  local -a _candidates
+
+  _candidates=( `find ~/.tmpl/* -type d -maxdepth 0 -exec basename '{}' ';'` )
+  _describe -t templates "Templates" _candidates
+
+  return 1;
+}
+# vim:fdm=marker sw=2 ts=2 ft=zsh noexpandtab:
