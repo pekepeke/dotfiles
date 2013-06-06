@@ -117,13 +117,22 @@ shrc_section_title "keybind from terminfo" #{{{2
 
 shrc_section_title "keybind" #{{{2
 bindkey -v
-shrc_section_title "for command mode" #{{{2
+shrc_section_title "for command mode" #{{{3
 bindkey -a 'O' push-line
 bindkey -a 'H' run-help
 bindkey -a '^A' beginning-of-line
 bindkey -a '^E' end-of-line
 
-## for insert mode {{{2
+## cheat-sheet # {{{3
+cheat-sheet () { zle -M "`cat ~/.zsh/cheat/zsh-cheat.conf`" }
+zle -N cheat-sheet
+bindkey -v "^]^h" cheat-sheet
+
+git-cheat () { zle -M "`cat ~/.zsh/cheat/git-cheat.conf`" }
+zle -N git-cheat
+bindkey -v "^]^g" git-cheat
+
+## for insert mode {{{3
 bindkey -v '^[OH' beginning-of-line
 bindkey -v '^[OF' end-of-line
 bindkey -v "\e[1~" begginning-of-line   # Home
@@ -131,7 +140,7 @@ bindkey -v "\e[4~" end-of-line          # End
 bindkey -v "^[[3~" delete-char          # Del
 bindkey -v "\e[Z" reverse-menu-complete # S-Tab
 
-## emacs like {{{2
+## emacs like {{{3
 bindkey -v '^D' delete-char
 bindkey -v '^H' backward-delete-char
 bindkey -v '^W' backward-kill-word
@@ -144,7 +153,7 @@ bindkey -v '^S' history-incremental-search-forward
 bindkey -v '^Y' yank
 bindkey -v '^R' history-incremental-pattern-search-backward
 
-# surround.vimみたいにクォートで囲む <<<
+# surround.vimみたいにクォートで囲む <<< # {{{3
 # http://d.hatena.ne.jp/mollifier/20091220/p1
 autoload -U modify-current-argument
 # シングルクォート用
@@ -168,7 +177,7 @@ bindkey -v '^[d' _quote-previous-word-in-double
 # WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 WORDCHARS='*?_-[]~=&;!#$%^(){}<>'
 
-# コマンドラインの単語区切りを設定する <<<
+# コマンドラインの単語区切りを設定する <<< # {{{3
 # http://d.hatena.ne.jp/sugyan/20100712/1278869962
 autoload -Uz select-word-style
 select-word-style default

@@ -13,6 +13,12 @@
 scriptencoding utf-8
 let $VIM_CACHE = $HOME . '/.cache'
 
+if v:version == 703 && has('patch970')
+  set regexpengine=1
+  command! -nargs=0 RegexpEngineNFA set regexpengine=0
+  command! -nargs=0 RegexpEngineOLD set regexpengine=0
+endif
+
 " platform detection {{{2
 let s:is_win = has('win16') || has('win32') || has('win64')
 let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim')
@@ -1343,6 +1349,26 @@ nnoremap <silent> [!s]X X
 " http://vim-users.jp/2009/10/hack91/
 cnoremap <expr> /  getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr> ?  getcmdtype() == '?' ? '\?' : '?'
+
+nnoremap <silent> o :call <SID>smart_comment_map("o")<CR>
+nnoremap <silent> O :call <SID>smart_comment_map("O")<CR>
+
+function! s:smart_comment_map(key)
+  let line = getline('.')
+  " TODO
+  let mark = "*"
+  let org=&formatoptions
+  if line =~ '^\s*'. substitute(mark, '\([\*\$]\)', '\\\1', 'g')
+    " 1行ずつでないと有功にならない
+    setl formatoptions+=r
+    setl formatoptions+=o
+  else
+    setl formatoptions-=r
+    setl formatoptions-=o
+  endif
+  silent execute 'normal!' a:key
+  let &formatoptions=org
+endfunction
 
 " indent whole buffer
 nnoremap [!space]= call my#ui#indent_whole_buffer()
