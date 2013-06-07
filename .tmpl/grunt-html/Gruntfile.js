@@ -13,6 +13,7 @@ module.exports = function (grunt) {
     connect: {
       livereload: {
         options: {
+          hostname : '0.0.0.0',
           port: 9001,
           middleware: function(connect, options) {
             return [lrSnippet, folderMount(connect, '.')];
@@ -26,11 +27,11 @@ module.exports = function (grunt) {
         tasks: ['livereload']
       },
       css: {
-        files: 'public/**/*.css',
+        files: 'stylesheets/**/*.css',
         tasks: ['livereload']
       },
       javascript: {
-        files: 'public/**/*.js',
+        files: 'javascripts/**/*.js',
         tasks: ['livereload']
       }
     }

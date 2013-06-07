@@ -1,5 +1,5 @@
+# compdef sheets
 # sheet
-compdef _sheets sheet
 function _sheets {
   local -a cmds
   _files -W  ~/.sheets/ -P '~/.sheets/'

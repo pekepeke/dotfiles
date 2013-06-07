@@ -16,7 +16,7 @@ let $VIM_CACHE = $HOME . '/.cache'
 if v:version == 703 && has('patch970')
   set regexpengine=1
   command! -nargs=0 RegexpEngineNFA set regexpengine=0
-  command! -nargs=0 RegexpEngineOLD set regexpengine=0
+  command! -nargs=0 RegexpEngineOLD set regexpengine=1
 endif
 
 " platform detection {{{2
@@ -801,10 +801,10 @@ function! s:highlights_add() "{{{3
   " highlight link TrailingSpaces Error
   highlight TrailingSpaces ctermbg=darkgray guibg=#222222
   " highlight clear CursorLine
-  "hi CursorLine gui=underline term=underline cterm=underline
+  " highlight CursorLine gui=underline term=underline cterm=underline
   " highlight CursorLine ctermbg=black guibg=black
   highlight link VimShellError WarningMsg
-  " highlight qf_error_ucurl term=underline ctermfg=red gui=undercurl guisp=red
+  highlight qf_error_ucurl term=underline cterm=underline ctermfg=darkred ctermbg=none gui=undercurl guisp=red
 endfunction
 
 function! s:syntaxes_add() "{{{3
@@ -1350,25 +1350,26 @@ nnoremap <silent> [!s]X X
 cnoremap <expr> /  getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr> ?  getcmdtype() == '?' ? '\?' : '?'
 
-nnoremap <silent> o :call <SID>smart_comment_map("o")<CR>
-nnoremap <silent> O :call <SID>smart_comment_map("O")<CR>
-
-function! s:smart_comment_map(key)
-  let line = getline('.')
-  " TODO
-  let mark = "*"
-  let org=&formatoptions
-  if line =~ '^\s*'. substitute(mark, '\([\*\$]\)', '\\\1', 'g')
-    " 1行ずつでないと有功にならない
-    setl formatoptions+=r
-    setl formatoptions+=o
-  else
-    setl formatoptions-=r
-    setl formatoptions-=o
-  endif
-  silent execute 'normal!' a:key
-  let &formatoptions=org
-endfunction
+" XXX
+" nnoremap <silent> o :call <SID>smart_comment_map("o")<CR>i
+" nnoremap <silent> O :call <SID>smart_comment_map("O")<CR>i
+"
+" function! s:smart_comment_map(key)
+"   let line = getline('.')
+"   " TODO
+"   let mark = "*"
+"   let org=&formatoptions
+"   if line =~ '^\s*'. substitute(mark, '\([\*\$]\)', '\\\1', 'g')
+"     " 1行ずつでないと有功にならない
+"     setl formatoptions+=r
+"     setl formatoptions+=o
+"   else
+"     setl formatoptions-=r
+"     setl formatoptions-=o
+"   endif
+"   execute 'normal!' a:key
+"   let &formatoptions=org
+" endfunction
 
 " indent whole buffer
 nnoremap [!space]= call my#ui#indent_whole_buffer()
@@ -1447,7 +1448,7 @@ function! s:my_quickfix_settings()
 endfunction
 
 " quickfix のエラー箇所を波線でハイライト
-" let g:hier_highlight_group_qf  = "qf_error_ucurl"
+let g:hier_highlight_group_qf  = "qf_error_ucurl"
 function! s:my_make_settings()
   HierUpdate
   QuickfixStatusEnable
@@ -4863,6 +4864,9 @@ function! s:ctagsutil.tagbar_source(...) "{{{4
 endfunction
 " TagsConfigExample {{{3
 command! -nargs=0 TagsConfigExample call s:ctagsutil.show()
+
+" for vim {{{3}}}
+command! -nargs=0 ThisSyntaxName echo synIDattr(synID(line("."), col("."), 1), "name")
 
 " after initializes {{{1
 if !has('vim_starting') && has('gui_running')
