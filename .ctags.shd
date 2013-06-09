@@ -1,3 +1,7 @@
+## perl -ne 'print unless /^\s*#/'
+# vim:fdm=marker sw=2 ts=2 ft=conf noexpandtab:
+
+## objective-c {{{1
 --langdef=objc
 --langmap=objc:.m.h
 --regex-objc=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+):[[:space:]]*\(/\1/m,method/
@@ -7,9 +11,12 @@
 --regex-objc=/^[[:space:]]*\@implementation[[:space:]]+(.*)$/\1/c,class/
 --regex-objc=/^[[:space:]]*\@interface[[:space:]]+(.*)[[:space:]]+:.*{/\1/i,interface/
 
+## ruby {{{1
 --regex-ruby=/^[[:space:]]*(has_(one|many)|has_and_belongs_to_many|belongs_to)[[:space:]]+:([a-z0-9_]+)/\3/
 --regex-ruby=/^[[:space:]]*attr_(reader|writer|accessor)[[:space:]]+:([a-z0-9_?]+)/\2/
 
+## javascript {{{1
+# --regex-javascript=/^[ \t]*(['"]?)([A-Za-z0-9_.]+)\1[ \t]*[:=][ \t]*function[ \t]*\(/\2/I,inner/i
 --langdef=js
 --langmap=js:.js
 --regex-js=/(,|(;|^)[ \t]*(var|let|([A-Za-z_$][A-Za-z0-9_$.]+\.)*))[ \t]*([A-Za-z0-9_$]+)[ \t]*=[ \t]*\{/\5/o,object/
@@ -30,6 +37,7 @@
 --regex-js=/(,|^)[ \t]*([A-Za-z_$][A-Za-z0-9_$]+)[ \t]*:[ \t]*[0-9]+/\2/n,number/
 --regex-js=/(,|^)[ \t]*([A-Za-z_$][A-Za-z0-9_$]+)[ \t]*:[ \t]*[^=]+([,;]|$)/\2/v,variable/
 
+## coffee {{{1
 --langdef=coffee
 --langmap=coffee:.coffee
 --regex-coffee=/class ([A-Za-z.]+)/\1/c,class/
@@ -40,6 +48,7 @@
 --regex-coffee=/^[ \t]*([ \t][a-z]+)[ \t]*=.*$/\1/v,var/
 --regex-coffee=/^[ \t]*(@[A-Za-z]+)[ \t]*=.*$/\1/i,ivar/
 
+## typescript {{{1
 --langdef=typescript
 --langmap=typescript:.ts
 --regex-typescript=/^[ \t]*(export)?[ \t]*class[ \t]+([a-zA-Z0-9_]+)/\2/c,classes/
@@ -51,6 +60,7 @@
 --regex-typescript=/^[ \t]*(export)?[ \t]*interface[ \t]+([a-zA-Z0-9_]+)/\2/i,interfaces/
 --regex-typescript=/^[ \t]*(export)?[ \t]*enum[ \t]+([a-zA-Z0-9_]+)/\2/e,enums/
 
+## haxe {{{1
 --langdef=haxe
 --langmap=haxe:.hx
 --regex-haxe=/^package[ \t]+([A-Za-z0-9_.]+)/\1/p,package/
@@ -63,9 +73,11 @@
 --regex-haxe=/^[ \t]*enum[ \t]+([A-Za-z0-9_]+)/\1/t,typedef/
 --regex-haxe=/^[ \t]*([A-Za-z0-9_]+)(;|\([^)]*:[^)]*\))/\1/t,enum_field/
 
+## PHP {{{1
 --langmap=PHP:+.inc
 --php-types=c+f+d
 
+## actionscript {{{1
 --langdef=actionscript
 --langmap=actionscript:.as
 --regex-actionscript=/^[ \t]*[(private| public|static) ( \t)]*function[ \t]+([A-Za-z0-9_]+)[ \t]*\(/\1/f, function, functions/
@@ -74,6 +86,7 @@
 --regex-actionscript=/.*\.prototype \.([A-Za-z0-9 ]+)=([ \t]?)function( [ \t]?)*\(/\1/ f,function, functions/
 --regex-actionscript=/^[ \t]*class[ \t]+([A-Za-z0-9_]+)[ \t]*/\1/c,class, classes/
 
+## scala {{{1
 --langdef=scala
 --langmap=scala:.scala
 --regex-scala=/^[ \t]*(((implicit|private|public)?[ \t]*)*(\[[a-zA-Z0-9_]*\])?[ \t]*)*class[ \t]*([a-zA-Z0-9_]+)/\5/c,classes/
@@ -88,6 +101,7 @@
 --regex-scala=/^[ \t]*import[ \t]*([a-zA-Z0-9_{}., \t=>]+$)/\1/i,includes/
 --regex-scala=/^[ \t]*package[ \t]*([a-zA-Z0-9_.]+$)/\1/p,packages/
 
+## latex {{{1
 --langdef=latex
 --langmap=latex:.tex
 --regex-latex=/^\\part[[:space:]]*(\[[^]]*\])?[[:space:]]*\{([^}]+)\}/PART \2/s,part/
@@ -106,7 +120,11 @@
 --regex-latex=/\\ref[[:space:]]*\{([^}]+)\}/\1/r,ref/
 --regex-latex=/\\pageref[[:space:]]*\{([^}]+)\}/\1/p,pageref/
 
+## make {{{1
 --regex-make=/^([^:# \t]+)[ \t]*[:]{1,2}/\1/t,targets/
 
+## ant {{{1
 --regex-ant=/^[ \t]*<[ \t]*project.*name="([a-zA-Z0-9 ]+)".*>/\1/p,project/i
 --regex-ant=/^[ \t]*<[ \t]*target.*name="([a-zA-Z0-9 ]+)".*>/\1/t,target/i
+
+# __END__ {{{1

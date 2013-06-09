@@ -6,6 +6,8 @@ snippet date
 	`strftime("%Y-%m-%d")`
 snippet now
 	`strftime("%Y-%m-%d %H:%M:%S")`
+snippet file_name
+	`bufname('%') =='[Command Line]' ? expand('#:t:r') : expand('%:t:r')`${0}
 snippet coding:
 	# -*- coding: `&fileencoding` -*-
 # modeline vim[colon]{{{1

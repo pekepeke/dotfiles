@@ -85,7 +85,7 @@ else
 endif
 
 " preexec for runtimepath {{{1
-set nocompatible
+" set nocompatible
 filetype off
 
 " vundle {{{1
@@ -113,18 +113,20 @@ if has('vim_starting')
 
   command! -nargs=+ NeoBundleLazyOn call <SID>neobundle_lazy_on(<f-args>)
 
-  function! s:neobundle_safe_update(bang)
+  function! s:neobundle_safe_update(bang, ...)
     let au_org_vimproc_dll_path = g:vimproc#dll_path
     let org_vimproc_dll_path = g:vimproc_dll_path
     let g:vimproc#dll_path = ''
     let g:vimproc_dll_path = ''
-    for name in map(neobundle#config#get_neobundles(), 'v:val.name')
-      execute 'NeoBundleUpdate'.a:bang name
-    endfor
+    let plugin_names = map(neobundle#config#get_neobundles(), 'v:val.name')
+    if a:0 > 0
+      let plugin_names = plugin_names[a:1 : (a:0 > 1 ? a:1 + a:2 : -1)]
+    endif
+    execute 'NeoBundleUpdate'.a:bang join(plugin_names, " ")
     let g:vimproc#dll_path = au_org_vimproc_dll_path
     let g:vimproc_dll_path = org_vimproc_dll_path
   endfunction
-  command! -nargs=0 -bang NeoBundleSafeUpdate call s:neobundle_safe_update("<bang>")
+  command! -nargs=* -bang NeoBundleSafeUpdate call s:neobundle_safe_update("<bang>", <f-args>)
 endif
 
 
@@ -137,7 +139,7 @@ if !s:is_win && (has('python') || has('python3'))
   NeoBundle 'zhaocai/linepower.vim'
   NeoBundleLazy 'Lokaltog/vim-powerline'
 else
-  NeoBundleLazy 'zhaocai/powerline', { 'rtp' : 'powerline/bindings/vim'}
+  NeoBundleLazy 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
   NeoBundle 'Lokaltog/vim-powerline'
 endif
 
@@ -178,14 +180,14 @@ NeoBundleLazy 'Shougo/vimfiler', {
       \      'explorer' : 1,
       \   }
       \ }
-NeoBundle 'Shougo/vimproc', {
+NeoBundle 'Shougo/vimproc.vim', {
       \ 'build' : {
       \     'cygwin' : 'make -f make_cygwin.mak',
       \     'mac'    : 'make -f make_mac.mak',
       \     'unix'   : 'make -f make_gcc.mak',
       \   }
       \ }
-NeoBundle 'Shougo/vimshell', {'depends': 'Shougo/vimproc'}
+NeoBundle 'Shougo/vimshell', {'depends': 'Shougo/vimproc.vim'}
 NeoBundle 'Shougo/vinarise'
 NeoBundle 'Shougo/junkfile.vim'
 NeoBundle 'yomi322/vim-gitcomplete'
@@ -285,17 +287,28 @@ NeoBundle 'tomtom/tcomment_vim'
 NeoBundle 'thinca/vim-template'
 NeoBundle 'mattn/sonictemplate-vim'
 NeoBundle 'ciaranm/detectindent'
-" NeoBundle 'ujihisa/shadow.vim'
+NeoBundle 'ujihisa/shadow.vim'
 " NeoBundle 'motemen/git-vim'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-git'
 NeoBundleLazy 'gregsexton/gitv', {
       \   'commands' : ['Gitv'],
       \ }
+NeoBundle 'violetyk/gitquick.vim'
 NeoBundle 'int3/vim-extradite'
 NeoBundleLazy 'Shougo/vim-vcs'
 NeoBundle 'sjl/splice.vim'
-NeoBundle 'vim-scripts/DirDiff.vim'
+NeoBundleLazy 'vim-scripts/DirDiff.vim', {
+      \   'autoload': {
+      \     'commands' : [
+      \       'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
+      \       'DirDiffUpdate', 'DirDiffQuit', {
+      \         'name': 'DirDiff',
+      \         'complete': 'dir',
+      \       },
+      \     ],
+      \   },
+      \ }
 NeoBundleLazy 'mbadran/headlights'
 NeoBundle 'thinca/vim-ft-diff_fold'
 NeoBundle 'AndrewRadev/linediff.vim'
@@ -335,24 +348,25 @@ NeoBundleLazy 'm2ym/rsense', {
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'basyura/csharp_complete'
 NeoBundle 'osyo-manga/neocomplcache-jsx'
+NeoBundle 'hrsh7th/vim-neco-calc'
 
 " ruby {{{4
-NeoBundle 'vim-ruby/vim-ruby'
+NeoBundleLazyOn FileType ruby 'vim-ruby/vim-ruby'
 NeoBundle 'tpope/vim-rails'
 " NeoBundle 'tpope/vim-bundler'
 NeoBundle 'tobiassvn/vim-gemfile'
-NeoBundle 'hallison/vim-ruby-sinatra'
+NeoBundleLazyOn FileType ruby 'hallison/vim-ruby-sinatra'
 " NeoBundle 'tpope/vim-rake'
 " NeoBundle 'taq/vim-rspec'
-NeoBundle 'skwp/vim-rspec'
+NeoBundleLazyOn FileType ruby 'skwp/vim-rspec'
 NeoBundleLazyOn FileType ruby 'tpope/vim-cucumber'
 NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
 NeoBundleLazyOn FileType ruby 'yaymukund/vim-rabl'
 NeoBundleLazyOn FileType eruby 'vim-scripts/eruby.vim'
-NeoBundle 't9md/vim-chef'
+NeoBundleLazyOn FileType ruby 't9md/vim-chef'
 NeoBundleLazyOn FileType puppet 'rodjek/vim-puppet'
-NeoBundle 'rhysd/unite-ruby-require.vim'
-NeoBundle 'rhysd/neco-ruby-keyword-args'
+NeoBundleLazyOn FileType ruby 'rhysd/unite-ruby-require.vim'
+NeoBundleLazyOn FileType ruby 'rhysd/neco-ruby-keyword-args'
 if has("signs") && has("clientserver") && v:version > 700
   NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
 else
@@ -395,16 +409,16 @@ NeoBundleLazyOn FileType html,eruby,php 'mattn/zencoding-vim'
 NeoBundleLazyOn FileType mustache 'juvenn/mustache.vim'
 
 " css {{{4
-NeoBundleLazyOn FileType html,javascript,css,sass,scss,less 'Rykka/colorv.vim'
+NeoBundleLazyOn FileType html,javascript,css,sass,scss,less,slim,stylus 'Rykka/colorv.vim'
 
-NeoBundle 'ChrisYip/Better-CSS-Syntax-for-Vim'
+NeoBundleLazyOn FileType sass,scss,less,slim,stylus,css 'ChrisYip/Better-CSS-Syntax-for-Vim'
 " NeoBundle 'ap/vim-css-color'
 " NeoBundle 'lilydjwg/colorizer'
-NeoBundle 'hail2u/vim-css3-syntax'
-NeoBundle 'cakebaker/scss-syntax.vim'
-NeoBundle 'wavded/vim-stylus'
-NeoBundle 'groenewege/vim-less'
-NeoBundle 'slim-template/vim-slim'
+NeoBundleLazyOn FileType sass,scss,less,slim,stylus,css 'hail2u/vim-css3-syntax'
+NeoBundleLazyOn FileType sass,scss 'cakebaker/scss-syntax.vim'
+NeoBundleLazyOn FileType less 'groenewege/vim-less'
+NeoBundleLazyOn FileType stylus 'wavded/vim-stylus'
+NeoBundleLazyOn FileType slim 'slim-template/vim-slim'
 NeoBundleLazyOn FileType css 'miripiruni/CSScomb-for-Vim'
 NeoBundleLazyOn FileType css 'vim-scripts/cssbaseline.vim'
 NeoBundleLazyOn FileType css 'bae22/prefixer'
@@ -425,8 +439,8 @@ if has('python')
 endif
 NeoBundleLazyOn FileType javascript 'teramako/jscomplete-vim'
 NeoBundleLazyOn FileType javascript 'myhere/vim-nodejs-complete'
-NeoBundle 'mklabs/grunt.vim'
-NeoBundle 'leshill/vim-json'
+NeoBundleLazyOn FileType javascript 'mklabs/grunt.vim'
+NeoBundleLazyOn FileType json 'leshill/vim-json'
 " NeoBundle 'drslump/vim-syntax-js'
 NeoBundleLazyOn FileType javascript  'vim-scripts/jQuery'
 " NeoBundle 'lukaszb/vim-web-indent'
@@ -435,8 +449,8 @@ NeoBundleLazyOn FileType javascript  'vim-scripts/jQuery'
 " NeoBundle 'jiangmiao/simple-javascript-indenter'
 NeoBundle 'pekepeke/titanium-vim'
 NeoBundle 'pekepeke/ref-jsextra-vim'
-NeoBundle 'chikatoike/sourcemap.vim'
-NeoBundle 'nono/vim-handlebars'
+NeoBundleLazyOn FileType javascript 'chikatoike/sourcemap.vim'
+NeoBundleLazyOn FileType handlebars 'nono/vim-handlebars'
 
 NeoBundleLazyOn FileType dart 'vim-scripts/Dart'
 NeoBundleLazyOn FileType haxe,hxml,nmml 'jdonaldson/vaxe'
@@ -633,7 +647,7 @@ NeoBundleLazyOn FileType keepalived 'glidenote/keepalived-syntax.vim'
 NeoBundleLazyOn FileType nyaos 'Shougo/vim-nyaos'
 
 " unite.vim {{{3
-NeoBundleLazy 'Shougo/unite.vim', {
+NeoBundle 'Shougo/unite.vim', {
       \   'autoload': { 'commands' : ['Unite'] },
       \ }
 NeoBundle 'Shougo/unite-help'
@@ -1925,7 +1939,7 @@ if neobundle#is_installed('hl_matchit.vim')
 endif
 
 " dirdiff.vim {{{2
-let g:DirDiffExcludes = "CVS,*.class,*.exe,.*.swp,*.log,.git,.svn,.hg"
+let g:DirDiffExcludes = "CVS,*.class,*.o,*.exe,.*.swp,*.log,.git,.svn,.hg"
 let g:DirDiffIgnore = "Id:,Revision:,Date:"
 map ;dg <Plug>DirDiffGet
 map ;dp <Plug>DirDiffPut
@@ -2281,6 +2295,7 @@ if neobundle#is_installed('jedi-vim')
   let g:jedi#show_function_definition = 0
   let g:jedi#auto_vim_configuration = 0
   MyAutocmd FileType python let b:did_ftplugin = 1
+        \ | setlocal omnifunc=jedi#complete
 endif
 " pydiction {{{2
 let g:pydiction_location = '~/.vim/dict/pydiction-complete-dict'
@@ -2514,8 +2529,8 @@ inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=narrow_or_insert file<CR>
 
 Alias colorscheme Unite colorscheme -auto-preview
 
-" if my#util#has_plugin('vimproc')
-" if neobundle#is_installed('vimproc')
+" if my#util#has_plugin('vimproc.vim')
+" if neobundle#is_installed('vimproc.vim')
 "   UniteNMap a file_rec/async -start-insert
 " else
 UniteNMap a file_rec -start-insert
@@ -2820,7 +2835,7 @@ function! s:exec_ctags(path) "{{{3
   if !empty(a:path) && isdirectory(a:path)
     exe 'lcd' a:path
   endif
-  if neobundle#is_installed('vimproc')
+  if neobundle#is_installed('vimproc.vim')
     call vimproc#system_bg(ctags_cmd)
   else
     execute "!" ctags_cmd
@@ -2983,7 +2998,7 @@ let g:ref_use_vimproc = 0
 let g:ref_alc_use_cache = 1
 let g:ref_alc_start_linenumber = 43
 
-if neobundle#is_installed('vimproc')
+if neobundle#is_installed('vimproc.vim')
   let g:ref_use_vimproc = 1
 endif
 
@@ -3156,7 +3171,7 @@ let g:quickrun_config._ = {
       \   'hook/inu/redraw' : 1,
       \   'hook/inu/wait' : 20,
       \ }
-if neobundle#is_installed('vimproc')
+if neobundle#is_installed('vimproc.vim')
   call extend(g:quickrun_config._, {
       \   'runner' : 'vimproc',
       \   'runner/vimproc/updatetime' : 100,
@@ -3374,7 +3389,7 @@ MyAutocmd FileType quickrun call s:quickrun_my_settings()
 
 " watchdogs {{{2
 
-if neobundle#is_installed('vimproc')
+if neobundle#is_installed('vimproc.vim')
 
   NeoBundleSource shabadou.vim vim-watchdogs
 
@@ -3581,6 +3596,7 @@ let g:echodoc_enable_at_startup=0
 " let g:clang_use_library = 1
 " let g:clang_library_path = 'path/to/libclang.dll'
 let g:neocomplcache_force_overwrite_completefunc = 1
+let g:neocomplete#force_overwrite_completefunc = 1
 " clang_complete の自動呼び出し OFF
 let g:clang_complete_auto = 0
 let g:cland_auto_select = 0
@@ -3834,17 +3850,17 @@ elseif s:plugin_loaded('neocomplete') "{{{3
 
   call s:initialize_global_dict('neocomplete#', [
         \ 'keyword_patterns',
-        \ 'dictionary_filetype_lists',
+        \ 'sources#dictionary#dictionaries',
         \ 'source_disable',
-        \ 'include_patterns', 'vim_completefuncs',
-        \ 'omni_patterns',
-        \ 'force_omni_patterns',
+        \ 'sources#include#patterns', 'sources#vim#complete_functions',
+        \ 'sources#omni#input_patterns',
+        \ 'force_omni_input_patterns',
         \ 'delimiter_patterns',
-        \ 'same_filetype_lists', 'member_prefix_patterns',
+        \ 'same_filetypes', 'sources#member#prefix_patterns',
         \ 'next_keyword_patterns',
-        \ 'include_exprs',
-        \ 'omni_functions',
-        \ 'include_paths',
+        \ 'sources#include#exprs',
+        \ 'sources#omni#functions',
+        \ 'sources#include#paths',
         \ ])
 
   let g:neocomplete#keyword_patterns.default = '\h\w*' " 日本語をキャッシュしない
@@ -3856,10 +3872,10 @@ elseif s:plugin_loaded('neocomplete') "{{{3
   function! s:neocomplete_dictionary_config() "{{{4
     for fp in split(globpath("~/.vim/dict", "*.dict"), "\n")
       let _name = fnamemodify(fp, ":p:r")
-      let g:neocomplete#dictionary_filetype_lists[_name] = fp
+      let g:neocomplete#sources#dictionary#dictionaries[_name] = fp
     endfor
 
-    call extend(g:neocomplete#dictionary_filetype_lists, {
+    call extend(g:neocomplete#sources#dictionary#dictionaries, {
           \ 'default'     : '',
           \ 'vimshell'    : $VIM_CACHE . '/vimshell/command-history',
           \ 'javascript'  : $HOME . '/.vim/dict/node.dict',
@@ -3871,7 +3887,7 @@ elseif s:plugin_loaded('neocomplete') "{{{3
 
   let g:use_zen_complete_tag=1
 
-  call extend(g:neocomplete#vim_completefuncs, {
+  call extend(g:neocomplete#sources#vim#complete_functions, {
         \ 'Ref'   : 'ref#complete',
         \ 'Unite' : 'unite#complete_source',
         \ 'VimShellExecute' :
@@ -3885,24 +3901,44 @@ elseif s:plugin_loaded('neocomplete') "{{{3
         \ 'Vinarise' : 'vinarise#complete',
         \ })
 
-  let g:neocomplete#force_omni_patterns.c =
+  " clang
+  let g:neocomplete#force_omni_input_patterns.c =
         \ '[^.[:digit:] *\t]\%(\.\|->\)'
-  let g:neocomplete#force_omni_patterns.cpp =
+  let g:neocomplete#force_omni_input_patterns.cpp =
         \ '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
-  let g:neocomplete#force_omni_patterns.cs = '[^.]\.\%(\u\{2,}\)\?'
-  " let g:neocomplete#force_omni_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
-  let g:neocomplete#force_omni_patterns.objc = '[^.[:digit:] *\t]\%(\.\|->\)'
-  let g:neocomplete#force_omni_patterns.objcpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+  let g:neocomplete#force_omni_input_patterns.cs = '[^.]\.\%(\u\{2,}\)\?'
+  " let g:neocomplete#force_omni_input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|::'
+  let g:neocomplete#force_omni_input_patterns.objc = '[^.[:digit:] *\t]\%(\.\|->\)'
+  let g:neocomplete#force_omni_input_patterns.objcpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
 
-  let g:neocomplete#omni_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+  " perl
+  let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
 
-  let g:neocomplete#omni_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
+  " ruby
+  let g:neocomplete#sources#omni#input_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
 
-  let g:neocomplete#omni_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+  " python
+	let g:neocomplete#force_omni_input_patterns.python = '[^. \t]\.\w*'
+
+  " scala
+  let g:neocomplete#sources#include#patterns.scala = '^import'
+
+  " javascript
+  let g:neocomplete#sources#omni#functions.javascript = 'nodejscomplete#CompleteJS'
+	" let g:neocomplete#sources#omni#functions.javascript = 'jscomplete#CompleteJS'
+	let g:neocomplete#sources#omni#input_patterns.javascript =
+        \ '\h\w*\|[^. \t]\.\w*'
+  let g:node_usejscomplete = 1
+
+  " haxe
+  let g:neocomplete#sources#omni#input_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
+
+  " php
+  let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
   let g:neocomplete#delimiter_patterns.php = ['->', '::', '\']
-  let g:neocomplete#member_prefix_patterns.php = '->\|::'
+  let g:neocomplete#sources#member#prefix_patterns.php = '->\|::'
   call s:bulk_dict_variables([{
-        \   'dict' : g:neocomplete#omni_patterns,
+        \   'dict' : g:neocomplete#sources#omni#input_patterns,
         \   'names' : ['twig', 'smarty'],
         \   'value' : '<[^>]*'
         \ }, {
@@ -3911,17 +3947,38 @@ elseif s:plugin_loaded('neocomplete') "{{{3
         \   'value' : '[[:alnum:]_:-]*>\|[^"]*"'
         \ }])
 
+  " Go
+  if neobundle#is_installed('vim-gocode')
+    let g:neocomplete#sources#omni#functions.go = 'gocomplete#Complete'
+  endif
 
-  let g:neocomplete#include_patterns.scala = '^import'
-  " javascript
-  let g:neocomplete#omni_functions.javascript = 'nodejscomplete#CompleteJS'
-  let g:node_usejscomplete = 1
-  " haxe
-  let g:neocomplete#omni_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
+  " Clojure
+  if neobundle#is_installed('vim-clojure')
+    let g:neocomplete#sources#omni#functions.clojure = 'vimclojure#OmniCompletion'
+  endif
+
+  " SQL
+  let g:neocomplete#sources#omni#functions.sql = 'sqlcomplete#Complete'
+
+  " R
+  if neobundle#is_installed('Vim-R-plugin')
+    let g:neocomplete#sources#omni#input_patterns.r = '[[:alnum:].\\]\+'
+    let g:neocomplete#sources#omni#functions.r = 'rcomplete#CompleteR'
+  endif
+
+  " XQuery
+  if neobundle#is_installed('XQuery-indentomnicomplete')
+    let g:neocomplete#sources#omni#input_patterns.xquery =
+          \ '\k\|:\|\-\|&'
+    let g:neocomplete#sources#omni#functions.xquery =
+          \ 'xquerycomplete#CompleteXQuery'
+  endif
+
   " autohotkey
-  let g:neocomplete#include_paths.autohotkey = '.,,'
-  let g:neocomplete#include_patterns.autohotkey = '^\s*#\s*include'
-  let g:neocomplete#include_exprs.autohotkey = ''
+  let g:neocomplete#sources#include#paths.autohotkey = '.,,'
+  let g:neocomplete#sources#include#patterns.autohotkey = '^\s*#\s*include'
+  let g:neocomplete#sources#include#exprs.autohotkey = ''
+
   " }}}
 
 
@@ -3999,7 +4056,7 @@ let g:vimshell_enable_auto_slash = 1
 
 function! s:setup_vimproc_dll() " {{{3
   let path = ""
-  let vimproc_root = neobundle#get('vimproc').path
+  let vimproc_root = neobundle#get('vimproc.vim').path
   if s:is_win
     if has('unix')
       let path = expand(vimproc_root . '/autoload/proc_cygwin.dll')
@@ -4035,7 +4092,7 @@ function! s:setup_vimproc_dll() " {{{3
   endif
 endfunction " }}}
 
-if neobundle#is_installed('vimproc')
+if neobundle#is_installed('vimproc.vim')
   call s:setup_vimproc_dll()
 endif
 
