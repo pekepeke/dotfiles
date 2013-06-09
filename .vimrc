@@ -157,8 +157,11 @@ NeoBundle 'vim-scripts/rdark'
 NeoBundle 'vim-scripts/Lucius'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'nanotech/jellybeans.vim'
+NeoBundle 'trapd00r/neverland-vim-theme'
 NeoBundle 'StanAngeloff/vim-zend55'
 NeoBundle 'w0ng/vim-hybrid'
+NeoBundle 'veloce/vim-aldmeris'
+NeoBundle 'git://gist.github.com/187578.git', {'directory': 'h2u_black'}
 
 " common {{{3
 " NeoBundle 'git://gist.github.com/5457352.git', {
