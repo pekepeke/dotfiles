@@ -370,6 +370,8 @@ NeoBundleLazyOn FileType ruby 't9md/vim-chef'
 NeoBundleLazyOn FileType puppet 'rodjek/vim-puppet'
 NeoBundleLazyOn FileType ruby 'rhysd/unite-ruby-require.vim'
 NeoBundleLazyOn FileType ruby 'rhysd/neco-ruby-keyword-args'
+" NeoBundleLazyOn FileType ruby 'markcornick/vim-vagrant'
+" NeoBundleLazyOn FileType ruby 'robbevan/Vagrantfile.vim'
 if has("signs") && has("clientserver") && v:version > 700
   NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
 else
