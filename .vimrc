@@ -13,8 +13,16 @@
 scriptencoding utf-8
 let $VIM_CACHE = $HOME . '/.cache'
 
+" defun macros {{{2
+augroup vimrc-myautocmd
+  autocmd!
+augroup END
+command! -bang -nargs=* MyAutocmd autocmd<bang> vimrc-myautocmd <args>
+command! -nargs=* Lazy autocmd vimrc-myautocmd VimEnter * <args>
+
+
 if v:version == 703 && has('patch970')
-  set regexpengine=1
+  Lazy set regexpengine=1
   command! -nargs=0 RegexpEngineNFA set regexpengine=0
   command! -nargs=0 RegexpEngineOLD set regexpengine=1
 endif
@@ -886,14 +894,6 @@ augroup vimrc-colors "{{{2
   endfunction "}}}3
 
 augroup END
-
-
-" defun macros {{{1
-augroup vimrc-myautocmd
-  autocmd!
-augroup END
-command! -bang -nargs=* MyAutocmd autocmd<bang> vimrc-myautocmd <args>
-command! -nargs=* Lazy autocmd vimrc-myautocmd VimEnter * <args>
 
 
 " for filetypes {{{1
@@ -1861,11 +1861,17 @@ if neobundle#is_installed('inline_edit.vim')
   nnoremap <Leader>i :<C-u>InlineEdit<CR>
 endif
 
+" cascading.vim {{{2
+if neobundle#is_installed('cascading.vim')
+  Lazy nunmap --
+  nnoremap -^ :<C-u>Cascading<CR>
+endif
+
 " switch.vim {{{2
 if neobundle#is_installed('switch.vim')
   " let g:switch_custom_definitions = [ {
   "       \ } ]
-  nnoremap - :<C-u>Switch<CR>
+  Lazy nnoremap -- :<C-u>Switch<CR>
 endif
 
 " undotree {{{2
