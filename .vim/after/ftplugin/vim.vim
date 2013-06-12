@@ -4,7 +4,7 @@ set cpo&vim
 
 " setl sw=2 ts=2 expandtab
 " setl foldmethod=marker
-setl formatoptions-=ro
+setl formatoptions-=r formatoptions-=o
 setl iskeyword-=#
 
 let b:match_words = &matchpairs . ',\<if\>:\<en\%[dif]\>'

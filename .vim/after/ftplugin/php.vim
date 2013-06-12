@@ -9,8 +9,9 @@ setl path+=;/
 
 setl commentstring=//\ %s
 " setl formatoptions-=r,o
+setl formatoptions-=r,o
 " setl iskeyword-=$,\-,:
-setl formatoptions-=r,o iskeyword-=- iskeyword-=$ iskeyword-=:
+setl iskeyword-=- iskeyword-=$ iskeyword-=:
 
 " setl noexpandtab
 

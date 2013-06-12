@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 "setl fdm=syntax
-setl formatoptions-=r,o
+setl formatoptions-=r formatoptions-=o
 setl complete=.,w,b,t,k,kspell
 setl iskeyword-=:
 " setl expandtab

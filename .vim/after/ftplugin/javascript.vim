@@ -5,6 +5,7 @@ set cpo&vim
 
 " setl expandtab ts=2 sw=2
 " setl formatoptions-=r,o
+setl formatoptions-=r formatoptions-=o
 setl iskeyword+=$,-
 setl iskeyword-=:
 
