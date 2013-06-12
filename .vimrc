@@ -1514,7 +1514,7 @@ function! s:show_mapping() " {{{3
     let c = "<C-".substitute(s, '^\^', "", "").">"
   endif
   if strlen(c) > 0
-    exe 'map' c
+    exe 'verbose' 'map' c
   endif
 endfunction " }}}
 
@@ -3419,6 +3419,38 @@ if neobundle#is_installed('vimproc.vim')
           \  'perl/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/vimparse.pl',
           \  },
+          \  'html/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/tidy',
+          \  },
+          \  'xhtml/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/tidy',
+          \  },
+          \  'watchdogs_checker/tidy' : {
+          \    'command' : 'tidy',
+          \     'exec'    : '%c -raw -quiet -errors --gnu-emacs yes %o %s:p',
+          \     'quickfix/errorformat' : '%f:%l:%c: %m',
+          \  },
+          \  'haml/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/haml',
+          \  },
+          \  'watchdogs_checker/haml' : {
+          \    'command' : 'haml',
+          \     'exec'    : '%c -c %o %s:p',
+          \     'quickfix/errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
+          \  },
+          \  'json/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/jsonlint',
+          \  },
+          \  'watchdogs_checker/jsonlint' : {
+          \    'command' : 'jsonlint',
+          \     'exec'    : '%c %s:p --compact',
+          \     'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
+          \  },
+          \  'watchdogs_checker/jsonval' : {
+          \    'command' : 'jsonval',
+          \     'exec'    : '%c %s:p',
+          \     'quickfix/errorformat' : '%E%f: %m at line %l,%-G%.%#',
+          \  },
           \  'coffee/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/coffee',
           \  },
@@ -3430,6 +3462,14 @@ if neobundle#is_installed('vimproc.vim')
           \                           . 'SyntaxError: In %f\, %m,'
           \                           . '%-G%.%#',
           \  },
+          \  'typescript/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/tsc',
+          \  },
+          \  'watchdogs_checker/tsc' : {
+          \    'command' : 'tsc',
+          \     'exec'    : '%c %s:p',
+          \     'quickfix/errorformat' : '%+A %#%f %#(%l\,%c): %m,%C%m',
+          \  },
           \  'css/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/csslint',
           \  },
@@ -3438,13 +3478,18 @@ if neobundle#is_installed('vimproc.vim')
           \     'exec'    : '%c --format=compact %s:p',
           \     'quickfix/errorformat' : '%-G,%-G%f: lint free!,%f: line %l\, col %c\, %trror - %m,%f: line %l\, col %c\, %tarning - %m,%f: line %l\, col %c\, %m,',
           \  },
-          \  'applescript/watchdogs_checker' : {
-          \    'type' : 'watchdogs_checker/osacompile',
-          \  },
-          \  'watchdogs_checker/osacompile' : {
-          \    'command' : 'osacompile',
-          \     'exec'    : '%c -o %o %s:p',
-          \     'quickfix/errorformat' : '%f:%l:%m',
+          \  'watchdogs_checker/python' : {
+          \    'command' : 'python',
+          \     'exec'    : "%c -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
+          \     'quickfix/errorformat' :
+          \        '%A  File "%f"\, line %l\,%m,' .
+          \        '%C    %.%#,' .
+          \        '%+Z%.%#Error: %.%#,' .
+          \        '%A  File "%f"\, line %l,' .
+          \        '%+C  %.%#,' .
+          \        '%-C%p^,' .
+          \        '%Z%m,' .
+          \        '%-G%.%#'
           \  },
           \  'csharp/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/mcs',
@@ -3454,14 +3499,6 @@ if neobundle#is_installed('vimproc.vim')
           \     'exec'    : '%c %o %s:p',
           \     'cmdopt'  : '--parse',
           \     'quickfix/errorformat' : '%f(%l\\\,%c):\ error\ CS%n:\ %m',
-          \  },
-          \  'haml/watchdogs_checker' : {
-          \    'type' : 'watchdogs_checker/haml',
-          \  },
-          \  'watchdogs_checker/haml' : {
-          \    'command' : 'haml',
-          \     'exec'    : '%c -c %o %s:p',
-          \     'quickfix/errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
           \  },
           \  'objc/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/gcc_objc',
@@ -3476,22 +3513,6 @@ if neobundle#is_installed('vimproc.vim')
           \                            . '%f:%l: %trror: %m,'
           \                            . '%f:%l: %tarning: %m,'
           \                            . '%f:%l: %m',
-          \  },
-          \  'cucumber/watchdogs_checker' : {
-          \    'type' : 'watchdogs_checker/cucumber',
-          \  },
-          \  'watchdogs_checker/cucumber' : {
-          \    'command' : 'cucumber',
-          \     'exec'    : '%c --dry-run --quiet --strict --format pretty %o %s:p',
-          \     'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
-          \  },
-          \  'lua/watchdogs_checker' : {
-          \    'type' : 'watchdogs_checker/luac',
-          \  },
-          \  'watchdogs_checker/luac' : {
-          \    'command' : 'luac',
-          \     'exec'    : '%c -p %o %s:p',
-          \     'quickfix/errorformat' : 'luac: %#%f:%l: %m',
           \  },
           \  'eruby/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/ruby_erb',
@@ -3511,39 +3532,29 @@ if neobundle#is_installed('vimproc.vim')
           \            . ', nil, ''-'').src" | %c -c %o',
           \     'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
           \  },
-          \  'typescript/watchdogs_checker' : {
-          \    'type' : 'watchdogs_checker/tsc',
+          \  'cucumber/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/cucumber',
           \  },
-          \  'watchdogs_checker/tsc' : {
-          \    'command' : 'tsc',
-          \     'exec'    : '%c %s:p',
-          \     'quickfix/errorformat' : '%+A %#%f %#(%l\,%c): %m,%C%m',
+          \  'watchdogs_checker/cucumber' : {
+          \    'command' : 'cucumber',
+          \     'exec'    : '%c --dry-run --quiet --strict --format pretty %o %s:p',
+          \     'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
           \  },
-          \  'json/watchdogs_checker' : {
-          \    'type' : 'watchdogs_checker/jsonlint',
+          \  'lua/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/luac',
           \  },
-          \  'watchdogs_checker/jsonlint' : {
-          \    'command' : 'jsonlint',
-          \     'exec'    : '%c %s:p --compact',
-          \     'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
+          \  'watchdogs_checker/luac' : {
+          \    'command' : 'luac',
+          \     'exec'    : '%c -p %o %s:p',
+          \     'quickfix/errorformat' : 'luac: %#%f:%l: %m',
           \  },
-          \  'watchdogs_checker/jsonval' : {
-          \    'command' : 'jsonval',
-          \     'exec'    : '%c %s:p',
-          \     'quickfix/errorformat' : '%E%f: %m at line %l,%-G%.%#',
+          \  'applescript/watchdogs_checker' : {
+          \    'type' : 'watchdogs_checker/osacompile',
           \  },
-          \  'watchdogs_checker/python' : {
-          \    'command' : 'python',
-          \     'exec'    : "%c -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
-          \     'quickfix/errorformat' :
-          \        '%A  File "%f"\, line %l\,%m,' .
-          \        '%C    %.%#,' .
-          \        '%+Z%.%#Error: %.%#,' .
-          \        '%A  File "%f"\, line %l,' .
-          \        '%+C  %.%#,' .
-          \        '%-C%p^,' .
-          \        '%Z%m,' .
-          \        '%-G%.%#'
+          \  'watchdogs_checker/osacompile' : {
+          \    'command' : 'osacompile',
+          \     'exec'    : '%c -o %o %s:p',
+          \     'quickfix/errorformat' : '%f:%l:%m',
           \  },
           \  'qml/watchdogs_checker' : {
           \    'type' : 'watchdogs_checker/qmlscene',

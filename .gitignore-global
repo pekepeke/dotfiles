@@ -2,14 +2,14 @@
 # Archives
 *.7z
 *.dmg
-*.gz
+# *.gz
 *.iso
-*.jar
-*.rar
-*.tar
-*.tar.gz
-*.zip
-*.bzip
+# *.jar
+# *.rar
+# *.tar
+# *.tar.gz
+# *.zip
+# *.bzip
 
 # compiled sources
 *.com
