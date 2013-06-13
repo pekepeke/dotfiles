@@ -244,6 +244,14 @@ NeoBundle 'kana/vim-smartword'
 " NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'thinca/vim-qfreplace'
 NeoBundle 'thinca/vim-localrc'
+NeoBundleLazy 'thinca/vim-prettyprint', {
+      \   'autoload': {
+      \     'commands' : [
+      \       { 'name' : 'PP', 'complete': 'expression'},
+      \       { 'name' : 'PrettyPrint', 'complete': 'expression'},
+      \     ]}
+      \ }
+NeoBundle 'thinca/vim-editvar'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'c9s/cascading.vim'
 NeoBundle 'mileszs/ack.vim'
@@ -303,7 +311,9 @@ NeoBundle 'ujihisa/shadow.vim'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-git'
 NeoBundleLazy 'gregsexton/gitv', {
-      \   'commands' : ['Gitv'],
+      \   'autoload' : {
+      \     'commands' : ['Gitv'],
+      \   },
       \ }
 NeoBundle 'violetyk/gitquick.vim'
 NeoBundle 'int3/vim-extradite'
@@ -3588,16 +3598,44 @@ if neobundle#is_installed('vimproc.vim')
     command! -nargs=0 WatchdogsOn let g:watchdogs_check_BufWritePost_enable=1
     command! -nargs=? WatchdogsConfig call <SID>watchdogs_config_show(<f-args>)
 
-    function! s:watchdogs_config_show(...)
-      let filetype = a:0 > 0 ? a:1 : &filetype
-      let items = []
+    function! s:watchdogs_find_config_names(...)
+      let ftype = a:0 > 0 ? a:1 : &filetype
+      let names = []
+      let default_name = ftype . "/watchdogs_checker"
+      let default_type = ""
+      if exists('g:quickrun_config[default_name]')
+        call add(names, default_name)
+        if exists('g:quickrun_config[default_name].type')
+          call add(names, g:quickrun_config[default_name].type)
+          let default_type = g:quickrun_config[default_name].type
+        endif
+      endif
       for name in keys(g:quickrun_config)
-        if name =~? 'watchdogs_checker' && name =~? filetype
-          call add(items, printf("%s => %s", name, string(g:quickrun_config[name])))
+        if name == default_name || name == default_type
+          continue
+        endif
+        if name =~? 'watchdogs_checker' && name =~? ftype
+          call add(names, name)
         endif
       endfor
-      if !empty(items)
-        echo join(items, "\n")
+      return names
+    endfunction
+
+    function! s:watchdogs_config_show(...)
+      let names = call('s:watchdogs_find_config_names', a:000)
+      let items = []
+      if !empty(names)
+        if exists(':PP')
+          for name in names
+            echo printf("let g:quickrun_config['%s']=", name)
+            exe 'PP' 'g:quickrun_config["' . name . '"]'
+          endfor
+        else
+          for name in names
+            call add(items, printf("let g:quickrun_config['%s'] = %s", name, string(g:quickrun_config[name])))
+          endfor
+          echo join(items, "\n")
+        endif
       endif
     endfunction
   endif
