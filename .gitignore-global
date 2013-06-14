@@ -1,6 +1,6 @@
 # @see https://github.com/github/gitignore
 # Archives
-*.7z
+# *.7z
 *.dmg
 # *.gz
 *.iso
