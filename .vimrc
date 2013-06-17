@@ -169,6 +169,8 @@ NeoBundle 'trapd00r/neverland-vim-theme'
 NeoBundle 'StanAngeloff/vim-zend55'
 NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'veloce/vim-aldmeris'
+NeoBundle 'Pychimp/vim-luna'
+NeoBundle 'croaker/mustang-vim'
 NeoBundle 'git://gist.github.com/187578.git', {'directory': 'h2u_black'}
 
 " common {{{3
@@ -216,6 +218,7 @@ NeoBundle 'jceb/vim-hier'
 " NeoBundle 'tomtom/quickfixsigns_vim'
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
+" NeoBundle 'anyakichi/vim-surround'
 NeoBundle 'tpope/vim-abolish'
 " NeoBundle 'tpope/vim-endwise'
 NeoBundle 'rhysd/endwize.vim'
@@ -275,12 +278,16 @@ NeoBundle 'kien/rainbow_parentheses.vim'
 " incompatible with smartinput
 " NeoBundle 'vim-scripts/Highlight-UnMatched-Brackets'
 NeoBundle 'vim-scripts/matchit.zip'
-NeoBundle 'vim-scripts/matchparenpp'
-" NeoBundle 'vimtaku/hl_matchit.vim'
-NeoBundle 'gregsexton/MatchTag'
 NeoBundle 'semmons99/vim-ruby-matchit'
 " NeoBundle 'vim-scripts/ruby-matchit'
 NeoBundle 'voithos/vim-python-matchit'
+NeoBundle 'vim-scripts/matchparenpp'
+" NeoBundle 'vimtaku/hl_matchit.vim'
+if has('python')
+  NeoBundle 'Valloric/MatchTagAlways'
+else
+  NeoBundle 'gregsexton/MatchTag'
+endif
 NeoBundle 'AndrewRadev/splitjoin.vim'
 NeoBundle 'AndrewRadev/inline_edit.vim'
 " NeoBundle 'Raimondi/delimitMate'
@@ -498,7 +505,6 @@ NeoBundleLazy 'clausreinke/typescript-tools', {
 NeoBundleLazyOn FileType python 'lambdalisue/vim-python-virtualenv'
 " NeoBundle 'lambdalisue/vim-django-support'
 NeoBundleLazyOn FileType python 'gerardo/vim-django-support'
-NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
 NeoBundleLazyOn FileType python 'vim-scripts/python_match.vim'
 
 if has('python')
@@ -757,6 +763,10 @@ endif
 " gf-user {{{3
 NeoBundle 'kana/vim-gf-user'
 NeoBundle 'kana/vim-gf-diff'
+NeoBundle 'sgur/vim-gf-autoload'
+" does not support gf-user
+" NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
+NeoBundleLazyOn FileType python 'zhaocai/vim-gf-python'
 
 " operator {{{3
 NeoBundle 'kana/vim-operator-replace'
@@ -1107,7 +1117,7 @@ set viminfo& viminfo+=!
 set visualbell
 set noerrorbells
 
-set guioptions& guioptions-=mT
+set guioptions& guioptions-=mMT
 let did_install_default_menus = 1
 let did_install_syntax_menu = 1
 set noequalalways
@@ -1149,6 +1159,9 @@ endif
 set nowrap     " 折り返しなし
 set nrformats-=octal
 set updatetime=200
+if has('winaltkeys')
+  set winaltkeys=no
+endif
 
 " sticky shift {{{2
 " http://vim-users.jp/2009/08/hack-54/
@@ -2291,6 +2304,8 @@ let g:netrw_home = $VIM_CACHE
 " yankring {{{2
 let g:yankring_history_dir = $VIM_CACHE
 let g:yankring_default_menu_mode = 0
+let g:yankring_min_element_length = 2
+let g:yankring_window_height = 14
 
 " rails.vim {{{2
 let g:rails_some_option = 1
@@ -2442,30 +2457,41 @@ call extend(g:grep_launcher_words, {
 let s:bundle = neobundle#get("unite.vim")
 function! s:bundle.hooks.on_source(bundle)
   " unite buffers {{{3
-  call unite#set_substitute_pattern('file', '\$\w\+', '\=eval(submatch(0))', 200)
+  function! s:unite_set_substitute_pattern(buffer_name, pattern, subst, ...)
+    let buffer_name = (a:buffer_name == '' ? 'default' : a:buffer_name)
+    let priority = a:0 >= 1 ? a:1 : 0
+    let value = {
+          \ 'pattern' : a:pattern,
+          \ 'subst' : a:subst,
+          \ 'priority' : priority,
+          \ }
+    call unite#custom#profile(a:buffer_name, 'substitute_patterns', value)
+  endfunction
 
-  call unite#set_substitute_pattern('file', '[^~.]\zs/', '*/*', 20)
-  call unite#set_substitute_pattern('file', '/\ze[^*]', '/*', 10)
+  " do not work as well??
+  call s:unite_set_substitute_pattern('file', '\$\w\+', '\=eval(submatch(0))', 200)
 
-  call unite#set_substitute_pattern('file', '^@@', '\=fnamemodify(expand("#"), ":p:h")."/*"', 2)
-  call unite#set_substitute_pattern('file', '^@', '\=getcwd()."/*"', 1)
-  call unite#set_substitute_pattern('file', '^\\', '~/*')
-  call unite#set_substitute_pattern('file', '^\~', escape($HOME, '\'), -2)
+  call s:unite_set_substitute_pattern('file', '[^~.]\zs/', '*/*', 20)
+  call s:unite_set_substitute_pattern('file', '/\ze[^*]', '/*', 10)
 
-  call unite#set_substitute_pattern('file', '^;v', '~/.vim/*')
-  call unite#set_substitute_pattern('file', '^;ft', '~/.vim/after/ftplugin/')
-  call unite#set_substitute_pattern('file', '^;r', '\=$VIMRUNTIME."/*"')
+  call s:unite_set_substitute_pattern('file', '^@@', '\=fnamemodify(expand("#"), ":p:h")."/*"', 2)
+  call s:unite_set_substitute_pattern('file', '^@', '\=getcwd()."/*"', 1)
+  call s:unite_set_substitute_pattern('file', '^\\', '~/*')
+  call s:unite_set_substitute_pattern('file', '^~', escape($HOME, '\'), -2)
+
+  call s:unite_set_substitute_pattern('file', '^;v', '~/.vim/*')
+  call s:unite_set_substitute_pattern('file', '^;ft', '~/.vim/after/ftplugin/')
+  call s:unite_set_substitute_pattern('file', '^;r', '\=$VIMRUNTIME."/*"')
   if s:is_win
-    call unite#set_substitute_pattern('file', '^;p', 'C:/Program Files/*')
+    call s:unite_set_substitute_pattern('file', '^;p', 'C:/Program Files/*')
     if isdirectory(expand('$USERPROFILE/Desktop'))
-      call unite#set_substitute_pattern('file', '^;d', '\=expand("$USERPROFILE/Desktop/")."*"')
+      call s:unite_set_substitute_pattern('file', '^;d', '\=expand("$USERPROFILE/Desktop/")."*"')
     else
-      call unite#set_substitute_pattern('file', '^;d', '\=expand("$USERPROFILE/デスクトップ/")."*"')
+      call s:unite_set_substitute_pattern('file', '^;d', '\=expand("$USERPROFILE/デスクトップ/")."*"')
     endif
   else
-    call unite#set_substitute_pattern('file', '^;d', '\=$HOME."/Desktop/*"')
+    call s:unite_set_substitute_pattern('file', '^;d', '\=$HOME."/Desktop/*"')
   endif
-
   " custom actions {{{3
   " custom action open_unite_file {{{4
   let s:unite_action_open_unite_file = {
