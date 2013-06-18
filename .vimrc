@@ -283,11 +283,11 @@ NeoBundle 'semmons99/vim-ruby-matchit'
 NeoBundle 'voithos/vim-python-matchit'
 NeoBundle 'vim-scripts/matchparenpp'
 " NeoBundle 'vimtaku/hl_matchit.vim'
-if has('python')
-  NeoBundle 'Valloric/MatchTagAlways'
-else
+" if has('python')
+"   NeoBundle 'Valloric/MatchTagAlways'
+" else
   NeoBundle 'gregsexton/MatchTag'
-endif
+" endif
 NeoBundle 'AndrewRadev/splitjoin.vim'
 NeoBundle 'AndrewRadev/inline_edit.vim'
 " NeoBundle 'Raimondi/delimitMate'
@@ -635,11 +635,11 @@ NeoBundleLazyOn FileType haskell 'eagletmt/unite-haddock'
 " NeoBundleLazyOn FileType php 'spf13/PIV'
 " NeoBundleLazyOn FileType php 'justinrainbow/php-doc.vim'
 NeoBundleLazyOn FileType php 'Gasol/vim-php'
-NeoBundleLazyOn FileType php 'pekepeke/php.vim-html-enhanced'
-NeoBundleLazyOn FileType php '2072/PHP-Indenting-for-VIm'
 NeoBundleLazyOn FileType php 'StanAngeloff/php.vim'
 NeoBundleLazyOn FileType php 'einars/vim-phpfold'
 NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
+" NeoBundleLazyOn FileType php 'pekepeke/php.vim-html-enhanced'
+NeoBundleLazyOn FileType php '2072/PHP-Indenting-for-VIm'
 NeoBundleLazyOn FileType php 'vim-scripts/phpcomplete.vim'
 NeoBundleLazyOn FileType php 'nishigori/phpfolding.vim'
 NeoBundleLazyOn FileType php 'arnaud-lb/vim-php-namespace'
@@ -2457,40 +2457,29 @@ call extend(g:grep_launcher_words, {
 let s:bundle = neobundle#get("unite.vim")
 function! s:bundle.hooks.on_source(bundle)
   " unite buffers {{{3
-  function! s:unite_set_substitute_pattern(buffer_name, pattern, subst, ...)
-    let buffer_name = (a:buffer_name == '' ? 'default' : a:buffer_name)
-    let priority = a:0 >= 1 ? a:1 : 0
-    let value = {
-          \ 'pattern' : a:pattern,
-          \ 'subst' : a:subst,
-          \ 'priority' : priority,
-          \ }
-    call unite#custom#profile(a:buffer_name, 'substitute_patterns', value)
-  endfunction
-
   " do not work as well??
-  call s:unite_set_substitute_pattern('file', '\$\w\+', '\=eval(submatch(0))', 200)
+  call unite#custom#substitute('files', '\$\w\+', '\=eval(submatch(0))', 200)
 
-  call s:unite_set_substitute_pattern('file', '[^~.]\zs/', '*/*', 20)
-  call s:unite_set_substitute_pattern('file', '/\ze[^*]', '/*', 10)
+  call unite#custom#substitute('files', '[^~.]\zs/', '*/*', 20)
+  call unite#custom#substitute('files', '/\ze[^*]', '/*', 10)
 
-  call s:unite_set_substitute_pattern('file', '^@@', '\=fnamemodify(expand("#"), ":p:h")."/*"', 2)
-  call s:unite_set_substitute_pattern('file', '^@', '\=getcwd()."/*"', 1)
-  call s:unite_set_substitute_pattern('file', '^\\', '~/*')
-  call s:unite_set_substitute_pattern('file', '^~', escape($HOME, '\'), -2)
+  call unite#custom#substitute('files', '^@@', '\=fnamemodify(expand("#"), ":p:h")."/*"', 2)
+  call unite#custom#substitute('files', '^@', '\=getcwd()."/*"', 1)
+  call unite#custom#substitute('files', '^\\', '~/*')
+  call unite#custom#substitute('files', '^~', escape($HOME, '\'), -2)
 
-  call s:unite_set_substitute_pattern('file', '^;v', '~/.vim/*')
-  call s:unite_set_substitute_pattern('file', '^;ft', '~/.vim/after/ftplugin/')
-  call s:unite_set_substitute_pattern('file', '^;r', '\=$VIMRUNTIME."/*"')
+  call unite#custom#substitute('files', '^;v', '~/.vim/*')
+  call unite#custom#substitute('files', '^;ft', '~/.vim/after/ftplugin/')
+  call unite#custom#substitute('files', '^;r', '\=$VIMRUNTIME."/*"')
   if s:is_win
-    call s:unite_set_substitute_pattern('file', '^;p', 'C:/Program Files/*')
+    call unite#custom#substitute('files', '^;p', 'C:/Program Files/*')
     if isdirectory(expand('$USERPROFILE/Desktop'))
-      call s:unite_set_substitute_pattern('file', '^;d', '\=expand("$USERPROFILE/Desktop/")."*"')
+      call unite#custom#substitute('files', '^;d', '\=expand("$USERPROFILE/Desktop/")."*"')
     else
-      call s:unite_set_substitute_pattern('file', '^;d', '\=expand("$USERPROFILE/デスクトップ/")."*"')
+      call unite#custom#substitute('files', '^;d', '\=expand("$USERPROFILE/デスクトップ/")."*"')
     endif
   else
-    call s:unite_set_substitute_pattern('file', '^;d', '\=$HOME."/Desktop/*"')
+    call unite#custom#substitute('files', '^;d', '\=$HOME."/Desktop/*"')
   endif
   " custom actions {{{3
   " custom action open_unite_file {{{4
