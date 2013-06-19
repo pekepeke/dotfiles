@@ -2946,10 +2946,11 @@ let g:surround_custom_mapping.markdown = {
       \ }
 let g:surround_custom_mapping.php = {
       \ '-':  "<?php \r ?>",
-      \ '=':  "<?php echo $\r; ?>",
-      \ 'h':  "<?php echo h( $\r ); ?>",
-      \ 'e':  "<?php echo $\r; ?>",
+      \ '=':  "<?php echo \r ?>",
+      \ 'h':  "<?php echo h( \r ); ?>",
+      \ 'e':  "<?php echo \r ?>",
       \ 'f':  "<?php foreach ($\r as $val): ?>\n<?php endforeach; ?>",
+      \ '%':  "<?php \r ?>",
       \ '#':  "<?php # \r ?>",
       \ '/':  "<?php // \r ?>",
       \ }
