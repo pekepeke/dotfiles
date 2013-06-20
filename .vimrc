@@ -214,7 +214,8 @@ NeoBundle 'vim-scripts/ShowMarks7'
 " NeoBundle 'vim-scripts/let-modeline.vim'
 " NeoBundle 'dannyob/quickfixstatus'
 NeoBundle 'pekepeke/quickfixstatus'
-NeoBundle 'jceb/vim-hier'
+" NeoBundle 'jceb/vim-hier'
+NeoBundle 'cohama/vim-hier'
 " NeoBundle 'tomtom/quickfixsigns_vim'
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
@@ -293,8 +294,6 @@ NeoBundle 'AndrewRadev/inline_edit.vim'
 " NeoBundle 'Raimondi/delimitMate'
 NeoBundle 'kana/vim-smartinput'
 " NeoBundle 'acustodioo/vim-enter-indent'
-" NeoBundle 'dahu/vim-fanfingtastic'
-NeoBundle 'pekepeke/vim-indent_cr'
 
 " NeoBundle 'houtsnip/vim-emacscommandline'
 NeoBundle 'tpope/vim-unimpaired'
@@ -470,7 +469,7 @@ endif
 NeoBundleLazyOn FileType javascript 'teramako/jscomplete-vim'
 NeoBundleLazyOn FileType javascript 'myhere/vim-nodejs-complete'
 NeoBundleLazyOn FileType javascript 'mklabs/grunt.vim'
-NeoBundleLazyOn FileType json 'leshill/vim-json'
+NeoBundleLazyOn FileType json 'elzr/vim-json'
 " NeoBundle 'drslump/vim-syntax-js'
 NeoBundleLazyOn FileType javascript  'vim-scripts/jQuery'
 " NeoBundle 'lukaszb/vim-web-indent'
@@ -575,6 +574,7 @@ NeoBundleLazyOn FileType ps1,ps1xml 'PProvost/vim-ps1'
 
 " java, android {{{4
 NeoBundleLazyOn FileType java 'mikelue/vim-maven-plugin'
+NeoBundleLazyOn FileType java 'KamunagiChiduru/unite-javaimport'
 " NeoBundle 'vim-scripts/javacomplete', {
 NeoBundleLazy 'nwertzberger/javacomplete', {
       \   'build' : {
@@ -748,6 +748,7 @@ NeoBundle 'mattn/webapi-vim'
 "       \ }
 " endif
 " NeoBundle 'mattn/googletranslate-vim'
+" NeoBundle 'mattn/bingtranslate-vim'
 NeoBundle 'mattn/excitetranslate-vim'
 NeoBundle 'Rykka/trans.vim'
 NeoBundle 'thinca/vim-ambicmd'
@@ -1720,6 +1721,7 @@ vnoremap ik i)
 vnoremap <Leader>te    :ExciteTranslate<CR>
 vnoremap <Leader>tg    :GingerRange<CR>
 " vnoremap <Leader>tj    :GoogleTranslate ja<CR>
+" vnoremap <Leader>tj    :BingTranslate ja<CR>
 vnoremap <Tab>   >gv
 vnoremap <S-Tab> <gv
 "nnoremap : q:
@@ -2082,6 +2084,16 @@ function! s:sminput_define_rules()
         \   'input'    : '{};<Left><Left>',
         \   'filetype' : ['cpp'],
         \   })
+  " http://qiita.com/todashuta@github/items/bdad8e28843bfb3cd8bf
+  call smartinput#map_to_trigger('i', '<Plug>(smartinput_BS)',
+        \   '<BS>',
+        \   '<BS>')
+  call smartinput#map_to_trigger('i', '<Plug>(smartinput_C-h)',
+        \   '<BS>',
+        \   '<C-h>')
+  call smartinput#map_to_trigger('i', '<Plug>(smartinput_CR)',
+        \   '<Enter>',
+        \   '<Enter>')
 endfunction
 if neobundle#is_installed('vim-smartinput')
   command! SmartinputOff call smartinput#clear_rules()
@@ -2755,6 +2767,7 @@ if neobundle#is_installed('taglist.vim') "{{{4
   let g:Tlist_WinWidth = 25
 
   let g:tlist_objc_settings='objc;P:protocols;i:interfaces;I:implementations;M:instance methods;C:implementation methods;Z:protocol methods;v:property'
+  let g:tlist_ruby_settings='Ruby;c:classes;f:methods;m:modules;F:singleton methods;r:regex'
   let g:tlist_javascript_settings='js;o:object;f:function;a:array;s:string;b:boolean;n:number;v:variable'
   " let g:tlist_javascript_settings='JavaScript;f:functions;c:classes;m:methods;p:properties;v:global variables;I:inner'
   let g:tlist_coffee_settings='coffee;c:class;n:namespace;f:function;m:method;v:var;i:ivar'
@@ -2784,6 +2797,9 @@ else "{{{4
         \   'Z:protocol methods',
         \   'v:property',
         \ ]}
+  let g:tagbar_type_ruby = {'ctagstype': 'Ruby', 'kinds':
+        \   ['c:classes', 'f:methods', 'm:modules', 'F:singleton methods', 'r:regex']
+        \ }
   let g:tagbar_type_javascript = {
         \ 'ctagstype' : 'js',
         \ 'kinds'     : [
@@ -3864,10 +3880,14 @@ if s:plugin_loaded('neocomplcache') "{{{3
 
     " <C-h>, <BS>: close popup and delete backword char.
     if neobundle#is_installed('vim-smartinput')
-      inoremap <expr> <C-h>  neocomplcache#smart_close_popup()
-            \ . eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<C-h>")')
-      inoremap <expr> <BS>   neocomplcache#smart_close_popup()
-            \ .eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<BS>")')
+      " inoremap <expr> <C-h>  neocomplcache#smart_close_popup()
+      "       \ . eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<C-h>")')
+      " inoremap <expr> <BS>   neocomplcache#smart_close_popup()
+      "       \ .eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<BS>")')
+      imap <expr> <C-h>  neocomplcache#smart_close_popup()
+            \ . "\<Plug>(smartinput_BS)"
+      imap <expr> <BS>   neocomplcache#smart_close_popup()
+            \ . "\<Plug>(smartinput_C-h)"
     else
       inoremap <expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
       inoremap <expr><BS>   neocomplcache#smart_close_popup()."\<C-h>"
@@ -3885,11 +3905,15 @@ if s:plugin_loaded('neocomplcache') "{{{3
   endif
   " endwise
   " inoremap <silent> <cr> <c-r>=EnterIndent()<cr>
-  if neobundle#is_installed('vim-enter-indent')
-    Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<CR>\<C-r>=endwize#crend()\<CR>"
-  else
-    Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
-  endif
+  " if neobundle#is_installed('vim-indent_cr')
+    " Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")
+    "       \ ."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
+    imap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")
+          \ ."\<Plug>(smartinput_CR)\<C-r>=endwize#crend()\<CR>"
+  " else
+    " Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")
+    "       \ ."\<CR>\<C-r>=endwize#crend()\<CR>"
+  " endif
 
 
 elseif s:plugin_loaded('neocomplete') "{{{3
@@ -4068,10 +4092,14 @@ elseif s:plugin_loaded('neocomplete') "{{{3
 
   " <C-h>, <BS>: close popup and delete backword char.
   if neobundle#is_installed('vim-smartinput')
-    inoremap <expr> <C-h>  neocomplete#smart_close_popup()
-          \ . eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<C-h>")')
-    inoremap <expr> <BS>   neocomplete#smart_close_popup()
-          \ .eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<BS>")')
+    " inoremap <expr> <C-h>  neocomplete#smart_close_popup()
+    "       \ . eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<C-h>")')
+    " inoremap <expr> <BS>   neocomplete#smart_close_popup()
+    "       \ .eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<BS>")')
+    imap <expr> <C-h>  neocomplete#smart_close_popup()
+          \ . "\<Plug>(smartinput_BS)"
+    imap <expr> <BS>   neocomplete#smart_close_popup()
+          \ . "\<Plug>(smartinput_C-h)"
   else
     inoremap <expr><C-h>  neocomplete#smart_close_popup()."\<C-h>"
     inoremap <expr><BS>   neocomplete#smart_close_popup()."\<C-h>"
@@ -4089,11 +4117,13 @@ elseif s:plugin_loaded('neocomplete') "{{{3
 
   " endwise
   " inoremap <silent> <cr> <c-r>=EnterIndent()<cr>
-  if neobundle#is_installed('vim-enter-indent')
-    Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplete#smart_close_popup():"")."\<CR>\<C-r>=endwize#crend()\<CR>"
-  else
-    Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplete#smart_close_popup():"")."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
-  endif
+  " if neobundle#is_installed('vim-enter-indent')
+  "   Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplete#smart_close_popup():"")."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
+    imap <silent><expr> <CR> (pumvisible()?neocomplete#smart_close_popup():"")
+          \ ."\<Plug>(smartinput_CR)\<C-r>=endwize#crend()\<CR>"
+  " else
+  "   Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplete#smart_close_popup():"")."\<CR>\<C-r>=endwize#crend()\<CR>"
+  " endif
 endif
 
 " completes {{{3
