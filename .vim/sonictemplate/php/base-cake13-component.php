@@ -1,6 +1,6 @@
 <?php
 
-class {{_expr_:substitute(expand('%:p', '\w\+', '\u\0', ''))}}Component extends Object {
+class {{_expr_:substitute(expand('%:p:t:r'), '\w\+', '\u\0', '')}}Component extends Object {
 
 	/**
 	 * controller

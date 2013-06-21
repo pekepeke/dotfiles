@@ -1742,6 +1742,59 @@ function! s:plugin_installed(name)
   return neobundle#is_installed(a:name)
 endfunction
 
+" trans.vim {{{2
+let g:trans_default_lang = 'ja'
+let g:trans_default_api = 'bing'
+if !exists('g:trans_api')
+  let g:trans_api = {}
+endif
+let g:trans_api.google = {
+      \   'url': 'http://translate.google.com/translate_a/t',
+      \   'params' : {
+      \     "client" : 'firefox-a',
+      \     "ie" : 'UTF-8',
+      \     "oe" : 'UTF-8',
+      \   },
+      \   'query_str': 'langpair=%FROM%7C%TO&text=%TEXT',
+      \   'parser': 'trans#data#parser_google',
+      \   'type': 'get',
+      \   'headers': { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.15 Safari/536.5' },
+      \ }
+let g:trans_api.bing = {'url': 'http://api.microsofttranslator.com/v2/ajax.svc/Translate',
+      \   'type': 'oauth',
+      \   'oauth_url': 'https://datamarket.accesscontrol.windows.net/v2/OAuth2-13/',
+      \   'oauth_obj': {
+      \     'client_id' : get(g:, 'bing_client_id', ''),
+      \     'client_secret' : get(g:, 'bing_client_secret', ''),
+      \     'scope' : 'http://api.microsofttranslator.com',
+      \     'grant_type' : 'client_credentials',
+      \   },
+      \   'token_str': 'appId=Bearer%20%TOKEN',
+      \   'token_expire': 600,
+      \   'token_parser': 'trans#data#parser_t_bing',
+      \   'parser': 'trans#data#parser_bing',
+      \   'query_str': 'from=%FROM&to=%TO&text=%TEXT',
+      \ }
+let g:trans_api.baidu = {
+      \   'url': 'http://openapi.baidu.com/public/2.0/bmt/translate',
+      \   'query_str' : 'q=%TEXT&from=%FROM&to=%TO',
+      \   'type' : 'get',
+      \   'params' : {'client_id': get(g:, 'baidu_client_id', '')},
+      \   'parser' : 'trans#data#parser_baidu',
+      \ }
+let g:trans_api.youdao = {'url': 'http://fanyi.youdao.com/openapi.do',
+      \   'query_str' : 'q=%TEXT',
+      \   'type' : 'get',
+      \   'params' : {
+      \     'key': get(g:, 'youdao_client_id', ''),
+      \     'keyfrom': 'trans-vim',
+      \     'doctype': 'json',
+      \     'version': '1.1',
+      \     'type': 'data',
+      \   },
+      \   'parser' : 'trans#data#parser_youdao',
+      \ }
+
 " perlomni {{{2
 if neobundle#is_installed('perlomni.vim')
   call s:path_push(neobundle#get('perlomni.vim').path . '/bin')
@@ -3083,8 +3136,18 @@ let g:ref_source_webdict_sites = {
       \     'keyword_encoding': 'utf-8',
       \     'cache': '0',
       \   },
+      \   'ja_en': {
+      \     'url': 'http://translate.google.co.jp/m?hl=ja\&sl=ja\&tl=en\&ie=UTF-8\&prev=_m\&q=%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
+      \   'en_ja': {
+      \     'url': 'http://translate.google.co.jp/m?hl=ja\&sl=en\&tl=ja\&ie=UTF-8\&prev=_m\&q=%s',
+      \     'keyword_encoding': 'utf-8',
+      \     'cache': '0',
+      \   },
       \   'ruby_toolbox': {
-      \     'url': 'https://www.ruby-toolbox.com/search?utf8=%E2%9C%93&q=%s',
+      \     'url': 'https://www.ruby-toolbox.com/search?utf8=%E2%9C%93\&q=%s',
       \     'keyword_encoding': 'utf-8',
       \     'cache': '0',
       \   },
@@ -3104,7 +3167,7 @@ let g:ref_source_webdict_sites = {
       \     'cache': '0',
       \   },
       \   'chef_cookbooks': {
-      \     'url': 'http://community.opscode.com/search?query=%s&scope=cookbook',
+      \     'url': 'http://community.opscode.com/search?query=%s\&scope=cookbook',
       \     'keyword_encoding': 'utf-8',
       \     'cache': '0',
       \   },

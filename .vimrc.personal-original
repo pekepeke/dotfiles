@@ -15,7 +15,13 @@ let g:author                          = ""
 let g:email                           = ""
 let g:company                         = ""
 
-"" php-doc.vim
+" trans.vim
+let g:bing_client_id = ''
+let g:bing_client_secret = ''
+let g:baidu_client_id = ''
+let g:youdao_client_id = ''
+
+" php-doc.vim
 let g:pdv_cfg_Type = "mixed"
 let g:pdv_cfg_Package = ""
 let g:pdv_cfg_Version = "$id$"

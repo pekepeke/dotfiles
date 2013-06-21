@@ -1,6 +1,6 @@
 <?php
 
-class {_name_}Helper extends AppHelper {
+class {{_name_}}Helper extends AppHelper {
 	public $helpers = array();
 
 	public function __construct(View $view, $settings = array()) {
