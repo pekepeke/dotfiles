@@ -237,6 +237,9 @@ NeoBundle 'AndrewRadev/inline_edit.vim'
 NeoBundle 'zef/vim-cycle'
 NeoBundle 'mbbill/undotree'
 NeoBundle 'rhysd/clever-f.vim'
+NeoBundle 'terryma/vim-expand-region'
+" XXX
+NeoBundleLazy 'editorconfig/editorconfig-vim'
 NeoBundleLazy 'kien/ctrlp.vim'
 NeoBundle 'glidenote/memolist.vim'
 
@@ -1152,6 +1155,11 @@ augroup END
 " タブ文字の設定 {{{2
 set autoindent smartindent cindent  " インデント設定
 set list
+if s:is_mac
+  set showbreak=↪
+else
+  set showbreak=↓
+endif
 set listchars=tab:^\ ,trail:~,nbsp:%,extends:>,precedes:<
 set smarttab             " インテリジェンスなタブ入力
 set noexpandtab
@@ -1254,6 +1262,8 @@ set wildmenu                                 " 補完候補を表示する
 set wildmode=list:longest,list:full          " zsh like complete
 set wildchar=<tab>
 set wildignore+=*.o,*.obj,.git,*.rbc,.class,.svn
+set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
+set wildignore+=*.so,*.swp,*.pdf,*.dmg
 " set completeopt=menu,preview,longest,menuone
 " set complete=.,w,b,u,t,i,k                   " 補完候補の設定
 " set completeopt=menuone,preview
