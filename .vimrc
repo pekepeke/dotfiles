@@ -466,6 +466,8 @@ if has('python')
         " \   'autoload' : {},
         " \   'rtp' : 'vim',
 endif
+NeoBundleLazyOn FileType javascript 'mmalecki/vim-node.js'
+NeoBundleLazyOn FileType javascript,coffee,typescript 'othree/javascript-libraries-syntax.vim'
 NeoBundleLazyOn FileType javascript 'teramako/jscomplete-vim'
 NeoBundleLazyOn FileType javascript 'myhere/vim-nodejs-complete'
 NeoBundleLazyOn FileType javascript 'mklabs/grunt.vim'
@@ -500,7 +502,7 @@ NeoBundleLazy 'clausreinke/typescript-tools', {
 
 " python {{{4
 " http://rope.sourceforge.net/
-" NeoBundle 'klen/python-mode'
+NeoBundleLazyOn FileType python 'klen/python-mode'
 NeoBundleLazyOn FileType python 'lambdalisue/vim-python-virtualenv'
 " NeoBundle 'lambdalisue/vim-django-support'
 NeoBundleLazyOn FileType python 'gerardo/vim-django-support'
@@ -661,6 +663,13 @@ NeoBundleLazyOn FileType processing 'pekepeke/ref-processing-vim'
 NeoBundle 'sjl/strftimedammit.vim'
 NeoBundle 'tangledhelix/vim-octopress'
 NeoBundleLazyOn FileType r 'jcfaria/Vim-R-plugin'
+NeoBundleLazy 'rbtnn/vimconsole.vim', {
+      \ 'autoload' : {
+      \   'commands': [
+      \     'VimConsoleLog', 'VimConsoleOpen', 'VimConsoleWarn', 'VimConsoleError',
+      \     'VimConsoleError', 'VimConsoleToggle', 'VimConsoleClear', 'VimConsoleRedraw',
+      \   ] }
+      \ }
 
 " if executable('loga')
 "   NeoBundle 'tacahiroy/vim-logaling'
@@ -1100,6 +1109,7 @@ set ttimeoutlen=50
 
 set showmatch                  " 対応する括弧の表示
 set showcmd                    " 入力中のコマンドを表示
+set showfulltag
 set backspace=indent,eol,start " BSでなんでも削除
 set nolinebreak
 set textwidth=1000
@@ -1118,12 +1128,13 @@ set viminfo& viminfo+=!
 set visualbell
 set noerrorbells
 
-set guioptions& guioptions-=mMT
+set guioptions& guioptions-=m guioptions-=M guioptions-=T
 let did_install_default_menus = 1
 let did_install_syntax_menu = 1
 set noequalalways
 set langmenu=none
 set helplang=ja,en
+set keywordprg=":help"
 set foldmethod=marker
 " http://d.hatena.ne.jp/thinca/20110523/1306080318
 augroup vimrc-foldmethod-expr
@@ -1359,8 +1370,10 @@ nnoremap q <Nop>
 nnoremap Q q
 
 " 行単位で移動 {{{2
-nnoremap j gj
-nnoremap k gk
+nnoremap <expr> j v:count == 0 ? 'gj' : 'j'
+xnoremap <expr> j (v:count == 0 && mode() !=# 'V') ? 'gj' : 'j'
+nnoremap <expr> k v:count == 0 ? 'gk' : 'k'
+xnoremap <expr> k (v:count == 0 && mode() !=# 'V') ? 'gk' : 'k'
 " nmap gb :ls<CR>:buf
 
 " disable danger keymaps {{{2
@@ -1511,7 +1524,7 @@ nnoremap <silent> [!t]k :<C-u>pop<CR>
 nnoremap <silent> [!t]l :<C-u>tags<CR>
 
 " nmaps {{{2
-autocmd FileType help,ref,git-status,git-log nnoremap <buffer> q <C-w>c
+MyAutocmd FileType help,ref,git-status,git-log nnoremap <buffer> q <C-w>c
 " win move
 nnoremap [!space]. :source ~/.vimrc<CR>
 
@@ -1718,10 +1731,12 @@ onoremap ik i)
 vnoremap ik i)
 
 " vmaps {{{2
-vnoremap <Leader>te    :ExciteTranslate<CR>
+" vnoremap <Leader>te    :ExciteTranslate<CR>
 vnoremap <Leader>tg    :GingerRange<CR>
 " vnoremap <Leader>tj    :GoogleTranslate ja<CR>
 " vnoremap <Leader>tj    :BingTranslate ja<CR>
+vnoremap <Leader>te    :GTransEnJa<CR>
+vnoremap <Leader>tj    :GTransJaEn<CR>
 vnoremap <Tab>   >gv
 vnoremap <S-Tab> <gv
 "nnoremap : q:
@@ -2387,6 +2402,9 @@ if neobundle#is_installed('dotnet-complete')
   MyAutocmd BufNewFile,BufRead *.cs      setl omnifunc=cs#complete
   MyAutocmd BufNewFile,BufRead *.cs      setl bexpr=cs#balloon() | setl ballooneval
 endif
+
+" python {{{2
+let g:pymode_rope = 0
 
 " jedi-vim {{{2
 if neobundle#is_installed('jedi-vim')
@@ -3095,6 +3113,7 @@ Tmap a,w <Plug>(textobj-wiw-a)
 let g:textobj_wiw_no_default_key_mappings=1
 
 " ref.vim {{{2
+let g:ref_open = '8split'
 let g:ref_cache_dir = $VIM_CACHE . '/vim-ref'
 if !exists('g:ref_detect_filetype')
   let g:ref_detect_filetype = {}
@@ -3188,7 +3207,7 @@ let g:ref_source_webdict_sites = {
       \   },
       \ }
 function! g:ref_source_webdict_sites.alc.filter(output)
-    return join(split(a:output, "\n")[38:], "\n")
+  return join(split(a:output, "\n")[38:], "\n")
 endfunction
 function! g:ref_source_webdict_sites.weblio.filter(output)
   return join(split(a:output, "\n")[53 :], "\n")
@@ -3197,10 +3216,19 @@ function! g:ref_source_webdict_sites.wikipedia.filter(output)
   return join(split(a:output, "\n")[17 :], "\n")
 endfunction
 function! g:ref_source_webdict_sites.wiktionary.filter(output)
-    return join(split(a:output, "\n")[38:], "\n")
+  return join(split(a:output, "\n")[38:], "\n")
 endfunction
+
 " webdict default {{{4
 let g:ref_source_webdict_sites.default = 'alc'
+
+" webdict command {{{4
+function! s:ref_webdict_search(source)
+  let text = join(getline(a:firstline, a:lastline), "\n")
+  execute "Ref" "webdict" a:source text
+endfunction
+command! -nargs=0 -range GTransEnJa <line1>,<line2>call s:ref_webdict_search('en_ja')
+command! -nargs=0 -range GTransJaEn <line1>,<line2>call s:ref_webdict_search('ja_en')
 
 " langs {{{4
 let g:ref_source_webdict_sites.default = 'alc'
@@ -3297,16 +3325,20 @@ endif
 call extend(g:quickrun_config, {
       \  'objc/gcc' : {
       \    'command' : 'gcc',
-      \    'exec' : ['%c %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
+      \    'exec' : ['%c %o %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
       \    'tempfile': '{tempname()}.m'
       \  },
       \  'processing/osascript' : {
       \    'command': 'osascript',
-      \    'exec' : ['osascript ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
+      \    'exec' : ['osascript %o ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
       \  },
       \  'processing/processing-java' : {
       \    'command': 'processing-java',
-      \    'exec' : '%c --sketch=$PWD/ --output=/Library/Processing --run --force',
+      \    'exec' : '%c %o --sketch=$PWD/ --output=/Library/Processing --run --force',
+      \  },
+      \  'jsx/jsx' : {
+      \    'command': 'jsx',
+      \    'exec' : '%c %o --run %s',
       \  },
       \  'applescript/osascript' : {
       \    'command' : 'osascript',
@@ -3330,11 +3362,11 @@ call extend(g:quickrun_config, {
       \  },
       \  'markdown/markedwrapper' : {
       \    'command' : 'markedwrapper',
-      \    'exec' : '%c %s',
+      \    'exec' : '%c %o %s',
       \  },
       \  'markdown/mdown' : {
       \    'command' : 'mdown',
-      \    'exec' : '%c -i %s',
+      \    'exec' : '%c %o -i %s',
       \  },
       \  'markdown/Marked' : {
       \    'command' : 'open',
@@ -3352,11 +3384,11 @@ call extend(g:quickrun_config, {
       \  },
       \  'command/cat' : {
       \    'command' : 'cat',
-      \    'exec' : ['%c %s'],
+      \    'exec' : ['%c %o %s'],
       \  },
       \  'ruby/rspec' : {
       \    'command' : 'rspec',
-      \    'exec' : '%c -l {line(".")}',
+      \    'exec' : '%c %o -l {line(".")}',
       \  },
       \  'php/phpunit' : {
       \    'command' : 'phpunit',
@@ -3421,6 +3453,9 @@ call extend(g:quickrun_config, {
       \   'objc' : {
       \     'type' : executable('gcc') ? 'objc/gcc':
       \              '',
+      \   },
+      \   'jsx' : {
+      \     'type' : 'jsx/jsx',
       \   },
       \   'ruby.rspec' : {
       \     'type' : 'ruby/rspec',
@@ -4813,13 +4848,13 @@ nnoremap [!prefix]mh :call my#winmaximizer#get().toggleDirection("h")<CR>
 command! -nargs=1 -complete=customlist,my#ui#complete_encodings Fenc setl fenc=<args>
 command! -nargs=1 -complete=customlist,my#ui#complete_encodings Freopen e ++enc=<args> %
 
-command! Utf8 e ++enc=utf-8 %
-command! Euc e ++enc=euc-jp %
-command! Sjis e ++enc=cp932 %
-command! Jis e ++enc=iso-2022-jp %
-command! Dos e ++ff=dos %
-command! Mac e ++ff=mac %
-command! Unix e ++ff=unix %
+command! -nargs=? -bang -complete=file Utf8 edit<bang> ++enc=utf-8 <args>
+command! -nargs=? -bang -complete=file Euc  edit<bang> ++enc=euc-jp <args>
+command! -nargs=? -bang -complete=file Sjis edit<bang> ++enc=cp932 <args>
+command! -nargs=? -bang -complete=file Jis  edit<bang> ++enc=iso-2022-jp <args>
+command! -nargs=? -bang -complete=file Dos  edit<bang> ++ff=dos <args>
+command! -nargs=? -bang -complete=file Mac  edit<bang> ++ff=mac <args>
+command! -nargs=? -bang -complete=file Unix edit<bang> ++ff=unix <args>
 command! Ccd if isdirectory(expand('%:p:h')) | execute ":lcd " . expand("%:p:h") | endif
 LCAlias Utf8 Euc Sjis Jis Ccd
 " }}}
