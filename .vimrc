@@ -102,6 +102,14 @@ if has('vim_starting')
   " pathogen
   " call pathogen#infect()
   set runtimepath+=~/.vim/neobundle.vim
+
+  " wrap funciton
+  function! s:plugin_loaded(name)
+    return neobundle#is_sourced(a:name)
+  endfunction
+  function! s:plugin_installed(name)
+    return neobundle#is_installed(a:name)
+  endfunction
 endif
 
 call neobundle#rc(expand("~/.vim/neobundle"))
@@ -237,9 +245,13 @@ NeoBundle 'AndrewRadev/inline_edit.vim'
 NeoBundle 'zef/vim-cycle'
 NeoBundle 'mbbill/undotree'
 NeoBundle 'rhysd/clever-f.vim'
-NeoBundle 'terryma/vim-expand-region'
+" XXX : this plugin overrides replace.vim keymap...--;
+" NeoBundle 'terryma/vim-expand-region'
+NeoBundle 'kshenoy/vim-signature'
 " XXX
-NeoBundleLazy 'editorconfig/editorconfig-vim'
+if has('python')
+  NeoBundleLazy 'editorconfig/editorconfig-vim'
+endif
 NeoBundleLazy 'kien/ctrlp.vim'
 NeoBundle 'glidenote/memolist.vim'
 
@@ -260,6 +272,7 @@ NeoBundleLazy 'thinca/vim-prettyprint', {
       \ }
 NeoBundle 'thinca/vim-editvar'
 NeoBundle 'nathanaelkane/vim-indent-guides'
+" NeoBundle 'Yggdroot/indentLine'
 NeoBundle 'c9s/cascading.vim'
 NeoBundle 'mileszs/ack.vim'
 NeoBundleLazy 'vim-scripts/MultipleSearch'
@@ -316,16 +329,17 @@ NeoBundle 'thinca/vim-template'
 NeoBundle 'mattn/sonictemplate-vim'
 NeoBundle 'ciaranm/detectindent'
 NeoBundle 'ujihisa/shadow.vim'
+NeoBundle 'mhinz/vim-signify'
 " NeoBundle 'motemen/git-vim'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-git'
+NeoBundle 'int3/vim-extradite'
 NeoBundleLazy 'gregsexton/gitv', {
       \   'autoload' : {
       \     'commands' : ['Gitv'],
       \   },
       \ }
 NeoBundle 'violetyk/gitquick.vim'
-NeoBundle 'int3/vim-extradite'
 NeoBundleLazy 'Shougo/vim-vcs'
 NeoBundle 'sjl/splice.vim'
 NeoBundleLazy 'vim-scripts/DirDiff.vim', {
@@ -357,8 +371,6 @@ NeoBundle 'kana/vim-vspec'
 
 " vim-help {{{4
 NeoBundle 'mattn/learn-vimscript'
-" git://gist.github.com/997811.git
-" git://gist.github.com/1046979.git
 
 " neocomplcache {{{4
 if has('lua') && (v:version > 703 ||
@@ -513,23 +525,10 @@ NeoBundleLazyOn FileType python 'vim-scripts/python_match.vim'
 
 if has('python')
   NeoBundleLazy 'davidhalter/jedi-vim', {
-      \   'build' : {
-      \     'cygwin' : 'git submodule update --init',
-      \     'windows' : 'git submodule update --init',
-      \     'mac'    : 'git submodule update --init',
-      \     'unix'   : 'git submodule update --init',
-      \   },
       \   'autoload' : { 'filetypes' : 'python' },
       \ }
 else
-  NeoBundleLazy 'davidhalter/jedi-vim', {
-      \   'build' : {
-      \     'cygwin' : 'git submodule update --init',
-      \     'windows' : 'git submodule update --init',
-      \     'mac'    : 'git submodule update --init',
-      \     'unix'   : 'git submodule update --init',
-      \   },
-      \ }
+  NeoBundleLazy 'davidhalter/jedi-vim'
 endif
 " NeoBundle 'sontek/rope-vim'
 " if executable('ipython')
@@ -641,6 +640,7 @@ NeoBundleLazyOn FileType haskell 'eagletmt/unite-haddock'
 " NeoBundleLazyOn FileType php 'justinrainbow/php-doc.vim'
 NeoBundleLazyOn FileType php 'Gasol/vim-php'
 NeoBundleLazyOn FileType php 'StanAngeloff/php.vim'
+NeoBundleLazyOn FileType php 'vim-scripts/php_localvarcheck.vim'
 NeoBundleLazyOn FileType php 'einars/vim-phpfold'
 NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
 " NeoBundleLazyOn FileType php 'pekepeke/php.vim-html-enhanced'
@@ -1318,7 +1318,7 @@ function! s:bulk_dict_variables(defines)
 endfunction
 
 " altercmd "{{{2
-if neobundle#is_installed('vim-altercmd')
+if s:plugin_installed('vim-altercmd')
   call altercmd#load()
 
   function! s:alias_lc(...) " {{{3
@@ -1528,7 +1528,7 @@ MyAutocmd QuickfixCmdPost make call s:my_make_settings()
 
 " tags-and-searches {{{2
 nnoremap [!t]r t
-nnoremap <silent> [!t]t <C-]>
+nnoremap <silent> [!t]t g<C-]>
 nnoremap <silent> [!t]j :<C-u>tag<CR>
 nnoremap <silent> [!t]k :<C-u>pop<CR>
 nnoremap <silent> [!t]l :<C-u>tags<CR>
@@ -1700,7 +1700,7 @@ inoremap <C-w> <C-g>u<C-w>
 inoremap <C-u> <C-g>u<C-u>
 
 " cmaps {{{2
-if neobundle#is_installed('vim-emacscommandline')
+if s:plugin_installed('vim-emacscommandline')
   cnoremap <C-x><C-x> <C-r>=substitute(expand('%:p:h'), ' ', '\\v:val', 'e')<CR>/
 else
   cnoremap <C-a> <Home>
@@ -1759,13 +1759,13 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
-" neobundle {{{}}}
-function! s:plugin_loaded(name)
-  return neobundle#is_installed(a:name) && !neobundle#get(a:name).lazy
-endfunction
-function! s:plugin_installed(name)
-  return neobundle#is_installed(a:name)
-endfunction
+
+" expand-region
+if s:plugin_installed('vim-expand-region')
+  vmap + <Plug>(expand_region_expand)
+  vmap _ <Plug>(expand_region_shrink)
+  let g:expand_region_use_select_mode = 0
+endif
 
 " trans.vim {{{2
 let g:trans_default_lang = 'ja'
@@ -1821,12 +1821,12 @@ let g:trans_api.youdao = {'url': 'http://fanyi.youdao.com/openapi.do',
       \ }
 
 " perlomni {{{2
-if neobundle#is_installed('perlomni.vim')
+if s:plugin_installed('perlomni.vim')
   call s:path_push(neobundle#get('perlomni.vim').path . '/bin')
 endif
 
 " gitv {{{2
-if neobundle#is_installed('gitv')
+if s:plugin_installed('gitv')
   " http://d.hatena.ne.jp/cohama/20130517/1368806202
   MyAutocmd FileType gitv call s:my_gitv_settings()
   function! s:my_gitv_settings()
@@ -1853,7 +1853,7 @@ Alias www W3mSplit
 let g:OmniSharp_typeLookupInPreview = 1
 
 " reanimate.vim {{{2
-if neobundle#is_installed('vim-reanimate')
+if s:plugin_installed('vim-reanimate')
   let g:reanimate_save_dir = $VIM_CACHE."/vim-reanimate"
   let g:reanimate_default_save_name = "latest"
   " sessionoptions
@@ -1892,7 +1892,7 @@ let g:colorv_cache_file = $VIM_CACHE . "/vim_colorv_cache"
 " trans.vim {{{2
 let g:trans_default_lang = "en-ja"
 " powerline {{{2
-if neobundle#is_installed('powerline')
+if s:plugin_installed('powerline')
   let g:unite_force_overwrite_statusline = 0
   " let g:powerline_config_path = expand('~/.vim/powerline')
   let g:powerline_config_overrides = {
@@ -1939,7 +1939,7 @@ if neobundle#is_installed('powerline')
         \    },
         \  },
         \ }
-  if neobundle#is_installed('linepower.vim')
+  if s:plugin_installed('linepower.vim')
     if !s:is_win && !isdirectory(expand('~/.config/powerline'))
       call system(printf("cp -r %s ~/.config/powerline",
             \ neobundle#get('linepower.vim').path . "/config" ))
@@ -1950,7 +1950,7 @@ if neobundle#is_installed('powerline')
 endif
 
 " inline_edit {{{2
-if neobundle#is_installed('inline_edit.vim')
+if s:plugin_installed('inline_edit.vim')
   let g:inline_edit_autowrite = 1
   let g:inline_edit_patterns = [
         \ {
@@ -1965,20 +1965,20 @@ if neobundle#is_installed('inline_edit.vim')
 endif
 
 " cascading.vim {{{2
-if neobundle#is_installed('cascading.vim')
+if s:plugin_installed('cascading.vim')
   Lazy nunmap --
   nnoremap -^ :<C-u>Cascading<CR>
 endif
 
 " switch.vim {{{2
-if neobundle#is_installed('switch.vim')
+if s:plugin_installed('switch.vim')
   " let g:switch_custom_definitions = [ {
   "       \ } ]
   Lazy nnoremap -- :<C-u>Switch<CR>
 endif
 
 " undotree {{{2
-if neobundle#is_installed('undotree')
+if s:plugin_installed('undotree')
   nnoremap <Leader>u :<C-u>UndotreeToggle<CR>
 
   let g:undotree_SetFocusWhenToggle = 1
@@ -1993,7 +1993,7 @@ if neobundle#is_installed('undotree')
 endif
 
 " vim-localrc {{{2
-if neobundle#is_installed('vim-localrc')
+if s:plugin_installed('vim-localrc')
   let g:localrc_filename = '.local.vimrc'
   if has('vim_starting')
     " http://vim-users.jp/2009/12/hack112/ => vimrc-local
@@ -2003,7 +2003,7 @@ endif
 
 
 " let-modeline.vim {{{2
-if neobundle#is_installed('let-modeline.vim')
+if s:plugin_installed('let-modeline.vim')
   MyAutocmd BufEnter * call FirstModeLine()
   " MyAutocmd BufNewFile * let b:this_is_new_buffer=1
 endif
@@ -2016,9 +2016,9 @@ let g:trimr_method = 'ignore_filetype'
 let g:trimr_targets = ['markdown', 'mkd', 'textile']
 
 " clever-f {{{2
-if neobundle#is_installed('clever-f.vim')
+if s:plugin_installed('clever-f.vim')
   let g:clever_f_not_overwrites_standard_mappings=1
-  if neobundle#is_installed('unite.vim')
+  if s:plugin_installed('unite.vim')
     nmap [!unite]f <Plug>(clever-f-f)
     vmap f <Plug>(clever-f-f)
   else
@@ -2031,7 +2031,7 @@ endif
 let g:hl_matchit_enable_on_vim_startup = 0
 let g:hl_matchit_hl_groupname = 'Title'
 let g:hl_matchit_allow_ft_regexp = 'html\|eruby\|eco'
-if neobundle#is_installed('hl_matchit.vim')
+if s:plugin_installed('hl_matchit.vim')
   let s:hl_matchit_running = get(g:, 'hl_matchit_enable_on_vim_startup', 0)
   let s:hl_matchit_last_off_time = 0
 
@@ -2061,7 +2061,7 @@ map ;dj <Plug>DirDiffNext
 map ;dk <Plug>DirDiffPrev
 
 " splitjoin.vim {{{2
-if neobundle#is_installed('splitjoin.vim')
+if s:plugin_installed('splitjoin.vim')
   let g:splitjoin_split_mapping = ''
   let g:splitjoin_join_mapping = ''
   let g:splitjoin_normalize_whitespace = 1
@@ -2072,7 +2072,7 @@ if neobundle#is_installed('splitjoin.vim')
 endif
 
 " rainbow_parentheses {{{2
-if neobundle#is_installed('rainbow_parentheses.vim')
+if s:plugin_installed('rainbow_parentheses.vim')
   MyAutocmd VimEnter * RainbowParenthesesToggleAll
 endif
 
@@ -2173,7 +2173,7 @@ function! s:sminput_define_rules()
         \   '<Enter>',
         \   '<Enter>')
 endfunction
-if neobundle#is_installed('vim-smartinput')
+if s:plugin_installed('vim-smartinput')
   command! SmartinputOff call smartinput#clear_rules()
   command! SmartinputOn call <SID>sminput_define_rules()
   call s:sminput_define_rules()
@@ -2192,7 +2192,7 @@ endif
 " nmap [!space]s <Plug>(golden_ratio_toggle)
 
 " ambicmd {{{2
-if neobundle#is_installed('vim-ambicmd')
+if s:plugin_installed('vim-ambicmd')
   cmap <expr> <Space> ambicmd#expand("\<Space>")
   cmap <expr> <CR> ambicmd#expand("\<CR>")
   " cnoremap <expr> <C-l> ambicmd#expand("\<Space>")
@@ -2229,7 +2229,7 @@ else
 endif
 
 " smartword {{{2
-if neobundle#is_installed('vim-smartword')
+if s:plugin_installed('vim-smartword')
   nmap w  <Plug>(smartword-w)
   nmap b  <Plug>(smartword-b)
   nmap e  <Plug>(smartword-e)
@@ -2241,7 +2241,7 @@ if neobundle#is_installed('vim-smartword')
 endif
 
 " vim-altr {{{2
-if neobundle#is_installed('vim-altr')
+if s:plugin_installed('vim-altr')
   call altr#define('autoload/%.vim', 'doc/%.txt', 'plugin/%.vim', 'test/%.vim')
 
   call altr#define('%.c', '%.cpp', '%.m', '%.h')
@@ -2320,7 +2320,7 @@ silent! repeat#set() " for loading
 
 " submode {{{2
 " http://d.hatena.ne.jp/tyru/20100502/vim_mappings
-if neobundle#is_installed('vim-submode')
+if s:plugin_installed('vim-submode')
   " Change current window size {{{3
   call submode#enter_with('winsize', 'n', '', '[!s]w', '<Nop>')
   call submode#leave_with('winsize', 'n', '', '<Esc>')
@@ -2407,7 +2407,7 @@ let g:rails_subversion=0
 let g:rails_default_file='config/database.yml'
 
 " csharp {{{2
-if neobundle#is_installed('dotnet-complete')
+if s:plugin_installed('dotnet-complete')
   MyAutocmd BufNewFile,BufRead *.xaml    setf xml | setl omnifunc=xaml#complete
   MyAutocmd BufNewFile,BufRead *.cs      setl omnifunc=cs#complete
   MyAutocmd BufNewFile,BufRead *.cs      setl bexpr=cs#balloon() | setl ballooneval
@@ -2417,7 +2417,7 @@ endif
 let g:pymode_rope = 0
 
 " jedi-vim {{{2
-if neobundle#is_installed('jedi-vim')
+if s:plugin_installed('jedi-vim')
   let g:jedi#auto_initialization = 1
   let g:jedi#popup_on_dot = 0
   let g:jedi#rename_command = '<leader>R'
@@ -2439,7 +2439,7 @@ let g:aria_attributes_complete = 1
 let g:PIVCreateDefaultMappings=0
 
 " sudo.vim {{{2
-if s:is_mac && has('gui_running') && neobundle#is_installed('sudo-gui.vim')
+if s:is_mac && has('gui_running') && s:plugin_installed('sudo-gui.vim')
   command! -bang SW SudoWriteMacGUI
 else
   command! SW w sudo:%
@@ -2467,7 +2467,7 @@ let g:user_zen_leader_key='<C-y>'
 nmap [!prefix]/ <Plug>(endtagcomment)
 
 " smartchr "{{{2
-if neobundle#is_installed('vim-smartchr')
+if s:plugin_installed('vim-smartchr')
   inoremap <expr>, smartchr#one_of(', ', ',')
 endif
 
@@ -2504,7 +2504,7 @@ endfunction
 
 " unite.vim {{{2
 LCAlias Unite
-if neobundle#is_installed('unite.vim')
+if s:plugin_installed('unite.vim')
   nnoremap [!unite] <Nop>
   nmap     f       [!unite]
   " define at clever-f
@@ -2559,7 +2559,7 @@ function! s:bundle.hooks.on_source(bundle)
   call unite#custom#substitute('files', '^@@', '\=fnamemodify(expand("#"), ":p:h")."/*"', 2)
   call unite#custom#substitute('files', '^@', '\=getcwd()."/*"', 1)
   call unite#custom#substitute('files', '^\\', '~/*')
-  call unite#custom#substitute('files', '^~', escape($HOME, '\'), -2)
+  call unite#custom#substitute('files', '^\~', escape($HOME, '\'), -2)
 
   call unite#custom#substitute('files', '^;v', '~/.vim/*')
   call unite#custom#substitute('files', '^;ft', '~/.vim/after/ftplugin/')
@@ -2629,11 +2629,11 @@ UniteNMap   s         source
 UniteNMap   <Space>   buffer
 UniteNMap   j         buffer_tab
 UniteNMap   k         tab
-UniteNMap   l         file
+UniteNMap   l         file -profile-name=files
 UniteNMap   d         directory_mru -default-action=vimfiler
 UniteNMap   z         z -default-action=vimfiler
-UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR><CR>
-UniteNMap   m         file_mru -default-action=open -buffer-name=file
+UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR> -profile-name=files
+UniteNMap   m         file_mru -default-action=open -profile-name=files
 UniteNMap   t         sonictemplate
 UniteNMap   c         webcolorname
 UniteNMap   i         jump
@@ -2659,7 +2659,7 @@ inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=narrow_or_insert file<CR>
 Alias colorscheme Unite colorscheme -auto-preview
 
 " if my#util#has_plugin('vimproc.vim')
-" if neobundle#is_installed('vimproc.vim')
+" if s:plugin_installed('vimproc.vim')
 "   UniteNMap a file_rec/async -start-insert
 " else
 UniteNMap a file_rec -start-insert
@@ -2840,7 +2840,7 @@ function! s:setup_tags()
 endfunction
 call s:setup_tags()
 
-if neobundle#is_installed('taglist.vim') "{{{4
+if s:plugin_installed('taglist.vim') "{{{4
   let g:Tlist_Auto_Update = 1
   let g:Tlist_Show_One_File = 0
   let g:Tlist_Exit_OnlyWindow = 1
@@ -2968,7 +2968,7 @@ function! s:exec_ctags(path) "{{{3
   if !empty(a:path) && isdirectory(a:path)
     exe 'lcd' a:path
   endif
-  if neobundle#is_installed('vimproc.vim')
+  if s:plugin_installed('vimproc.vim')
     call vimproc#system_bg(ctags_cmd)
   else
     execute "!" ctags_cmd
@@ -3067,7 +3067,7 @@ let g:surround_custom_mapping.vim= {
 
 " operator {{{2
 " http://labs.timedia.co.jp/2011/07/vim-excel-and-sql.html
-if neobundle#is_installed('vim-operator-user')
+if s:plugin_installed('vim-operator-user')
   call operator#user#define('excelize', 'OperatorExcelize')
   function! OperatorExcelize(motion_wise)
     let b = line("'[")
@@ -3133,7 +3133,7 @@ let g:ref_use_vimproc = 0
 let g:ref_alc_use_cache = 1
 let g:ref_alc_start_linenumber = 43
 
-if neobundle#is_installed('vimproc.vim')
+if s:plugin_installed('vimproc.vim')
   let g:ref_use_vimproc = 1
 endif
 
@@ -3325,7 +3325,7 @@ let g:quickrun_config._ = {
       \   'hook/inu/redraw' : 1,
       \   'hook/inu/wait' : 20,
       \ }
-if neobundle#is_installed('vimproc.vim')
+if s:plugin_installed('vimproc.vim')
   call extend(g:quickrun_config._, {
       \   'runner' : 'vimproc',
       \   'runner/vimproc/updatetime' : 100,
@@ -3525,7 +3525,7 @@ command! PhpUnitSkelGen call <SID>gen_phpunit_skel()
 MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
 MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
 
-if neobundle#is_installed('vim-ref')
+if s:plugin_installed('vim-ref')
   augroup vimrc-plugin-ref
     autocmd!
     autocmd FileType ruby.rspec,php.phpunit,python.nosetests,perl.prove call s:testcase_lazy_init()
@@ -3550,11 +3550,11 @@ MyAutocmd FileType quickrun call s:quickrun_my_settings()
 
 " watchdogs {{{2
 
-if neobundle#is_installed('vimproc.vim')
+if s:plugin_installed('vimproc.vim')
 
   NeoBundleSource shabadou.vim vim-watchdogs
 
-  if neobundle#is_installed('vim-watchdogs')
+  if s:plugin_installed('vim-watchdogs')
     " run ok
     "  python, jsonlint
     call extend(g:quickrun_config, {
@@ -3806,7 +3806,7 @@ let g:neosnippet#snippets_directory            = $HOME . '/.vim/snippets'
 let g:neosnippet#enable_snipmate_compatibility = 0
 " let g:neosnippet#disable_runtime_snippets._    = 1
 
-if neobundle#is_installed('neosnippet')
+if s:plugin_installed('neosnippet')
   function! s:can_snip()
     return neosnippet#expandable_or_jumpable() && &filetype != "snippet"
   endfunction
@@ -3977,7 +3977,7 @@ if s:plugin_loaded('neocomplcache') "{{{3
   let g:neocomplcache_include_exprs.autohotkey = ''
   " }}}
 
-  if neobundle#is_installed('neocomplcache')
+  if s:plugin_installed('neocomplcache')
     " Recommended key-mappings.
     " <CR>: close popup and save indent.
     " inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
@@ -3987,7 +3987,7 @@ if s:plugin_loaded('neocomplcache') "{{{3
     " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
     " <C-h>, <BS>: close popup and delete backword char.
-    if neobundle#is_installed('vim-smartinput')
+    if s:plugin_installed('vim-smartinput')
       " inoremap <expr> <C-h>  neocomplcache#smart_close_popup()
       "       \ . eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<C-h>")')
       " inoremap <expr> <BS>   neocomplcache#smart_close_popup()
@@ -4013,7 +4013,7 @@ if s:plugin_loaded('neocomplcache') "{{{3
   endif
   " endwise
   " inoremap <silent> <cr> <c-r>=EnterIndent()<cr>
-  " if neobundle#is_installed('vim-indent_cr')
+  " if s:plugin_installed('vim-indent_cr')
     " Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")
     "       \ ."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
     imap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")
@@ -4156,12 +4156,12 @@ elseif s:plugin_loaded('neocomplete') "{{{3
         \ }])
 
   " Go
-  if neobundle#is_installed('vim-gocode')
+  if s:plugin_installed('vim-gocode')
     let g:neocomplete#sources#omni#functions.go = 'gocomplete#Complete'
   endif
 
   " Clojure
-  if neobundle#is_installed('vim-clojure')
+  if s:plugin_installed('vim-clojure')
     let g:neocomplete#sources#omni#functions.clojure = 'vimclojure#OmniCompletion'
   endif
 
@@ -4169,13 +4169,13 @@ elseif s:plugin_loaded('neocomplete') "{{{3
   let g:neocomplete#sources#omni#functions.sql = 'sqlcomplete#Complete'
 
   " R
-  if neobundle#is_installed('Vim-R-plugin')
+  if s:plugin_installed('Vim-R-plugin')
     let g:neocomplete#sources#omni#input_patterns.r = '[[:alnum:].\\]\+'
     let g:neocomplete#sources#omni#functions.r = 'rcomplete#CompleteR'
   endif
 
   " XQuery
-  if neobundle#is_installed('XQuery-indentomnicomplete')
+  if s:plugin_installed('XQuery-indentomnicomplete')
     let g:neocomplete#sources#omni#input_patterns.xquery =
           \ '\k\|:\|\-\|&'
     let g:neocomplete#sources#omni#functions.xquery =
@@ -4199,7 +4199,7 @@ elseif s:plugin_loaded('neocomplete') "{{{3
   " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
   " <C-h>, <BS>: close popup and delete backword char.
-  if neobundle#is_installed('vim-smartinput')
+  if s:plugin_installed('vim-smartinput')
     " inoremap <expr> <C-h>  neocomplete#smart_close_popup()
     "       \ . eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<C-h>")')
     " inoremap <expr> <BS>   neocomplete#smart_close_popup()
@@ -4225,7 +4225,7 @@ elseif s:plugin_loaded('neocomplete') "{{{3
 
   " endwise
   " inoremap <silent> <cr> <c-r>=EnterIndent()<cr>
-  " if neobundle#is_installed('vim-enter-indent')
+  " if s:plugin_installed('vim-enter-indent')
   "   Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplete#smart_close_popup():"")."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
     imap <silent><expr> <CR> (pumvisible()?neocomplete#smart_close_popup():"")
           \ ."\<Plug>(smartinput_CR)\<C-r>=endwize#crend()\<CR>"
@@ -4306,7 +4306,7 @@ function! s:setup_vimproc_dll() " {{{3
   endif
 endfunction " }}}
 
-if neobundle#is_installed('vimproc.vim')
+if s:plugin_installed('vimproc.vim')
   call s:setup_vimproc_dll()
 endif
 
@@ -4741,7 +4741,7 @@ endfunction
 " tiny snippets {{{2
 let g:my_snippets_dir = "$HOME/memos/tiny-snippets"
 
-" if neobundle#is_installed('unite.vim')
+" if s:plugin_installed('unite.vim')
 "   let s:unite_action_file_insert = {} " {{{3
 "   function! s:unite_action_file_insert.func(candicate)
 "     "echo a:candicate
@@ -5148,11 +5148,11 @@ if !has('vim_starting')
   if has('gui_running')
     doautocmd GUIEnter,BufRead
   endif
-  if exists('*PowerlineNew') " neobundle#is_installed('powerline')
+  if exists('*PowerlineNew') " s:plugin_installed('powerline')
     set statusline=%!PowerlineNew()
     call PowerlineNew()
     redraw!
-  elseif neobundle#is_installed('vim-powerline')
+  elseif s:plugin_installed('vim-powerline')
     call Pl#UpdateStatusline(1)
   endif
 endif
