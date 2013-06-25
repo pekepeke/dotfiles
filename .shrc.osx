@@ -23,9 +23,12 @@ alias bl='brew list'
 alias bop='open $(brew --prefix)/'
 alias bcd='cd $(brew --prefix)/'
 
-alias mvi='mvim --remote-tab-silent'
-alias cote='open -a CotEditor'
-alias twe='open -a TextWrangler'
+alias mvi="$TMUX_PREFIX_COMMAND mvim --remote-tab-silent"
+alias cote="$TMUX_PREFIX_COMMAND open -a CotEditor"
+alias twe="$TMUX_PREFIX_COMMAND open -a TextWrangler"
+if [ -n "$TMUX" ]; then
+  alias mvim="$TMUX_PREFIX_COMMAND mvim"
+fi
 
 # commands {{{2
 if [ -e /Applications/Emacs.app ]; then

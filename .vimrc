@@ -190,7 +190,7 @@ NeoBundle 'mklabs/vim-fetch'
 NeoBundle 'osyo-manga/vim-reanimate'
 NeoBundleLazy 'mattn/benchvimrc-vim'
 NeoBundle 'Shougo/context_filetype.vim'
-NeoBundleLazy 'Shougo/vimfiler', {
+NeoBundleLazy 'Shougo/vimfiler.vim', {
       \   'depends': 'Shougo/unite.vim',
       \   'autoload' : {
       \      'commands' : [{ 'name' : 'VimFiler',
@@ -375,19 +375,20 @@ NeoBundle 'mattn/learn-vimscript'
 " neocomplcache {{{4
 if has('lua') && (v:version > 703 ||
       \ (v:version == 703&& has('patch885')))
-  NeoBundle 'Shougo/neocomplete'
-  NeoBundleLazy 'Shougo/neocomplcache'
+  NeoBundle 'Shougo/neocomplete.vim'
+  NeoBundleLazy 'Shougo/neocomplcache.vim'
 else
-  NeoBundle 'Shougo/neocomplcache'
-  NeoBundleLazy 'Shougo/neocomplete'
+  NeoBundle 'Shougo/neocomplcache.vim'
+  NeoBundleLazy 'Shougo/neocomplete.vim'
 endif
-NeoBundle 'Shougo/neocomplcache-rsense'
+" NeoBundle 'Shougo/neocomplcache-rsense.vim'
+NeoBundle 'pekepeke/neocomplcache-rsense.vim', 'neocompleteFeature'
 NeoBundleLazy 'm2ym/rsense', {
       \ 'build' : {
       \    'mac': 'ruby etc/config.rb > ~/.rsense',
       \    'unix': 'ruby etc/config.rb > ~/.rsense',
       \ } }
-NeoBundle 'Shougo/neosnippet'
+NeoBundle 'Shougo/neosnippet.vim'
 NeoBundle 'basyura/csharp_complete'
 NeoBundle 'osyo-manga/neocomplcache-jsx'
 NeoBundle 'hrsh7th/vim-neco-calc'
@@ -767,11 +768,6 @@ NeoBundle 'thinca/vim-ambicmd'
 NeoBundle 'mattn/gist-vim'
 " NeoBundle 'mattn/vimplenote-vim'
 " NeoBundle 'pekepeke/vimplenote-vim'
-if has('python') && (s:is_win || s:is_mac || !has('gui_running'))
-  NeoBundle 'tsukkee/lingr-vim'
-else
-  NeoBundleLazy 'tsukkee/lingr-vim'
-endif
 
 " gf-user {{{3
 NeoBundle 'kana/vim-gf-user'
@@ -1827,6 +1823,7 @@ endif
 
 " gitv {{{2
 if s:plugin_installed('gitv')
+  let g:Gitv_OpenHorizontal = 1
   " http://d.hatena.ne.jp/cohama/20130517/1368806202
   MyAutocmd FileType gitv call s:my_gitv_settings()
   function! s:my_gitv_settings()
@@ -2700,7 +2697,7 @@ nnoremap <silent> [!unite]rg :<C-u>UniteResume grep<CR>
 nnoremap <silent> [!unite]rt :<C-u>UniteResume todo<CR>
 nnoremap <silent> [!unite]rq :<C-u>UniteResume qfix<CR>
 
-if s:plugin_loaded('neocomplcache')
+if s:plugin_loaded('neocomplcache.vim')
   inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
 else
   inoremap <C-x><C-j> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
@@ -2722,7 +2719,7 @@ nnoremap <silent> [!unite]V  :<C-u>call <SID>unite_open_ftplugin()<CR>
 function! s:tags_update()
     " include している tag ファイルが毎回同じとは限らないので毎回初期化
     setlocal tags=
-    if s:plugin_loaded('neocomplcache')
+    if s:plugin_loaded('neocomplcache.vim')
       for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
           execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
       endfor
@@ -2972,7 +2969,7 @@ function! s:exec_ctags(path) "{{{3
     call vimproc#system_bg(ctags_cmd)
   else
     execute "!" ctags_cmd
-    if s:plugin_loaded('neocomplcache')
+    if s:plugin_loaded('neocomplcache.vim')
       NeoComplCacheCachingTags
     else
       NeoCompleteTagMakeCache
@@ -3806,7 +3803,7 @@ let g:neosnippet#snippets_directory            = $HOME . '/.vim/snippets'
 let g:neosnippet#enable_snipmate_compatibility = 0
 " let g:neosnippet#disable_runtime_snippets._    = 1
 
-if s:plugin_installed('neosnippet')
+if s:plugin_installed('neosnippet.vim')
   function! s:can_snip()
     return neosnippet#expandable_or_jumpable() && &filetype != "snippet"
   endfunction
@@ -3853,7 +3850,7 @@ if s:plugin_installed('neosnippet')
 endif
 
 " neocomplete, neocomplcache {{{2
-if s:plugin_loaded('neocomplcache') "{{{3
+if s:plugin_loaded('neocomplcache.vim') "{{{3
   " options {{{4
   let g:neocomplcache_temporary_dir = $VIM_CACHE . '/neocomplcache'
   let g:neocomplcache_enable_at_startup                   = 1
@@ -3977,7 +3974,7 @@ if s:plugin_loaded('neocomplcache') "{{{3
   let g:neocomplcache_include_exprs.autohotkey = ''
   " }}}
 
-  if s:plugin_installed('neocomplcache')
+  if s:plugin_installed('neocomplcache.vim')
     " Recommended key-mappings.
     " <CR>: close popup and save indent.
     " inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
@@ -4024,7 +4021,7 @@ if s:plugin_loaded('neocomplcache') "{{{3
   " endif
 
 
-elseif s:plugin_loaded('neocomplete') "{{{3
+elseif s:plugin_loaded('neocomplete.vim') "{{{3
   " options {{{4
   let g:neocomplete#data_directory = $VIM_CACHE . '/neocomplete'
   let g:neocomplete#enable_at_startup                   = 1
@@ -4252,6 +4249,10 @@ if exists("+omnifunc") " {{{4
         \ | endif
 endif
 
+if s:plugin_installed('rsense')
+  let $RSENSE_HOME = neobundle#get('rsense').path
+endif
+
 " if exists('$RSENSE_HOME') " {{{4 RSENSE
 "   let g:rsenseHome=$RSENSE_HOME
 "   let g:rsenseUseOmniFunc=0
@@ -4385,7 +4386,7 @@ function! s:vimshell_my_settings() " {{{3
   call vimshell#hook#add('preexec'   , 'my_preexec', s:vimshell_hooks.preexec)
 
   imap <silent> <buffer> <C-a> <C-o>:call cursor(line('.'), strlen(g:vimshell_prompt)+1)<CR>
-  if s:plugin_loaded('neocomplcache')
+  if s:plugin_loaded('neocomplcache.vim')
     inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
   else
     inoremap <expr><buffer> <C-j> pumvisible() ? neocomplete#close_popup() : ""
