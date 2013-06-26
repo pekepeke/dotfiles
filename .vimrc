@@ -622,6 +622,7 @@ NeoBundleLazyOn FileType textile 'timcharper/textile.vim'
 NeoBundleLazyOn FileType csv 'chrisbra/csv.vim'
 NeoBundleLazyOn FileType yaml 'henrik/vim-yaml-flattener'
 NeoBundleLazyOn FileType plantuml 'aklt/plantuml-syntax'
+NeoBundleLazyOn FileType tjp 'maxmeyer/vim-taskjuggler'
 
 NeoBundle 'motemen/hatena-vim'
 NeoBundle 'nvie/vim-rst-tables'

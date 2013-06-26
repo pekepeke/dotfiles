@@ -1,0 +1,314 @@
+# allocate ...
+snippet all
+	allocate ${1:resource}
+
+
+# duration ...
+snippet dur
+	duration ${1:time}
+
+
+# effort ...
+snippet eff
+	effort ${1:time}
+
+
+# flags ...
+snippet fla
+	flags ${1:flag}
+
+
+# include "..."
+snippet inc
+	include "${1:filename}"}
+
+
+# minslackrate ...
+snippet min
+	minslackrate ${1:10.0}
+
+
+# project ... "..." "v" start - end
+snippet pro
+	project ${1:name} "${2:description}" "${3:version}" ${4:2012}-${5:01}-${6:01} - ${7:2013}-${8:12}-${9:31} {
+	
+	    scenario plan "Plan" {
+		${10:#...}
+		}
+	}
+
+
+# projection ...
+snippet pro
+	projection {${1:strict}}
+
+
+# new project report template
+snippet pre
+	navigator p-${1:projectname}_navbar {
+	  hidereport 0
+	}
+	
+	#textreport "${1:projectname}_dayplanning" {
+	#    formats html
+	#    center '<[report id="${1:projectname}_dayplanning"]>'
+	#}
+	
+	textreport "3dprinter_weekplanning" {
+	    formats html
+	    center '<[report id="${1:projectname}_weekplanning"]>'
+		selfcontained yes
+	}
+	 
+	textreport "${1:projectname}_TrackingGantt_week" {
+	    formats html
+	    title "${1:projectname} Tracking Gantt per week"
+	    center '<[report id="${1:projectname}_TrackingGantt_week"]>'
+		selfcontained yes
+	}
+	
+	#textreport "${1:projectname}_TrackingGantt_day" {
+	#    formats html
+	#    title "${1:projectname} Tracking Gantt per day"
+	#    center '<[report id="${1:projectname}_TrackingGantt_day"]>'
+	#}
+	
+	#taskreport ${1:projectname}_dayplanning "Resource planning per day (PLAN)" {
+	#  scenarios plan
+	#  headline "${1:projectname} Planning - Resource Allocation Report - per day (PLAN)"
+	#  columns hierarchindex, name, start, end, effort {title "Work"},
+	#          duration, chart { ${TaskTip} scale day width 700}
+	#  timeformat "%Y-%m-%d"
+	#  loadunit days
+	#  hideresource ~(isleaf() & isleaf_())
+	#  sortresources name.up
+	#  taskroot ${1:projectname}
+	#}
+	
+	taskreport ${1:projectname}_weekplanning "Resource weekplanning per week (Delayed)" {
+	  scenarios delayed
+	  headline "${1:projectname} Planning - Resource Allocation Report - per week (Delayed)"
+	  columns hierarchindex, name, start, end, effort {title "Work"},
+	          duration, chart { ${TaskTip} scale week width ${resourcewidth} }
+	  timeformat "%Y-%m-%d"
+	  loadunit days
+	  hideresource ~(isleaf() & isleaf_())
+	  sortresources name.up
+	  taskroot ${1:projectname}
+	  selfcontained yes
+	}
+	
+	taskreport ${1:projectname}_TrackingGantt_week "Tracking Gantt Week" {
+	  headline "${1:projectname} Tracking Gantt Week"
+	  columns hierarchindex, name, start, end, effort {title "Work"}, duration, completed, effortleft,
+	          chart { ${TaskTip} scale week width ${ganttwidth} } 
+			  #hierarchindex, name, start, end, note {width 150}, complete,
+	  timeformat "%a %Y-%m-%d"
+	  loadunit days
+	  taskroot ${1:projectname}
+	  hideresource 1
+	  scenarios plan, delayed
+	  selfcontained yes
+	}
+	
+	#taskreport ${1:projectname}_TrackingGantt_day "Tracking Gantt Day" {
+	#  headline "${1:projectname} Tracking Gantt Day"
+	#  columns hierarchindex, name, start, end, effort {title "Work"}, duration, completed, effortleft,
+	#          chart { ${TaskTip} scale day width 1700 } #
+			  #hierarchindex, name, start, end, note {width 150}, complete,
+	#  timeformat "%a %Y-%m-%d"
+	#  loadunit days
+	#  taskroot ${1:projectname}
+	#  hideresource 1
+	#  scenarios plan, delayed
+	#  selfcontained yes
+	#}
+	
+	#taskreport ${1:projectname}_TrackingGantt_day_plan "Tracking Gantt PLAN" {
+	#  headline "${1:projectname} Tracking Gantt PLAN"
+	#  columns hierarchindex, name, start, end, effort {title "Work"}, duration, completed, 
+	#          chart { ${TaskTip} scale week width 1700 } 
+	#		  #hierarchindex, name, start, end, note {width 150}, complete,
+	#  timeformat "%a %Y-%m-%d"
+	#  loadunit weeks
+	#  taskroot ${1:projectname}
+	#  hideresource 1
+	#  scenarios plan
+	#}
+	
+	#taskreport ${1:projectname}_TrackingGantt_day_delayed "Tracking Gantt Day DELAYED" {
+	#  headline "${1:projectname} Tracking Gantt Day DELAYED"
+	#  columns hierarchindex, name, start, end, effort {title "Work"}, duration, completed, 
+	#          chart { ${TaskTip} scale day width 1700 } 
+			  #hierarchindex, name, start, end, note {width 150}, complete,
+	#  timeformat "%a %Y-%m-%d"
+	#  loadunit days
+	#  taskroot ${1:projectname}
+	#  hideresource 1
+	#  scenarios delayed
+	#}
+	
+	textreport ${1:projectname}_frame "" {
+	  header -8<-
+	    == ${1:projectname} Rindler ==
+	    ----
+	    <[navigator id="${1:projectname}_navbar"]>
+	    ----
+	  ->8-
+	  footer "----"
+	  textreport index "${1:projectname}_overview" {
+	    formats html
+	    center '<[report id="${1:projectname}_overview"]>'
+	  }
+	#  textreport "${1:projectname}_Status" {
+	#    formats html
+	#    center -8<-
+	#      <[report id="${1:projectname}_status.dashboard"]>
+	#      ----
+	#      <[report id="${1:projectname}_status.completed"]>
+	#      ----
+	#      <[report id="${1:projectname}_status.ongoing"]>
+	#      ----
+	#      <[report id="${1:projectname}_status.future"]>
+	#    ->8-   
+	#  }
+	#  textreport "${1:projectname}_dayplanning" {
+	#    formats html#
+	#	title "${1:projectname} Day Planning"
+	#    center '<[report id="${1:projectname}_dayplanning"]>'
+	#  }
+	    textreport "${1:projectname}_weekplanning" {
+	    formats html
+		title "${1:projectname} Week Planning"
+	    center '<[report id="${1:projectname}_weekplanning"]>'
+	  }
+	    textreport "${1:projectname}_TrackingGantt_week" {
+	    formats html
+	    title "${1:projectname} TrackingGantt Week"
+	    center '<[report id="${1:projectname}_TrackingGantt_week"]>'
+	  }
+	#    textreport "${1:projectname}_TrackingGantt_day" {
+	#    formats html
+	#    title "${1:projectname} TrackingGantt Day"
+	#    center '<[report id="${1:projectname}_TrackingGantt_day"]>'
+	#  }
+	    textreport "${1:projectname}_ResourceGraph" {
+	    formats html
+	    title "${1:projectname} Resource Graph"
+	    center '<[report id="${1:projectname}_resourceGraph"]>'
+	  }
+	#    textreport "${1:projectname}_TrackingGantt_day_plan" {
+	#    formats html
+	#    title "${1:projectname} TrackingGantt Day PLAN"
+	#    center '<[report id="${1:projectname}_TrackingGantt_day_plan"]>'
+	#  }    textreport "${1:projectname}_TrackingGantt_day" {
+	#    formats html
+	#    title "${1:projectname} TrackingGantt Day DELAYED"
+	#    center '<[report id="${1:projectname}_TrackingGantt_day_delayed"]>'
+	#  }
+	 }
+	 
+	 resourcereport ${1:projectname}_resourceGraph "Resource graph 113393 Rindler" {
+	  scenarios delayed
+	  headline "${1:projectname} Resource Allocation Graph (Scenario Delayed)"
+	  columns no, name, effort, weekly { ${TaskTip} scale day width 700} #rate, 
+	  loadunit shortauto
+	  # We only like to show leaf tasks for leaf resources.
+	  hidetask ~(isleaf() & isleaf_())
+	  taskroot ${1:projectname}
+	  sorttasks plan.start.up
+	}
+	#    === Project Overview === 
+	taskreport ${1:projectname}_overview "Overview 113393 Rindler" {
+	  formats html
+	  header -8<-
+	  
+	
+	
+		Go back to [[Optigrader600_projects_overview]]
+	
+		This is the project for 113393 Rindler, Poland. Below is the current status.
+	
+		If you want to compare it with the original plan you should have a look [[${1:projectname}_TrackingGantt_week]].
+		
+		If you want to look at the resource allocation for the acual situation you should look at [[${1:projectname}_ResourceGraph]].
+		
+	  ->8-
+	    columns hierarchindex,
+	          name, start, end, effort, duration,
+	          chart { ${TaskTip} scale week width ${ganttwidth} }
+			  # cost, revenue,
+	  # For this report we like to have the abbreviated weekday in front
+	  # of the date. %a is the tag for this.
+	  timeformat "%a %Y-%m-%d"
+	#  timeformat "%Y-%m-%d"
+	#  loadunit shortauto
+	  loadunit days #weeks
+	  hideresource 1
+	  #hidetask isleaf()
+	  #balance cost rev
+	#  caption 'All effort values are in man days.'
+	  scenarios plan
+	  taskroot ${1:projectname}
+	}
+		
+	#textreport "${1:projectname}_Tasks" {
+	#    formats html
+	#    title "${1:projectname} Tasks"
+	#    center '<[report id="${1:projectname}_tasks"]>'
+	#}
+	
+	#taskreport ${1:projectname}_tasks "Tasks" {
+	#  scenarios plan
+	#  headline "${1:projectname} Tasks"
+	#  columns hierarchindex, name, start, end, effort {title "Work"}, duration #, chart { ${TaskTip} scale day width 700}
+	#  timeformat "%Y-%m-%d"
+	#  loadunit days
+	#  hideresource 1
+	  #~(isleaf() & isleaf_())
+	  #sortresources name.up
+	#  taskroot ${1:projectname}
+	#}
+
+
+
+# scenario ... "..."
+snippet sce
+	scenario ${1:name} "${2:description}" {
+		projection {${3:strict}}
+		}
+	}
+
+
+# task ... "..." {}
+snippet tas
+	task ${1:taskname} "${2:taskdescription}" {
+		${3:#put other code here}
+	}
+
+
+# taskreport ... "..." {}
+snippet tar
+	taskreport ${1:taskreportname} "${2:taskreportdescription}" {
+		columns bsi { title 'WBS' },
+	          name, start, end, effort, cost,
+	          revenue, chart { ${TaskTip} }
+	          ${3:#put other code here}
+	}
+
+
+# timeformat ...
+snippet tim
+	timeformat ${1:"%Y-%m-%d"}
+
+
+# weekstartsmonday
+snippet wee
+	weekstartsmonday
+
+
+# workinghours
+snippet wor
+	workinghours mon,tue,wed,thu,fri 08:00 -12:00 , 13:00 - 17:00
+
+
