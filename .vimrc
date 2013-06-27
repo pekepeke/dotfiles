@@ -774,6 +774,7 @@ NeoBundle 'mattn/gist-vim'
 NeoBundle 'kana/vim-gf-user'
 NeoBundle 'kana/vim-gf-diff'
 NeoBundle 'sgur/vim-gf-autoload'
+NeoBundle 'sgur/citation-utils.vim'
 " does not support gf-user
 " NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
 NeoBundleLazyOn FileType python 'zhaocai/vim-gf-python'
