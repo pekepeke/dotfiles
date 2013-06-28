@@ -1,27 +1,26 @@
-"" hatena.vim & changelog, etc "{{{
-" hatena
+" env {{{1
+let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
+let s:is_win = has('win16') || has('win32') || has('win64')
+
+" hatena.vim & changelog, etc "{{{1
+" hatena {{{2
 let g:hatena_user                     = ''
 let g:hatena_group_name               = ''
 
-" changelog
+" changelog {{{2
 let g:changelog_timeformat            = "%Y-%m-%d"
 let g:changelog_username              = ""
 let g:changelog_date_end_entry_search = '^\s*$'
 
-" template
+" template {{{2
 let g:author                          = ""
 let g:email                           = ""
 let g:author                          = ""
 let g:email                           = ""
 let g:company                         = ""
 
-" trans.vim
-let g:bing_client_id = ''
-let g:bing_client_secret = ''
-let g:baidu_client_id = ''
-let g:youdao_client_id = ''
-
-" php-doc.vim
+" languages, or web services {{{1
+" php-doc.vim {{{2
 let g:pdv_cfg_Type = "mixed"
 let g:pdv_cfg_Package = ""
 let g:pdv_cfg_Version = "$id$"
@@ -29,15 +28,25 @@ let g:pdv_cfg_Author = ""
 let g:pdv_cfg_Copyright = ""
 let g:pdv_cfg_License = ""
 
-" lingr.vim
+" rmine.vim {{{2
+let g:rmine_server_url = 'http://localhost:3000'
+let g:rmine_access_key = 'access key'
+
+" unite_yarm {{{2
+" let g:unite_yarm_server_url = 'http://localhost:3000'
+" let g:unite_yarm_access_key = 'your API access key'
+" let g:unite_yarm_limit = 25
+" let g:unite_yarm_backup_dir = $VIM_CACHE . '/vim-unite_yarm'
+
+" lingr.vim {{{2
 let g:lingr_vim_user = ""
 let g:lingr_vim_password = ""
 
-" vimplenote.vim
+" vimplenote.vim {{{2
 let g:VimpleNoteUsername = ""
 let g:VimpleNotePassword = ""
 
-" dbext.vim
+" dbext.vim {{{2
 let g:dbext_default_MYSQL_definer = 'root@localhost'
 let g:dbext_default_stored_proc_author = 'root'
 
@@ -49,9 +58,13 @@ let g:dbext_default_port=3306
 "let g:dbext_default_usermaps=0
 let g:dbext_default_MYSQL_bin = 'mysql'
 
-let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
-let s:is_win = has('win16') || has('win32') || has('win64')
+" trans.vim {{{2
+let g:bing_client_id = ''
+let g:bing_client_secret = ''
+let g:baidu_client_id = ''
+let g:youdao_client_id = ''
 
+" vimrc {{{1
 if s:is_win
   let g:my_chm_dir = expand("")
   let g:my_cheatsheets_dir = expand("")
@@ -60,6 +73,6 @@ elseif s:is_mac
   let g:my_chm_command = 'open -a iChm'
   let g:my_cheatsheets_dir = expand("")
 endif
-"}}}
 
-"" vim: set fdm=marker sw=2 ts=2 et:
+" vim: set fdm=marker sw=2 ts=2 et:
+" __END__

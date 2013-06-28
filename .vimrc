@@ -410,6 +410,11 @@ NeoBundleLazyOn FileType ruby 't9md/vim-chef'
 NeoBundleLazyOn FileType puppet 'rodjek/vim-puppet'
 NeoBundleLazyOn FileType ruby 'rhysd/unite-ruby-require.vim'
 NeoBundleLazyOn FileType ruby 'rhysd/neco-ruby-keyword-args'
+
+NeoBundleLazyOn FileType ruby 'ujihisa/unite-gem'
+NeoBundleLazyOn FileType ruby 'ujihisa/unite-rake'
+NeoBundleLazyOn FileType ruby 'basyura/unite-rails'
+
 " NeoBundleLazyOn FileType ruby 'markcornick/vim-vagrant'
 " NeoBundleLazyOn FileType ruby 'robbevan/Vagrantfile.vim'
 if has("signs") && has("clientserver") && v:version > 700
@@ -634,6 +639,7 @@ NeoBundleLazy 'vim-scripts/DrawIt', {'depends' : 'vim-scripts/cecutil'}
 NeoBundleLazyOn FileType haskell 'dag/vim2hs'
 NeoBundleLazyOn FileType haskell 'ujihisa/ref-hoogle'
 NeoBundleLazyOn FileType haskell 'ujihisa/neco-ghc'
+NeoBundleLazyOn FileType haskell "ujihisa/unite-haskellimport"
 NeoBundleLazyOn FileType haskell 'eagletmt/ghcmod-vim'
 NeoBundleLazyOn FileType haskell 'eagletmt/unite-haddock'
 
@@ -653,6 +659,9 @@ NeoBundleLazyOn FileType php 'arnaud-lb/vim-php-namespace'
 NeoBundleLazyOn FileType twig 'beyondwords/vim-twig'
 NeoBundleLazyOn FileType twig 'tokutake/twig-indent'
 NeoBundleLazyOn FileType php 'violetyk/cake.vim'
+" NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
+NeoBundleLazyOn FileType php 'heavenshell/unite-zf'
+NeoBundleLazyOn FileType php 'heavenshell/unite-sf2'
 
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim'
@@ -675,6 +684,8 @@ NeoBundleLazy 'rbtnn/vimconsole.vim', {
       \     'VimConsoleError', 'VimConsoleToggle', 'VimConsoleClear', 'VimConsoleRedraw',
       \   ] }
       \ }
+NeoBundle 'basyura/rmine.vim'
+" NeoBundle 'basyura/unite-yarm'
 
 " if executable('loga')
 "   NeoBundle 'tacahiroy/vim-logaling'
@@ -698,7 +709,6 @@ NeoBundle 'tacroe/unite-mark'
 NeoBundle 'thinca/vim-unite-history'
 NeoBundle 'zhaocai/unite-scriptnames'
 NeoBundle 'daisuzu/unite-grep_launcher'
-NeoBundle 'basyura/unite-yarm'
 NeoBundle 'pasela/unite-webcolorname'
 NeoBundle 'ujihisa/unite-colorscheme'
 " NeoBundle 'ujihisa/unite-font'
@@ -720,13 +730,6 @@ NeoBundle 'tsukkee/unite-tag'
 " NeoBundle 'ujihisa/unite-launch'
 NeoBundle 'ujihisa/quicklearn'
 
-NeoBundleLazyOn FileType ruby 'ujihisa/unite-gem'
-NeoBundleLazyOn FileType ruby 'ujihisa/unite-rake'
-NeoBundleLazyOn FileType ruby 'basyura/unite-rails'
-
-NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
-NeoBundleLazyOn FileType php 'heavenshell/unite-zf'
-NeoBundleLazyOn FileType php 'heavenshell/unite-sf2'
 if executable('w3m')
   NeoBundle 'ringogirl/unite-w3m', {
         \   'depends' : 'yuratomo/w3m.vim',
@@ -778,6 +781,7 @@ NeoBundle 'sgur/citation-utils.vim'
 " does not support gf-user
 " NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
 NeoBundleLazyOn FileType python 'zhaocai/vim-gf-python'
+NeoBundleLazyOn FileType ruby 'pekepeke/vim-gf-ruby-require.vim'
 
 " operator {{{3
 NeoBundle 'kana/vim-operator-replace'
@@ -1065,6 +1069,8 @@ set nomousefocus
 set mousehide
 
 set nospell
+set spelllang=en_us
+set spellfile=~/.vim/spell/spellfile.utf-8.add
 set noautochdir
 set shellslash
 set directory=$VIM_CACHE,/var/tmp,/tmp
@@ -1757,6 +1763,15 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" vimconsole.vim {{{2
+if neobundle#is_installed('vimconsole.vim')
+  let g:vimconsole#auto_redraw = 1
+  nnoremap [!space]v :<C-u>VimConsoleToggle<CR>
+  MyAutocmd FileType vimconsole call s:vimconsole_my_settings()
+  function! s:vimconsole_my_settings() "{{{3
+    nnoremap <buffer> <C-l> :<C-u>VimConsoleRedraw<CR>
+  endfunction
+endif
 
 " expand-region
 if s:plugin_installed('vim-expand-region')

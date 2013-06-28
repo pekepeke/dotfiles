@@ -182,23 +182,23 @@ snippet sslproxypass
     ProxyPassReverseCookieDomain $2 ${3:real}
 	ProxyPassReverseCookiePath / $1
 
-snippet allow
+snippet ordera
 	Order Deny,Allow
 	Deny from all
 	Allow from $1
 
-snippet deny
+snippet orderd
 	Order Allow,Deny
 	Allow from all
 	Deny from $1
 
-snippet allow_if_referer
+snippet orderallow_if_referer
 	SetEnvIf Referer "^http://www\.${1:xxx\.com}" ref_ok
 	Order Deny,Allow
 	Deny from all
 	Allow from env=ref_ok
 
-snippet deny_ua
+snippet orderdeny_ua
 	SetEnvIf User-Agent "${1:BotUA$}" deny_ua
 	Order Allow,Deny
 	Allow from All
