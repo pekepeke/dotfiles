@@ -329,7 +329,9 @@ NeoBundle 'thinca/vim-template'
 NeoBundle 'mattn/sonictemplate-vim'
 NeoBundle 'ciaranm/detectindent'
 NeoBundle 'ujihisa/shadow.vim'
-NeoBundle 'mhinz/vim-signify'
+if !s:is_win
+  NeoBundle 'mhinz/vim-signify'
+endif
 " NeoBundle 'motemen/git-vim'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-git'
@@ -850,7 +852,7 @@ endif
 "set t_Co=256
 set background=dark
 
-function! s:highlights_add() "{{{3
+function! s:highlights_add() "{{{2
   " for unite.vim
   " highlight StatusLine gui=none guifg=black guibg=lightgreen cterm=none ctermfg=black ctermbg=lightgreen
 
@@ -869,19 +871,19 @@ function! s:highlights_add() "{{{3
   highlight qf_error_ucurl term=underline cterm=underline ctermfg=darkred ctermbg=none gui=undercurl guisp=red
 endfunction
 
-function! s:syntaxes_add() "{{{3
+function! s:syntaxes_add() "{{{2
   syntax match IdeographicSpace /　/ display containedin=ALL
   syntax match TrailingSpaces /\s\+$/ display containedin=ALL
 endfunction
 
-if has('gui_running')
+if has('gui_running') "{{{2
   function! s:gui_colorscheme_init()
     colorscheme vividchalk
     call s:syntaxes_add()
     call s:highlights_add()
   endfunction
 
-elseif &t_Co == 256 || s:is_win "{{{2
+elseif &t_Co == 256 || s:is_win
   colorscheme vividchalk
 else
   " colorscheme wombat
@@ -1029,6 +1031,11 @@ function! s:cmdwin_my_settings() "{{{3
   noremap <buffer> <Esc> :q<CR>
   inoremap <buffer><expr> kk col('.') == 1 ? '<Esc>k' : 'kk'
   inoremap <buffer><expr> <BS> col('.') == 1 ? '<Esc>:quit<CR>' : '<BS>'
+
+  if s:plugin_installed('vim-ambicmd')
+    imap <expr> <Space> ambicmd#expand("\<Space>")
+    imap <expr> <CR> ambicmd#expand("\<CR>")
+  endif
   startinsert!
 endfunction " }}}
 MyAutocmd CmdwinEnter * call s:cmdwin_my_settings()
@@ -1162,7 +1169,8 @@ set list
 if s:is_mac
   set showbreak=↪
 else
-  set showbreak=↓
+  " set showbreak=↓
+  set showbreak=
 endif
 set listchars=tab:^\ ,trail:~,nbsp:%,extends:>,precedes:<
 set smarttab             " インテリジェンスなタブ入力
@@ -1227,10 +1235,28 @@ endfunction
 
 " statusline {{{2
 set laststatus=2  " ステータス表示用変数
-"set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'}%=%l,%c%V%8P
-let &statusline="%<%f %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'
-  \ }%=%l,%c%V%8P"
-    " \ .'['.cfi#format('%s()','no func').']'
+
+function! MyStatusline() "{{{3
+  let s = ''
+
+  let s .= '%<'
+  let s .= '%f ' " filename
+  let s .= '%m' " modified flag
+  let s .= '%r' " readonly flag
+  let s .= '%h' " help flag
+  let s .= '%w' " preview flag
+  if neobundle#is_sourced('current-func-info.vim')
+    let s .= '> %{cfi#format("%s()","")}'
+  endif
+  let s .= '%='
+  let s .= '[%{&l:fenc}]'
+  let s .= '[%{&l:ff}] %{&l:ft} '
+  let s .= '< L%l:%c%V ' " current line status
+  let s .= '%8P'
+
+  return s
+endfunction "}}}3
+set statusline=%!MyStatusline()
 
 set modeline
 set modelines=10
@@ -1381,6 +1407,9 @@ noremap [!comment-doc] <Nop>
 map     [!prefix]c     [!comment-doc]
 
 nnoremap q <Nop>
+nnoremap q: q:
+nnoremap q/ q/
+nnoremap q? q?
 nnoremap Q q
 
 " 行単位で移動 {{{2
@@ -1421,8 +1450,8 @@ cnoremap <expr> /  getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr> ?  getcmdtype() == '?' ? '\?' : '?'
 
 " XXX
-" nnoremap <silent> o :call <SID>smart_comment_map("o")<CR>i
-" nnoremap <silent> O :call <SID>smart_comment_map("O")<CR>i
+" nnoremap <silent> o :call <SID>smart_comment_map("o")<CR>
+" nnoremap <silent> O :call <SID>smart_comment_map("O")<CR>
 "
 " function! s:smart_comment_map(key)
 "   let line = getline('.')
@@ -1430,22 +1459,17 @@ cnoremap <expr> ?  getcmdtype() == '?' ? '\?' : '?'
 "   let mark = "*"
 "   let org=&formatoptions
 "   if line =~ '^\s*'. substitute(mark, '\([\*\$]\)', '\\\1', 'g')
-"     " 1行ずつでないと有功にならない
-"     setl formatoptions+=r
-"     setl formatoptions+=o
+"     setl formatoptions+=r formatoptions+=o
 "   else
-"     setl formatoptions-=r
-"     setl formatoptions-=o
+"     setl formatoptions-=r formatoptions-=o
 "   endif
 "   execute 'normal!' a:key
 "   let &formatoptions=org
+"   startinsert
 " endfunction
 
 " indent whole buffer
 nnoremap [!space]= call my#ui#indent_whole_buffer()
-
-" insert timestamp
-nmap <silent> [!t]w :exe "normal! i" . strftime("%Y-%m-%d\T%H:%M:%S+09:00")<CR>
 
 " tab switch
 for i in range(10)
@@ -1454,6 +1478,10 @@ endfor
 unlet i
 nnoremap <silent> [!t]n gt
 nnoremap <silent> [!t]p gT
+nnoremap <silent> [!t]c :<C-u>tabnew<CR>
+nnoremap <silent> [!t]C :<C-u>tabnew %<CR>
+nnoremap <silent> [!t]* :<C-u>tabedit %<CR>*
+nnoremap <silent> [!t]# :<C-u>tabedit %<CR>#
 
 " redraw map
 nmap <silent> [!s]r :redraw!<CR>
@@ -1766,7 +1794,9 @@ endif
 " vimconsole.vim {{{2
 if neobundle#is_installed('vimconsole.vim')
   let g:vimconsole#auto_redraw = 1
+
   nnoremap [!space]v :<C-u>VimConsoleToggle<CR>
+
   MyAutocmd FileType vimconsole call s:vimconsole_my_settings()
   function! s:vimconsole_my_settings() "{{{3
     nnoremap <buffer> <C-l> :<C-u>VimConsoleRedraw<CR>
@@ -2716,7 +2746,7 @@ nnoremap <silent> [!unite]rq :<C-u>UniteResume qfix<CR>
 
 if s:plugin_loaded('neocomplcache.vim')
   inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
-else
+elseif s:plugin_loaded('neocomplete.vim')
   inoremap <C-x><C-j> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
 endif
 
@@ -2740,7 +2770,7 @@ function! s:tags_update()
       for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
           execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
       endfor
-    else
+    elseif s:plugin_loaded('neocomplete.vim')
       for filename in neocomplete#sources#include#get_include_files(bufnr('%'))
           execute "setlocal tags+=".neocomplete#cache#encode_name('tags_output', filename)
       endfor
@@ -2988,7 +3018,7 @@ function! s:exec_ctags(path) "{{{3
     execute "!" ctags_cmd
     if s:plugin_loaded('neocomplcache.vim')
       NeoComplCacheCachingTags
-    else
+    elseif s:plugin_loaded('neocomplete.vim')
       NeoCompleteTagMakeCache
     endif
   endif
@@ -4405,7 +4435,7 @@ function! s:vimshell_my_settings() " {{{3
   imap <silent> <buffer> <C-a> <C-o>:call cursor(line('.'), strlen(g:vimshell_prompt)+1)<CR>
   if s:plugin_loaded('neocomplcache.vim')
     inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
-  else
+  elseif s:plugin_loaded('neocomplete.vim')
     inoremap <expr><buffer> <C-j> pumvisible() ? neocomplete#close_popup() : ""
   endif
 endfunction
