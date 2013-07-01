@@ -92,6 +92,311 @@ else
   " endif
 endif
 
+" basic settings {{{1
+" 文字コード周り {{{2
+set encoding=utf-8
+if s:is_win && (!has('win32unix') || !has('gui_running'))
+  set termencoding=cp932
+else
+  set termencoding=utf-8
+endif
+set fileencoding=utf-8
+set fileformat=unix
+set fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp,cp932
+set fileformats=unix,dos,mac
+
+set display=lastline
+set clipboard=unnamed
+if has('unnamedplus')
+  set clipboard+=unnamedplus
+endif
+" set mouse=a
+set mouse=nv
+set nomousefocus
+set mousehide
+
+set nospell
+set spelllang=en_us
+set spellfile=~/.vim/spell/spellfile.utf-8.add
+set noautochdir
+set shellslash
+set directory=$VIM_CACHE,/var/tmp,/tmp
+set viminfo+=n$VIM_CACHE/viminfo.txt
+
+" IME の設定 {{{2
+if has('kaoriya') | set iminsert=0 imsearch=0 | endif
+
+MyAutocmd BufEnter * call <SID>autochdir()
+if !exists('g:my_lcd_autochdir')
+  let g:my_lcd_autochdir = 1
+endif
+
+function! s:autochdir() "{{{3
+  if expand('%') == '' && &buftype =~ 'nofile'
+  " if (&filetype == "vimfiler" || &filetype == "unite" || &filetype == "vimshell"
+  "       \ || &filetype == "quickrun" )
+    return
+  elseif g:my_lcd_autochdir
+    if !exists('b:my_lcd_current_or_prj_dir')
+      let b:my_lcd_current_or_prj_dir = my#util#find_proj_dir()
+    endif
+    if b:my_lcd_current_or_prj_dir != '' && isdirectory(b:my_lcd_current_or_prj_dir)
+      execute 'lcd' fnameescape(b:my_lcd_current_or_prj_dir)
+    endif
+  endif
+endfunction
+
+" diff {{{2
+set diffopt& diffopt-=filler diffopt+=iwhite
+
+" 表示周り {{{2
+set lazyredraw
+set ttyfast
+set scrolloff=10000000         " 中央に表示
+set sidescrolloff=999
+set number                     " 行番号の表示
+set ruler
+
+set mouse=nch                  " use mouse normal/command/help
+set timeoutlen=1000
+set ttimeoutlen=50
+
+set showmatch                  " 対応する括弧の表示
+set showcmd                    " 入力中のコマンドを表示
+set showfulltag
+set backspace=indent,eol,start " BSでなんでも削除
+set nolinebreak
+set textwidth=1000
+set formatoptions& formatoptions+=mM
+set whichwrap=b,s,h,l,<,>,[,]  " 行頭・行末間移動を可能に
+if exists('&colorcolumn') | set colorcolumn=+1 | endif
+set splitbelow                 " 横分割は下に
+set splitright                 " 縦分割は右に
+set switchbuf=useopen          " 再利用
+set background=dark
+set title
+
+set hidden                     " 編集中でも他のファイルを開けるように
+set sidescroll=5
+set viminfo& viminfo+=!
+set visualbell
+set noerrorbells
+
+set guioptions& guioptions+=T guioptions-=m guioptions-=M
+let did_install_syntax_menu = 1
+set noequalalways
+set langmenu=none
+set helplang=ja,en
+set keywordprg=":help"
+set foldmethod=marker
+" http://d.hatena.ne.jp/thinca/20110523/1306080318
+augroup vimrc-foldmethod-expr
+  autocmd!
+  autocmd InsertEnter * if &l:foldmethod ==# 'expr'
+  \ |   let b:foldinfo = [&l:foldmethod, &l:foldexpr]
+  \ |   setlocal foldmethod=manual foldexpr=0
+  \ | endif
+  autocmd InsertLeave * if exists('b:foldinfo')
+  \ |   let [&l:foldmethod, &l:foldexpr] = b:foldinfo
+  \ |   unlet b:foldinfo
+  \ | endif
+augroup END
+
+" タブ文字の設定 {{{2
+set autoindent smartindent cindent  " インデント設定
+set list
+if s:is_mac
+  set showbreak=↪
+else
+  " set showbreak=↓
+  set showbreak=
+endif
+set listchars=tab:^\ ,trail:~,nbsp:%,extends:>,precedes:<
+set smarttab             " インテリジェンスなタブ入力
+set noexpandtab
+"set softtabstop=4 tabstop=4 shiftwidth=4
+set softtabstop=0 tabstop=4 shiftwidth=4
+
+if exists('&ambiwidth')
+  set ambiwidth=double
+endif " }}}
+
+" For snippet_complete marker.
+if has('conceal')
+  set conceallevel=2 concealcursor=i
+endif
+
+"set wm=2
+set nowrap     " 折り返しなし
+set nrformats-=octal
+set updatetime=200
+if has('winaltkeys')
+  set winaltkeys=no
+endif
+
+" statusline {{{2
+set laststatus=2  " ステータス表示用変数
+
+function! MyStatusline() "{{{3
+  let s = ''
+
+  let s .= '%<'
+  let s .= '%f ' " filename
+  let s .= '%m' " modified flag
+  let s .= '%r' " readonly flag
+  let s .= '%h' " help flag
+  let s .= '%w' " preview flag
+  if neobundle#is_sourced('current-func-info.vim')
+    let s .= '> %{cfi#format("%s()","")}'
+  endif
+  let s .= '%='
+  let s .= '[%{&l:fenc}]'
+  let s .= '[%{&l:ff}] %{&l:ft} '
+  let s .= '< L%l:%c%V ' " current line status
+  let s .= '%8P'
+
+  return s
+endfunction "}}}3
+set statusline=%!MyStatusline()
+
+set modeline
+set modelines=10
+
+" 検索周り {{{2
+set ignorecase smartcase       " 賢い検索
+set incsearch                  " インクメンタル
+set wrapscan                   " 検索で最初にもどる
+set hlsearch                   " 検索で色
+set virtualedit+=block         " 矩形の virtualedit 許可
+
+" バックアップ {{{2
+set nobackup               " バックアップとか自分で
+"set backup
+set noswapfile
+set nowritebackup
+set autoread                   " 更新があったファイルを自動で読み直し
+set backupcopy=yes
+set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*.tmp,crontab.*
+set backupdir=$VIM_CACHE/vim-backups
+set viewdir=$VIM_CACHE/vim-views
+call my#util#mkdir(&backupdir)
+call my#util#mkdir(&viewdir)
+if has('persistent_undo')
+  set undodir=$VIM_CACHE/vim-undo
+  call my#util#mkdir(&undodir)
+  set undofile
+endif
+
+
+" 補完 {{{2
+set wildmenu                                 " 補完候補を表示する
+set wildmode=list:longest,list:full          " zsh like complete
+set wildchar=<tab>
+set wildignore+=*.o,*.obj,.git,*.rbc,.class,.svn
+set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
+set wildignore+=*.so,*.swp,*.pdf,*.dmg
+" set completeopt=menu,preview,longest,menuone
+" set complete=.,w,b,u,t,i,k                   " 補完候補の設定
+" set completeopt=menuone,preview
+set completeopt=menuone
+set complete=.,w,b,u,t,i,k
+
+" for migemo {{{2
+if has('kaoriya') && has('migemo')
+  set migemo
+  if filereadable('/usr/local/share/migemo/utf-8/migemo-dict')
+    set migemodict=/usr/local/share/migemo/utf-8/migemo-dict
+  endif
+elseif executable('cmigemo')
+  nnoremap <silent> g/ :Mi<CR>
+endif
+
+" color settings "{{{1
+"set t_Co=256
+set background=dark
+
+function! s:highlights_add() "{{{2
+  " for unite.vim
+  " highlight StatusLine gui=none guifg=black guibg=lightgreen cterm=none ctermfg=black ctermbg=lightgreen
+
+  highlight MatchParen ctermbg=cyan ctermfg=darkred guibg=cyan guifg=darkred
+
+  highlight NonText term=underline ctermfg=darkgray guifg=darkgray
+  highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
+  " highlight link IdeographicSpace Error
+  highlight IdeographicSpace term=underline ctermbg=darkgreen guibg=darkgreen
+  " highlight link TrailingSpaces Error
+  highlight TrailingSpaces ctermbg=darkgray guibg=#222222
+  " highlight clear CursorLine
+  " highlight CursorLine gui=underline term=underline cterm=underline
+  " highlight CursorLine ctermbg=black guibg=black
+  highlight link VimShellError WarningMsg
+  highlight qf_error_ucurl term=underline cterm=underline ctermfg=darkred ctermbg=none gui=undercurl guisp=red
+endfunction
+
+function! s:syntaxes_add() "{{{2
+  syntax match IdeographicSpace /　/ display containedin=ALL
+  syntax match TrailingSpaces /\s\+$/ display containedin=ALL
+endfunction
+
+if has('gui_running') "{{{2
+  function! s:gui_colorscheme_init()
+    colorscheme vividchalk
+    call s:syntaxes_add()
+    call s:highlights_add()
+  endfunction
+
+elseif &t_Co == 256 || s:is_win
+  colorscheme vividchalk
+else
+  " colorscheme wombat
+  colorscheme desert
+endif
+
+augroup vimrc-colors "{{{2
+  autocmd!
+
+  autocmd ColorScheme * call s:highlights_add()
+  autocmd Syntax * call s:syntaxes_add()
+  " autocmd VimEnter,WinEnter * call s:my_additional_syntaxes()
+  autocmd Syntax eruby highlight link erubyRubyDelim Label
+
+  if has('gui_running')
+    autocmd vimrc-colors GUIEnter * call <SID>gui_colorscheme_init()
+  endif
+
+  " カーソル行 http://d.hatena.ne.jp/thinca/20090530/1243615055
+  autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
+  autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
+  autocmd WinEnter * call s:auto_cursorline('WinEnter')
+  autocmd WinLeave * call s:auto_cursorline('WinLeave')
+
+  let s:cursorline_lock = 0
+  function! s:auto_cursorline(event) "{{{3
+    if a:event ==# 'WinEnter'
+      setlocal cursorline
+      let s:cursorline_lock = 2
+    elseif a:event ==# 'WinLeave'
+      setlocal nocursorline
+    elseif a:event ==# 'CursorMoved'
+      if s:cursorline_lock
+        if 1 < s:cursorline_lock
+          let s:cursorline_lock = 1
+        else
+          setlocal nocursorline
+          let s:cursorline_lock = 0
+        endif
+      endif
+    elseif a:event ==# 'CursorHold'
+      setlocal cursorline
+      let s:cursorline_lock = 1
+    endif
+  endfunction "}}}3
+
+augroup END
+
+
+
 " preexec for runtimepath {{{1
 " set nocompatible
 filetype off
@@ -769,7 +1074,7 @@ NeoBundle 'mattn/webapi-vim'
 " NeoBundle 'mattn/googletranslate-vim'
 " NeoBundle 'mattn/bingtranslate-vim'
 NeoBundle 'mattn/excitetranslate-vim'
-NeoBundle 'Rykka/trans.vim'
+" NeoBundle 'Rykka/trans.vim'
 NeoBundle 'thinca/vim-ambicmd'
 NeoBundle 'mattn/gist-vim'
 " NeoBundle 'mattn/vimplenote-vim'
@@ -784,6 +1089,7 @@ NeoBundle 'sgur/citation-utils.vim'
 " NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
 NeoBundleLazyOn FileType python 'zhaocai/vim-gf-python'
 NeoBundleLazyOn FileType ruby 'pekepeke/vim-gf-ruby-require.vim'
+NeoBundle 'pekepeke/vim-gf-vundle'
 
 " operator {{{3
 NeoBundle 'kana/vim-operator-replace'
@@ -847,91 +1153,6 @@ if s:is_win
   unlet dotnets
 endif
 " }}}
-
-" color settings "{{{1
-"set t_Co=256
-set background=dark
-
-function! s:highlights_add() "{{{2
-  " for unite.vim
-  " highlight StatusLine gui=none guifg=black guibg=lightgreen cterm=none ctermfg=black ctermbg=lightgreen
-
-  highlight MatchParen ctermbg=cyan ctermfg=darkred guibg=cyan guifg=darkred
-
-  highlight NonText term=underline ctermfg=darkgray guifg=darkgray
-  highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
-  " highlight link IdeographicSpace Error
-  highlight IdeographicSpace term=underline ctermbg=darkgreen guibg=darkgreen
-  " highlight link TrailingSpaces Error
-  highlight TrailingSpaces ctermbg=darkgray guibg=#222222
-  " highlight clear CursorLine
-  " highlight CursorLine gui=underline term=underline cterm=underline
-  " highlight CursorLine ctermbg=black guibg=black
-  highlight link VimShellError WarningMsg
-  highlight qf_error_ucurl term=underline cterm=underline ctermfg=darkred ctermbg=none gui=undercurl guisp=red
-endfunction
-
-function! s:syntaxes_add() "{{{2
-  syntax match IdeographicSpace /　/ display containedin=ALL
-  syntax match TrailingSpaces /\s\+$/ display containedin=ALL
-endfunction
-
-if has('gui_running') "{{{2
-  function! s:gui_colorscheme_init()
-    colorscheme vividchalk
-    call s:syntaxes_add()
-    call s:highlights_add()
-  endfunction
-
-elseif &t_Co == 256 || s:is_win
-  colorscheme vividchalk
-else
-  " colorscheme wombat
-  colorscheme desert
-endif
-
-augroup vimrc-colors "{{{2
-  autocmd!
-
-  autocmd ColorScheme * call s:highlights_add()
-  autocmd Syntax * call s:syntaxes_add()
-  " autocmd VimEnter,WinEnter * call s:my_additional_syntaxes()
-  autocmd Syntax eruby highlight link erubyRubyDelim Label
-
-  if has('gui_running')
-    autocmd vimrc-colors GUIEnter * call <SID>gui_colorscheme_init()
-  endif
-
-  " カーソル行 http://d.hatena.ne.jp/thinca/20090530/1243615055
-  autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
-  autocmd CursorHold,CursorHoldI * call s:auto_cursorline('CursorHold')
-  autocmd WinEnter * call s:auto_cursorline('WinEnter')
-  autocmd WinLeave * call s:auto_cursorline('WinLeave')
-
-  let s:cursorline_lock = 0
-  function! s:auto_cursorline(event) "{{{3
-    if a:event ==# 'WinEnter'
-      setlocal cursorline
-      let s:cursorline_lock = 2
-    elseif a:event ==# 'WinLeave'
-      setlocal nocursorline
-    elseif a:event ==# 'CursorMoved'
-      if s:cursorline_lock
-        if 1 < s:cursorline_lock
-          let s:cursorline_lock = 1
-        else
-          setlocal nocursorline
-          let s:cursorline_lock = 0
-        endif
-      endif
-    elseif a:event ==# 'CursorHold'
-      setlocal cursorline
-      let s:cursorline_lock = 1
-    endif
-  endfunction "}}}3
-
-augroup END
-
 
 " for filetypes {{{1
 " shebang {{{2
@@ -1052,263 +1273,6 @@ augroup vimrc-binary
   au BufWritePost *.bin set nomod | endif
 augroup END
 
-" basic settings {{{1
-" 文字コード周り {{{2
-set encoding=utf-8
-if s:is_win && (!has('win32unix') || !has('gui_running'))
-  set termencoding=cp932
-else
-  set termencoding=utf-8
-endif
-set fileencoding=utf-8
-set fileformat=unix
-set fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp,cp932
-set fileformats=unix,dos,mac
-
-set display=lastline
-set clipboard=unnamed
-if has('unnamedplus')
-  set clipboard+=unnamedplus
-endif
-" set mouse=a
-set mouse=nv
-set nomousefocus
-set mousehide
-
-set nospell
-set spelllang=en_us
-set spellfile=~/.vim/spell/spellfile.utf-8.add
-set noautochdir
-set shellslash
-set directory=$VIM_CACHE,/var/tmp,/tmp
-set viminfo+=n$VIM_CACHE/viminfo.txt
-
-" IME の設定 {{{2
-if has('kaoriya') | set iminsert=0 imsearch=0 | endif
-
-MyAutocmd BufEnter * call <SID>autochdir()
-if !exists('g:my_lcd_autochdir')
-  let g:my_lcd_autochdir = 1
-endif
-
-function! s:autochdir() "{{{3
-  if expand('%') == '' && &buftype =~ 'nofile'
-  " if (&filetype == "vimfiler" || &filetype == "unite" || &filetype == "vimshell"
-  "       \ || &filetype == "quickrun" )
-    return
-  elseif g:my_lcd_autochdir
-    if !exists('b:my_lcd_current_or_prj_dir')
-      let b:my_lcd_current_or_prj_dir = my#util#find_proj_dir()
-    endif
-    if b:my_lcd_current_or_prj_dir != '' && isdirectory(b:my_lcd_current_or_prj_dir)
-      execute 'lcd' fnameescape(b:my_lcd_current_or_prj_dir)
-    endif
-  endif
-endfunction
-
-" diff {{{2
-set diffopt& diffopt-=filler diffopt+=iwhite
-
-" 表示周り {{{2
-set lazyredraw
-set ttyfast
-set scrolloff=10000000         " 中央に表示
-set sidescrolloff=999
-set number                     " 行番号の表示
-set ruler
-
-set mouse=nch                  " use mouse normal/command/help
-set timeoutlen=1000
-set ttimeoutlen=50
-
-set showmatch                  " 対応する括弧の表示
-set showcmd                    " 入力中のコマンドを表示
-set showfulltag
-set backspace=indent,eol,start " BSでなんでも削除
-set nolinebreak
-set textwidth=1000
-set formatoptions& formatoptions+=mM
-set whichwrap=b,s,h,l,<,>,[,]  " 行頭・行末間移動を可能に
-if exists('&colorcolumn') | set colorcolumn=+1 | endif
-set splitbelow                 " 横分割は下に
-set splitright                 " 縦分割は右に
-set switchbuf=useopen          " 再利用
-set background=dark
-set title
-
-set hidden                     " 編集中でも他のファイルを開けるように
-set sidescroll=5
-set viminfo& viminfo+=!
-set visualbell
-set noerrorbells
-
-set guioptions& guioptions-=m guioptions-=M guioptions-=T
-let did_install_default_menus = 1
-let did_install_syntax_menu = 1
-set noequalalways
-set langmenu=none
-set helplang=ja,en
-set keywordprg=":help"
-set foldmethod=marker
-" http://d.hatena.ne.jp/thinca/20110523/1306080318
-augroup vimrc-foldmethod-expr
-  autocmd!
-  autocmd InsertEnter * if &l:foldmethod ==# 'expr'
-  \ |   let b:foldinfo = [&l:foldmethod, &l:foldexpr]
-  \ |   setlocal foldmethod=manual foldexpr=0
-  \ | endif
-  autocmd InsertLeave * if exists('b:foldinfo')
-  \ |   let [&l:foldmethod, &l:foldexpr] = b:foldinfo
-  \ |   unlet b:foldinfo
-  \ | endif
-augroup END
-
-" タブ文字の設定 {{{2
-set autoindent smartindent cindent  " インデント設定
-set list
-if s:is_mac
-  set showbreak=↪
-else
-  " set showbreak=↓
-  set showbreak=
-endif
-set listchars=tab:^\ ,trail:~,nbsp:%,extends:>,precedes:<
-set smarttab             " インテリジェンスなタブ入力
-set noexpandtab
-"set softtabstop=4 tabstop=4 shiftwidth=4
-set softtabstop=0 tabstop=4 shiftwidth=4
-
-if exists('&ambiwidth')
-  set ambiwidth=double
-endif " }}}
-
-" For snippet_complete marker.
-if has('conceal')
-  set conceallevel=2 concealcursor=i
-endif
-
-"set wm=2
-set nowrap     " 折り返しなし
-set nrformats-=octal
-set updatetime=200
-if has('winaltkeys')
-  set winaltkeys=no
-endif
-
-" sticky shift {{{2
-" http://vim-users.jp/2009/08/hack-54/
-let g:sticky_shift_enable = 0
-command! -nargs=0 StickyShift let g:sticky_shift_enable=1
-command! -nargs=0 NoStickyShift let g:sticky_shift_enable=0
-
-inoremap <expr> ;  g:sticky_shift_enable ? <SID>sticky_func() : ";"
-
-function! s:sticky_func() "{{{3
-  " let l:sticky_table = {
-  " \',' : '<', '.' : '>', '/' : '?',
-  " \'1' : '!', '2' : '@', '3' : '#', '4' : '$', '5' : '%',
-  " \'6' : '^', '7' : '&', '8' : '*', '9' : '(', '0' : ')', '-' : '_', '=' : '+',
-  " \';' : ':', '[' : '{', ']' : '}', '`' : '~', "'" : "\"", '\' : '|',
-  " \}
-  "'\' : '|',
-  let l:sticky_table = {
-        \',' : '<', '.' : '>', '/' : '?', '\' : '_',
-        \'1' : '!', '2' : '"', '3' : '#', '4' : '$', '5' : '%',
-        \'6' : '&', '7' : "'", '8' : '(', '9' : ')', '0' : '|', '-' : '=', '^' : '~',
-        \'@' : '`', '[' : '{', ';' : '+', ':' : '*', ']' : '}'
-        \}
-  let l:special_table = {
-        \"\<ESC>" : "\<ESC>", "\<Space>" : ';', "\<CR>" : ";\<CR>"
-        \}
-
-  let l:key = getchar()
-  if nr2char(l:key) =~ '\l'
-    return toupper(nr2char(l:key))
-  elseif has_key(l:sticky_table, nr2char(l:key))
-    return l:sticky_table[nr2char(l:key)]
-  elseif has_key(l:special_table, nr2char(l:key))
-    return l:special_table[nr2char(l:key)]
-  else
-    return ''
-  endif
-endfunction
-
-" statusline {{{2
-set laststatus=2  " ステータス表示用変数
-
-function! MyStatusline() "{{{3
-  let s = ''
-
-  let s .= '%<'
-  let s .= '%f ' " filename
-  let s .= '%m' " modified flag
-  let s .= '%r' " readonly flag
-  let s .= '%h' " help flag
-  let s .= '%w' " preview flag
-  if neobundle#is_sourced('current-func-info.vim')
-    let s .= '> %{cfi#format("%s()","")}'
-  endif
-  let s .= '%='
-  let s .= '[%{&l:fenc}]'
-  let s .= '[%{&l:ff}] %{&l:ft} '
-  let s .= '< L%l:%c%V ' " current line status
-  let s .= '%8P'
-
-  return s
-endfunction "}}}3
-set statusline=%!MyStatusline()
-
-set modeline
-set modelines=10
-
-" 検索周り {{{2
-set ignorecase smartcase       " 賢い検索
-set incsearch                  " インクメンタル
-set wrapscan                   " 検索で最初にもどる
-set hlsearch                   " 検索で色
-set virtualedit+=block         " 矩形の virtualedit 許可
-
-" バックアップ {{{2
-set nobackup               " バックアップとか自分で
-"set backup
-set noswapfile
-set nowritebackup
-set autoread                   " 更新があったファイルを自動で読み直し
-set backupcopy=yes
-set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*.tmp,crontab.*
-set backupdir=$VIM_CACHE/vim-backups
-set viewdir=$VIM_CACHE/vim-views
-call my#util#mkdir(&backupdir)
-call my#util#mkdir(&viewdir)
-if has('persistent_undo')
-  set undodir=$VIM_CACHE/vim-undo
-  call my#util#mkdir(&undodir)
-  set undofile
-endif
-
-
-" 補完 {{{2
-set wildmenu                                 " 補完候補を表示する
-set wildmode=list:longest,list:full          " zsh like complete
-set wildchar=<tab>
-set wildignore+=*.o,*.obj,.git,*.rbc,.class,.svn
-set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
-set wildignore+=*.so,*.swp,*.pdf,*.dmg
-" set completeopt=menu,preview,longest,menuone
-" set complete=.,w,b,u,t,i,k                   " 補完候補の設定
-" set completeopt=menuone,preview
-set completeopt=menuone
-set complete=.,w,b,u,t,i,k
-
-" for migemo {{{2
-if has('kaoriya') && has('migemo')
-  set migemo
-  if filereadable('/usr/local/share/migemo/utf-8/migemo-dict')
-    set migemodict=/usr/local/share/migemo/utf-8/migemo-dict
-  endif
-elseif executable('cmigemo')
-  nnoremap <silent> g/ :Mi<CR>
-endif
 
 " alias commands {{{1
 " basic {{{2
@@ -1380,6 +1344,45 @@ Alias v vnew
 
 
 " mappings {{{1
+" sticky shift {{{2
+" http://vim-users.jp/2009/08/hack-54/
+let g:sticky_shift_enable = 0
+command! -nargs=0 StickyShift let g:sticky_shift_enable=1
+command! -nargs=0 NoStickyShift let g:sticky_shift_enable=0
+
+inoremap <expr> ;  g:sticky_shift_enable ? <SID>sticky_func() : ";"
+
+function! s:sticky_func() "{{{3
+  " let l:sticky_table = {
+  " \',' : '<', '.' : '>', '/' : '?',
+  " \'1' : '!', '2' : '@', '3' : '#', '4' : '$', '5' : '%',
+  " \'6' : '^', '7' : '&', '8' : '*', '9' : '(', '0' : ')', '-' : '_', '=' : '+',
+  " \';' : ':', '[' : '{', ']' : '}', '`' : '~', "'" : "\"", '\' : '|',
+  " \}
+  "'\' : '|',
+  let l:sticky_table = {
+        \',' : '<', '.' : '>', '/' : '?', '\' : '_',
+        \'1' : '!', '2' : '"', '3' : '#', '4' : '$', '5' : '%',
+        \'6' : '&', '7' : "'", '8' : '(', '9' : ')', '0' : '|', '-' : '=', '^' : '~',
+        \'@' : '`', '[' : '{', ';' : '+', ':' : '*', ']' : '}'
+        \}
+  let l:special_table = {
+        \"\<ESC>" : "\<ESC>", "\<Space>" : ';', "\<CR>" : ";\<CR>"
+        \}
+
+  let l:key = getchar()
+  if nr2char(l:key) =~ '\l'
+    return toupper(nr2char(l:key))
+  elseif has_key(l:sticky_table, nr2char(l:key))
+    return l:sticky_table[nr2char(l:key)]
+  elseif has_key(l:special_table, nr2char(l:key))
+    return l:special_table[nr2char(l:key)]
+  else
+    return ''
+  endif
+endfunction
+
+
 " define common key-prefixes {{{2
 noremap [!space] <Nop>
 nnoremap g<Space> <Space>
@@ -1818,57 +1821,59 @@ if s:plugin_installed('vim-expand-region')
 endif
 
 " trans.vim {{{2
-let g:trans_default_lang = 'ja'
-let g:trans_default_api = 'bing'
-if !exists('g:trans_api')
-  let g:trans_api = {}
+if s:plugin_installed('trans.vim')
+  let g:trans_default_lang = 'ja'
+  let g:trans_default_api = 'bing'
+  if !exists('g:trans_api')
+    let g:trans_api = {}
+  endif
+  let g:trans_api.google = {
+        \   'url': 'http://translate.google.com/translate_a/t',
+        \   'params' : {
+        \     "client" : 'firefox-a',
+        \     "ie" : 'UTF-8',
+        \     "oe" : 'UTF-8',
+        \   },
+        \   'query_str': 'langpair=%FROM%7C%TO&text=%TEXT',
+        \   'parser': 'trans#data#parser_google',
+        \   'type': 'get',
+        \   'headers': { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.15 Safari/536.5' },
+        \ }
+  let g:trans_api.bing = {'url': 'http://api.microsofttranslator.com/v2/ajax.svc/Translate',
+        \   'type': 'oauth',
+        \   'oauth_url': 'https://datamarket.accesscontrol.windows.net/v2/OAuth2-13/',
+        \   'oauth_obj': {
+        \     'client_id' : get(g:, 'bing_client_id', ''),
+        \     'client_secret' : get(g:, 'bing_client_secret', ''),
+        \     'scope' : 'http://api.microsofttranslator.com',
+        \     'grant_type' : 'client_credentials',
+        \   },
+        \   'token_str': 'appId=Bearer%20%TOKEN',
+        \   'token_expire': 600,
+        \   'token_parser': 'trans#data#parser_t_bing',
+        \   'parser': 'trans#data#parser_bing',
+        \   'query_str': 'from=%FROM&to=%TO&text=%TEXT',
+        \ }
+  let g:trans_api.baidu = {
+        \   'url': 'http://openapi.baidu.com/public/2.0/bmt/translate',
+        \   'query_str' : 'q=%TEXT&from=%FROM&to=%TO',
+        \   'type' : 'get',
+        \   'params' : {'client_id': get(g:, 'baidu_client_id', '')},
+        \   'parser' : 'trans#data#parser_baidu',
+        \ }
+  let g:trans_api.youdao = {'url': 'http://fanyi.youdao.com/openapi.do',
+        \   'query_str' : 'q=%TEXT',
+        \   'type' : 'get',
+        \   'params' : {
+        \     'key': get(g:, 'youdao_client_id', ''),
+        \     'keyfrom': 'trans-vim',
+        \     'doctype': 'json',
+        \     'version': '1.1',
+        \     'type': 'data',
+        \   },
+        \   'parser' : 'trans#data#parser_youdao',
+        \ }
 endif
-let g:trans_api.google = {
-      \   'url': 'http://translate.google.com/translate_a/t',
-      \   'params' : {
-      \     "client" : 'firefox-a',
-      \     "ie" : 'UTF-8',
-      \     "oe" : 'UTF-8',
-      \   },
-      \   'query_str': 'langpair=%FROM%7C%TO&text=%TEXT',
-      \   'parser': 'trans#data#parser_google',
-      \   'type': 'get',
-      \   'headers': { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.15 Safari/536.5' },
-      \ }
-let g:trans_api.bing = {'url': 'http://api.microsofttranslator.com/v2/ajax.svc/Translate',
-      \   'type': 'oauth',
-      \   'oauth_url': 'https://datamarket.accesscontrol.windows.net/v2/OAuth2-13/',
-      \   'oauth_obj': {
-      \     'client_id' : get(g:, 'bing_client_id', ''),
-      \     'client_secret' : get(g:, 'bing_client_secret', ''),
-      \     'scope' : 'http://api.microsofttranslator.com',
-      \     'grant_type' : 'client_credentials',
-      \   },
-      \   'token_str': 'appId=Bearer%20%TOKEN',
-      \   'token_expire': 600,
-      \   'token_parser': 'trans#data#parser_t_bing',
-      \   'parser': 'trans#data#parser_bing',
-      \   'query_str': 'from=%FROM&to=%TO&text=%TEXT',
-      \ }
-let g:trans_api.baidu = {
-      \   'url': 'http://openapi.baidu.com/public/2.0/bmt/translate',
-      \   'query_str' : 'q=%TEXT&from=%FROM&to=%TO',
-      \   'type' : 'get',
-      \   'params' : {'client_id': get(g:, 'baidu_client_id', '')},
-      \   'parser' : 'trans#data#parser_baidu',
-      \ }
-let g:trans_api.youdao = {'url': 'http://fanyi.youdao.com/openapi.do',
-      \   'query_str' : 'q=%TEXT',
-      \   'type' : 'get',
-      \   'params' : {
-      \     'key': get(g:, 'youdao_client_id', ''),
-      \     'keyfrom': 'trans-vim',
-      \     'doctype': 'json',
-      \     'version': '1.1',
-      \     'type': 'data',
-      \   },
-      \   'parser' : 'trans#data#parser_youdao',
-      \ }
 
 " perlomni {{{2
 if s:plugin_installed('perlomni.vim')
