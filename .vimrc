@@ -1791,6 +1791,13 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+
+let g:cakephp_no_default_keymappings = 1
+function! s:init_cakephp()
+  nmap <buffer> gf <Plug>CakeJump
+endfunction
+MyAutocmd User PluginCakephpInitializeAfter call s:init_cakephp()
+
 " vimconsole.vim {{{2
 if neobundle#is_installed('vimconsole.vim')
   let g:vimconsole#auto_redraw = 1
