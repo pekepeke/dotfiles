@@ -1794,13 +1794,6 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
-
-let g:cakephp_no_default_keymappings = 1
-function! s:init_cakephp()
-  nmap <buffer> gf <Plug>CakeJump
-endfunction
-MyAutocmd User PluginCakephpInitializeAfter call s:init_cakephp()
-
 " vimconsole.vim {{{2
 if neobundle#is_installed('vimconsole.vim')
   let g:vimconsole#auto_redraw = 1
@@ -1879,6 +1872,17 @@ endif
 if s:plugin_installed('perlomni.vim')
   call s:path_push(neobundle#get('perlomni.vim').path . '/bin')
 endif
+
+" cake.vim {{{2
+let g:cakephp_no_default_keymappings = 1
+function! s:init_cakephp()
+  if !empty(g:cake)
+    nmap <buffer> gf <Plug>CakeJump
+    nmap <buffer> <C-w>f <Plug>CakeSplitJump
+    nmap <buffer> <C-w>gf <Plug>CakeTabJump
+  endif
+endfunction
+MyAutocmd User PluginCakephpInitializeAfter call s:init_cakephp()
 
 " gitv {{{2
 if s:plugin_installed('gitv')
@@ -3289,12 +3293,13 @@ endfunction
 let g:ref_source_webdict_sites.default = 'alc'
 
 " webdict command {{{4
-function! s:ref_webdict_search(source)
-  let text = join(getline(a:firstline, a:lastline), "\n")
+function! s:ref_webdict_search(source, count, l1, l2, text)
+  " let text = a:firstline == 0 ? a:text : join(getline(a:firstline, a:lastline), "\n")
+  let text = a:count == 0 ? a:text : join(getline(a:l1, a:l2), "\n")
   execute "Ref" "webdict" a:source text
 endfunction
-command! -nargs=0 -range GTransEnJa <line1>,<line2>call s:ref_webdict_search('en_ja')
-command! -nargs=0 -range GTransJaEn <line1>,<line2>call s:ref_webdict_search('ja_en')
+command! -nargs=? -range=0 GTransEnJa call s:ref_webdict_search('en_ja', <count>, <line1>, <line2>, <q-args>)
+command! -nargs=? -range=0 GTransJaEn call s:ref_webdict_search('ja_en', <count>, <line1>, <line2>, <q-args>)
 
 " langs {{{4
 let g:ref_source_webdict_sites.default = 'alc'

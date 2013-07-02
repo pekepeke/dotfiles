@@ -140,7 +140,9 @@ fi
 alias vimfiler='vim -c VimFiler'
 alias vimshell='vim -c VimShell'
 
-alias viminspect='vim --startuptime "$HOME/vimrc-read.log"'
+alias vimrcinspect='vim --startuptime "$HOME/vimrc-read.txt" +q && vim vimrc-read.txt'
+alias vimrcprofile='vim --cmd "profile start vimrc-profile.txt" --cmd "profile file $HOME/.vimrc" +q && vim vimrc-profile.txt'
+alias vimrcprofileall='vim --cmd "profile start vimrc-profileall.txt" --cmd "profile! file $HOME/.vimrc" +q && vim vimrc-profileall.txt'
 alias vimsafe='vim -u NONE -i NONE'
 alias vimf='vim -u '
 alias view='view -u $HOME/.vimpagerrc'
