@@ -484,6 +484,7 @@ NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'veloce/vim-aldmeris'
 NeoBundle 'Pychimp/vim-luna'
 NeoBundle 'croaker/mustang-vim'
+NeoBundle 'jaromero/vim-monokai-refined'
 NeoBundle 'git://gist.github.com/187578.git', {'directory': 'h2u_black'}
 
 " common {{{3
@@ -594,8 +595,8 @@ endif
 " lang {{{3
 " basic {{{4
 NeoBundle 'thinca/vim-quickrun'
-NeoBundleLazy 'osyo-manga/shabadou.vim'
-NeoBundleLazy 'osyo-manga/vim-watchdogs'
+NeoBundle 'osyo-manga/shabadou.vim'
+NeoBundle 'osyo-manga/vim-watchdogs'
 NeoBundle 'kien/rainbow_parentheses.vim'
 " incompatible with smartinput
 " NeoBundle 'vim-scripts/Highlight-UnMatched-Brackets'
@@ -671,6 +672,10 @@ NeoBundle 'vim-scripts/ConflictDetection', {
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'pekepeke/ref-javadoc'
 NeoBundle 'soh335/vim-ref-jquery'
+NeoBundle 'yuku-t/vim-ref-ri'
+" NeoBundle 'nishigori/vim-ref-phpunit'
+" NeoBundle 'eiiches/vim-ref-gtkdoc'
+" NeoBundle 'eiiches/vim-ref-info'
 " NeoBundle 'mojako/ref-sources.vim'
 
 " vim {{{4
@@ -701,20 +706,22 @@ NeoBundle 'osyo-manga/neocomplcache-jsx'
 NeoBundle 'hrsh7th/vim-neco-calc'
 
 " ruby {{{4
-NeoBundleLazyOn FileType ruby 'vim-ruby/vim-ruby'
+NeoBundle 'vim-ruby/vim-ruby'
 NeoBundle 'tpope/vim-rails'
 " NeoBundle 'tpope/vim-bundler'
 NeoBundle 'tobiassvn/vim-gemfile'
-NeoBundleLazyOn FileType ruby 'hallison/vim-ruby-sinatra'
+NeoBundle 'hallison/vim-ruby-sinatra'
 " NeoBundle 'tpope/vim-rake'
 " NeoBundle 'taq/vim-rspec'
 NeoBundleLazyOn FileType ruby 'skwp/vim-rspec'
-NeoBundleLazyOn FileType ruby 'tpope/vim-cucumber'
-NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
-NeoBundleLazyOn FileType ruby 'yaymukund/vim-rabl'
-NeoBundleLazyOn FileType eruby 'vim-scripts/eruby.vim'
+NeoBundle 'ecomba/vim-ruby-refactoring'
+
+NeoBundle 'tpope/vim-cucumber'
+NeoBundle 'yaymukund/vim-rabl'
+NeoBundle 'vim-scripts/eruby.vim'
+
 NeoBundleLazyOn FileType ruby 't9md/vim-chef'
-NeoBundleLazyOn FileType puppet 'rodjek/vim-puppet'
+NeoBundle 'rodjek/vim-puppet'
 NeoBundleLazyOn FileType ruby 'rhysd/unite-ruby-require.vim'
 NeoBundleLazyOn FileType ruby 'rhysd/neco-ruby-keyword-args'
 
@@ -725,7 +732,7 @@ NeoBundleLazyOn FileType ruby 'basyura/unite-rails'
 " NeoBundleLazyOn FileType ruby 'markcornick/vim-vagrant'
 " NeoBundleLazyOn FileType ruby 'robbevan/Vagrantfile.vim'
 if has("signs") && has("clientserver") && v:version > 700
-  NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
+  NeoBundle 'astashov/vim-ruby-debugger'
 else
   NeoBundleLazy 'astashov/vim-ruby-debugger'
 endif
@@ -752,36 +759,36 @@ else
 endif
 
 " html {{{4
-NeoBundleLazyOn FileType html,php 'othree/html5.vim'
-NeoBundleLazyOn FileType html 'amirh/HTML-AutoCloseTag'
+NeoBundle 'othree/html5.vim'
+NeoBundle 'amirh/HTML-AutoCloseTag'
 " heavy...
 " NeoBundleLazyOn FileType html,php 'vim-scripts/indenthtml.vim'
 " NeoBundleLazyOn FileType html,php 'vim-scripts/html-improved-indentation'
-NeoBundleLazyOn FileType html 'vim-scripts/html_FileCompletion'
-NeoBundleLazyOn FileType haml 'tpope/vim-haml'
-NeoBundleLazyOn FileType jade 'digitaltoad/vim-jade'
+NeoBundle 'vim-scripts/html_FileCompletion'
+NeoBundle 'tpope/vim-haml'
+NeoBundle 'digitaltoad/vim-jade'
 " NeoBundle 'mattn/zencoding-vim'
 NeoBundleLazyOn FileType html,eruby,php 'mattn/zencoding-vim'
 " NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
-NeoBundleLazyOn FileType mustache 'juvenn/mustache.vim'
+NeoBundle 'juvenn/mustache.vim'
 
 " css {{{4
 NeoBundleLazyOn FileType html,javascript,css,sass,scss,less,slim,stylus 'Rykka/colorv.vim'
 
-NeoBundleLazyOn FileType sass,scss,less,slim,stylus,css 'ChrisYip/Better-CSS-Syntax-for-Vim'
+NeoBundle 'ChrisYip/Better-CSS-Syntax-for-Vim'
 " NeoBundle 'ap/vim-css-color'
 " NeoBundle 'lilydjwg/colorizer'
-NeoBundleLazyOn FileType sass,scss,less,slim,stylus,css 'hail2u/vim-css3-syntax'
-NeoBundleLazyOn FileType sass,scss 'cakebaker/scss-syntax.vim'
-NeoBundleLazyOn FileType less 'groenewege/vim-less'
-NeoBundleLazyOn FileType stylus 'wavded/vim-stylus'
-NeoBundleLazyOn FileType slim 'slim-template/vim-slim'
+NeoBundle 'hail2u/vim-css3-syntax'
+NeoBundle 'cakebaker/scss-syntax.vim'
+NeoBundle 'groenewege/vim-less'
+NeoBundle 'wavded/vim-stylus'
+NeoBundle 'slim-template/vim-slim'
 NeoBundleLazyOn FileType css 'miripiruni/CSScomb-for-Vim'
 NeoBundleLazyOn FileType css 'vim-scripts/cssbaseline.vim'
 NeoBundleLazyOn FileType css 'bae22/prefixer'
 
 " javascript {{{4
-NeoBundleLazyOn FileType javascript 'pangloss/vim-javascript'
+NeoBundle 'pangloss/vim-javascript'
 if has('python')
   NeoBundleLazy 'marijnh/tern_for_vim', {
         \   'build' : {
@@ -794,14 +801,14 @@ if has('python')
         " \   'autoload' : {},
         " \   'rtp' : 'vim',
 endif
-NeoBundleLazyOn FileType javascript 'mmalecki/vim-node.js'
-NeoBundleLazyOn FileType javascript,coffee,typescript 'othree/javascript-libraries-syntax.vim'
-NeoBundleLazyOn FileType javascript 'teramako/jscomplete-vim'
-NeoBundleLazyOn FileType javascript 'myhere/vim-nodejs-complete'
+NeoBundle 'mmalecki/vim-node.js'
+NeoBundle 'othree/javascript-libraries-syntax.vim'
+NeoBundle 'teramako/jscomplete-vim'
+NeoBundle 'myhere/vim-nodejs-complete'
 NeoBundleLazyOn FileType javascript 'mklabs/grunt.vim'
-NeoBundleLazyOn FileType json 'elzr/vim-json'
+NeoBundle 'elzr/vim-json'
 " NeoBundle 'drslump/vim-syntax-js'
-NeoBundleLazyOn FileType javascript  'vim-scripts/jQuery'
+NeoBundle  'vim-scripts/jQuery'
 " NeoBundle 'lukaszb/vim-web-indent'
 " NeoBundle 'vim-scripts/IndentAnything'
 " NeoBundle 'itspriddle/vim-javascript-indent'
@@ -809,14 +816,14 @@ NeoBundleLazyOn FileType javascript  'vim-scripts/jQuery'
 NeoBundle 'pekepeke/titanium-vim'
 NeoBundle 'pekepeke/ref-jsextra-vim'
 NeoBundleLazyOn FileType javascript 'chikatoike/sourcemap.vim'
-NeoBundleLazyOn FileType handlebars 'nono/vim-handlebars'
+NeoBundle 'nono/vim-handlebars'
 
-NeoBundleLazyOn FileType dart 'vim-scripts/Dart'
+NeoBundle 'vim-scripts/Dart'
 NeoBundleLazyOn FileType haxe,hxml,nmml 'jdonaldson/vaxe'
 " NeoBundle 'MarcWeber/vim-haxe'
-NeoBundleLazyOn FileType jst 'jeyb/vim-jst'
-NeoBundleLazyOn FileType coffee  'kchmck/vim-coffee-script'
-NeoBundleLazyOn FileType typescript 'leafgarland/typescript-vim'
+NeoBundle 'jeyb/vim-jst'
+NeoBundle 'kchmck/vim-coffee-script'
+NeoBundle 'leafgarland/typescript-vim'
 NeoBundleLazy 'clausreinke/typescript-tools', {
       \ 'script_type' : 'plugin',
       \ 'autoload' : { 'filetypes' : 'typescript' },
@@ -830,11 +837,11 @@ NeoBundleLazy 'clausreinke/typescript-tools', {
 
 " python {{{4
 " http://rope.sourceforge.net/
-NeoBundleLazyOn FileType python 'klen/python-mode'
-NeoBundleLazyOn FileType python 'lambdalisue/vim-python-virtualenv'
+NeoBundle 'klen/python-mode'
+NeoBundle 'lambdalisue/vim-python-virtualenv'
 " NeoBundle 'lambdalisue/vim-django-support'
-NeoBundleLazyOn FileType python 'gerardo/vim-django-support'
-NeoBundleLazyOn FileType python 'vim-scripts/python_match.vim'
+NeoBundle 'gerardo/vim-django-support'
+NeoBundle 'vim-scripts/python_match.vim'
 
 if has('python')
   NeoBundleLazy 'davidhalter/jedi-vim', {
@@ -849,16 +856,16 @@ endif
 " endif
 
 " perl {{{4
-" NeoBundleLazyOn FileType perl 'petdance/vim-perl'
-NeoBundleLazyOn FileType perl 'vim-perl/vim-perl'
-NeoBundleLazyOn FileType perl 'c9s/perlomni.vim'
+" NeoBundle 'petdance/vim-perl'
+NeoBundle 'vim-perl/vim-perl'
+NeoBundle 'c9s/perlomni.vim'
 NeoBundleLazyOn FileType perl 'y-uuki/unite-perl-module.vim'
 NeoBundleLazyOn FileType perl 'y-uuki/perl-local-lib-path.vim'
 
 " C,CPP {{{4
 NeoBundleLazyOn FileType c,cpp 'vim-scripts/DoxygenToolkit.vim'
 NeoBundleLazyOn FileType c,cpp,objc 'Rip-Rip/clang_complete'
-NeoBundleLazyOn FileType qml 'peterhoeg/vim-qml'
+NeoBundle 'peterhoeg/vim-qml'
 "NeoBundleLazyOn FileType cpp 'OmniCppComplete'
 
 " C# {{{4
@@ -877,17 +884,17 @@ if s:is_win
 endif
 
 " OSX {{{4
-NeoBundleLazyOn FileType objj 'nanki/vim-objj'
+NeoBundle 'nanki/vim-objj'
 NeoBundleLazyOn FileType objc 'pekepeke/cocoa.vim'
 if has('ruby')
   NeoBundleLazyOn FileType objc 'eraserhd/vim-ios'
 else
   NeoBundleLazy 'eraserhd/vim-ios'
 endif
-NeoBundleLazyOn FileType applescript 'vim-scripts/applescript.vim'
+NeoBundle 'vim-scripts/applescript.vim'
 
 " windows {{{4
-NeoBundleLazyOn FileType ps1,ps1xml 'PProvost/vim-ps1'
+NeoBundle 'PProvost/vim-ps1'
 
 " java, android {{{4
 NeoBundleLazyOn FileType java 'mikelue/vim-maven-plugin'
@@ -903,9 +910,9 @@ NeoBundleLazy 'nwertzberger/javacomplete', {
       \   'autoload' : { 'filetypes' : 'java' },
       \ }
 NeoBundleLazyOn FileType java 'vim-scripts/jcommenter.vim'
-NeoBundleLazyOn FileType groovy 'groovy.vim'
+NeoBundle 'groovy.vim'
 NeoBundle 'thinca/vim-logcat'
-NeoBundleLazyOn FileType velocity 'lepture/vim-velocity'
+NeoBundle 'lepture/vim-velocity'
 
 " scala {{{4
 NeoBundleLazyOn FileType scala 'derekwyatt/vim-scala'
@@ -913,7 +920,7 @@ NeoBundleLazyOn FileType scala 'derekwyatt/vim-scala'
 " go {{{4
 NeoBundleLazyOn FileType go 'uggedal/go-vim'
 if executable('gocode')
-  NeoBundleLazyOn FileType go 'undx/vim-gocode'
+  NeoBundle 'undx/vim-gocode'
 else
   NeoBundleLazy 'undx/vim-gocode'
 endif
@@ -928,13 +935,13 @@ endif
 
 " texts {{{4
 " NeoBundle 'plasticboy/vim-markdown' " plasticboy mode -> mkd
-NeoBundleLazyOn FileType markdown 'tpope/vim-markdown'
-NeoBundleLazyOn FileType markdown 'thinca/vim-ft-markdown_fold'
-NeoBundleLazyOn FileType textile 'timcharper/textile.vim'
+NeoBundle 'tpope/vim-markdown'
+NeoBundle 'thinca/vim-ft-markdown_fold'
+NeoBundle 'timcharper/textile.vim'
 NeoBundleLazyOn FileType csv 'chrisbra/csv.vim'
 NeoBundleLazyOn FileType yaml 'henrik/vim-yaml-flattener'
-NeoBundleLazyOn FileType plantuml 'aklt/plantuml-syntax'
-NeoBundleLazyOn FileType tjp 'maxmeyer/vim-taskjuggler'
+NeoBundle 'aklt/plantuml-syntax'
+NeoBundle 'maxmeyer/vim-taskjuggler'
 
 NeoBundle 'motemen/hatena-vim'
 NeoBundle 'nvie/vim-rst-tables'
@@ -953,20 +960,21 @@ NeoBundleLazyOn FileType haskell 'eagletmt/unite-haddock'
 " php {{{4
 " NeoBundleLazyOn FileType php 'spf13/PIV'
 " NeoBundleLazyOn FileType php 'justinrainbow/php-doc.vim'
-NeoBundleLazyOn FileType php 'Gasol/vim-php'
-NeoBundleLazyOn FileType php 'StanAngeloff/php.vim'
-NeoBundleLazyOn FileType php 'vim-scripts/php_localvarcheck.vim'
-NeoBundleLazyOn FileType php 'einars/vim-phpfold'
-NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
+NeoBundle 'Gasol/vim-php'
+NeoBundle 'StanAngeloff/php.vim'
 " NeoBundleLazyOn FileType php 'pekepeke/php.vim-html-enhanced'
-NeoBundleLazyOn FileType php '2072/PHP-Indenting-for-VIm'
-NeoBundleLazyOn FileType php 'vim-scripts/phpcomplete.vim'
-NeoBundleLazyOn FileType php 'nishigori/phpfolding.vim'
-NeoBundleLazyOn FileType php 'arnaud-lb/vim-php-namespace'
-NeoBundleLazyOn FileType twig 'beyondwords/vim-twig'
-NeoBundleLazyOn FileType twig 'tokutake/twig-indent'
+NeoBundle 'captbaritone/better-indent-support-for-php-with-html'
+NeoBundle '2072/PHP-Indenting-for-VIm'
+NeoBundle 'arnaud-lb/vim-php-namespace'
+NeoBundle 'einars/vim-phpfold'
+NeoBundle 'nishigori/phpfolding.vim'
+NeoBundle 'vim-scripts/phpcomplete.vim'
+NeoBundle 'vim-scripts/php_localvarcheck.vim'
+NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
+NeoBundle 'beyondwords/vim-twig'
+NeoBundle 'tokutake/twig-indent'
 NeoBundleLazyOn FileType php 'violetyk/cake.vim'
-" NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
+NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
 NeoBundleLazyOn FileType php 'heavenshell/unite-zf'
 NeoBundleLazyOn FileType php 'heavenshell/unite-sf2'
 
@@ -979,11 +987,11 @@ NeoBundleLazyOn FileType sql 'vim-scripts/SQLUtilities'
 " etc {{{4
 NeoBundleLazyOn FileType lua 'xolox/vim-lua-ftplugin'
 NeoBundle 'vim-scripts/syslog-syntax-file'
-NeoBundleLazyOn FileType processing 'sophacles/vim-processing'
+NeoBundle 'sophacles/vim-processing'
 NeoBundleLazyOn FileType processing 'pekepeke/ref-processing-vim'
 NeoBundle 'sjl/strftimedammit.vim'
 NeoBundle 'tangledhelix/vim-octopress'
-NeoBundleLazyOn FileType r 'jcfaria/Vim-R-plugin'
+NeoBundle 'jcfaria/Vim-R-plugin'
 NeoBundleLazy 'rbtnn/vimconsole.vim', {
       \ 'autoload' : {
       \   'commands': [
@@ -999,54 +1007,85 @@ NeoBundle 'basyura/rmine.vim'
 " endif
 
 " config {{{4
-NeoBundleLazyOn FileType tmux 'qqshfox/vim-tmux'
-NeoBundleLazyOn FileType nginx 'vim-scripts/nginx.vim'
-NeoBundleLazyOn FileType vcl 'smerrill/vcl-vim-plugin'
-NeoBundleLazyOn FileType haproxy 'ksauzz/haproxy.vim'
+NeoBundle 'qqshfox/vim-tmux'
+NeoBundle 'vim-scripts/nginx.vim'
+NeoBundle 'smerrill/vcl-vim-plugin'
+NeoBundle 'ksauzz/haproxy.vim'
 " NeoBundle 'empanda/vim-varnish.vim'
-NeoBundleLazyOn FileType keepalived 'glidenote/keepalived-syntax.vim'
-NeoBundleLazyOn FileType nyaos 'Shougo/vim-nyaos'
+NeoBundle 'glidenote/keepalived-syntax.vim'
+NeoBundle 'Shougo/vim-nyaos'
 
 " unite.vim {{{3
 NeoBundle 'Shougo/unite.vim', {
-      \   'autoload': { 'commands' : ['Unite'] },
+      \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
       \ }
-NeoBundle 'Shougo/unite-help'
-NeoBundle 'tacroe/unite-mark'
 NeoBundle 'thinca/vim-unite-history'
-NeoBundle 'zhaocai/unite-scriptnames'
-NeoBundle 'daisuzu/unite-grep_launcher'
-NeoBundle 'pasela/unite-webcolorname'
-NeoBundle 'ujihisa/unite-colorscheme'
+NeoBundleLazy 'Shougo/unite-help', { 'autoload' : {
+      \ 'unite_sources' : ['help'],
+      \ }}
+NeoBundleLazy 'tacroe/unite-mark', { 'autoload' : {
+      \ 'unite_sources' : ['mark'],
+      \ }}
+NeoBundleLazy 'zhaocai/unite-scriptnames', { 'autoload' : {
+      \ 'unite_sources' : ['scriptnames'],
+      \ }}
+NeoBundleLazy 'daisuzu/unite-grep_launcher', { 'autoload' : {
+      \ 'unite_sources' : ['grep_launcher'],
+      \ }}
+NeoBundleLazy 'pasela/unite-webcolorname', { 'autoload' : {
+      \ 'unite_sources' : ['webcolorname'],
+      \ }}
+NeoBundleLazy 'ujihisa/unite-colorscheme', { 'autoload' : {
+      \ 'unite_sources' : ['colorscheme'],
+      \ }}
 " NeoBundle 'ujihisa/unite-font'
 " NeoBundle 'tacroe/unite-alias'
 " NeoBundle 'hakobe/unite-script'
 " NeoBundle 'mattn/unite-remotefile'
 " NeoBundle 'pekepeke/unite-fileline'
-
-NeoBundle 'Shougo/unite-build'
+NeoBundleLazy 'Shougo/unite-build', { 'autoload' : {
+      \ 'unite_sources' : ['build'],
+      \ }}
 " NeoBundle 'h1mesuke/unite-outline'
-NeoBundle 'Shougo/unite-outline'
-
-NeoBundle 'sgur/unite-git_grep'
-NeoBundle 'kmnk/vim-unite-giti'
+NeoBundleLazy 'Shougo/unite-outline', { 'autoload' : {
+      \ 'unite_sources' : ['outline'],
+      \ }}
+NeoBundleLazy 'sgur/unite-git_grep', { 'autoload' : {
+      \ 'unite_sources' : ['vcs_grep', 'vcs_grep/git'],
+      \ }}
+NeoBundleLazy 'kmnk/vim-unite-giti'
 " NeoBundle 'sgur/unite-qf'
-NeoBundle 'osyo-manga/unite-quickfix'
-NeoBundle 'tsukkee/unite-tag'
+NeoBundleLazy 'osyo-manga/unite-quickfix', { 'autoload' : {
+      \ 'unite_sources' : ['quickfix'],
+      \ }}
+NeoBundleLazy 'eiiches/unite-tselect', { 'autoload' : {
+      \ 'unite_sources' : ['tselect'],
+      \ }}
+NeoBundleLazy 'tsukkee/unite-tag', { 'autoload' : {
+      \ 'unite_sources' : ['tag', 'tag/file', 'tag/include'],
+      \ }}
 
 " NeoBundle 'ujihisa/unite-launch'
-NeoBundle 'ujihisa/quicklearn'
+NeoBundleLazy 'ujihisa/quicklearn', { 'autoload' : {
+      \ 'unite_sources' : ['quicklearn'],
+      \ }}
 
 if executable('w3m')
-  NeoBundle 'ringogirl/unite-w3m', {
+  NeoBundleLazy 'ringogirl/unite-w3m', {
         \   'depends' : 'yuratomo/w3m.vim',
+        \   'unite_sources' : ['w3m', 'w3m/history'],
         \ }
   NeoBundle 'yuratomo/w3m.vim'
 endif
 
 " NeoBundle 'pekepeke/vim-unite-sonictemplate'
-NeoBundle 'pekepeke/vim-unite-repo-files'
-NeoBundle 'pekepeke/vim-unite-z'
+NeoBundleLazy 'pekepeke/vim-unite-repo-files', { 'autoload' : {
+      \ 'unite_sources' : ['repo_files'],
+      \ }}
+NeoBundleLazy 'pekepeke/vim-unite-z', { 'autoload' : {
+      \ 'unite_sources' : ['z'],
+      \ }}
+
 
 if s:is_win
   "NeoBundle 'sgur/unite-everything'
@@ -1088,17 +1127,42 @@ NeoBundle 'sgur/citation-utils.vim'
 " does not support gf-user
 " NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
 NeoBundleLazyOn FileType python 'zhaocai/vim-gf-python'
-NeoBundleLazyOn FileType ruby 'pekepeke/vim-gf-ruby-require.vim'
+NeoBundleLazyOn FileType ruby 'pekepeke/vim-gf-ruby-require'
 NeoBundle 'pekepeke/vim-gf-vundle'
 
 " operator {{{3
-NeoBundle 'kana/vim-operator-replace'
 NeoBundle 'kana/vim-operator-user'
-NeoBundle 'tyru/operator-camelize.vim'
-NeoBundle 'tyru/operator-html-escape.vim'
-NeoBundle 'pekepeke/vim-operator-shuffle'
+NeoBundleLazy 'kana/vim-operator-replace', {
+      \ 'depends' : 'vim-operator-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(operator-replace)']]
+      \ }}
+NeoBundleLazy 'tyru/operator-camelize.vim', {
+      \ 'depends' : 'vim-operator-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(operator-camelize)', '<Plug>(operator-camelize)']]
+      \ }}
+NeoBundleLazy 'tyru/operator-html-escape.vim', {
+      \ 'depends' : 'vim-operator-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(operator-html-escape)', '<Plug>(operator-html-unescape)']]
+      \ }}
+NeoBundleLazy 'pekepeke/vim-operator-shuffle', {
+      \ 'depends' : 'vim-operator-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(operator-shuffle)']]
+      \ }}
 NeoBundle 'pekepeke/vim-operator-tabular', { 'depends':'pekepeke/vim-csvutil' }
-NeoBundle 'pekepeke/vim-operator-normalize-utf8mac'
+NeoBundleLazy 'pekepeke/vim-operator-normalize-utf8mac', {
+      \ 'depends' : 'vim-operator-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(operator-normalize_utf8mac)']]
+      \ }}
 
 " textobj {{{3
 NeoBundle 'kana/vim-textobj-user'
@@ -1106,22 +1170,53 @@ NeoBundle 'kana/vim-textobj-datetime'
 NeoBundle 'kana/vim-textobj-diff'
 NeoBundle 'kana/vim-textobj-entire'
 NeoBundle 'kana/vim-textobj-fold'
-NeoBundle 'kana/vim-textobj-function'
+NeoBundleLazy 'kana/vim-textobj-function', {
+      \ 'depends' : 'vim-textobj-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(textobj-function-i)', '<Plug>(textobj-function-a)']]
+      \ }}
+
 NeoBundle 'kana/vim-textobj-jabraces'
 NeoBundle 'kana/vim-textobj-lastpat'
 NeoBundle 'kana/vim-textobj-syntax'
 NeoBundle 'kana/vim-textobj-line'
 NeoBundle 'kana/vim-textobj-underscore'
-NeoBundle 'thinca/vim-textobj-between'
+NeoBundleLazy 'thinca/vim-textobj-between', {
+      \ 'depends' : 'vim-textobj-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(textobj-between-i)', '<Plug>(textobj-between-a)']]
+      \ }}
 " NeoBundle 'thinca/vim-textobj-comment'
 NeoBundleLazyOn FileType javascript 'thinca/vim-textobj-function-javascript'
 NeoBundleLazyOn FileType perl 'thinca/vim-textobj-function-perl'
 NeoBundleLazyOn FileType ruby 't9md/vim-textobj-function-ruby'
 NeoBundleLazyOn FileType ruby 'nelstrom/vim-textobj-rubyblock'
-NeoBundle 'osyo-manga/vim-textobj-multiblock'
-NeoBundle 'vim-scripts/textobj-indent'
-NeoBundle 'sgur/vim-textobj-parameter'
-NeoBundle 'h1mesuke/textobj-wiw'
+NeoBundleLazy 'osyo-manga/vim-textobj-multiblock', {
+      \ 'depends' : 'vim-textobj-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(textobj-multiblock-i)', '<Plug>(textobj-multiblock-a)']]
+      \ }}
+NeoBundleLazy 'vim-scripts/textobj-indent', {
+      \ 'depends' : 'vim-textobj-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(textobj-indent-i)', '<Plug>(textobj-indent-a)']]
+      \ }}
+NeoBundleLazy 'sgur/vim-textobj-parameter', {
+      \ 'depends' : 'vim-textobj-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(textobj-parameter-i)', '<Plug>(textobj-parameter-a)']]
+      \ }}
+NeoBundleLazy 'h1mesuke/textobj-wiw', {
+      \ 'depends' : 'vim-textobj-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(textobj-wiw-i)', '<Plug>(textobj-wiw-a)']]
+      \ }}
 NeoBundle 'coderifous/textobj-word-column.vim'
 NeoBundle 'rhysd/vim-textobj-continuous-line'
 " NeoBundle 'gorkunov/smartpairs.vim'
@@ -1563,7 +1658,11 @@ MyAutocmd QuickfixCmdPost make call s:my_make_settings()
 
 " tags-and-searches {{{2
 nnoremap [!t]r t
-nnoremap <silent> [!t]t g<C-]>
+if s:plugin_installed('unite-tselect')
+  nnoremap <silent> [!t]t :<C-u>Unite tselect:<C-r>=expand('<cword>')<CR> -immediately<CR>
+else
+  nnoremap <silent> [!t]t g<C-]>
+endif
 nnoremap <silent> [!t]j :<C-u>tag<CR>
 nnoremap <silent> [!t]k :<C-u>pop<CR>
 nnoremap <silent> [!t]l :<C-u>tags<CR>
@@ -2708,6 +2807,7 @@ UniteNMap!  q         quickfix -buffer-name=qfix
 " UniteNMap   :         history/command command
 " UniteNMap   /         history/search
 UniteNMap   bb        bookmark -default-action=open
+
 nnoremap <silent> [!unite]ba :<C-u>UniteBookmarkAdd<CR>
 " UniteNMap   rr        quicklearn -immediately
 nnoremap [!space]R :<C-u>Unite quicklearn -immediately<CR>
@@ -2871,18 +2971,25 @@ endif
 " nnoremap [!space]gp :<C-u>Git push
 
 " fugitive.vim {{{2
-nnoremap [!space]gd :<C-u>Gdiff --cached<CR>
-nnoremap [!space]gD :<C-u>Gdiff<CR>
-nnoremap [!space]gs :<C-u>Gstatus<CR>
+nnoremap <silent> [!space]gd :<C-u>Gdiff --cached<CR>
+nnoremap <silent> [!space]gD :<C-u>Gdiff<CR>
+nnoremap <silent> [!space]gs :<C-u>Gstatus<CR>
 nnoremap [!space]gl :<C-u>Glog<CR>
 nnoremap [!space]gL :<C-u>Glog -u \| head -10000<CR>
 nnoremap [!space]ga :<C-u>Gwrite<CR>
 nnoremap [!space]gA :<C-u>Gwrite <cfile><CR>
-nnoremap [!space]gc :<C-u>Gcommit<CR>
-nnoremap [!space]gC :<C-u>Gcommit --amend<CR>
-nnoremap [!space]gr :<C-u>Ggrep<Space>
-nnoremap [!space]gb :<C-u>Gblame<CR>
-nnoremap [!space]gp :<C-u>Git push
+nnoremap <silent> [!space]gc :<C-u>Gcommit<CR>
+nnoremap <silent> [!space]gC :<C-u>Gcommit --amend<CR>
+nnoremap <silent> [!space]gr :<C-u>Ggrep<Space>
+nnoremap <silent> [!space]gb :<C-u>Gblame<CR>
+nnoremap <silent> [!space]gp :<C-u>Git push
+function! s:my_git_init()
+  setl foldmethod=expr
+  " setl foldexpr=getline(v:lnum)!~'^commit'
+  setlocal foldexpr=GitLogViewerFoldExpr(v:lnum)
+  setlocal foldtext=GitLogViewerFoldText()
+endfunction
+MyAutocmd FileType git call s:my_git_init()
 
 " TOhtml {{{2
 let g:html_number_lines = 0
