@@ -22,18 +22,11 @@ setl iskeyword-=.,:
 " vnoremap <buffer> [space]xs ! xmpfiler -s
 " vnoremap <buffer> [space]xm ! xmpfiler -m
 
-function! s:if_string_smtchrloop(...)
-  let sname = synIDattr(synID(line("."), col("."), 1), "name")
-  if sname =~? 'rubyString' || sname =~? 'string' ||
-        \ sname =~? 'rubyInterporation' || sname =~? 'rubyInterporationDelimiter'
-    let Fn = function('smartchr#loop')
-    return call(Fn, a:000)
-  endif
-  return a:000[0]
-endfunction
-
-inoremap <expr><buffer> # <SID>if_string_smtchrloop('#', '#{', '##')
+inoremap <expr><buffer> #
+      \ synchat#is('rubyString\|rubyInterporation\|rubyInterporationDelimiter')
+      \ ? smartchr#loop('#', '#{', '##') : '#'
 " inoremap <expr><buffer> { smartchr#loop('{', '#{', '{{')
-inoremap <expr><buffer> > smartchr#one_of('>', '=>', '>>')
+inoremap <expr><buffer> > synchat#is('rubyString\|rubyInterporation\|rubyInterporationDelimiter')?
+      \ '>' : smartchr#one_of('>', '=>', '>>')
 
 let &cpo = s:save_cpo

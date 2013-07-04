@@ -9,6 +9,6 @@ if exists('g:loaded_python_ftplugin')
 
   let g:loaded_python_ftplugin=1
 endif
-
+nmap <silent> [!comment-doc] <Plug>(pydocstring)
 
 let &cpo = s:save_cpo

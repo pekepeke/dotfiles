@@ -14,8 +14,8 @@ setl iskeyword-=:
 " setl dictionary+=~/.vim/dict/wsh.dict
 " setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
 
-inoremap <buffer> <expr> \  smartchr#one_of('\', 'function(', '\\')
-inoremap <buffer><expr> @ smartchr#one_of('@', 'this.', '@@')
+inoremap <buffer> <expr> \  synchat#not_src()?'\':smartchr#one_of('\', 'function(', '\\')
+inoremap <buffer><expr> @ synchat#not_src()?'@':smartchr#one_of('@', 'this.', '@@')
 nmap <silent> [!comment-doc] <Plug>(jsdoc)
 
 " for vim-syntax-js
