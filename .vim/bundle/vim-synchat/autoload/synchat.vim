@@ -1,10 +1,10 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-if !exists('g:synchat#text_patterns')
+if !exists('g:synchat#plain_patterns')
   let g:synchat#plain_patterns = {}
 endif
-if !exists('g:synchat#text_patterns._')
+if !exists('g:synchat#plain_patterns._')
   let g:synchat#plain_patterns._ = 'String\|Comment\|None'
 endif
 
@@ -23,8 +23,8 @@ function! synchat#isnt_str() "{{{2
 endfunction
 
 function! s:get_pattern() "{{{2
-  return get(g:, 'synchat#text_patterns.'.&filetype,
-        \ g:synchat#text_patterns._)
+  return get(g:, 'synchat#plain_patterns.'.&filetype,
+        \ g:synchat#plain_patterns._)
 endfunction
 
 " deprecated

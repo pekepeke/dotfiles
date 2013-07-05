@@ -559,7 +559,7 @@ NeoBundleLazy 'bkad/CamelCaseMotion', { 'autoload' : {
       \ '<Plug>CamelCaseMotion_b'],
       \ }}
 NeoBundle 'h1mesuke/vim-alignta'
-NeoBundle 'vim-scripts/YankRing.vim'
+" NeoBundle 'vim-scripts/YankRing.vim'
 " NeoBundle 'maxbrunsfeld/vim-yankstack'
 " NeoBundle 'chrismetcalf/vim-yankring'
 " NeoBundle 'the-isz/MinYankRing.vim'
@@ -596,11 +596,23 @@ NeoBundleLazy 'thinca/vim-prettyprint', {
       \       { 'name' : 'PrettyPrint', 'complete': 'expression'},
       \     ]}
       \ }
-NeoBundle 'thinca/vim-editvar'
+NeoBundleLazy 'thinca/vim-editvar', {
+      \ 'autoload': {
+      \   'commands': [{'name': 'Editvar', 'complete': 'var'}],
+      \   'unite_sources': ['variable'],
+      \ }}
 NeoBundle 'nathanaelkane/vim-indent-guides'
 " NeoBundle 'Yggdroot/indentLine'
 NeoBundle 'c9s/cascading.vim'
-NeoBundle 'mileszs/ack.vim'
+NeoBundleLazy 'mileszs/ack.vim', {
+      \ 'autoload': {
+      \   'commands': [
+      \     {'name': 'Ack', 'complete': 'file'}, {'name': 'AckAdd', 'complete': 'file'},
+      \     {'name': 'AckFromSearch', 'complete': 'file'}, {'name': 'LAck', 'complete': 'file'},
+      \     {'name': 'LAckAdd', 'complete': 'file'}, {'name': 'AckFile', 'complete': 'file'},
+      \     {'name': 'AckHelp', 'complete': 'file'}, {'name': 'LAckHelp', 'complete': 'file'},
+      \   ],
+      \ }}
 NeoBundleLazy 'vim-scripts/MultipleSearch'
 " NeoBundle 'terryma/vim-multiple-cursors'
 NeoBundle 'vim-scripts/sudo.vim'
@@ -1604,11 +1616,11 @@ nnoremap <silent> [!SW]S "_dd
 nnoremap <silent> [!SW]d "_d
 nnoremap <silent> [!SW]D "_D
 
-nnoremap <silent> x "_x
-nnoremap <silent> X "_X
-" x はたまに使う
-nnoremap <silent> [!s]x x
-nnoremap <silent> [!s]X X
+" nnoremap <silent> x "_x
+" nnoremap <silent> X "_X
+" " x はたまに使う
+" nnoremap <silent> [!s]x x
+" nnoremap <silent> [!s]X X
 
 " http://vim-users.jp/2009/10/hack91/
 cnoremap <expr> /  getcmdtype() == '/' ? '\/' : '/'
@@ -2775,11 +2787,13 @@ endif
 call extend(g:grep_launcher_words, {
       \ 'TODO' : 'TODO\|FIXME\|XXX',
       \ })
+" unite-history
+let g:unite_source_history_yank_enable = 1
 
+
+" unite buffers {{{3
 let s:bundle = neobundle#get("unite.vim")
 function! s:bundle.hooks.on_source(bundle)
-  " unite buffers {{{3
-  " do not work as well??
   call unite#custom#substitute('files', '\$\w\+', '\=eval(submatch(0))', 200)
 
   call unite#custom#substitute('files', '[^~.]\zs/', '*/*', 20)
@@ -2873,7 +2887,7 @@ UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=tod
 UniteNMap   gl        grep_launcher
 UniteNMap!  gi        git_grep -buffer-name=git_grep
 UniteNMap!  q         quickfix -buffer-name=qfix
-" UniteNMap   y         history/yank
+UniteNMap   p         history/yank
 " UniteNMap   :         history/command command
 " UniteNMap   /         history/search
 UniteNMap   bb        bookmark -default-action=open
@@ -2888,7 +2902,6 @@ inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=narrow_or_insert file<CR>
 
 Alias colorscheme Unite colorscheme -auto-preview
 
-" if my#util#has_plugin('vimproc.vim')
 " if s:plugin_installed('vimproc.vim')
 "   UniteNMap a file_rec/async -start-insert
 " else
@@ -3418,7 +3431,7 @@ let g:ref_source_webdict_sites = {
       \     'cache': '0',
       \   },
       \   'ruby_toolbox': {
-      \     'url': 'https://www.ruby-toolbox.com/search?utf8=%E2%9C%93\&q=%s',
+      \     'url': 'https://www.ruby-toolbox.com/search?utf8=%%E2%%9C%%93\&q=%s',
       \     'keyword_encoding': 'utf-8',
       \     'cache': '0',
       \   },
@@ -3469,6 +3482,15 @@ function! g:ref_source_webdict_sites.wikipedia.filter(output)
 endfunction
 function! g:ref_source_webdict_sites.wiktionary.filter(output)
   return join(split(a:output, "\n")[38:], "\n")
+endfunction
+function! g:ref_source_webdict_sites.rurema.filter(output)
+  return substitute(a:output, '.*検索結果', '', '')
+endfunction
+function! g:ref_source_webdict_sites.node_toolbox.filter(output)
+  return join(split(a:output, "\n")[34 :], "\n")
+endfunction
+function! g:ref_source_webdict_sites.chef_cookbooks.filter(output)
+  return join(split(a:output, "\n")[18 :], "\n")
 endfunction
 
 " webdict default {{{4
