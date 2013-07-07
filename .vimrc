@@ -492,7 +492,13 @@ NeoBundle 'git://gist.github.com/187578.git', {'directory': 'h2u_black'}
 "       \ 'directory' : 'ginger',
 "       \ 'script_type' : 'plugin',
 "       \ }
-NeoBundle 'mklabs/vim-fetch'
+NeoBundleLazy 'mklabs/vim-fetch', {
+      \ 'autoload' : {
+      \   'commands' : [
+      \     {'name': 'Fetch', },
+      \     'FetchManage',
+      \   ],
+      \ }}
 NeoBundle 'osyo-manga/vim-reanimate'
 NeoBundleLazy 'mattn/benchvimrc-vim'
 NeoBundle 'Shougo/context_filetype.vim'
@@ -538,6 +544,23 @@ NeoBundle 'kana/vim-smartchr'
 NeoBundle 'kana/vim-submode'
 NeoBundle 'kana/vim-niceblock'
 NeoBundle 'tyru/vim-altercmd'
+NeoBundle 'kana/vim-smartinput'
+
+NeoBundleLazy 'tyru/stickykey.vim', {
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['icsl', '<Plug>(stickykey-ctrl)', '<Plug>(stickykey-ctrl-remap)',
+      \ '<Plug>(stickykey-alt)', '<Plug>(stickykey-alt-remap)',
+      \ '<Plug>(stickykey-shift)', '<Plug>(stickykey-shift-remap)',
+      \ '<Plug>(stickykey-command)', '<Plug>(stickykey-command-remap)',
+      \ ]]
+      \ }}
+
+NeoBundleLazy 'chikatoike/concealedyank.vim', {
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(operator-concealedyank)']]
+      \ }}
 NeoBundle 'vim-scripts/ShowMarks7'
 " NeoBundle 'vim-scripts/let-modeline.vim'
 " NeoBundle 'dannyob/quickfixstatus'
@@ -548,35 +571,65 @@ NeoBundle 'cohama/vim-hier'
 NeoBundle 'tpope/vim-repeat'
 " NeoBundle 'tpope/vim-surround'
 NeoBundle 'anyakichi/vim-surround'
-NeoBundle 'tpope/vim-abolish'
+NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
+      \ 'commands': [
+      \   {'name': 'Abolish'}, {'name': 'Subvert'}
+      \ ],
+      \ 'mappings': [['n', '<Plug>Coerce']]
+      \ }}
 " NeoBundle 'tpope/vim-endwise'
 NeoBundle 'rhysd/endwize.vim'
 NeoBundle 't9md/vim-surround_custom_mapping'
-NeoBundle 't9md/vim-quickhl'
+NeoBundleLazy 't9md/vim-quickhl', {'autoload': {
+      \ 'commands': [
+      \   'QuickhlList', 'QuickhlDump', 'QuickhlReset', 'QuickhlColors',
+      \   'QuickhlReloadColors', 'QuickhlAdd', 'QuickhlDel', 'QuickhlLock',
+      \   'QuickhlUnLock', 'QuickhlMatch', 'QuickhlMatchClear', 'QuickhlMatchAuto',
+      \   'QuickhlMatchNoAuto',
+      \ ],
+      \ 'mappings': [['n', '<Plug>(quickhl-match)'],
+      \   ['nv', '<Plug>(quickhl-toggle)', '<Plug>(quickhl-reset)']],
+      \ }}
 NeoBundleLazy 't9md/vim-textmanip'
 NeoBundleLazy 'bkad/CamelCaseMotion', { 'autoload' : {
       \ 'mappings' : ['<Plug>CamelCaseMotion_w',
       \ '<Plug>CamelCaseMotion_b'],
       \ }}
-NeoBundle 'h1mesuke/vim-alignta'
+NeoBundleLazy 'h1mesuke/vim-alignta', {'autoload': {
+      \ 'commands': [
+      \   {'name': 'Align'},
+      \   {'name': 'Alignta'},
+      \ ],
+      \ 'unite_sources': ['alignta']
+      \ }}
 " NeoBundle 'vim-scripts/YankRing.vim'
 " NeoBundle 'maxbrunsfeld/vim-yankstack'
 " NeoBundle 'chrismetcalf/vim-yankring'
 " NeoBundle 'the-isz/MinYankRing.vim'
+" TODO :
 NeoBundle 'AndrewRadev/switch.vim'
-NeoBundle 'AndrewRadev/inline_edit.vim'
+NeoBundleLazy 'AndrewRadev/splitjoin.vim', {'autoload': {
+      \ 'commands': ['SplitjoinJoin', 'SplitjoinSplit'],
+      \ }}
+NeoBundleLazy 'AndrewRadev/inline_edit.vim', {'autoload': {
+      \ 'commands': [
+      \   {'name': 'InlineEdit'},
+      \ ],
+      \ }}
 NeoBundle 'zef/vim-cycle'
 NeoBundle 'mbbill/undotree'
 NeoBundle 'rhysd/clever-f.vim'
-" XXX : this plugin overrides replace.vim keymap...--;
+" TODO : T-T;; this plugin overrides keymap...
 " NeoBundle 'terryma/vim-expand-region'
 NeoBundle 'kshenoy/vim-signature'
-" XXX
+" TODO : try
 if has('python')
   NeoBundleLazy 'editorconfig/editorconfig-vim'
 endif
 NeoBundleLazy 'kien/ctrlp.vim'
-NeoBundle 'glidenote/memolist.vim'
+NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {
+      \ 'commands': ['MemoNew', 'MemoGrep', 'MemoList']
+      \ }}
 
 NeoBundle 'pekepeke/vim-trimr'
 NeoBundleLazy 'othree/eregex.vim', {
@@ -603,6 +656,7 @@ NeoBundleLazy 'thinca/vim-editvar', {
       \ }}
 NeoBundle 'nathanaelkane/vim-indent-guides'
 " NeoBundle 'Yggdroot/indentLine'
+" TODO : x_x
 NeoBundle 'c9s/cascading.vim'
 NeoBundleLazy 'mileszs/ack.vim', {
       \ 'autoload': {
@@ -643,10 +697,7 @@ NeoBundle 'vim-scripts/matchparenpp'
 " else
   NeoBundle 'gregsexton/MatchTag'
 " endif
-NeoBundle 'AndrewRadev/splitjoin.vim'
-NeoBundle 'AndrewRadev/inline_edit.vim'
 " NeoBundle 'Raimondi/delimitMate'
-NeoBundle 'kana/vim-smartinput'
 " NeoBundle 'acustodioo/vim-enter-indent'
 
 " NeoBundle 'houtsnip/vim-emacscommandline'
@@ -659,12 +710,24 @@ if s:is_win
 else
   NeoBundle 'majutsushi/tagbar'
 endif
-NeoBundle 'wesleyche/SrcExpl'
+NeoBundle 'wesleyche/SrcExpl', {'autoload': {
+      \ 'commands': ['SrcExpl', 'SrcExplClose', 'SrcExplToggle',],
+      \ }}
 " NeoBundle 'abudden/TagHighlight'
-NeoBundle 'tomtom/tcomment_vim'
+" NeoBundle 'tomtom/tcomment_vim'
+NeoBundle 'tpope/vim-commentary'
 " NeoBundle 'scrooloose/nerdcommenter'
 NeoBundle 'thinca/vim-template'
-NeoBundle 'mattn/sonictemplate-vim'
+NeoBundle 'mattn/sonictemplate-vim', {'autoload': {
+      \ 'commands': [
+      \   {'name': 'Template', 'complete': 'complete=customlist,sonictemplate#complete'},
+      \   {'name': '', 'complete': 'complete=customlist,sonictemplate#complete'},
+      \ ],
+      \ 'mappings': [
+      \   ['in', '<plug>(sonictemplate)', '<plug>(sonictemplate-intelligent)'],
+      \ ],
+      \ 'unite_sources': ['sonictemplate'],
+      \ }}
 NeoBundle 'ciaranm/detectindent'
 NeoBundle 'ujihisa/shadow.vim'
 if !s:is_win
@@ -680,23 +743,31 @@ NeoBundleLazy 'gregsexton/gitv', {
       \     'commands' : ['Gitv'],
       \   },
       \ }
-NeoBundle 'violetyk/gitquick.vim'
+" TODO : --;;;;
+" NeoBundle 'violetyk/gitquick.vim'
 NeoBundleLazy 'Shougo/vim-vcs'
-NeoBundle 'sjl/splice.vim'
-NeoBundleLazy 'vim-scripts/DirDiff.vim', {
-      \   'autoload': {
-      \     'commands' : [
-      \       'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
-      \       'DirDiffUpdate', 'DirDiffQuit', {
-      \         'name': 'DirDiff',
-      \         'complete': 'dir',
-      \       },
-      \     ],
-      \   },
-      \ }
+NeoBundleLazy 'sjl/splice.vim', {'autoload': {
+      \ 'commands': [
+      \   'SpliceInit', 'SpliceGrid', 'SpliceLoupe',
+      \   'SpliceCompare', 'SplicePath', 'SpliceOriginal',
+      \   'SpliceOne', 'SpliceTwo', 'SpliceResult',
+      \   'SpliceDiff', 'SpliceDiffoff', 'SpliceScroll',
+      \   'SpliceLayout', 'SpliceNext', 'SplicePrev',
+      \   'SpliceUse', 'SpliceUse1', 'SpliceUse2',
+      \ ],
+      \ }}
+NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
+      \ 'commands' : [
+      \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
+      \   'DirDiffUpdate', 'DirDiffQuit',
+      \   {'name': 'DirDiff', 'complete': 'dir'},
+      \ ],
+      \ }}
 NeoBundleLazy 'mbadran/headlights'
 NeoBundle 'thinca/vim-ft-diff_fold'
-NeoBundle 'AndrewRadev/linediff.vim'
+NeoBundle 'AndrewRadev/linediff.vim', {'autoload': {
+      \ 'commands': ['Linediff', 'LinediffReset'],
+      \ }}
 NeoBundle 'vim-scripts/ConflictDetection', {
       \   'depends': 'vim-scripts/ingo-library',
       \ }
@@ -786,7 +857,7 @@ NeoBundleLazy 'basyura/unite-rails', { 'autoload' : {
 " NeoBundleLazyOn FileType ruby 'markcornick/vim-vagrant'
 " NeoBundleLazyOn FileType ruby 'robbevan/Vagrantfile.vim'
 if has("signs") && has("clientserver") && v:version > 700
-  NeoBundle 'astashov/vim-ruby-debugger'
+  NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
 else
   NeoBundleLazy 'astashov/vim-ruby-debugger'
 endif
@@ -800,14 +871,16 @@ else
 endif
 if executable('rails_best_practices')
   NeoBundleLazy 'taichouchou2/unite-rails_best_practices', {
-        \ 'depends' : [ 'Shougo/unite.vim', 'romanvbabenko/rails.vim' ],
-        \ 'autoload' : { 'filetypes' : 'ruby'},
+        \ 'depends' : [ 'Shougo/unite.vim', 'tpope/rails.vim' ],
+        \ 'unite_sources': ['rails_best_practices']
         \ }
 else
   NeoBundleLazy 'taichouchou2/unite-rails_best_practices'
 endif
 if executable('reek')
-  NeoBundle 'taichouchou2/unite-reek'
+  NeoBundle 'taichouchou2/unite-reek', {'autoload':{
+        \ 'unite_sources': ['reek'],
+        \ }}
 else
   NeoBundleLazy 'taichouchou2/unite-reek'
 endif
@@ -837,14 +910,21 @@ NeoBundle 'cakebaker/scss-syntax.vim'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'wavded/vim-stylus'
 NeoBundle 'slim-template/vim-slim'
-NeoBundleLazyOn FileType css 'miripiruni/CSScomb-for-Vim'
-NeoBundleLazyOn FileType css 'vim-scripts/cssbaseline.vim'
-NeoBundleLazyOn FileType css 'bae22/prefixer'
+NeoBundleLazy 'csscomb/CSScomb-for-Vim', {'autoload': {
+      \ 'commands': ['CSSComb'],
+      \ }}
+NeoBundleLazy 'vim-scripts/cssbaseline.vim', {'autoload': {
+      \ 'commands': ['Baseline', 'Baseline1'],
+      \ }}
+NeoBundleLazy 'bae22/prefixer', {'autoload': {
+      \ 'commands': ['Prefixer', 'Prefixer1', 'Prefixer1a',
+      \   'Prefixer2', 'Prefixer2a'],
+      \ }}
 
 " javascript {{{4
 NeoBundle 'pangloss/vim-javascript'
 if has('python')
-  NeoBundleLazy 'marijnh/tern_for_vim', {
+  NeoBundle 'marijnh/tern_for_vim', {
         \   'build' : {
         \    'cygwin': 'npm install',
         \    'windows': 'npm install',
@@ -869,7 +949,13 @@ NeoBundle  'vim-scripts/jQuery'
 " NeoBundle 'jiangmiao/simple-javascript-indenter'
 NeoBundle 'pekepeke/titanium-vim'
 NeoBundle 'pekepeke/ref-jsextra-vim'
-NeoBundleLazyOn FileType javascript 'chikatoike/sourcemap.vim'
+NeoBundleLazy 'chikatoike/sourcemap.vim', {'autoload':{
+\ 'commands': [
+\   {'name' : 'SourceMapAddMap', 'complete':'file'},
+\   'SourceMapSwitch', 'SourceMapConvertQuickfixToOriginal',
+\   'SourceMapConvertLocListToOriginal', 'SourceMapAddOriginalToQuickfix',
+\   'SourceMapAddOriginalToLocList',]
+\ }}
 NeoBundle 'nono/vim-handlebars'
 
 NeoBundle 'vim-scripts/Dart'
@@ -955,7 +1041,9 @@ NeoBundle 'PProvost/vim-ps1'
 
 " java, android {{{4
 NeoBundleLazyOn FileType java 'mikelue/vim-maven-plugin'
-NeoBundleLazyOn FileType java 'KamunagiChiduru/unite-javaimport'
+NeoBundleLazy 'KamunagiChiduru/unite-javaimport', {'autoload': {
+      \ 'unite_sources': ['javaimport']
+      \ }}
 " NeoBundle 'vim-scripts/javacomplete', {
 NeoBundleLazy 'nwertzberger/javacomplete', {
       \   'build' : {
@@ -967,9 +1055,15 @@ NeoBundleLazy 'nwertzberger/javacomplete', {
       \   'autoload' : { 'filetypes' : 'java' },
       \ }
 NeoBundleLazyOn FileType java 'vim-scripts/jcommenter.vim'
-NeoBundle 'groovy.vim'
-NeoBundle 'thinca/vim-logcat'
+NeoBundle 'vim-scripts/groovy.vim'
+NeoBundle 'vim-scripts/groovyindent'
+NeoBundleLazy 'thinca/vim-logcat', {'autoload':{
+      \ 'commands': ['Logcat', 'LogcatClear'],
+      \ }}
 NeoBundle 'lepture/vim-velocity'
+NeoBundleLazy 'ryotakato/unite-gradle', {'autoload':{
+      \ 'unite_sources': ['gradle'],
+      \ }}
 
 " scala {{{4
 NeoBundleLazyOn FileType scala 'derekwyatt/vim-scala'
@@ -1059,6 +1153,7 @@ NeoBundleLazyOn FileType sql 'vim-scripts/SQLUtilities'
 " etc {{{4
 NeoBundleLazyOn FileType lua 'xolox/vim-lua-ftplugin'
 NeoBundle 'vim-scripts/syslog-syntax-file'
+NeoBundle 'brandonbloom/vim-proto'
 NeoBundle 'sophacles/vim-processing'
 NeoBundleLazyOn FileType processing 'pekepeke/ref-processing-vim'
 NeoBundle 'sjl/strftimedammit.vim'
@@ -1071,7 +1166,13 @@ NeoBundleLazy 'rbtnn/vimconsole.vim', {
       \     'VimConsoleError', 'VimConsoleToggle', 'VimConsoleClear', 'VimConsoleRedraw',
       \   ] }
       \ }
-NeoBundle 'basyura/rmine.vim'
+NeoBundleLazy 'basyura/rmine.vim', {'autoload': {
+      \ 'commands': [
+      \   {'name': 'Rmine', 'complete': 'custom,rmine#complete#project'},
+      \   'RmineIssue', 'RmineNewIssue'
+      \ ],
+      \ 'unite_sources': ['rmine/project', 'rmine/query', 'rmine/selector'],
+      \ }}
 " NeoBundle 'basyura/unite-yarm'
 
 " if executable('loga')
@@ -1123,9 +1224,19 @@ NeoBundleLazy 'Shougo/unite-outline', { 'autoload' : {
       \ 'unite_sources' : ['outline'],
       \ }}
 NeoBundleLazy 'sgur/unite-git_grep', { 'autoload' : {
-      \ 'unite_sources' : ['vcs_grep', 'vcs_grep/git'],
+      \ 'unite_sources' : ['vcs_grep', 'vcs_grep/git', 'vcs_grep/hg'],
       \ }}
-NeoBundleLazy 'kmnk/vim-unite-giti'
+NeoBundleLazy 'Kocha/vim-unite-tig', { 'autoload' : {
+      \ 'unite_sources' : ['tig'],
+      \ }}
+NeoBundleLazy 'kmnk/vim-unite-giti', { 'autoload' : {
+      \ 'unite_sources' : ['giti', 'giti/branch', 'giti/config',
+      \   'giti/log', 'giti/remote', 'giti/status',],
+      \ }}
+NeoBundleLazy 'kmnk/vim-unite-svn', { 'autoload' : {
+      \ 'unite_sources' : ['svn/status', 'svn/diff', 'svn/blame',
+      \   ],
+      \ }}
 " NeoBundle 'sgur/unite-qf'
 NeoBundleLazy 'osyo-manga/unite-quickfix', { 'autoload' : {
       \ 'unite_sources' : ['quickfix'],
@@ -1191,7 +1302,9 @@ NeoBundle 'mattn/webapi-vim'
 " endif
 " NeoBundle 'mattn/googletranslate-vim'
 " NeoBundle 'mattn/bingtranslate-vim'
-NeoBundle 'mattn/excitetranslate-vim'
+NeoBundleLazy 'mattn/excitetranslate-vim', {'autoload': {
+      \ 'commands': ['ExciteTranslate']
+      \ }}
 " NeoBundle 'Rykka/trans.vim'
 NeoBundle 'thinca/vim-ambicmd'
 NeoBundle 'mattn/gist-vim'
@@ -1518,45 +1631,6 @@ Alias v vnew
 
 
 " mappings {{{1
-" sticky shift {{{2
-" http://vim-users.jp/2009/08/hack-54/
-let g:sticky_shift_enable = 0
-command! -nargs=0 StickyShift let g:sticky_shift_enable=1
-command! -nargs=0 NoStickyShift let g:sticky_shift_enable=0
-
-inoremap <expr> ;  g:sticky_shift_enable ? <SID>sticky_func() : ";"
-
-function! s:sticky_func() "{{{3
-  " let l:sticky_table = {
-  " \',' : '<', '.' : '>', '/' : '?',
-  " \'1' : '!', '2' : '@', '3' : '#', '4' : '$', '5' : '%',
-  " \'6' : '^', '7' : '&', '8' : '*', '9' : '(', '0' : ')', '-' : '_', '=' : '+',
-  " \';' : ':', '[' : '{', ']' : '}', '`' : '~', "'" : "\"", '\' : '|',
-  " \}
-  "'\' : '|',
-  let l:sticky_table = {
-        \',' : '<', '.' : '>', '/' : '?', '\' : '_',
-        \'1' : '!', '2' : '"', '3' : '#', '4' : '$', '5' : '%',
-        \'6' : '&', '7' : "'", '8' : '(', '9' : ')', '0' : '|', '-' : '=', '^' : '~',
-        \'@' : '`', '[' : '{', ';' : '+', ':' : '*', ']' : '}'
-        \}
-  let l:special_table = {
-        \"\<ESC>" : "\<ESC>", "\<Space>" : ';', "\<CR>" : ";\<CR>"
-        \}
-
-  let l:key = getchar()
-  if nr2char(l:key) =~ '\l'
-    return toupper(nr2char(l:key))
-  elseif has_key(l:sticky_table, nr2char(l:key))
-    return l:sticky_table[nr2char(l:key)]
-  elseif has_key(l:special_table, nr2char(l:key))
-    return l:special_table[nr2char(l:key)]
-  else
-    return ''
-  endif
-endfunction
-
-
 " define common key-prefixes {{{2
 noremap [!space] <Nop>
 nnoremap g<Space> <Space>
@@ -2303,13 +2377,13 @@ map ;dk <Plug>DirDiffPrev
 
 " splitjoin.vim {{{2
 if s:plugin_installed('splitjoin.vim')
-  let g:splitjoin_split_mapping = ''
-  let g:splitjoin_join_mapping = ''
+  let g:splitjoin_split_mapping = 'gS'
+  let g:splitjoin_join_mapping = 'gJ'
   let g:splitjoin_normalize_whitespace = 1
   let g:splitjoin_align = 1
 
-  nmap [!prefix]j :<C-u>SplitjoinSplit<CR>
-  nmap [!prefix]k :<C-u>SplitjoinJoin<CR>
+  " nmap [!prefix]j :<C-u>SplitjoinSplit<CR>
+  " nmap [!prefix]k :<C-u>SplitjoinJoin<CR>
 endif
 
 " rainbow_parentheses {{{2
@@ -2556,8 +2630,6 @@ vnoremap [!prefix],r :Alignta<< [=><\-)}\]]\+
 vnoremap [!prefix],t :Alignta \|<CR>
 vnoremap [!prefix],c :Alignta<< \(//\|#\|\/\*\)/1<CR>
 
-" repeat.vim {{{2
-silent! repeat#set() " for loading
 
 " submode {{{2
 " http://d.hatena.ne.jp/tyru/20100502/vim_mappings
@@ -2790,6 +2862,114 @@ call extend(g:grep_launcher_words, {
 " unite-history
 let g:unite_source_history_yank_enable = 1
 
+" unite-menu {{{3
+if !exists("g:unite_source_menu_menus")
+   let g:unite_source_menu_menus = {}
+endif
+" http://d.hatena.ne.jp/osyo-manga/20130225/1361794133
+function! s:unite_menu_create(desc, ...) "{{{4
+  let commands = {
+  \   'description' : a:desc,
+  \}
+  let commands.candidates = a:0 >= 1 ? a:1 : {}
+  function commands.map(key, value)
+    let [word, value] = a:value
+    if isdirectory(value)
+      return {
+            \   "word" : "[directory] ".word,
+            \   "kind" : "directory",
+            \   "action__directory" : value
+            \ }
+    elseif !empty(glob(value))
+      return {
+            \   "word" : "[file] ".word,
+            \   "kind" : "file",
+            \   "default_action" : "tabdrop",
+            \   "action__path" : value,
+            \ }
+    else
+      return {
+            \   "word" : "[command] ".word,
+            \   "kind" : "command",
+            \   "action__command" : value
+            \ }
+      endif
+  endfunction
+  return commands
+endfunction "4}}}
+
+let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
+\ 'Shortcut', [
+\   ["vimrc"              , $MYVIMRC]                                  ,
+\   ["reload vimrc"       , "source " . $MYVIMRC]                      ,
+\   ["gvimrc"             , $MYGVIMRC]                                 ,
+\   ["VimFiler ~/.vim"    , "VimFiler " .$HOME . "/.vim"]              ,
+\   ["scriptnames"        , "Unite scriptnames"]                       ,
+\   ["neobundle vimfiles" , "Unite neobundle/vimfiles"]                ,
+\   ["all vimfiles"       , "Unite neobundle/rtpvimfiles"]             ,
+\   ["colorscheme"        , "Unite colorscheme -auto-preview"]         ,
+\   ["global options"     , "Unite output:set"]                        ,
+\   ["local options"      , "Unite output:setlocal"]                   ,
+\   ["mappings"           , "Unite mapping"]                           ,
+\   ["repl"               , "Unite menu:repl"]                           ,
+\ ])
+
+let g:unite_source_menu_menus["repl"] = s:unite_menu_create(
+\ 'Repl', [
+\   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
+\   ["javascript"         , "VimShellInteractive node"]                ,
+\   ["ghci"               , "VimShellInteractive ghci"]                ,
+\   ["python"             , "VimShellInteractive python"]              ,
+\   ["php"                , "VimShellInteractive phpa-norl"]           ,
+\   ["perl"               , "VimShellInteractive re.pl"]               ,
+\   ["VimShellPop"        , "VimShellPop"]                             ,
+\   ["VimConsole"         , "VimConsoleOpen"]                          ,
+\ ])
+let g:unite_source_menu_menus["lang_perl"] = s:unite_menu_create(
+\ 'Perl Menu', [
+\   ["local module"  , "Unite perl/local"]  ,
+\   ["global module" , "Unite perl/global"] ,
+\ ])
+let g:unite_source_menu_menus["lang_ruby"] = s:unite_menu_create(
+\ 'Ruby Menu', [
+\   ["rake"             , "Unite rake"]              ,
+\   ["rails controller" , "Unite rails/controller"]  ,
+\   ["rails model"      , "Unite rails/model"]       ,
+\   ["rails view"       , "Unite rails/view"]        ,
+\   ["rails helper"     , "Unite rails/helper"]      ,
+\   ["rails lib"        , "Unite rails/lib"]         ,
+\   ['Add param'        , 'RAddParameter']           ,
+\   ['Split cond'       , 'RConvertPostConditional'] ,
+\   ['Extract let'      , 'RExtractLet']             ,
+\   ['Remove tmpvar'    , 'RInlineTemp']             ,
+\   ['chef attribute'   , 'ChefFindAttribute']       ,
+\   ['chef recipe'      , 'ChefFindRecipe']          ,
+\   ['chef definition'  , 'ChefFindDefinition']      ,
+\   ['chef lwrp'        , 'ChefFindLWRP']            ,
+\   ['chef source'      , 'ChefFindSource']          ,
+\   ['chef related'     , 'ChefFindRelated']         ,
+\ ])
+let g:unite_source_menu_menus["lang_java"] = s:unite_menu_create(
+\ 'Java Menu' , [
+\   ["import" , "Unite javaimport"] ,
+\   ["gradle" , "Unite gradle"]     ,
+\ ])
+
+" let g:unite_source_menu_menus["lang_"] = s:unite_menu_create(
+" \ '', [
+" \  ["", ""],
+" \ ])
+
+function! s:unite_context_menu() "{{{4
+  if !exists('g:unite_source_menu_menus["lang_' . &filetype . '"]')
+    echohl Error
+    echon "menu not found"
+    echohl None
+    return
+  endif
+  execute 'Unite' 'menu:'.'lang_'.&filetype
+endfunction "4}}}
+
 
 " unite buffers {{{3
 let s:bundle = neobundle#get("unite.vim")
@@ -2883,7 +3063,7 @@ UniteNMap   i         jump
 UniteNMap   o         outline
 UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep -auto-preview
 UniteNMap!  gr        grep -buffer-name=grep
-UniteNMap!  gt        grep:<C-r>=getcwd()<CR>::TODO\|FIXME\|XXX -buffer-name=todo -auto-preview
+UniteNMap!  gt        grep:<C-r>=getcwd()<CR>:TODO\|FIXME\|XXX -buffer-name=todo -auto-preview
 UniteNMap   gl        grep_launcher
 UniteNMap!  gi        git_grep -buffer-name=git_grep
 UniteNMap!  q         quickfix -buffer-name=qfix
@@ -2891,16 +3071,28 @@ UniteNMap   p         history/yank
 " UniteNMap   :         history/command command
 " UniteNMap   /         history/search
 UniteNMap   bb        bookmark -default-action=open
+if s:is_win
+  UniteNMap ,         everything -start-insert
+elseif s:is_mac
+  UniteNMap ,         spotlight -start-insert
+else
+  UniteNMap ,         locate -start-insert
+endif
 
 nnoremap <silent> [!unite]ba :<C-u>UniteBookmarkAdd<CR>
 " UniteNMap   rr        quicklearn -immediately
 nnoremap [!space]R :<C-u>Unite quicklearn -immediately<CR>
 
+nnoremap <silent> [!unite]v :Unite menu:shortcut<CR>
+nnoremap <silent> [!unite]V :call <SID>unite_context_menu()<CR>
+nnoremap <silent> [!space]ll :Unite menu:shortcut<CR>
+nnoremap <silent> [!space]lo :call <SID>unite_context_menu()<CR>
+
 " filepath insert
 nnoremap <C-y><C-f> :<C-u>Unite -default-action=narrow_or_insert file<CR>
 inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=narrow_or_insert file<CR>
 
-Alias colorscheme Unite colorscheme -auto-preview
+" Alias colorscheme Unite colorscheme -auto-preview
 
 " if s:plugin_installed('vimproc.vim')
 "   UniteNMap a file_rec/async -start-insert
@@ -2957,8 +3149,8 @@ function! s:unite_open_ftplugin()
 endfunction
 " nnoremap <silent> [!unite]v  :<C-u>call <SID>unite_open_ftplugin()<CR>
 " nnoremap <silent> [!unite]V  :<C-u>Unite file:~/.vim/<CR>
-nnoremap <silent> [!unite]v  :<C-u>Unite scriptnames<CR>
-nnoremap <silent> [!unite]V  :<C-u>call <SID>unite_open_ftplugin()<CR>
+" nnoremap <silent> [!unite]v  :<C-u>Unite scriptnames<CR>
+" nnoremap <silent> [!unite]V  :<C-u>call <SID>unite_open_ftplugin()<CR>
 " nnoremap <silent> [!unite]v  :<C-u>Unite file_rec:~/.vim/after file_rec:~/.vim/ftplugin<CR>
 
 " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
@@ -4653,6 +4845,10 @@ function! s:vimshell_my_settings() " {{{3
   call vimshell#hook#add('preprompt' , 'my_preprompt', s:vimshell_hooks.preprompt)
   call vimshell#hook#add('preexec'   , 'my_preexec', s:vimshell_hooks.preexec)
 
+  if s:plugin_installed('concealedyank.vim')
+    nmap y <Plug>(operator-concealedyank)
+    xmap y <Plug>(operator-concealedyank)
+  endif
   imap <silent> <buffer> <C-a> <C-o>:call cursor(line('.'), strlen(g:vimshell_prompt)+1)<CR>
   if s:plugin_loaded('neocomplcache.vim')
     inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
