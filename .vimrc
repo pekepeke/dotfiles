@@ -871,7 +871,7 @@ else
 endif
 if executable('rails_best_practices')
   NeoBundleLazy 'taichouchou2/unite-rails_best_practices', {
-        \ 'depends' : [ 'Shougo/unite.vim', 'tpope/rails.vim' ],
+        \ 'depends' : [ 'Shougo/unite.vim', 'romanvbabenko/rails.vim' ],
         \ 'unite_sources': ['rails_best_practices']
         \ }
 else
@@ -2921,7 +2921,7 @@ let g:unite_source_menu_menus["repl"] = s:unite_menu_create(
 \   ["ghci"               , "VimShellInteractive ghci"]                ,
 \   ["python"             , "VimShellInteractive python"]              ,
 \   ["php"                , "VimShellInteractive phpa-norl"]           ,
-\   ["perl"               , "VimShellInteractive re.pl"]               ,
+\   ["perl"               , "VimShellInteractive tinyrepl"]            ,
 \   ["VimShellPop"        , "VimShellPop"]                             ,
 \   ["VimConsole"         , "VimConsoleOpen"]                          ,
 \ ])
