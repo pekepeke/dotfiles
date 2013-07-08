@@ -100,11 +100,13 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   shrc_section_title "for node.js" # {{{2
   # if [ -e ~/.nenv ];then
   #   vmenv-init nenv
-  if [ -e ~/.nodebrew ]; then
-    PATH=$HOME/.nodebrew/current/bin:$PATH
-    export NODE_PATH=$HOME/.nodebrew/current/lib/node:$HOME/.nodebrew/current/lib/node_modules
-    # eval "$(npm completion 2>/dev/null)"
-    # alias nodebrew='CFLAGS="-D__DARWIN_64_BIT_INO_T" CXXFLAGS="-D__DARWIN_64_BIT_INO_T" nodebrew'
+  if ! vmenv-init nodenv; then
+    if [ -e ~/.nodebrew ]; then
+      PATH=$HOME/.nodebrew/current/bin:$PATH
+      export NODE_PATH=$HOME/.nodebrew/current/lib/node:$HOME/.nodebrew/current/lib/node_modules
+      # eval "$(npm completion 2>/dev/null)"
+      # alias nodebrew='CFLAGS="-D__DARWIN_64_BIT_INO_T" CXXFLAGS="-D__DARWIN_64_BIT_INO_T" nodebrew'
+    fi
   fi
 
   shrc_section_title "java" # {{{2
