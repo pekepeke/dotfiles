@@ -1,7 +1,32 @@
+;; auto-complete
+(setq ac-comphist-file "~/.emacs.d/cache/auto-complete/ac-comphist.dat")
+
+;; eshell
+(setq eshell-directory-name "~/.emacs.d/cache/eshell/")
+
+;; migemo
+(setq migemo-pattern-alist-file "~/.emacs.d/cache/migemo/migemo-pattern")
+(setq migemo-frequent-pattern-alist-file "~/.emacs.d/cache/migemo/migemo-frequent")
+
+;; recentf
+(custom-set-variables
+ '(recentf-save-file
+   (format "~/.emacs.d/cache/recentf/%s"
+           (replace-regexp-in-string "\\." "_" system-configuration))))
+
+;; savehist
+(setq savehist-file "~/.emacs.d/cache/savehist-history")
+
+;; savehistのファイルに保存する履歴からfile-name-historyをのぞく
+(setq savehist-ignored-variables '(file-name-history))
+
+(setq auto-save-list-file-prefix "~/.emacs.d/cache/auto-save-list")
+
+
 (require 'autoinsert)
 (require 'cl)
 
-(setq auto-insert-directory "~/.emacs.d/templates/")
+(setq auto-insert-directory "~/.emacs.d/assets/templates/")
 (setq auto-insert-alist
       (nconc
        (remove nil
@@ -47,10 +72,8 @@
 (define-key dired-mode-map "V" 'dired-vc-status)
 
 ;;; 警告
-;; 2011-03-01
 (require 'warnings)
 
 ;;; スペルチェック
-;; 2011-03-09
 (setq-default flyspell-mode t)
 (setq ispell-dictionary "american")

@@ -10,8 +10,8 @@
 (autoload 'company-mode "company" nil t)
 (eval-after-load "company"
   '(progn
-	(ac-company-define-source ac-source-company-xcode company-xcode)
-	(ac-company-define-source ac-source-company-xcode company-gtags)
+	; (ac-company-define-source ac-source-company-xcode company-xcode)
+	; (ac-company-define-source ac-source-company-xcode company-gtags)
 	(setq ac-modes (append ac-modes '(objc-mode)))
 	(setq ac-modes (append ac-modes '(c-mode)))
 	(setq ac-modes (append ac-modes '(c++-mode)))
@@ -106,8 +106,9 @@
 	 (require 'perl-completion)
 	 (perl-completion-mode t)
 	 (auto-complete-mode t)
-	 (make-variable-buffer-local 'ac-sources)
-	 (add-to-list 'ac-sources 'ac-source-perl-completion)) )
+	 ;(make-variable-buffer-local 'ac-sources)
+	 ;(add-to-list 'ac-sources 'ac-source-perl-completion))
+	 ))
 
 (autoload 'tmt-mode "tmt-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.mt$" . tmt-mode))
@@ -139,6 +140,11 @@
 	 (define-key js2-mode-map (kbd "C-m") nil)
 	 ))
 
+;; markdown
+(autoload 'markdown-mode "markdown-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
+
 (setq rsense-home (getenv "RSENSE_HOME"))
 (autoload 'ruby-mode "ruby-mode" "Ruby mode" t)
 (autoload 'rhtml-mode "rhtml-mode" "rhtml mode" t)
@@ -154,17 +160,17 @@
 	 (ido-mode t)
 	 (require 'rinari)
 	 (require 'rsense)
-	 (make-local-variable 'ac-sources)
-	 (add-to-list 'ac-sources 'ac-source-rsense-method)
-	 (add-to-list 'ac-sources 'ac-source-rsense-constant)
+	 ;(make-local-variable 'ac-sources)
+	 ;(add-to-list 'ac-sources 'ac-source-rsense-method)
+	 ;(add-to-list 'ac-sources 'ac-source-rsense-constant)
 	 ))
 (eval-after-load "rhtml-mode"
   '(progn
 	 (rinari-launch)
 	 (require 'rsense)
-	 (make-local-variable 'ac-sources)
-	 (add-to-list 'ac-sources 'ac-source-rsense-method)
-	 (add-to-list 'ac-sources 'ac-source-rsense-constant)
+	 ;(make-local-variable 'ac-sources)
+	 ;(add-to-list 'ac-sources 'ac-source-rsense-method)
+	 ;(add-to-list 'ac-sources 'ac-source-rsense-constant)
 	 ))
 
 ;;; objc
@@ -193,7 +199,7 @@
 		  (lambda ()
 			(define-key objc-mode-map (kbd "\t") 'ac-complete)
 			;; XCode を利用した補完を有効にする
-			(push 'ac-source-company-xcode ac-sources)
+			; (push 'ac-source-company-xcode ac-sources)
 			;; C++ のキーワード補完をする
 			;;(push 'ac-source-c++-keywords ac-sources)
 			(define-key objc-mode-map (kbd "C-c C-r") 'xcode:buildandrun)
@@ -212,8 +218,8 @@
 	 ;;(setq tab-width 4)
 
 	 (package-install 'emacswiki "php-completion.el" 'php-completion)
-	 (make-variable-buffer-local 'ac-sources)
-	 (add-to-list 'ac-sources 'ac-source-php-completion)
+	 ; (make-variable-buffer-local 'ac-sources)
+	 ; (add-to-list 'ac-sources 'ac-source-php-completion)
 	 ))
 
 ;;; Apple script

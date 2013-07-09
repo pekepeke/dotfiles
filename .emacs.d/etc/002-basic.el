@@ -111,15 +111,15 @@
 
 ;;; 部分一致の補完機能を使う
 ;;; p-bでprint-bufferとか
-(partial-completion-mode t)
+;(partial-completion-mode t)
 
 ;;; 補完可能なものを随時表示
 ;;; 少しうるさい
 (icomplete-mode 1)
 
 ;;; history
-(setq savehist-file (local-tmp-filename "history"))
-(setq auto-save-list-file-prefix (local-tmp-filename "auto-save-list"))
+;; (setq savehist-file (local-tmp-filename "history"))
+;; (setq auto-save-list-file-prefix (local-tmp-filename "auto-save-list"))
 ;;; 履歴数を大きくする
 (setq history-length 10000)
 
@@ -355,7 +355,11 @@
 	 nil
 	 'append)
     (add-to-list 'default-frame-alist '(font . "fontset-menlokakugo"))
-    )
+		(set-frame-font "Ricty 16" nil t)
+		(set-fontset-font
+		 nil 'japanese-jisx0208
+		 (font-spec :family "Ricty"))		
+			 )
 
   ;; Ctrl/Cmd/Optionがシステムに渡されるのを防ぐ
   (setq mac-pass-control-to-system nil)

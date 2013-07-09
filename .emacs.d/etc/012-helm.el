@@ -1,0 +1,15 @@
+(let ((key-and-func
+       `((,(kbd "C-x b")   helm-for-files)
+		 (,(kbd "C-x C-b") helm-buffers-list)
+		 (,(kbd "C-x C-f") helm-find-files)
+		 (,(kbd "C-x b") helm-buffer-list)
+         (,(kbd "C-^")   helm-c-apropos)
+         (,(kbd "C-;")   helm-resume)
+         (,(kbd "M-s")   helm-occur)
+         (,(kbd "M-x")   helm-M-x)
+         (,(kbd "M-y")   helm-show-kill-ring)
+         (,(kbd "M-z")   helm-do-grep)
+         (,(kbd "C-S-h") helm-descbinds)
+		 )))
+  (loop for (key func) in key-and-func
+        do (global-set-key key func)))

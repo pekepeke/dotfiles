@@ -1,5 +1,8 @@
 ;;; キーバインド
-(define-key global-map (kbd "C-h") 'delete-backward-char) ; 削除
+(keyboard-translate ?\C-h ?\C-?)
+;; (define-key global-map (kbd "C-h") 'delete-backward-char) ; 削除
+(define-key global-map (kbd "C-x C-n") 'next-multiframe-window) ; next win
+(define-key global-map (kbd "C-x C-p") 'previous-multiframe-window) ; prev win
 (define-key global-map (kbd "M-h") 'backward-kill-word)
 (define-key global-map (kbd "M-?") 'help-for-help)        ; ヘルプ
 (define-key global-map (kbd "C-c h") 'help-command)

@@ -32,6 +32,7 @@ if !exists('g:loaded_php_ftplugin') " {{{1
   let g:pdv_cfg_License = 'PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}'
 endif " }}}
 
+setl foldmethod=manual
 setl noexpandtab
 
 let &cpo = s:save_cpo

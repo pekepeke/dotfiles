@@ -51,9 +51,8 @@ doc/tags-ja
 .vim/neobundle
 
 #emacs
-.emacs.d/tmp
-.emacs.d/packages
-.emacs.d/el-get
+.emacs.d/cache
+.emacs.d/elisp.d
 
 # freemind
 .freemind/log.*
