@@ -41,6 +41,11 @@
 			 :features evil
 			 :depends undo-tree
 			 )
+		  (:name helm-descbinds
+				 :type github
+				 :pkgname "emacs-helm/helm-descbinds"
+				 :description "Yet Another `describe-bindings' with `helm'."
+				 :depends (helm))
 		  (:name tmt-mode
 			 :type http
 			 :url "https://github.com/yoshiki/tmt-mode/raw/master/tmt-mode.el"
@@ -80,6 +85,11 @@
 			 :description "A loader of configuration files."
 			 :type github
 			 :pkgname "emacs-jp/init-loader")
+		  (:name google-translate
+				 :description "Use google translate api to perform translations"
+				 :type github
+				 :pkgname "manzyuk/google-translate"
+				 :load "google-translate.el")
 		  (:name init-loader
 			 :website "https://github.com/emacsmirror/mode-compile"
 			 :description "Compile files according to major-mode."
@@ -91,6 +101,7 @@
 		  popwin
 		  auto-complete
 		  helm
+		  helm-descbinds
 		  grep-edit
 		  smartchr
 		  yasnippet
@@ -117,6 +128,7 @@
 		  apache-mode
 		  applescript-mode
 		  run-test
+		  google-translate
 		  init-loader
 		  ))
 

@@ -20,6 +20,7 @@
 	 (color-theme-initialize)
 	 (color-theme-molokai)
 	 ;;(color-theme-twilight)
+	 ;; (set-face-background 'show-paren-match-face (face-background 'selection-face))
 	 ))
 (require 'color-theme)
 
@@ -31,6 +32,20 @@
 ;; popwin
 (require 'popwin)
 (setq display-buffer-function 'popwin:display-buffer)
+(setq popwin:popup-window-position 'bottom)
+(push '("*slime-apropos*") popwin:special-display-config) ;; Apropos
+(push '("*slime-macroexpansion*") popwin:special-display-config) ;; Macroexpand
+(push '("*slime-description*") popwin:special-display-config) ;; Help
+(push '("*slime-compilation*" :noselect t) popwin:special-display-config) ;; Compilation
+(push '("*slime-xref*") popwin:special-display-config) ;; Cross-reference
+;;(push '("*Fuzzy Completions*") popwin:special-display-config) ;; Fuzzy
+(push '(sldb-mode :stick t) popwin:special-display-config) ;; Debugger
+(push '(slime-repl-mode) popwin:special-display-config) ;; REPL
+(push '(slime-connection-list-mode) popwin:special-display-config) ;; Connections
+(push '("*Kill Ring*") popwin:special-display-config) ;; Browse-Kill-RIng
+(push '("*anything*") popwin:special-display-config) ;; anything
+(push '("*sdic*") popwin:special-display-config) ;; sdic
+(push '("*Completions*") popwin:special-display-config) ;; Completions
 
 ;;; linum
 (require 'linum)
@@ -161,3 +176,16 @@
 (defun smartchr-custom-keybindings-objc ()
   (local-set-key (kbd "@") (smartchr '("@\"`!!'\"" "@")))
   )
+
+;; google-translate.el
+(require 'google-translate)
+
+;; キーバインドの設定（お好みで）
+(global-set-key [(C x) (C t)] 'google-translate-at-point)
+
+;; 翻訳のデフォルト値を設定（en -> ja）
+(custom-set-variables
+  '(google-translate-default-source-language "en")
+  '(google-translate-default-target-language "ja"))
+;; google-translate.elの翻訳バッファをポップアップで表示させる
+(push '("*Google Translate*") popwin:special-display-config)
