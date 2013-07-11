@@ -453,16 +453,12 @@ endif
 
 " vundles {{{2
 " powerline {{{3
-if !s:is_win && (has('python') || has('python3'))
-  NeoBundle 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
-  " for unite.vim,,,
-  " NeoBundle 'zhaocai/powerline', { 'rtp' : 'powerline/bindings/vim'}
-  NeoBundle 'zhaocai/linepower.vim'
-  NeoBundleLazy 'Lokaltog/vim-powerline'
-else
-  NeoBundleLazy 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
-  NeoBundle 'Lokaltog/vim-powerline'
-endif
+NeoBundle 'bling/vim-airline'
+NeoBundleLazy 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
+" for unite.vim
+" NeoBundle 'zhaocai/powerline', { 'rtp' : 'powerline/bindings/vim'}
+NeoBundle 'zhaocai/linepower.vim'
+NeoBundleLazy 'Lokaltog/vim-powerline'
 
 " colorscheme {{{3
 NeoBundle 'tomasr/molokai'
@@ -540,11 +536,13 @@ NeoBundleLazy 'Shougo/junkfile.vim', {
 NeoBundle 'yomi322/vim-gitcomplete'
 NeoBundle 'kana/vim-altr'
 NeoBundle 'kana/vim-fakeclip'
-NeoBundle 'kana/vim-smartchr'
+NeoBundleLazy 'kana/vim-smartchr', {'autoload': {'insert':1}}
 NeoBundle 'kana/vim-submode'
-NeoBundle 'kana/vim-niceblock'
+NeoBundleLazy 'kana/vim-niceblock', { 'autoload' : {
+      \ 'mappings' : ['<Plug>(niceblock-I)', '<Plug>(niceblock-A)']
+      \ }}
 NeoBundle 'tyru/vim-altercmd'
-NeoBundle 'kana/vim-smartinput'
+NeoBundleLazy 'kana/vim-smartinput', {'autoload': {'insert':1}}
 
 NeoBundleLazy 'tyru/stickykey.vim', {
       \ 'autoload' : {
@@ -571,6 +569,7 @@ NeoBundle 'cohama/vim-hier'
 NeoBundle 'tpope/vim-repeat'
 " NeoBundle 'tpope/vim-surround'
 NeoBundle 'anyakichi/vim-surround'
+NeoBundle 't9md/vim-surround_custom_mapping'
 NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
       \ 'commands': [
       \   {'name': 'Abolish'}, {'name': 'Subvert'}
@@ -578,8 +577,7 @@ NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
       \ 'mappings': [['n', '<Plug>Coerce']]
       \ }}
 " NeoBundle 'tpope/vim-endwise'
-NeoBundle 'rhysd/endwize.vim'
-NeoBundle 't9md/vim-surround_custom_mapping'
+NeoBundle 'rhysd/endwize.vim', {'autoload': {'insert':1}}
 NeoBundleLazy 't9md/vim-quickhl', {'autoload': {
       \ 'commands': [
       \   'QuickhlList', 'QuickhlDump', 'QuickhlReset', 'QuickhlColors',
@@ -607,7 +605,9 @@ NeoBundleLazy 'h1mesuke/vim-alignta', {'autoload': {
 " NeoBundle 'chrismetcalf/vim-yankring'
 " NeoBundle 'the-isz/MinYankRing.vim'
 " TODO :
-NeoBundle 'AndrewRadev/switch.vim'
+NeoBundleLazy 'AndrewRadev/switch.vim', {'autoload': {
+      \ 'commands': ['Switch']
+      \ }}
 NeoBundleLazy 'AndrewRadev/splitjoin.vim', {'autoload': {
       \ 'commands': ['SplitjoinJoin', 'SplitjoinSplit'],
       \ }}
@@ -618,7 +618,13 @@ NeoBundleLazy 'AndrewRadev/inline_edit.vim', {'autoload': {
       \ }}
 NeoBundle 'zef/vim-cycle'
 NeoBundle 'mbbill/undotree'
-NeoBundle 'rhysd/clever-f.vim'
+NeoBundle 'rhysd/clever-f.vim', {'autoload': {
+      \ 'mappings': [
+      \ '<Plug>(clever-f-f)', '<Plug>(clever-f-F)',
+      \ '<Plug>(clever-f-t)', '<Plug>(clever-f-T)',
+      \ '<Plug>(clever-f-reset)', '<Plug>(clever-f-repeat-forward)',
+      \ '<Plug>(clever-f-repeat-back)',
+      \ ]}}
 " TODO : T-T;; this plugin overrides keymap...
 " NeoBundle 'terryma/vim-expand-region'
 NeoBundle 'kshenoy/vim-signature'
@@ -637,7 +643,11 @@ NeoBundleLazy 'othree/eregex.vim', {
       \   'commands': ['E2v', 'M', 'S', 'G', 'V'],
       \ }}
 NeoBundle 'sjl/gundo.vim'
-NeoBundle 'kana/vim-smartword'
+NeoBundleLazy 'kana/vim-smartword', { 'autoload' : {
+      \ 'mappings' : [['nv',
+      \ '<Plug>(smartword-w)', '<Plug>(smartword-b)',
+      \ '<Plug>(smartword-ge)', '<Plug>(smartword-e)',
+      \ ]]}}
 " NeoBundle 'pekepeke/golden-ratio'
 " NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'thinca/vim-qfreplace'
@@ -1288,7 +1298,10 @@ endif
 
 " web {{{3
 NeoBundle 'tyru/open-browser.vim'
-NeoBundle 'tyru/open-browser-github.vim'
+NeoBundleLazy 'tyru/open-browser-github.vim', {'autoload': {
+      \ 'commands': ['OpenGithubFile', 'OpenGithubIssue',
+      \   'OpenGithubPullReq']
+      \ }}
 NeoBundle 'mattn/webapi-vim'
 " if executable('python')
 "   NeoBundle 'mattn/mkdpreview-vim', {
@@ -1302,24 +1315,26 @@ NeoBundle 'mattn/webapi-vim'
 " NeoBundle 'mattn/googletranslate-vim'
 " NeoBundle 'mattn/bingtranslate-vim'
 NeoBundleLazy 'mattn/excitetranslate-vim', {'autoload': {
-      \ 'commands': ['ExciteTranslate']
+      \ 'commands': ['ExciteTranslate'],
       \ }}
 " NeoBundle 'Rykka/trans.vim'
 NeoBundle 'thinca/vim-ambicmd'
-NeoBundle 'mattn/gist-vim'
+NeoBundleLazy 'mattn/gist-vim', {'autoload': {
+      \ 'commands': ['Gist'],
+      \ }}
 " NeoBundle 'mattn/vimplenote-vim'
 " NeoBundle 'pekepeke/vimplenote-vim'
 
 " gf-user {{{3
 NeoBundle 'kana/vim-gf-user'
 NeoBundle 'kana/vim-gf-diff'
-NeoBundle 'sgur/vim-gf-autoload'
-NeoBundle 'sgur/citation-utils.vim'
+NeoBundleLazyOn FileType vim 'sgur/vim-gf-autoload'
+NeoBundleLazyOn FileType markdown,rst,text 'sgur/citation-utils.vim'
 " does not support gf-user
 " NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
 NeoBundleLazyOn FileType python 'zhaocai/vim-gf-python'
 NeoBundleLazyOn FileType ruby 'pekepeke/vim-gf-ruby-require'
-NeoBundle 'pekepeke/vim-gf-vundle'
+NeoBundleLazyOn FileType vim 'pekepeke/vim-gf-vundle'
 
 " operator {{{3
 NeoBundle 'kana/vim-operator-user'
@@ -1347,7 +1362,16 @@ NeoBundleLazy 'pekepeke/vim-operator-shuffle', {
       \ 'mappings' : [
       \ ['nx', '<Plug>(operator-shuffle)']]
       \ }}
-NeoBundle 'pekepeke/vim-operator-tabular', { 'depends':'pekepeke/vim-csvutil' }
+NeoBundleLazy 'pekepeke/vim-operator-tabular', {
+      \ 'depends': 'pekepeke/vim-csvutil',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx',
+      \ '<Plug>(operator-md_tabularize_tsv)', '<Plug>(operator-md_untabularize_tsv)',
+      \ '<Plug>(operator-textile_tabularize_tsv)', '<Plug>(operator-textile_untabularize_tsv)',
+      \ '<Plug>(operator-backlog_tabularize_tsv)', '<Plug>(operator-backlog_untabularize_tsv)',
+      \ ]]
+      \ }}
 NeoBundleLazy 'pekepeke/vim-operator-normalize-utf8mac', {
       \ 'depends' : 'vim-operator-user',
       \ 'autoload' : {
@@ -2339,6 +2363,8 @@ if s:plugin_installed('clever-f.vim')
     map f <Plug>(clever-f-f)
   endif
   map F <Plug>(clever-f-F)
+  " map t <Plug>(clever-f-t)
+  " map T <Plug>(clever-f-T)
 endif
 
 " hl_matchit {{{2
@@ -2899,9 +2925,9 @@ endfunction "4}}}
 
 let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
 \ 'Shortcut', [
-\   ["vimrc"              , $MYVIMRC]                                  ,
-\   ["reload vimrc"       , "source " . $MYVIMRC]                      ,
-\   ["gvimrc"             , $MYGVIMRC]                                 ,
+\   ["edit .vimrc"        , $MYVIMRC]                                  ,
+\   ["reload .vimrc"      , "source " . $MYVIMRC]                      ,
+\   ["edit .gvimrc"       , $MYGVIMRC]                                 ,
 \   ["VimFiler ~/.vim"    , "VimFiler " .$HOME . "/.vim"]              ,
 \   ["scriptnames"        , "Unite scriptnames"]                       ,
 \   ["neobundle vimfiles" , "Unite neobundle/vimfiles"]                ,
@@ -3449,6 +3475,10 @@ let g:surround_custom_mapping.html = {
       \ 'I':  "<img src=\"\" alt=\"\r\" />",
       \ 'd':  "<div>\r</div>",
       \ 'D':  "<div class=\"selection\">\r</div>",
+      \ '%':  "<?php \r ?>",
+      \ '#':  "<?php # \r ?>",
+      \ '/':  "<?php // \r ?>",
+      \ '=':  "<?php echo \r ?>",
       \ }
 let g:surround_custom_mapping.help = {
       \ 'p':  "> \r <",
@@ -3492,6 +3522,7 @@ let g:surround_custom_mapping.php = {
       \ '#':  "<?php # \r ?>",
       \ '/':  "<?php // \r ?>",
       \ }
+let g:surround_custom_mapping.ctp = g:surround_custom_mapping.php
 let g:surround_custom_mapping.javascript = {
       \ 'f':  "function(){ \r }"
       \ }
@@ -3562,6 +3593,10 @@ Tmap ib <Plug>(textobj-multiblock-i)
 Tmap i,w <Plug>(textobj-wiw-i)
 Tmap a,w <Plug>(textobj-wiw-a)
 let g:textobj_wiw_no_default_key_mappings=1
+
+" vim-niceblock {{{2
+xmap I <Plug>(niceblock-I)
+xmap A <Plug>(niceblock-A)
 
 " ref.vim {{{2
 let g:ref_open = '8split'
@@ -5619,6 +5654,18 @@ if !has('vim_starting')
   elseif s:plugin_installed('vim-powerline')
     call Pl#UpdateStatusline(1)
   endif
+else
+  " function! s:powerline_init()
+  "   if &diff || &filetype =~# 'gitcommit\|svn\|hgcommit'
+  "     " do nothing
+  "   elseif !s:is_win && (has('python') || has('python3'))
+  "     NeoBundleSource powerline
+  "   else
+  "     NeoBundleSource vim-powerline
+  "   endif
+  " endfunction
+  " Lazy call s:powerline_init()
+
 endif
 " __END__ {{{1
 " vim: set ft=vim fdm=marker sw=2 ts=2 et:
