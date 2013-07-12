@@ -568,8 +568,8 @@ NeoBundle 'cohama/vim-hier'
 " NeoBundle 'tomtom/quickfixsigns_vim'
 NeoBundle 'tpope/vim-repeat'
 " NeoBundle 'tpope/vim-surround'
+" NeoBundle 't9md/vim-surround_custom_mapping'
 NeoBundle 'anyakichi/vim-surround'
-NeoBundle 't9md/vim-surround_custom_mapping'
 NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
       \ 'commands': [
       \   {'name': 'Abolish'}, {'name': 'Subvert'}
@@ -616,9 +616,13 @@ NeoBundleLazy 'AndrewRadev/inline_edit.vim', {'autoload': {
       \   {'name': 'InlineEdit'},
       \ ],
       \ }}
-NeoBundle 'zef/vim-cycle'
+NeoBundleLazy 'zef/vim-cycle', {'autoload': {
+      \ 'commands': ['CycleNext', 'CyclePrevious'],
+      \ 'mappings': ['<Plug>CycleNext', '<Plug>CyclePrevious'],
+      \ 'functions': ['AddCycleGroup']
+      \ }}
 NeoBundle 'mbbill/undotree'
-NeoBundle 'rhysd/clever-f.vim', {'autoload': {
+NeoBundleLazy 'rhysd/clever-f.vim', {'autoload': {
       \ 'mappings': [
       \ '<Plug>(clever-f-f)', '<Plug>(clever-f-F)',
       \ '<Plug>(clever-f-t)', '<Plug>(clever-f-T)',
@@ -666,8 +670,10 @@ NeoBundleLazy 'thinca/vim-editvar', {
       \ }}
 NeoBundle 'nathanaelkane/vim-indent-guides'
 " NeoBundle 'Yggdroot/indentLine'
-" TODO : x_x
-NeoBundle 'c9s/cascading.vim'
+NeoBundleLazy 'pekepeke/cascading.vim', {'autoload':{
+      \ 'commands': ['Cascading'],
+      \ 'mappings': [['n', '<Plug>(cascading)']]
+      \ }}
 NeoBundleLazy 'mileszs/ack.vim', {
       \ 'autoload': {
       \   'commands': [
@@ -2071,6 +2077,11 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" cycle.vim {{{2
+let g:cycle_no_mappings=1
+nmap <C-A> <Plug>CycleNext
+nmap <C-X> <Plug>CyclePrevious
+
 " vimconsole.vim {{{2
 if neobundle#is_installed('vimconsole.vim')
   let g:vimconsole#auto_redraw = 1
@@ -2304,8 +2315,7 @@ endif
 
 " cascading.vim {{{2
 if s:plugin_installed('cascading.vim')
-  Lazy nunmap --
-  nnoremap -^ :<C-u>Cascading<CR>
+  nmap -^ <Plug>(cascading)
 endif
 
 " switch.vim {{{2
@@ -3522,7 +3532,6 @@ let g:surround_custom_mapping.php = {
       \ '#':  "<?php # \r ?>",
       \ '/':  "<?php // \r ?>",
       \ }
-let g:surround_custom_mapping.ctp = g:surround_custom_mapping.php
 let g:surround_custom_mapping.javascript = {
       \ 'f':  "function(){ \r }"
       \ }
