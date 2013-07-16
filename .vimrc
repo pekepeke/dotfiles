@@ -233,32 +233,6 @@ set updatetime=200
 if has('winaltkeys')
   set winaltkeys=no
 endif
-
-" statusline {{{2
-set laststatus=2  " ステータス表示用変数
-
-function! MyStatusline() "{{{3
-  let s = ''
-
-  let s .= '%<'
-  let s .= '%f ' " filename
-  let s .= '%m' " modified flag
-  let s .= '%r' " readonly flag
-  let s .= '%h' " help flag
-  let s .= '%w' " preview flag
-  if neobundle#is_sourced('current-func-info.vim')
-    let s .= '> %{cfi#format("%s()","")}'
-  endif
-  let s .= '%='
-  let s .= '[%{&l:fenc}]'
-  let s .= '[%{&l:ff}] %{&l:ft} '
-  let s .= '< L%l:%c%V ' " current line status
-  let s .= '%8P'
-
-  return s
-endfunction "}}}3
-set statusline=%!MyStatusline()
-
 set modeline
 set modelines=10
 
@@ -339,19 +313,11 @@ function! s:syntaxes_add() "{{{2
   syntax match TrailingSpaces /\s\+$/ display containedin=ALL
 endfunction
 
-if has('gui_running') "{{{2
-  function! s:gui_colorscheme_init()
-    colorscheme vividchalk
-    call s:syntaxes_add()
-    call s:highlights_add()
-  endfunction
-
-elseif &t_Co == 256 || s:is_win
+function! s:gui_colorscheme_init()
   colorscheme vividchalk
-else
-  " colorscheme wombat
-  colorscheme desert
-endif
+  call s:syntaxes_add()
+  call s:highlights_add()
+endfunction
 
 augroup vimrc-colors "{{{2
   autocmd!
@@ -397,6 +363,15 @@ augroup END
 
 
 
+
+if has('gui_running') "{{{2
+elseif &t_Co == 256 || s:is_win
+  colorscheme vividchalk
+else
+  " colorscheme wombat
+  colorscheme desert
+endif
+
 " preexec for runtimepath {{{1
 " set nocompatible
 filetype off
@@ -431,34 +406,49 @@ if has('vim_starting')
       execute printf('NeoBundleLazy %s,%s', a:source, string(opt))
     endif
   endfunction
+  function! s:neobundle_summary()
+    let bundles = neobundle#config#get_neobundles()
+    let msgs = [
+          \ printf("Installed   : %d", len(bundles)),
+          \ printf("Enabled     : %d", len(filter(copy(bundles), '!v:val.lazy'))),
+          \ printf("Lazy        : %d", len(filter(copy(bundles), 'v:val.lazy'))),
+          \ printf("Not Sourced : %d", len(filter(copy(bundles), '!v:val.sourced'))),
+          \ printf("Sourced     : %d", len(filter(copy(bundles), 'v:val.sourced'))),
+          \ printf("Sourced plugins\n%s", join(map(
+          \   filter(copy(bundles), 'v:val.lazy && v:val.sourced'),
+          \   'v:val.name'), "\n")),
+          \ ]
+    echo join(msgs, "\n")
+  endfunction
+
+  function! s:neobundle_validate()
+    let bundles = neobundle#config#get_neobundles()
+    let lazies = filter(copy(bundles), 'v:val.lazy && v:val.sourced')
+    let plugins = []
+    for item in lazies
+      if isdirectory(item.path . '/plugin')
+        continue
+      endif
+      call add(plugins, item)
+    endfor
+    if !empty(plugins)
+      echo printf("Following plugins looks good should not be delayed\n%s",
+            \ join(map(plugins, 'v:val.name'), "\n"))
+    endif
+  endfunction
 
   command! -nargs=+ NeoBundleLazyOn call <SID>neobundle_lazy_on(<f-args>)
-
-  function! s:neobundle_safe_update(bang, ...)
-    let au_org_vimproc_dll_path = g:vimproc#dll_path
-    let org_vimproc_dll_path = g:vimproc_dll_path
-    let g:vimproc#dll_path = ''
-    let g:vimproc_dll_path = ''
-    let plugin_names = map(neobundle#config#get_neobundles(), 'v:val.name')
-    if a:0 > 0
-      let plugin_names = plugin_names[a:1 : (a:0 > 1 ? a:1 + a:2 : -1)]
-    endif
-    execute 'NeoBundleUpdate'.a:bang join(plugin_names, " ")
-    let g:vimproc#dll_path = au_org_vimproc_dll_path
-    let g:vimproc_dll_path = org_vimproc_dll_path
-  endfunction
-  command! -nargs=* -bang NeoBundleSafeUpdate call s:neobundle_safe_update("<bang>", <f-args>)
+  command! NeoBundleSummary call s:neobundle_summary()
+  command! NeoBundleValidate call s:neobundle_validate()
 endif
 
 
 " vundles {{{2
 " powerline {{{3
 NeoBundle 'bling/vim-airline'
-NeoBundleLazy 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
-" for unite.vim
-" NeoBundle 'zhaocai/powerline', { 'rtp' : 'powerline/bindings/vim'}
-NeoBundle 'zhaocai/linepower.vim'
-NeoBundleLazy 'Lokaltog/vim-powerline'
+" NeoBundleLazy 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
+" NeoBundle 'zhaocai/linepower.vim'
+" NeoBundleLazy 'Lokaltog/vim-powerline'
 
 " colorscheme {{{3
 NeoBundle 'tomasr/molokai'
@@ -488,27 +478,28 @@ NeoBundle 'git://gist.github.com/187578.git', {'directory': 'h2u_black'}
 "       \ 'directory' : 'ginger',
 "       \ 'script_type' : 'plugin',
 "       \ }
-NeoBundleLazy 'mklabs/vim-fetch', {
-      \ 'autoload' : {
-      \   'commands' : [
-      \     {'name': 'Fetch', },
-      \     'FetchManage',
-      \   ],
-      \ }}
+NeoBundleLazy 'mklabs/vim-fetch', { 'autoload' : {
+      \ 'commands' : [
+      \   {'name': 'Fetch', },
+      \   'FetchManage',
+      \ ], }}
 NeoBundle 'osyo-manga/vim-reanimate'
+NeoBundleLazy 'osyo-manga/vim-jplus', {'autoload':{
+      \ 'mappings' : [['nv',
+      \   '<Plug>(jplus-getchar)', '<Plug>(jplus-getchar-with-space)',
+      \   '<Plug>(jplus-input)', '<Plug>(jplus-input-with-space)',
+      \ ]]}}
 NeoBundleLazy 'mattn/benchvimrc-vim'
 NeoBundle 'Shougo/context_filetype.vim'
 NeoBundleLazy 'Shougo/vimfiler.vim', {
-      \   'depends': 'Shougo/unite.vim',
-      \   'autoload' : {
-      \      'commands' : [{ 'name' : 'VimFiler',
-      \                   'complete' : 'customlist,vimfiler#complete' },
-      \                   'VimFilerExplorer',
-      \                   'Edit', 'Read', 'Source', 'Write'],
-      \      'mappings' : ['<Plug>(vimfiler_switch)'],
-      \      'explorer' : 1,
-      \   }
-      \ }
+      \ 'depends': 'Shougo/unite.vim', 'autoload' : {
+      \ 'commands' : [{ 'name' : 'VimFiler',
+      \    'complete' : 'customlist,vimfiler#complete' },
+      \    'VimFilerExplorer',
+      \    'Edit', 'Read', 'Source', 'Write'],
+      \ 'mappings' : ['<Plug>(vimfiler_switch)'],
+      \ 'explorer' : 1,
+      \ }}
 NeoBundle 'Shougo/vimproc.vim', {
       \ 'build' : {
       \     'cygwin' : 'make -f make_cygwin.mak',
@@ -517,21 +508,19 @@ NeoBundle 'Shougo/vimproc.vim', {
       \   }
       \ }
 NeoBundleLazy 'Shougo/vimshell', {
-      \ 'depends': 'Shougo/vimproc.vim',
-      \ 'autoload' : {
-      \   'commands' : [{ 'name' : 'VimShell',
-      \   'complete' : 'customlist,vimshell#complete'},
+      \ 'depends': 'Shougo/vimproc.vim', 'autoload' : {
+      \ 'commands' : [{ 'name' : 'VimShell',
+      \ 'complete' : 'customlist,vimshell#complete'},
       \   'VimShellExecute', 'VimShellInteractive',
       \   'VimShellTerminal', 'VimShellPop'],
-      \   'mappings' : ['<Plug>(vimshell_switch)']
+      \ 'mappings' : ['<Plug>(vimshell_switch)']
       \ }}
 NeoBundleLazy 'Shougo/vinarise', { 'autoload': {
       \ 'commands': ['Vinarise'],
       \ }}
-NeoBundleLazy 'Shougo/junkfile.vim', {
-      \ 'autoload' : {
-      \   'commands' : 'JunkfileOpen',
-      \   'unite_sources' : ['junkfile', 'junkfile/new'],
+NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
+      \ 'commands' : ['JunkfileOpen'],
+      \ 'unite_sources' : ['junkfile', 'junkfile/new'],
       \ }}
 NeoBundle 'yomi322/vim-gitcomplete'
 NeoBundle 'kana/vim-altr'
@@ -542,7 +531,7 @@ NeoBundleLazy 'kana/vim-niceblock', { 'autoload' : {
       \ 'mappings' : ['<Plug>(niceblock-I)', '<Plug>(niceblock-A)']
       \ }}
 NeoBundle 'tyru/vim-altercmd'
-NeoBundleLazy 'kana/vim-smartinput', {'autoload': {'insert':1}}
+NeoBundle 'kana/vim-smartinput', {'autoload': {'insert':1}}
 
 NeoBundleLazy 'tyru/stickykey.vim', {
       \ 'autoload' : {
@@ -554,8 +543,7 @@ NeoBundleLazy 'tyru/stickykey.vim', {
       \ ]]
       \ }}
 
-NeoBundleLazy 'chikatoike/concealedyank.vim', {
-      \ 'autoload' : {
+NeoBundleLazy 'chikatoike/concealedyank.vim', { 'autoload' : {
       \ 'mappings' : [
       \ ['nx', '<Plug>(operator-concealedyank)']]
       \ }}
@@ -572,7 +560,7 @@ NeoBundle 'tpope/vim-repeat'
 NeoBundle 'anyakichi/vim-surround'
 NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
       \ 'commands': [
-      \   {'name': 'Abolish'}, {'name': 'Subvert'}
+      \ {'name': 'Abolish'}, {'name': 'Subvert'},
       \ ],
       \ 'mappings': [['n', '<Plug>Coerce']]
       \ }}
@@ -580,13 +568,13 @@ NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
 NeoBundle 'rhysd/endwize.vim', {'autoload': {'insert':1}}
 NeoBundleLazy 't9md/vim-quickhl', {'autoload': {
       \ 'commands': [
-      \   'QuickhlList', 'QuickhlDump', 'QuickhlReset', 'QuickhlColors',
-      \   'QuickhlReloadColors', 'QuickhlAdd', 'QuickhlDel', 'QuickhlLock',
-      \   'QuickhlUnLock', 'QuickhlMatch', 'QuickhlMatchClear', 'QuickhlMatchAuto',
-      \   'QuickhlMatchNoAuto',
+      \ 'QuickhlList', 'QuickhlDump', 'QuickhlReset', 'QuickhlColors',
+      \ 'QuickhlReloadColors', 'QuickhlAdd', 'QuickhlDel', 'QuickhlLock',
+      \ 'QuickhlUnLock', 'QuickhlMatch', 'QuickhlMatchClear', 'QuickhlMatchAuto',
+      \ 'QuickhlMatchNoAuto',
       \ ],
       \ 'mappings': [['n', '<Plug>(quickhl-match)'],
-      \   ['nv', '<Plug>(quickhl-toggle)', '<Plug>(quickhl-reset)']],
+      \ ['nv', '<Plug>(quickhl-toggle)', '<Plug>(quickhl-reset)']],
       \ }}
 NeoBundleLazy 't9md/vim-textmanip'
 NeoBundleLazy 'bkad/CamelCaseMotion', { 'autoload' : {
@@ -595,8 +583,8 @@ NeoBundleLazy 'bkad/CamelCaseMotion', { 'autoload' : {
       \ }}
 NeoBundleLazy 'h1mesuke/vim-alignta', {'autoload': {
       \ 'commands': [
-      \   {'name': 'Align'},
-      \   {'name': 'Alignta'},
+      \ {'name': 'Align'},
+      \ {'name': 'Alignta'},
       \ ],
       \ 'unite_sources': ['alignta']
       \ }}
@@ -613,7 +601,7 @@ NeoBundleLazy 'AndrewRadev/splitjoin.vim', {'autoload': {
       \ }}
 NeoBundleLazy 'AndrewRadev/inline_edit.vim', {'autoload': {
       \ 'commands': [
-      \   {'name': 'InlineEdit'},
+      \ {'name': 'InlineEdit'},
       \ ],
       \ }}
 NeoBundleLazy 'zef/vim-cycle', {'autoload': {
@@ -642,9 +630,8 @@ NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {
       \ }}
 
 NeoBundle 'pekepeke/vim-trimr'
-NeoBundleLazy 'othree/eregex.vim', {
-      \ 'autoload': {
-      \   'commands': ['E2v', 'M', 'S', 'G', 'V'],
+NeoBundleLazy 'othree/eregex.vim', { 'autoload': {
+      \ 'commands': ['E2v', 'M', 'S', 'G', 'V'],
       \ }}
 NeoBundle 'sjl/gundo.vim'
 NeoBundleLazy 'kana/vim-smartword', { 'autoload' : {
@@ -656,17 +643,14 @@ NeoBundleLazy 'kana/vim-smartword', { 'autoload' : {
 " NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'thinca/vim-qfreplace'
 NeoBundle 'thinca/vim-localrc'
-NeoBundleLazy 'thinca/vim-prettyprint', {
-      \   'autoload': {
-      \     'commands' : [
-      \       { 'name' : 'PP', 'complete': 'expression'},
-      \       { 'name' : 'PrettyPrint', 'complete': 'expression'},
-      \     ]}
-      \ }
-NeoBundleLazy 'thinca/vim-editvar', {
-      \ 'autoload': {
-      \   'commands': [{'name': 'Editvar', 'complete': 'var'}],
-      \   'unite_sources': ['variable'],
+NeoBundleLazy 'thinca/vim-prettyprint', { 'autoload': {
+      \ 'commands' : [
+      \   { 'name' : 'PP', 'complete': 'expression'},
+      \   { 'name' : 'PrettyPrint', 'complete': 'expression'},
+      \ ]}}
+NeoBundleLazy 'thinca/vim-editvar', {'autoload': {
+      \ 'commands': [{'name': 'Editvar', 'complete': 'var'}],
+      \ 'unite_sources': ['variable'],
       \ }}
 NeoBundle 'nathanaelkane/vim-indent-guides'
 " NeoBundle 'Yggdroot/indentLine'
@@ -674,14 +658,13 @@ NeoBundleLazy 'pekepeke/cascading.vim', {'autoload':{
       \ 'commands': ['Cascading'],
       \ 'mappings': [['n', '<Plug>(cascading)']]
       \ }}
-NeoBundleLazy 'mileszs/ack.vim', {
-      \ 'autoload': {
-      \   'commands': [
-      \     {'name': 'Ack', 'complete': 'file'}, {'name': 'AckAdd', 'complete': 'file'},
-      \     {'name': 'AckFromSearch', 'complete': 'file'}, {'name': 'LAck', 'complete': 'file'},
-      \     {'name': 'LAckAdd', 'complete': 'file'}, {'name': 'AckFile', 'complete': 'file'},
-      \     {'name': 'AckHelp', 'complete': 'file'}, {'name': 'LAckHelp', 'complete': 'file'},
-      \   ],
+NeoBundleLazy 'mileszs/ack.vim', { 'autoload': {
+      \ 'commands': [
+      \   {'name': 'Ack', 'complete': 'file'}, {'name': 'AckAdd', 'complete': 'file'},
+      \   {'name': 'AckFromSearch', 'complete': 'file'}, {'name': 'LAck', 'complete': 'file'},
+      \   {'name': 'LAckAdd', 'complete': 'file'}, {'name': 'AckFile', 'complete': 'file'},
+      \   {'name': 'AckHelp', 'complete': 'file'}, {'name': 'LAckHelp', 'complete': 'file'},
+      \ ],
       \ }}
 NeoBundleLazy 'vim-scripts/MultipleSearch'
 " NeoBundle 'terryma/vim-multiple-cursors'
@@ -1345,26 +1328,22 @@ NeoBundleLazyOn FileType vim 'pekepeke/vim-gf-vundle'
 " operator {{{3
 NeoBundle 'kana/vim-operator-user'
 NeoBundleLazy 'kana/vim-operator-replace', {
-      \ 'depends' : 'vim-operator-user',
-      \ 'autoload' : {
+      \ 'depends' : 'vim-operator-user', 'autoload' : {
       \ 'mappings' : [
       \ ['nx', '<Plug>(operator-replace)']]
       \ }}
 NeoBundleLazy 'tyru/operator-camelize.vim', {
-      \ 'depends' : 'vim-operator-user',
-      \ 'autoload' : {
+      \ 'depends' : 'vim-operator-user', 'autoload' : {
       \ 'mappings' : [
       \ ['nx', '<Plug>(operator-camelize)', '<Plug>(operator-camelize)']]
       \ }}
 NeoBundleLazy 'tyru/operator-html-escape.vim', {
-      \ 'depends' : 'vim-operator-user',
-      \ 'autoload' : {
+      \ 'depends' : 'vim-operator-user', 'autoload' : {
       \ 'mappings' : [
       \ ['nx', '<Plug>(operator-html-escape)', '<Plug>(operator-html-unescape)']]
       \ }}
 NeoBundleLazy 'pekepeke/vim-operator-shuffle', {
-      \ 'depends' : 'vim-operator-user',
-      \ 'autoload' : {
+      \ 'depends' : 'vim-operator-user', 'autoload' : {
       \ 'mappings' : [
       \ ['nx', '<Plug>(operator-shuffle)']]
       \ }}
@@ -1376,33 +1355,73 @@ NeoBundleLazy 'pekepeke/vim-operator-tabular', {
       \ '<Plug>(operator-md_tabularize_tsv)', '<Plug>(operator-md_untabularize_tsv)',
       \ '<Plug>(operator-textile_tabularize_tsv)', '<Plug>(operator-textile_untabularize_tsv)',
       \ '<Plug>(operator-backlog_tabularize_tsv)', '<Plug>(operator-backlog_untabularize_tsv)',
+      \ '<Plug>(operator-md_tabularize_csv)', '<Plug>(operator-md_untabularize_csv)',
+      \ '<Plug>(operator-textile_tabularize_csv)', '<Plug>(operator-textile_untabularize_csv)',
+      \ '<Plug>(operator-backlog_tabularize_csv)', '<Plug>(operator-backlog_untabularize_csv)',
       \ ]]
       \ }}
 NeoBundleLazy 'pekepeke/vim-operator-normalize-utf8mac', {
       \ 'depends' : 'vim-operator-user',
       \ 'autoload' : {
-      \ 'mappings' : [
-      \ ['nx', '<Plug>(operator-normalize_utf8mac)']]
+      \ 'mappings' : [['nx', '<Plug>(operator-normalize_utf8mac)']]
       \ }}
 
 " textobj {{{3
 NeoBundle 'kana/vim-textobj-user'
-NeoBundle 'kana/vim-textobj-datetime'
-NeoBundle 'kana/vim-textobj-diff'
-NeoBundle 'kana/vim-textobj-entire'
-NeoBundle 'kana/vim-textobj-fold'
-NeoBundleLazy 'kana/vim-textobj-function', {
-      \ 'depends' : 'vim-textobj-user',
-      \ 'autoload' : {
-      \ 'mappings' : [
-      \ ['nx', '<Plug>(textobj-function-i)', '<Plug>(textobj-function-a)']]
+NeoBundleLazy 'kana/vim-textobj-datetime', {'autoload': {
+      \ 'mappings': [['nx',
+      \ '<Plug>(textobj-datetime-auto-i)', '<Plug>(textobj-datetime-auto-a)',
+      \ '<Plug>(textobj-datetime-full-i)', '<Plug>(textobj-datetime-full-a)',
+      \ '<Plug>(textobj-datetime-date-i)', '<Plug>(textobj-datetime-date-a)',
+      \ '<Plug>(textobj-datetime-time-i)', '<Plug>(textobj-datetime-time-a)',
+      \ '<Plug>(textobj-datetime-tz-i)', '<Plug>(textobj-datetime-tz-a)',
+      \ ]],
       \ }}
-
-NeoBundle 'kana/vim-textobj-jabraces'
-NeoBundle 'kana/vim-textobj-lastpat'
-NeoBundle 'kana/vim-textobj-syntax'
-NeoBundle 'kana/vim-textobj-line'
-NeoBundle 'kana/vim-textobj-underscore'
+NeoBundleLazy 'kana/vim-textobj-diff', {'autoload': {
+      \ 'mappings': [
+      \ '<Plug>(textobj-diff-hunk-n)', '<Plug>(textobj-diff-hunk-N)',
+      \ '<Plug>(textobj-diff-hunk-p)', '<Plug>(textobj-diff-hunk-P)',
+      \ '<Plug>(textobj-diff-file-n)', '<Plug>(textobj-diff-file-N)',
+      \ '<Plug>(textobj-diff-file-p)', '<Plug>(textobj-diff-file-P)',
+      \ ],
+      \ }}
+NeoBundleLazy 'kana/vim-textobj-entire', {'autoload':{
+      \ 'mappings': [['nx', '<Plug>(textobj-entire-i)', '<Plug>(textobj-entire-a))']],
+      \ }}
+NeoBundleLazy 'kana/vim-textobj-fold', {'autoload':{
+      \ 'mappings': [['nx', '<Plug>(textobj-fold-i)', '<Plug>(textobj-fold-a))']],
+      \ }}
+NeoBundleLazy 'kana/vim-textobj-jabraces', {'autoload':{
+      \ 'mappings' : [['nx',
+      \ '<Plug>(textobj-jabraces-parens-i)', '<Plug>(textobj-jabraces-parens-a)',
+      \ '<Plug>(textobj-jabraces-brackets-i)', '<Plug>(textobj-jabraces-brackets-a)',
+      \ '<Plug>(textobj-jabraces-braces-i)', '<Plug>(textobj-jabraces-braces-a)',
+      \ '<Plug>(textobj-jabraces-angles-i)', '<Plug>(textobj-jabraces-angles-a)',
+      \ '<Plug>(textobj-jabraces-double-angles-i)', '<Plug>(textobj-jabraces-double-angles-a)',
+      \ '<Plug>(textobj-jabraces-kakko-i)', '<Plug>(textobj-jabraces-kakko-a)',
+      \ '<Plug>(textobj-jabraces-double-kakko-i)', '<Plug>(textobj-jabraces-double-kakko-a)',
+      \ '<Plug>(textobj-jabraces-yama-kakko-i)', '<Plug>(textobj-jabraces-yama-kakko-a)',
+      \ '<Plug>(textobj-jabraces-double-yama-kakko-i)', '<Plug>(textobj-jabraces-double-yama-kakko-a)',
+      \ '<Plug>(textobj-jabraces-kikkou-kakko-i)', '<Plug>(textobj-jabraces-kikkou-kakko-a)',
+      \ '<Plug>(textobj-jabraces-sumi-kakko-i)', '<Plug>(textobj-jabraces-sumi-kakko-a)',
+      \ ]],
+      \ }}
+NeoBundleLazy 'kana/vim-textobj-lastpat', {'autoload': {
+      \ 'mappings' : [['nx',
+      \ '<Plug>(textobj-lastpat-n)', '<Plug>(textobj-lastpat-N)',
+      \ ]],
+      \ }}
+NeoBundleLazy 'kana/vim-textobj-syntax', {'autoload': {
+      \ 'mappings' : [['nx',
+      \ '<Plug>(textobj-syntax-i)', '<Plug>(textobj-syntax-a)',
+      \ ]],
+      \ }}
+NeoBundleLazy 'kana/vim-textobj-line', {'autoload':{
+      \ 'mappings': [['nx', '<Plug>(textobj-line-i)', '<Plug>(textobj-line-a))']],
+      \ }}
+NeoBundleLazy 'kana/vim-textobj-underscore', {'autoload':{
+      \ 'mappings': [['nx', '<Plug>(textobj-quoted-i)', '<Plug>(textobj-quoted-a))']],
+      \ }}
 NeoBundleLazy 'thinca/vim-textobj-between', {
       \ 'depends' : 'vim-textobj-user',
       \ 'autoload' : {
@@ -1410,9 +1429,15 @@ NeoBundleLazy 'thinca/vim-textobj-between', {
       \ ['nx', '<Plug>(textobj-between-i)', '<Plug>(textobj-between-a)']]
       \ }}
 " NeoBundle 'thinca/vim-textobj-comment'
-NeoBundleLazyOn FileType javascript 'thinca/vim-textobj-function-javascript'
-NeoBundleLazyOn FileType perl 'thinca/vim-textobj-function-perl'
-NeoBundleLazyOn FileType ruby 't9md/vim-textobj-function-ruby'
+NeoBundleLazy 'kana/vim-textobj-function', {
+      \ 'depends' : 'vim-textobj-user',
+      \ 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(textobj-function-i)', '<Plug>(textobj-function-a)']]
+      \ }}
+NeoBundle 'thinca/vim-textobj-function-javascript'
+NeoBundle 'thinca/vim-textobj-function-perl'
+NeoBundle 't9md/vim-textobj-function-ruby'
 NeoBundleLazyOn FileType ruby 'nelstrom/vim-textobj-rubyblock'
 NeoBundleLazy 'osyo-manga/vim-textobj-multiblock', {
       \ 'depends' : 'vim-textobj-user',
@@ -1469,6 +1494,35 @@ if s:is_win
   unlet dotnets
 endif
 " }}}
+
+" statusline {{{1
+set laststatus=2  " ステータス表示用変数
+let s:status_generator = { 'cfi':neobundle#is_installed('current-func-info.vim') }
+function! s:status_generator.get_line() "{{{3
+  let s = ''
+
+  let s .= '%<'
+  let s .= '%f ' " filename
+  let s .= '%m' " modified flag
+  let s .= '%r' " readonly flag
+  let s .= '%h' " help flag
+  let s .= '%w' " preview flag
+  if self.cfi
+    let s .= '> %{cfi#format("%s()","")}'
+  endif
+  let s .= '%='
+  let s .= '[%{&l:fenc}]'
+  let s .= '[%{&l:ff}] %{&l:ft} '
+  let s .= '< L%l:%c%V ' " current line status
+  let s .= '%8P'
+
+  return s
+endfunction "}}}3
+function! MyStatusline()
+  return s:status_generator.get_line()
+endfunction
+set statusline=%!MyStatusline()
+
 
 " for filetypes {{{1
 " shebang {{{2
@@ -1851,14 +1905,21 @@ nnoremap <silent> [!t]j :<C-u>tag<CR>
 nnoremap <silent> [!t]k :<C-u>pop<CR>
 nnoremap <silent> [!t]l :<C-u>tags<CR>
 
-" nmaps {{{2
+" maps {{{2
+" if &diff
+map <leader>1 :diffget LOCAL \| duffupdate<CR>
+map <leader>2 :diffget BASE \| duffupdate<CR>
+map <leader>3 :diffget REMOTE \| duffupdate<CR>
+" endif
+
+" nmaps {{{3
 MyAutocmd FileType help,ref,git-status,git-log nnoremap <buffer> q <C-w>c
 " win move
 nnoremap [!space]. :source ~/.vimrc<CR>
 
 "nnoremap [!edit]<C-o> :copen<CR><C-w><C-w>
 nnoremap [!space]q :<C-u>call <SID>toggle_quickfix_window()<CR>
-function! s:toggle_quickfix_window() "{{{3
+function! s:toggle_quickfix_window() "{{{4
   let n = winnr('$')
   cclose
   if n == winnr('$')
@@ -1871,7 +1932,7 @@ endfunction "}}}
 nnoremap / :<C-u>nohlsearch<CR>/
 nnoremap ? :<C-u>nohlsearch<CR>?
 
-function! s:show_mapping() " {{{3
+function! s:show_mapping() " {{{4
   let key = getchar()
   let c = nr2char(key)
   let s = strtrans(c)
@@ -1892,7 +1953,7 @@ nnoremap <C-w>*  <C-w>s*
 nnoremap <C-w>#  <C-w>s#
 
 nnoremap [!prefix]ds :call <SID>replace_at_caret_data_scheme()<CR>
-function! s:replace_at_caret_data_scheme() " {{{3
+function! s:replace_at_caret_data_scheme() " {{{4
   let cfile = expand('<cfile>')
   let cpath = expand(cfile)
   let errmsg = ""
@@ -1912,7 +1973,7 @@ function! s:replace_at_caret_data_scheme() " {{{3
           \ 'printf("data:%s;base64,%s",mime_content_type($fp),base64_encode(file_get_contents($fp)))'
           \ )
   else
-    let errmsg = "vm not found : ruby, php"
+    let errmsg = "exe not found : ruby or php"
   endif
   if !empty(errmsg)
     echohl Error
@@ -1928,7 +1989,7 @@ function! s:replace_at_caret_data_scheme() " {{{3
         \ )
 endfunction
 
-if 1 " {{{3 http://vim-users.jp/2011/04/hack213/
+if 1 " {{{4 http://vim-users.jp/2011/04/hack213/
   let g:scrolloff = &scrolloff
   set scrolloff=0
   " Hack for <LeftMouse> not to adjust ('scrolloff') when single-clicking.
@@ -1936,35 +1997,35 @@ if 1 " {{{3 http://vim-users.jp/2011/04/hack213/
   MyAutocmd CursorMoved * call s:reinventing_scrolloff()
   let s:last_lnum = -1
   function! s:reinventing_scrolloff()
-      if s:last_lnum > 0 && line('.') ==# s:last_lnum
-          return
+    if s:last_lnum > 0 && line('.') ==# s:last_lnum
+      return
+    endif
+    let s:last_lnum = line('.')
+    let winline     = winline()
+    let winheight   = winheight(0)
+    let middle      = winheight / 2
+    let upside      = (winheight / winline) >= 2
+    " If upside is true, add winlines to above the cursor.
+    " If upside is false, add winlines to under the cursor.
+    if upside
+      let up_num = g:scrolloff - winline + 1
+      let up_num = winline + up_num > middle ? middle - winline : up_num
+      if up_num > 0
+        execute 'normal!' up_num."\<C-y>"
       endif
-      let s:last_lnum = line('.')
-      let winline     = winline()
-      let winheight   = winheight(0)
-      let middle      = winheight / 2
-      let upside      = (winheight / winline) >= 2
-      " If upside is true, add winlines to above the cursor.
-      " If upside is false, add winlines to under the cursor.
-      if upside
-          let up_num = g:scrolloff - winline + 1
-          let up_num = winline + up_num > middle ? middle - winline : up_num
-          if up_num > 0
-              execute 'normal!' up_num."\<C-y>"
-          endif
-      else
-          let down_num = g:scrolloff - (winheight - winline)
-          let down_num = winline - down_num < middle ? winline - middle : down_num
-          if down_num > 0
-              execute 'normal!' down_num."\<C-e>"
-          endif
+    else
+      let down_num = g:scrolloff - (winheight - winline)
+      let down_num = winline - down_num < middle ? winline - middle : down_num
+      if down_num > 0
+        execute 'normal!' down_num."\<C-e>"
       endif
+    endif
   endfunction
   nnoremap <silent> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>
   nnoremap          <2-LeftMouse>     g*
   nnoremap <silent> <ScrollWheelUp>   <Esc>:set eventignore=all<CR><ScrollWheelUp>:set eventignore=<CR>
   nnoremap <silent> <ScrollWheelDown> <Esc>:set eventignore=all<CR><ScrollWheelDown>:set eventignore=<CR>
-else " {{{3 altanative
+else " {{{4 altanative
   augroup vimrc-scroll-mouse
     autocmd!
 
@@ -1996,7 +2057,7 @@ else " {{{3 altanative
 endif "}}}
 " vmap              <LeftMouse> <Plug>(visualstar-g*)
 
-" imaps {{{2
+" imaps {{{3
 inoremap <C-t> <C-v><Tab>
 
 inoremap <C-f> <Right>
@@ -2017,7 +2078,7 @@ inoremap <C-]><C-d> <Delete>
 inoremap <C-w> <C-g>u<C-w>
 inoremap <C-u> <C-g>u<C-u>
 
-" cmaps {{{2
+" cmaps {{{3
 if s:plugin_installed('vim-emacscommandline')
   cnoremap <C-x><C-x> <C-r>=substitute(expand('%:p:h'), ' ', '\\v:val', 'e')<CR>/
 else
@@ -2058,7 +2119,7 @@ vnoremap ak a)
 onoremap ik i)
 vnoremap ik i)
 
-" vmaps {{{2
+" vmaps {{{3
 " vnoremap <Leader>te    :ExciteTranslate<CR>
 vnoremap <Leader>tg    :GingerRange<CR>
 " vnoremap <Leader>tj    :GoogleTranslate ja<CR>
@@ -2077,6 +2138,10 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+"  jplus {{{2
+nmap <Leader>j <Plug>(jplus-getchar)
+vmap <Leader>j <Plug>(jplus-getchar)
+
 " cycle.vim {{{2
 let g:cycle_no_mappings=1
 nmap <C-A> <Plug>CycleNext
@@ -2099,61 +2164,6 @@ if s:plugin_installed('vim-expand-region')
   vmap + <Plug>(expand_region_expand)
   vmap _ <Plug>(expand_region_shrink)
   let g:expand_region_use_select_mode = 0
-endif
-
-" trans.vim {{{2
-if s:plugin_installed('trans.vim')
-  let g:trans_default_lang = 'ja'
-  let g:trans_default_api = 'bing'
-  if !exists('g:trans_api')
-    let g:trans_api = {}
-  endif
-  let g:trans_api.google = {
-        \   'url': 'http://translate.google.com/translate_a/t',
-        \   'params' : {
-        \     "client" : 'firefox-a',
-        \     "ie" : 'UTF-8',
-        \     "oe" : 'UTF-8',
-        \   },
-        \   'query_str': 'langpair=%FROM%7C%TO&text=%TEXT',
-        \   'parser': 'trans#data#parser_google',
-        \   'type': 'get',
-        \   'headers': { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.15 Safari/536.5' },
-        \ }
-  let g:trans_api.bing = {'url': 'http://api.microsofttranslator.com/v2/ajax.svc/Translate',
-        \   'type': 'oauth',
-        \   'oauth_url': 'https://datamarket.accesscontrol.windows.net/v2/OAuth2-13/',
-        \   'oauth_obj': {
-        \     'client_id' : get(g:, 'bing_client_id', ''),
-        \     'client_secret' : get(g:, 'bing_client_secret', ''),
-        \     'scope' : 'http://api.microsofttranslator.com',
-        \     'grant_type' : 'client_credentials',
-        \   },
-        \   'token_str': 'appId=Bearer%20%TOKEN',
-        \   'token_expire': 600,
-        \   'token_parser': 'trans#data#parser_t_bing',
-        \   'parser': 'trans#data#parser_bing',
-        \   'query_str': 'from=%FROM&to=%TO&text=%TEXT',
-        \ }
-  let g:trans_api.baidu = {
-        \   'url': 'http://openapi.baidu.com/public/2.0/bmt/translate',
-        \   'query_str' : 'q=%TEXT&from=%FROM&to=%TO',
-        \   'type' : 'get',
-        \   'params' : {'client_id': get(g:, 'baidu_client_id', '')},
-        \   'parser' : 'trans#data#parser_baidu',
-        \ }
-  let g:trans_api.youdao = {'url': 'http://fanyi.youdao.com/openapi.do',
-        \   'query_str' : 'q=%TEXT',
-        \   'type' : 'get',
-        \   'params' : {
-        \     'key': get(g:, 'youdao_client_id', ''),
-        \     'keyfrom': 'trans-vim',
-        \     'doctype': 'json',
-        \     'version': '1.1',
-        \     'type': 'data',
-        \   },
-        \   'parser' : 'trans#data#parser_youdao',
-        \ }
 endif
 
 " perlomni {{{2
@@ -3585,22 +3595,69 @@ function! s:textobj_mapping(key, cmd)
   silent exe 'vmap' a:key a:cmd
 endfunction
 command! -nargs=+ Tmap call s:textobj_mapping(<f-args>)
+function! s:textobj_mapping_by_name(key, name)
+  call s:textobj_mapping('i'.a:key, '<Plug>(textobj-' . a:name . '-i)')
+  call s:textobj_mapping('a'.a:key, '<Plug>(textobj-' . a:name . '-a)')
+endfunction
+command! -nargs=+ TTmap call s:textobj_mapping_by_name(<f-args>)
 
 " Tmap i<Space>f <Plug>(textobj-function-i)
 " Tmap a<Space>f <Plug>(textobj-function-a)
 " Tmap i<Space>i <Plug>(textobj-indent-i)
 " Tmap a<Space>i <Plug>(textobj-indent-a)
-Tmap iP <Plug>(textobj-parameter-i)
-Tmap aP <Plug>(textobj-parameter-a)
-" Tmap i<Space>l <Plug>(textobj-line-i)
-" Tmap a<Space>l <Plug>(textobj-line-a)
-Tmap i,, <Plug>(textobj-between-i)
-Tmap a,, <Plug>(textobj-between-a)
+
+nmap <Leader>dj <Plug>(textobj-diff-hunk-n)
+nmap <Leader>dJ <Plug>(textobj-diff-hunk-N)
+nmap <Leader>dk <Plug>(textobj-diff-hunk-p)
+nmap <Leader>dK <Plug>(textobj-diff-hunk-P)
+nmap <Leader>dfj <Plug>(textobj-diff-file-n)
+nmap <Leader>dfJ <Plug>(textobj-diff-file-N)
+nmap <Leader>dfk <Plug>(textobj-diff-file-p)
+nmap <Leader>dfK <Plug>(textobj-diff-file-P)
+
+TTmap da datetime-auto
+TTmap df datetime-full
+TTmap dd datetime-date
+TTmap dt datetime-time
+TTmap dz datetime-tz
+
+TTmap jb jabraces-parens
+TTmap j( jabraces-parens
+TTmap j) jabraces-parens
+TTmap jr jabraces-brackets
+TTmap j[ jabraces-brackets
+TTmap j] jabraces-brackets
+TTmap jB jabraces-braces
+TTmap j{ jabraces-braces
+TTmap j} jabraces-braces
+TTmap ja jabraces-angles
+TTmap j< jabraces-angles
+TTmap j> jabraces-angles
+TTmap jA jabraces-double-angles
+TTmap jk jabraces-kakko
+TTmap jK jabraces-double-kakko
+TTmap jy jabraces-yama-kakko
+TTmap jY jabraces-double-yama-kakko
+TTmap jt jabraces-kikkou-kakko
+TTmap js jabraces-sumi-kakko
+
+Tmap a/ <Plug>(textobj-lastpat-n)
+Tmap i/ <Plug>(textobj-lastpat-n)
+Tmap a? <Plug>(textobj-lastpat-N)
+Tmap i? <Plug>(textobj-lastpat-N)
+
+TTmap y syntax
+TTmap _ quoted
+TTmap f function
+
+TTmap e entire
+TTmap P parameter
+TTmap l line
+TTmap ,, between
+TTmap ,f fold
+TTmap b multiblock
+TTmap ,w wiw
 let g:textobj_between_no_default_key_mappings=1
-Tmap ab <Plug>(textobj-multiblock-a)
-Tmap ib <Plug>(textobj-multiblock-i)
-Tmap i,w <Plug>(textobj-wiw-i)
-Tmap a,w <Plug>(textobj-wiw-a)
 let g:textobj_wiw_no_default_key_mappings=1
 
 " vim-niceblock {{{2
