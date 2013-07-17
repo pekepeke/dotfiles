@@ -34,6 +34,11 @@
   ignore = !"f() { local s=$1; shift; \
     while [ $# -gt 0 ]; do s="$s,$1"; shift; done;\
     curl "http://gitignore.io/api/$s"; }; f"
+
+[tig "bind"]
+  generic = g move-first-line
+  generic = G move-last-line
+
 [diff "applescript"]
   textconv = osadecompile
 [diff "rtf"]
@@ -44,8 +49,8 @@
 [difftool "p4diff"]
   path = p4diff
 [difftool "mvimdiff"]
-  cmd = mvim -d "$LOCAL" "$REMOTE"
-  trustExitCode = true
+    cmd = mvim -f -d "$LOCAL" "$REMOTE"
+    trustExitCode = false
 ; [difftool "WinMerge"]
 ;   path = C:/Apps/WinMerge/WinMergeU.exe
 ;   cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" -e -ub -dl \"Base\" -dr \"Mine\" \"$LOCAL\" \"$REMOTE\"
@@ -61,8 +66,12 @@
   path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
   trustExitCode = false
 [mergetool "mvimdiff"]
-  cmd = mvim -d "$LOCAL" "$MERGED" "$REMOTE"
-  trustExitCode = true
+    cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
+    trustExitCode = false
+[mergetool "mvimfugitive"]
+    ; cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
+    cmd = mvim -f -c "Gdiff" "$MERGED"
+    trustExitCode = false
 ; [mergetool "WinMerge"]
 ;   path = C:/Apps/WinMerge/WinMergeU.exe
 ;   cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" \"$MERGED\"
