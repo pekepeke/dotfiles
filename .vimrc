@@ -1465,6 +1465,15 @@ NeoBundleLazy 'h1mesuke/textobj-wiw', {
       \ }}
 NeoBundle 'coderifous/textobj-word-column.vim'
 NeoBundle 'rhysd/vim-textobj-continuous-line'
+NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(textobj-lastinserted-i)', '<Plug>(textobj-lastinserted-a)']]
+      \ }}
+NeoBundleLazy 'akiyan/vim-textobj-php', {'autoload':{
+      \ 'mappings' : [['nx',
+      \ '<Plug>(textobj-php-i)', '<Plug>(textobj-php-a)',
+      \ '<Plug>(textobj-phparray-i)', '<Plug>(textobj-phparray-a)',
+      \ ]]}}
 " NeoBundle 'gorkunov/smartpairs.vim'
 
 " metarw {{{3
@@ -3651,12 +3660,16 @@ TTmap _ quoted
 TTmap f function
 
 TTmap e entire
-TTmap P parameter
+TTmap ,, parameter
 TTmap l line
-TTmap ,, between
+TTmap ,b between
 TTmap ,f fold
 TTmap b multiblock
 TTmap ,w wiw
+TTmap u wiw
+TTmap P php
+TTmap aP phparray
+
 let g:textobj_between_no_default_key_mappings=1
 let g:textobj_wiw_no_default_key_mappings=1
 
