@@ -97,16 +97,13 @@ snippet ajax
 		, type: "${2:POST}"
 		, dataType: "${3:xml/html/script/json}"
 		, data: $.param( $("${4:Element or Expression}") )
-		, complete: function() {
-			${5://called when complete}
-		}
-		, success: function() {
-			${6://called when successful}
-		}
-		, error: function() {
-			${7://called when there is an error}
-		}
-	});
+    }).always(function() {
+        ${5://called when complete}
+    }).done(function() {
+        ${6://called when successful}
+    }).fail(function() {
+        ${7://called when there is an error}
+    })
 
 snippet ajaxerror
 	.ajaxError(function(${1:request, settings}) {
@@ -788,3 +785,7 @@ snippet jshintes5
 	/*jshint strict: true, node : true, es5 : true */
 snippet jshintnode
 	/*jshint strict: true, node : true, es5 : true */
+snippet main
+    if (!module.parent) {
+        {$0}
+    }

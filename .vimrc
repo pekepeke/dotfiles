@@ -21,8 +21,8 @@ command! -bang -nargs=* MyAutocmd autocmd<bang> vimrc-myautocmd <args>
 command! -nargs=* Lazy autocmd vimrc-myautocmd VimEnter * <args>
 
 
-if v:version == 703 && has('patch970')
-  Lazy set regexpengine=1
+if v:version > 703 || (v:version == 703 && has('patch970'))
+  Lazy set regexpengine=0
   command! -nargs=0 RegexpEngineNFA set regexpengine=0
   command! -nargs=0 RegexpEngineOLD set regexpengine=1
 endif
