@@ -523,15 +523,17 @@ NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
       \ 'unite_sources' : ['junkfile', 'junkfile/new'],
       \ }}
 NeoBundle 'yomi322/vim-gitcomplete'
-NeoBundle 'kana/vim-altr'
+NeoBundleLazy 'kana/vim-altr', {'autoload': {
+      \ 'mappings': ['<Plug>(altr-back)', '<Plug>(altr-forward)'],
+      \ }}
 NeoBundle 'kana/vim-fakeclip'
-NeoBundleLazy 'kana/vim-smartchr', {'autoload': {'insert':1}}
+NeoBundle 'kana/vim-smartchr'
 NeoBundle 'kana/vim-submode'
 NeoBundleLazy 'kana/vim-niceblock', { 'autoload' : {
       \ 'mappings' : ['<Plug>(niceblock-I)', '<Plug>(niceblock-A)']
       \ }}
 NeoBundle 'tyru/vim-altercmd'
-NeoBundle 'kana/vim-smartinput', {'autoload': {'insert':1}}
+NeoBundleLazy 'kana/vim-smartinput', {'autoload': {'insert':1}}
 
 NeoBundleLazy 'tyru/stickykey.vim', {
       \ 'autoload' : {
@@ -617,8 +619,9 @@ NeoBundleLazy 'rhysd/clever-f.vim', {'autoload': {
       \ '<Plug>(clever-f-reset)', '<Plug>(clever-f-repeat-forward)',
       \ '<Plug>(clever-f-repeat-back)',
       \ ]}}
-" TODO : T-T;; this plugin overrides keymap...
-" NeoBundle 'terryma/vim-expand-region'
+NeoBundleLazy 'terryma/vim-expand-region', {'autoload':{
+      \ 'mappings': ['<Plug>(expand_region_shrink)', '<Plug>(expand_region_expand)']
+      \ }}
 NeoBundle 'kshenoy/vim-signature'
 " TODO : try
 if has('python')
@@ -791,13 +794,13 @@ NeoBundle 'mattn/learn-vimscript'
 if has('lua') && (v:version > 703 ||
       \ (v:version == 703&& has('patch885')))
   NeoBundle 'Shougo/neocomplete.vim'
-  NeoBundleLazy 'Shougo/neocomplcache.vim'
+  " NeoBundleLazy 'Shougo/neocomplcache.vim'
+  NeoBundle 'pekepeke/neocomplcache-rsense.vim', 'neocompleteFeature'
 else
   NeoBundle 'Shougo/neocomplcache.vim'
-  NeoBundleLazy 'Shougo/neocomplete.vim'
+  " NeoBundleLazy 'Shougo/neocomplete.vim'
+  NeoBundle 'Shougo/neocomplcache-rsense.vim'
 endif
-" NeoBundle 'Shougo/neocomplcache-rsense.vim'
-NeoBundle 'pekepeke/neocomplcache-rsense.vim', 'neocompleteFeature'
 NeoBundleLazy 'm2ym/rsense', {
       \ 'build' : {
       \    'mac': 'ruby etc/config.rb > ~/.rsense',
@@ -1439,6 +1442,10 @@ NeoBundle 'thinca/vim-textobj-function-javascript'
 NeoBundle 'thinca/vim-textobj-function-perl'
 NeoBundle 't9md/vim-textobj-function-ruby'
 NeoBundleLazyOn FileType ruby 'nelstrom/vim-textobj-rubyblock'
+NeoBundleLazy 'deris/vim-textobj-enclosedsyntax', {'autoload':{
+      \ 'mappings' : [['nx',
+      \ '<Plug>(textobj-enclosedsyntax-i)', '<Plug>(textobj-enclosedsyntax-a)',
+      \ ]]}}
 NeoBundleLazy 'osyo-manga/vim-textobj-multiblock', {
       \ 'depends' : 'vim-textobj-user',
       \ 'autoload' : {
@@ -1465,17 +1472,55 @@ NeoBundleLazy 'h1mesuke/textobj-wiw', {
       \ }}
 NeoBundle 'coderifous/textobj-word-column.vim'
 NeoBundle 'rhysd/vim-textobj-continuous-line'
+" NeoBundleLazy 'osyo-manga/vim-textobj-context', {'autoload':{
+"       \ 'mappings' : [['nx',
+"       \ '<Plug>(textobj-context-i)',
+"       \ ]]}}
+NeoBundleLazy 'akiyan/vim-textobj-xml-attribute', {'autoload':{
+      \ 'mappings' : [['nx',
+      \ '<Plug>(textobj-xmlattribute-i)', '<Plug>(textobj-xmlattribute-a)',
+      \ ]]}}
+NeoBundleLazy 'hchbaw/textobj-motionmotion.vim', {'autoload':{
+      \ 'mappings' : [['nx',
+      \ '<Plug>(textobj-motionmotion-i)', '<Plug>(textobj-motionmotion-a)',
+      \ ]]}}
+NeoBundleLazy 'anyakichi/vim-textobj-xbrackets', {'autoload':{
+      \ 'mappings' : [['nx',
+      \ '<Plug>(textobj-xbrackets-$(_)-a)', '<Plug>(textobj-xbrackets-$(_)-i)',
+      \ '<Plug>(textobj-xbrackets-${_}$(_)-a)', '<Plug>(textobj-xbrackets-${_}$(_)-i)',
+      \ '<Plug>(textobj-xbrackets-${_}-a)', '<Plug>(textobj-xbrackets-${_}-i)',
+      \ '<Plug>(textobj-xbrackets-x(_)-a)', '<Plug>(textobj-xbrackets-x(_)-i)',
+      \ '<Plug>(textobj-xbrackets-x<_>-a)', '<Plug>(textobj-xbrackets-x<_>-i)',
+      \ '<Plug>(textobj-xbrackets-x[_]-a)', '<Plug>(textobj-xbrackets-x[_]-i)',
+      \ '<Plug>(textobj-xbrackets-xs(){_}', '<Plug>(textobj-xbrackets-xs(_)-a',
+      \ '<Plug>(textobj-xbrackets-xs(_)-i', '<Plug>(textobj-xbrackets-xs<_>-a',
+      \ '<Plug>(textobj-xbrackets-xs<_>-i', '<Plug>(textobj-xbrackets-xs[_]-a',
+      \ '<Plug>(textobj-xbrackets-xs[_]-i', '<Plug>(textobj-xbrackets-xs{_}-a)',
+      \ '<Plug>(textobj-xbrackets-xs{_}-i)', '<Plug>(textobj-xbrackets-x{_}-a)',
+      \ '<Plug>(textobj-xbrackets-x{_}-i)', '<Plug>(textobj-xbrackets-y(_)-a)',
+      \ '<Plug>(textobj-xbrackets-y(_)-i)', '<Plug>(textobj-xbrackets-y<_>-a)',
+      \ '<Plug>(textobj-xbrackets-y<_>-i)', '<Plug>(textobj-xbrackets-y[_]-a)',
+      \ '<Plug>(textobj-xbrackets-y[_]-i)', '<Plug>(textobj-xbrackets-ys(){_}-a)',
+      \ '<Plug>(textobj-xbrackets-ys(){_}-i)', '<Plug>(textobj-xbrackets-ys(_)-a)',
+      \ '<Plug>(textobj-xbrackets-ys(_)-i)', '<Plug>(textobj-xbrackets-ys<_>-a',
+      \ '<Plug>(textobj-xbrackets-ys<_>-i', '<Plug>(textobj-xbrackets-ys[_]-a',
+      \ '<Plug>(textobj-xbrackets-ys[_]-i', '<Plug>(textobj-xbrackets-ys{_}-a',
+      \ '<Plug>(textobj-xbrackets-ys{_}-i', '<Plug>(textobj-xbrackets-y{_}-a)',
+      \ ]]}}
 NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
       \ 'mappings' : [
       \ ['nx', '<Plug>(textobj-lastinserted-i)', '<Plug>(textobj-lastinserted-a)']]
       \ }}
 NeoBundleLazy 'akiyan/vim-textobj-php', {'autoload':{
       \ 'mappings' : [['nx',
-      \ '<Plug>(textobj-php-i)', '<Plug>(textobj-php-a)',
-      \ '<Plug>(textobj-phparray-i)', '<Plug>(textobj-phparray-a)',
+      \ '<Plug>(textobj-php-phptag-i)', '<Plug>(textobj-php-phptag-a)',
+      \ '<Plug>(textobj-php-phparray-i)', '<Plug>(textobj-php-phparray-a)',
       \ ]]}}
 " NeoBundle 'gorkunov/smartpairs.vim'
-
+" , {'autoload':{
+"       \ 'mappings' : [['nx',
+"       \ '<Plug>(textobj--i)', '<Plug>(textobj--a)',
+"       \ ]]}}
 " metarw {{{3
 " NeoBundle "mattn/vim-metarw"
 " NeoBundle "mattn/vim-metarw-gist"
@@ -2170,9 +2215,9 @@ endif
 
 " expand-region
 if s:plugin_installed('vim-expand-region')
-  vmap + <Plug>(expand_region_expand)
-  vmap _ <Plug>(expand_region_shrink)
-  let g:expand_region_use_select_mode = 0
+  map [!space]l <Plug>(expand_region_expand)
+  map [!space]h <Plug>(expand_region_shrink)
+  " let g:expand_region_use_select_mode = 0
 endif
 
 " perlomni {{{2
@@ -2545,14 +2590,22 @@ endfunction
 if s:plugin_installed('vim-smartinput')
   command! SmartinputOff call smartinput#clear_rules()
   command! SmartinputOn call <SID>sminput_define_rules()
-  call s:sminput_define_rules()
-  " clear auto cmaps(for altercmd.vim)
+
   function! s:smartinput_init()
     if hasmapto('<CR>', 'c')
       cunmap <CR>
     endif
   endfunction
-  MyAutocmd VimEnter * call <SID>smartinput_init()
+
+  " clear auto cmaps(for altercmd.vim)
+  " MyAutocmd VimEnter * call <SID>smartinput_init()
+
+  let s:bundle = neobundle#get('vim-smartinput')
+  function! s:bundle.hooks.on_source(bundle)
+    call s:sminput_define_rules()
+    call s:smartinput_init()
+  endfunction
+  unlet s:bundle
 endif
 
 " golden-ratio {{{2
@@ -2611,23 +2664,26 @@ endif
 
 " vim-altr {{{2
 if s:plugin_installed('vim-altr')
-  call altr#define('autoload/%.vim', 'doc/%.txt', 'plugin/%.vim', 'test/%.vim')
+  let s:bundle = neobundle#get('vim-altr')
+  function! s:bundle.hooks.on_source(bundle)
+    call altr#define('autoload/%.vim', 'doc/%.txt', 'plugin/%.vim', 'test/%.vim')
 
-  call altr#define('%.c', '%.cpp', '%.m', '%.h')
+    call altr#define('%.c', '%.cpp', '%.m', '%.h')
 
-  call altr#define('%.rb', 'spec/%_spec.rb')
-  call altr#define('lib/%.rb', 'spec/lib/%_spec.rb')
-  call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.rb')
-  call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
-  call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
+    call altr#define('%.rb', 'spec/%_spec.rb')
+    call altr#define('lib/%.rb', 'spec/lib/%_spec.rb')
+    call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.rb')
+    call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
+    call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
 
-  call altr#define('%.js', 'test/%Test.js', 'test/%_test.js', 'spec/%_spec.js', 'spec/%Spec.js')
-  call altr#define('%.coffee', 'test/%Test.coffee', 'test/%_test.coffee', 'spec/%_spec.coffee', 'spec/%Spec.coffee')
+    call altr#define('%.js', 'test/%Test.js', 'test/%_test.js', 'spec/%_spec.js', 'spec/%Spec.js')
+    call altr#define('%.coffee', 'test/%Test.coffee', 'test/%_test.coffee', 'spec/%_spec.coffee', 'spec/%Spec.coffee')
 
-  call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
-  call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
-  call altr#define('View/Helper/%.php', 'Test/Case/View/Helper/%Test.php')
-  call altr#define('View/%.php', 'Test/Case/View/%Test.php')
+    call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
+    call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
+    call altr#define('View/Helper/%.php', 'Test/Case/View/Helper/%Test.php')
+    call altr#define('View/%.php', 'Test/Case/View/%Test.php')
+  endfunction
 
   nmap [!space]k <Plug>(altr-back)
   nmap [!space]j <Plug>(altr-forward)
@@ -3139,8 +3195,6 @@ nnoremap [!space]R :<C-u>Unite quicklearn -immediately<CR>
 
 nnoremap <silent> [!unite]v :Unite menu:shortcut<CR>
 nnoremap <silent> [!unite]V :call <SID>unite_context_menu()<CR>
-nnoremap <silent> [!space]ll :Unite menu:shortcut<CR>
-nnoremap <silent> [!space]lo :call <SID>unite_context_menu()<CR>
 
 " filepath insert
 nnoremap <C-y><C-f> :<C-u>Unite -default-action=narrow_or_insert file<CR>
@@ -3664,11 +3718,56 @@ TTmap ,, parameter
 TTmap l line
 TTmap ,b between
 TTmap ,f fold
+TTmap q enclosedsyntax
 TTmap b multiblock
 TTmap ,w wiw
-TTmap u wiw
-TTmap P php
-TTmap aP phparray
+TTmap u lastinserted
+" omap icx <Plug>(textobj-context-i)
+" vmap icx <Plug>(textobj-context-i)
+
+Tmap axa <Plug>(textobj-xmlattribute-xmlattribute)
+Tmap ixa <Plug>(textobj-xmlattribute-xmlattributenospace)
+TTmap m  motionmotion
+
+TTmap V( xbrackets-$(_)
+TTmap V) xbrackets-$(_)
+TTmap Vb xbrackets-$(_)
+TTmap V{ xbrackets-${_}
+TTmap V} xbrackets-${_}
+TTmap VB xbrackets-${_}
+TTmap v  xbrackets-${_}$(_)
+TTmap x( xbrackets-x(_)
+TTmap x) xbrackets-x(_)
+TTmap xb xbrackets-x(_)
+TTmap 9  xbrackets-x(_)
+TTmap 0  xbrackets-x(_)
+TTmap x< xbrackets-x<_>
+TTmap x[ xbrackets-x[_]
+TTmap x{ xbrackets-x{_}
+TTmap xB xbrackets-x{_}
+TTmap xs( xbrackets-xs(_)
+TTmap xsb xbrackets-xs(_)
+TTmap xs< xbrackets-xs<_>
+TTmap xs[ xbrackets-xs[_]
+TTmap xs{ xbrackets-xs{_}
+TTmap xsB xbrackets-xs{_}
+TTmap xs){ xbrackets-xs(){_}
+TTmap y( xbrackets-y(_)
+TTmap yb xbrackets-y(_)
+TTmap y< xbrackets-y<_>
+TTmap y[ xbrackets-y[_]
+TTmap y{ xbrackets-y{_}
+TTmap yB xbrackets-y{_}
+TTmap ys( xbrackets-ys(_)
+TTmap ysb xbrackets-ys(_)
+TTmap ys< xbrackets-ys<_>
+TTmap ys[ xbrackets-ys[_]
+TTmap ys{ xbrackets-ys{_}
+TTmap ysB xbrackets-ys{_}
+TTmap ys){ xbrackets-ys(){_}
+
+TTmap P php-phptag
+TTmap aP php-phparray
 
 let g:textobj_between_no_default_key_mappings=1
 let g:textobj_wiw_no_default_key_mappings=1

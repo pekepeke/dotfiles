@@ -77,7 +77,7 @@ endfunction
 
 function! s:expand_rtp(path) "{{{2
   return map([
-        \ 'after', 'autoload', 'colors', 'compiler',
+        \ 'after', 'autoload', 'plugin', 'colors', 'compiler',
         \ 'ftdetect', 'indent', 'keymap', 'macros', 'syntax'
         \ ], 'a:path . "/" . v:val')
 endfunction
