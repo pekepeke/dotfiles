@@ -1511,6 +1511,14 @@ NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
       \ 'mappings' : [
       \ ['nx', '<Plug>(textobj-lastinserted-i)', '<Plug>(textobj-lastinserted-a)']]
       \ }}
+NeoBundleLazy 'mattn/vim-textobj-url', {'autoload':{
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(textobj-url-i)', '<Plug>(textobj-url-a)']]
+      \ }}
+NeoBundleLazy 'anyakichi/vim-textobj-ifdef', {'autoload':{
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(textobj-ifdef-i)', '<Plug>(textobj-ifdef-a)']]
+      \ }}
 NeoBundleLazy 'akiyan/vim-textobj-php', {'autoload':{
       \ 'mappings' : [['nx',
       \ '<Plug>(textobj-php-phptag-i)', '<Plug>(textobj-php-phptag-a)',
@@ -3722,6 +3730,8 @@ TTmap q enclosedsyntax
 TTmap b multiblock
 TTmap ,w wiw
 TTmap u lastinserted
+TTmap U url
+TTmap # ifdef
 " omap icx <Plug>(textobj-context-i)
 " vmap icx <Plug>(textobj-context-i)
 
@@ -3769,8 +3779,27 @@ TTmap ys){ xbrackets-ys(){_}
 TTmap P php-phptag
 TTmap aP php-phparray
 
+" let g:textboj_ _no_default_key_mappings=1
+let g:textboj_datetime_no_default_key_mappings=1
+let g:textboj_jabraces_no_default_key_mappings=1
+
+let g:textboj_syntax_no_default_key_mappings=1
+let g:textboj_quoted_no_default_key_mappings=1
+let g:textboj_function_no_default_key_mappings=1
+
+let g:textobj_entire_no_default_key_mappings=1
+let g:textobj_parameter_no_default_key_mappings=1
+let g:textobj_line_no_default_key_mappings=1
 let g:textobj_between_no_default_key_mappings=1
+let g:textboj_fold_no_default_key_mappings=1
+let g:textboj_enclosedsyntax_no_default_key_mappings=1
+let g:textboj_multiblock_no_default_key_mappings=1
 let g:textobj_wiw_no_default_key_mappings=1
+let g:textboj_lastinserted_no_default_key_mappings=1
+let g:textboj_url_no_default_key_mappings=1
+let g:textboj_ifdef_no_default_key_mappings=1
+let g:textboj_xbrackets_no_default_key_mappings=1
+let g:textboj_php_no_default_key_mappings=1
 
 " vim-niceblock {{{2
 xmap I <Plug>(niceblock-I)
