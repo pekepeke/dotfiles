@@ -527,7 +527,7 @@ NeoBundleLazy 'kana/vim-altr', {'autoload': {
       \ 'mappings': ['<Plug>(altr-back)', '<Plug>(altr-forward)'],
       \ }}
 NeoBundle 'kana/vim-fakeclip'
-NeoBundle 'kana/vim-smartchr'
+NeoBundleLazy 'kana/vim-smartchr', {'autoload': {'insert':1}}
 NeoBundle 'kana/vim-submode'
 NeoBundleLazy 'kana/vim-niceblock', { 'autoload' : {
       \ 'mappings' : ['<Plug>(niceblock-I)', '<Plug>(niceblock-A)']
@@ -1321,7 +1321,6 @@ NeoBundleLazy 'mattn/gist-vim', {'autoload': {
 NeoBundle 'kana/vim-gf-user'
 NeoBundle 'kana/vim-gf-diff'
 NeoBundleLazyOn FileType vim 'sgur/vim-gf-autoload'
-NeoBundleLazyOn FileType markdown,rst,text 'sgur/citation-utils.vim'
 " does not support gf-user
 " NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
 NeoBundleLazyOn FileType python 'zhaocai/vim-gf-python'
@@ -1372,7 +1371,7 @@ NeoBundleLazy 'pekepeke/vim-operator-normalize-utf8mac', {
 " textobj {{{3
 NeoBundle 'kana/vim-textobj-user'
 NeoBundleLazy 'kana/vim-textobj-datetime', {'autoload': {
-      \ 'mappings': [['nx',
+      \ 'mappings': [['nvx',
       \ '<Plug>(textobj-datetime-auto-i)', '<Plug>(textobj-datetime-auto-a)',
       \ '<Plug>(textobj-datetime-full-i)', '<Plug>(textobj-datetime-full-a)',
       \ '<Plug>(textobj-datetime-date-i)', '<Plug>(textobj-datetime-date-a)',
@@ -1389,13 +1388,13 @@ NeoBundleLazy 'kana/vim-textobj-diff', {'autoload': {
       \ ],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-entire', {'autoload':{
-      \ 'mappings': [['nx', '<Plug>(textobj-entire-i)', '<Plug>(textobj-entire-a))']],
+      \ 'mappings': [['nvx', '<Plug>(textobj-entire-i)', '<Plug>(textobj-entire-a))']],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-fold', {'autoload':{
-      \ 'mappings': [['nx', '<Plug>(textobj-fold-i)', '<Plug>(textobj-fold-a))']],
+      \ 'mappings': [['nvx', '<Plug>(textobj-fold-i)', '<Plug>(textobj-fold-a))']],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-jabraces', {'autoload':{
-      \ 'mappings' : [['nx',
+      \ 'mappings' : [['nvx',
       \ '<Plug>(textobj-jabraces-parens-i)', '<Plug>(textobj-jabraces-parens-a)',
       \ '<Plug>(textobj-jabraces-brackets-i)', '<Plug>(textobj-jabraces-brackets-a)',
       \ '<Plug>(textobj-jabraces-braces-i)', '<Plug>(textobj-jabraces-braces-a)',
@@ -1410,82 +1409,83 @@ NeoBundleLazy 'kana/vim-textobj-jabraces', {'autoload':{
       \ ]],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-lastpat', {'autoload': {
-      \ 'mappings' : [['nx',
+      \ 'mappings' : [['nvx',
       \ '<Plug>(textobj-lastpat-n)', '<Plug>(textobj-lastpat-N)',
       \ ]],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-syntax', {'autoload': {
-      \ 'mappings' : [['nx',
+      \ 'mappings' : [['nvx',
       \ '<Plug>(textobj-syntax-i)', '<Plug>(textobj-syntax-a)',
       \ ]],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-line', {'autoload':{
-      \ 'mappings': [['nx', '<Plug>(textobj-line-i)', '<Plug>(textobj-line-a))']],
+      \ 'mappings': [['nvx', '<Plug>(textobj-line-i)', '<Plug>(textobj-line-a))']],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-underscore', {'autoload':{
-      \ 'mappings': [['nx', '<Plug>(textobj-quoted-i)', '<Plug>(textobj-quoted-a))']],
+      \ 'mappings': [['nvx', '<Plug>(textobj-quoted-i)', '<Plug>(textobj-quoted-a))']],
       \ }}
 NeoBundleLazy 'thinca/vim-textobj-between', {
       \ 'depends' : 'vim-textobj-user',
       \ 'autoload' : {
       \ 'mappings' : [
-      \ ['nx', '<Plug>(textobj-between-i)', '<Plug>(textobj-between-a)']]
+      \ ['nvx', '<Plug>(textobj-between-i)', '<Plug>(textobj-between-a)']]
       \ }}
 " NeoBundle 'thinca/vim-textobj-comment'
 NeoBundleLazy 'kana/vim-textobj-function', {
       \ 'depends' : 'vim-textobj-user',
       \ 'autoload' : {
       \ 'mappings' : [
-      \ ['nx', '<Plug>(textobj-function-i)', '<Plug>(textobj-function-a)']]
+      \ ['nvx', '<Plug>(textobj-function-i)', '<Plug>(textobj-function-a)']]
       \ }}
 NeoBundle 'thinca/vim-textobj-function-javascript'
 NeoBundle 'thinca/vim-textobj-function-perl'
 NeoBundle 't9md/vim-textobj-function-ruby'
 NeoBundleLazyOn FileType ruby 'nelstrom/vim-textobj-rubyblock'
 NeoBundleLazy 'deris/vim-textobj-enclosedsyntax', {'autoload':{
-      \ 'mappings' : [['nx',
+      \ 'mappings' : [['nvo',
       \ '<Plug>(textobj-enclosedsyntax-i)', '<Plug>(textobj-enclosedsyntax-a)',
       \ ]]}}
 NeoBundleLazy 'osyo-manga/vim-textobj-multiblock', {
       \ 'depends' : 'vim-textobj-user',
       \ 'autoload' : {
       \ 'mappings' : [
-      \ ['nx', '<Plug>(textobj-multiblock-i)', '<Plug>(textobj-multiblock-a)']]
+      \ ['nvo', '<Plug>(textobj-multiblock-i)', '<Plug>(textobj-multiblock-a)']]
       \ }}
 NeoBundleLazy 'vim-scripts/textobj-indent', {
       \ 'depends' : 'vim-textobj-user',
       \ 'autoload' : {
       \ 'mappings' : [
-      \ ['nx', '<Plug>(textobj-indent-i)', '<Plug>(textobj-indent-a)']]
+      \ ['nvo', '<Plug>(textobj-indent-i)', '<Plug>(textobj-indent-a)']]
       \ }}
 NeoBundleLazy 'sgur/vim-textobj-parameter', {
       \ 'depends' : 'vim-textobj-user',
       \ 'autoload' : {
       \ 'mappings' : [
-      \ ['nx', '<Plug>(textobj-parameter-i)', '<Plug>(textobj-parameter-a)']]
+      \ ['nvo', '<Plug>(textobj-parameter-i)', '<Plug>(textobj-parameter-a)']]
       \ }}
 NeoBundleLazy 'h1mesuke/textobj-wiw', {
       \ 'depends' : 'vim-textobj-user',
       \ 'autoload' : {
       \ 'mappings' : [
-      \ ['nx', '<Plug>(textobj-wiw-i)', '<Plug>(textobj-wiw-a)']]
+      \ ['nvo', '<Plug>(textobj-wiw-i)', '<Plug>(textobj-wiw-a)']]
       \ }}
 NeoBundle 'coderifous/textobj-word-column.vim'
 NeoBundle 'rhysd/vim-textobj-continuous-line'
-" NeoBundleLazy 'osyo-manga/vim-textobj-context', {'autoload':{
-"       \ 'mappings' : [['nx',
-"       \ '<Plug>(textobj-context-i)',
-"       \ ]]}}
+NeoBundleLazy 'osyo-manga/vim-textobj-context', {'autoload':{
+      \ 'mappings' : [['nvo',
+      \ '<Plug>(textobj-context-i)',
+      \ ]]}}
 NeoBundleLazy 'akiyan/vim-textobj-xml-attribute', {'autoload':{
-      \ 'mappings' : [['nx',
-      \ '<Plug>(textobj-xmlattribute-i)', '<Plug>(textobj-xmlattribute-a)',
+      \ 'mappings' : [['nvo',
+      \ '<Plug>(textobj-xmlattribute-xmlattribute)',
+      \ '<Plug>(textobj-xmlattribute-xmlattributenospace)',
       \ ]]}}
 NeoBundleLazy 'hchbaw/textobj-motionmotion.vim', {'autoload':{
-      \ 'mappings' : [['nx',
+      \ 'mappings' : [['nvo',
       \ '<Plug>(textobj-motionmotion-i)', '<Plug>(textobj-motionmotion-a)',
       \ ]]}}
 NeoBundleLazy 'anyakichi/vim-textobj-xbrackets', {'autoload':{
-      \ 'mappings' : [['nx',
+      \ 'mappings' : [['nvo',
       \ '<Plug>(textobj-xbrackets-$(_)-a)', '<Plug>(textobj-xbrackets-$(_)-i)',
       \ '<Plug>(textobj-xbrackets-${_}$(_)-a)', '<Plug>(textobj-xbrackets-${_}$(_)-i)',
       \ '<Plug>(textobj-xbrackets-${_}-a)', '<Plug>(textobj-xbrackets-${_}-i)',
@@ -1509,18 +1509,18 @@ NeoBundleLazy 'anyakichi/vim-textobj-xbrackets', {'autoload':{
       \ ]]}}
 NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
       \ 'mappings' : [
-      \ ['nx', '<Plug>(textobj-lastinserted-i)', '<Plug>(textobj-lastinserted-a)']]
+      \ ['nvo', '<Plug>(textobj-lastinserted-i)', '<Plug>(textobj-lastinserted-a)']]
       \ }}
 NeoBundleLazy 'mattn/vim-textobj-url', {'autoload':{
       \ 'mappings' : [
-      \ ['nx', '<Plug>(textobj-url-i)', '<Plug>(textobj-url-a)']]
+      \ ['nvo', '<Plug>(textobj-url-i)', '<Plug>(textobj-url-a)']]
       \ }}
 NeoBundleLazy 'anyakichi/vim-textobj-ifdef', {'autoload':{
       \ 'mappings' : [
-      \ ['nx', '<Plug>(textobj-ifdef-i)', '<Plug>(textobj-ifdef-a)']]
+      \ ['nvo', '<Plug>(textobj-ifdef-i)', '<Plug>(textobj-ifdef-a)']]
       \ }}
 NeoBundleLazy 'akiyan/vim-textobj-php', {'autoload':{
-      \ 'mappings' : [['nx',
+      \ 'mappings' : [['nvo',
       \ '<Plug>(textobj-php-phptag-i)', '<Plug>(textobj-php-phptag-a)',
       \ '<Plug>(textobj-php-phparray-i)', '<Plug>(textobj-php-phparray-a)',
       \ ]]}}
@@ -2221,13 +2221,6 @@ if neobundle#is_installed('vimconsole.vim')
   endfunction
 endif
 
-" expand-region
-if s:plugin_installed('vim-expand-region')
-  map [!space]l <Plug>(expand_region_expand)
-  map [!space]h <Plug>(expand_region_shrink)
-  " let g:expand_region_use_select_mode = 0
-endif
-
 " perlomni {{{2
 if s:plugin_installed('perlomni.vim')
   call s:path_push(neobundle#get('perlomni.vim').path . '/bin')
@@ -2752,6 +2745,24 @@ vnoremap [!prefix],c :Alignta<< \(//\|#\|\/\*\)/1<CR>
 " submode {{{2
 " http://d.hatena.ne.jp/tyru/20100502/vim_mappings
 if s:plugin_installed('vim-submode')
+
+  " expand-region {{{3
+  if s:plugin_installed('vim-expand-region')
+    " don't work...
+    call submode#enter_with('ex_region', 'v', '',  '+', '+')
+    call submode#enter_with('ex_region', 'v', '',  '-', '+')
+    call submode#leave_with('ex_region', 'v', '',  '<Esc>')
+    call submode#map       ('ex_region', 'v', 'r', 'l', "<Plug>(expand_region_expand)")
+    call submode#map       ('ex_region', 'v', 'r', 'j', "<Plug>(expand_region_expand)")
+    call submode#map       ('ex_region', 'v', 'r', '+', "<Plug>(expand_region_expand)")
+    call submode#map       ('ex_region', 'v', 'r', 'k', "<Plug>(expand_region_shrink)")
+    call submode#map       ('ex_region', 'v', 'r', 'h', "<Plug>(expand_region_shrink)")
+    call submode#map       ('ex_region', 'v', 'r', '-', "<Plug>(expand_region_shrink)")
+    " map [!space]l <Plug>(expand_region_expand)
+    " map [!space]h <Plug>(expand_region_shrink)
+    " let g:expand_region_use_select_mode = 0
+  endif
+
   " Change current window size {{{3
   call submode#enter_with('winsize', 'n', '', '[!s]w', '<Nop>')
   call submode#leave_with('winsize', 'n', '', '<Esc>')
@@ -2804,15 +2815,15 @@ if s:plugin_installed('vim-submode')
   call submode#map       ('winsize', 'n', '', '>', '<C-w>>:redraw<CR>')
 
   " Quickfix {{{3
-  call submode#enter_with('quickfix', 'n', '', '[!s]q', '<Nop>')
-  call submode#leave_with('quickfix', 'n', '', '<Esc>')
-  call submode#map       ('quickfix', 'n', '', 'j', ':cn<CR>')
-  call submode#map       ('quickfix', 'n', '', 'k', ':cp<CR>')
-  call submode#map       ('quickfix', 'n', '', 'n', ':cn<CR>')
-  call submode#map       ('quickfix', 'n', '', 'p', ':cp<CR>')
-  call submode#map       ('quickfix', 'n', '', 'c', ':cclose<CR>')
-  call submode#map       ('quickfix', 'n', '', 'o', ':copen<CR>')
-  call submode#map       ('quickfix', 'n', '', 'w', ':cwindow<CR>')
+  call submode#enter_with('quickfix', 'n', '',  '[!s]q', '<Nop>')
+  call submode#leave_with('quickfix', 'n', '',  '<Esc>')
+  call submode#map       ('quickfix', 'n', '',  'j', ':cn<CR>')
+  call submode#map       ('quickfix', 'n', '',  'k', ':cp<CR>')
+  call submode#map       ('quickfix', 'n', '',  'n', ':cn<CR>')
+  call submode#map       ('quickfix', 'n', '',  'p', ':cp<CR>')
+  call submode#map       ('quickfix', 'n', 'x', 'c', ':cclose<CR>')
+  call submode#map       ('quickfix', 'n', '',  'o', ':copen<CR>')
+  call submode#map       ('quickfix', 'n', '',  'w', ':cwindow<CR>')
 endif
 
 " open-browser.vim {{{2
@@ -3542,10 +3553,13 @@ function! s:exec_ctags(path) "{{{3
 endfunction
 
 " surround.vim {{{2
-nmap [!s]s <Plug>Ysurround
+nmap [!s]s <Plug>Yssurround
+" nmap [!s]s <Plug>Ysurround
+imap <C-g>y <Esc><Plug>Yssurround
 
 let g:surround_custom_mapping = {}
 let g:surround_custom_mapping._ = {
+      \ "\<CR>" : "\n\r\n",
       \ 'g':  "_('\r')",
       \ 'G':  "_(\"\r\")",
       \ }
@@ -3664,6 +3678,8 @@ endif
 function! s:textobj_mapping(key, cmd)
   silent exe 'omap' a:key a:cmd
   silent exe 'vmap' a:key a:cmd
+  " silent exe 'xmap' a:key a:cmd
+  " silent exe 'smap' a:key a:cmd
 endfunction
 command! -nargs=+ Tmap call s:textobj_mapping(<f-args>)
 function! s:textobj_mapping_by_name(key, name)
@@ -3718,7 +3734,7 @@ Tmap a? <Plug>(textobj-lastpat-N)
 Tmap i? <Plug>(textobj-lastpat-N)
 
 TTmap y syntax
-TTmap _ quoted
+TTmap ,_ quoted
 TTmap f function
 
 TTmap e entire
@@ -3732,8 +3748,7 @@ TTmap ,w wiw
 TTmap u lastinserted
 TTmap U url
 TTmap # ifdef
-" omap icx <Plug>(textobj-context-i)
-" vmap icx <Plug>(textobj-context-i)
+Tmap ixx <Plug>(textobj-context-i)
 
 Tmap axa <Plug>(textobj-xmlattribute-xmlattribute)
 Tmap ixa <Plug>(textobj-xmlattribute-xmlattributenospace)
@@ -3798,6 +3813,7 @@ let g:textobj_wiw_no_default_key_mappings=1
 let g:textboj_lastinserted_no_default_key_mappings=1
 let g:textboj_url_no_default_key_mappings=1
 let g:textboj_ifdef_no_default_key_mappings=1
+let g:textboj_context_no_default_key_mappings=1
 let g:textboj_xbrackets_no_default_key_mappings=1
 let g:textboj_php_no_default_key_mappings=1
 
@@ -5858,7 +5874,8 @@ if !has('vim_starting')
     set statusline=%!PowerlineNew()
     call PowerlineNew()
     redraw!
-  elseif s:plugin_installed('vim-powerline')
+  " elseif s:plugin_installed('vim-powerline')
+  elseif exists('*Pl#UpdateStatusline')
     call Pl#UpdateStatusline(1)
   endif
 else
