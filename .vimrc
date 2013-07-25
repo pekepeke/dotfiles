@@ -1976,6 +1976,29 @@ map <leader>3 :diffget REMOTE \| duffupdate<CR>
 
 " nmaps {{{3
 MyAutocmd FileType help,ref,git-status,git-log nnoremap <buffer> q <C-w>c
+
+function! s:set_transparency(op)
+  exe 'set transparency'.(a:op =~# '^[-+=]' ? a:op : '=' . a:op)
+  echo &transparency
+endfunction
+
+if s:is_mac && has('gui_running')
+  function! s:map_gui()
+    nnoremap <D-Up>   :<C-u>call <SID>set_transparency('+=5')<CR>
+    nnoremap <D-Down> :<C-u>call <SID>set_transparency('-=5')<CR>
+    nnoremap <D-Right> :<C-u>call <SID>set_transparency(90)<CR>
+    execute 'nnoremap <D-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
+  endfunction
+  MyAutocmd GUIEnter * call s:map_gui()
+elseif has('gui_running')
+  function! s:map_gui()
+    nnoremap <A-Up>   :<C-u>call <SID>set_transparency('+=5')<CR>
+    nnoremap <A-Down> :<C-u>call <SID>set_transparency('-=5')<CR>
+    nnoremap <A-Right> :<C-u>call <SID>set_transparency(230)<CR>
+    execute 'nnoremap <A-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
+  endfunction
+  MyAutocmd GUIEnter * call s:map_gui()
+endif
 " win move
 nnoremap [!space]. :source ~/.vimrc<CR>
 
@@ -2745,6 +2768,19 @@ vnoremap [!prefix],c :Alignta<< \(//\|#\|\/\*\)/1<CR>
 " submode {{{2
 " http://d.hatena.ne.jp/tyru/20100502/vim_mappings
 if s:plugin_installed('vim-submode')
+
+  " browser {{{3
+  if s:is_mac
+    call submode#enter_with('cscroll', 'n', '', '[!s]b', ':ChromeScrollDown<CR>')
+    " call submode#enter_with('cscroll', 'n', '', '[!s]k', ':ChromeScrollUp<CR>')
+    call submode#map('cscroll', 'n', '', 'j', ':ChromeScrollDown<CR>')
+    call submode#map('cscroll', 'n', '', 'k', ':ChromeScrollUp<CR>')
+    call submode#map('cscroll', 'n', '', 'l', ':ChromeTabRight<CR>')
+    call submode#map('cscroll', 'n', '', 'h', ':ChromeTabLeft<CR>')
+    call submode#map('cscroll', 'n', '', 'L', ':ChromePageGo<CR>')
+    call submode#map('cscroll', 'n', '', 'H', ':ChromePageBack<CR>')
+    call submode#map('cscroll', 'n', '', 'r', ':ChromeTabReload<CR>')
+  endif
 
   " expand-region {{{3
   if s:plugin_installed('vim-expand-region')
@@ -5693,6 +5729,20 @@ endfunction
 command! -nargs=0 Helptags call s:help_util.refresh()
 command! -nargs=0 HelptagsShow call s:help_util.show_tags()
 command! -nargs=0 HelpDirShow call s:help_util.show_dirs()
+
+" Browser Control
+if s:is_mac
+  command! -bar ChromePageGo silent !osascript ~/.vim/bin/chrome_go.scpt 1
+  command! -bar ChromePageBack silent !osascript ~/.vim/bin/chrome_go.scpt -1
+  command! -bar ChromeScrollDown silent !osascript ~/.vim/bin/chrome_scroll.scpt next
+  command! -bar ChromeScrollUp silent !osascript ~/.vim/bin/chrome_scroll.scpt previous
+  command! -bar ChromeTabClose silent !osascript ~/.vim/bin/chrome_tabclose.scpt next
+  command! -bar ChromeTabReload silent !osascript ~/.vim/bin/chrome_reload.scpt next
+  command! -bar ChromeTabRight silent !osascript ~/.vim/bin/chrome_tabselect.scpt right
+  command! -bar ChromeTabLeft silent !osascript ~/.vim/bin/chrome_tabselect.scpt left
+else
+  " TODO :
+endif
 
 " ginger {{{2
 let s:ginger = {}

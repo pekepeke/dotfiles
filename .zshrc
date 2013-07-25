@@ -449,6 +449,7 @@ zsh-complete-init() {
   [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
   [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
   source_all ~/.zsh/commands/*
+  (( $+functions[___main] )) || ___main() {} # for git
 
   if [ ! -e ~/.zsh.d ]; then
     mkdir -p ~/.zsh.d
