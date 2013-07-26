@@ -1686,8 +1686,8 @@ function! s:cmdwin_my_settings() "{{{3
   inoremap <buffer><expr> <BS> col('.') == 1 ? '<Esc>:quit<CR>' : '<BS>'
 
   if s:plugin_installed('vim-ambicmd')
-    imap <expr> <Space> ambicmd#expand("\<Space>")
-    imap <expr> <CR> ambicmd#expand("\<CR>")
+    imap <expr><buffer> <Space> ambicmd#expand("\<Space>")
+    imap <expr><buffer> <CR> ambicmd#expand("\<CR>")
   endif
   startinsert!
 endfunction " }}}
