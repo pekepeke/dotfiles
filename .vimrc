@@ -773,6 +773,12 @@ NeoBundle 'AndrewRadev/linediff.vim', {'autoload': {
 NeoBundle 'vim-scripts/ConflictDetection', {
       \   'depends': 'vim-scripts/ingo-library',
       \ }
+NeoBundleLazy 'yuratomo/dbg.vim', {'autoload':{
+      \ 'commands': [
+      \ {'name':'Dbg', 'complete':'file'},
+      \ {'name':'DbgShell', 'complete':'file'},
+      \ ],
+      \ }}
 
 " help {{{4
 NeoBundle 'thinca/vim-ref'
@@ -793,11 +799,16 @@ NeoBundle 'mattn/learn-vimscript'
 " neocomplcache {{{4
 if has('lua') && (v:version > 703 ||
       \ (v:version == 703&& has('patch885')))
-  NeoBundle 'Shougo/neocomplete.vim'
+  NeoBundleLazy 'Shougo/neocomplete.vim', {'autoload':{
+        \ 'insert':1,
+        \ }}
   " NeoBundleLazy 'Shougo/neocomplcache.vim'
-  NeoBundle 'pekepeke/neocomplcache-rsense.vim', 'neocompleteFeature'
+  " NeoBundle 'pekepeke/neocomplcache-rsense.vim', 'neocompleteFeature'
+  NeoBundle 'supermomonga/neocomplete-rsense.vim'
 else
-  NeoBundle 'Shougo/neocomplcache.vim'
+  NeoBundleLazy 'Shougo/neocomplcache.vim', {'autoload':{
+        \ 'insert':1,
+        \ }}
   " NeoBundleLazy 'Shougo/neocomplete.vim'
   NeoBundle 'Shougo/neocomplcache-rsense.vim'
 endif
@@ -937,7 +948,11 @@ if has('python')
         " \   'autoload' : {},
         " \   'rtp' : 'vim',
 endif
-NeoBundle 'mmalecki/vim-node.js'
+" NeoBundle 'mmalecki/vim-node.js'
+NeoBundle 'moll/vim-node'
+NeoBundleLazy 'afshinm/npm.vim', {'autoload': {
+      \ 'commands': ['Npm']
+      \ }}
 NeoBundle 'othree/javascript-libraries-syntax.vim'
 NeoBundle 'teramako/jscomplete-vim'
 NeoBundle 'myhere/vim-nodejs-complete'
@@ -1680,7 +1695,7 @@ MyAutocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
       \ | endif
 
 function! s:cmdwin_my_settings() "{{{3
-  noremap <buffer> q :q<CR>
+  noremap <buffer><nowait> q :q<CR>
   noremap <buffer> <Esc> :q<CR>
   inoremap <buffer><expr> kk col('.') == 1 ? '<Esc>k' : 'kk'
   inoremap <buffer><expr> <BS> col('.') == 1 ? '<Esc>:quit<CR>' : '<BS>'
@@ -1975,7 +1990,7 @@ map <leader>3 :diffget REMOTE \| duffupdate<CR>
 " endif
 
 " nmaps {{{3
-MyAutocmd FileType help,ref,git-status,git-log nnoremap <buffer> q <C-w>c
+MyAutocmd FileType help,ref,git-status,git-log nnoremap <buffer><nowait> q <C-w>c
 
 function! s:set_transparency(op)
   exe 'set transparency'.(a:op =~# '^[-+=]' ? a:op : '=' . a:op)
@@ -3076,9 +3091,25 @@ let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
 \   ["global options"     , "Unite output:set"]                        ,
 \   ["local options"      , "Unite output:setlocal"]                   ,
 \   ["mappings"           , "Unite mapping"]                           ,
-\   ["repl"               , "Unite menu:repl"]                           ,
+\   ["repl"               , "Unite menu:repl"]                         ,
+\   ["help"               , "Unite menu:help"]                         ,
 \ ])
-
+let g:unite_source_menu_menus["help"] = s:unite_menu_create(
+\ 'Help', [
+\   ['Vimscript functions' , 'help function-list']         ,
+\   ['Vimscript grammar'   , 'help usr_41']                ,
+\   ['Regexp'              , 'help pattern-overview']      ,
+\   ['quickkref'           , 'help quickref']              ,
+\   ['Option'              , 'help option-list']           ,
+\   ['Tips'                , 'help tips']                  ,
+\   ['User Manual'         , 'help usr_toc']               ,
+\   ['Startup Options'     , 'help startup-options']       ,
+\   ['Window'              , 'help windows']               ,
+\   ['Tab'                 , 'help tabpage']               ,
+\   ['Plugin'              , 'help write-plugin']          ,
+\   ['FtPlugin'            , 'help write-filetype-plugin'] ,
+\   ['Helpfile'            , 'help help-writing']          ,
+\ ])
 let g:unite_source_menu_menus["repl"] = s:unite_menu_create(
 \ 'Repl', [
 \   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
@@ -3298,9 +3329,9 @@ nnoremap <silent> [!unite]rg :<C-u>UniteResume grep<CR>
 nnoremap <silent> [!unite]rt :<C-u>UniteResume todo<CR>
 nnoremap <silent> [!unite]rq :<C-u>UniteResume qfix<CR>
 
-if s:plugin_loaded('neocomplcache.vim')
+if s:plugin_installed('neocomplcache.vim')
   inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
-elseif s:plugin_loaded('neocomplete.vim')
+elseif s:plugin_installed('neocomplete.vim')
   inoremap <C-x><C-j> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
 endif
 
@@ -3320,11 +3351,11 @@ endfunction
 function! s:tags_update()
     " include している tag ファイルが毎回同じとは限らないので毎回初期化
     setlocal tags=
-    if s:plugin_loaded('neocomplcache.vim')
+    if s:plugin_installed('neocomplcache.vim')
       for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
           execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
       endfor
-    elseif s:plugin_loaded('neocomplete.vim')
+    elseif s:plugin_installed('neocomplete.vim')
       for filename in neocomplete#sources#include#get_include_files(bufnr('%'))
           execute "setlocal tags+=".neocomplete#cache#encode_name('tags_output', filename)
       endfor
@@ -3369,6 +3400,7 @@ function! s:unite_my_settings()
   imap <buffer> [[ <C-o><Plug>(unite_rotate_previous_source)
   imap <buffer> <ESC> <ESC><ESC>
 
+  nmap <buffer><nowait> q <Plug>(unite_exit)
   nnoremap <silent><buffer><expr> <C-j> unite#do_action('split')
   inoremap <silent><buffer><expr> <C-j> unite#do_action('split')
   nmap <buffer> t <Plug>(unite_choose_action)
@@ -3577,9 +3609,9 @@ function! s:exec_ctags(path) "{{{3
     call vimproc#system_bg(ctags_cmd)
   else
     execute "!" ctags_cmd
-    if s:plugin_loaded('neocomplcache.vim')
+    if s:plugin_installed('neocomplcache.vim')
       NeoComplCacheCachingTags
-    elseif s:plugin_loaded('neocomplete.vim')
+    elseif s:plugin_installed('neocomplete.vim')
       NeoCompleteTagMakeCache
     endif
   endif
@@ -4603,7 +4635,7 @@ if s:plugin_installed('neosnippet.vim')
 endif
 
 " neocomplete, neocomplcache {{{2
-if s:plugin_loaded('neocomplcache.vim') "{{{3
+if s:plugin_installed('neocomplcache.vim') "{{{3
   " options {{{4
   let g:neocomplcache_temporary_dir = $VIM_CACHE . '/neocomplcache'
   let g:neocomplcache_enable_at_startup                   = 1
@@ -4774,7 +4806,7 @@ if s:plugin_loaded('neocomplcache.vim') "{{{3
   " endif
 
 
-elseif s:plugin_loaded('neocomplete.vim') "{{{3
+elseif s:plugin_installed('neocomplete.vim') "{{{3
   " options {{{4
   let g:neocomplete#data_directory = $VIM_CACHE . '/neocomplete'
   let g:neocomplete#enable_at_startup                   = 1
@@ -5143,9 +5175,9 @@ function! s:vimshell_my_settings() " {{{3
     xmap y <Plug>(operator-concealedyank)
   endif
   imap <silent> <buffer> <C-a> <C-o>:call cursor(line('.'), strlen(g:vimshell_prompt)+1)<CR>
-  if s:plugin_loaded('neocomplcache.vim')
+  if s:plugin_installed('neocomplcache.vim')
     inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
-  elseif s:plugin_loaded('neocomplete.vim')
+  elseif s:plugin_installed('neocomplete.vim')
     inoremap <expr><buffer> <C-j> pumvisible() ? neocomplete#close_popup() : ""
   endif
 endfunction
