@@ -1268,6 +1268,9 @@ NeoBundleLazy 'tsukkee/unite-tag', { 'autoload' : {
 NeoBundleLazy 'ujihisa/quicklearn', { 'autoload' : {
       \ 'unite_sources' : ['quicklearn'],
       \ }}
+NeoBundle "osyo-manga/unite-airline_themes", {'autoload':{
+      \ 'unite_sources' : ['airline_themes'],
+      \ }}
 
 if executable('w3m')
   NeoBundleLazy 'ringogirl/unite-w3m', {
@@ -2238,6 +2241,22 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" airline {{{2
+let g:airline_left_sep='|'
+let g:airline_right_sep='|'
+let g:airline_linecolumn_prefix = ':'
+let g:airline_branch_prefix = 'BR:'
+let g:airline_paste_symbol = '[P]'
+let g:airline_readonly_symbol = '[R]'
+
+let g:airline_enable_syntastic=0
+" let g:airline_powerline_fonts=0
+let g:airline_enable_branch=1
+let g:airline_detect_modified=1
+let g:airline_detect_paste=1
+let g:airline_detect_iminsert=1
+let g:airline_theme='powerlineish'
+
 "  jplus {{{2
 nmap <Leader>j <Plug>(jplus-getchar)
 vmap <Leader>j <Plug>(jplus-getchar)
@@ -3037,8 +3056,8 @@ if !exists('g:grep_launcher_words')
   let g:grep_launcher_words = {}
 endif
 call extend(g:grep_launcher_words, {
-      \ 'TODO' : 'TODO\|FIXME\|XXX',
-      \ })
+  \ 'TODO' : 'TODO\|FIXME\|XXX',
+  \ })
 " unite-history
 let g:unite_source_history_yank_enable = 1
 
@@ -3056,23 +3075,23 @@ function! s:unite_menu_create(desc, ...) "{{{4
     let [word, value] = a:value
     if isdirectory(value)
       return {
-            \   "word" : "[directory] ".word,
-            \   "kind" : "directory",
-            \   "action__directory" : value
-            \ }
+      \   "word" : "[directory] ".word,
+      \   "kind" : "directory",
+      \   "action__directory" : value
+      \ }
     elseif !empty(glob(value))
       return {
-            \   "word" : "[file] ".word,
-            \   "kind" : "file",
-            \   "default_action" : "tabdrop",
-            \   "action__path" : value,
-            \ }
+      \   "word" : "[file] ".word,
+      \   "kind" : "file",
+      \   "default_action" : "tabdrop",
+      \   "action__path" : value,
+      \ }
     else
       return {
-            \   "word" : "[command] ".word,
-            \   "kind" : "command",
-            \   "action__command" : value
-            \ }
+      \   "word" : "[command] ".word,
+      \   "kind" : "command",
+      \   "action__command" : value
+      \ }
       endif
   endfunction
   return commands
@@ -3088,9 +3107,11 @@ let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
 \   ["neobundle vimfiles" , "Unite neobundle/vimfiles"]                ,
 \   ["all vimfiles"       , "Unite neobundle/rtpvimfiles"]             ,
 \   ["colorscheme"        , "Unite colorscheme -auto-preview"]         ,
+\   ["airline themes"     , "Unite airline_themes -auto-preview"]      ,
 \   ["global options"     , "Unite output:set"]                        ,
 \   ["local options"      , "Unite output:setlocal"]                   ,
 \   ["mappings"           , "Unite mapping"]                           ,
+\   ["todo"               , "Todo"]                                    ,
 \   ["repl"               , "Unite menu:repl"]                         ,
 \   ["help"               , "Unite menu:help"]                         ,
 \ ])
