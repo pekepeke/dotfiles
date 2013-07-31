@@ -747,7 +747,9 @@ NeoBundleLazy 'gregsexton/gitv', {
       \ }
 " TODO : --;;;;
 " NeoBundle 'violetyk/gitquick.vim'
-NeoBundleLazy 'Shougo/vim-vcs'
+NeoBundleLazy 'Shougo/vim-vcs', {'autoload': {
+      \ 'functions': ['vcs#info'],
+      \ }}
 NeoBundleLazy 'sjl/splice.vim', {'autoload': {
       \ 'commands': [
       \   'SpliceInit', 'SpliceGrid', 'SpliceLoupe',
@@ -5068,10 +5070,6 @@ endif
 
 " vimshell {{{2
 let g:vimshell_temporary_directory = $VIM_CACHE . "/vimshell"
-let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-if exists('*vcs#info')
-  let g:vimshell_right_prompt = 'vimshell#vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
-endif
 let g:vimshell_enable_smart_case = 1
 let g:vimshell_enable_auto_slash = 1
 
@@ -5117,6 +5115,15 @@ if s:plugin_installed('vimproc.vim')
   call s:setup_vimproc_dll()
 endif
 
+let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
+if s:plugin_installed('vim-fugitive')
+  " let g:vimshell_right_prompt = '"[" . fugitive#head() . "]"'
+  let g:vimshell_right_prompt = 'fugitive#statusline()'
+endif
+" if s:plugin_installed('vim-vcs')
+"   let g:vimshell_right_prompt = 'vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
+" endif
+
 if s:is_win " {{{3
   " Display user name on Windows.
   let g:vimshell_prompt = $USERNAME."% "
@@ -5125,14 +5132,8 @@ if s:is_win " {{{3
 else " {{{3
   " Display user name
   let g:vimshell_prompt = $USER."$ "
-
-  MyAutocmd VimEnter
-        \ call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
-        \ call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
-        \ let g:vimshell_execute_file_list['zip'] = 'zipinfo'
-        \ call vimshell#set_execute_file('tgz,gz', 'gzcat')
-        \ call vimshell#set_execute_file('tbz,bz2', 'bzcat')
 endif
+
 let s:vimshell_hooks = {} "{{{3
 function! s:vimshell_hooks.chpwd(args, context)
   if len(split(glob('*'), '\n')) < 100
@@ -5161,8 +5162,8 @@ function! s:vimshell_hooks.preexec(cmdline, context)
   return a:cmdline
 endfunction
 
-MyAutocmd FileType vimshell call s:vimshell_my_settings()
-function! s:vimshell_my_settings() " {{{3
+MyAutocmd FileType vimshell call s:vimshell_init()
+function! s:vimshell_init() " {{{3
   setl textwidth=0
   "autocmd FileType vimshell
   call vimshell#altercmd#define('g'  , 'git')
@@ -5174,13 +5175,29 @@ function! s:vimshell_my_settings() " {{{3
   call vimshell#set_alias('e' , 'vim')
   call vimshell#set_alias('time' , 'exe time')
 
+  if !s:is_win
+    let g:vimshell_execute_file_list['zip'] = 'zipinfo'
+    call vimshell#set_execute_file('tgz,gz', 'gzcat')
+    call vimshell#set_execute_file('tbz,bz2', 'bzcat')
+  endif
   if s:is_mac
     call vimshell#set_alias('gvim'  , 'gexe mvim')
     call vimshell#set_alias('mvim'  , 'gexe mvim')
   else
-    call vimshell#set_alias('gvim'  , 'gexe mvim')
-    call vimshell#set_alias('mvim'  , 'gexe mvim')
+    call vimshell#set_alias('gvim'  , 'gexe gvim')
+    call vimshell#set_alias('mvim'  , 'gexe gvim')
   endif
+  if s:is_win
+  elseif s:is_mac
+    " call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe open')
+    " call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe open')
+    let g:vimshell_use_terminal_command = 'open'
+  else
+    call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
+    call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
+    let g:vimshell_use_terminal_command = 'gnome-terminal -e'
+  endif
+
   if executable('pry')
     call vimshell#set_alias('pry' , 'iexe irb')
     call vimshell#set_alias('irb' , 'iexe irb')
@@ -5195,6 +5212,9 @@ function! s:vimshell_my_settings() " {{{3
     nmap y <Plug>(operator-concealedyank)
     xmap y <Plug>(operator-concealedyank)
   endif
+
+  nmap <buffer><nowait> q <Plug>(vimshell_exit)
+  nmap <buffer> I G<Plug>(vimshell_append_enter)
   imap <silent> <buffer> <C-a> <C-o>:call cursor(line('.'), strlen(g:vimshell_prompt)+1)<CR>
   if s:plugin_installed('neocomplcache.vim')
     inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
