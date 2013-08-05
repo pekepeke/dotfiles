@@ -3,9 +3,11 @@
 
 ;; setup package.el
 (require 'package)
-(setq package-user-dir "~/.emacs.d/elisp.d/elpa/")
+(setq package-user-dir "~/.emacs.d/elisp.d/package-el/")
 (add-to-list 'package-archives
 			 '("melpa" . "http://melpa.milkbox.net/packages/") t)
+(add-to-list 'package-archives
+			 '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
 ;; setup el-get
 (setq el-get-dir "~/.emacs.d/elisp.d/el-get/")
@@ -26,7 +28,41 @@
        (package-install package)))
  '(
    ;;; write some package
+   popwin
+   auto-complete
+   quickrun
+   helm
+   helm-descbinds
+   ;; grep-edit
+   ;; smartchr
+   yasnippet
+   ;; yasnippet-config
+   evil
+   ;; evil-surround
+   ;; mode-compile
+   color-theme
+   color-theme-molokai
+   highlight-parentheses
+   ;; historyf
+   perl-completion
+   ;; tmt-mode
+   ruby-mode rinari rhtml-mode rsense
+   python-mode
+										; html5
+   haml-mode js2-mode
+   coffee-mode sass-mode zencoding-mode
+   ;; haskell-mode 
+   clojure-mode
+   ;; rst-mode
+   textile-mode markdown-mode
+   yaml-mode
+   apache-mode
+   applescript-mode
+   ;; run-test
+   google-translate
+   init-loader
    ))
+
 (package-initialize)
 
 ;; install packages by el-get
@@ -46,6 +82,9 @@
 				 :pkgname "emacs-helm/helm-descbinds"
 				 :description "Yet Another `describe-bindings' with `helm'."
 				 :depends (helm))
+		  (:name grep-edit
+				 :type emacswiki
+				 :features (grep-edit))
 		  (:name tmt-mode
 			 :type http
 			 :url "https://github.com/yoshiki/tmt-mode/raw/master/tmt-mode.el"
@@ -97,39 +136,40 @@
 			 :pkgname "emacsmirror/mode-compile")
 		       ))
 (el-get 'sync '(
-		  popup
-		  popwin
-		  auto-complete
-		  helm
-		  helm-descbinds
+		  ;; popup
+		  ;; popwin
+		  ;; auto-complete
+		  ;; helm
+		  ;; helm-descbinds
 		  grep-edit
 		  smartchr
-		  yasnippet
-		  yasnippet-config
-		  evil
+		  ;; yasnippet
+		  ;; yasnippet-config
+		  ;; evil
 		  evil-surround
-		  ;; eshell-manual
+		  ;; ;; eshell-manual
 		  mode-compile
-		  color-theme
-		  color-theme-molokai
-		  highlight-parentheses
+		  ;; color-theme
+		  ;; color-theme-molokai
+		  ;; highlight-parentheses
 		  historyf
-		  perl-completion
+		  ;; perl-completion
 		  tmt-mode
-		  ruby-mode rinari rhtml-mode rsense
-		  python-mode
-		  ; html5
-		  haml-mode js2-mode
-		  coffee-mode sass-mode zencoding-mode
-		  ;; haskell-mode 
-		  clojure-mode
-		  rst-mode textile-mode markdown-mode
-		  yaml-mode
-		  apache-mode
-		  applescript-mode
+		  ;; ruby-mode rinari rhtml-mode rsense
+		  ;; python-mode
+		  ;; ; html5
+		  ;; haml-mode js2-mode
+		  ;; coffee-mode sass-mode zencoding-mode
+		  ;; ;; haskell-mode 
+		  ;; clojure-mode
+		  rst-mode
+		  ;; textile-mode markdown-mode
+		  ;; yaml-mode
+		  ;; apache-mode
+		  ;; applescript-mode
 		  run-test
-		  google-translate
-		  init-loader
+		  ;; google-translate
+		  ;; init-loader
 		  ))
 
 ;;; define local vars

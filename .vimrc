@@ -1107,6 +1107,7 @@ endif
 " NeoBundle 'plasticboy/vim-markdown' " plasticboy mode -> mkd
 NeoBundle 'tpope/vim-markdown'
 NeoBundle 'thinca/vim-ft-markdown_fold'
+NeoBundleLazyOn FileType markdown 'joker1007/vim-markdown-quote-syntax'
 NeoBundle 'timcharper/textile.vim'
 NeoBundleLazyOn FileType csv 'chrisbra/csv.vim'
 NeoBundleLazyOn FileType yaml 'henrik/vim-yaml-flattener'
