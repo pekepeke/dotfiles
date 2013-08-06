@@ -735,6 +735,8 @@ NeoBundle 'ujihisa/shadow.vim'
 if !s:is_win
   NeoBundle 'mhinz/vim-signify'
   " NeoBundle 'airblade/vim-gitgutter'
+else
+  NeoBundle 'sgur/vim-gitgutter'
 endif
 " NeoBundle 'motemen/git-vim'
 NeoBundle 'tpope/vim-fugitive'
@@ -5427,8 +5429,10 @@ endfunction
 " let g:vinarise_enable_auto_detect = 1
 
 " memolist {{{2
-let g:memolist_suffix = "md"
+let g:memolist_memo_suffix = "md"
 let g:memolist_path = $HOME . '/memo'
+let g:memolist_vimfiler = 1
+
 nmap <silent> [!prefix]mf :exe 'Unite' 'file:'.g:memolist_path<CR>
 nmap <silent> [!prefix]mc :MemoNew<CR>
 nmap <silent> [!prefix]ml :MemoList<CR>
