@@ -480,10 +480,19 @@ NeoBundle 'git://gist.github.com/187578.git', {'directory': 'h2u_black'}
 "       \ }
 NeoBundleLazy 'mklabs/vim-fetch', { 'autoload' : {
       \ 'commands' : [
-      \   {'name': 'Fetch', },
+      \   {'name': 'Fetch', 'complete':'customlist,s:Completion'},
       \   'FetchManage',
       \ ], }}
-NeoBundle 'osyo-manga/vim-reanimate'
+NeoBundle 'osyo-manga/vim-reanimate', {'autoload': {
+      \ 'commands': [
+      \ 'ReanimateSave', 'ReanimateSaveCursorHold', 'ReanimateSaveInput',
+      \ 'ReanimateLoadInput', 'ReanimateLoadLatest',
+      \ 'ReanimateEditVimrcUnload',
+      \ {'name': 'ReanimateLoad', 'complete': 'customlist,s:save_point_completelist'},
+      \ {'name': 'ReanimateSwitch', 'complete': 'customlist,s:save_point_completelist'},
+      \ {'name': 'ReanimateEditVimrcLocal', 'complete': 'customlist,s:save_point_completelist'},
+      \ ]
+      \ }}
 NeoBundleLazy 'osyo-manga/vim-jplus', {'autoload':{
       \ 'mappings' : [['nv',
       \   '<Plug>(jplus-getchar)', '<Plug>(jplus-getchar-with-space)',
@@ -557,6 +566,15 @@ NeoBundle 'pekepeke/quickfixstatus'
 NeoBundle 'cohama/vim-hier'
 " NeoBundle 'tomtom/quickfixsigns_vim'
 NeoBundle 'tpope/vim-repeat'
+NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {
+      \ 'commands': [
+      \ {'name': 'FocusDispatch', 'complete': 'custom,dispatch#command_complete'},
+      \ {'name': 'Dispatch', 'complete': 'custom,dispatch#command_complete'},
+      \ {'name': 'Start', 'complete': 'custom,dispatch#command_complete'},
+      \ {'name': 'Make', 'complete': 'file'},
+      \ {'name': 'Copen'},
+      \ ],
+      \ }}
 " NeoBundle 'tpope/vim-surround'
 " NeoBundle 't9md/vim-surround_custom_mapping'
 NeoBundle 'anyakichi/vim-surround'
@@ -704,7 +722,9 @@ NeoBundle 'vim-scripts/matchparenpp'
 
 " NeoBundle 'houtsnip/vim-emacscommandline'
 NeoBundle 'tpope/vim-unimpaired'
-NeoBundle 'vim-scripts/ShowMultiBase'
+NeoBundleLazy 'vim-scripts/ShowMultiBase', {'autoload':{
+      \ 'commands': ['ShowMultiBase'],
+      \ }}
 " NeoBundle 'tyru/current-func-info.vim'
 " NeoBundle 'vim-scripts/taglist.vim'
 if s:is_win
@@ -712,15 +732,20 @@ if s:is_win
 else
   NeoBundle 'majutsushi/tagbar'
 endif
-NeoBundle 'wesleyche/SrcExpl', {'autoload': {
+NeoBundleLazy 'wesleyche/SrcExpl', {'autoload': {
       \ 'commands': ['SrcExpl', 'SrcExplClose', 'SrcExplToggle',],
       \ }}
 " NeoBundle 'abudden/TagHighlight'
 " NeoBundle 'tomtom/tcomment_vim'
-NeoBundle 'tpope/vim-commentary'
+NeoBundleLazy 'tpope/vim-commentary', {'autoload': {
+      \ 'mappings': [
+      \   ['xn', '<Plug>Commentary'],
+      \   ['n', '<Plug>CommentaryLine', '<Plug>CommentaryUndo'],
+      \ ],
+      \ }}
 " NeoBundle 'scrooloose/nerdcommenter'
 NeoBundle 'thinca/vim-template'
-NeoBundle 'mattn/sonictemplate-vim', {'autoload': {
+NeoBundleLazy 'mattn/sonictemplate-vim', {'autoload': {
       \ 'commands': [
       \   {'name': 'Template', 'complete': 'complete=customlist,sonictemplate#complete'},
       \   {'name': '', 'complete': 'complete=customlist,sonictemplate#complete'},
@@ -769,9 +794,9 @@ NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
       \   {'name': 'DirDiff', 'complete': 'dir'},
       \ ],
       \ }}
-NeoBundleLazy 'mbadran/headlights'
+" NeoBundleLazy 'mbadran/headlights'
 NeoBundle 'thinca/vim-ft-diff_fold'
-NeoBundle 'AndrewRadev/linediff.vim', {'autoload': {
+NeoBundleLazy 'AndrewRadev/linediff.vim', {'autoload': {
       \ 'commands': ['Linediff', 'LinediffReset'],
       \ }}
 NeoBundle 'vim-scripts/ConflictDetection', {
@@ -883,8 +908,6 @@ if executable('alpaca_complete')
         \ 'depends' : 'tpope/vim-rails',
         \ 'autoload' : { 'filetypes' : 'ruby'},
         \  }
-else
-  NeoBundleLazy 'taichouchou2/alpaca_complete'
 endif
 if executable('rails_best_practices')
   NeoBundleLazy 'taichouchou2/unite-rails_best_practices', {
@@ -912,7 +935,7 @@ NeoBundle 'vim-scripts/html_FileCompletion'
 NeoBundle 'tpope/vim-haml'
 NeoBundle 'digitaltoad/vim-jade'
 " NeoBundle 'mattn/zencoding-vim'
-NeoBundleLazyOn FileType html,eruby,php 'mattn/zencoding-vim'
+NeoBundleLazyOn FileType html,eruby,php 'mattn/emmet-vim'
 " NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
 NeoBundle 'juvenn/mustache.vim'
 
@@ -1312,7 +1335,17 @@ else
 endif
 
 " web {{{3
-NeoBundle 'tyru/open-browser.vim'
+NeoBundleLazy 'tyru/open-browser.vim', {'autoload':{
+      \ 'commands': [
+      \ {'name': 'OpenBrowser',},
+      \ {'name': 'OpenBrowserSearch', 'complete':'customlist,openbrowser#_cmd_complete'},
+      \ {'name': 'OpenBrowserSmartSearch', 'complete':'customlist,openbrowser#_cmd_complete'},
+      \ ],
+      \ 'mappings': [
+      \   ['nv', '<Plug>(openbrowser-open)', '<Plug>(openbrowser-search)',
+      \    '<Plug>(openbrowser-smart-search)',]
+      \ ],
+      \ }}
 NeoBundleLazy 'tyru/open-browser-github.vim', {'autoload': {
       \ 'commands': ['OpenGithubFile', 'OpenGithubIssue',
       \   'OpenGithubPullReq']
@@ -2263,8 +2296,27 @@ let g:airline_detect_iminsert=1
 let g:airline_theme='powerlineish'
 
 "  jplus {{{2
-nmap <Leader>j <Plug>(jplus-getchar)
-vmap <Leader>j <Plug>(jplus-getchar)
+if s:plugin_installed('vim-jplus')
+  nmap <Leader>j <Plug>(jplus-getchar)
+  vmap <Leader>j <Plug>(jplus-getchar)
+endif
+
+" commentary {{{2
+if s:plugin_installed('vim-commentary')
+  xmap gc <Plug>Commentary
+  nmap gc <Plug>Commentary
+  nmap gcc <Plug>CommentaryLine
+  nmap gcu <Plug>CommentaryUndo
+endif
+" showmultibase {{{2
+let g:ShowMultiBase_General_UseDefaultMappings = 0
+if s:plugin_installed('ShowMultiBase')
+  noremap <silent> <Leader>= :ShowMultiBase<CR>
+  noremap <silent> <Leader>b= :ShowMultiBase 2<CR>
+  noremap <silent> <Leader>o= :ShowMultiBase 8<CR>
+  noremap <silent> <Leader>d= :ShowMultiBase 10<CR>
+  noremap <silent> <Leader>h= :ShowMultiBase 16<CR>
+endif
 
 " cycle.vim {{{2
 let g:cycle_no_mappings=1
@@ -2902,8 +2954,10 @@ if s:plugin_installed('vim-submode')
 endif
 
 " open-browser.vim {{{2
-nmap [!space]u <Plug>(openbrowser-open)
-vmap [!space]u <Plug>(openbrowser-open)
+if s:plugin_installed('open-browser.vim')
+  nmap [!space]u <Plug>(openbrowser-open)
+  vmap [!space]u <Plug>(openbrowser-open)
+endif
 
 " netrw {{{2
 let g:netrw_home = $VIM_CACHE
