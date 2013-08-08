@@ -2025,9 +2025,10 @@ nnoremap <silent> [!t]l :<C-u>tags<CR>
 
 " maps {{{2
 " if &diff
-map <leader>1 :diffget LOCAL \| duffupdate<CR>
-map <leader>2 :diffget BASE \| duffupdate<CR>
-map <leader>3 :diffget REMOTE \| duffupdate<CR>
+" //2 = target-branch, //3 = merge branch
+map <leader>1 :diffget //2 \| duffupdate<CR>
+map <leader>2 :diffget //3 \| duffupdate<CR>
+map <leader>3 :echo '<Leader>2 = merges from target branch(left buffer), <Leader>3 = merges from merge branch(right buffer)'<CR>
 " endif
 
 " nmaps {{{3

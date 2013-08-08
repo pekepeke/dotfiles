@@ -1,4 +1,4 @@
-# #!/bin/zsh
+# vim:fdm=marker sw=2 ts=2 ft=snippet noexpandtab:
 snippet #!
 	#!/bin/zsh
 
@@ -76,3 +76,7 @@ snippet OS
 		*)
 			;;
 	esac
+snippet script_dir
+	script_dir="$(cd "$(dirname "${BASH_SOURCE:-$0}")"; pwd)"
+snippet script_dir2
+	script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE:-$0}")"; pwd)"
