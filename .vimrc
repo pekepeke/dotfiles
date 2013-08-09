@@ -2298,8 +2298,8 @@ let g:airline_theme='powerlineish'
 
 "  jplus {{{2
 if s:plugin_installed('vim-jplus')
-  nmap <Leader>j <Plug>(jplus-getchar)
-  vmap <Leader>j <Plug>(jplus-getchar)
+  nmap <Leader>j <Plug>(jplus-getchar-with-space)
+  vmap <Leader>j <Plug>(jplus-getchar-with-space)
 endif
 
 " commentary {{{2
