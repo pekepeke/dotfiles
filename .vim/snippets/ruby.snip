@@ -452,3 +452,13 @@ snippet encode_fixinvalid
 snippet encode_fixinvalidchars
 	${1:str}.chars.collect { |c| (c.valid_encoding?) ? c : "\uFFFD" }.join
 
+snippet lib
+	$:.push(File.join(File.dirname(__FILE__), 'lib'))
+
+snippet hash_extract
+	context = binding
+	attr.each {|k, v| eval("#{k} = #{v}", context)}
+
+snippet erb_result
+	ERB.new(${1:File.open("path", "r").read}).result(binding)
+

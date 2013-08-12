@@ -1,6 +1,6 @@
-source "http://rubygems.org"
-source "http://gems.rubyforge.org"
-source "http://gemcutter.org"
+source "https://rubygems.org"
+# source :rubyforge
+# source :gemcutter
 
 # source :rubygems
 # source :rubyforge
