@@ -502,10 +502,12 @@ NeoBundleLazy 'mattn/benchvimrc-vim'
 NeoBundle 'Shougo/context_filetype.vim'
 NeoBundleLazy 'Shougo/vimfiler.vim', {
       \ 'depends': 'Shougo/unite.vim', 'autoload' : {
-      \ 'commands' : [{ 'name' : 'VimFiler',
-      \    'complete' : 'customlist,vimfiler#complete' },
-      \    'VimFilerExplorer',
-      \    'Edit', 'Read', 'Source', 'Write'],
+      \ 'commands' : [
+      \ { 'name' : 'VimFiler', 'complete' : 'customlist,vimfiler#complete' },
+      \ { 'name' : 'VimFilerExplorer', 'complete' : 'customlist,vimfiler#complete' },
+      \ { 'name' : 'Edit', 'complete' : 'customlist,vimfiler#complete' },
+      \ { 'name' : 'Write', 'complete' : 'customlist,vimfiler#complete' },
+      \ 'Read', 'Source'],
       \ 'mappings' : ['<Plug>(vimfiler_switch)'],
       \ 'explorer' : 1,
       \ }}
@@ -764,7 +766,9 @@ else
   NeoBundle 'sgur/vim-gitgutter'
 endif
 " NeoBundle 'motemen/git-vim'
-NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'tpope/vim-fugitive', {'autoload':{
+      \ 'commands': [ "Git", "Gstatus", "Gcommit", "Gedit", "Gwrite", "Ggrep", "Glog", "Gdiff"],
+      \ }}
 NeoBundle 'tpope/vim-git'
 NeoBundle 'int3/vim-extradite'
 NeoBundleLazy 'gregsexton/gitv', {
@@ -825,7 +829,7 @@ NeoBundle 'kana/vim-vspec'
 " vim-help {{{4
 NeoBundle 'mattn/learn-vimscript'
 
-" neocomplcache {{{4
+" completion {{{4
 if has('lua') && (v:version > 703 ||
       \ (v:version == 703&& has('patch885')))
   NeoBundleLazy 'Shougo/neocomplete.vim', {'autoload':{
@@ -840,6 +844,8 @@ else
         \ }}
   " NeoBundleLazy 'Shougo/neocomplete.vim'
   NeoBundle 'Shougo/neocomplcache-rsense.vim'
+  NeoBundle 'basyura/csharp_complete'
+  NeoBundle 'osyo-manga/neocomplcache-jsx'
 endif
 NeoBundleLazy 'm2ym/rsense', {
       \ 'build' : {
@@ -853,8 +859,6 @@ NeoBundleLazy 'Shougo/neosnippet.vim', {
       \ 'filetypes' : 'snippet',
       \ 'unite_sources' : ['snippet', 'neosnippet/user', 'neosnippet/runtime'],
       \ }}
-NeoBundle 'basyura/csharp_complete'
-NeoBundle 'osyo-manga/neocomplcache-jsx'
 NeoBundle 'hrsh7th/vim-neco-calc'
 
 " ruby {{{4
@@ -1027,6 +1031,9 @@ NeoBundle 'lambdalisue/vim-python-virtualenv'
 NeoBundle 'gerardo/vim-django-support'
 NeoBundle 'vim-scripts/python_match.vim'
 NeoBundle 'heavenshell/vim-pydocstring'
+NeoBundleLazy 'hachibeeDI/unite-pythonimport', {'autoload':{
+      \ 'unite_sources' : ['pythonimport'],
+      \ }}
 
 if has('python')
   NeoBundleLazy 'davidhalter/jedi-vim', {
@@ -1082,6 +1089,7 @@ NeoBundle 'vim-scripts/applescript.vim'
 
 " windows {{{4
 NeoBundle 'PProvost/vim-ps1'
+NeoBundleLazyOn FileType vbnet 'hachibeeDI/vim-vbnet'
 
 " java, android {{{4
 NeoBundleLazyOn FileType java 'mikelue/vim-maven-plugin'
@@ -1336,6 +1344,8 @@ endif
 
 " web {{{3
 NeoBundleLazy 'tyru/open-browser.vim', {'autoload':{
+      \ 'functions': ['OpenBrowser', ],
+      \ 'function_prefix':'openbrowser',
       \ 'commands': [
       \ {'name': 'OpenBrowser',},
       \ {'name': 'OpenBrowserSearch', 'complete':'customlist,openbrowser#_cmd_complete'},
@@ -2280,6 +2290,9 @@ if s:is_mac
 endif
 
 " plugin settings {{{1
+" context_filetype
+let g:context_filetype#search_offset = 500
+
 " airline {{{2
 let g:airline_left_sep='|'
 let g:airline_right_sep='|'
