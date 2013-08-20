@@ -3269,6 +3269,7 @@ let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
 \   ["todo"               , "Todo"]                                    ,
 \   ["repl"               , "Unite menu:repl"]                         ,
 \   ["help"               , "Unite menu:help"]                         ,
+\   ["quickrun config"        , "Unite quickrun_config"]               ,
 \ ])
 let g:unite_source_menu_menus["help"] = s:unite_menu_create(
 \ 'Help', [
@@ -3440,6 +3441,7 @@ UniteNMap   gl        grep_launcher
 UniteNMap!  gi        git_grep -buffer-name=git_grep
 UniteNMap!  q         quickfix -buffer-name=qfix
 UniteNMap   p         history/yank
+UniteNMap   @         quickrun_config
 " UniteNMap   :         history/command command
 " UniteNMap   /         history/search
 UniteNMap   bb        bookmark -default-action=open
@@ -3769,6 +3771,12 @@ let g:SrcExpl_refreshTime = 1000
 
 function! s:exec_ctags(path) "{{{3
   let path = a:path
+  let options = ' --exclude=".git"'
+  if &filetype != 'javascript'
+    let options .= ' --exclude="*.js"'
+  elseif &filetype != 'coffee'
+    let options .= ' --exclude="*.coffee"'
+  endif
   let ctags_cmd = "ctags -R"
   if empty(path)
     " let path = input("input base dir : ", expand('%:p:h'))
@@ -4369,48 +4377,44 @@ call extend(g:quickrun_config, {
       \ },
       \ })
 " http://qiita.com/joker1007/items/9dc7f2a92cfb245ad502
-let g:quickrun_config['rspec/bundle'] = {
-  \ 'type': 'rspec/bundle',
-  \ 'command': 'rspec',
-  \ 'outputter/buffer/split': 'botright',
-  \ 'exec': 'bundle exec %c %o --color --tty %s'
-  \}
-let g:quickrun_config['rspec/normal'] = {
-  \ 'type': 'rspec/normal',
-  \ 'command': 'rspec',
-  \ 'outputter/buffer/split': 'botright',
-  \ 'exec': '%c %o --color --tty %s'
-  \}
-let g:quickrun_config['rspec/zeus'] = {
-  \ 'type': 'rspec/zeus',
-  \ 'command': 'rspec',
-  \ 'outputter/buffer/split': 'botright',
-  \ 'exec': 'zeus test %o --color --tty %s'
-  \}
-let g:quickrun_config['rspec/spring'] = {
-  \ 'type': 'rspec/spring',
-  \ 'command': 'rspec',
-  \ 'outputter/buffer/split': 'botright',
-  \ 'exec': 'spring rspec %o --color --tty %s'
-  \}
-let g:quickrun_config['cucumber/bundle'] = {
-  \ 'type': 'cucumber/zeus',
-  \ 'command': 'cucumber',
-  \ 'outputter/buffer/split': 'botright',
-  \ 'exec': 'bundle exec %c %o --color %s'
-  \}
-let g:quickrun_config['cucumber/zeus'] = {
-  \ 'type': 'cucumber/zeus',
-  \ 'command': 'cucumber',
-  \ 'outputter/buffer/split': 'botright',
-  \ 'exec': 'zeus cucumber %o --color %s'
-  \}
-let g:quickrun_config['cucumber/spring'] = {
-  \ 'type': 'cucumber/spring',
-  \ 'command': 'cucumber',
-  \ 'outputter/buffer/split': 'botright',
-  \ 'exec': 'spring cucumber %o --color %s'
-  \}
+call extend(g:quickrun_config, {
+      \ 'ruby.rspec/rspec_bundle': {
+      \   'command': 'rspec',
+      \   'outputter/buffer/split': 'botright',
+      \   'exec': 'bundle exec %c %o --color --tty %s'
+      \ },
+      \ 'ruby.rspec/rspec_normal': {
+      \   'command': 'rspec',
+      \   'outputter/buffer/split': 'botright',
+      \   'exec': '%c %o --color --tty %s'
+      \ },
+      \ 'ruby.rspec/rspec_zeus': {
+      \   'command': 'rspec',
+      \   'outputter/buffer/split': 'botright',
+      \   'exec': 'zeus test %o --color --tty %s'
+      \ },
+      \ 'ruby.rspec/rspec_spring': {
+      \   'command': 'rspec',
+      \   'outputter/buffer/split': 'botright',
+      \   'exec': 'spring rspec %o --color --tty %s'
+      \ },
+      \ 'ruby/cucumber_bundle': {
+      \   'command': 'cucumber',
+      \   'outputter/buffer/split': 'botright',
+      \   'exec': 'bundle exec %c %o --color %s'
+      \ },
+      \ 'ruby/cucumber_zeus': {
+      \   'command': 'cucumber',
+      \   'outputter/buffer/split': 'botright',
+      \   'exec': 'zeus cucumber %o --color %s'
+      \ },
+      \ 'ruby/cucumber_spring': {
+      \   'command': 'cucumber',
+      \   'outputter/buffer/split': 'botright',
+      \   'exec': 'spring cucumber %o --color %s'
+      \ },
+      \ })
+
 call extend(g:quickrun_config, {
       \  'ruby/rspec' : {
       \    'command' : 'rspec',
