@@ -852,6 +852,7 @@ else
   NeoBundle 'osyo-manga/neocomplcache-jsx'
 endif
 NeoBundleLazy 'm2ym/rsense', {
+      \ 'rtp' : 'etc',
       \ 'build' : {
       \    'mac': 'ruby etc/config.rb > ~/.rsense',
       \    'unix': 'ruby etc/config.rb > ~/.rsense',
@@ -886,6 +887,8 @@ NeoBundle 'tpope/vim-cucumber'
 NeoBundle 'yaymukund/vim-rabl'
 NeoBundle 'vim-scripts/eruby.vim'
 
+NeoBundle 'markcornick/vim-vagrant'
+" NeoBundle 'robbevan/Vagrantfile.vim'
 NeoBundleLazyOn FileType ruby 't9md/vim-chef'
 NeoBundle 'rodjek/vim-puppet'
 NeoBundleLazyOn FileType ruby 'joker1007/vim-ruby-heredoc-syntax'
@@ -911,8 +914,6 @@ NeoBundleLazy 'basyura/unite-rails', { 'autoload' : {
       \ ],
       \ }}
 
-" NeoBundleLazyOn FileType ruby 'markcornick/vim-vagrant'
-" NeoBundleLazyOn FileType ruby 'robbevan/Vagrantfile.vim'
 if has("signs") && has("clientserver") && v:version > 700
   NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
 else
@@ -1222,6 +1223,7 @@ NeoBundleLazyOn FileType sql 'vim-scripts/SQLUtilities'
 " NeoBundleLazyOn FileType sql 'vim-scripts/SQLComplete.vim'
 
 " etc {{{4
+NeoBundle 'honza/dockerfile.vim'
 NeoBundleLazyOn FileType lua 'xolox/vim-lua-ftplugin'
 NeoBundle 'vim-scripts/syslog-syntax-file'
 NeoBundle 'brandonbloom/vim-proto'
@@ -5140,15 +5142,15 @@ elseif s:plugin_installed('neocomplete.vim') "{{{3
   let g:neocomplete#sources#omni#input_patterns.ruby = '[^. *\t]\.\w*\|\h\w*::'
 
   " python
-	let g:neocomplete#force_omni_input_patterns.python = '[^. \t]\.\w*'
+  let g:neocomplete#force_omni_input_patterns.python = '[^. \t]\.\w*'
 
   " scala
   let g:neocomplete#sources#include#patterns.scala = '^import'
 
   " javascript
   let g:neocomplete#sources#omni#functions.javascript = 'nodejscomplete#CompleteJS'
-	" let g:neocomplete#sources#omni#functions.javascript = 'jscomplete#CompleteJS'
-	let g:neocomplete#sources#omni#input_patterns.javascript =
+  " let g:neocomplete#sources#omni#functions.javascript = 'jscomplete#CompleteJS'
+  let g:neocomplete#sources#omni#input_patterns.javascript =
         \ '\h\w*\|[^. \t]\.\w*'
   let g:node_usejscomplete = 1
 
@@ -6164,7 +6166,7 @@ function! s:ctagsutil.show() "{{{4
 endfunction
 
 function! s:ctagsutil.taglist_source(...) "{{{4
-	let langs = empty(a:000) ? keys(self.langmap) : a:000
+  let langs = empty(a:000) ? keys(self.langmap) : a:000
   let m = []
   for lang in langs
     if !exists('self.langmap[lang]')
@@ -6177,7 +6179,7 @@ function! s:ctagsutil.taglist_source(...) "{{{4
 endfunction
 
 function! s:ctagsutil.tagbar_source(...) "{{{4
-	let langs = empty(a:000) ? keys(self.langmap) : a:000
+  let langs = empty(a:000) ? keys(self.langmap) : a:000
   let m = []
   for lang in langs
     if !exists('self.langmap[lang]')
