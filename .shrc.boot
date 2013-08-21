@@ -151,11 +151,11 @@ dot-submodules-update() { #{{{3
   local cwd=$(pwd)
   cd ~/.github-dotfiles
   git submodule init
-  git submodule foreach 'git checkout master; git pull --ff origin master; git pull --ff'
+  git submodule foreach 'git checkout master; git pull --ff --rebase origin master; git pull --ff --rebase'
   if [ -e ~/.osx_library ]; then
     cd ~/.osx_library
     git submodule init
-    git submodule foreach 'git checkout master; git pull --ff origin master; git pull --ff'
+    git submodule foreach 'git checkout master; git pull --ff --rebase origin master; git pull --ff --rebase'
   fi
   cd ${cwd}
   __NOTIFY "update .github-dotfiles" "complete!"

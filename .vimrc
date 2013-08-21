@@ -1182,6 +1182,7 @@ NeoBundle 'ujihisa/neco-ghc'
 NeoBundleLazyOn FileType haskell "ujihisa/unite-haskellimport"
 NeoBundle 'eagletmt/ghcmod-vim'
 NeoBundleLazyOn FileType haskell 'eagletmt/unite-haddock'
+NeoBundle 'elixir-lang/vim-elixir'
 
 " php {{{4
 " NeoBundleLazyOn FileType php 'spf13/PIV'
@@ -1458,58 +1459,41 @@ NeoBundleLazy 'pekepeke/vim-operator-normalize-utf8mac', {
 " textobj {{{3
 NeoBundle 'kana/vim-textobj-user'
 NeoBundleLazy 'kana/vim-textobj-datetime', {'autoload': {
-      \ 'mappings': [['nvx',
-      \ '<Plug>(textobj-datetime-auto-i)', '<Plug>(textobj-datetime-auto-a)',
-      \ '<Plug>(textobj-datetime-full-i)', '<Plug>(textobj-datetime-full-a)',
-      \ '<Plug>(textobj-datetime-date-i)', '<Plug>(textobj-datetime-date-a)',
-      \ '<Plug>(textobj-datetime-time-i)', '<Plug>(textobj-datetime-time-a)',
-      \ '<Plug>(textobj-datetime-tz-i)', '<Plug>(textobj-datetime-tz-a)',
-      \ ]],
+      \ 'mappings': [['vo', 'da', 'df', 'dd', 'dt', 'dz', ]],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-diff', {'autoload': {
       \ 'mappings': [
-      \ '<Plug>(textobj-diff-hunk-n)', '<Plug>(textobj-diff-hunk-N)',
-      \ '<Plug>(textobj-diff-hunk-p)', '<Plug>(textobj-diff-hunk-P)',
-      \ '<Plug>(textobj-diff-file-n)', '<Plug>(textobj-diff-file-N)',
-      \ '<Plug>(textobj-diff-file-p)', '<Plug>(textobj-diff-file-P)',
+      \ ['n', '<Leader>dj', '<Leader>dJ', '<Leader>dk', '<Leader>dK',
+      \   '<Leader>dfj', '<Leader>dfJ', '<Leader>dfk', '<Leader>dfK', ]
       \ ],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-entire', {'autoload':{
-      \ 'mappings': [['nvx', '<Plug>(textobj-entire-i)', '<Plug>(textobj-entire-a))']],
+      \ 'mappings': [['vo', 'ie', 'ae']],
       \ }}
+      " \ 'mappings': [['nvx', '<Plug>(textobj-entire-i)', '<Plug>(textobj-entire-a)']],
 NeoBundleLazy 'kana/vim-textobj-fold', {'autoload':{
-      \ 'mappings': [['nvx', '<Plug>(textobj-fold-i)', '<Plug>(textobj-fold-a))']],
+      \ 'mappings': [['nvx', '<Plug>(textobj-fold-i)', '<Plug>(textobj-fold-a)']],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-jabraces', {'autoload':{
-      \ 'mappings' : [['nvx',
-      \ '<Plug>(textobj-jabraces-parens-i)', '<Plug>(textobj-jabraces-parens-a)',
-      \ '<Plug>(textobj-jabraces-brackets-i)', '<Plug>(textobj-jabraces-brackets-a)',
-      \ '<Plug>(textobj-jabraces-braces-i)', '<Plug>(textobj-jabraces-braces-a)',
-      \ '<Plug>(textobj-jabraces-angles-i)', '<Plug>(textobj-jabraces-angles-a)',
-      \ '<Plug>(textobj-jabraces-double-angles-i)', '<Plug>(textobj-jabraces-double-angles-a)',
-      \ '<Plug>(textobj-jabraces-kakko-i)', '<Plug>(textobj-jabraces-kakko-a)',
-      \ '<Plug>(textobj-jabraces-double-kakko-i)', '<Plug>(textobj-jabraces-double-kakko-a)',
-      \ '<Plug>(textobj-jabraces-yama-kakko-i)', '<Plug>(textobj-jabraces-yama-kakko-a)',
-      \ '<Plug>(textobj-jabraces-double-yama-kakko-i)', '<Plug>(textobj-jabraces-double-yama-kakko-a)',
-      \ '<Plug>(textobj-jabraces-kikkou-kakko-i)', '<Plug>(textobj-jabraces-kikkou-kakko-a)',
-      \ '<Plug>(textobj-jabraces-sumi-kakko-i)', '<Plug>(textobj-jabraces-sumi-kakko-a)',
+      \ 'mappings' : [['ov',
+      \ 'jb', 'j(', 'j)', 'jr', 'j[', 'j]', 'jB', 'j{', 'j}', 'ja', 'j<', 'j>', 'jA',
+      \ 'jk', 'jK', 'jy', 'jY', 'jt', 'js',
       \ ]],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-lastpat', {'autoload': {
-      \ 'mappings' : [['nvx',
-      \ '<Plug>(textobj-lastpat-n)', '<Plug>(textobj-lastpat-N)',
-      \ ]],
+      \ 'mappings' : [['vo', 'a/', 'i/', 'a?', 'i?' ]],
       \ }}
+      " \ '<Plug>(textobj-lastpat-n)', '<Plug>(textobj-lastpat-N)',
 NeoBundleLazy 'kana/vim-textobj-syntax', {'autoload': {
       \ 'mappings' : [['nvx',
       \ '<Plug>(textobj-syntax-i)', '<Plug>(textobj-syntax-a)',
       \ ]],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-line', {'autoload':{
-      \ 'mappings': [['nvx', '<Plug>(textobj-line-i)', '<Plug>(textobj-line-a))']],
+      \ 'mappings': [['vo', '<Plug>(textobj-line-i)', '<Plug>(textobj-line-a)']],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-underscore', {'autoload':{
-      \ 'mappings': [['nvx', '<Plug>(textobj-quoted-i)', '<Plug>(textobj-quoted-a))']],
+      \ 'mappings': [['nvx', '<Plug>(textobj-quoted-i)', '<Plug>(textobj-quoted-a)']],
       \ }}
 NeoBundleLazy 'thinca/vim-textobj-between', {
       \ 'depends' : 'vim-textobj-user',
@@ -1578,27 +1562,11 @@ NeoBundleLazy 'hchbaw/textobj-motionmotion.vim', {'autoload':{
       \ '<Plug>(textobj-motionmotion-i)', '<Plug>(textobj-motionmotion-a)',
       \ ]]}}
 NeoBundleLazy 'anyakichi/vim-textobj-xbrackets', {'autoload':{
-      \ 'mappings' : [['nvo',
-      \ '<Plug>(textobj-xbrackets-$(_)-a)', '<Plug>(textobj-xbrackets-$(_)-i)',
-      \ '<Plug>(textobj-xbrackets-${_}$(_)-a)', '<Plug>(textobj-xbrackets-${_}$(_)-i)',
-      \ '<Plug>(textobj-xbrackets-${_}-a)', '<Plug>(textobj-xbrackets-${_}-i)',
-      \ '<Plug>(textobj-xbrackets-x(_)-a)', '<Plug>(textobj-xbrackets-x(_)-i)',
-      \ '<Plug>(textobj-xbrackets-x<_>-a)', '<Plug>(textobj-xbrackets-x<_>-i)',
-      \ '<Plug>(textobj-xbrackets-x[_]-a)', '<Plug>(textobj-xbrackets-x[_]-i)',
-      \ '<Plug>(textobj-xbrackets-xs(){_}', '<Plug>(textobj-xbrackets-xs(_)-a',
-      \ '<Plug>(textobj-xbrackets-xs(_)-i', '<Plug>(textobj-xbrackets-xs<_>-a',
-      \ '<Plug>(textobj-xbrackets-xs<_>-i', '<Plug>(textobj-xbrackets-xs[_]-a',
-      \ '<Plug>(textobj-xbrackets-xs[_]-i', '<Plug>(textobj-xbrackets-xs{_}-a)',
-      \ '<Plug>(textobj-xbrackets-xs{_}-i)', '<Plug>(textobj-xbrackets-x{_}-a)',
-      \ '<Plug>(textobj-xbrackets-x{_}-i)', '<Plug>(textobj-xbrackets-y(_)-a)',
-      \ '<Plug>(textobj-xbrackets-y(_)-i)', '<Plug>(textobj-xbrackets-y<_>-a)',
-      \ '<Plug>(textobj-xbrackets-y<_>-i)', '<Plug>(textobj-xbrackets-y[_]-a)',
-      \ '<Plug>(textobj-xbrackets-y[_]-i)', '<Plug>(textobj-xbrackets-ys(){_}-a)',
-      \ '<Plug>(textobj-xbrackets-ys(){_}-i)', '<Plug>(textobj-xbrackets-ys(_)-a)',
-      \ '<Plug>(textobj-xbrackets-ys(_)-i)', '<Plug>(textobj-xbrackets-ys<_>-a',
-      \ '<Plug>(textobj-xbrackets-ys<_>-i', '<Plug>(textobj-xbrackets-ys[_]-a',
-      \ '<Plug>(textobj-xbrackets-ys[_]-i', '<Plug>(textobj-xbrackets-ys{_}-a',
-      \ '<Plug>(textobj-xbrackets-ys{_}-i', '<Plug>(textobj-xbrackets-y{_}-a)',
+      \ 'mappings' : [['vo',
+      \ 'V(', 'V)', 'Vb', 'V{', 'V}', 'VB', 'v', 'x(', 'x)', 'xb', '9', '0',
+      \ 'x<', 'x[', 'x{', 'xB', 'xs(', 'xsb', 'xs<', 'xs[', 'xs{', 'xsB',
+      \ 'xs){', 'y(', 'yb', 'y<', 'y[', 'y{', 'yB', 'ys(', 'ysb', 'ys<',
+      \ 'ys[', 'ys{', 'ysB', 'ys){',
       \ ]]}}
 NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
       \ 'mappings' : [
@@ -3814,6 +3782,7 @@ let g:surround_custom_mapping._ = {
       \ "\<CR>" : "\n\r\n",
       \ 'g':  "_('\r')",
       \ 'G':  "_(\"\r\")",
+      \ '!':  "<!-- \r -->",
       \ }
 let g:surround_custom_mapping.html = {
       \ '1':  "<h1>\r</h1>",
@@ -3940,58 +3909,23 @@ function! s:textobj_mapping_by_name(key, name)
 endfunction
 command! -nargs=+ TTmap call s:textobj_mapping_by_name(<f-args>)
 
-" Tmap i<Space>f <Plug>(textobj-function-i)
-" Tmap a<Space>f <Plug>(textobj-function-a)
-" Tmap i<Space>i <Plug>(textobj-indent-i)
-" Tmap a<Space>i <Plug>(textobj-indent-a)
+Tmap i<Space>f <Plug>(textobj-function-i)
+Tmap a<Space>f <Plug>(textobj-function-a)
+Tmap i<Space>i <Plug>(textobj-indent-i)
+Tmap a<Space>i <Plug>(textobj-indent-a)
 
-nmap <Leader>dj <Plug>(textobj-diff-hunk-n)
-nmap <Leader>dJ <Plug>(textobj-diff-hunk-N)
-nmap <Leader>dk <Plug>(textobj-diff-hunk-p)
-nmap <Leader>dK <Plug>(textobj-diff-hunk-P)
-nmap <Leader>dfj <Plug>(textobj-diff-file-n)
-nmap <Leader>dfJ <Plug>(textobj-diff-file-N)
-nmap <Leader>dfk <Plug>(textobj-diff-file-p)
-nmap <Leader>dfK <Plug>(textobj-diff-file-P)
-
-TTmap da datetime-auto
-TTmap df datetime-full
-TTmap dd datetime-date
-TTmap dt datetime-time
-TTmap dz datetime-tz
-
-TTmap jb jabraces-parens
-TTmap j( jabraces-parens
-TTmap j) jabraces-parens
-TTmap jr jabraces-brackets
-TTmap j[ jabraces-brackets
-TTmap j] jabraces-brackets
-TTmap jB jabraces-braces
-TTmap j{ jabraces-braces
-TTmap j} jabraces-braces
-TTmap ja jabraces-angles
-TTmap j< jabraces-angles
-TTmap j> jabraces-angles
-TTmap jA jabraces-double-angles
-TTmap jk jabraces-kakko
-TTmap jK jabraces-double-kakko
-TTmap jy jabraces-yama-kakko
-TTmap jY jabraces-double-yama-kakko
-TTmap jt jabraces-kikkou-kakko
-TTmap js jabraces-sumi-kakko
-
-Tmap a/ <Plug>(textobj-lastpat-n)
-Tmap i/ <Plug>(textobj-lastpat-n)
-Tmap a? <Plug>(textobj-lastpat-N)
-Tmap i? <Plug>(textobj-lastpat-N)
+" Tmap a/ <Plug>(textobj-lastpat-n)
+" Tmap i/ <Plug>(textobj-lastpat-n)
+" Tmap a? <Plug>(textobj-lastpat-N)
+" Tmap i? <Plug>(textobj-lastpat-N)
 
 TTmap y syntax
 TTmap ,_ quoted
 TTmap f function
 
-TTmap e entire
+" TTmap e entire
 TTmap ,, parameter
-TTmap l line
+" TTmap l line
 TTmap ,b between
 TTmap ,f fold
 TTmap q enclosedsyntax
@@ -4007,55 +3941,18 @@ Tmap axa <Plug>(textobj-xmlattribute-xmlattribute)
 Tmap ixa <Plug>(textobj-xmlattribute-xmlattributenospace)
 TTmap m  motionmotion
 
-TTmap V( xbrackets-$(_)
-TTmap V) xbrackets-$(_)
-TTmap Vb xbrackets-$(_)
-TTmap V{ xbrackets-${_}
-TTmap V} xbrackets-${_}
-TTmap VB xbrackets-${_}
-TTmap v  xbrackets-${_}$(_)
-TTmap x( xbrackets-x(_)
-TTmap x) xbrackets-x(_)
-TTmap xb xbrackets-x(_)
-TTmap 9  xbrackets-x(_)
-TTmap 0  xbrackets-x(_)
-TTmap x< xbrackets-x<_>
-TTmap x[ xbrackets-x[_]
-TTmap x{ xbrackets-x{_}
-TTmap xB xbrackets-x{_}
-TTmap xs( xbrackets-xs(_)
-TTmap xsb xbrackets-xs(_)
-TTmap xs< xbrackets-xs<_>
-TTmap xs[ xbrackets-xs[_]
-TTmap xs{ xbrackets-xs{_}
-TTmap xsB xbrackets-xs{_}
-TTmap xs){ xbrackets-xs(){_}
-TTmap y( xbrackets-y(_)
-TTmap yb xbrackets-y(_)
-TTmap y< xbrackets-y<_>
-TTmap y[ xbrackets-y[_]
-TTmap y{ xbrackets-y{_}
-TTmap yB xbrackets-y{_}
-TTmap ys( xbrackets-ys(_)
-TTmap ysb xbrackets-ys(_)
-TTmap ys< xbrackets-ys<_>
-TTmap ys[ xbrackets-ys[_]
-TTmap ys{ xbrackets-ys{_}
-TTmap ysB xbrackets-ys{_}
-TTmap ys){ xbrackets-ys(){_}
-
 TTmap P php-phptag
 TTmap aP php-phparray
 
 " let g:textboj_ _no_default_key_mappings=1
-let g:textboj_datetime_no_default_key_mappings=1
-let g:textboj_jabraces_no_default_key_mappings=1
+" let g:textboj_datetime_no_default_key_mappings=1
+" let g:textboj_jabraces_no_default_key_mappings=1
 
 let g:textboj_syntax_no_default_key_mappings=1
 let g:textboj_quoted_no_default_key_mappings=1
 let g:textboj_function_no_default_key_mappings=1
 
-let g:textobj_entire_no_default_key_mappings=1
+" let g:textobj_entire_no_default_key_mappings=1
 let g:textobj_parameter_no_default_key_mappings=1
 let g:textobj_line_no_default_key_mappings=1
 let g:textobj_between_no_default_key_mappings=1
@@ -4067,7 +3964,7 @@ let g:textboj_lastinserted_no_default_key_mappings=1
 let g:textboj_url_no_default_key_mappings=1
 let g:textboj_ifdef_no_default_key_mappings=1
 let g:textboj_context_no_default_key_mappings=1
-let g:textboj_xbrackets_no_default_key_mappings=1
+" let g:textboj_xbrackets_no_default_key_mappings=1
 let g:textboj_php_no_default_key_mappings=1
 
 let g:textobj_multiblock_blocks = [
@@ -4085,16 +3982,16 @@ let g:textobj_multitextobj_textobjects_i = [
       \ "\<Plug>(textobj-multiblock-i)",
       \ "\<Plug>(textobj-ruby-any-i)",
       \ "\<Plug>(textobj-function-i)",
-      \ "\<Plug>(textobj-entire-i)",
       \]
+      " \ "\<Plug>(textobj-entire-i)",
 
 let g:textobj_multitextobj_textobjects_a = [
       \ "\<Plug>(textobj-url-a)",
       \ "\<Plug>(textobj-multiblock-a)",
       \ "\<Plug>(textobj-ruby-any-i)",
       \ "\<Plug>(textobj-function-a)",
-      \ "\<Plug>(textobj-entire-a)",
       \]
+      " \ "\<Plug>(textobj-entire-a)",
 
 let g:textobj_multitextobj_textobjects_group_i = {
       \ "A" : [
