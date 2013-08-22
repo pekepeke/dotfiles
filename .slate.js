@@ -29,11 +29,11 @@ var LIB = {
     };
   }
 };
-var cas = ":cmd;ctrl";
+// var cas = ":cmd;ctrl";
 S.bindAll({
   'g:cmd;ctrl' : S.op('grid'),
   'r:cmd;ctrl' : function() {
     S.src(".slate", true);
     S.src(".slate.js", true);
-  },
+  }
 });

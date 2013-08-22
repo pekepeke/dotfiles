@@ -28,11 +28,15 @@ bind x:${cas} corner top-left resize:screenSizeX;screenSizeY
 bind up:${cas} corner top-left resize:screenSizeX;screenSizeY
 bind z:${cas} undo
 
+bind l:cmd;alt shell '/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine'
+
 # run screen saver
 # bind l:${cas} shell '/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine'
 bind l:cmd;alt shell '/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine'
 
 # Window Hints
 bind tab:${cas} hint
+bind f1:cmd shell '~/bin/mac/expose'
+bind f2:cmd shell '~/bin/mac/expose_app'
 
-source ~/.slate.js
+# source ~/.slate.js
