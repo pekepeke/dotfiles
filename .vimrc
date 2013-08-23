@@ -3363,7 +3363,7 @@ function! s:bundle.hooks.on_source(bundle)
       call unite#take_action('narrow', a:candidate)
     else
       let context = unite#get_context()
-      call unite#close(context.buffer_name)
+      " call unite#close(context.buffer_name)
       call unite#take_action('insert', a:candidate)
     endif
   endfunction
@@ -3430,7 +3430,7 @@ nnoremap [!space]R :<C-u>Unite quicklearn -immediately<CR>
 nnoremap <silent> [!unite]v :Unite menu:shortcut<CR>
 nnoremap <silent> [!unite]V :call <SID>unite_context_menu()<CR>
 
-" filepath insert
+" filepath insert TODO : don't works well...--;
 nnoremap <C-y><C-f> :<C-u>Unite -default-action=narrow_or_insert file<CR>
 inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=narrow_or_insert file<CR>
 
@@ -4997,7 +4997,7 @@ if s:plugin_installed('neocomplcache.vim') "{{{3
     " Recommended key-mappings.
     " <CR>: close popup and save indent.
     " inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
-    inoremap <silent> <Cr> <C-R>=neocomplcache#smart_close_popup()<CR><CR>
+    inoremap <silent> <CR> <C-R>=neocomplcache#smart_close_popup()<CR><CR>
 
     " <TAB>: completion.
     " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
@@ -5017,7 +5017,7 @@ if s:plugin_installed('neocomplcache.vim') "{{{3
       inoremap <expr><BS>   neocomplcache#smart_close_popup()."\<C-h>"
     endif
 
-    inoremap <expr> <C-y>  neocomplcache#close_popup()
+    " inoremap <expr> <C-y>  neocomplcache#close_popup()
     inoremap <expr> <C-e>  neocomplcache#cancel_popup()
 
     inoremap <expr> <C-j> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
@@ -5209,7 +5209,7 @@ elseif s:plugin_installed('neocomplete.vim') "{{{3
   " Recommended key-mappings.
   " <CR>: close popup and save indent.
   " inoremap <expr><CR>  neocomplete#smart_close_popup() . "\<CR>"
-  inoremap <silent> <Cr> <C-R>=neocomplete#smart_close_popup()<CR><CR>
+  inoremap <silent> <CR> <C-R>=neocomplete#smart_close_popup()<CR><CR>
 
   " <TAB>: completion.
   " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
@@ -5229,7 +5229,7 @@ elseif s:plugin_installed('neocomplete.vim') "{{{3
     inoremap <expr><BS>   neocomplete#smart_close_popup()."\<C-h>"
   endif
 
-  inoremap <expr> <C-y>  neocomplete#close_popup()
+  " inoremap <expr> <C-y>  neocomplete#close_popup()
   inoremap <expr> <C-e>  neocomplete#cancel_popup()
 
   inoremap <expr> <C-j> pumvisible() ? neocomplete#close_popup() : "\<CR>"
