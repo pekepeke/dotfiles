@@ -162,57 +162,14 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   #   # --enable-fpm --without-mm
   #   export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql"
   # fi
-  ## cakephp {{{3
-  # cake-dispatch() { #{{{
-  #   local mode=$1 rlwrap=$(which rlwrap 2>/dev/null)
-  #   local cwd=$(pwd)
-  #   local appdir=$cwd/app
-  #   while [ 1 ] ; do
-  #     [ -e $appdir/Console/cake ] && break
-  #     [ -e $appdir/console/cake ] && break
-  #     if [ "/" = "$appdir" ] ; then
-  #       echo "command not found"
-  #       return 1
-  #     fi
-  #     appdir=$(dirname $appdir)
-  #   done
-  #   shift
-
-  #   [ x$ENV = x ] && ENV=development
-  #   case $mode in
-  #     console)
-  #       if [ -x $appdir/Console/cake ] ; then
-  #         (cd "$appdir"; ENV=$ENV $rlwrap Console/cake $*)
-  #       elif [ -x $appdir/console/cake ]; then
-  #         (cd "$appdir"; ENV=$ENV $rlwrap console/cake $*)
-  #       else
-  #         echo "command not found $*"
-  #       fi
-  #       ;;
-  #     clear-cache)
-  #       (cd "$appdir"; [ -e ./tmp/cache ] && find ./tmp/cache -type f -name 'cake_*' -exec rm {} \;)
-  #       ;;
-  #     *)
-  #       echo "command not found $*"
-  #       ;;
-  #   esac
-  # } #}}}
-  # cakec() {
-  #   cake-dispatch console $*
-  # }
-  # bake() {
-  #   cake-dispatch console bake $*
-  # }
-  # cake-cc() {
-  #   cake-dispatch clear-cache $*
-  # }
-  ## }}}
 
   # scala {{{2
   if [ -e ~/.svm ]; then
     export SCALA_HOME=~/.svm/current/rt
     PATH=$SCALA_HOME/bin:$HOME/.svm/:$PATH
   fi
+
+  vmenv-init goenv
 
   shrc_section_title "for Ruby" # {{{2
   vmenv-init rbenv

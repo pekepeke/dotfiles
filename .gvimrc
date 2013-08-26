@@ -11,6 +11,7 @@ set cmdheight=1
 " set nomousefocus
 " set mousehide
 
+colorscheme vividchalk
 " autocmd BufReadPost * tab ball
 
 " environment settings "{{{1

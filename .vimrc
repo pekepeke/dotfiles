@@ -44,6 +44,10 @@ function! s:path_push(...)
   let $PATH .= sep . join(pathes, sep)
 endfunction
 
+if !has('vim_starting')
+  let s:restore_setlocal=join(['setlocal sw=', &sw, ' tw=', &tw, ' sts=', &sts], ' '.(&et ? '' : 'no').'expandtab')
+endif
+
 " reset settings & restore runtimepath {{{2
 " let s:configured_runtimepath = &runtimepath
 set all&
@@ -314,7 +318,7 @@ function! s:syntaxes_add() "{{{2
 endfunction
 
 function! s:gui_colorscheme_init()
-  colorscheme vividchalk
+  " colorscheme vividchalk
   call s:syntaxes_add()
   call s:highlights_add()
 endfunction
@@ -328,7 +332,7 @@ augroup vimrc-colors "{{{2
   autocmd Syntax eruby highlight link erubyRubyDelim Label
 
   if has('gui_running')
-    autocmd vimrc-colors GUIEnter * call <SID>gui_colorscheme_init()
+    autocmd GUIEnter * call <SID>gui_colorscheme_init()
   endif
 
   " カーソル行 http://d.hatena.ne.jp/thinca/20090530/1243615055
@@ -445,7 +449,8 @@ endif
 
 " vundles {{{2
 " powerline {{{3
-NeoBundle 'bling/vim-airline'
+" NeoBundle 'bling/vim-airline'
+NeoBundle 'itchyny/lightline.vim'
 " NeoBundleLazy 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
 " NeoBundle 'zhaocai/linepower.vim'
 " NeoBundleLazy 'Lokaltog/vim-powerline'
@@ -1461,7 +1466,10 @@ NeoBundleLazy 'pekepeke/vim-operator-normalize-utf8mac', {
 " textobj {{{3
 NeoBundle 'kana/vim-textobj-user'
 NeoBundleLazy 'kana/vim-textobj-datetime', {'autoload': {
-      \ 'mappings': [['vo', 'da', 'df', 'dd', 'dt', 'dz', ]],
+      \ 'mappings': [['vo',
+      \ 'ada', 'adf', 'add', 'adt', 'adz',
+      \ 'ida', 'idf', 'idd', 'idt', 'idz',
+      \ ]],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-diff', {'autoload': {
       \ 'mappings': [
@@ -1478,8 +1486,10 @@ NeoBundleLazy 'kana/vim-textobj-fold', {'autoload':{
       \ }}
 NeoBundleLazy 'kana/vim-textobj-jabraces', {'autoload':{
       \ 'mappings' : [['ov',
-      \ 'jb', 'j(', 'j)', 'jr', 'j[', 'j]', 'jB', 'j{', 'j}', 'ja', 'j<', 'j>', 'jA',
-      \ 'jk', 'jK', 'jy', 'jY', 'jt', 'js',
+      \ 'ajb', 'aj(', 'aj)', 'ajr', 'aj[', 'aj]', 'ajB', 'aj{', 'aj}', 'aja', 'aj<', 'aj>', 'ajA',
+      \ 'ajk', 'ajK', 'ajy', 'ajY', 'ajt', 'ajs',
+      \ 'ijb', 'ij(', 'ij)', 'ijr', 'ij[', 'ij]', 'ijB', 'ij{', 'ij}', 'ija', 'ij<', 'ij>', 'ijA',
+      \ 'ijk', 'ijK', 'ijy', 'ijY', 'ijt', 'ijs',
       \ ]],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-lastpat', {'autoload': {
@@ -1565,10 +1575,13 @@ NeoBundleLazy 'hchbaw/textobj-motionmotion.vim', {'autoload':{
       \ ]]}}
 NeoBundleLazy 'anyakichi/vim-textobj-xbrackets', {'autoload':{
       \ 'mappings' : [['vo',
-      \ 'V(', 'V)', 'Vb', 'V{', 'V}', 'VB', 'v', 'x(', 'x)', 'xb', '9', '0',
-      \ 'x<', 'x[', 'x{', 'xB', 'xs(', 'xsb', 'xs<', 'xs[', 'xs{', 'xsB',
-      \ 'xs){', 'y(', 'yb', 'y<', 'y[', 'y{', 'yB', 'ys(', 'ysb', 'ys<',
-      \ 'ys[', 'ys{', 'ysB', 'ys){',
+      \ 'aV(', 'aV)', 'aVb', 'aV{', 'aV}', 'aVB', 'av', 'ax(', 'ax)', 'axb', 'a9', 'a0',
+      \ 'ax<', 'ax[', 'ax{', 'axB', 'axs(', 'axsb', 'axs<', 'axs[', 'axs{', 'axsB',
+      \ 'axs){', 'ay(', 'ayb', 'ay<', 'ay[', 'ay{', 'ayB', 'ays(', 'aysb', 'ays<',
+      \ 'iV(', 'iV)', 'iVb', 'iV{', 'iV}', 'iVB', 'iv', 'ix(', 'ix)', 'ixb', 'i9', 'i0',
+      \ 'ix<', 'ix[', 'ix{', 'ixB', 'ixs(', 'ixsb', 'ixs<', 'ixs[', 'ixs{', 'ixsB',
+      \ 'ixs){', 'iy(', 'iyb', 'iy<', 'iy[', 'iy{', 'iyB', 'iys(', 'iysb', 'iys<',
+      \ 'iys[', 'iys{', 'iysB', 'iys){',
       \ ]]}}
 NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
       \ 'mappings' : [
@@ -1967,7 +1980,12 @@ nnoremap [!space]r :<C-u>%S/
 vnoremap [!space]r :S/
 
 " grep
-if executable('ag')
+if s:is_win && executable('jvgrep')
+  set grepprg=jvgrep
+  " set grepprg=jvgrep\ -n
+  let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
+  let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
+elseif executable('ag')
   set grepprg=ag\ -i\ --nocolor\ --nogroup\ --nopager
   set grepformat=%f:%l:%m
   let g:ackprg="ag -i --nocolor --nogroup --column --nopager"
@@ -2098,8 +2116,10 @@ nnoremap [!space]/ :<C-u>nohlsearch<CR>
 nnoremap [!space]w :<C-u>call <SID>toggle_option("wrap")<CR>
 
 nnoremap <C-w><Space> <C-w>p
-nnoremap <C-w>*  <C-w>s*
-nnoremap <C-w>#  <C-w>s#
+nnoremap *  *N
+nnoremap #  #n
+nnoremap <C-w>*  <C-w>s*N
+nnoremap <C-w>#  <C-w>s#n
 
 nnoremap [!prefix]ds :call <SID>replace_at_caret_data_scheme()<CR>
 function! s:replace_at_caret_data_scheme() " {{{4
@@ -2299,21 +2319,87 @@ endif
 " context_filetype
 let g:context_filetype#search_offset = 500
 
-" airline {{{2
-let g:airline_left_sep='|'
-let g:airline_right_sep='|'
-let g:airline_linecolumn_prefix = ':'
-let g:airline_branch_prefix = 'BR:'
-let g:airline_paste_symbol = '[P]'
-let g:airline_readonly_symbol = '[R]'
+" lightline {{{2
+if s:plugin_installed('lightline.vim')
+  let g:unite_force_overwrite_statusline = 0
+  let g:lightline = {
+        \ 'colorscheme': 'solarized',
+        \ 'active': {
+        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
+        \ },
+        \ 'component_function': {
+        \   'fugitive' : 'g:lightline_fn.fugitive',
+        \   'filename' : 'g:lightline_fn.filename',
+        \ },
+        \ }
+  let g:lightline_fn = {}
+  function! g:lightline_fn.is_special_ft() "{{{3
+    return &filetype =~ 'help\|vimfiler\|gundo'
+  endfunction
 
-let g:airline_enable_syntastic=0
-" let g:airline_powerline_fonts=0
-let g:airline_enable_branch=1
-let g:airline_detect_modified=1
-let g:airline_detect_paste=1
-let g:airline_detect_iminsert=1
-let g:airline_theme='powerlineish'
+  function! g:lightline_fn.fugitive() "{{{3
+    if !self.is_special_ft() && exists('*fugitive#head')
+      return fugitive#head()
+    endif
+    return ''
+  endfunction
+
+  function! g:lightline_fn.modified() "{{{3
+    if self.is_special_ft()
+      return ''
+    elseif &modified
+      return '[+]'
+    elseif &modifiable
+      return ''
+    endif
+    return '[-]'
+  endfunction
+
+  function! g:lightline_fn.readonly() "{{{3
+    return !self.is_special_ft() && &readonly ? '[R]' : ''
+  endfunction
+
+  function! g:lightline_fn.get_filename() "{{{3
+    if &filetype == 'vimfiler'
+      return vimfiler#get_status_string()
+    elseif &filetype == 'unite'
+      return unite#get_status_string()
+    elseif &filetype == 'vimshell'
+      return substitute(b:vimshell.current_dir, expand('~'), '~', '')
+    elseif exists('t:undotree')
+      if filetype == 'undotree' && exists('*t:undotree.GetStatusLine')
+        return t:undotree.GetStatusLine()
+      elseif &filetype == 'diff' exists('*t:diffpanel.GetStatusLine')
+        return t:diffpanel.GetStatusLine()
+      endif
+    elseif expand('%t')
+      return '[No Name]'
+    endif
+    return expand('%t')
+  endfunction
+
+  function! g:lightline_fn.filename() "{{{3
+    return join([self.readonly(), self.get_filename(), self.modified()], '')
+  endfunction
+endif
+
+" airline {{{2
+if s:plugin_installed('vim-airline')
+  let g:airline_left_sep='|'
+  let g:airline_right_sep='|'
+  let g:airline_linecolumn_prefix = ':'
+  let g:airline_branch_prefix = 'BR:'
+  let g:airline_paste_symbol = '[P]'
+  let g:airline_readonly_symbol = '[R]'
+
+  let g:airline_enable_syntastic=0
+  " let g:airline_powerline_fonts=0
+  let g:airline_enable_branch=1
+  let g:airline_detect_modified=1
+  let g:airline_detect_paste=1
+  let g:airline_detect_iminsert=1
+  let g:airline_theme='powerlineish'
+endif
 
 "  jplus {{{2
 if s:plugin_installed('vim-jplus')
@@ -3166,7 +3252,10 @@ let g:unite_source_file_rec_max_cache_files = 5000
 
 " unite-grep {{{3
 " let g:unite_source_grep_default_opts = '-iRHn'
-if executable('ag')
+if s:is_win && executable('jvgrep')
+  let g:unite_source_grep_command = "jvgrep"
+  let g:unite_source_grep_default_opts = '-in --exclude "\.(git|svn|hg|bzr)"'
+elseif executable('ag')
   let g:unite_source_grep_command = 'ag'
   let g:unite_source_grep_default_opts = '-i --noheading --nocolor --nogroup --nopager'
   let g:unite_source_grep_recursive_opt = ''
@@ -5947,6 +6036,18 @@ command! -range Tsvtoflatjson      <line1>,<line2>call my#tsv#to_flat_json()
 command! -nargs=0 -range TMY <line1>,<line2>call my#mysql#to_tsv()
 command! -nargs=0 -range MySQLToTsv <line1>,<line2>call my#mysql#to_tsv()
 
+" text {{{3
+command! -nargs=0 -range=0 Plain call s:text_to_plain(<count>, <line1>, <line2>)
+function! s:text_to_plain(count, l1, l2)
+  if a:count <= 0
+    return
+  endif
+  silent! execute a:l1.','a:l2.'s/[｀]/`/g'
+  silent! execute a:l1.','a:l2."s/[‘’]/'/g"
+  silent! execute a:l1.','a:l2.'s/[“”]/"/g'
+  silent! execute a:l1.','a:l2.'s/　/  /g'
+endfunction
+
 " padding {{{3
 command! -nargs=? -range PadNumber <line1>,<line2>call my#padding#number(<f-args>)
 command! -nargs=? -range PadString <line1>,<line2>call my#padding#string(<f-args>)
@@ -6194,17 +6295,27 @@ endfunction
 " TagsConfigExample {{{3
 command! -nargs=0 TagsConfigExample call s:ctagsutil.show()
 
-" for vim {{{3}}}
+" for vim {{{3
 command! -nargs=0 ThisSyntaxName echo synIDattr(synID(line("."), col("."), 1), "name")
+command! -nargs=0 ThisSyntax echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+                        \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+                        \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
 
 " after initializes {{{1
-if !has('vim_starting') && has('gui_running')
-  execute 'source' expand("~/.gvimrc")
-endif
 if !has('vim_starting')
-  doautocmd VimEnter
   if has('gui_running')
-    doautocmd GUIEnter,BufRead
+    execute 'source' expand("~/.gvimrc")
+  endif
+
+  if has('gui_running')
+    " doautocmd GUIEnter,BufRead
+    doautocmd VimEnter,GUIEnter
+  else
+    doautocmd VimEnter
+  endif
+  if exists('s:restore_setlocal')
+    execute s:restore_setlocal
+    unlet s:restore_setlocal
   endif
   if exists('*PowerlineNew') " s:plugin_installed('powerline')
     set statusline=%!PowerlineNew()
