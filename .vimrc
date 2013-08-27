@@ -875,6 +875,7 @@ NeoBundle 'hrsh7th/vim-neco-calc'
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
 NeoBundleLazyOn FileType ruby,haml,eruby 'tpope/vim-rails'
+" NeoBundleLazyOn FileType ruby 'tpope/vim-rbenv'
 " NeoBundle 'tpope/vim-bundler'
 NeoBundle 'tobiassvn/vim-gemfile'
 NeoBundle 'hallison/vim-ruby-sinatra'
@@ -2325,26 +2326,28 @@ if s:plugin_installed('lightline.vim')
   let g:lightline = {
         \ 'colorscheme': 'solarized',
         \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ] ]
+        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'lang_version' ] ]
         \ },
         \ 'component_function': {
-        \   'fugitive' : 'g:lightline_fn.fugitive',
-        \   'filename' : 'g:lightline_fn.filename',
+        \   'fugitive' : 'g:ll_helper.fugitive',
+        \   'filename' : 'g:ll_helper.filename',
+        \   'iminsert' : 'g:ll_helper.iminsert',
+        \   'lang_version' : 'g:ll_helper.lang_version',
         \ },
         \ }
-  let g:lightline_fn = {}
-  function! g:lightline_fn.is_special_ft() "{{{3
+  let g:ll_helper = {}
+  function! g:ll_helper.is_special_ft() "{{{3
     return &filetype =~ 'help\|vimfiler\|gundo'
   endfunction
 
-  function! g:lightline_fn.fugitive() "{{{3
+  function! g:ll_helper.fugitive() "{{{3
     if !self.is_special_ft() && exists('*fugitive#head')
       return fugitive#head()
     endif
     return ''
   endfunction
 
-  function! g:lightline_fn.modified() "{{{3
+  function! g:ll_helper.modified() "{{{3
     if self.is_special_ft()
       return ''
     elseif &modified
@@ -2355,17 +2358,83 @@ if s:plugin_installed('lightline.vim')
     return '[-]'
   endfunction
 
-  function! g:lightline_fn.readonly() "{{{3
+  function! g:ll_helper.readonly() "{{{3
     return !self.is_special_ft() && &readonly ? '[R]' : ''
   endfunction
 
-  function! g:lightline_fn.get_filename() "{{{3
+  function! g:ll_helper.iminsert() "{{{3
+    return &iminsert ? "IME" : ''
+  endfunction
+
+  function! g:ll_helper.lang_version() "{{{3
+    return join(map(copy(self.lang_items), 'self[v:val]()'), '')
+    " return g:ll_helper.virtualenv().g:ll_helper.rbenv()
+  endfunction
+  let g:ll_helper.lang_items = [
+        \ 'rbenv', 'pyenv',
+        \ 'plenv', 'nodenv', 'phpenv',
+        \ ]
+
+  function! g:ll_helper.env_version(ft, name) "{{{3
+    if &filetype != a:ft
+      return ""
+    endif
+
+    let var = a:name . '_version'
+    if !exists('b:'.var)
+      for f in ['.'.a:name.'-version', expand('~/.'.a:name.'/version')]
+        if filereadable(f)
+          let b:[var] = readfile(f)[0]
+          break
+        endif
+      endfor
+    endif
+    let ver = get(b:, var, '')
+    return a:name . ':' . ver
+  endfunction
+
+  function! g:ll_helper.plenv() "{{{3
+    return self.env_version('perl', 'plenv')
+  endfunction
+
+  function! g:ll_helper.pyenv() "{{{3
+    return self.env_version('python', 'pyenv')
+  endfunction
+
+  function! g:ll_helper.phpenv() "{{{3
+    return self.env_version('php', 'phpenv')
+  endfunction
+
+  function! g:ll_helper.nodenv() "{{{3
+    return self.env_version('javascript', 'nodenv')
+  endfunction
+
+  function! g:ll_helper.rbenv() "{{{3
+    if &filetype == 'ruby'
+      if exists('$RBENV_VERSION')
+        return "rbenv:" . $RBENV_VERSION
+      endif
+      return self.env_version('ruby', 'rbenv')
+    endif
+    return ''
+  endfunction
+
+  function! g:ll_helper.virtualenv() "{{{3
+    if &filetype == 'python' && exists('*virtualenv#statusline')
+      return virtualenv#statusline()
+    endif
+    return ''
+  endfunction
+
+  function! g:ll_helper.get_filename() "{{{3
     if &filetype == 'vimfiler'
       return vimfiler#get_status_string()
     elseif &filetype == 'unite'
       return unite#get_status_string()
     elseif &filetype == 'vimshell'
       return substitute(b:vimshell.current_dir, expand('~'), '~', '')
+    elseif &filetype == 'tagbar'
+      return 'Tagbar ' . tagbar#currenttag("%s", "")
     elseif exists('t:undotree')
       if filetype == 'undotree' && exists('*t:undotree.GetStatusLine')
         return t:undotree.GetStatusLine()
@@ -2378,7 +2447,7 @@ if s:plugin_installed('lightline.vim')
     return expand('%t')
   endfunction
 
-  function! g:lightline_fn.filename() "{{{3
+  function! g:ll_helper.filename() "{{{3
     return join([self.readonly(), self.get_filename(), self.modified()], '')
   endfunction
 endif
