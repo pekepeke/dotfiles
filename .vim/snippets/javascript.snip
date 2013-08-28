@@ -1,3 +1,4 @@
+
 # anonymous function
 snippet anon
 	function(${1}) { ${2} };
@@ -789,3 +790,9 @@ snippet main
     if (!module.parent) {
         {$0}
     }
+snippet processOnUncaughtException
+    process.on('uncaughtException', function(err) {
+        // handle the error safely
+        console.log(err);
+    });
+

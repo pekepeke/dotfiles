@@ -3601,8 +3601,36 @@ UniteNMap a file_rec -start-insert
 " endif
 
 " nnoremap <silent> [!unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
-nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_filetype()<CR>
+" nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_filetype()<CR>
+nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_smart()<CR>
 nnoremap <silent> [!unite]hk :<C-u>Unite mapping<CR>
+
+function! s:unite_ref_smart(...) "{{{4
+  let kwd = ""
+  if a:0 > 0
+    let isk = &l:isk
+    setlocal isk& isk+=- isk+=. isk+=:
+    let kwd = expand('<cword>')
+    let &l:isk = isk
+  endif
+  let name = ref#detect()
+  let names = type(name) == type("") ? [name] : name
+  unlet name
+
+  let completable = keys(filter(ref#available_sources(), 'exists("v:val.complete")'))
+  let sources = filter(names, 'index(completable, v:val) != -1')
+  unlet names
+
+  if !empty(sources)
+    let source = join(map(sources, '"ref/".v:val'), ' ')
+    execute printf('Unite -default-action=below -input=%s %s', kwd, source)
+  else
+    echohl Error
+    echomsg "Not Found : ref source"
+    echohl Normal
+  endif
+  unlet kwd completable sources source
+endfunction
 
 function! s:unite_ref_filetype() " {{{4
   let ft = &ft
