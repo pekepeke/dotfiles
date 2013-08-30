@@ -881,12 +881,14 @@ NeoBundle 'tobiassvn/vim-gemfile'
 NeoBundle 'hallison/vim-ruby-sinatra'
 " NeoBundle 'tpope/vim-rake'
 " NeoBundle 'taq/vim-rspec'
-NeoBundleLazyOn FileType ruby 'skwp/vim-rspec'
-" NeoBundleLazy 'alpaca-tc/neorspec.vim', {
-"       \ 'depends' : ['alpaca-tc/vim-rails', 'tpope/vim-dispatch'],
-"       \ 'autoload' : {
-"       \   'commands' : ['RSpec', 'RSpecAll', 'RSpecCurrent', 'RSpecNearest', 'RSpecRetry']
+" NeoBundleLazy 'skwp/vim-rspec', {'autoload': {
+"       \ 'commands' : ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
 "       \ }}
+NeoBundleLazy 'alpaca-tc/neorspec.vim', {
+      \ 'depends' : ['alpaca-tc/vim-rails', 'tpope/vim-dispatch'],
+      \ 'autoload' : {
+      \   'commands' : ['RSpec', 'RSpecAll', 'RSpecCurrent', 'RSpecNearest', 'RSpecRetry']
+      \ }}
 NeoBundleLazyOn FileType ruby 'ecomba/vim-ruby-refactoring'
 
 NeoBundle 'tpope/vim-cucumber'
@@ -2019,19 +2021,19 @@ nnoremap [!space]g  :Ack<Space>-i<Space>''<Left>
 nnoremap [!space]gg :Ack<Space>-i<Space>''<Left>
 
 
-function! s:my_quickfix_settings()
+function! s:my_quickfix_init()
   " nnoremap <buffer> < :<C-u><CR>
 endfunction
 
 " quickfix のエラー箇所を波線でハイライト
 let g:hier_highlight_group_qf  = "qf_error_ucurl"
-function! s:my_make_settings()
+function! s:my_make_init()
   HierUpdate
   QuickfixStatusEnable
 endfunction
 
-MyAutocmd FileType qf call s:my_quickfix_settings()
-MyAutocmd QuickfixCmdPost make call s:my_make_settings()
+MyAutocmd FileType qf call s:my_quickfix_init()
+MyAutocmd QuickfixCmdPost make call s:my_make_init()
 " MyAutocmd QuickfixCmdPost make,grep,grepadd,vimgrep copen
 " MyAutocmd QuickfixCmdPost l* lopen
 
@@ -2532,6 +2534,23 @@ function! s:init_cakephp()
     nmap <buffer> gf <Plug>CakeJump
     nmap <buffer> <C-w>f <Plug>CakeSplitJump
     nmap <buffer> <C-w>gf <Plug>CakeTabJump
+
+    nnoremap <Leader>cc :Ccontroller
+    nnoremap <Leader>cm :Cmodel
+    nnoremap <Leader>cv :Cview
+    nnoremap <Leader>cw :Ccontrollerview
+    nnoremap <Leader>cs :Cshell
+    nnoremap <Leader>ct :Ctask
+    nnoremap <Leader>ccf :Cconfig
+    nnoremap <Leader>ccp :Ccomponent
+    nnoremap <Leader>cl :Clog
+
+    nnoremap <C-w><Leader>ccs :Ccontrollersp
+    nnoremap <C-w><Leader>cms :Cmodelsp
+    nnoremap <C-w><Leader>cvs :Cviewsp
+    nnoremap <C-w><Leader>cvws :Ccontrollerviewsp
+    nnoremap <C-w><Leader>ccfs :Cconfigsp
+    nnoremap <C-w><Leader>ccps :Ccomponentsp
   endif
 endfunction
 MyAutocmd User PluginCakephpInitializeAfter call s:init_cakephp()
@@ -2540,8 +2559,8 @@ MyAutocmd User PluginCakephpInitializeAfter call s:init_cakephp()
 if s:plugin_installed('gitv')
   let g:Gitv_OpenHorizontal = 1
   " http://d.hatena.ne.jp/cohama/20130517/1368806202
-  MyAutocmd FileType gitv call s:my_gitv_settings()
-  function! s:my_gitv_settings()
+  MyAutocmd FileType gitv call s:my_gitv_init()
+  function! s:my_gitv_init()
     setl iskeyword+=/,-,.
 
     nnoremap <silent><buffer> [!space]C :<C-u>Git checkout <C-r><C-w><CR>
@@ -3174,14 +3193,18 @@ let g:rails_url='http://localhost:3000'
 let g:rails_subversion=0
 let g:rails_default_file='config/database.yml'
 
-function! s:my_rails_settings()
+function! s:my_rails_init()
+  nnoremap <buffer><leader>vv :Rview<CR>
+  nnoremap <buffer><leader>cc :Rcontroller<CR>
+  nnoremap <buffer><leader>mm :Rmodel<Space>
+  nnoremap <buffer><leader>pp :Rpreview<CR>
+
   nnoremap <buffer> [!t]r :R<CR>
   nnoremap <buffer> [!t]a :A<CR>
-  nnoremap <buffer> [!t]m :Rmodel<Space>
-  nnoremap <buffer> [!t]c :Rcontroller<Space>
-  nnoremap <buffer> [!t]v :Rview<Space>
-  nnoremap <buffer> [!t]p :Rpreview<CR>
 
+  Rnavcommand api app/controllers/api -glob=**/* -suffix=_controller.rb
+  " Rnavcommand tmpl app/controllers/tmpl -glob=**/* -suffix=_controller.rb
+  Rnavcommand config config   -glob=*.*  -suffix= -default=routes.rb
   " nnoremap <buffer><C-H><C-H><C-H>  :<C-U>Unite rails/view<CR>
   " nnoremap <buffer><C-H><C-H>       :<C-U>Unite rails/model<CR>
   " nnoremap <buffer><C-H>            :<C-U>Unite rails/controller<CR>
@@ -3196,7 +3219,7 @@ function! s:my_rails_settings()
   " nnoremap <buffer><C-H>h           :<C-U>Unite rails/heroku<CR>
 endfunction
 
-MyAutocmd User Rails call s:my_rails_settings()
+MyAutocmd User Rails call s:my_rails_init()
 
 " csharp {{{2
 if s:plugin_installed('dotnet-complete')
@@ -3207,6 +3230,9 @@ endif
 
 " python {{{2
 let g:pymode_rope = 0
+let g:pymode_run = 0
+let g:pymode_doc = 0
+let g:pymode_lint = 0
 
 " jedi-vim {{{2
 if s:plugin_installed('jedi-vim')

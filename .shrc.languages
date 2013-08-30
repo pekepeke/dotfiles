@@ -34,6 +34,8 @@ case $OSTYPE in
     ;;
   darwin*)
     soft_source $HOME/.shrc.osx
+    HOMEBREW_PREFIX=/usr/local/
+
     if [ "$LOGIN_FROM" != "Finder" ] ; then
       remove_path /usr/local/bin /usr/bin /bin
       PATH=$PATH:/usr/local/bin:/usr/bin:/bin
@@ -93,7 +95,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   # export PYTHONPATH=~/.lib/python:$PYTHONPATH
   export PYTHONSTARTUP=~/.pyrc
   export PIP_DOWNLOAD_CACHE="$HOME/.pip_cache"
-  if [ -e "/usr/local/Library/Homebrew" ] ; then
+  if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/Library/Homebrew" ] ; then
     export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
   fi
 
@@ -169,7 +171,13 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
     PATH=$SCALA_HOME/bin:$HOME/.svm/:$PATH
   fi
 
-  vmenv-init goenv
+  # go {{{2
+  # vmenv-init goenv
+  export GOPATH=~/.gopath
+  if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/bin/go" ]; then
+    export GOROOT=$(dirname $(dirname $HOMEBREW_PREFIX/bin/go/$(readlink /usr/local/bin/go)))
+  fi
+  PATH=$GOROOT/bin:$PATH
 
   shrc_section_title "for Ruby" # {{{2
   vmenv-init rbenv
