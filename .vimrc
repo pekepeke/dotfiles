@@ -1273,7 +1273,9 @@ NeoBundle 'Shougo/vim-nyaos'
 NeoBundle 'Shougo/unite.vim', {
       \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
       \ }
-NeoBundle 'thinca/vim-unite-history'
+NeoBundleLazy 'thinca/vim-unite-history', {'autoload':{
+      \ 'unite_sources': ['history/command', 'history/search'],
+      \ }}
 NeoBundleLazy 'Shougo/unite-help', { 'autoload' : {
       \ 'unite_sources' : ['help'],
       \ }}
@@ -1320,7 +1322,7 @@ NeoBundleLazy 'kmnk/vim-unite-svn', { 'autoload' : {
       \ }}
 " NeoBundle 'sgur/unite-qf'
 NeoBundleLazy 'osyo-manga/unite-quickfix', { 'autoload' : {
-      \ 'unite_sources' : ['quickfix'],
+      \ 'unite_sources' : ['quickfix', 'location_list'],
       \ }}
 NeoBundleLazy "osyo-manga/unite-quickrun_config", { 'autoload' : {
       \ 'unite_sources' : ['quickrun_config'],
