@@ -21,6 +21,10 @@ Host *
   ControlPath /tmp/%r@%h:%p
   RemoteForward 52698 127.0.0.1:52698
 
+Host github.com
+  Compression yes
+  Ciphers arcfour256
+
 #Host name
 #  HostName xxx.xxx.xxx.xxx
 #  Port 22

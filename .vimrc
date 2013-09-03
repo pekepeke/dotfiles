@@ -448,7 +448,7 @@ endif
 
 
 " vundles {{{2
-" powerline {{{3
+" statusline {{{3
 " NeoBundle 'bling/vim-airline'
 NeoBundle 'itchyny/lightline.vim'
 " NeoBundleLazy 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
@@ -543,7 +543,7 @@ NeoBundleLazy 'kana/vim-altr', {'autoload': {
       \ 'mappings': ['<Plug>(altr-back)', '<Plug>(altr-forward)'],
       \ }}
 NeoBundle 'kana/vim-fakeclip'
-NeoBundleLazy 'kana/vim-smartchr', {'autoload': {'insert':1}}
+NeoBundle 'kana/vim-smartchr', {'autoload': {'insert':1}}
 NeoBundle 'kana/vim-submode'
 NeoBundleLazy 'kana/vim-niceblock', { 'autoload' : {
       \ 'mappings' : ['<Plug>(niceblock-I)', '<Plug>(niceblock-A)']
@@ -1563,7 +1563,9 @@ NeoBundleLazy 'h1mesuke/textobj-wiw', {
       \ 'mappings' : [
       \ ['nvo', '<Plug>(textobj-wiw-i)', '<Plug>(textobj-wiw-a)']]
       \ }}
-NeoBundle 'coderifous/textobj-word-column.vim'
+NeoBundleLazy 'coderifous/textobj-word-column.vim', {'autoload':{
+      \ 'mappings' : [['xo', 'ac', 'aC', 'ic', 'iC']]
+      \ }}
 NeoBundle 'rhysd/vim-textobj-continuous-line'
 NeoBundleLazy 'osyo-manga/vim-textobj-context', {'autoload':{
       \ 'mappings' : [['nvo',
