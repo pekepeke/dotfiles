@@ -3331,417 +3331,423 @@ if s:plugin_installed('unite.vim')
   nmap     f       [!unite]
   " define at clever-f
   " nnoremap [!unite]f f
-endif
 
-" unite basic settings {{{3
-let g:unite_data_directory = $VIM_CACHE . '/vim-unite'
-let g:unite_update_time=1000
-let g:unite_source_history_yank_enable=0
-"let g:unite_enable_start_insert=1
-let g:unite_enable_start_insert=0
-" let g:unite_source_file_mru_limit=100
-let g:unite_source_file_mru_limit=200
-let g:unite_source_file_mru_time_format = ''
-"let g:unite_source_file_mru_time_format = '%Y-%m-%d %H:%M:%S'
-let g:unite_winheight = 20
-" let g:unite_winwidth = &columns - 12
-"let g:unite_split_rule = 'botright'
-let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
-let g:unite_source_file_rec_max_cache_files = 5000
+  " unite basic settings {{{3
+  let g:unite_data_directory = $VIM_CACHE . '/vim-unite'
+  let g:unite_update_time=1000
+  let g:unite_source_history_yank_enable=0
+  "let g:unite_enable_start_insert=1
+  let g:unite_enable_start_insert=0
+  " let g:unite_source_file_mru_limit=100
+  let g:unite_source_file_mru_limit=200
+  let g:unite_source_file_mru_time_format = ''
+  "let g:unite_source_file_mru_time_format = '%Y-%m-%d %H:%M:%S'
+  let g:unite_winheight = 20
+  " let g:unite_winwidth = &columns - 12
+  "let g:unite_split_rule = 'botright'
+  let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
+  let g:unite_source_file_rec_max_cache_files = 5000
 
-" unite-grep {{{3
-" let g:unite_source_grep_default_opts = '-iRHn'
-if s:is_win && executable('jvgrep')
-  let g:unite_source_grep_command = "jvgrep"
-  let g:unite_source_grep_default_opts = '-in --exclude "\.(git|svn|hg|bzr)"'
-elseif executable('ag')
-  let g:unite_source_grep_command = 'ag'
-  let g:unite_source_grep_default_opts = '-i --noheading --nocolor --nogroup --nopager'
-  let g:unite_source_grep_recursive_opt = ''
-else
-  let g:unite_source_grep_command = 'ack-grep'
-  let g:unite_source_grep_default_opts = '--no-heading --nocolor -a --nogroup --nopager'
-  let g:unite_source_grep_recursive_opt = ''
-endif
+  " unite-grep {{{3
+  " let g:unite_source_grep_default_opts = '-iRHn'
+  if s:is_win && executable('jvgrep')
+    let g:unite_source_grep_command = "jvgrep"
+    let g:unite_source_grep_default_opts = '-in --exclude "\.(git|svn|hg|bzr)"'
+  elseif executable('ag')
+    let g:unite_source_grep_command = 'ag'
+    let g:unite_source_grep_default_opts = '-i --noheading --nocolor --nogroup --nopager'
+    let g:unite_source_grep_recursive_opt = ''
+  else
+    let g:unite_source_grep_command = 'ack-grep'
+    let g:unite_source_grep_default_opts = '--no-heading --nocolor -a --nogroup --nopager'
+    let g:unite_source_grep_recursive_opt = ''
+  endif
 
-" unite-grep_launcher {{{3
-if !exists('g:grep_launcher_words')
-  let g:grep_launcher_words = {}
-endif
-call extend(g:grep_launcher_words, {
-  \ 'TODO' : 'TODO\|FIXME\|XXX',
-  \ })
-" unite-history
-let g:unite_source_history_yank_enable = 1
+  " unite-grep_launcher {{{3
+  if !exists('g:grep_launcher_words')
+    let g:grep_launcher_words = {}
+  endif
+  call extend(g:grep_launcher_words, {
+    \ 'TODO' : 'TODO\|FIXME\|XXX',
+    \ })
+  " unite-history
+  let g:unite_source_history_yank_enable = 1
 
-" unite-menu {{{3
-if !exists("g:unite_source_menu_menus")
-   let g:unite_source_menu_menus = {}
-endif
-" http://d.hatena.ne.jp/osyo-manga/20130225/1361794133
-function! s:unite_menu_create(desc, ...) "{{{4
-  let commands = {
-  \   'description' : a:desc,
-  \}
-  let commands.candidates = a:0 >= 1 ? a:1 : {}
-  function commands.map(key, value)
-    let [word, value] = a:value
-    if isdirectory(value)
-      return {
-      \   "word" : "[directory] ".word,
-      \   "kind" : "directory",
-      \   "action__directory" : value
-      \ }
-    elseif !empty(glob(value))
-      return {
-      \   "word" : "[file] ".word,
-      \   "kind" : "file",
-      \   "default_action" : "tabdrop",
-      \   "action__path" : value,
-      \ }
-    else
-      return {
-      \   "word" : "[command] ".word,
-      \   "kind" : "command",
-      \   "action__command" : value
-      \ }
+  " unite-menu {{{3
+  if !exists("g:unite_source_menu_menus")
+     let g:unite_source_menu_menus = {}
+  endif
+  " http://d.hatena.ne.jp/osyo-manga/20130225/1361794133
+  function! s:unite_menu_create(desc, ...) "{{{4
+    let commands = {
+    \   'description' : a:desc,
+    \}
+    let commands.candidates = a:0 >= 1 ? a:1 : {}
+    function commands.map(key, value)
+      let [word, value] = a:value
+      if isdirectory(value)
+        return {
+        \   "word" : "[directory] ".word,
+        \   "kind" : "directory",
+        \   "action__directory" : value
+        \ }
+      elseif !empty(glob(value))
+        return {
+        \   "word" : "[file] ".word,
+        \   "kind" : "file",
+        \   "default_action" : "tabdrop",
+        \   "action__path" : value,
+        \ }
+      else
+        return {
+        \   "word" : "[command] ".word,
+        \   "kind" : "command",
+        \   "action__command" : value
+        \ }
+        endif
+    endfunction
+    return commands
+  endfunction "4}}}
+
+  let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
+  \ 'Shortcut', [
+  \   ["edit .vimrc"        , $MYVIMRC]                                  ,
+  \   ["reload .vimrc"      , "source " . $MYVIMRC]                      ,
+  \   ["edit .gvimrc"       , $MYGVIMRC]                                 ,
+  \   ["VimFiler ~/.vim"    , "VimFiler " .$HOME . "/.vim"]              ,
+  \   ["scriptnames"        , "Unite scriptnames"]                       ,
+  \   ["neobundle vimfiles" , "Unite neobundle/vimfiles"]                ,
+  \   ["all vimfiles"       , "Unite neobundle/rtpvimfiles"]             ,
+  \   ["colorscheme"        , "Unite colorscheme -auto-preview"]         ,
+  \   ["airline themes"     , "Unite airline_themes -auto-preview"]      ,
+  \   ["global options"     , "Unite output:set"]                        ,
+  \   ["local options"      , "Unite output:setlocal"]                   ,
+  \   ["mappings"           , "Unite mapping"]                           ,
+  \   ["todo"               , "Todo"]                                    ,
+  \   ["repl"               , "Unite menu:repl"]                         ,
+  \   ["help"               , "Unite menu:help"]                         ,
+  \   ["quickrun config"        , "Unite quickrun_config"]               ,
+  \ ])
+  let g:unite_source_menu_menus["help"] = s:unite_menu_create(
+  \ 'Help', [
+  \   ['Vimscript functions' , 'help function-list']         ,
+  \   ['Vimscript grammar'   , 'help usr_41']                ,
+  \   ['Regexp'              , 'help pattern-overview']      ,
+  \   ['quickkref'           , 'help quickref']              ,
+  \   ['Option'              , 'help option-list']           ,
+  \   ['Tips'                , 'help tips']                  ,
+  \   ['User Manual'         , 'help usr_toc']               ,
+  \   ['Startup Options'     , 'help startup-options']       ,
+  \   ['Window'              , 'help windows']               ,
+  \   ['Tab'                 , 'help tabpage']               ,
+  \   ['Plugin'              , 'help write-plugin']          ,
+  \   ['FtPlugin'            , 'help write-filetype-plugin'] ,
+  \   ['Helpfile'            , 'help help-writing']          ,
+  \ ])
+  let g:unite_source_menu_menus["repl"] = s:unite_menu_create(
+  \ 'Repl', [
+  \   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
+  \   ["javascript"         , "VimShellInteractive node"]                ,
+  \   ["ghci"               , "VimShellInteractive ghci"]                ,
+  \   ["python"             , "VimShellInteractive python"]              ,
+  \   ["php"                , "VimShellInteractive phpa-norl"]           ,
+  \   ["perl"               , "VimShellInteractive tinyrepl"]            ,
+  \   ["VimShellPop"        , "VimShellPop"]                             ,
+  \   ["VimConsole"         , "VimConsoleOpen"]                          ,
+  \ ])
+  let g:unite_source_menu_menus["lang_perl"] = s:unite_menu_create(
+  \ 'Perl Menu', [
+  \   ["local module"  , "Unite perl/local"]  ,
+  \   ["global module" , "Unite perl/global"] ,
+  \ ])
+  let g:unite_source_menu_menus["lang_ruby"] = s:unite_menu_create(
+  \ 'Ruby Menu', [
+  \   ["rake"             , "Unite rake"]              ,
+  \   ["rails controller" , "Unite rails/controller"]  ,
+  \   ["rails model"      , "Unite rails/model"]       ,
+  \   ["rails view"       , "Unite rails/view"]        ,
+  \   ["rails helper"     , "Unite rails/helper"]      ,
+  \   ["rails lib"        , "Unite rails/lib"]         ,
+  \   ['Add param'        , 'RAddParameter']           ,
+  \   ['Split cond'       , 'RConvertPostConditional'] ,
+  \   ['Extract let'      , 'RExtractLet']             ,
+  \   ['Remove tmpvar'    , 'RInlineTemp']             ,
+  \   ['chef attribute'   , 'ChefFindAttribute']       ,
+  \   ['chef recipe'      , 'ChefFindRecipe']          ,
+  \   ['chef definition'  , 'ChefFindDefinition']      ,
+  \   ['chef lwrp'        , 'ChefFindLWRP']            ,
+  \   ['chef source'      , 'ChefFindSource']          ,
+  \   ['chef related'     , 'ChefFindRelated']         ,
+  \ ])
+  let g:unite_source_menu_menus["lang_java"] = s:unite_menu_create(
+  \ 'Java Menu' , [
+  \   ["import" , "Unite javaimport"] ,
+  \   ["gradle" , "Unite gradle"]     ,
+  \ ])
+
+  " let g:unite_source_menu_menus["lang_"] = s:unite_menu_create(
+  " \ '', [
+  " \  ["", ""],
+  " \ ])
+
+  function! s:unite_context_menu() "{{{4
+    if !exists('g:unite_source_menu_menus["lang_' . &filetype . '"]')
+      echohl Error
+      echon "menu not found"
+      echohl None
+      return
+    endif
+    execute 'Unite' 'menu:'.'lang_'.&filetype
+  endfunction "4}}}
+
+
+  " unite buffers {{{3
+  let s:bundle = neobundle#get("unite.vim")
+  function! s:bundle.hooks.on_source(bundle)
+    " file_rec
+    call unite#custom#source('file_rec/async', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
+    call unite#custom#source('file_rec', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
+    call unite#custom#source('repo_files', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
+
+    " files
+    call unite#custom#substitute('files', '\$\w\+', '\=eval(submatch(0))', 200)
+
+    call unite#custom#substitute('files', '[^~.]\zs/', '*/*', 20)
+    call unite#custom#substitute('files', '/\ze[^*]', '/*', 10)
+
+    call unite#custom#substitute('files', '^@@', '\=fnamemodify(expand("#"), ":p:h")."/*"', 2)
+    call unite#custom#substitute('files', '^@', '\=getcwd()."/*"', 1)
+    call unite#custom#substitute('files', '^\\', '~/*')
+    call unite#custom#substitute('files', '^\~', escape($HOME, '\'), -2)
+
+    call unite#custom#substitute('files', '^;v', '~/.vim/*')
+    call unite#custom#substitute('files', '^;ft', '~/.vim/after/ftplugin/')
+    call unite#custom#substitute('files', '^;r', '\=$VIMRUNTIME."/*"')
+    if s:is_win
+      call unite#custom#substitute('files', '^;p', 'C:/Program Files/*')
+      if isdirectory(expand('$USERPROFILE/Desktop'))
+        call unite#custom#substitute('files', '^;d', '\=expand("$USERPROFILE/Desktop/")."*"')
+      else
+        call unite#custom#substitute('files', '^;d', '\=expand("$USERPROFILE/デスクトップ/")."*"')
       endif
+    else
+      call unite#custom#substitute('files', '^;d', '\=$HOME."/Desktop/*"')
+    endif
+    " custom actions {{{3
+    " custom action open_unite_file {{{4
+    let s:unite_action_open_unite_file = {
+          \ }
+    function! s:unite_action_open_unite_file.func(candidate)
+      " echoerr a:candicate.word
+      let path = a:candidate.action__path
+      execute 'Unite' 'file:'.path
+    endfunction
+    call unite#custom_action('directory', 'open_unite_file', s:unite_action_open_unite_file)
+    unlet! s:unite_action_action_open_unite_file
+
+    " custom action insert_or_narrow {{{4
+    let s:unite_action_narrow_or_insert = {
+          \ 'is_quit': 0
+          \ }
+    function! s:unite_action_narrow_or_insert.func(candidate)
+      " echoerr a:candicate.word
+      let path = a:candidate.action__path
+      if isdirectory(path)
+        call unite#take_action('narrow', a:candidate)
+      else
+        let context = unite#get_context()
+        " call unite#close(context.buffer_name)
+        call unite#take_action('insert', a:candidate)
+      endif
+    endfunction
+    call unite#custom_action('file', 'narrow_or_insert', s:unite_action_narrow_or_insert)
+    unlet! s:unite_action_narrow_or_insert
   endfunction
-  return commands
-endfunction "4}}}
+  unlet s:bundle
 
-let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
-\ 'Shortcut', [
-\   ["edit .vimrc"        , $MYVIMRC]                                  ,
-\   ["reload .vimrc"      , "source " . $MYVIMRC]                      ,
-\   ["edit .gvimrc"       , $MYGVIMRC]                                 ,
-\   ["VimFiler ~/.vim"    , "VimFiler " .$HOME . "/.vim"]              ,
-\   ["scriptnames"        , "Unite scriptnames"]                       ,
-\   ["neobundle vimfiles" , "Unite neobundle/vimfiles"]                ,
-\   ["all vimfiles"       , "Unite neobundle/rtpvimfiles"]             ,
-\   ["colorscheme"        , "Unite colorscheme -auto-preview"]         ,
-\   ["airline themes"     , "Unite airline_themes -auto-preview"]      ,
-\   ["global options"     , "Unite output:set"]                        ,
-\   ["local options"      , "Unite output:setlocal"]                   ,
-\   ["mappings"           , "Unite mapping"]                           ,
-\   ["todo"               , "Todo"]                                    ,
-\   ["repl"               , "Unite menu:repl"]                         ,
-\   ["help"               , "Unite menu:help"]                         ,
-\   ["quickrun config"        , "Unite quickrun_config"]               ,
-\ ])
-let g:unite_source_menu_menus["help"] = s:unite_menu_create(
-\ 'Help', [
-\   ['Vimscript functions' , 'help function-list']         ,
-\   ['Vimscript grammar'   , 'help usr_41']                ,
-\   ['Regexp'              , 'help pattern-overview']      ,
-\   ['quickkref'           , 'help quickref']              ,
-\   ['Option'              , 'help option-list']           ,
-\   ['Tips'                , 'help tips']                  ,
-\   ['User Manual'         , 'help usr_toc']               ,
-\   ['Startup Options'     , 'help startup-options']       ,
-\   ['Window'              , 'help windows']               ,
-\   ['Tab'                 , 'help tabpage']               ,
-\   ['Plugin'              , 'help write-plugin']          ,
-\   ['FtPlugin'            , 'help write-filetype-plugin'] ,
-\   ['Helpfile'            , 'help help-writing']          ,
-\ ])
-let g:unite_source_menu_menus["repl"] = s:unite_menu_create(
-\ 'Repl', [
-\   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
-\   ["javascript"         , "VimShellInteractive node"]                ,
-\   ["ghci"               , "VimShellInteractive ghci"]                ,
-\   ["python"             , "VimShellInteractive python"]              ,
-\   ["php"                , "VimShellInteractive phpa-norl"]           ,
-\   ["perl"               , "VimShellInteractive tinyrepl"]            ,
-\   ["VimShellPop"        , "VimShellPop"]                             ,
-\   ["VimConsole"         , "VimConsoleOpen"]                          ,
-\ ])
-let g:unite_source_menu_menus["lang_perl"] = s:unite_menu_create(
-\ 'Perl Menu', [
-\   ["local module"  , "Unite perl/local"]  ,
-\   ["global module" , "Unite perl/global"] ,
-\ ])
-let g:unite_source_menu_menus["lang_ruby"] = s:unite_menu_create(
-\ 'Ruby Menu', [
-\   ["rake"             , "Unite rake"]              ,
-\   ["rails controller" , "Unite rails/controller"]  ,
-\   ["rails model"      , "Unite rails/model"]       ,
-\   ["rails view"       , "Unite rails/view"]        ,
-\   ["rails helper"     , "Unite rails/helper"]      ,
-\   ["rails lib"        , "Unite rails/lib"]         ,
-\   ['Add param'        , 'RAddParameter']           ,
-\   ['Split cond'       , 'RConvertPostConditional'] ,
-\   ['Extract let'      , 'RExtractLet']             ,
-\   ['Remove tmpvar'    , 'RInlineTemp']             ,
-\   ['chef attribute'   , 'ChefFindAttribute']       ,
-\   ['chef recipe'      , 'ChefFindRecipe']          ,
-\   ['chef definition'  , 'ChefFindDefinition']      ,
-\   ['chef lwrp'        , 'ChefFindLWRP']            ,
-\   ['chef source'      , 'ChefFindSource']          ,
-\   ['chef related'     , 'ChefFindRelated']         ,
-\ ])
-let g:unite_source_menu_menus["lang_java"] = s:unite_menu_create(
-\ 'Java Menu' , [
-\   ["import" , "Unite javaimport"] ,
-\   ["gradle" , "Unite gradle"]     ,
-\ ])
+  " unite mappings {{{3
+  function! s:unite_map(bang, prefix, key, ...) " {{{4
+    if a:key[0] == "<"
+      let key = empty(a:bang) ? a:key : substitute(a:key, "^<", "<S-", "")
+      let bang_key = empty(a:bang) ? substitute(a:key, "^<", "<S-", "") : a:key
+    else
+      let key = empty(a:bang) ? a:key : toupper(a:key)
+      let bang_key = empty(a:bang) ? toupper(a:key) : a:key
+    endif
+    let cmdargs = join(a:000, " ")
+    let fmt = "%snoremap <silent> [!unite]%s :<C-u>Unite %s %s<CR>"
 
-" let g:unite_source_menu_menus["lang_"] = s:unite_menu_create(
-" \ '', [
-" \  ["", ""],
-" \ ])
+    exe printf(fmt, a:prefix, key, "", cmdargs)
+    exe printf(fmt, a:prefix, bang_key, "-no-quit", cmdargs)
+  endfunction " }}}
+  command! -nargs=* -bang UniteNMap call s:unite_map("<bang>", "n", <f-args>)
 
-function! s:unite_context_menu() "{{{4
-  if !exists('g:unite_source_menu_menus["lang_' . &filetype . '"]')
-    echohl Error
-    echon "menu not found"
-    echohl None
-    return
-  endif
-  execute 'Unite' 'menu:'.'lang_'.&filetype
-endfunction "4}}}
+  nmap [!unite]u  :<C-u>Unite<Space>
 
-
-" unite buffers {{{3
-let s:bundle = neobundle#get("unite.vim")
-function! s:bundle.hooks.on_source(bundle)
-  call unite#custom#substitute('files', '\$\w\+', '\=eval(submatch(0))', 200)
-
-  call unite#custom#substitute('files', '[^~.]\zs/', '*/*', 20)
-  call unite#custom#substitute('files', '/\ze[^*]', '/*', 10)
-
-  call unite#custom#substitute('files', '^@@', '\=fnamemodify(expand("#"), ":p:h")."/*"', 2)
-  call unite#custom#substitute('files', '^@', '\=getcwd()."/*"', 1)
-  call unite#custom#substitute('files', '^\\', '~/*')
-  call unite#custom#substitute('files', '^\~', escape($HOME, '\'), -2)
-
-  call unite#custom#substitute('files', '^;v', '~/.vim/*')
-  call unite#custom#substitute('files', '^;ft', '~/.vim/after/ftplugin/')
-  call unite#custom#substitute('files', '^;r', '\=$VIMRUNTIME."/*"')
+  UniteNMap   s         source
+  UniteNMap   <Space>   buffer
+  UniteNMap   j         buffer_tab
+  UniteNMap   k         tab
+  UniteNMap   l         file -profile-name=files
+  UniteNMap   d         directory_mru -default-action=vimfiler
+  UniteNMap   z         z -default-action=vimfiler
+  UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR> -profile-name=files
+  UniteNMap   m         file_mru -default-action=open -profile-name=files
+  UniteNMap   t         sonictemplate
+  UniteNMap   c         webcolorname
+  UniteNMap   i         jump
+  UniteNMap   o         outline
+  UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep -auto-preview
+  UniteNMap!  gr        grep -buffer-name=grep
+  UniteNMap!  gt        grep:<C-r>=getcwd()<CR>:TODO\|FIXME\|XXX -buffer-name=todo -auto-preview
+  UniteNMap   gl        grep_launcher
+  UniteNMap!  gi        git_grep -buffer-name=git_grep
+  UniteNMap!  q         quickfix -buffer-name=qfix
+  UniteNMap   p         history/yank
+  UniteNMap   @         quickrun_config
+  " UniteNMap   :         history/command command
+  " UniteNMap   /         history/search
+  UniteNMap   bb        bookmark -default-action=open
   if s:is_win
-    call unite#custom#substitute('files', '^;p', 'C:/Program Files/*')
-    if isdirectory(expand('$USERPROFILE/Desktop'))
-      call unite#custom#substitute('files', '^;d', '\=expand("$USERPROFILE/Desktop/")."*"')
-    else
-      call unite#custom#substitute('files', '^;d', '\=expand("$USERPROFILE/デスクトップ/")."*"')
-    endif
+    UniteNMap ,         everything -start-insert
+  elseif s:is_mac
+    UniteNMap ,         spotlight -start-insert
   else
-    call unite#custom#substitute('files', '^;d', '\=$HOME."/Desktop/*"')
+    UniteNMap ,         locate -start-insert
   endif
-  " custom actions {{{3
-  " custom action open_unite_file {{{4
-  let s:unite_action_open_unite_file = {
-        \ }
-  function! s:unite_action_open_unite_file.func(candidate)
-    " echoerr a:candicate.word
-    let path = a:candidate.action__path
-    execute 'Unite' 'file:'.path
-  endfunction
-  call unite#custom_action('directory', 'open_unite_file', s:unite_action_open_unite_file)
-  unlet! s:unite_action_action_open_unite_file
 
-  " custom action insert_or_narrow {{{4
-  let s:unite_action_narrow_or_insert = {
-        \ 'is_quit': 0
-        \ }
-  function! s:unite_action_narrow_or_insert.func(candidate)
-    " echoerr a:candicate.word
-    let path = a:candidate.action__path
-    if isdirectory(path)
-      call unite#take_action('narrow', a:candidate)
-    else
-      let context = unite#get_context()
-      " call unite#close(context.buffer_name)
-      call unite#take_action('insert', a:candidate)
+  nnoremap <silent> [!unite]ba :<C-u>UniteBookmarkAdd<CR>
+  " UniteNMap   rr        quicklearn -immediately
+  nnoremap [!space]R :<C-u>Unite quicklearn -immediately<CR>
+
+  nnoremap <silent> [!unite]v :Unite menu:shortcut<CR>
+  nnoremap <silent> [!unite]V :call <SID>unite_context_menu()<CR>
+
+  " filepath insert TODO : don't works well...--;
+  nnoremap <C-y><C-f> :<C-u>Unite -default-action=narrow_or_insert file<CR>
+  inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=narrow_or_insert file<CR>
+
+  " Alias colorscheme Unite colorscheme -auto-preview
+
+  " if s:plugin_installed('vimproc.vim')
+  "   UniteNMap a file_rec/async -start-insert
+  " else
+  UniteNMap a file_rec -start-insert
+  " endif
+
+  " nnoremap <silent> [!unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
+  " nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_filetype()<CR>
+  nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_smart()<CR>
+  nnoremap <silent> [!unite]hk :<C-u>Unite mapping<CR>
+
+  function! s:unite_ref_smart(...) "{{{4
+    let kwd = ""
+    if a:0 > 0
+      let isk = &l:isk
+      setlocal isk& isk+=- isk+=. isk+=:
+      let kwd = expand('<cword>')
+      let &l:isk = isk
     endif
+    let name = ref#detect()
+    let names = type(name) == type("") ? [name] : name
+    unlet name
+
+    let completable = keys(filter(ref#available_sources(), 'exists("v:val.complete")'))
+    let sources = filter(names, 'index(completable, v:val) != -1')
+    unlet names
+
+    if !empty(sources)
+      let source = join(map(sources, '"ref/".v:val'), ' ')
+      execute printf('Unite -default-action=below -input=%s %s', kwd, source)
+    else
+      echohl Error
+      echomsg "Not Found : ref source"
+      echohl Normal
+    endif
+    unlet kwd completable sources source
   endfunction
-  call unite#custom_action('file', 'narrow_or_insert', s:unite_action_narrow_or_insert)
-  unlet! s:unite_action_narrow_or_insert
-endfunction
-unlet s:bundle
 
-" unite mappings {{{3
-function! s:unite_map(bang, prefix, key, ...) " {{{4
-  if a:key[0] == "<"
-    let key = empty(a:bang) ? a:key : substitute(a:key, "^<", "<S-", "")
-    let bang_key = empty(a:bang) ? substitute(a:key, "^<", "<S-", "") : a:key
-  else
-    let key = empty(a:bang) ? a:key : toupper(a:key)
-    let bang_key = empty(a:bang) ? toupper(a:key) : a:key
-  endif
-  let cmdargs = join(a:000, " ")
-  let fmt = "%snoremap <silent> [!unite]%s :<C-u>Unite %s %s<CR>"
+  function! s:unite_ref_filetype() " {{{4
+    let ft = &ft
+    let names = []
 
-  exe printf(fmt, a:prefix, key, "", cmdargs)
-  exe printf(fmt, a:prefix, bang_key, "-no-quit", cmdargs)
-endfunction " }}}
-command! -nargs=* -bang UniteNMap call s:unite_map("<bang>", "n", <f-args>)
-
-nmap [!unite]u  :<C-u>Unite<Space>
-
-UniteNMap   s         source
-UniteNMap   <Space>   buffer
-UniteNMap   j         buffer_tab
-UniteNMap   k         tab
-UniteNMap   l         file -profile-name=files
-UniteNMap   d         directory_mru -default-action=vimfiler
-UniteNMap   z         z -default-action=vimfiler
-UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR> -profile-name=files
-UniteNMap   m         file_mru -default-action=open -profile-name=files
-UniteNMap   t         sonictemplate
-UniteNMap   c         webcolorname
-UniteNMap   i         jump
-UniteNMap   o         outline
-UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep -auto-preview
-UniteNMap!  gr        grep -buffer-name=grep
-UniteNMap!  gt        grep:<C-r>=getcwd()<CR>:TODO\|FIXME\|XXX -buffer-name=todo -auto-preview
-UniteNMap   gl        grep_launcher
-UniteNMap!  gi        git_grep -buffer-name=git_grep
-UniteNMap!  q         quickfix -buffer-name=qfix
-UniteNMap   p         history/yank
-UniteNMap   @         quickrun_config
-" UniteNMap   :         history/command command
-" UniteNMap   /         history/search
-UniteNMap   bb        bookmark -default-action=open
-if s:is_win
-  UniteNMap ,         everything -start-insert
-elseif s:is_mac
-  UniteNMap ,         spotlight -start-insert
-else
-  UniteNMap ,         locate -start-insert
-endif
-
-nnoremap <silent> [!unite]ba :<C-u>UniteBookmarkAdd<CR>
-" UniteNMap   rr        quicklearn -immediately
-nnoremap [!space]R :<C-u>Unite quicklearn -immediately<CR>
-
-nnoremap <silent> [!unite]v :Unite menu:shortcut<CR>
-nnoremap <silent> [!unite]V :call <SID>unite_context_menu()<CR>
-
-" filepath insert TODO : don't works well...--;
-nnoremap <C-y><C-f> :<C-u>Unite -default-action=narrow_or_insert file<CR>
-inoremap <C-y><C-f> <C-o>:<C-u>Unite -default-action=narrow_or_insert file<CR>
-
-" Alias colorscheme Unite colorscheme -auto-preview
-
-" if s:plugin_installed('vimproc.vim')
-"   UniteNMap a file_rec/async -start-insert
-" else
-UniteNMap a file_rec -start-insert
-" endif
-
-" nnoremap <silent> [!unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
-" nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_filetype()<CR>
-nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_smart()<CR>
-nnoremap <silent> [!unite]hk :<C-u>Unite mapping<CR>
-
-function! s:unite_ref_smart(...) "{{{4
-  let kwd = ""
-  if a:0 > 0
     let isk = &l:isk
     setlocal isk& isk+=- isk+=. isk+=:
     let kwd = expand('<cword>')
     let &l:isk = isk
-  endif
-  let name = ref#detect()
-  let names = type(name) == type("") ? [name] : name
-  unlet name
 
-  let completable = keys(filter(ref#available_sources(), 'exists("v:val.complete")'))
-  let sources = filter(names, 'index(completable, v:val) != -1')
-  unlet names
-
-  if !empty(sources)
-    let source = join(map(sources, '"ref/".v:val'), ' ')
-    execute printf('Unite -default-action=below -input=%s %s', kwd, source)
-  else
-    echohl Error
-    echomsg "Not Found : ref source"
-    echohl Normal
-  endif
-  unlet kwd completable sources source
-endfunction
-
-function! s:unite_ref_filetype() " {{{4
-  let ft = &ft
-  let names = []
-
-  let isk = &l:isk
-  setlocal isk& isk+=- isk+=. isk+=:
-  let kwd = expand('<cword>')
-  let &l:isk = isk
-
-  let types = ref#detect()
-  if type('') == type(types)
-    unlet types
-    let types = ['man']
-  endif
-  let types = filter(types, 'type(ref#available_sources(v:val)) == type({})')
-  if !empty(types)
-    execute 'Unite' '-default-action=below' '-input='.kwd join(map(types, '"ref/".v:val'), ' ')
-  else
-    echohl Error
-    echomsg "Not Found : ref source"
-    echohl Normal
-  endif
-endfunction "}}}
-
-nnoremap          [!unite]rr :<C-u>UniteResume<Space>
-nnoremap <silent> [!unite]re :<C-u>UniteResume<CR>
-nnoremap <silent> [!unite]ri :<C-u>UniteResume git<CR>
-nnoremap <silent> [!unite]rg :<C-u>UniteResume grep<CR>
-nnoremap <silent> [!unite]rt :<C-u>UniteResume todo<CR>
-nnoremap <silent> [!unite]rq :<C-u>UniteResume qfix<CR>
-
-if s:plugin_installed('neocomplcache.vim')
-  inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
-elseif s:plugin_installed('neocomplete.vim')
-  inoremap <C-x><C-j> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
-endif
-
-command! Todo silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
-
-function! s:unite_open_ftplugin()
-  let dirs = ['after', 'ftplugin', 'snippets', 'template', 'sonictemplate']
-  execute 'Unite' '-input='.&filetype join(map(dirs, '"file_rec:~/.vim/".v:val'), " ")
-endfunction
-" nnoremap <silent> [!unite]v  :<C-u>call <SID>unite_open_ftplugin()<CR>
-" nnoremap <silent> [!unite]V  :<C-u>Unite file:~/.vim/<CR>
-" nnoremap <silent> [!unite]v  :<C-u>Unite scriptnames<CR>
-" nnoremap <silent> [!unite]V  :<C-u>call <SID>unite_open_ftplugin()<CR>
-" nnoremap <silent> [!unite]v  :<C-u>Unite file_rec:~/.vim/after file_rec:~/.vim/ftplugin<CR>
-
-" http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
-function! s:tags_update()
-    " include している tag ファイルが毎回同じとは限らないので毎回初期化
-    setlocal tags=
-    if s:plugin_installed('neocomplcache.vim')
-      for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
-          execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
-      endfor
-    elseif s:plugin_installed('neocomplete.vim')
-      for filename in neocomplete#sources#include#get_include_files(bufnr('%'))
-          execute "setlocal tags+=".neocomplete#cache#encode_name('tags_output', filename)
-      endfor
+    let types = ref#detect()
+    if type('') == type(types)
+      unlet types
+      let types = ['man']
     endif
-endfunction
+    let types = filter(types, 'type(ref#available_sources(v:val)) == type({})')
+    if !empty(types)
+      execute 'Unite' '-default-action=below' '-input='.kwd join(map(types, '"ref/".v:val'), ' ')
+    else
+      echohl Error
+      echomsg "Not Found : ref source"
+      echohl Normal
+    endif
+  endfunction "}}}
 
-command!
-    \ -nargs=? PopupTags
-    \ call <SID>tags_update() | Unite tag:<args>
+  nnoremap          [!unite]rr :<C-u>UniteResume<Space>
+  nnoremap <silent> [!unite]re :<C-u>UniteResume<CR>
+  nnoremap <silent> [!unite]ri :<C-u>UniteResume git<CR>
+  nnoremap <silent> [!unite]rg :<C-u>UniteResume grep<CR>
+  nnoremap <silent> [!unite]rt :<C-u>UniteResume todo<CR>
+  nnoremap <silent> [!unite]rq :<C-u>UniteResume qfix<CR>
 
-function! s:get_func_name(word)
-    let end = match(a:word, '<\|[\|(')
-    return end == -1 ? a:word : a:word[ : end-1 ]
-endfunction
+  if s:plugin_installed('neocomplcache.vim')
+    inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
+  elseif s:plugin_installed('neocomplete.vim')
+    inoremap <C-x><C-j> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
+  endif
 
-" カーソル下のワード(word)で絞り込み
-nnoremap <silent> [!unite]] :<C-u>execute "PopupTags ".expand('<cword>')<CR>
+  command! Todo silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
 
-" カーソル下のワード(WORD)で ( か < か [ までが現れるまでで絞り込み
-nnoremap <silent> [!unite]<C-]> :<C-u>execute "PopupTags "
-    \.substitute(<SID>get_func_name(expand('<cWORD>')), '\:', '\\\:', "g")<CR>
+  function! s:unite_open_ftplugin()
+    let dirs = ['after', 'ftplugin', 'snippets', 'template', 'sonictemplate']
+    execute 'Unite' '-input='.&filetype join(map(dirs, '"file_rec:~/.vim/".v:val'), " ")
+  endfunction
+  " nnoremap <silent> [!unite]v  :<C-u>call <SID>unite_open_ftplugin()<CR>
+  " nnoremap <silent> [!unite]V  :<C-u>Unite file:~/.vim/<CR>
+  " nnoremap <silent> [!unite]v  :<C-u>Unite scriptnames<CR>
+  " nnoremap <silent> [!unite]V  :<C-u>call <SID>unite_open_ftplugin()<CR>
+  " nnoremap <silent> [!unite]v  :<C-u>Unite file_rec:~/.vim/after file_rec:~/.vim/ftplugin<CR>
 
+  " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
+  function! s:tags_update()
+      " include している tag ファイルが毎回同じとは限らないので毎回初期化
+      setlocal tags=
+      if s:plugin_installed('neocomplcache.vim')
+        for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
+            execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
+        endfor
+      elseif s:plugin_installed('neocomplete.vim')
+        for filename in neocomplete#sources#include#get_include_files(bufnr('%'))
+            execute "setlocal tags+=".neocomplete#cache#encode_name('tags_output', filename)
+        endfor
+      endif
+  endfunction
+
+  command!
+      \ -nargs=? PopupTags
+      \ call <SID>tags_update() | Unite tag:<args>
+
+  function! s:get_func_name(word)
+      let end = match(a:word, '<\|[\|(')
+      return end == -1 ? a:word : a:word[ : end-1 ]
+  endfunction
+
+  " カーソル下のワード(word)で絞り込み
+  nnoremap <silent> [!unite]] :<C-u>execute "PopupTags ".expand('<cword>')<CR>
+
+  " カーソル下のワード(WORD)で ( か < か [ までが現れるまでで絞り込み
+  nnoremap <silent> [!unite]<C-]> :<C-u>execute "PopupTags "
+      \.substitute(<SID>get_func_name(expand('<cWORD>')), '\:', '\\\:', "g")<CR>
+
+endif
 " cmd-t/r {{{3
 function! s:get_cmd_t_key(key)
   return printf("<%s-%s>", has('gui_macvim') ? "D" : "A", a:key)
