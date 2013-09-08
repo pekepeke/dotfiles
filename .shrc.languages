@@ -173,11 +173,12 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
 
   # go {{{2
   # vmenv-init goenv
-  export GOPATH=~/.gopath
-  if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/bin/go" ]; then
-    export GOROOT=$(dirname $(dirname $HOMEBREW_PREFIX/bin/go/$(readlink /usr/local/bin/go)))
-  fi
-  PATH=$GOROOT/bin:$PATH
+  # export GOPATH=~/.gopath
+  # if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/bin/go" ]; then
+  #   export GOPATH=$(dirname $(dirname $HOMEBREW_PREFIX/bin/go/$(readlink /usr/local/bin/go)))
+  export GOPATH=$HOME/.gopath
+  PATH=$GOPATH/bin:$PATH
+  # fi
 
   # haskell {{{2
   PATH=${HOME}/.cabal/bin:$PATH
