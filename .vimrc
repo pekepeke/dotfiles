@@ -31,6 +31,7 @@ endif
 let s:is_win = has('win16') || has('win32') || has('win64')
 let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim')
 " || (executable('uname') && system('uname') =~? '^darwin')
+
 function! s:nop(...)
 endfunction
 
@@ -43,6 +44,13 @@ function! s:path_push(...)
   let pathes = s:is_win ? map(copy(a:000), 'substitute(v:val, "/", "\\", "g")') : a:000
   let $PATH .= sep . join(pathes, sep)
 endfunction
+
+function! s:mkdir(path)
+  if !isdirectory(a:path)
+    call mkdir(a:path, "p")
+  endif
+endfunction
+
 
 if !has('vim_starting')
   let s:restore_setlocal=join(['setlocal sw=', &sw, ' tw=', &tw, ' sts=', &sts], ' '.(&et ? '' : 'no').'expandtab')
@@ -135,6 +143,51 @@ if !exists('g:my_lcd_autochdir')
   let g:my_lcd_autochdir = 1
 endif
 
+function! s:find_proj_dir() "{{{3
+  if isdirectory(expand('%:p')) | return '' | endif
+  let cdir = expand('%:p:h')
+  let pjdir = ''
+  if cdir == '' || !isdirectory(cdir) | return '' | endif
+  "if stridx(cdir, '/.vim/') > 0 | return cdir | endif
+  for d in ['.git', '.bzr', '.hg']
+    let d = finddir(d, cdir . ';')
+    if d != ''
+      let pjdir = fnamemodify(d, ':p:h:h')
+      break
+    endif
+  endfor
+  if pjdir == ''
+    for f in ['build.xml', 'pom.xml', 'prj.el',
+          \ '.project', '.settings',
+          \ 'Gruntfile.js', 'Jakefile', 'Cakefile',
+          \ 'tiapp.xml', 'NAnt.build',
+          \ 'Makefile', 'Rakefile',
+          \ 'Gemfile', 'cpanfile',
+          \ 'configure', 'tags', 'gtags',
+          \ ]
+      let f = findfile(f, cdir . ';')
+      if f != ''
+        let pjdir = fnamemodify(f, ':p:h')
+        break
+      endif
+    endfor
+  endif
+  if pjdir == ''
+    for d in ['src', 'lib', 'vendor', 'app']
+      let d = finddir(d, cdir . ';')
+      if d != ''
+        let pjdir = fnamemodify(d, ':p:h:h')
+        break
+      endif
+    endfor
+  endif
+
+  if pjdir != '' && isdirectory(pjdir)
+    return pjdir
+  endif
+  return cdir
+endfunction
+
 function! s:autochdir() "{{{3
   if expand('%') == '' && &buftype =~ 'nofile'
   " if (&filetype == "vimfiler" || &filetype == "unite" || &filetype == "vimshell"
@@ -142,7 +195,7 @@ function! s:autochdir() "{{{3
     return
   elseif g:my_lcd_autochdir
     if !exists('b:my_lcd_current_or_prj_dir')
-      let b:my_lcd_current_or_prj_dir = my#util#find_proj_dir()
+      let b:my_lcd_current_or_prj_dir = s:find_proj_dir()
     endif
     if b:my_lcd_current_or_prj_dir != '' && isdirectory(b:my_lcd_current_or_prj_dir)
       execute 'lcd' fnameescape(b:my_lcd_current_or_prj_dir)
@@ -257,11 +310,11 @@ set backupcopy=yes
 set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*.tmp,crontab.*
 set backupdir=$VIM_CACHE/vim-backups
 set viewdir=$VIM_CACHE/vim-views
-call my#util#mkdir(&backupdir)
-call my#util#mkdir(&viewdir)
+call s:mkdir(&backupdir)
+call s:mkdir(&viewdir)
 if has('persistent_undo')
   set undodir=$VIM_CACHE/vim-undo
-  call my#util#mkdir(&undodir)
+  call s:mkdir(&undodir)
   set undofile
 endif
 
@@ -273,6 +326,7 @@ set wildchar=<tab>
 set wildignore+=*.o,*.obj,.git,*.rbc,.class,.svn
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
 set wildignore+=*.so,*.swp,*.pdf,*.dmg
+set wildignore+=*.luac,*.jar,*.pyc,*.stats
 " set completeopt=menu,preview,longest,menuone
 " set complete=.,w,b,u,t,i,k                   " 補完候補の設定
 " set completeopt=menuone,preview
@@ -714,6 +768,7 @@ endif
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'osyo-manga/shabadou.vim'
 NeoBundle 'osyo-manga/vim-watchdogs'
+NeoBundle 'osyo-manga/vim-anzu'
 NeoBundle 'kien/rainbow_parentheses.vim'
 " incompatible with smartinput
 " NeoBundle 'vim-scripts/Highlight-UnMatched-Brackets'
@@ -2326,22 +2381,38 @@ endif
 " context_filetype
 let g:context_filetype#search_offset = 500
 
+" vim-anzu
+if s:plugin_installed('vim-anzu')
+  let g:anzu_status_format = "(%i/%l)"
+  nmap n <Plug>(anzu-n)
+  nmap N <Plug>(anzu-N)
+  nmap * <Plug>(anzu-star)
+  nmap # <Plug>(anzu-sharp)
+  " 一定時間キー入力がないとき、ウインドウを移動したとき、タブを移動したときに
+  " 検索ヒット数の表示を消去する
+  MyAutocmd CursorHold,CursorHoldI,WinLeave,TabLeave * call anzu#clear_search_status()
+endif
+
 " lightline {{{2
 if s:plugin_installed('lightline.vim')
   let g:unite_force_overwrite_statusline = 0
   let g:lightline = {
         \ 'colorscheme': 'solarized',
         \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'lang_version' ] ]
+        \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'filename', 'modified', 'lang_version', 'anzu' ] ]
         \ },
         \ 'component_function': {
         \   'fugitive' : 'g:ll_helper.fugitive',
         \   'filename' : 'g:ll_helper.filename',
         \   'iminsert' : 'g:ll_helper.iminsert',
         \   'lang_version' : 'g:ll_helper.lang_version',
+        \   'anzu': 'g:ll_helper.anzu',
         \ },
         \ }
   let g:ll_helper = {}
+  function! g:ll_helper.anzu() "{{{3
+    return exists('*anzu#search_status') ? anzu#search_status() : ''
+  endfunction
   function! g:ll_helper.is_special_ft() "{{{3
     return &filetype =~ 'help\|vimfiler\|gundo'
   endfunction
@@ -3269,7 +3340,7 @@ endif
 
 " hatena.vim {{{2
 let g:hatena_base_dir = $VIM_CACHE . '/vim-hatena/'
-call my#util#mkdir(g:hatena_base_dir.'/cookies')
+call s:mkdir(g:hatena_base_dir.'/cookies')
 let g:hatena_upload_on_write = 0
 let g:hatena_upload_on_write_bang = 1
 let g:hatena_no_default_keymappings = 1

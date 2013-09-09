@@ -21,11 +21,11 @@ function! my#util#has_plugin(name) " {{{2
   return s:has_plugin_cache[a:name]
 endfunction
 
-function! my#util#mkdir(path) " {{{2
-  if !isdirectory(a:path)
-    call mkdir(a:path, "p")
-  endif
-endfunction
+" function! my#util#mkdir(path) " {{{2
+"   if !isdirectory(a:path)
+"     call mkdir(a:path, "p")
+"   endif
+" endfunction
 
 function! my#util#copy(fromfp, tofp) " {{{2
   let fdat = readfile(a:fromfp, "b")
@@ -73,65 +73,65 @@ function! my#util#newfile_with_text(path, text)
   silent exe 'wincmd p'
 endfunction
 
-function! my#util#find_proj_dir() " {{{2
-  if isdirectory(expand('%:p')) | return '' | endif
-  let cdir = expand('%:p:h')
-  let pjdir = ''
-  if cdir == '' || !isdirectory(cdir) | return '' | endif
-  "if stridx(cdir, '/.vim/') > 0 | return cdir | endif
-  for d in ['.git', '.bzr', '.hg']
-    let d = finddir(d, cdir . ';')
-    if d != ''
-      let pjdir = fnamemodify(d, ':p:h:h')
-      break
-    endif
-  endfor
-  if pjdir == ''
-    for f in ['build.xml', 'pom.xml', 'prj.el',
-          \ '.project', '.settings',
-          \ 'Gruntfile.js', 'Jakefile', 'Cakefile',
-          \ 'tiapp.xml', 'NAnt.build',
-          \ 'Makefile', 'Rakefile',
-          \ 'Gemfile', 'cpanfile',
-          \ 'configure', 'tags', 'gtags',
-          \ ]
-      let f = findfile(f, cdir . ';')
-      if f != ''
-        let pjdir = fnamemodify(f, ':p:h')
-        break
-      endif
-    endfor
-  endif
-  if pjdir == ''
-    for d in ['src', 'lib', 'vendor', 'app']
-      let d = finddir(d, cdir . ';')
-      if d != ''
-        let pjdir = fnamemodify(d, ':p:h:h')
-        break
-      endif
-    endfor
-  endif
-  if pjdir != '' && isdirectory(pjdir)
-    return pjdir
-  endif
-  return cdir
-  " let proj_dirs = ['.git', 'app', 'apps', 'build']
-  " if isdirectory(cdir)
-    " let pdir = cdir
-    " for idx in range(3)
-      " for proj_dir in proj_dirs
-        " if isdirectory(pdir.'/'.proj_dir)
-          " return pdir
-        " endif
-      " endfor
-      " let pdir = fnamemodify(pdir, ':p:h:h')
-      " if pdir == '/' || pdir =~ '.:/'
-        " break
-      " endif
-    " endfor
-    " return cdir
-  " endif
-endfunction
+" function! my#util#find_proj_dir() " {{{2
+"   if isdirectory(expand('%:p')) | return '' | endif
+"   let cdir = expand('%:p:h')
+"   let pjdir = ''
+"   if cdir == '' || !isdirectory(cdir) | return '' | endif
+"   "if stridx(cdir, '/.vim/') > 0 | return cdir | endif
+"   for d in ['.git', '.bzr', '.hg']
+"     let d = finddir(d, cdir . ';')
+"     if d != ''
+"       let pjdir = fnamemodify(d, ':p:h:h')
+"       break
+"     endif
+"   endfor
+"   if pjdir == ''
+"     for f in ['build.xml', 'pom.xml', 'prj.el',
+"           \ '.project', '.settings',
+"           \ 'Gruntfile.js', 'Jakefile', 'Cakefile',
+"           \ 'tiapp.xml', 'NAnt.build',
+"           \ 'Makefile', 'Rakefile',
+"           \ 'Gemfile', 'cpanfile',
+"           \ 'configure', 'tags', 'gtags',
+"           \ ]
+"       let f = findfile(f, cdir . ';')
+"       if f != ''
+"         let pjdir = fnamemodify(f, ':p:h')
+"         break
+"       endif
+"     endfor
+"   endif
+"   if pjdir == ''
+"     for d in ['src', 'lib', 'vendor', 'app']
+"       let d = finddir(d, cdir . ';')
+"       if d != ''
+"         let pjdir = fnamemodify(d, ':p:h:h')
+"         break
+"       endif
+"     endfor
+"   endif
+"   if pjdir != '' && isdirectory(pjdir)
+"     return pjdir
+"   endif
+"   return cdir
+"   " let proj_dirs = ['.git', 'app', 'apps', 'build']
+"   " if isdirectory(cdir)
+"     " let pdir = cdir
+"     " for idx in range(3)
+"       " for proj_dir in proj_dirs
+"         " if isdirectory(pdir.'/'.proj_dir)
+"           " return pdir
+"         " endif
+"       " endfor
+"       " let pdir = fnamemodify(pdir, ':p:h:h')
+"       " if pdir == '/' || pdir =~ '.:/'
+"         " break
+"       " endif
+"     " endfor
+"     " return cdir
+"   " endif
+" endfunction
 
 function! my#util#vars(names, val) " {{{2
   let val = type(a:val) == type('') ? string(a:val) : a:val
