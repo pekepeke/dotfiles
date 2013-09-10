@@ -32,23 +32,33 @@ let s:is_win = has('win16') || has('win32') || has('win64')
 let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim')
 " || (executable('uname') && system('uname') =~? '^darwin')
 
-function! s:nop(...)
+function! s:nop(...) "{{{3
 endfunction
 
-function! s:SID()
+function! s:SID() "{{{3
     return matchstr(expand('<sfile>'), '<SNR>\d\+_')
 endfunction
 
-function! s:path_push(...)
+function! s:path_push(...) "{{{3
   let sep = s:is_win ? ';' : ':'
   let pathes = s:is_win ? map(copy(a:000), 'substitute(v:val, "/", "\\", "g")') : a:000
   let $PATH .= sep . join(pathes, sep)
 endfunction
 
-function! s:mkdir(path)
+function! s:mkdir(path) "{{{3
   if !isdirectory(a:path)
     call mkdir(a:path, "p")
   endif
+endfunction
+
+function! s:mkvars(names, val) "{{{3
+  let val = type(a:val) == type('') ? string(a:val) : a:val
+  let names = type(a:names) == type([]) ? a:names : [a:names]
+  for name in a:names
+    if !exists(name)
+      silent execute 'let' name '=' val
+    endif
+  endfor
 endfunction
 
 
@@ -1621,7 +1631,9 @@ NeoBundleLazy 'h1mesuke/textobj-wiw', {
 NeoBundleLazy 'coderifous/textobj-word-column.vim', {'autoload':{
       \ 'mappings' : [['xo', 'ac', 'aC', 'ic', 'iC']]
       \ }}
-NeoBundle 'rhysd/vim-textobj-continuous-line'
+NeoBundleLazy 'rhysd/vim-textobj-continuous-line', {'autoload':{
+      \ 'filetypes': ['vim', 'c', 'cpp', 'sh', 'zsh', 'fish'],
+      \ }}
 NeoBundleLazy 'osyo-manga/vim-textobj-context', {'autoload':{
       \ 'mappings' : [['nvo',
       \ '<Plug>(textobj-context-i)',
@@ -2042,29 +2054,75 @@ nnoremap [!space]r :<C-u>%S/
 vnoremap [!space]r :S/
 
 " grep
-if s:is_win && executable('jvgrep')
-  set grepprg=jvgrep
-  " set grepprg=jvgrep\ -n
-  let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
-  let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
-elseif executable('ag')
-  set grepprg=ag\ -i\ --nocolor\ --nogroup\ --nopager
-  set grepformat=%f:%l:%m
-  let g:ackprg="ag -i --nocolor --nogroup --column --nopager"
-elseif executable('ack')
-  set grepprg=ack\ -a\ --nocolor\ --nogroup\ --nopager
-  set grepformat=%f:%l:%m
-elseif executable('ack-grep')
-  set grepprg=ack-grep\ -a\ --nocolor\ --nogroup\ --nopager
-  set grepformat=%f:%l:%m
-  let g:ackprg="ack-grep -H --nocolor --nogroup --column --nopager"
-else
+function! s:set_grep(...) "{{{3
+  let retval = 0
+  for type in copy(a:000)
+    if type == "jvgrep" && executable(type)
+      set grepprg=jvgrep
+      set grepformat=%f:%l:%m
+      " set grepprg=jvgrep\ -n
+      let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
+      let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
+
+      let g:unite_source_grep_command = "jvgrep"
+      let g:unite_source_grep_default_opts = '-in --exclude "\.(git|svn|hg|bzr)"'
+      return 1
+    elseif type == "ag" && executable(type)
+      set grepprg=ag\ -i\ --nocolor\ --nogroup\ --nopager
+      set grepformat=%f:%l:%m
+      let g:ackprg="ag -i --nocolor --nogroup --column --nopager"
+
+      let g:unite_source_grep_command = 'ag'
+      let g:unite_source_grep_default_opts = '-i --noheading --nocolor --nogroup --nopager'
+      let g:unite_source_grep_recursive_opt = ''
+      return 1
+    elseif type == "ack" && executable(type)
+      set grepprg=ack\ -a\ --nocolor\ --nogroup\ --nopager
+      set grepformat=%f:%l:%m
+
+      let g:ackprg="ack -H --nocolor --nogroup --column --nopager"
+      let g:unite_source_grep_command = 'ack'
+      let g:unite_source_grep_default_opts = '--no-heading --nocolor -a --nogroup --nopager'
+      let g:unite_source_grep_recursive_opt = ''
+      return 1
+    elseif type == "ack-grep"  && executable(type)
+      set grepprg=ack-grep\ -a\ --nocolor\ --nogroup\ --nopager
+      set grepformat=%f:%l:%m
+
+      let g:ackprg="ack-grep -H --nocolor --nogroup --column --nopager"
+      let g:unite_source_grep_command = 'ack-grep'
+      let g:unite_source_grep_default_opts = '--no-heading --nocolor -a --nogroup --nopager'
+      let g:unite_source_grep_recursive_opt = ''
+      return 1
+    endif
+    if type == "grep"
+      let retval = 1
+      break
+    endif
+  endfor
+
   set grepprg=grep\ -n\ $*\ /dev/null
   "set grepprg=grep\ -n\ $*\ /dev/null\ --exclude\ \"\*\.svn\*\"
   let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
   let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
   let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
+
+  let g:unite_source_grep_command = 'grep'
+  let g:unite_source_grep_default_opts = '-iRHn'
+  let g:unite_source_grep_recursive_opt = ''
+  return retval
+endfunction
+
+command! -nargs=0 SetJvgrep call s:set_grep("jvgrep")
+command! -nargs=0 SetAck call s:set_grep("ack-grep")
+command! -nargs=0 SetAg call s:set_grep("ag")
+
+if s:is_win
+  call s:set_grep("jvgrep", "ag", "ack-grep")
+else
+  call s:set_grep("ag", "jvgrep", "ack-grep")
 endif
+
 let Grep_Default_Options = '-i'
 let Grep_OpenQuickfixWindow = 1
 
@@ -3102,7 +3160,7 @@ let g:template_basedir = expand('$HOME/.vim')
 let g:template_files = 'template/**'
 let g:template_free_pattern = 'template'
 
-call my#util#vars(['g:email', 'g:author', 'g:homepage_url'], '')
+call s:mkvars(['g:email', 'g:author', 'g:homepage_url'], '')
 
 "autocmd BufNewFile * execute 'TemplateLoad'
 MyAutocmd User plugin-template-loaded call s:template_keywords()
@@ -3419,20 +3477,6 @@ if s:plugin_installed('unite.vim')
   let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
   let g:unite_source_file_rec_max_cache_files = 5000
 
-  " unite-grep {{{3
-  " let g:unite_source_grep_default_opts = '-iRHn'
-  if s:is_win && executable('jvgrep')
-    let g:unite_source_grep_command = "jvgrep"
-    let g:unite_source_grep_default_opts = '-in --exclude "\.(git|svn|hg|bzr)"'
-  elseif executable('ag')
-    let g:unite_source_grep_command = 'ag'
-    let g:unite_source_grep_default_opts = '-i --noheading --nocolor --nogroup --nopager'
-    let g:unite_source_grep_recursive_opt = ''
-  else
-    let g:unite_source_grep_command = 'ack-grep'
-    let g:unite_source_grep_default_opts = '--no-heading --nocolor -a --nogroup --nopager'
-    let g:unite_source_grep_recursive_opt = ''
-  endif
 
   " unite-grep_launcher {{{3
   if !exists('g:grep_launcher_words')

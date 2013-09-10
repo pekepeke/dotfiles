@@ -133,16 +133,16 @@ endfunction
 "   " endif
 " endfunction
 
-function! my#util#vars(names, val) " {{{2
-  let val = type(a:val) == type('') ? string(a:val) : a:val
-  if type(a:names) == type([])
-    for name in a:names
-      if !exists(name) | silent execute 'let' name '=' val | endif
-    endfor
-  else
-    if !exists(a:names) | silent execute 'let' a:names '=' val | endif
-  endif
-endfunction
+" function! my#util#vars(names, val) " {{{2
+"   let val = type(a:val) == type('') ? string(a:val) : a:val
+"   if type(a:names) == type([])
+"     for name in a:names
+"       if !exists(name) | silent execute 'let' name '=' val | endif
+"     endfor
+"   else
+"     if !exists(a:names) | silent execute 'let' a:names '=' val | endif
+"   endif
+" endfunction
 
 function! my#util#benchmark() " {{{2
   let bm = {}
