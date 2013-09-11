@@ -1406,6 +1406,9 @@ NeoBundleLazy 'ujihisa/quicklearn', { 'autoload' : {
 NeoBundleLazy "osyo-manga/unite-airline_themes", {'autoload':{
       \ 'unite_sources' : ['airline_themes'],
       \ }}
+NeoBundleLazy "osyo-manga/unite-fold", {'autoload':{
+      \ 'unite_sources' : ['fold'],
+      \ }}
 
 if executable('w3m')
   NeoBundleLazy 'ringogirl/unite-w3m', {
@@ -2441,14 +2444,17 @@ let g:context_filetype#search_offset = 500
 
 " vim-anzu
 if s:plugin_installed('vim-anzu')
-  let g:anzu_status_format = "(%i/%l)"
-  nmap n <Plug>(anzu-n)
-  nmap N <Plug>(anzu-N)
-  nmap * <Plug>(anzu-star)
-  nmap # <Plug>(anzu-sharp)
+  let g:anzu_status_format = "%p(%i/%l)%w"
+  let g:anzu_bottomtop_word = "search hit BOTTOM, continuing at TOP"
+  let g:anzu_topbottom_word = "search hit TOP, continuing at BOTTOM"
+  nmap n <Plug>(anzu-n)zxzz
+  nmap N <Plug>(anzu-N)zxzz
+  nmap * <Plug>(anzu-star)Nzxzz
+  nmap # <Plug>(anzu-sharp)nzxzz
   " 一定時間キー入力がないとき、ウインドウを移動したとき、タブを移動したときに
   " 検索ヒット数の表示を消去する
-  MyAutocmd CursorHold,CursorHoldI,WinLeave,TabLeave * call anzu#clear_search_status()
+  " MyAutocmd CursorHold,CursorHoldI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
+  MyAutocmd CursorMoved,CursorMovedI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
 endif
 
 " lightline {{{2
@@ -3541,7 +3547,8 @@ if s:plugin_installed('unite.vim')
   \   ["todo"               , "Todo"]                                    ,
   \   ["repl"               , "Unite menu:repl"]                         ,
   \   ["help"               , "Unite menu:help"]                         ,
-  \   ["quickrun config"        , "Unite quickrun_config"]               ,
+  \   ["fold"               , "Unite fold"]                              ,
+  \   ["quickrun config"    , "Unite quickrun_config"]                   ,
   \ ])
   let g:unite_source_menu_menus["help"] = s:unite_menu_create(
   \ 'Help', [
@@ -3705,7 +3712,9 @@ if s:plugin_installed('unite.vim')
   UniteNMap   k         tab
   UniteNMap   l         file -profile-name=files
   UniteNMap   d         directory_mru -default-action=vimfiler
-  UniteNMap   z         z -default-action=vimfiler
+  UniteNMap   zz        z -default-action=vimfiler
+  UniteNMap   za        fold
+  UniteNMap   <Leader>r quickrun_config
   UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR> -profile-name=files
   UniteNMap   m         file_mru -default-action=open -profile-name=files
   UniteNMap   t         sonictemplate
