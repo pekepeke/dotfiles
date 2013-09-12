@@ -2447,10 +2447,15 @@ if s:plugin_installed('vim-anzu')
   let g:anzu_status_format = "%p(%i/%l)%w"
   let g:anzu_bottomtop_word = "search hit BOTTOM, continuing at TOP"
   let g:anzu_topbottom_word = "search hit TOP, continuing at BOTTOM"
-  nmap n <Plug>(anzu-n)zxzz
-  nmap N <Plug>(anzu-N)zxzz
-  nmap * <Plug>(anzu-star)Nzxzz
-  nmap # <Plug>(anzu-sharp)nzxzz
+  " nmap n <Plug>(anzu-n)zxzz
+  " nmap N <Plug>(anzu-N)zxzz
+  " nmap * <Plug>(anzu-star)Nzxzz
+  " nmap # <Plug>(anzu-sharp)nzxzz
+
+  nmap n <Plug>(anzu-n)zx
+  nmap N <Plug>(anzu-N)zx
+  nmap * <Plug>(anzu-star)Nzx
+  nmap # <Plug>(anzu-sharp)nzx
   " 一定時間キー入力がないとき、ウインドウを移動したとき、タブを移動したときに
   " 検索ヒット数の表示を消去する
   " MyAutocmd CursorHold,CursorHoldI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
@@ -2463,7 +2468,7 @@ if s:plugin_installed('lightline.vim')
   let g:lightline = {
         \ 'colorscheme': 'solarized',
         \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'filename', 'modified', 'lang_version', 'anzu' ] ]
+        \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'filename', 'modified', 'anzu' , 'lang_version', ] ]
         \ },
         \ 'component_function': {
         \   'fugitive' : 'g:ll_helper.fugitive',

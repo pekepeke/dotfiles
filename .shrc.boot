@@ -146,6 +146,7 @@ alias vimrcprofileall='vim --cmd "profile start vimrc-profileall.txt" --cmd "pro
 alias vimsafe='vim -u NONE -i NONE'
 alias vimf='vim -u '
 alias view='view -u $HOME/.vimpagerrc'
+alias ctags-rb='ctags --langmap=RUBY:.rb --exclude="*.js"  --exclude=".git*"'
 
 dot-submodules-update() { #{{{3
   local cwd=$(pwd)
