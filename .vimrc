@@ -724,6 +724,9 @@ NeoBundleLazy 'kien/ctrlp.vim'
 NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {
       \ 'commands': ['MemoNew', 'MemoGrep', 'MemoList']
       \ }}
+NeoBundleLazy 'LeafCage/nebula.vim', {'autoload': {
+      \ 'commands': ['NebulaPutLazy', 'NebulaPutConfig', 'NebulaYankOptions', 'NebulaPutFromClipboard'],
+      \ }}
 
 NeoBundle 'pekepeke/vim-trimr'
 NeoBundleLazy 'othree/eregex.vim', { 'autoload': {
