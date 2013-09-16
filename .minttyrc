@@ -1,0 +1,16 @@
+BoldAsFont=no
+FontHeight=10
+Transparency=high
+Font=Inconsolata
+FontIsBold=no
+CursorColour=255,0,0
+CursorType=block
+Locale=ja_JP
+Charset=UTF-8
+BackspaceSendsBS=yes
+RightClickAction=paste
+ClicksTargetApp=no
+CursorBlinks=yes
+FontSmoothing=default
+CopyOnSelect=yes
+Rows=45

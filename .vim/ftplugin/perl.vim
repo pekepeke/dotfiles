@@ -23,6 +23,7 @@ if !exists('g:loaded_perl_ftplugin')
 endif
 
 setl expandtab
-setl cindent
+" setl cindent
+let b:match_words = &matchpairs . ',\<if\>:\<elsif\>:\<else\>,\<unless\>:\<else\>'
 
 let &cpo = s:save_cpo

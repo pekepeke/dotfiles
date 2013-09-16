@@ -34,5 +34,6 @@ endif " }}}
 
 setl foldmethod=marker
 setl noexpandtab
+let b:match_words = &matchpairs . ',\<try\>:\<catch\>:\<finally\>'
 
 let &cpo = s:save_cpo

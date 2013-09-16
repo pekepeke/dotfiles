@@ -690,6 +690,11 @@ NeoBundleLazy 'h1mesuke/vim-alignta', {'autoload': {
 NeoBundleLazy 'AndrewRadev/switch.vim', {'autoload': {
       \ 'commands': ['Switch']
       \ }}
+NeoBundle 'tpope/vim-speeddating', {'autoload': {
+      \ 'mappings' : [['nv', '<Plug>SpeedDatingUp', '<Plug>SpeedDatingDown'],
+      \ ['n', '<Plug>SpeedDatingNowLocal', '<Plug>SpeedDatingNowUTC']],
+      \ 'commands' : ['SpeedDatingFormat']
+      \ }}
 NeoBundleLazy 'AndrewRadev/splitjoin.vim', {'autoload': {
       \ 'commands': ['SplitjoinJoin', 'SplitjoinSplit'],
       \ }}
@@ -1031,6 +1036,11 @@ NeoBundle 'digitaltoad/vim-jade'
 NeoBundleLazyOn FileType html,eruby,php 'mattn/emmet-vim'
 " NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
 NeoBundle 'juvenn/mustache.vim'
+NeoBundleLazy 'https://gist.github.com/6576341', {
+      \ 'directory' : 'endtagcomment',
+      \ 'script_type' : 'plugin',
+      \ 'autoload': {'mappings': [['n', '<Plug>(endtagcomment)']]}
+      \ }
 
 " css {{{4
 NeoBundleLazyOn FileType html,javascript,css,sass,scss,less,slim,stylus 'Rykka/colorv.vim'
@@ -2643,14 +2653,49 @@ if s:plugin_installed('ShowMultiBase')
   noremap <silent> <Leader>h= :ShowMultiBase 16<CR>
 endif
 
+" monday {{{2
+" kill monday.vim
+let g:loaded_monday=1
+
+" speeddating {{{2
+let g:speeddating_no_mappings = 1
+if s:plugin_installed('vim-speeddating')
+  if !s:plugin_installed('vim-cycle')
+    nmap <C-A> <Plug>SpeedDatingUp
+    nmap <C-X> <Plug>SpeedDatingDown
+  else
+    function! s:speeddating_or_cycle(incr) "{{{3
+      let line = getline('.')
+      execute 'normal' abs(a:incr)."\<Plug>SpeedDating".(a:incr < 0 ? 'Down' : 'Up')
+      if line == getline('.')
+        execute 'normal' "\<Plug>Cycle".(a:incr < 0 ? 'Previous' : 'Next')
+      endif
+    endfunction " }}}
+    nmap <silent> <C-a> :<C-u>call <SID>speeddating_or_cycle(v:count1)<CR>
+    nmap <silent> <C-x> :<C-u>call <SID>speeddating_or_cycle(-v:count1)<CR>
+  endif
+  xmap <C-A> <Plug>SpeedDatingUp
+  xmap <C-X> <Plug>SpeedDatingDown
+  nmap d<C-A> <Plug>SpeedDatingNowUTC
+  nmap d<C-X> <Plug>SpeedDatingNowLocal
+endif
+
 " cycle.vim {{{2
 let g:cycle_no_mappings=1
 if s:plugin_installed('vim-cycle')
-  nmap <C-A> <Plug>CycleNext
-  nmap <C-X> <Plug>CyclePrevious
+  if !s:plugin_installed('vim-speeddating')
+    nmap <C-A> <Plug>CycleNext
+    nmap <C-X> <Plug>CyclePrevious
+  endif
 
   let s:bundle = neobundle#get("vim-cycle")
-  function! s:bundle.hooks.on_source(bundle)
+  function! s:bundle.hooks.on_post_source(bundle)
+    call AddCycleGroup(['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'])
+    " call AddCycleGroup(['jan', 'feb', 'mar', 'apr', 'may', 'june', 'july', 'aug', 'sep', 'oct', 'nov', 'dec'])
+    call AddCycleGroup([ 'january', 'february', 'march', 'april', 'may',
+          \ 'june', 'july', 'august', 'september', 'october',
+          \ 'november', 'december'])
+
     call AddCycleGroup(['specify', 'it'])
     call AddCycleGroup(['describe', 'context'])
     call AddCycleGroup(['public', 'protected', 'private'])
@@ -2705,6 +2750,8 @@ MyAutocmd User PluginCakephpInitializeAfter call s:init_cakephp()
 " gitv {{{2
 if s:plugin_installed('gitv')
   let g:Gitv_OpenHorizontal = 1
+  let g:Gitv_WipeAllOnClose = 1
+  let g:Gitv_DoNotMapCtrlKey = 1
   " http://d.hatena.ne.jp/cohama/20130517/1368806202
   MyAutocmd FileType gitv call s:my_gitv_init()
   function! s:my_gitv_init()
@@ -3376,17 +3423,21 @@ if s:plugin_installed('dotnet-complete')
 endif
 
 " python {{{2
-let g:pymode_rope = 0
+let g:pymode_rope = 1
+let g:pymode_rope_goto_def_newwin = 'new'
+let g:pymode_rope_vim_completion = 1
 let g:pymode_run = 0
 let g:pymode_doc = 0
 let g:pymode_lint = 0
+let g:pymode_virtualenv = 0
 
 " jedi-vim {{{2
 if s:plugin_installed('jedi-vim')
   let g:jedi#auto_initialization = 1
   let g:jedi#popup_on_dot = 0
   let g:jedi#rename_command = '<leader>R'
-  let g:jedi#show_function_definition = 0
+  " let g:jedi#show_function_definition = 0
+  let g:jedi#show_call_signatures = 0
   let g:jedi#auto_vim_configuration = 0
   MyAutocmd FileType python let b:did_ftplugin = 1
         \ | setlocal omnifunc=jedi#complete
@@ -3497,7 +3548,7 @@ if s:plugin_installed('unite.vim')
     let g:grep_launcher_words = {}
   endif
   call extend(g:grep_launcher_words, {
-    \ 'TODO' : 'TODO\|FIXME\|XXX',
+    \ 'TODO' : 'TODO\|FIXME\|NOTE\|!!!\|\?\?\?\|XXX',
     \ })
   " unite-history
   let g:unite_source_history_yank_enable = 1
@@ -3731,7 +3782,7 @@ if s:plugin_installed('unite.vim')
   UniteNMap   o         outline
   UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep -auto-preview
   UniteNMap!  gr        grep -buffer-name=grep
-  UniteNMap!  gt        grep:<C-r>=getcwd()<CR>:TODO\|FIXME\|XXX -buffer-name=todo -auto-preview
+  UniteNMap!  gt        grep:<C-r>=getcwd()<CR>:TODO\|FIXME\|XXX\|NOTE\|!!!\|\?\?\? -buffer-name=todo -auto-preview
   UniteNMap   gl        grep_launcher
   UniteNMap!  gi        git_grep -buffer-name=git_grep
   UniteNMap!  q         quickfix -buffer-name=qfix
@@ -3769,10 +3820,11 @@ if s:plugin_installed('unite.vim')
 
   " nnoremap <silent> [!unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
   " nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_filetype()<CR>
-  nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_smart()<CR>
+  nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_callable()<CR>
+  nnoremap <silent> [!unite]he :<C-u>Unite help<CR>
   nnoremap <silent> [!unite]hk :<C-u>Unite mapping<CR>
 
-  function! s:unite_ref_smart(...) "{{{4
+  function! s:unite_ref_callable(...) "{{{4
     let kwd = ""
     if a:0 > 0
       let isk = &l:isk
@@ -3836,7 +3888,7 @@ if s:plugin_installed('unite.vim')
     inoremap <C-x><C-j> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
   endif
 
-  command! Todo silent! exe 'Unite' printf("grep:%s::TODO\\|FIXME\\|XXX", getcwd()) '-buffer-name=todo' '-no-quit'
+  command! Todo silent! exe 'Unite' printf('grep:%s::TODO\|FIXME\|NOTE\|!!!\|\?\?\?\|XXX', getcwd()) '-buffer-name=todo' '-no-quit'
 
   function! s:unite_open_ftplugin()
     let dirs = ['after', 'ftplugin', 'snippets', 'template', 'sonictemplate']
@@ -3943,18 +3995,36 @@ endif
 " nnoremap [!space]gp :<C-u>Git push
 
 " fugitive.vim {{{2
+function! s:git_qfix(...)
+  let word = input("Pattern: ")
+  if empty(word)
+    echoerr "abort"
+  endif
+  execute 'silent' call('printf', copy(a:000) + [word])
+  Unite -no-quit quickfix
+endfunction
+
 nnoremap <silent> [!space]gd :<C-u>Gdiff --cached<CR>
 nnoremap <silent> [!space]gD :<C-u>Gdiff<CR>
 nnoremap <silent> [!space]gs :<C-u>Gstatus<CR>
-nnoremap [!space]gl :<C-u>Glog<CR>
-nnoremap [!space]gL :<C-u>Glog -u \| head -10000<CR>
+nnoremap [!space]gl :<C-u>silent Glog <Bar> Unite -no-quit quickfix<CR>
+nnoremap [!space]gL :<C-u>silent Glog -- <Bar> Unite -no-quit quickfix<CR>
+nnoremap [!space]gg :<C-u>call s:git_qfix('Ggrep -i "%s"')<CR>
+nnoremap [!space]ggr :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
+nnoremap [!space]ggm :<C-u>call s:git_qfix('Glog --grep="%s"')<CR>
+nnoremap [!space]ggl :<C-u>call s:git_qfix('Glog -S="%s"')<CR>
+nnoremap [!space]gR :<C-u>Gremove<CR>
+nnoremap [!space]gm :<C-u>Gmove<Space>
 nnoremap [!space]ga :<C-u>Gwrite<CR>
 nnoremap [!space]gA :<C-u>Gwrite <cfile><CR>
 nnoremap <silent> [!space]gc :<C-u>Gcommit<CR>
 nnoremap <silent> [!space]gC :<C-u>Gcommit --amend<CR>
-nnoremap <silent> [!space]gr :<C-u>Ggrep<Space>
 nnoremap <silent> [!space]gb :<C-u>Gblame<CR>
+nnoremap <silent> [!space]gB :<C-u>Gbrowse<CR>
 nnoremap <silent> [!space]gp :<C-u>Git push
+nnoremap <silent> [!space]ge :<C-u>Gedit<Space>
+nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
+nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
 function! s:my_git_init()
   setl foldmethod=expr
   " setl foldexpr=getline(v:lnum)!~'^commit'
