@@ -470,21 +470,13 @@ if has('vim_starting')
     endif
   endfunction " }}}
 
-  function! s:bundle.loaded(name) "{{{
+  function! s:bundle.is_sourced(name) "{{{
     return neobundle#is_sourced(a:name)
   endfunction "}}}
 
   function! s:bundle.is_installed(name) "{{{
     return neobundle#is_installed(a:name)
   endfunction "}}}
-
-  " wrap funciton
-  function! s:plugin_loaded(name)
-    return neobundle#is_sourced(a:name)
-  endfunction
-  function! s:bundle.is_installed(name)
-    return neobundle#is_installed(a:name)
-  endfunction
 endif
 
 call neobundle#rc(expand("~/.vim/neobundle"))
@@ -2702,8 +2694,9 @@ if s:bundle.tap('vim-commentary')
 endif
 
 " showmultibase {{{2
-let g:ShowMultiBase_General_UseDefaultMappings = 0
 if s:bundle.tap('ShowMultiBase')
+  let g:ShowMultiBase_General_UseDefaultMappings = 0
+
   noremap <silent> <Leader>= :ShowMultiBase<CR>
   noremap <silent> <Leader>b= :ShowMultiBase 2<CR>
   noremap <silent> <Leader>o= :ShowMultiBase 8<CR>
@@ -2717,8 +2710,9 @@ endif
 let g:loaded_monday=1
 
 " speeddating {{{2
-let g:speeddating_no_mappings = 1
 if s:bundle.tap('vim-speeddating')
+  let g:speeddating_no_mappings = 1
+
   if !s:bundle.is_installed('vim-cycle')
     nmap <C-A> <Plug>SpeedDatingUp
     nmap <C-X> <Plug>SpeedDatingDown
@@ -2742,8 +2736,9 @@ if s:bundle.tap('vim-speeddating')
 endif
 
 " cycle.vim {{{2
-let g:cycle_no_mappings=1
 if s:bundle.tap('vim-cycle')
+  let g:cycle_no_mappings=1
+
   if !s:bundle.is_installed('vim-speeddating')
     nmap <C-A> <Plug>CycleNext
     nmap <C-X> <Plug>CyclePrevious
@@ -2788,32 +2783,43 @@ if s:bundle.tap('perlomni.vim')
 endif
 
 " cake.vim {{{2
-let g:cakephp_no_default_keymappings = 1
-function! s:init_cakephp() "{{{
-  if !empty(g:cake)
-    nmap <buffer> gf <Plug>CakeJump
-    nmap <buffer> <C-w>f <Plug>CakeSplitJump
-    nmap <buffer> <C-w>gf <Plug>CakeTabJump
+if s:bundle.tap('cake.vim')
+  let g:cakephp_no_default_keymappings = 1
 
-    nnoremap <Leader>cc :Ccontroller
-    nnoremap <Leader>cm :Cmodel
-    nnoremap <Leader>cv :Cview
-    nnoremap <Leader>cw :Ccontrollerview
-    nnoremap <Leader>cs :Cshell
-    nnoremap <Leader>ct :Ctask
-    nnoremap <Leader>ccf :Cconfig
-    nnoremap <Leader>ccp :Ccomponent
-    nnoremap <Leader>cl :Clog
-
-    nnoremap <C-w><Leader>ccs :Ccontrollersp
-    nnoremap <C-w><Leader>cms :Cmodelsp
-    nnoremap <C-w><Leader>cvs :Cviewsp
-    nnoremap <C-w><Leader>cvws :Ccontrollerviewsp
-    nnoremap <C-w><Leader>ccfs :Cconfigsp
-    nnoremap <C-w><Leader>ccps :Ccomponentsp
+  if !s:bundle.is_sourced('cake.vim')
+    function! s:bundle.tapped.hooks.on_source(bundle)
+      doautocmd FileRead
+    endfunction
   endif
-endfunction " }}}
-MyAutocmd User PluginCakephpInitializeAfter call s:init_cakephp()
+
+  function! s:init_cakephp() "{{{
+    if !empty(g:cake)
+      nmap <buffer> gf <Plug>CakeJump
+      nmap <buffer> <C-w>f <Plug>CakeSplitJump
+      nmap <buffer> <C-w>gf <Plug>CakeTabJump
+
+      nnoremap <Leader>cc :Ccontroller
+      nnoremap <Leader>cm :Cmodel
+      nnoremap <Leader>cv :Cview
+      nnoremap <Leader>cw :Ccontrollerview
+      nnoremap <Leader>cs :Cshell
+      nnoremap <Leader>ct :Ctask
+      nnoremap <Leader>ccf :Cconfig
+      nnoremap <Leader>ccp :Ccomponent
+      nnoremap <Leader>cl :Clog
+
+      nnoremap <C-w><Leader>ccs :Ccontrollersp
+      nnoremap <C-w><Leader>cms :Cmodelsp
+      nnoremap <C-w><Leader>cvs :Cviewsp
+      nnoremap <C-w><Leader>cvws :Ccontrollerviewsp
+      nnoremap <C-w><Leader>ccfs :Cconfigsp
+      nnoremap <C-w><Leader>ccps :Ccomponentsp
+    endif
+  endfunction " }}}
+
+  MyAutocmd User PluginCakephpInitializeAfter call s:init_cakephp()
+  call s:bundle.untap()
+endif
 
 " gitv {{{2
 if s:bundle.tap('gitv')
@@ -2895,6 +2901,12 @@ let g:colorv_cache_file = $VIM_CACHE . "/vim_colorv_cache"
 " trans.vim {{{2
 let g:trans_default_lang = "en-ja"
 
+" vim-powerline {{{2
+if s:bundle.is_installed('vim-powerline')
+  if !has('vim_starting') && exists('*Pl#UpdateStatusline')
+    call Pl#UpdateStatusline(1)
+  endif
+endif
 " powerline {{{2
 if s:bundle.is_installed('powerline')
   let g:unite_force_overwrite_statusline = 0
@@ -2950,6 +2962,12 @@ if s:bundle.is_installed('powerline')
     endif
     " let g:powerline_config_path = neobundle#get('linepower.vim').path . "/config"
     " let g:powerline_config_path = neobundle#get('powerline').path . "/powerline/config_files"
+  endif
+
+  if !has('vim_starting') && exists('*PowerlineNew')
+    set statusline=%!PowerlineNew()
+    call PowerlineNew()
+    redraw!
   endif
 endif
 
@@ -3048,10 +3066,10 @@ if s:bundle.is_installed('clever-f.vim')
 endif
 
 " hl_matchit {{{2
-let g:hl_matchit_enable_on_vim_startup = 0
-let g:hl_matchit_hl_groupname = 'Title'
-let g:hl_matchit_allow_ft_regexp = 'html\|eruby\|eco'
 if s:bundle.tap('hl_matchit.vim')
+  let g:hl_matchit_enable_on_vim_startup = 0
+  let g:hl_matchit_hl_groupname = 'Title'
+  let g:hl_matchit_allow_ft_regexp = 'html\|eruby\|eco'
   let s:hl_matchit_running = get(g:, 'hl_matchit_enable_on_vim_startup', 0)
   let s:hl_matchit_last_off_time = 0
 
@@ -3076,12 +3094,14 @@ if s:bundle.tap('hl_matchit.vim')
 endif
 
 " dirdiff.vim {{{2
-let g:DirDiffExcludes = "CVS,*.class,*.o,*.exe,.*.swp,*.log,.git,.svn,.hg"
-let g:DirDiffIgnore = "Id:,Revision:,Date:"
-map ;dg <Plug>DirDiffGet
-map ;dp <Plug>DirDiffPut
-map ;dj <Plug>DirDiffNext
-map ;dk <Plug>DirDiffPrev
+if s:bundle.is_installed('DirDiff.vim')
+  let g:DirDiffExcludes = "CVS,*.class,*.o,*.exe,.*.swp,*.log,.git,.svn,.hg"
+  let g:DirDiffIgnore = "Id:,Revision:,Date:"
+  map ;dg <Plug>DirDiffGet
+  map ;dp <Plug>DirDiffPut
+  map ;dj <Plug>DirDiffNext
+  map ;dk <Plug>DirDiffPrev
+endif
 
 " splitjoin.vim {{{2
 if s:bundle.is_installed('splitjoin.vim')
@@ -3235,23 +3255,27 @@ if s:bundle.is_installed('vim-ambicmd')
 endif
 
 " camelcasemotion {{{2
-nmap <silent> [!prefix]w <Plug>CamelCaseMotion_w
-nmap <silent> [!prefix]e <Plug>CamelCaseMotion_e
-nmap <silent> [!prefix]b <Plug>CamelCaseMotion_b
-vmap <silent> [!prefix]w <Plug>CamelCaseMotion_w
-vmap <silent> [!prefix]e <Plug>CamelCaseMotion_e
-vmap <silent> [!prefix]b <Plug>CamelCaseMotion_b
+if s:bundle.tap('CamelCaseMotion')
+  nmap <silent> [!prefix]w <Plug>CamelCaseMotion_w
+  nmap <silent> [!prefix]e <Plug>CamelCaseMotion_e
+  nmap <silent> [!prefix]b <Plug>CamelCaseMotion_b
+  vmap <silent> [!prefix]w <Plug>CamelCaseMotion_w
+  vmap <silent> [!prefix]e <Plug>CamelCaseMotion_e
+  vmap <silent> [!prefix]b <Plug>CamelCaseMotion_b
 
-omap <silent> i,w <Plug>CamelCaseMotion_iw
-xmap <silent> i,w <Plug>CamelCaseMotion_iw
-omap <silent> i,b <Plug>CamelCaseMotion_ib
-xmap <silent> i,b <Plug>CamelCaseMotion_ib
-omap <silent> i,e <Plug>CamelCaseMotion_ie
-xmap <silent> i,e <Plug>CamelCaseMotion_ie
+  omap <silent> i,w <Plug>CamelCaseMotion_iw
+  xmap <silent> i,w <Plug>CamelCaseMotion_iw
+  omap <silent> i,b <Plug>CamelCaseMotion_ib
+  xmap <silent> i,b <Plug>CamelCaseMotion_ib
+  omap <silent> i,e <Plug>CamelCaseMotion_ie
+  xmap <silent> i,e <Plug>CamelCaseMotion_ie
+
+  call s:bundle.untap()
+endif
 
 " indent-guides {{{2
-let g:indent_guides_enable_on_vim_startup = 1
 if s:bundle.tap('vim-indent-guides')
+  let g:indent_guides_enable_on_vim_startup = 1
   if has('gui_running')
     let g:indent_guides_auto_colors = 1
   else
@@ -3332,14 +3356,15 @@ if s:bundle.tap('vim-template')
     "autocmd BufNewFile * execute 'TemplateLoad'
     MyAutocmd User plugin-template-loaded call s:template_keywords()
   endfunction
+
   call s:bundle.untap()
 endif
 
 " sonictemplate-vim {{{2
-let g:sonictemplate_vim_template_dir = expand('$HOME/.vim/sonictemplate/')
-" nmap <C-y><C-t> <Plug>(sonictemplate)
-" imap <C-y><C-t> <Plug>(sonictemplate)
 if s:bundle.tap('sonictemplate-vim')
+  let g:sonictemplate_vim_template_dir = expand('$HOME/.vim/sonictemplate/')
+  " nmap <C-y><C-t> <Plug>(sonictemplate)
+  " imap <C-y><C-t> <Plug>(sonictemplate)
   nmap <C-y><C-t> :<C-u>Unite sonictemplate<CR>
   imap <C-y><C-t> <ESC>:<C-u>Unite sonictemplate<CR>
 
@@ -3350,16 +3375,20 @@ if s:bundle.tap('sonictemplate-vim')
 endif
 
 " junkfile.vim http://vim-users.jp/2010/11/hack181/ {{{2
+if s:bundle.tap('junkfile.vim')
+  nnoremap [!prefix]ss :<C-u>JunkfileOpen<CR>
+  call s:bundle.untap()
+endif
 command! -nargs=0 EnewNofile enew | setl buftype=nofile
 
-nnoremap [!prefix]ss :<C-u>JunkfileOpen<CR>
 nmap [!prefix]sc :<C-u>EnewNofile<CR>
 
 " alignta {{{2
-let g:alignta_confirm_for_retab = 0
-" let g:Align_xstrlen=3
-" vmap [!prefix]a :Align
 if s:bundle.tap('vim-alignta')
+  let g:alignta_confirm_for_retab = 0
+  " let g:Align_xstrlen=3
+  " vmap [!prefix]a :Align
+
   vnoremap [!prefix]a :Alignta
   vnoremap [!prefix],a :Alignta<< [:=><\-)}\]]\+
   vnoremap [!prefix],r :Alignta<< [=><\-)}\]]\+
@@ -3480,41 +3509,43 @@ let g:yankring_min_element_length = 2
 let g:yankring_window_height = 14
 
 " rails.vim {{{2
-let g:rails_some_option = 1
-let g:rails_level = 4
-let g:rails_syntax = 1
-let g:rails_statusline = 1
-let g:rails_url='http://localhost:3000'
-let g:rails_subversion=0
-let g:rails_default_file='config/database.yml'
+if s:bundle.tap('vim-rails')
+  let g:rails_some_option = 1
+  let g:rails_level = 4
+  let g:rails_syntax = 1
+  let g:rails_statusline = 1
+  let g:rails_url='http://localhost:3000'
+  let g:rails_subversion=0
+  let g:rails_default_file='config/database.yml'
 
-function! s:my_rails_init()
-  nnoremap <buffer><leader>vv :Rview<CR>
-  nnoremap <buffer><leader>cc :Rcontroller<CR>
-  nnoremap <buffer><leader>mm :Rmodel<Space>
-  nnoremap <buffer><leader>pp :Rpreview<CR>
+  function! s:my_rails_init()
+    nnoremap <buffer><leader>vv :Rview<CR>
+    nnoremap <buffer><leader>cc :Rcontroller<CR>
+    nnoremap <buffer><leader>mm :Rmodel<Space>
+    nnoremap <buffer><leader>pp :Rpreview<CR>
 
-  nnoremap <buffer> [!t]r :R<CR>
-  nnoremap <buffer> [!t]a :A<CR>
+    nnoremap <buffer> [!t]r :R<CR>
+    nnoremap <buffer> [!t]a :A<CR>
 
-  Rnavcommand api app/controllers/api -glob=**/* -suffix=_controller.rb
-  " Rnavcommand tmpl app/controllers/tmpl -glob=**/* -suffix=_controller.rb
-  Rnavcommand config config   -glob=*.*  -suffix= -default=routes.rb
-  " nnoremap <buffer><C-H><C-H><C-H>  :<C-U>Unite rails/view<CR>
-  " nnoremap <buffer><C-H><C-H>       :<C-U>Unite rails/model<CR>
-  " nnoremap <buffer><C-H>            :<C-U>Unite rails/controller<CR>
-  " nnoremap <buffer><C-H>c           :<C-U>Unite rails/config<CR>
-  " nnoremap <buffer><C-H>s           :<C-U>Unite rails/spec<CR>
-  " nnoremap <buffer><C-H>m           :<C-U>Unite rails/db -input=migrate<CR>
-  " nnoremap <buffer><C-H>l           :<C-U>Unite rails/lib<CR>
-  " nnoremap <buffer><expr><C-H>g     ':e '.b:rails_root.'/Gemfile<CR>'
-  " nnoremap <buffer><expr><C-H>r     ':e '.b:rails_root.'/config/routes.rb<CR>'
-  " nnoremap <buffer><expr><C-H>se    ':e '.b:rails_root.'/db/seeds.rb<CR>'
-  " nnoremap <buffer><C-H>ra          :<C-U>Unite rails/rake<CR>
-  " nnoremap <buffer><C-H>h           :<C-U>Unite rails/heroku<CR>
-endfunction
+    Rnavcommand api app/controllers/api -glob=**/* -suffix=_controller.rb
+    " Rnavcommand tmpl app/controllers/tmpl -glob=**/* -suffix=_controller.rb
+    Rnavcommand config config   -glob=*.*  -suffix= -default=routes.rb
+    " nnoremap <buffer><C-H><C-H><C-H>  :<C-U>Unite rails/view<CR>
+    " nnoremap <buffer><C-H><C-H>       :<C-U>Unite rails/model<CR>
+    " nnoremap <buffer><C-H>            :<C-U>Unite rails/controller<CR>
+    " nnoremap <buffer><C-H>c           :<C-U>Unite rails/config<CR>
+    " nnoremap <buffer><C-H>s           :<C-U>Unite rails/spec<CR>
+    " nnoremap <buffer><C-H>m           :<C-U>Unite rails/db -input=migrate<CR>
+    " nnoremap <buffer><C-H>l           :<C-U>Unite rails/lib<CR>
+    " nnoremap <buffer><expr><C-H>g     ':e '.b:rails_root.'/Gemfile<CR>'
+    " nnoremap <buffer><expr><C-H>r     ':e '.b:rails_root.'/config/routes.rb<CR>'
+    " nnoremap <buffer><expr><C-H>se    ':e '.b:rails_root.'/db/seeds.rb<CR>'
+    " nnoremap <buffer><C-H>ra          :<C-U>Unite rails/rake<CR>
+    " nnoremap <buffer><C-H>h           :<C-U>Unite rails/heroku<CR>
+  endfunction
 
-MyAutocmd User Rails call s:my_rails_init()
+  MyAutocmd User Rails call s:my_rails_init()
+endif
 
 " csharp {{{2
 if s:bundle.is_installed('dotnet-complete')
@@ -5342,11 +5373,11 @@ let g:clang_complete_auto = 0
 let g:cland_auto_select = 0
 
 " neosnippet {{{2
-let g:neosnippet#snippets_directory            = $HOME . '/.vim/snippets'
-let g:neosnippet#enable_snipmate_compatibility = 0
-" let g:neosnippet#disable_runtime_snippets._    = 1
-
 if s:bundle.is_installed('neosnippet.vim')
+  let g:neosnippet#snippets_directory            = $HOME . '/.vim/snippets'
+  let g:neosnippet#enable_snipmate_compatibility = 0
+  " let g:neosnippet#disable_runtime_snippets._    = 1
+
   function! s:can_snip()
     return neosnippet#expandable_or_jumpable() && &filetype != "snippet"
   endfunction
@@ -5803,372 +5834,379 @@ endif
 "   "MyAutocmd FileType ruby setl omnifunc=rubycomplete#Complete
 " endif
 
-" vimshell {{{2
-let g:vimshell_temporary_directory = $VIM_CACHE . "/vimshell"
-let g:vimshell_enable_smart_case = 1
-let g:vimshell_enable_auto_slash = 1
-
-function! s:setup_vimproc_dll() " {{{3
-  let path = ""
-  let vimproc_root = neobundle#get('vimproc.vim').path
-  if s:is_win
-    if has('unix')
-      let path = expand(vimproc_root . '/autoload/proc_cygwin.dll')
-    elseif has('win64')
-      let path = expand('$VIM/plugins/vimproc/autoload/vimproc_win64.dll')
-    elseif has('win32')
-      let path = expand('$VIM/plugins/vimproc/autoload/vimproc_win32.dll')
-    endif
-    " else
-    "   if has('win64')
-    "     let path = expand(vimproc_root . '/autoload/proc_win64.dll')
-    "   else
-    "     let path = expand(vimproc_root . '/autoload/proc_win32.dll')
-    "   endif
-    "   if !filereadable(path)
-    "     if has('win64')
-    "       let path = expand('~/.vim/lib/vimproc/vimproc_win64.dll')
-    "     elseif has('win32')
-    "       let path = expand('~/.vim/lib/vimproc/vimproc_win32.dll')
-    "     elseif has('win16')
-    "       let path = expand('~/.vim/lib/vimproc/vimproc_win16.dll')
-    "     endif
-    "   endif
-    " endif
-  elseif s:is_mac
-    let path = expand(vimproc_root . '/autoload/proc_mac.so')
-  else
-    let path = expand(vimproc_root . '/autoload/proc_unix.so')
-  endif
-  if filereadable(path)
-    let g:vimproc_dll_path = path
-    let g:vimproc#dll_path = path
-  endif
-endfunction " }}}
-
+" vimproc {{{2
 if s:bundle.is_installed('vimproc.vim')
+  function! s:setup_vimproc_dll() " {{{3
+    let path = ""
+    let vimproc_root = neobundle#get('vimproc.vim').path
+    if s:is_win
+      if has('unix')
+        let path = expand(vimproc_root . '/autoload/proc_cygwin.dll')
+      elseif has('win64')
+        let path = expand('$VIM/plugins/vimproc/autoload/vimproc_win64.dll')
+      elseif has('win32')
+        let path = expand('$VIM/plugins/vimproc/autoload/vimproc_win32.dll')
+      endif
+      " else
+      "   if has('win64')
+      "     let path = expand(vimproc_root . '/autoload/proc_win64.dll')
+      "   else
+      "     let path = expand(vimproc_root . '/autoload/proc_win32.dll')
+      "   endif
+      "   if !filereadable(path)
+      "     if has('win64')
+      "       let path = expand('~/.vim/lib/vimproc/vimproc_win64.dll')
+      "     elseif has('win32')
+      "       let path = expand('~/.vim/lib/vimproc/vimproc_win32.dll')
+      "     elseif has('win16')
+      "       let path = expand('~/.vim/lib/vimproc/vimproc_win16.dll')
+      "     endif
+      "   endif
+      " endif
+    elseif s:is_mac
+      let path = expand(vimproc_root . '/autoload/proc_mac.so')
+    else
+      let path = expand(vimproc_root . '/autoload/proc_unix.so')
+    endif
+    if filereadable(path)
+      let g:vimproc_dll_path = path
+      let g:vimproc#dll_path = path
+    endif
+  endfunction " }}}
+
   call s:setup_vimproc_dll()
 endif
 
-let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-if s:bundle.is_installed('vim-fugitive')
-  " let g:vimshell_right_prompt = '"[" . fugitive#head() . "]"'
-  let g:vimshell_right_prompt = 'fugitive#statusline()'
+" vimshell {{{2
+if s:bundle.is_installed('vimshell')
+  let g:vimshell_temporary_directory = $VIM_CACHE . "/vimshell"
+  let g:vimshell_enable_smart_case = 1
+  let g:vimshell_enable_auto_slash = 1
+
+  let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
+  if s:bundle.is_installed('vim-fugitive')
+    " let g:vimshell_right_prompt = '"[" . fugitive#head() . "]"'
+    let g:vimshell_right_prompt = 'fugitive#statusline()'
+  endif
+  " if s:bundle.is_installed('vim-vcs')
+  "   let g:vimshell_right_prompt = 'vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
+  " endif
+
+  if s:is_win " {{{3
+    " Display user name on Windows.
+    let g:vimshell_prompt = $USERNAME."% "
+    let g:vimshell_use_ckw = 1
+    "let g:vimproc_dll_path = expand("~/.vim/lib/vimproc/win32/proc.dll")
+  else " {{{3
+    " Display user name
+    let g:vimshell_prompt = $USER."$ "
+  endif
+
+  let s:vimshell_hooks = {} "{{{3
+  function! s:vimshell_hooks.chpwd(args, context)
+    if len(split(glob('*'), '\n')) < 100
+      call vimshell#execute('ls')
+    else
+      call vimshell#execute('echo "Many files."')
+    endif
+  endfunction
+  function! s:vimshell_hooks.emptycmd(cmdline, context)
+    call vimshell#set_prompt_command('ls')
+    return 'ls'
+  endfunction
+
+  function! s:vimshell_hooks.preprompt(args, context)
+    " call vimshell#execute('echo "preprompt"')
+  endfunction
+
+  function! s:vimshell_hooks.preexec(cmdline, context)
+    " call vimshell#execute('echo "preexec"')
+
+    let args = vimproc#parser#split_args(a:cmdline)
+    if len(args) > 0 && args[0] ==# 'diff'
+      call vimshell#set_syntax('diff')
+    endif
+
+    return a:cmdline
+  endfunction
+
+  MyAutocmd FileType vimshell call s:vimshell_init()
+  function! s:vimshell_init() " {{{3
+    setl textwidth=0
+    "autocmd FileType vimshell
+    call vimshell#altercmd#define('g'  , 'git')
+    call vimshell#altercmd#define('i'  , 'iexe')
+    call vimshell#altercmd#define('t'  , 'texe')
+    call vimshell#set_alias('l'  , 'll')
+    call vimshell#set_alias('ll' , 'ls -l')
+    call vimshell#set_alias('la' , 'ls -a')
+    call vimshell#set_alias('e' , 'vim')
+    call vimshell#set_alias('time' , 'exe time')
+
+    if !s:is_win
+      let g:vimshell_execute_file_list['zip'] = 'zipinfo'
+      call vimshell#set_execute_file('tgz,gz', 'gzcat')
+      call vimshell#set_execute_file('tbz,bz2', 'bzcat')
+    endif
+    if s:is_mac
+      call vimshell#set_alias('gvim'  , 'gexe mvim')
+      call vimshell#set_alias('mvim'  , 'gexe mvim')
+    else
+      call vimshell#set_alias('gvim'  , 'gexe gvim')
+      call vimshell#set_alias('mvim'  , 'gexe gvim')
+    endif
+    if s:is_win
+    elseif s:is_mac
+      " call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe open')
+      " call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe open')
+      let g:vimshell_use_terminal_command = 'open'
+    else
+      call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
+      call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
+      let g:vimshell_use_terminal_command = 'gnome-terminal -e'
+    endif
+
+    if executable('pry')
+      call vimshell#set_alias('pry' , 'iexe irb')
+      call vimshell#set_alias('irb' , 'iexe irb')
+    endif
+
+    call vimshell#hook#add('chpwd'     , 'my_chpwd', s:vimshell_hooks.chpwd)
+    call vimshell#hook#add('emptycmd'  , 'my_emptycmd', s:vimshell_hooks.emptycmd)
+    call vimshell#hook#add('preprompt' , 'my_preprompt', s:vimshell_hooks.preprompt)
+    call vimshell#hook#add('preexec'   , 'my_preexec', s:vimshell_hooks.preexec)
+
+    if s:bundle.is_installed('concealedyank.vim')
+      nmap y <Plug>(operator-concealedyank)
+      xmap y <Plug>(operator-concealedyank)
+    endif
+
+    nmap <buffer><nowait> q <Plug>(vimshell_exit)
+    nmap <buffer> I G<Plug>(vimshell_append_enter)
+    imap <silent> <buffer> <C-a> <C-o>:call cursor(line('.'), strlen(g:vimshell_prompt)+1)<CR>
+    if s:bundle.is_installed('neocomplcache.vim')
+      inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
+    elseif s:bundle.is_installed('neocomplete.vim')
+      inoremap <expr><buffer> <C-j> pumvisible() ? neocomplete#close_popup() : ""
+    endif
+  endfunction
+
+
+  nmap [!space]vp :<C-u>VimShellPop<CR>
+  nmap [!space]vv :<C-u>VimShellTab<CR>
+  nmap [!space]ve :<C-u>VimShellExecute<Space>
+  nmap [!space]vi :<C-u>VimShellInteractive<Space>
+  nmap [!space]vt :<C-u>VimShellTerminal<Space>
+
+  command! IRB VimShellInteractive irb
+  LCAlias IRB
 endif
-" if s:bundle.is_installed('vim-vcs')
-"   let g:vimshell_right_prompt = 'vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
-" endif
-
-if s:is_win " {{{3
-  " Display user name on Windows.
-  let g:vimshell_prompt = $USERNAME."% "
-  let g:vimshell_use_ckw = 1
-  "let g:vimproc_dll_path = expand("~/.vim/lib/vimproc/win32/proc.dll")
-else " {{{3
-  " Display user name
-  let g:vimshell_prompt = $USER."$ "
-endif
-
-let s:vimshell_hooks = {} "{{{3
-function! s:vimshell_hooks.chpwd(args, context)
-  if len(split(glob('*'), '\n')) < 100
-    call vimshell#execute('ls')
-  else
-    call vimshell#execute('echo "Many files."')
-  endif
-endfunction
-function! s:vimshell_hooks.emptycmd(cmdline, context)
-  call vimshell#set_prompt_command('ls')
-  return 'ls'
-endfunction
-
-function! s:vimshell_hooks.preprompt(args, context)
-  " call vimshell#execute('echo "preprompt"')
-endfunction
-
-function! s:vimshell_hooks.preexec(cmdline, context)
-  " call vimshell#execute('echo "preexec"')
-
-  let args = vimproc#parser#split_args(a:cmdline)
-  if len(args) > 0 && args[0] ==# 'diff'
-    call vimshell#set_syntax('diff')
-  endif
-
-  return a:cmdline
-endfunction
-
-MyAutocmd FileType vimshell call s:vimshell_init()
-function! s:vimshell_init() " {{{3
-  setl textwidth=0
-  "autocmd FileType vimshell
-  call vimshell#altercmd#define('g'  , 'git')
-  call vimshell#altercmd#define('i'  , 'iexe')
-  call vimshell#altercmd#define('t'  , 'texe')
-  call vimshell#set_alias('l'  , 'll')
-  call vimshell#set_alias('ll' , 'ls -l')
-  call vimshell#set_alias('la' , 'ls -a')
-  call vimshell#set_alias('e' , 'vim')
-  call vimshell#set_alias('time' , 'exe time')
-
-  if !s:is_win
-    let g:vimshell_execute_file_list['zip'] = 'zipinfo'
-    call vimshell#set_execute_file('tgz,gz', 'gzcat')
-    call vimshell#set_execute_file('tbz,bz2', 'bzcat')
-  endif
-  if s:is_mac
-    call vimshell#set_alias('gvim'  , 'gexe mvim')
-    call vimshell#set_alias('mvim'  , 'gexe mvim')
-  else
-    call vimshell#set_alias('gvim'  , 'gexe gvim')
-    call vimshell#set_alias('mvim'  , 'gexe gvim')
-  endif
-  if s:is_win
-  elseif s:is_mac
-    " call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe open')
-    " call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe open')
-    let g:vimshell_use_terminal_command = 'open'
-  else
-    call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
-    call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
-    let g:vimshell_use_terminal_command = 'gnome-terminal -e'
-  endif
-
-  if executable('pry')
-    call vimshell#set_alias('pry' , 'iexe irb')
-    call vimshell#set_alias('irb' , 'iexe irb')
-  endif
-
-  call vimshell#hook#add('chpwd'     , 'my_chpwd', s:vimshell_hooks.chpwd)
-  call vimshell#hook#add('emptycmd'  , 'my_emptycmd', s:vimshell_hooks.emptycmd)
-  call vimshell#hook#add('preprompt' , 'my_preprompt', s:vimshell_hooks.preprompt)
-  call vimshell#hook#add('preexec'   , 'my_preexec', s:vimshell_hooks.preexec)
-
-  if s:bundle.is_installed('concealedyank.vim')
-    nmap y <Plug>(operator-concealedyank)
-    xmap y <Plug>(operator-concealedyank)
-  endif
-
-  nmap <buffer><nowait> q <Plug>(vimshell_exit)
-  nmap <buffer> I G<Plug>(vimshell_append_enter)
-  imap <silent> <buffer> <C-a> <C-o>:call cursor(line('.'), strlen(g:vimshell_prompt)+1)<CR>
-  if s:bundle.is_installed('neocomplcache.vim')
-    inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
-  elseif s:bundle.is_installed('neocomplete.vim')
-    inoremap <expr><buffer> <C-j> pumvisible() ? neocomplete#close_popup() : ""
-  endif
-endfunction
-
-
-nmap [!space]vp :<C-u>VimShellPop<CR>
-nmap [!space]vv :<C-u>VimShellTab<CR>
-nmap [!space]ve :<C-u>VimShellExecute<Space>
-nmap [!space]vi :<C-u>VimShellInteractive<Space>
-nmap [!space]vt :<C-u>VimShellTerminal<Space>
-
-command! IRB VimShellInteractive irb
-LCAlias IRB
 
 " vimfiler {{{2
-let g:vimfiler_data_directory = $VIM_CACHE . '/vimfiler'
-let g:vimfiler_as_default_explorer=1
-let g:vimfiler_safe_mode_by_default=0
-" let g:vimfiler_edit_action = 'below'
-" let g:vimfiler_edit_action = 'tabopen'
+if s:bundle.is_installed('vimfiler.vim')
+  let g:vimfiler_data_directory = $VIM_CACHE . '/vimfiler'
+  let g:vimfiler_as_default_explorer=1
+  let g:vimfiler_safe_mode_by_default=0
+  " let g:vimfiler_edit_action = 'below'
+  " let g:vimfiler_edit_action = 'tabopen'
 
-let g:vimfiler_file_icon = '-'
-let g:vimfiler_tree_leaf_icon = ' '
-if s:is_win
-  let g:vimfiler_tree_opened_icon = '-'
-  let g:vimfiler_tree_closed_icon = '+'
-else
-  let g:vimfiler_tree_opened_icon = '▾'
-  let g:vimfiler_tree_closed_icon = '▸'
-endif
-" let g:vimfiler_marked_file_icon = '*'
-if s:is_mac
-  let g:vimfiler_readonly_file_icon = '✗'
-  let g:vimfiler_marked_file_icon = '✓'
-else
-  let g:vimfiler_readonly_file_icon = 'x'
-  let g:vimfiler_marked_file_icon = 'v'
-endif
-
-" keymaps {{{3
-nnoremap <silent> [!space]f  :call <SID>vimfiler_tree_launch()<CR>
-nnoremap <silent> [!space]ff :call <SID>vimfiler_tree_launch()<CR>
-nnoremap <silent> [!space]fg :call <SID>vimfiler_tree_launch(fnameescape(expand('%:p:h')))<CR>
-command! -nargs=? -complete=file VimFilerTree call s:vimfiler_tree_launch(<f-args>)
-command! -nargs=? -complete=file FTree call s:vimfiler_tree_launch(<f-args>)
-
-function! s:vimfiler_tree_launch(...) "{{{4
-  let fpath = a:0 > 0 ? a:1 : getcwd()
-  execute 'VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:' . fpath
-endfunction
-
-function! s:vimfiler_smart_tree_h(...) "{{{4
-  let file = vimfiler#get_file()
-  let cmd = a:0 > 0 ? a:1 : ""
-  "\<Plug>(vimfiler_smart_h)"
-  if !empty(file)
-    if file.vimfiler__is_opened
-      let cmd = "\<Plug>(vimfiler_expand_tree)"
-    elseif file.vimfiler__nest_level > 0
-      let nest_level = file.vimfiler__nest_level
-      while 1
-        exe 'normal!' 'k'
-        let file = vimfiler#get_file()
-        if empty(file) || file.vimfiler__nest_level < nest_level
-          " let cmd = "\<Plug>(vimfiler_expand_tree)" | break
-          normal! ^
-          return
-        endif
-      endwhile
-    endif
+  let g:vimfiler_file_icon = '-'
+  let g:vimfiler_tree_leaf_icon = ' '
+  if s:is_win
+    let g:vimfiler_tree_opened_icon = '-'
+    let g:vimfiler_tree_closed_icon = '+'
+  else
+    let g:vimfiler_tree_opened_icon = '▾'
+    let g:vimfiler_tree_closed_icon = '▸'
   endif
-  if !empty(cmd)
-    exe 'normal' cmd
-    normal! ^
-  endif
-endfunction
-
-function! s:vimfiler_tree_up() "{{{4
-  call s:vimfiler_smart_tree_h("\<Plug>(vimfiler_smart_h)")
-endfunction
-
-function! s:vimfiler_tree_edit(method) "{{{4
-  " let file = vimfiler#get_file()
-  " if empty(file) || empty(a:method) | return | endif
-  " let path = file.action__path
-  " wincmd p
-  " execute a:method
-  " exe 'edit' path
-  if empty(a:method) | return | endif
-  let linenr = line('.')
-  let context = s:vimfiler_create_action_context(a:method, linenr)
-  "wincmd p
-  let cur_nr = bufnr('%')
-  silent wincmd l
-  if cur_nr == bufnr('%')
-    silent wincmd v
-  endif
-  " call vimfiler#mappings#do_action(a:method, linenr)
-  call context.execute()
-  unlet context
-endfunction
-
-function! s:vimfiler_smart_tree_l(method, ...) "{{{4
-  let file = vimfiler#get_file()
-  if empty(file)
-    if (a:0 > 0 && a:1 == 1)
-      exe 'normal' "\<Plug>(vimfiler_smart_h)"
-    endif
-    return
-  endif
-  let path = file.action__path
-  if file.vimfiler__is_directory
-    if (a:0 > 0 && a:1 == 2)
-      exe 'normal' "\<Plug>(vimfiler_smart_l)"
-    else
-      exe 'normal' "\<Plug>(vimfiler_expand_tree)"
-    endif
-    normal! ^
-    return
-  endif
-  call s:vimfiler_tree_edit(a:method)
-endfunction "}}}
-function! s:vimfiler_do_action(action) " {{{4
-  let bnr = bufnr('%')
-  let linenr = line('.')
-  let context = s:vimfiler_create_action_context(a:action, linenr)
-  call context.execute()
-  unlet context
-endfunction
-
-function! s:vimfiler_tree_tabopen() " {{{4
-  call s:vimfiler_tabopen()
-  silent! exe printf('vsplit +wincmd\ H\|wincmd\ l #%d', bnr)
-endfunction
-
-let s:vimfiler_context = {} " {{{4
-function! s:vimfiler_context.new(...)
-  let dict = get(a:000, 0, {})
-  return extend(dict, self)
-endfunction
-
-function! s:vimfiler_context.execute()
-  call unite#mappings#do_action(self.action, self.files, {
-        \ 'vimfiler__current_directory' : self.current_dir,
-        \ })
-endfunction
-
-function! s:vimfiler_create_action_context(action, ...) " {{{4
-  let cursor_linenr = get(a:000, 0, line('.'))
-  let vimfiler = vimfiler#get_current_vimfiler()
-  let marked_files = vimfiler#get_marked_files()
-  if empty(marked_files)
-    let marked_files = [ vimfiler#get_file(cursor_linenr) ]
+  " let g:vimfiler_marked_file_icon = '*'
+  if s:is_mac
+    let g:vimfiler_readonly_file_icon = '✗'
+    let g:vimfiler_marked_file_icon = '✓'
+  else
+    let g:vimfiler_readonly_file_icon = 'x'
+    let g:vimfiler_marked_file_icon = 'v'
   endif
 
-  let context = s:vimfiler_context.new({
-        \ 'action' : a:action,
-        \ 'files' : marked_files,
-        \ 'current_dir' : vimfiler.current_dir,
-        \ })
-  return context
-endfunction
+  " keymaps {{{3
+  nnoremap <silent> [!space]f  :call <SID>vimfiler_tree_launch()<CR>
+  nnoremap <silent> [!space]ff :call <SID>vimfiler_tree_launch()<CR>
+  nnoremap <silent> [!space]fg :call <SID>vimfiler_tree_launch(fnameescape(expand('%:p:h')))<CR>
+  command! -nargs=? -complete=file VimFilerTree call s:vimfiler_tree_launch(<f-args>)
+  command! -nargs=? -complete=file FTree call s:vimfiler_tree_launch(<f-args>)
 
-MyAutocmd FileType vimfiler call s:vimfiler_my_settings() "{{{3
-function! s:vimfiler_my_settings() " {{{3
-  nnoremap <silent><buffer> E :<C-u>call <SID>vimfiler_do_action('tabopen')<CR>
-  nnoremap <silent><buffer> p :<C-u>call <SID>vimfiler_do_action('split')<CR>
-  nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
-  hi link ExrenameModified Statement
-  "nnoremap <buffer> v V
-  if exists('b:vimfiler') && !exists('b:my_vimfiler_init')
-    let b:my_vimfiler_init=1
-    if exists('b:vimfiler.context.explorer') && b:vimfiler.context.explorer "{{{4
-      " nmap <silent><buffer> L <Plug>(vimfiler_smart_l)
-      " nmap <silent><buffer> E :call <SID>vimfiler_tabopen()<CR>
-      " " smart_h ができない…ｼｮﾎﾞﾝﾇ(´Д｀)
-      " " nmap <silent><buffer> H <Plug>(vimfiler_smart_h)
-      " if exists('g:scrolloff')
-      "   nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>
-      "   nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>:set eventignore=<CR>
-      " else
-      "   nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>
-      "   nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
-      " endif
-    elseif exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
-      nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('open')<CR>
-      nnoremap <silent><buffer> E :call <SID>vimfiler_tree_tabopen()<CR>
-      nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
-      if exists('g:scrolloff')
-        nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>:call <SID>vimfiler_smart_tree_l('', 1)<CR>:set eventignore=<CR>
-        nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=<CR><LeftMouse>:<C-u>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
-      else
-        nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('', 1)<CR>
-        nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
+  function! s:vimfiler_tree_launch(...) "{{{4
+    let fpath = a:0 > 0 ? a:1 : getcwd()
+    execute 'VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:' . fpath
+  endfunction
+
+  function! s:vimfiler_smart_tree_h(...) "{{{4
+    let file = vimfiler#get_file()
+    let cmd = a:0 > 0 ? a:1 : ""
+    "\<Plug>(vimfiler_smart_h)"
+    if !empty(file)
+      if file.vimfiler__is_opened
+        let cmd = "\<Plug>(vimfiler_expand_tree)"
+      elseif file.vimfiler__nest_level > 0
+        let nest_level = file.vimfiler__nest_level
+        while 1
+          exe 'normal!' 'k'
+          let file = vimfiler#get_file()
+          if empty(file) || file.vimfiler__nest_level < nest_level
+            " let cmd = "\<Plug>(vimfiler_expand_tree)" | break
+            normal! ^
+            return
+          endif
+        endwhile
       endif
-      " nmap <buffer> l <Plug>(vimfiler_expand_tree)
-      nmap <buffer> L <Plug>(vimfiler_smart_l)
-      nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
-      nnoremap <silent><buffer> gu :call <SID>vimfiler_tree_up()<CR>
     endif
-  endif
-endfunction
+    if !empty(cmd)
+      exe 'normal' cmd
+      normal! ^
+    endif
+  endfunction
+
+  function! s:vimfiler_tree_up() "{{{4
+    call s:vimfiler_smart_tree_h("\<Plug>(vimfiler_smart_h)")
+  endfunction
+
+  function! s:vimfiler_tree_edit(method) "{{{4
+    " let file = vimfiler#get_file()
+    " if empty(file) || empty(a:method) | return | endif
+    " let path = file.action__path
+    " wincmd p
+    " execute a:method
+    " exe 'edit' path
+    if empty(a:method) | return | endif
+    let linenr = line('.')
+    let context = s:vimfiler_create_action_context(a:method, linenr)
+    "wincmd p
+    let cur_nr = bufnr('%')
+    silent wincmd l
+    if cur_nr == bufnr('%')
+      silent wincmd v
+    endif
+    " call vimfiler#mappings#do_action(a:method, linenr)
+    call context.execute()
+    unlet context
+  endfunction
+
+  function! s:vimfiler_smart_tree_l(method, ...) "{{{4
+    let file = vimfiler#get_file()
+    if empty(file)
+      if (a:0 > 0 && a:1 == 1)
+        exe 'normal' "\<Plug>(vimfiler_smart_h)"
+      endif
+      return
+    endif
+    let path = file.action__path
+    if file.vimfiler__is_directory
+      if (a:0 > 0 && a:1 == 2)
+        exe 'normal' "\<Plug>(vimfiler_smart_l)"
+      else
+        exe 'normal' "\<Plug>(vimfiler_expand_tree)"
+      endif
+      normal! ^
+      return
+    endif
+    call s:vimfiler_tree_edit(a:method)
+  endfunction "}}}
+  function! s:vimfiler_do_action(action) " {{{4
+    let bnr = bufnr('%')
+    let linenr = line('.')
+    let context = s:vimfiler_create_action_context(a:action, linenr)
+    call context.execute()
+    unlet context
+  endfunction
+
+  function! s:vimfiler_tree_tabopen() " {{{4
+    call s:vimfiler_tabopen()
+    silent! exe printf('vsplit +wincmd\ H\|wincmd\ l #%d', bnr)
+  endfunction
+
+  let s:vimfiler_context = {} " {{{4
+  function! s:vimfiler_context.new(...)
+    let dict = get(a:000, 0, {})
+    return extend(dict, self)
+  endfunction
+
+  function! s:vimfiler_context.execute()
+    call unite#mappings#do_action(self.action, self.files, {
+          \ 'vimfiler__current_directory' : self.current_dir,
+          \ })
+  endfunction
+
+  function! s:vimfiler_create_action_context(action, ...) " {{{4
+    let cursor_linenr = get(a:000, 0, line('.'))
+    let vimfiler = vimfiler#get_current_vimfiler()
+    let marked_files = vimfiler#get_marked_files()
+    if empty(marked_files)
+      let marked_files = [ vimfiler#get_file(cursor_linenr) ]
+    endif
+
+    let context = s:vimfiler_context.new({
+          \ 'action' : a:action,
+          \ 'files' : marked_files,
+          \ 'current_dir' : vimfiler.current_dir,
+          \ })
+    return context
+  endfunction
+
+  MyAutocmd FileType vimfiler call s:vimfiler_my_settings() "{{{3
+  function! s:vimfiler_my_settings() " {{{3
+    nnoremap <silent><buffer> E :<C-u>call <SID>vimfiler_do_action('tabopen')<CR>
+    nnoremap <silent><buffer> p :<C-u>call <SID>vimfiler_do_action('split')<CR>
+    nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
+    hi link ExrenameModified Statement
+    "nnoremap <buffer> v V
+    if exists('b:vimfiler') && !exists('b:my_vimfiler_init')
+      let b:my_vimfiler_init=1
+      if exists('b:vimfiler.context.explorer') && b:vimfiler.context.explorer "{{{4
+        " nmap <silent><buffer> L <Plug>(vimfiler_smart_l)
+        " nmap <silent><buffer> E :call <SID>vimfiler_tabopen()<CR>
+        " " smart_h ができない…ｼｮﾎﾞﾝﾇ(´Д｀)
+        " " nmap <silent><buffer> H <Plug>(vimfiler_smart_h)
+        " if exists('g:scrolloff')
+        "   nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>
+        "   nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>:set eventignore=<CR>
+        " else
+        "   nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>
+        "   nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
+        " endif
+      elseif exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
+        nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('open')<CR>
+        nnoremap <silent><buffer> E :call <SID>vimfiler_tree_tabopen()<CR>
+        nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
+        if exists('g:scrolloff')
+          nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>:call <SID>vimfiler_smart_tree_l('', 1)<CR>:set eventignore=<CR>
+          nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=<CR><LeftMouse>:<C-u>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
+        else
+          nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('', 1)<CR>
+          nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
+        endif
+        " nmap <buffer> l <Plug>(vimfiler_expand_tree)
+        nmap <buffer> L <Plug>(vimfiler_smart_l)
+        nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
+        nnoremap <silent><buffer> gu :call <SID>vimfiler_tree_up()<CR>
+      endif
+    endif
+  endfunction
+endif
 
 " vinarise {{{2
 " let g:vinarise_enable_auto_detect = 1
 
 " memolist {{{2
-let g:memolist_memo_suffix = "md"
-let g:memolist_path = $HOME . '/memo'
-let g:memolist_vimfiler = 1
+if s:bundle.is_installed('memolist.vim')
+  let g:memolist_memo_suffix = "md"
+  let g:memolist_path = $HOME . '/memo'
+  let g:memolist_vimfiler = 1
 
-nmap <silent> [!prefix]mf :exe 'Unite' 'file:'.g:memolist_path<CR>
-nmap <silent> [!prefix]mc :MemoNew<CR>
-nmap <silent> [!prefix]ml :MemoList<CR>
-nmap <silent> [!prefix]mg :MemoGrep<CR>
+  nmap <silent> [!prefix]mf :exe 'Unite' 'file:'.g:memolist_path<CR>
+  nmap <silent> [!prefix]mc :MemoNew<CR>
+  nmap <silent> [!prefix]ml :MemoList<CR>
+  nmap <silent> [!prefix]mg :MemoGrep<CR>
+endif
 
 " etc functions & commands {{{1
 " git "{{{2
@@ -6748,17 +6786,10 @@ if !has('vim_starting')
   else
     doautocmd VimEnter
   endif
+
   if exists('s:restore_setlocal')
     execute s:restore_setlocal
     unlet s:restore_setlocal
-  endif
-  if exists('*PowerlineNew') " s:bundle.is_installed('powerline')
-    set statusline=%!PowerlineNew()
-    call PowerlineNew()
-    redraw!
-  " elseif s:bundle.is_installed('vim-powerline')
-  elseif exists('*Pl#UpdateStatusline')
-    call Pl#UpdateStatusline(1)
   endif
 else
   " function! s:powerline_init()
