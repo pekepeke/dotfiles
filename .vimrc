@@ -1308,19 +1308,19 @@ NeoBundle 'beyondwords/vim-twig'
 NeoBundle 'tokutake/twig-indent'
 NeoBundleLazyOn FileType php 'violetyk/cake.vim'
 " NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
-NeoBundleLazy 'heavenshell/unite-zf', { 'autoload' : {
-      \ 'unite_sources' : [
-      \   'zf/app', 'zf/controllers', 'zf/models', 'zf/views',
-      \   'zf/helpers', 'zf/configs', 'zf/layouts', 'zf/modules',
-      \   'zf/tests', 'zf/services',
-      \ ],
-      \ }}
-NeoBundle 'heavenshell/unite-sf2', { 'autoload' : {
-      \ 'unite_sources' : [
-      \   'sf2/', 'sf2/app', 'sf2/app', 'sf2/app/config', 'sf2/app/views',
-      \   'sf2/app/web', 'sf2/bundles',
-      \ ],
-      \ }}
+" NeoBundleLazy 'heavenshell/unite-zf', { 'autoload' : {
+"       \ 'unite_sources' : [
+"       \   'zf/app', 'zf/controllers', 'zf/models', 'zf/views',
+"       \   'zf/helpers', 'zf/configs', 'zf/layouts', 'zf/modules',
+"       \   'zf/tests', 'zf/services',
+"       \ ],
+"       \ }}
+" NeoBundle 'heavenshell/unite-sf2', { 'autoload' : {
+"       \ 'unite_sources' : [
+"       \   'sf2/', 'sf2/app', 'sf2/app', 'sf2/app/config', 'sf2/app/views',
+"       \   'sf2/app/web', 'sf2/bundles',
+"       \ ],
+"       \ }}
 
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim'
@@ -2785,35 +2785,44 @@ endif
 " cake.vim {{{2
 if s:bundle.tap('cake.vim')
   let g:cakephp_no_default_keymappings = 1
+  let g:cakephp_enable_fix_mode = 1
+  let g:cakephp_enable_auto_mode = 1
 
   if !s:bundle.is_sourced('cake.vim')
-    function! s:bundle.tapped.hooks.on_source(bundle)
-      doautocmd FileRead
+    function! s:bundle.tapped.on_post_source(bundle)
+      doautocmd VimEnter
     endfunction
   endif
 
+  function! s:detect_cakephpapp() "{{{
+    if exists('g:cake.paths.app')
+      return stridx(expand('%:p'), g:cake.paths.app) == 0
+    endif
+    return 0
+  endfunction " }}}
+
   function! s:init_cakephp() "{{{
-    if !empty(g:cake)
+    if !empty(g:cake) && s:detect_cakephpapp()
       nmap <buffer> gf <Plug>CakeJump
       nmap <buffer> <C-w>f <Plug>CakeSplitJump
       nmap <buffer> <C-w>gf <Plug>CakeTabJump
 
-      nnoremap <Leader>cc :Ccontroller
-      nnoremap <Leader>cm :Cmodel
-      nnoremap <Leader>cv :Cview
-      nnoremap <Leader>cw :Ccontrollerview
-      nnoremap <Leader>cs :Cshell
-      nnoremap <Leader>ct :Ctask
-      nnoremap <Leader>ccf :Cconfig
-      nnoremap <Leader>ccp :Ccomponent
-      nnoremap <Leader>cl :Clog
+      nnoremap <buffer> <Leader>cc :Ccontroller
+      nnoremap <buffer> <Leader>cm :Cmodel
+      nnoremap <buffer> <Leader>cv :Cview
+      nnoremap <buffer> <Leader>cw :Ccontrollerview
+      nnoremap <buffer> <Leader>cs :Cshell
+      nnoremap <buffer> <Leader>ct :Ctask
+      nnoremap <buffer> <Leader>ccf :Cconfig
+      nnoremap <buffer> <Leader>ccp :Ccomponent
+      nnoremap <buffer> <Leader>cl :Clog
 
-      nnoremap <C-w><Leader>ccs :Ccontrollersp
-      nnoremap <C-w><Leader>cms :Cmodelsp
-      nnoremap <C-w><Leader>cvs :Cviewsp
-      nnoremap <C-w><Leader>cvws :Ccontrollerviewsp
-      nnoremap <C-w><Leader>ccfs :Cconfigsp
-      nnoremap <C-w><Leader>ccps :Ccomponentsp
+      nnoremap <buffer> <C-w><Leader>ccs :Ccontrollersp
+      nnoremap <buffer> <C-w><Leader>cms :Cmodelsp
+      nnoremap <buffer> <C-w><Leader>cvs :Cviewsp
+      nnoremap <buffer> <C-w><Leader>cvws :Ccontrollerviewsp
+      nnoremap <buffer> <C-w><Leader>ccfs :Cconfigsp
+      nnoremap <buffer> <C-w><Leader>ccps :Ccomponentsp
     endif
   endfunction " }}}
 
