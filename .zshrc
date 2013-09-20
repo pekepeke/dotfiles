@@ -443,6 +443,10 @@ if [ -n "$SSH_CONNECTION" ] && [ $TERM =~ "screen" ] && [ -z "$TMUX" ]; then
 fi
 
 shrc_section_title "complete" #{{{1
+zcomplete_reload() {
+  rm -f $_comp_dumpfile && exec $SHELL
+}
+
 zsh-complete-init() {
   shrc_section_title "complete-init start"
 

@@ -1,0 +1,7 @@
+#compdef sshtunnel
+
+_arguments -A "-*" \
+  '-h+[print usage summary]' \
+  '-t+[remote host]:host:_hosts' \
+  '-p+[specifiy custom port]:port:_ports' \
+  '1: :_hosts'
