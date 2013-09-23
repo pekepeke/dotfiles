@@ -1,4 +1,11 @@
 # ~/.bashrc: executed by bash(1) for non-login shells.
+case $OSTYPE in
+  cygwin*|msys*)
+  PATH=$(echo $PATH | sed -e 's/\\\? /\\ /g')
+  [ -e "$USERPROFILE/.pik/.pikrc" ] && source "$USERPROFILE/.pik/.pikrc"
+  [ -e "$USERPROFILE/.pik/pik.sh" ] && source "$USERPROFILE/.pik/pik.sh"
+  ;;
+esac
 
 [ -s $HOME/.shrc.languages ] && source $HOME/.shrc.languages
 

@@ -2,13 +2,14 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " variables {{{1
-let g:unite_docset_debug = 1
+" let g:unite_docset_debug = 1
 let g:unite_docset_debug = get(g:, 'unite_docset_debug', 0)
 
 let g:unite_docset_docsetutil_command = get(g:, 'unite_docset_docsetutil_command', '/Applications/Xcode.app/Contents/Developer/usr/bin/docsetutil')
 if !executable(g:unite_docset_docsetutil_command)
   let g:unite_docset_docsetutil_command = '/Developer/usr/bin/docsetutil'
 endif
+let g:unite_docset_sqlite3_command = get(g:, 'unite_docset_sqlite3_command', '/usr/bin/sqlite3')
 let g:unite_docset_search_option = get(g:, 'unite_docset_search_option', '-query "*" -skip-text')
 
 if !exists('g:unite_docset_scan_directories')
@@ -21,6 +22,20 @@ let g:unite_docset_files = get(g:, 'unite_docset_files', [])
 
 " static variable {{{1
 let s:unite_docset_sources = {}
+
+" menu source {{{1
+let s:menu = {
+      \ 'name' : 'docset',
+      \ 'default_kind' : 'command',
+      \ }
+
+function! s:menu.on_init(args, context) "{{{2
+endfunction
+
+function! s:menu.gather_candidates(args, context) "{{{2
+  return map(keys(s:unite_docset_sources), 's:create_menu_candidate(self, v:val)')
+endfunction
+
 
 " source {{{1
 let s:source = {
@@ -58,6 +73,16 @@ function! s:source.gather_candidates(args, context) "{{{2
 endfunction
 
 " some utils {{{1
+function! s:create_menu_candidate(source, name) "{{{2
+  return {
+        \ 'kind' : 'command',
+        \ 'word' : a:name,
+        \ 'source' : a:source.name,
+        \ 'action__command' : printf('Unite %s/%s', a:source.name, a:name),
+        \ 'action_type' : ':',
+        \ }
+endfunction
+
 function! s:create_candidate(source, key, path) "{{{2
   return {
         \ 'kind' : 'docset',
@@ -122,12 +147,27 @@ function! s:docset_files(...) "{{{2
 endfunction
 
 function! s:fetch_index(docset_path) "{{{2
-  let bin = fnamemodify(expand(g:unite_docset_docsetutil_command), ':p')
   let docset = fnamemodify(expand(a:docset_path), ':p')
-  let command = printf('"%s" search "%s" %s', bin, docset, g:unite_docset_search_option)
+  if filereadable(docset . "/Contents/Resources/docset.toc")
+    let bin = fnamemodify(expand(g:unite_docset_docsetutil_command), ':p')
+    let command = printf('"%s" search "%s" %s', bin, docset, g:unite_docset_search_option)
+  else
+    let bin = g:unite_docset_sqlite3_command
+    let name = fnamemodify(docset, ':p:h:t:r')
+    let sql = printf("select '%s/Tag/'||type||'/'||name||'   '||path from searchIndex;", name)
+    let command = printf('%s -noheader -cmd "%s" "%s" < %s',
+          \ bin,
+          \ sql,
+          \ docset . '/Contents/Resources/docset.dsidx',
+          \ "/dev/null"
+          \ )
+    " echoerr command
+  endif
 
   call s:log("system :" . command)
+  call s:log(system(command))
   let result = split(system(command), "\n")
+  " call s:log(result)
   return result
 endfunction
 
@@ -192,7 +232,7 @@ endfunction
 
 
 function! unite#sources#docset#define() "{{{1
-  return executable(g:unite_docset_docsetutil_command) ? s:create_sources() : []
+  return executable(g:unite_docset_docsetutil_command) ? [s:menu] + s:create_sources() : []
 endfunction
 
 let &cpo = s:save_cpo

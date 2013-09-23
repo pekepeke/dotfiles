@@ -24,11 +24,20 @@ if s:is_win " {{{2
   "set guifont=MeiryoConsolas:h9:cSHIFTJIS
   "set guifont=Anonymous\ Pro:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
   command! -nargs=0 Consolas set guifont=Consolas:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
-  command! -nargs=0 Ricty set guifont=Ricty:h12 guifontwide=Ricty:h12
+  command! -nargs=0 Ricty set guifont=Ricty:h11 guifontwide=Ricty:h11
+  " command! -nargs=0 Ricty set guifont=Ricty:h12 guifontwide=Ricty:h12
+
+  MyAutocmd VimEnter * set transparency=210
+
+  if filereadable($WINDIR . '\Fonts\Ricty-Regular.ttf')
+    Ricty
+  else
+    Consolas
+  endif
+
   if has('directx') && &encoding == 'utf-8'
     silent! exe 'set' 'renderoptions=type:directx'
   endif
-  Consolas
 
   if has('printer')
     set printfont=MS_Gothic:h12:cSHIFTJIS

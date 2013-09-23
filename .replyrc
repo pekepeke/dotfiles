@@ -1,0 +1,13 @@
+script_line1 = use common::sense
+script_line2 = use Data::Printer
+;script_line3 = use utf8::all
+
+[Interrupt]
+[FancyPrompt]
+[DataPrinter]
+[Colors]
+[ReadLine]
+[Hints]
+[Packages]
+[LexicalPersistence]
+[ResultCache]

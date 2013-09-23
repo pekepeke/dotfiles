@@ -599,6 +599,7 @@ NeoBundleLazy 'Shougo/vimfiler.vim', {
       \ 'mappings' : ['<Plug>(vimfiler_switch)'],
       \ 'explorer' : 1,
       \ }}
+NeoBundle "osyo-manga/unite-filters-collection"
 NeoBundle 'Shougo/vimproc.vim', {
       \ 'build' : {
       \     'cygwin' : 'make -f make_cygwin.mak',
@@ -2263,7 +2264,7 @@ function! s:show_mapping() " {{{4
     let c = "<C-".substitute(s, '^\^', "", "").">"
   endif
   if strlen(c) > 0
-    exe 'verbose' 'map' c
+    exe 'Unite output:verbose\ map\ '.c
   endif
 endfunction " }}}
 
@@ -3694,143 +3695,15 @@ if s:bundle.tap('unite.vim')
   " unite-history
   let g:unite_source_history_yank_enable = 1
 
-  " unite-menu {{{3
-  if !exists("g:unite_source_menu_menus")
-     let g:unite_source_menu_menus = {}
-  endif
-  " http://d.hatena.ne.jp/osyo-manga/20130225/1361794133
-  function! s:unite_menu_create(desc, ...) "{{{4
-    let commands = {
-    \   'description' : a:desc,
-    \}
-    let commands.candidates = a:0 >= 1 ? a:1 : {}
-    function commands.map(key, value)
-      let [word, value] = a:value
-      if isdirectory(value)
-        return {
-        \   "word" : "[directory] ".word,
-        \   "kind" : "directory",
-        \   "action__directory" : value
-        \ }
-      elseif !empty(glob(value))
-        return {
-        \   "word" : "[file] ".word,
-        \   "kind" : "file",
-        \   "default_action" : "tabdrop",
-        \   "action__path" : value,
-        \ }
-      else
-        return {
-        \   "word" : "[command] ".word,
-        \   "kind" : "command",
-        \   "action__command" : value
-        \ }
-        endif
-    endfunction
-    return commands
-  endfunction "4}}}
 
-  let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
-  \ 'Shortcut', [
-  \   ["edit .vimrc"        , $MYVIMRC]                                  ,
-  \   ["reload .vimrc"      , "source " . $MYVIMRC]                      ,
-  \   ["edit .gvimrc"       , $MYGVIMRC]                                 ,
-  \   ["VimFiler ~/.vim"    , "VimFiler " .$HOME . "/.vim"]              ,
-  \   ["scriptnames"        , "Unite scriptnames"]                       ,
-  \   ["neobundle vimfiles" , "Unite neobundle/vimfiles"]                ,
-  \   ["all vimfiles"       , "Unite neobundle/rtpvimfiles"]             ,
-  \   ["colorscheme"        , "Unite colorscheme -auto-preview"]         ,
-  \   ["airline themes"     , "Unite airline_themes -auto-preview"]      ,
-  \   ["global options"     , "Unite output:set"]                        ,
-  \   ["local options"      , "Unite output:setlocal"]                   ,
-  \   ["mappings"           , "Unite mapping"]                           ,
-  \   ["todo"               , "Todo"]                                    ,
-  \   ["repl"               , "Unite menu:repl"]                         ,
-  \   ["help"               , "Unite menu:help"]                         ,
-  \   ["fold"               , "Unite fold"]                              ,
-  \   ["quickrun config"    , "Unite quickrun_config"]                   ,
-  \ ])
-  let g:unite_source_menu_menus["help"] = s:unite_menu_create(
-  \ 'Help', [
-  \   ['Vimscript functions' , 'help function-list']         ,
-  \   ['Vimscript grammar'   , 'help usr_41']                ,
-  \   ['Regexp'              , 'help pattern-overview']      ,
-  \   ['quickkref'           , 'help quickref']              ,
-  \   ['Option'              , 'help option-list']           ,
-  \   ['Tips'                , 'help tips']                  ,
-  \   ['User Manual'         , 'help usr_toc']               ,
-  \   ['Startup Options'     , 'help startup-options']       ,
-  \   ['Window'              , 'help windows']               ,
-  \   ['Tab'                 , 'help tabpage']               ,
-  \   ['Plugin'              , 'help write-plugin']          ,
-  \   ['FtPlugin'            , 'help write-filetype-plugin'] ,
-  \   ['Helpfile'            , 'help help-writing']          ,
-  \ ])
-  let g:unite_source_menu_menus["repl"] = s:unite_menu_create(
-  \ 'Repl', [
-  \   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
-  \   ["javascript"         , "VimShellInteractive node"]                ,
-  \   ["ghci"               , "VimShellInteractive ghci"]                ,
-  \   ["python"             , "VimShellInteractive python"]              ,
-  \   ["php"                , "VimShellInteractive phpa-norl"]           ,
-  \   ["perl"               , "VimShellInteractive tinyrepl"]            ,
-  \   ["VimShellPop"        , "VimShellPop"]                             ,
-  \   ["VimConsole"         , "VimConsoleOpen"]                          ,
-  \ ])
-  let g:unite_source_menu_menus["lang_perl"] = s:unite_menu_create(
-  \ 'Perl Menu', [
-  \   ["local module"  , "Unite perl/local"]  ,
-  \   ["global module" , "Unite perl/global"] ,
-  \ ])
-  let g:unite_source_menu_menus["lang_ruby"] = s:unite_menu_create(
-  \ 'Ruby Menu', [
-  \   ["rake"             , "Unite rake"]              ,
-  \   ["rails controller" , "Unite rails/controller"]  ,
-  \   ["rails model"      , "Unite rails/model"]       ,
-  \   ["rails view"       , "Unite rails/view"]        ,
-  \   ["rails helper"     , "Unite rails/helper"]      ,
-  \   ["rails lib"        , "Unite rails/lib"]         ,
-  \   ['Add param'        , 'RAddParameter']           ,
-  \   ['Split cond'       , 'RConvertPostConditional'] ,
-  \   ['Extract let'      , 'RExtractLet']             ,
-  \   ['Remove tmpvar'    , 'RInlineTemp']             ,
-  \   ['chef attribute'   , 'ChefFindAttribute']       ,
-  \   ['chef recipe'      , 'ChefFindRecipe']          ,
-  \   ['chef definition'  , 'ChefFindDefinition']      ,
-  \   ['chef lwrp'        , 'ChefFindLWRP']            ,
-  \   ['chef source'      , 'ChefFindSource']          ,
-  \   ['chef related'     , 'ChefFindRelated']         ,
-  \ ])
-  let g:unite_source_menu_menus["lang_java"] = s:unite_menu_create(
-  \ 'Java Menu' , [
-  \   ["import" , "Unite javaimport"] ,
-  \   ["gradle" , "Unite gradle"]     ,
-  \ ])
-
-  " let g:unite_source_menu_menus["lang_"] = s:unite_menu_create(
-  " \ '', [
-  " \  ["", ""],
-  " \ ])
-
-  function! s:unite_context_menu() "{{{4
-    if !exists('g:unite_source_menu_menus["lang_' . &filetype . '"]')
-      echohl Error
-      echon "menu not found"
-      echohl None
-      return
-    endif
-    execute 'Unite' 'menu:'.'lang_'.&filetype
-  endfunction "4}}}
-
-
-  " unite buffers {{{3
+  " unite hooks.on_source {{{3
   function! s:bundle.tapped.hooks.on_source(bundle)
-    " file_rec
+    " file_rec {{{4
     call unite#custom#source('file_rec/async', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
     call unite#custom#source('file_rec', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
     call unite#custom#source('repo_files', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
 
-    " files
+    " files {{{4
     call unite#custom#substitute('files', '\$\w\+', '\=eval(submatch(0))', 200)
 
     call unite#custom#substitute('files', '[^~.]\zs/', '*/*', 20)
@@ -3854,8 +3727,8 @@ if s:bundle.tap('unite.vim')
     else
       call unite#custom#substitute('files', '^;d', '\=$HOME."/Desktop/*"')
     endif
-    " custom actions {{{3
-    " custom action open_unite_file {{{4
+    " custom actions {{{4
+    " custom action open_unite_file {{{5
     let s:unite_action_open_unite_file = {
           \ }
     function! s:unite_action_open_unite_file.func(candidate)
@@ -3866,7 +3739,7 @@ if s:bundle.tap('unite.vim')
     call unite#custom_action('directory', 'open_unite_file', s:unite_action_open_unite_file)
     unlet! s:unite_action_action_open_unite_file
 
-    " custom action insert_or_narrow {{{4
+    " custom action insert_or_narrow {{{5
     let s:unite_action_narrow_or_insert = {
           \ 'is_quit': 0
           \ }
@@ -3883,7 +3756,174 @@ if s:bundle.tap('unite.vim')
     endfunction
     call unite#custom_action('file', 'narrow_or_insert', s:unite_action_narrow_or_insert)
     unlet! s:unite_action_narrow_or_insert
-  endfunction
+    " menu {{{4
+
+    " unite-menu {{{5
+    if !exists("g:unite_source_menu_menus")
+       let g:unite_source_menu_menus = {}
+    endif
+    " http://d.hatena.ne.jp/osyo-manga/20130225/1361794133
+    function! s:unite_menu_create(desc, ...) "{{{6
+      let commands = {
+      \   'description' : a:desc,
+      \}
+      let commands.candidates = a:0 >= 1 ? a:1 : {}
+      function commands.map(key, value)
+        let [word, value] = a:value
+        if isdirectory(value)
+          return {
+          \   "word" : "[directory] ".word,
+          \   "kind" : "directory",
+          \   "action__directory" : value
+          \ }
+        elseif !empty(glob(value))
+          return {
+          \   "word" : "[file] ".word,
+          \   "kind" : "file",
+          \   "default_action" : "tabdrop",
+          \   "action__path" : value,
+          \ }
+        else
+          return {
+          \   "word" : "[command] ".word,
+          \   "kind" : "command",
+          \   "action__command" : value
+          \ }
+          endif
+      endfunction
+      return commands
+    endfunction "5}}}
+    " menu {{{6
+    let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
+    \ 'Shortcut', [
+    \   ["edit .vimrc"        , $MYVIMRC]                                  ,
+    \   ["reload .vimrc"      , "source " . $MYVIMRC]                      ,
+    \   ["edit .gvimrc"       , $MYGVIMRC]                                 ,
+    \   ["VimFiler ~/.vim"    , "VimFiler " .$HOME . "/.vim"]              ,
+    \   ["scriptnames"        , "Unite scriptnames"]                       ,
+    \   ["neobundle vimfiles" , "Unite neobundle/vimfiles"]                ,
+    \   ["all vimfiles"       , "Unite neobundle/rtpvimfiles"]             ,
+    \   ["colorscheme"        , "Unite colorscheme -auto-preview"]         ,
+    \   ["airline themes"     , "Unite airline_themes -auto-preview"]      ,
+    \   ["global options"     , "Unite output:set"]                        ,
+    \   ["local options"      , "Unite output:setlocal"]                   ,
+    \   ["mappings"           , "Unite mapping"]                           ,
+    \   ["todo"               , "Todo"]                                    ,
+    \   ["repl"               , "Unite menu:repl"]                         ,
+    \   ["help"               , "Unite menu:help"]                         ,
+    \   ["fold"               , "Unite fold"]                              ,
+    \   ["quickrun config"    , "Unite quickrun_config"]                   ,
+    \ ])
+    let g:unite_source_menu_menus["help"] = s:unite_menu_create(
+    \ 'Help', [
+    \   ['Vimscript functions' , 'help function-list']         ,
+    \   ['Vimscript grammar'   , 'help usr_41']                ,
+    \   ['Regexp'              , 'help pattern-overview']      ,
+    \   ['quickkref'           , 'help quickref']              ,
+    \   ['Option'              , 'help option-list']           ,
+    \   ['Tips'                , 'help tips']                  ,
+    \   ['User Manual'         , 'help usr_toc']               ,
+    \   ['Startup Options'     , 'help startup-options']       ,
+    \   ['Window'              , 'help windows']               ,
+    \   ['Tab'                 , 'help tabpage']               ,
+    \   ['Plugin'              , 'help write-plugin']          ,
+    \   ['FtPlugin'            , 'help write-filetype-plugin'] ,
+    \   ['Helpfile'            , 'help help-writing']          ,
+    \ ])
+    let g:unite_source_menu_menus["repl"] = s:unite_menu_create(
+    \ 'Repl', [
+    \   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
+    \   ["perl"               , "VimShellInteractive reply"]               ,
+    \   ["javascript"         , "VimShellInteractive node"]                ,
+    \   ["ghci"               , "VimShellInteractive ghci"]                ,
+    \   ["python"             , "VimShellInteractive python"]              ,
+    \   ["php"                , "VimShellInteractive phpa-norl"]           ,
+    \   ["VimShellPop"        , "VimShellPop"]                             ,
+    \   ["VimConsole"         , "VimConsoleOpen"]                          ,
+    \ ])
+
+    " lang menu {{{6
+    let g:unite_source_menu_menus["lang_perl"] = s:unite_menu_create(
+    \ 'Perl Menu', [
+    \   ["local module"  , "Unite perl/local"]  ,
+    \   ["global module" , "Unite perl/global"] ,
+    \ ])
+    let g:unite_source_menu_menus["lang_ruby"] = s:unite_menu_create(
+    \ 'Ruby Menu', [
+    \   ["rake"             , "Unite rake"]              ,
+    \   ["rails controller" , "Unite rails/controller"]  ,
+    \   ["rails model"      , "Unite rails/model"]       ,
+    \   ["rails view"       , "Unite rails/view"]        ,
+    \   ["rails helper"     , "Unite rails/helper"]      ,
+    \   ["rails lib"        , "Unite rails/lib"]         ,
+    \   ['Add param'        , 'RAddParameter']           ,
+    \   ['Split cond'       , 'RConvertPostConditional'] ,
+    \   ['Extract let'      , 'RExtractLet']             ,
+    \   ['Remove tmpvar'    , 'RInlineTemp']             ,
+    \   ['chef attribute'   , 'ChefFindAttribute']       ,
+    \   ['chef recipe'      , 'ChefFindRecipe']          ,
+    \   ['chef definition'  , 'ChefFindDefinition']      ,
+    \   ['chef lwrp'        , 'ChefFindLWRP']            ,
+    \   ['chef source'      , 'ChefFindSource']          ,
+    \   ['chef related'     , 'ChefFindRelated']         ,
+    \ ])
+    let g:unite_source_menu_menus["lang_java"] = s:unite_menu_create(
+    \ 'Java Menu' , [
+    \   ["import" , "Unite javaimport"] ,
+    \   ["gradle" , "Unite gradle"]     ,
+    \ ])
+
+    " let g:unite_source_menu_menus["lang_"] = s:unite_menu_create(
+    " \ '', [
+    " \  ["", ""],
+    " \ ])
+
+    function! s:unite_context_menu() "{{{6
+      if !exists('g:unite_source_menu_menus["lang_' . &filetype . '"]')
+        echohl Error
+        echon "menu not found"
+        echohl None
+        return
+      endif
+      execute 'Unite' 'menu:'.'lang_'.&filetype
+    endfunction "5}}}
+
+    " http://d.hatena.ne.jp/osyo-manga/20130919 {{{4
+    let g:unite_source_alias_aliases = {
+    \  "memolist" : {
+    \     "source" : "file",
+    \     "args" : g:memolist_path,
+    \  },
+    \}
+
+
+    let s:filters = {
+    \  "name" : "converter_add_memolist_tags_word",
+    \}
+
+    function! s:get_memolist_tags(filepath)
+      return filereadable(a:filepath) ? matchstr(get(filter(readfile(a:filepath), 'v:val =~ ''^tags: \[.*\]'''), 0), '^tags: \[\zs.*\ze\]') : ""
+    endfunction
+
+    function! s:filters.filter(candidates, context)
+      for candidate in a:candidates
+        if !has_key(candidate, "converter_add_ftime_word_base")
+          let candidate.converter_add_ftime_word_base = candidate.word
+        endif
+        let word = get(candidate, "converter_add_ftime_word_base", candidate.action__path)
+        let candidate.word = s:get_memolist_tags(get(candidate, "action__path")) . " " . word
+      endfor
+      return a:candidates
+    endfunction
+
+    call unite#define_filter(s:filters)
+    unlet s:filters
+
+    call unite#custom#source('memolist', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
+    call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+    " 4}}}
+
+  endfunction "3}}}
 
   " unite mappings {{{3
   function! s:unite_map(bang, prefix, key, ...) " {{{4
@@ -4462,911 +4502,925 @@ if s:bundle.is_installed('vim-operator-user')
 endif
 
 " textobj {{{2
-function! s:textobj_mapping(key, cmd)
-  silent exe 'omap' a:key a:cmd
-  silent exe 'vmap' a:key a:cmd
-  " silent exe 'xmap' a:key a:cmd
-  " silent exe 'smap' a:key a:cmd
-endfunction
-command! -nargs=+ Tmap call s:textobj_mapping(<f-args>)
-function! s:textobj_mapping_by_name(key, name)
-  call s:textobj_mapping('i'.a:key, '<Plug>(textobj-' . a:name . '-i)')
-  call s:textobj_mapping('a'.a:key, '<Plug>(textobj-' . a:name . '-a)')
-endfunction
-command! -nargs=+ TTmap call s:textobj_mapping_by_name(<f-args>)
+if s:bundle.is_installed('vim-textobj-user')
+  function! s:textobj_mapping(key, cmd)
+    silent exe 'omap' a:key a:cmd
+    silent exe 'vmap' a:key a:cmd
+    " silent exe 'xmap' a:key a:cmd
+    " silent exe 'smap' a:key a:cmd
+  endfunction
+  command! -nargs=+ Tmap call s:textobj_mapping(<f-args>)
+  function! s:textobj_mapping_by_name(key, name)
+    call s:textobj_mapping('i'.a:key, '<Plug>(textobj-' . a:name . '-i)')
+    call s:textobj_mapping('a'.a:key, '<Plug>(textobj-' . a:name . '-a)')
+  endfunction
+  command! -nargs=+ TTmap call s:textobj_mapping_by_name(<f-args>)
 
-Tmap i<Space>f <Plug>(textobj-function-i)
-Tmap a<Space>f <Plug>(textobj-function-a)
-Tmap i<Space>i <Plug>(textobj-indent-i)
-Tmap a<Space>i <Plug>(textobj-indent-a)
+  Tmap i<Space>f <Plug>(textobj-function-i)
+  Tmap a<Space>f <Plug>(textobj-function-a)
+  Tmap i<Space>i <Plug>(textobj-indent-i)
+  Tmap a<Space>i <Plug>(textobj-indent-a)
 
-" Tmap a/ <Plug>(textobj-lastpat-n)
-" Tmap i/ <Plug>(textobj-lastpat-n)
-" Tmap a? <Plug>(textobj-lastpat-N)
-" Tmap i? <Plug>(textobj-lastpat-N)
+  " Tmap a/ <Plug>(textobj-lastpat-n)
+  " Tmap i/ <Plug>(textobj-lastpat-n)
+  " Tmap a? <Plug>(textobj-lastpat-N)
+  " Tmap i? <Plug>(textobj-lastpat-N)
 
-TTmap y syntax
-TTmap ,_ quoted
-TTmap f function
+  TTmap y syntax
+  TTmap ,_ quoted
+  TTmap f function
 
-" TTmap e entire
-TTmap ,, parameter
-" TTmap l line
-TTmap ,b between
-TTmap ,f fold
-TTmap q enclosedsyntax
-" TTmap b multiblock
-TTmap b multitextobj
-TTmap ,w wiw
-TTmap u lastinserted
-TTmap U url
-TTmap # ifdef
-Tmap ixx <Plug>(textobj-context-i)
+  " TTmap e entire
+  TTmap ,, parameter
+  " TTmap l line
+  TTmap ,b between
+  TTmap ,f fold
+  TTmap q enclosedsyntax
+  " TTmap b multiblock
+  TTmap b multitextobj
+  TTmap ,w wiw
+  TTmap u lastinserted
+  TTmap U url
+  TTmap # ifdef
+  Tmap ixx <Plug>(textobj-context-i)
 
-Tmap axa <Plug>(textobj-xmlattribute-xmlattribute)
-Tmap ixa <Plug>(textobj-xmlattribute-xmlattributenospace)
-TTmap m  motionmotion
+  Tmap axa <Plug>(textobj-xmlattribute-xmlattribute)
+  Tmap ixa <Plug>(textobj-xmlattribute-xmlattributenospace)
+  TTmap m  motionmotion
 
-TTmap P php-phptag
-TTmap aP php-phparray
+  TTmap P php-phptag
+  TTmap aP php-phparray
 
-" let g:textboj_ _no_default_key_mappings=1
-" let g:textboj_datetime_no_default_key_mappings=1
-" let g:textboj_jabraces_no_default_key_mappings=1
+  " let g:textboj_ _no_default_key_mappings=1
+  " let g:textboj_datetime_no_default_key_mappings=1
+  " let g:textboj_jabraces_no_default_key_mappings=1
 
-let g:textboj_syntax_no_default_key_mappings=1
-let g:textboj_quoted_no_default_key_mappings=1
-let g:textboj_function_no_default_key_mappings=1
+  let g:textboj_syntax_no_default_key_mappings=1
+  let g:textboj_quoted_no_default_key_mappings=1
+  let g:textboj_function_no_default_key_mappings=1
 
-" let g:textobj_entire_no_default_key_mappings=1
-let g:textobj_parameter_no_default_key_mappings=1
-let g:textobj_line_no_default_key_mappings=1
-let g:textobj_between_no_default_key_mappings=1
-let g:textboj_fold_no_default_key_mappings=1
-let g:textboj_enclosedsyntax_no_default_key_mappings=1
-let g:textboj_multiblock_no_default_key_mappings=1
-let g:textobj_wiw_no_default_key_mappings=1
-let g:textboj_lastinserted_no_default_key_mappings=1
-let g:textboj_url_no_default_key_mappings=1
-let g:textboj_ifdef_no_default_key_mappings=1
-let g:textboj_context_no_default_key_mappings=1
-" let g:textboj_xbrackets_no_default_key_mappings=1
-let g:textboj_php_no_default_key_mappings=1
+  " let g:textobj_entire_no_default_key_mappings=1
+  let g:textobj_parameter_no_default_key_mappings=1
+  let g:textobj_line_no_default_key_mappings=1
+  let g:textobj_between_no_default_key_mappings=1
+  let g:textboj_fold_no_default_key_mappings=1
+  let g:textboj_enclosedsyntax_no_default_key_mappings=1
+  let g:textboj_multiblock_no_default_key_mappings=1
+  let g:textobj_wiw_no_default_key_mappings=1
+  let g:textboj_lastinserted_no_default_key_mappings=1
+  let g:textboj_url_no_default_key_mappings=1
+  let g:textboj_ifdef_no_default_key_mappings=1
+  let g:textboj_context_no_default_key_mappings=1
+  " let g:textboj_xbrackets_no_default_key_mappings=1
+  let g:textboj_php_no_default_key_mappings=1
 
-let g:textobj_multiblock_blocks = [
-      \ [ '(', ')' ],
-      \ [ '[', ']' ],
-      \ [ '{', '}' ],
-      \ [ '<', '>', 1 ],
-      \ [ '"', '"', 1 ],
-      \ [ "'", "'", 1 ],
-      \ [ "_", "_", 1 ],
-      \]
+  let g:textobj_multiblock_blocks = [
+        \ [ '(', ')' ],
+        \ [ '[', ']' ],
+        \ [ '{', '}' ],
+        \ [ '<', '>', 1 ],
+        \ [ '"', '"', 1 ],
+        \ [ "'", "'", 1 ],
+        \ [ "_", "_", 1 ],
+        \]
 
-let g:textobj_multitextobj_textobjects_i = [
-      \ "\<Plug>(textobj-url-i)",
-      \ "\<Plug>(textobj-multiblock-i)",
-      \ "\<Plug>(textobj-ruby-any-i)",
-      \ "\<Plug>(textobj-function-i)",
-      \]
-      " \ "\<Plug>(textobj-entire-i)",
+  let g:textobj_multitextobj_textobjects_i = [
+        \ "\<Plug>(textobj-url-i)",
+        \ "\<Plug>(textobj-multiblock-i)",
+        \ "\<Plug>(textobj-ruby-any-i)",
+        \ "\<Plug>(textobj-function-i)",
+        \]
+        " \ "\<Plug>(textobj-entire-i)",
 
-let g:textobj_multitextobj_textobjects_a = [
-      \ "\<Plug>(textobj-url-a)",
-      \ "\<Plug>(textobj-multiblock-a)",
-      \ "\<Plug>(textobj-ruby-any-i)",
-      \ "\<Plug>(textobj-function-a)",
-      \]
-      " \ "\<Plug>(textobj-entire-a)",
+  let g:textobj_multitextobj_textobjects_a = [
+        \ "\<Plug>(textobj-url-a)",
+        \ "\<Plug>(textobj-multiblock-a)",
+        \ "\<Plug>(textobj-ruby-any-i)",
+        \ "\<Plug>(textobj-function-a)",
+        \]
+        " \ "\<Plug>(textobj-entire-a)",
 
-let g:textobj_multitextobj_textobjects_group_i = {
-      \ "A" : [
-      \   "\<Plug>(textobj-url-i)",
-      \   "\<Plug>(textobj-wiw-i)",
-      \   "iw",
-      \ ]
-      \}
-
+  let g:textobj_multitextobj_textobjects_group_i = {
+        \ "A" : [
+        \   "\<Plug>(textobj-url-i)",
+        \   "\<Plug>(textobj-wiw-i)",
+        \   "iw",
+        \ ]
+        \}
+endif
 
 " vim-niceblock {{{2
-xmap I <Plug>(niceblock-I)
-xmap A <Plug>(niceblock-A)
+if s:bundle.is_installed('vim-niceblock')
+  xmap I <Plug>(niceblock-I)
+  xmap A <Plug>(niceblock-A)
+endif
 
 " ref.vim {{{2
-let g:ref_open = '8split'
-let g:ref_cache_dir = $VIM_CACHE . '/vim-ref'
-if !exists('g:ref_detect_filetype')
-  let g:ref_detect_filetype = {}
+if s:bundle.is_installed('vim-ref')
+  let g:ref_open = '8split'
+  let g:ref_cache_dir = $VIM_CACHE . '/vim-ref'
+  if !exists('g:ref_detect_filetype')
+    let g:ref_detect_filetype = {}
+  endif
+  let g:ref_detect_filetype._ = 'webdict'
+  let g:ref_use_vimproc = 0
+  let g:ref_alc_use_cache = 1
+  let g:ref_alc_start_linenumber = 43
+
+  if s:bundle.is_installed('vimproc.vim')
+    let g:ref_use_vimproc = 1
+  endif
+
+  " options {{{3
+  " webdict {{{4
+  if s:is_win
+    " for w3m
+    let $LANG='C.UTF-8'
+    let g:ref_source_webdict_encoding = 'utf-8'
+  endif
+  let g:ref_source_webdict_sites = {
+        \   'alc' : {
+        \     'url': 'http://eow.alc.co.jp/%s',
+        \     'keyword_encoding,': 'utf-8',
+        \     'cache': 1,
+        \   },
+        \   'weblio': {
+        \     'url': 'http://ejje.weblio.jp/content/%s',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': 1,
+        \   },
+        \   'wikipedia': {
+        \     'url': 'http://ja.wikipedia.org/wiki/%s',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '0',
+        \   },
+        \   'wikipedia:en': {
+        \     'url': 'http://en.wikipedia.org/wiki/%s',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '0',
+        \   },
+        \   'wiktionary': {
+        \     'url': 'http://ja.wiktionary.org/wiki/%s',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '0',
+        \   },
+        \   'ja_en': {
+        \     'url': 'http://translate.google.co.jp/m?hl=ja\&sl=ja\&tl=en\&ie=UTF-8\&prev=_m\&q=%s',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '0',
+        \   },
+        \   'en_ja': {
+        \     'url': 'http://translate.google.co.jp/m?hl=ja\&sl=en\&tl=ja\&ie=UTF-8\&prev=_m\&q=%s',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '0',
+        \   },
+        \   'ruby_toolbox': {
+        \     'url': 'https://www.ruby-toolbox.com/search?utf8=%%E2%%9C%%93\&q=%s',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '0',
+        \   },
+        \   'rurema': {
+        \     'url': 'http://doc.ruby-lang.org/ja/search/query:%s/',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '0',
+        \   },
+        \   'rubygems': {
+        \     'url': 'http://rubygems.org/search?query=%s',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '0',
+        \   },
+        \   'node_toolbox': {
+        \     'url': 'http://nodetoolbox.com/search?q=%s',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '0',
+        \   },
+        \   'chef_cookbooks': {
+        \     'url': 'http://community.opscode.com/search?query=%s\&scope=cookbook',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '0',
+        \   },
+        \   'underscore.js': {
+        \     'url': 'http://underscorejs.org/?q=%s',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '1',
+        \   },
+        \   'lodash.js': {
+        \     'url': 'http://lodash.com/docs?q=%s',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '1',
+        \   },
+        \   'cpan': {
+        \     'url': 'http://search.cpan.org/search?q=%s;s={startIndex}',
+        \     'keyword_encoding': 'utf-8',
+        \     'cache': '0',
+        \   },
+        \ }
+  function! g:ref_source_webdict_sites.alc.filter(output)
+    return join(split(a:output, "\n")[38:], "\n")
+  endfunction
+  function! g:ref_source_webdict_sites.weblio.filter(output)
+    return join(split(a:output, "\n")[53 :], "\n")
+  endfunction
+  function! g:ref_source_webdict_sites.wikipedia.filter(output)
+    return join(split(a:output, "\n")[17 :], "\n")
+  endfunction
+  function! g:ref_source_webdict_sites.wiktionary.filter(output)
+    return join(split(a:output, "\n")[38:], "\n")
+  endfunction
+  function! g:ref_source_webdict_sites.rurema.filter(output)
+    return substitute(a:output, '.*検索結果', '', '')
+  endfunction
+  function! g:ref_source_webdict_sites.node_toolbox.filter(output)
+    return join(split(a:output, "\n")[34 :], "\n")
+  endfunction
+  function! g:ref_source_webdict_sites.chef_cookbooks.filter(output)
+    return join(split(a:output, "\n")[18 :], "\n")
+  endfunction
+
+  " webdict default {{{4
+  let g:ref_source_webdict_sites.default = 'alc'
+
+  " webdict command {{{4
+  function! s:ref_webdict_search(source, count, l1, l2, text)
+    " let text = a:firstline == 0 ? a:text : join(getline(a:firstline, a:lastline), "\n")
+    let text = a:count == 0 ? a:text : join(getline(a:l1, a:l2), "\n")
+    execute "Ref" "webdict" a:source text
+  endfunction
+  command! -nargs=? -range=0 GTransEnJa call s:ref_webdict_search('en_ja', <count>, <line1>, <line2>, <q-args>)
+  command! -nargs=? -range=0 GTransJaEn call s:ref_webdict_search('ja_en', <count>, <line1>, <line2>, <q-args>)
+
+  " langs {{{4
+  let g:ref_source_webdict_sites.default = 'alc'
+  let g:ref_phpmanual_path=$HOME.'/.bin/apps/phpman/'
+  let g:ref_javadoc_path = $HOME.'/.bin/apps/jdk-6-doc/ja'
+  let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest/docs'
+  let g:ref_html_path=expand('~/.bin/apps/htmldoc/www.aptana.com/reference/html/api')
+  let g:ref_html5_path=expand('~/.bin/apps/html5doc/dist')
+  let g:ref_jscore_path=expand('~/.bin/apps/jscore/www.aptana.com/reference/html/api')
+  let g:ref_jsdom_path=expand('~/.bin/apps/jscore/www.aptana.com/reference/html/api')
+  "let g:ref_jquery_use_cache = 1
+  if isdirectory($HOME."/.nodebrew")
+    let g:ref_nodejsdoc_dir = my#dir#find("~/.nodebrew/src/node-v*").last() . "/doc"
+  endif
+
+  if executable('rurema')
+    let g:ref_refe_cmd     = "rurema"
+    let g:ref_refe_version = 2
+  endif
+  if s:is_win
+    let g:ref_refe_encoding = 'cp932'
+  else
+    " let g:ref_refe_encoding = 'utf-8'
+    " if exists('$RSENSE_HOME') && executable($RSENSE_HOME.'/bin/rsense')
+    "   let g:ref_refe_rsense_cmd = $RSENSE_HOME.'/bin/rsense'
+    " endif
+  endif
+  let g:ref_perldoc_complete_head = 1
+  " }}}
+
+  LCAlias Ref
+  for src in ['refe', 'ri', 'perldoc', 'man'
+        \ , 'pydoc', 'jsref', 'jquery'
+        \ , 'cppref', 'cheat', 'nodejs', ]
+    silent! exe 'Alias' src 'Ref' src
+  endfor
+  Alias webd[ict] Ref webdict
+  Alias mr Ref webdict
+  Alias alc Ref webdict alc
+  Alias php[manual] Ref phpmanual
+  Alias timo Ref timobileref
+  Alias tide Ref tidesktopref
+
+  nnoremap [!space]hh :Ref alc <C-r>=expand("<cWORD>")<CR><CR>
+
+  if !exists('g:ref_jsextra_defines')
+    let g:ref_jsextra_defines = {}
+  endif
+  call extend(g:ref_jsextra_defines, {
+        \ 'EaselJS' : {
+        \   'type' : 'yui',
+        \   'command' : 'zip',
+        \   'relative' : '',
+        \   'url' : 'https://github.com/CreateJS/EaselJS/raw/master/docs/EaselJS_docs-0.5.0.zip',
+        \ },
+        \ 'TweenJS' : {
+        \   'type' : 'yui',
+        \   'command' : 'zip',
+        \   'relative' : '',
+        \   'url' : 'https://github.com/CreateJS/TweenJS/raw/master/docs/TweenJS_docs-0.3.0.zip',
+        \ },
+        \ 'PreloadJS' : {
+        \   'type' : 'yui',
+        \   'command' : 'zip',
+        \   'relative' : '',
+        \   'url' : 'https://github.com/CreateJS/PreloadJS/raw/master/docs/PreloadJS_docs-0.2.0.zip',
+        \ },
+        \ 'SoundJS' : {
+        \   'type' : 'yui',
+        \   'command' : 'zip',
+        \   'relative' : '',
+        \   'url' : 'https://github.com/CreateJS/SoundJS/raw/master/docs/SoundJS_docs-0.3.0.zip',
+        \ },
+        \ })
 endif
-let g:ref_detect_filetype._ = 'webdict'
-let g:ref_use_vimproc = 0
-let g:ref_alc_use_cache = 1
-let g:ref_alc_start_linenumber = 43
-
-if s:bundle.is_installed('vimproc.vim')
-  let g:ref_use_vimproc = 1
-endif
-
-" options {{{3
-" webdict {{{4
-if s:is_win
-  " for w3m
-  let $LANG='C.UTF-8'
-  let g:ref_source_webdict_encoding = 'utf-8'
-endif
-let g:ref_source_webdict_sites = {
-      \   'alc' : {
-      \     'url': 'http://eow.alc.co.jp/%s',
-      \     'keyword_encoding,': 'utf-8',
-      \     'cache': 1,
-      \   },
-      \   'weblio': {
-      \     'url': 'http://ejje.weblio.jp/content/%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': 1,
-      \   },
-      \   'wikipedia': {
-      \     'url': 'http://ja.wikipedia.org/wiki/%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \   'wikipedia:en': {
-      \     'url': 'http://en.wikipedia.org/wiki/%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \   'wiktionary': {
-      \     'url': 'http://ja.wiktionary.org/wiki/%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \   'ja_en': {
-      \     'url': 'http://translate.google.co.jp/m?hl=ja\&sl=ja\&tl=en\&ie=UTF-8\&prev=_m\&q=%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \   'en_ja': {
-      \     'url': 'http://translate.google.co.jp/m?hl=ja\&sl=en\&tl=ja\&ie=UTF-8\&prev=_m\&q=%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \   'ruby_toolbox': {
-      \     'url': 'https://www.ruby-toolbox.com/search?utf8=%%E2%%9C%%93\&q=%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \   'rurema': {
-      \     'url': 'http://doc.ruby-lang.org/ja/search/query:%s/',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \   'rubygems': {
-      \     'url': 'http://rubygems.org/search?query=%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \   'node_toolbox': {
-      \     'url': 'http://nodetoolbox.com/search?q=%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \   'chef_cookbooks': {
-      \     'url': 'http://community.opscode.com/search?query=%s\&scope=cookbook',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \   'underscore.js': {
-      \     'url': 'http://underscorejs.org/?q=%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '1',
-      \   },
-      \   'lodash.js': {
-      \     'url': 'http://lodash.com/docs?q=%s',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '1',
-      \   },
-      \   'cpan': {
-      \     'url': 'http://search.cpan.org/search?q=%s;s={startIndex}',
-      \     'keyword_encoding': 'utf-8',
-      \     'cache': '0',
-      \   },
-      \ }
-function! g:ref_source_webdict_sites.alc.filter(output)
-  return join(split(a:output, "\n")[38:], "\n")
-endfunction
-function! g:ref_source_webdict_sites.weblio.filter(output)
-  return join(split(a:output, "\n")[53 :], "\n")
-endfunction
-function! g:ref_source_webdict_sites.wikipedia.filter(output)
-  return join(split(a:output, "\n")[17 :], "\n")
-endfunction
-function! g:ref_source_webdict_sites.wiktionary.filter(output)
-  return join(split(a:output, "\n")[38:], "\n")
-endfunction
-function! g:ref_source_webdict_sites.rurema.filter(output)
-  return substitute(a:output, '.*検索結果', '', '')
-endfunction
-function! g:ref_source_webdict_sites.node_toolbox.filter(output)
-  return join(split(a:output, "\n")[34 :], "\n")
-endfunction
-function! g:ref_source_webdict_sites.chef_cookbooks.filter(output)
-  return join(split(a:output, "\n")[18 :], "\n")
-endfunction
-
-" webdict default {{{4
-let g:ref_source_webdict_sites.default = 'alc'
-
-" webdict command {{{4
-function! s:ref_webdict_search(source, count, l1, l2, text)
-  " let text = a:firstline == 0 ? a:text : join(getline(a:firstline, a:lastline), "\n")
-  let text = a:count == 0 ? a:text : join(getline(a:l1, a:l2), "\n")
-  execute "Ref" "webdict" a:source text
-endfunction
-command! -nargs=? -range=0 GTransEnJa call s:ref_webdict_search('en_ja', <count>, <line1>, <line2>, <q-args>)
-command! -nargs=? -range=0 GTransJaEn call s:ref_webdict_search('ja_en', <count>, <line1>, <line2>, <q-args>)
-
-" langs {{{4
-let g:ref_source_webdict_sites.default = 'alc'
-let g:ref_phpmanual_path=$HOME.'/.bin/apps/phpman/'
-let g:ref_javadoc_path = $HOME.'/.bin/apps/jdk-6-doc/ja'
-let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest/docs'
-let g:ref_html_path=expand('~/.bin/apps/htmldoc/www.aptana.com/reference/html/api')
-let g:ref_html5_path=expand('~/.bin/apps/html5doc/dist')
-let g:ref_jscore_path=expand('~/.bin/apps/jscore/www.aptana.com/reference/html/api')
-let g:ref_jsdom_path=expand('~/.bin/apps/jscore/www.aptana.com/reference/html/api')
-"let g:ref_jquery_use_cache = 1
-if isdirectory($HOME."/.nodebrew")
-  let g:ref_nodejsdoc_dir = my#dir#find("~/.nodebrew/src/node-v*").last() . "/doc"
-endif
-
-if executable('rurema')
-  let g:ref_refe_cmd     = "rurema"
-  let g:ref_refe_version = 2
-endif
-if s:is_win
-  let g:ref_refe_encoding = 'cp932'
-else
-  " let g:ref_refe_encoding = 'utf-8'
-  " if exists('$RSENSE_HOME') && executable($RSENSE_HOME.'/bin/rsense')
-  "   let g:ref_refe_rsense_cmd = $RSENSE_HOME.'/bin/rsense'
-  " endif
-endif
-let g:ref_perldoc_complete_head = 1
-" }}}
-
-LCAlias Ref
-for src in ['refe', 'ri', 'perldoc', 'man'
-      \ , 'pydoc', 'jsref', 'jquery'
-      \ , 'cppref', 'cheat', 'nodejs', ]
-  silent! exe 'Alias' src 'Ref' src
-endfor
-Alias webd[ict] Ref webdict
-Alias mr Ref webdict
-Alias alc Ref webdict alc
-Alias php[manual] Ref phpmanual
-Alias timo Ref timobileref
-Alias tide Ref tidesktopref
-
-nnoremap [!space]hh :Ref alc <C-r>=expand("<cWORD>")<CR><CR>
-
-if !exists('g:ref_jsextra_defines')
-  let g:ref_jsextra_defines = {}
-endif
-call extend(g:ref_jsextra_defines, {
-      \ 'EaselJS' : {
-      \   'type' : 'yui',
-      \   'command' : 'zip',
-      \   'relative' : '',
-      \   'url' : 'https://github.com/CreateJS/EaselJS/raw/master/docs/EaselJS_docs-0.5.0.zip',
-      \ },
-      \ 'TweenJS' : {
-      \   'type' : 'yui',
-      \   'command' : 'zip',
-      \   'relative' : '',
-      \   'url' : 'https://github.com/CreateJS/TweenJS/raw/master/docs/TweenJS_docs-0.3.0.zip',
-      \ },
-      \ 'PreloadJS' : {
-      \   'type' : 'yui',
-      \   'command' : 'zip',
-      \   'relative' : '',
-      \   'url' : 'https://github.com/CreateJS/PreloadJS/raw/master/docs/PreloadJS_docs-0.2.0.zip',
-      \ },
-      \ 'SoundJS' : {
-      \   'type' : 'yui',
-      \   'command' : 'zip',
-      \   'relative' : '',
-      \   'url' : 'https://github.com/CreateJS/SoundJS/raw/master/docs/SoundJS_docs-0.3.0.zip',
-      \ },
-      \ })
 
 " quickrun {{{2
-"silent! nmap <unique> <Space> <Plug>(quickrun)
-if !exists('g:quickrun_config')
-  let g:quickrun_config={}
-endif
-let g:quickrun_config._ = {
-      \   'outputter/buffer/split' : ':botright 8sp',
-      \   'hook/inu/enable' : 1,
-      \   'hook/inu/redraw' : 1,
-      \   'hook/inu/wait' : 20,
-      \ }
-if s:bundle.is_installed('vimproc.vim')
-  call extend(g:quickrun_config._, {
-      \   'runner' : 'vimproc',
-      \   'runner/vimproc/updatetime' : 100,
-      \ })
-endif
-
-call extend(g:quickrun_config, {
-      \  'objc/gcc' : {
-      \    'command' : 'gcc',
-      \    'exec' : ['%c %o %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
-      \    'tempfile': '{tempname()}.m'
-      \  },
-      \ })
-call extend(g:quickrun_config, {
-      \  'go/8g' : {
-      \    'command': '8g',
-      \    'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
-      \  },
-      \ })
-call extend(g:quickrun_config, {
-      \  'csharp/csc' : {
-      \    'command' : 'csc',
-      \    'runmode' : 'simple',
-      \    'exec' : ['%c /nologo %s:gs?/?\\? > /dev/null', '"%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
-      \    'tempfile' : '{tempname()}.cs',
-      \  },
-      \  'csharp/cs' : {
-      \    'command' : 'cs',
-      \    'runmode' : 'simple',
-      \    'exec' : ['%c %s > /dev/null', 'mono "%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
-      \    'tempfile' : '{tempname()}.cs',
-      \  },
-      \ })
-call extend(g:quickrun_config, {
-      \  'jsx/jsx' : {
-      \    'command': 'jsx',
-      \    'exec' : '%c %o --run %s',
-      \  },
-      \ })
-call extend(g:quickrun_config, {
-      \ 'slim' : {
-      \   'type' : 'slim/slimrb',
-      \ },
-      \ 'slim/slimrb' : {
-      \   'command' : 'slimrb',
-      \   'exec' : ['%c %o -p %s'],
-      \ },
-      \ })
-" http://qiita.com/joker1007/items/9dc7f2a92cfb245ad502
-call extend(g:quickrun_config, {
-      \ 'ruby.rspec/rspec_bundle': {
-      \   'command': 'rspec',
-      \   'outputter/buffer/split': 'botright',
-      \   'exec': 'bundle exec %c %o --color --tty %s'
-      \ },
-      \ 'ruby.rspec/rspec_normal': {
-      \   'command': 'rspec',
-      \   'outputter/buffer/split': 'botright',
-      \   'exec': '%c %o --color --tty %s'
-      \ },
-      \ 'ruby.rspec/rspec_zeus': {
-      \   'command': 'rspec',
-      \   'outputter/buffer/split': 'botright',
-      \   'exec': 'zeus test %o --color --tty %s'
-      \ },
-      \ 'ruby.rspec/rspec_spring': {
-      \   'command': 'rspec',
-      \   'outputter/buffer/split': 'botright',
-      \   'exec': 'spring rspec %o --color --tty %s'
-      \ },
-      \ 'ruby/cucumber_bundle': {
-      \   'command': 'cucumber',
-      \   'outputter/buffer/split': 'botright',
-      \   'exec': 'bundle exec %c %o --color %s'
-      \ },
-      \ 'ruby/cucumber_zeus': {
-      \   'command': 'cucumber',
-      \   'outputter/buffer/split': 'botright',
-      \   'exec': 'zeus cucumber %o --color %s'
-      \ },
-      \ 'ruby/cucumber_spring': {
-      \   'command': 'cucumber',
-      \   'outputter/buffer/split': 'botright',
-      \   'exec': 'spring cucumber %o --color %s'
-      \ },
-      \ })
-
-call extend(g:quickrun_config, {
-      \  'ruby/rspec' : {
-      \    'command' : 'rspec',
-      \    'exec' : '%c %o -l {line(".")}',
-      \  },
-      \  'php/phpunit' : {
-      \    'command' : 'phpunit',
-      \  },
-      \  'python/nosetests' : {
-      \    'command' : 'nosetests',
-      \    'cmdopt': '-s -vv',
-      \  },
-      \  'perl/prove' : {
-      \    'command' : 'prove',
-      \  },
-      \ })
-call extend(g:quickrun_config, {
-      \ 'mysql' : {
-      \   'type' : 'sql/mysql',
-      \ },
-      \ 'sql' : {
-      \   'type' : 'sql/postgresql',
-      \ },
-      \ 'sql/mysql' : {
-      \   'runner' : 'system',
-      \   'command' : 'mysql',
-      \   'exec' : ['%c %o < %s'],
-      \ },
-      \ 'sql/postgresql': {
-      \   'command' : 'psql',
-      \   'exec': ['%c %o'],
-      \ }
-      \ })
-call extend(g:quickrun_config, {
-      \  'markdown/markedwrapper' : {
-      \    'command' : 'markedwrapper',
-      \    'exec' : '%c %o %s',
-      \  },
-      \  'markdown/mdown' : {
-      \    'command' : 'mdown',
-      \    'exec' : '%c %o -i %s',
-      \  },
-      \  'markdown/Marked' : {
-      \    'command' : 'open',
-      \    'outputter' : 'null',
-      \    'exec' : '%c -a Marked %o %s',
-      \  },
-      \  'markdown/multimarkdown' : {
-      \    'command' : 'multimarkdown',
-      \  },
-      \  'markdown/rdiscount' : {
-      \    'command' : 'rdiscount',
-      \  },
-      \  'markdown/markdown' : {
-      \    'command' : 'markdown',
-      \  },
-      \ })
-call extend(g:quickrun_config, {
-      \  'processing/osascript' : {
-      \    'command': 'osascript',
-      \    'exec' : ['osascript %o ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
-      \  },
-      \  'processing/processing-java' : {
-      \    'command': 'processing-java',
-      \    'exec' : '%c %o --sketch=$PWD/ --output=/Library/Processing --run --force',
-      \  },
-      \  'applescript/osascript' : {
-      \    'command' : 'osascript',
-      \    'output' : '_',
-      \  },
-      \  'diag/diag' : {
-      \    'exec': [
-      \       '%c -a %s -o %{expand("%:r")}.png',
-      \       printf("%s %{expand(%:r)}.png", s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'gnome-open')),
-      \    ],
-      \    'outputter': 'message',
-      \ },
-      \ })
-call extend(g:quickrun_config, {
-      \  'command/cat' : {
-      \    'command' : 'cat',
-      \    'exec' : ['%c %o %s'],
-      \  },
-      \ })
-
-call extend(g:quickrun_config, {
-      \   'objc' : {
-      \     'type' : executable('gcc') ? 'objc/gcc':
-      \              '',
-      \   },
-      \   'jsx' : {
-      \     'type' : 'jsx/jsx',
-      \   },
-      \ })
-call extend(g:quickrun_config, {
-      \   'cs' : {
-      \     'type' : executable('csc') ? 'csharp/csc':
-      \              executable('cs') ? 'csharp/cs':
-      \              '',
-      \   },
-      \   'go' : {
-      \     'type' : executable('8g') ? 'go/8g':
-      \              '',
-      \   },
-      \ })
-call extend(g:quickrun_config, {
-      \   'ruby.rspec' : {
-      \     'type' : 'ruby/rspec',
-      \   },
-      \   'python.nosetests' : {
-      \     'type' : 'python/nosetests',
-      \   },
-      \   'perl.prove' : {
-      \     'type' : 'perl/prove',
-      \   },
-      \   'php.phpunit' : {
-      \     'type' : 'php/phpunit',
-      \   },
-      \ })
-call extend(g:quickrun_config, {
-      \   'markdown' : {
-      \     'type' :
-      \              s:is_mac && isdirectory('/Applications/Marked.app') ? 'markdown/Marked':
-      \              executable('markedwrapper')    ? 'markdown/markedwrapper':
-      \              executable('mdown')            ? 'markdown/mdown':
-      \              executable('pandoc')           ? 'markdown/pandoc':
-      \              executable('multimarkdown')    ? 'markdown/multimarkdown':
-      \              executable('MultiMarkdown.pl') ? 'markdown/MultiMarkdown.pl':
-      \              executable('rdiscount')        ? 'markdown/rdiscount':
-      \              executable('bluecloth')        ? 'markdown/bluecloth':
-      \              executable('markdown')         ? 'markdown/markdown':
-      \              executable('Markdown.pl')      ? 'markdown/Markdown.pl':
-      \              executable('redcarpet')        ? 'markdown/redcarpet':
-      \              executable('kramdown')         ? 'markdown/kramdown':
-      \              '',
-      \     'outputter' : 'browser',
-      \   },
-      \ })
-call extend(g:quickrun_config, {
-      \   'processing' : {
-      \     'type' : executable('processing-java') ? 'processing/processing-java' :
-      \              executable('osascript') ? 'processing/osascript':
-      \              '',
-      \   },
-      \   'applescript' : {
-      \     'type' : executable('osascript') ? 'applescript/osascript':
-      \              '',
-      \   },
-      \   'diag' : {
-      \     'type' : 'diag/diag',
-      \   },
-      \ })
-
-nnoremap <Leader><Leader>r :<C-u>QuickRun command/cat<CR>
-
-" for testcase {{{3
-MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
-MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
-function! s:gen_phpunit_skel()
-  let old_cwd = getcwd()
-  let cwd = expand('%:p:h')
-  let name = expand('%:t:r')
-  let m = matchlist(join(getline(1, 10), "\n"), "\s*namespace\s*\(\w+\)\s*;")
-  let type = match(name, '\(_test|Test\)$') == -1 ? "--test" : "--class"
-  let opts = []
-  if !empty(m)
-    call add(opts, '--')
-    call add(opts, m[1])
+if s:bundle.tap('vim-quickrun')
+  "silent! nmap <unique> <Space> <Plug>(quickrun)
+  if !exists('g:quickrun_config')
+    let g:quickrun_config={}
   endif
-  silent exe 'lcd' cwd
-  exe "!" printf("phpunit-skelgen %s %s %s", join(opts, " "), type, name)
-  silent exe 'lcd' old_cwd
-endfunction
-command! PhpUnitSkelGen call <SID>gen_phpunit_skel()
-MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
-MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
+  let g:quickrun_config._ = {
+        \   'outputter/buffer/split' : ':botright 8sp',
+        \   'hook/inu/enable' : 1,
+        \   'hook/inu/redraw' : 1,
+        \   'hook/inu/wait' : 20,
+        \ }
+  if s:bundle.is_installed('vimproc.vim')
+    call extend(g:quickrun_config._, {
+        \   'runner' : 'vimproc',
+        \   'runner/vimproc/updatetime' : 100,
+        \ })
+  endif
 
-if s:bundle.is_installed('vim-ref')
-  augroup vimrc-plugin-ref
-    autocmd!
-    autocmd FileType ruby.rspec,php.phpunit,python.nosetests,perl.prove call s:testcase_lazy_init()
-  augroup END
+  call extend(g:quickrun_config, {
+        \  'objc/gcc' : {
+        \    'command' : 'gcc',
+        \    'exec' : ['%c %o %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
+        \    'tempfile': '{tempname()}.m'
+        \  },
+        \ })
+  call extend(g:quickrun_config, {
+        \  'go/8g' : {
+        \    'command': '8g',
+        \    'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
+        \  },
+        \ })
+  call extend(g:quickrun_config, {
+        \  'csharp/csc' : {
+        \    'command' : 'csc',
+        \    'runmode' : 'simple',
+        \    'exec' : ['%c /nologo %s:gs?/?\\? > /dev/null', '"%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
+        \    'tempfile' : '{tempname()}.cs',
+        \  },
+        \  'csharp/cs' : {
+        \    'command' : 'cs',
+        \    'runmode' : 'simple',
+        \    'exec' : ['%c %s > /dev/null', 'mono "%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
+        \    'tempfile' : '{tempname()}.cs',
+        \  },
+        \ })
+  call extend(g:quickrun_config, {
+        \  'jsx/jsx' : {
+        \    'command': 'jsx',
+        \    'exec' : '%c %o --run %s',
+        \  },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'slim' : {
+        \   'type' : 'slim/slimrb',
+        \ },
+        \ 'slim/slimrb' : {
+        \   'command' : 'slimrb',
+        \   'exec' : ['%c %o -p %s'],
+        \ },
+        \ })
+  " http://qiita.com/joker1007/items/9dc7f2a92cfb245ad502
+  call extend(g:quickrun_config, {
+        \ 'ruby.rspec/rspec_bundle': {
+        \   'command': 'rspec',
+        \   'outputter/buffer/split': 'botright',
+        \   'exec': 'bundle exec %c %o --color --tty %s'
+        \ },
+        \ 'ruby.rspec/rspec_normal': {
+        \   'command': 'rspec',
+        \   'outputter/buffer/split': 'botright',
+        \   'exec': '%c %o --color --tty %s'
+        \ },
+        \ 'ruby.rspec/rspec_zeus': {
+        \   'command': 'rspec',
+        \   'outputter/buffer/split': 'botright',
+        \   'exec': 'zeus test %o --color --tty %s'
+        \ },
+        \ 'ruby.rspec/rspec_spring': {
+        \   'command': 'rspec',
+        \   'outputter/buffer/split': 'botright',
+        \   'exec': 'spring rspec %o --color --tty %s'
+        \ },
+        \ 'ruby/cucumber_bundle': {
+        \   'command': 'cucumber',
+        \   'outputter/buffer/split': 'botright',
+        \   'exec': 'bundle exec %c %o --color %s'
+        \ },
+        \ 'ruby/cucumber_zeus': {
+        \   'command': 'cucumber',
+        \   'outputter/buffer/split': 'botright',
+        \   'exec': 'zeus cucumber %o --color %s'
+        \ },
+        \ 'ruby/cucumber_spring': {
+        \   'command': 'cucumber',
+        \   'outputter/buffer/split': 'botright',
+        \   'exec': 'spring cucumber %o --color %s'
+        \ },
+        \ })
 
-  function! s:testcase_lazy_init()
-    call ref#register_detection('ruby.rspec', 'refe', 'append')
-    call ref#register_detection('php.phpunit', 'phpmanual', 'append')
-    call ref#register_detection('python.nosetests', 'pydoc', 'append')
-    call ref#register_detection('perl.prove', 'perldoc', 'append')
+  call extend(g:quickrun_config, {
+        \  'ruby/rspec' : {
+        \    'command' : 'rspec',
+        \    'exec' : '%c %o -l {line(".")}',
+        \  },
+        \  'php/phpunit' : {
+        \    'command' : 'phpunit',
+        \  },
+        \  'python/nosetests' : {
+        \    'command' : 'nosetests',
+        \    'cmdopt': '-s -vv',
+        \  },
+        \  'perl/prove' : {
+        \    'command' : 'prove',
+        \  },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'mysql' : {
+        \   'type' : 'sql/mysql',
+        \ },
+        \ 'sql' : {
+        \   'type' : 'sql/postgresql',
+        \ },
+        \ 'sql/mysql' : {
+        \   'runner' : 'system',
+        \   'command' : 'mysql',
+        \   'exec' : ['%c %o < %s'],
+        \ },
+        \ 'sql/postgresql': {
+        \   'command' : 'psql',
+        \   'exec': ['%c %o'],
+        \ }
+        \ })
+  call extend(g:quickrun_config, {
+        \  'markdown/markedwrapper' : {
+        \    'command' : 'markedwrapper',
+        \    'exec' : '%c %o %s',
+        \  },
+        \  'markdown/mdown' : {
+        \    'command' : 'mdown',
+        \    'exec' : '%c %o -i %s',
+        \  },
+        \  'markdown/Marked' : {
+        \    'command' : 'open',
+        \    'outputter' : 'null',
+        \    'exec' : '%c -a Marked %o %s',
+        \  },
+        \  'markdown/multimarkdown' : {
+        \    'command' : 'multimarkdown',
+        \  },
+        \  'markdown/rdiscount' : {
+        \    'command' : 'rdiscount',
+        \  },
+        \  'markdown/markdown' : {
+        \    'command' : 'markdown',
+        \  },
+        \ })
+  call extend(g:quickrun_config, {
+        \  'processing/osascript' : {
+        \    'command': 'osascript',
+        \    'exec' : ['osascript %o ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
+        \  },
+        \  'processing/processing-java' : {
+        \    'command': 'processing-java',
+        \    'exec' : '%c %o --sketch=$PWD/ --output=/Library/Processing --run --force',
+        \  },
+        \  'applescript/osascript' : {
+        \    'command' : 'osascript',
+        \    'output' : '_',
+        \  },
+        \  'diag/diag' : {
+        \    'exec': [
+        \       '%c -a %s -o %{expand("%:r")}.png',
+        \       printf("%s %{expand(%:r)}.png", s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'gnome-open')),
+        \    ],
+        \    'outputter': 'message',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \  'command/cat' : {
+        \    'command' : 'cat',
+        \    'exec' : ['%c %o %s'],
+        \  },
+        \ })
+
+  call extend(g:quickrun_config, {
+        \   'objc' : {
+        \     'type' : executable('gcc') ? 'objc/gcc':
+        \              '',
+        \   },
+        \   'jsx' : {
+        \     'type' : 'jsx/jsx',
+        \   },
+        \ })
+  call extend(g:quickrun_config, {
+        \   'cs' : {
+        \     'type' : executable('csc') ? 'csharp/csc':
+        \              executable('cs') ? 'csharp/cs':
+        \              '',
+        \   },
+        \   'go' : {
+        \     'type' : executable('8g') ? 'go/8g':
+        \              '',
+        \   },
+        \ })
+  call extend(g:quickrun_config, {
+        \   'ruby.rspec' : {
+        \     'type' : 'ruby/rspec',
+        \   },
+        \   'python.nosetests' : {
+        \     'type' : 'python/nosetests',
+        \   },
+        \   'perl.prove' : {
+        \     'type' : 'perl/prove',
+        \   },
+        \   'php.phpunit' : {
+        \     'type' : 'php/phpunit',
+        \   },
+        \ })
+  call extend(g:quickrun_config, {
+        \   'markdown' : {
+        \     'type' :
+        \              s:is_mac && isdirectory('/Applications/Marked.app') ? 'markdown/Marked':
+        \              executable('markedwrapper')    ? 'markdown/markedwrapper':
+        \              executable('mdown')            ? 'markdown/mdown':
+        \              executable('pandoc')           ? 'markdown/pandoc':
+        \              executable('multimarkdown')    ? 'markdown/multimarkdown':
+        \              executable('MultiMarkdown.pl') ? 'markdown/MultiMarkdown.pl':
+        \              executable('rdiscount')        ? 'markdown/rdiscount':
+        \              executable('bluecloth')        ? 'markdown/bluecloth':
+        \              executable('markdown')         ? 'markdown/markdown':
+        \              executable('Markdown.pl')      ? 'markdown/Markdown.pl':
+        \              executable('redcarpet')        ? 'markdown/redcarpet':
+        \              executable('kramdown')         ? 'markdown/kramdown':
+        \              '',
+        \     'outputter' : 'browser',
+        \   },
+        \ })
+  call extend(g:quickrun_config, {
+        \   'processing' : {
+        \     'type' : executable('processing-java') ? 'processing/processing-java' :
+        \              executable('osascript') ? 'processing/osascript':
+        \              '',
+        \   },
+        \   'applescript' : {
+        \     'type' : executable('osascript') ? 'applescript/osascript':
+        \              '',
+        \   },
+        \   'diag' : {
+        \     'type' : 'diag/diag',
+        \   },
+        \ })
+
+  nnoremap <Leader><Leader>r :<C-u>QuickRun command/cat<CR>
+
+  " for testcase {{{3
+  MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
+  MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
+  function! s:gen_phpunit_skel()
+    let old_cwd = getcwd()
+    let cwd = expand('%:p:h')
+    let name = expand('%:t:r')
+    let m = matchlist(join(getline(1, 10), "\n"), "\s*namespace\s*\(\w+\)\s*;")
+    let type = match(name, '\(_test|Test\)$') == -1 ? "--test" : "--class"
+    let opts = []
+    if !empty(m)
+      call add(opts, '--')
+      call add(opts, m[1])
+    endif
+    silent exe 'lcd' cwd
+    exe "!" printf("phpunit-skelgen %s %s %s", join(opts, " "), type, name)
+    silent exe 'lcd' old_cwd
+  endfunction
+  command! PhpUnitSkelGen call <SID>gen_phpunit_skel()
+  MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
+  MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
+
+  if s:bundle.is_installed('vim-ref')
     augroup vimrc-plugin-ref
       autocmd!
+      autocmd FileType ruby.rspec,php.phpunit,python.nosetests,perl.prove call s:testcase_lazy_init()
     augroup END
-  endfunction
+
+    function! s:testcase_lazy_init()
+      call ref#register_detection('ruby.rspec', 'refe', 'append')
+      call ref#register_detection('php.phpunit', 'phpmanual', 'append')
+      call ref#register_detection('python.nosetests', 'pydoc', 'append')
+      call ref#register_detection('perl.prove', 'perldoc', 'append')
+      augroup vimrc-plugin-ref
+        autocmd!
+      augroup END
+    endfunction
+  endif
+
+
+  function! s:quickrun_my_settings() "{{{4
+    nmap <buffer> q :quit<CR>
+  endfunction "}}}
+  MyAutocmd FileType quickrun call s:quickrun_my_settings()
+
+  call s:bundle.untap()
 endif
 
-
-function! s:quickrun_my_settings() "{{{4
-  nmap <buffer> q :quit<CR>
-endfunction "}}}
-MyAutocmd FileType quickrun call s:quickrun_my_settings()
-
 " watchdogs {{{2
-
-if s:bundle.is_installed('vimproc.vim')
+if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
 
   NeoBundleSource shabadou.vim vim-watchdogs
 
-  if s:bundle.is_installed('vim-watchdogs')
-    " run ok
-    "  python, jsonlint
-    " \   'hook/back_window/enable_exit' : 1,
-    " \   'hook/unite_quickfix/no_focus' : 1,
+  " run ok
+  "  python, jsonlint
+  " \   'hook/back_window/enable_exit' : 1,
+  " \   'hook/unite_quickfix/no_focus' : 1,
+  " watchdogs g:quickrun_config {{{3
+  call extend(g:quickrun_config, {
+        \ 'watchdogs_checker/_' : {
+        \   'hook/close_quickfix/enable_failure' : 1,
+        \   'hook/close_quickfix/enable_success' : 1,
+        \   'hook/hier_update/enable' : 1,
+        \   'hook/quickfix_status_enable/enable' : 1,
+        \   'hook/back_window/enable' : 1,
+        \   'outputter/quickfix/open_cmd' : '',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'perl/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/vimparse.pl',
+        \ },
+        \ 'cpanfile/watchdogs_checker': {
+        \   'type' : 'watchdogs_checker/cpanfile',
+        \ },
+        \ "watchdogs_checker/perl-locallib" : {
+        \   "command" : "perl",
+        \   "exec"    : "%c %o -Mlib=local/lib/perl5/ -Mlib=lib -Mlib=. -cw %s:p",
+        \   "quickfix/errorformat" : '%m\ at\ %f\ line\ %l%.%#',
+        \ },
+        \ 'watchdogs_checker/perl-projectlibs': {
+        \   'command' : 'perl',
+        \   'exec' : '%c %o -cw -MProject::Libs %s:p',
+        \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
+        \ },
+        \ 'watchdogs_checker/cpanfile': {
+        \   'command' : 'perl',
+        \   'exec' : '%c %o -w -MModule::CPANfile -e "Module::CPANfile->load(q|%S:p|)"',
+        \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'html/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/tidy',
+        \ },
+        \ 'xhtml/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/tidy',
+        \ },
+        \ 'watchdogs_checker/tidy' : {
+        \   'command' : 'tidy',
+        \    'exec'    : '%c -raw -quiet -errors --gnu-emacs yes %o %s:p',
+        \    'quickfix/errorformat' : '%f:%l:%c: %m',
+        \ },
+        \ 'haml/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/haml',
+        \ },
+        \ 'watchdogs_checker/haml' : {
+        \   'command' : 'haml',
+        \    'exec'    : '%c -c %o %s:p',
+        \    'quickfix/errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'json/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/jsonlint',
+        \ },
+        \ 'watchdogs_checker/jsonlint' : {
+        \   'command' : 'jsonlint',
+        \    'exec'    : '%c %s:p --compact',
+        \    'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
+        \ },
+        \ 'watchdogs_checker/jsonval' : {
+        \   'command' : 'jsonval',
+        \    'exec'    : '%c %s:p',
+        \    'quickfix/errorformat' : '%E%f: %m at line %l,%-G%.%#',
+        \ },
+        \ 'coffee/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/coffee',
+        \ },
+        \ 'watchdogs_checker/coffee' : {
+        \   'command' : 'coffee',
+        \   'exec'    : '%c -c %o %s:p',
+        \   'quickfix/errorformat' : 'Error: In %f\, %m on line %l,'
+        \                          . 'Error: In %f\, Parse error on line %l: %m,'
+        \                          . 'SyntaxError: In %f\, %m,'
+        \                          . '%-G%.%#',
+        \ },
+        \ 'typescript/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/tsc',
+        \ },
+        \ 'watchdogs_checker/tsc' : {
+        \   'command' : 'tsc',
+        \    'exec'    : '%c %s:p',
+        \    'quickfix/errorformat' : '%+A %#%f %#(%l\,%c): %m,%C%m',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'css/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/csslint',
+        \ },
+        \ 'watchdogs_checker/csslint' : {
+        \   'command' : 'csslint',
+        \    'exec'    : '%c --format=compact %s:p',
+        \    'quickfix/errorformat' : '%-G,%-G%f: lint free!,%f: line %l\, col %c\, %trror - %m,%f: line %l\, col %c\, %tarning - %m,%f: line %l\, col %c\, %m,',
+        \ },
+        \ })
+  if !executable('pyflakes')
     call extend(g:quickrun_config, {
-          \ 'watchdogs_checker/_' : {
-          \   'hook/close_quickfix/enable_failure' : 1,
-          \   'hook/close_quickfix/enable_success' : 1,
-          \   'hook/hier_update/enable' : 1,
-          \   'hook/quickfix_status_enable/enable' : 1,
-          \   'hook/back_window/enable' : 1,
-          \   'outputter/quickfix/open_cmd' : '',
-          \ },
-          \ })
-    call extend(g:quickrun_config, {
-          \ 'perl/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/vimparse.pl',
-          \ },
-          \ 'cpanfile/watchdogs_checker': {
-          \   'type' : 'watchdogs_checker/cpanfile',
-          \ },
-          \ "watchdogs_checker/perl-locallib" : {
-          \   "command" : "perl",
-          \   "exec"    : "%c %o -Mlib=local/lib/perl5/ -Mlib=lib -Mlib=. -cw %s:p",
-          \   "quickfix/errorformat" : '%m\ at\ %f\ line\ %l%.%#',
-          \ },
-          \ 'watchdogs_checker/perl-projectlibs': {
-          \   'command' : 'perl',
-          \   'exec' : '%c %o -cw -MProject::Libs %s:p',
-          \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
-          \ },
-          \ 'watchdogs_checker/cpanfile': {
-          \   'command' : 'perl',
-          \   'exec' : '%c %o -w -MModule::CPANfile -e "Module::CPANfile->load(q|%S:p|)"',
-          \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
-          \ },
-          \ })
-    call extend(g:quickrun_config, {
-          \ 'html/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/tidy',
-          \ },
-          \ 'xhtml/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/tidy',
-          \ },
-          \ 'watchdogs_checker/tidy' : {
-          \   'command' : 'tidy',
-          \    'exec'    : '%c -raw -quiet -errors --gnu-emacs yes %o %s:p',
-          \    'quickfix/errorformat' : '%f:%l:%c: %m',
-          \ },
-          \ 'haml/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/haml',
-          \ },
-          \ 'watchdogs_checker/haml' : {
-          \   'command' : 'haml',
-          \    'exec'    : '%c -c %o %s:p',
-          \    'quickfix/errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
-          \ },
-          \ })
-    call extend(g:quickrun_config, {
-          \ 'json/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/jsonlint',
-          \ },
-          \ 'watchdogs_checker/jsonlint' : {
-          \   'command' : 'jsonlint',
-          \    'exec'    : '%c %s:p --compact',
-          \    'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
-          \ },
-          \ 'watchdogs_checker/jsonval' : {
-          \   'command' : 'jsonval',
-          \    'exec'    : '%c %s:p',
-          \    'quickfix/errorformat' : '%E%f: %m at line %l,%-G%.%#',
-          \ },
-          \ 'coffee/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/coffee',
-          \ },
-          \ 'watchdogs_checker/coffee' : {
-          \   'command' : 'coffee',
-          \   'exec'    : '%c -c %o %s:p',
-          \   'quickfix/errorformat' : 'Error: In %f\, %m on line %l,'
-          \                          . 'Error: In %f\, Parse error on line %l: %m,'
-          \                          . 'SyntaxError: In %f\, %m,'
-          \                          . '%-G%.%#',
-          \ },
-          \ 'typescript/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/tsc',
-          \ },
-          \ 'watchdogs_checker/tsc' : {
-          \   'command' : 'tsc',
-          \    'exec'    : '%c %s:p',
-          \    'quickfix/errorformat' : '%+A %#%f %#(%l\,%c): %m,%C%m',
-          \ },
-          \ })
-    call extend(g:quickrun_config, {
-          \ 'css/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/csslint',
-          \ },
-          \ 'watchdogs_checker/csslint' : {
-          \   'command' : 'csslint',
-          \    'exec'    : '%c --format=compact %s:p',
-          \    'quickfix/errorformat' : '%-G,%-G%f: lint free!,%f: line %l\, col %c\, %trror - %m,%f: line %l\, col %c\, %tarning - %m,%f: line %l\, col %c\, %m,',
-          \ },
-          \ })
-    if !executable('pyflakes')
-      call extend(g:quickrun_config, {
-          \  'python/watchdogs_checker' : {
-          \    'type' : 'watchdogs_checker/python',
-          \  },
-          \ })
-    endif
-    call extend(g:quickrun_config, {
-          \ 'watchdogs_checker/python' : {
-          \   'command' : 'python',
-          \    'exec'    : "%c -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
-          \    'quickfix/errorformat' :
-          \       '%A  File "%f"\, line %l\,%m,' .
-          \       '%C    %.%#,' .
-          \       '%+Z%.%#Error: %.%#,' .
-          \       '%A  File "%f"\, line %l,' .
-          \       '%+C  %.%#,' .
-          \       '%-C%p^,' .
-          \       '%Z%m,' .
-          \       '%-G%.%#'
-          \ },
-          \ })
-    call extend(g:quickrun_config, {
-          \ 'csharp/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/mcs',
-          \ },
-          \ 'watchdogs_checker/mcs' : {
-          \   'command' : 'mcs',
-          \    'exec'    : '%c %o %s:p',
-          \    'cmdopt'  : '--parse',
-          \    'quickfix/errorformat' : '%f(%l\\\,%c):\ error\ CS%n:\ %m',
-          \ },
-          \ })
-    call extend(g:quickrun_config, {
-          \ 'objc/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/gcc_objc',
-          \ },
-          \ 'watchdogs_checker/gcc_objc' : {
-          \   'command' : 'gcc',
-          \    'exec'    : '%c -fsyntax-only -lobjc %o %s:p',
-          \    'quickfix/errorformat' : '%-G%f:%s:,'
-          \                           . '%f:%l:%c: %trror: %m,'
-          \                           . '%f:%l:%c: %tarning: %m,'
-          \                           . '%f:%l:%c: %m,'
-          \                           . '%f:%l: %trror: %m,'
-          \                           . '%f:%l: %tarning: %m,'
-          \                           . '%f:%l: %m',
-          \ },
-          \ })
-    call extend(g:quickrun_config, {
-          \ 'eruby/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/ruby_erb',
-          \ },
-          \ 'Gemfile/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/ruby',
-          \ },
-          \ 'watchdogs_checker/erubis' : {
-          \   'command' : 'erubis',
-          \    'exec'    : '%c -z %o %s:p',
-          \    'quickfix/errorformat' : '%f:%l:%m',
-          \ },
-          \ 'watchdogs_checker/ruby_erb' : {
-          \   'command' : 'ruby',
-          \    'exec'    : '%c -rerb -e "puts ERB.new('
-          \           . 'File.read(''%s:p'').gsub(''<\%='', ''<\%'')'
-          \           . ', nil, ''-'').src" | %c -c %o',
-          \    'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
-          \ },
-          \ 'cucumber/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/cucumber',
-          \ },
-          \ 'watchdogs_checker/cucumber' : {
-          \   'command' : 'cucumber',
-          \    'exec'    : '%c --dry-run --quiet --strict --format pretty %o %s:p',
-          \    'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
-          \ },
-          \ })
-    call extend(g:quickrun_config, {
-          \ 'applescript/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/osacompile',
-          \ },
-          \ 'watchdogs_checker/osacompile' : {
-          \   'command' : 'osacompile',
-          \    'exec'    : '%c -o %o %s:p',
-          \    'quickfix/errorformat' : '%f:%l:%m',
-          \ },
-          \ })
-    call extend(g:quickrun_config, {
-          \ 'lua/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/luac',
-          \ },
-          \ 'watchdogs_checker/luac' : {
-          \   'command' : 'luac',
-          \    'exec'    : '%c -p %o %s:p',
-          \    'quickfix/errorformat' : 'luac: %#%f:%l: %m',
-          \ },
-          \ 'qml/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/qmlscene',
-          \ },
-          \ 'watchdogs_checker/qmlscene' : {
-          \   'command' : 'qmlscene',
-          \    'exec'    : '%c -c %o %s:p',
-          \    'cmdopt' : '--quit',
-          \    'quickfix/errorformat' : 'file:\/\/%f:%l %m',
-          \ },
-          \ })
-    call extend(g:quickrun_config, {
-          \ 'watchdogs_checker/sqlplus' : {
-          \   'command' : 'sqlplus',
-          \   'cmdopt'  : '-S %{OracleConnection()}',
-          \   'exec'    : '%c %o \@%s:p',
-          \   'quickfix/errorformat' : '%Eerror\ at\ line\ %l:,%Z%m',
-          \ },
-          \ })
-    " call extend(g:quickrun_config, {
-    "       \ '/watchdogs_checker' : {
-    "       \   'type' : 'watchdogs_checker/',
-    "       \ },
-    "       \ 'watchdogs_checker/' : {
-    "       \   'command' : '',
-    "       \   'exec'    : '%c -c %o %s:p',
-    "       \   'quickfix/errorformat' : '',
-    "       \ },
-    "       \ })
-
-    call watchdogs#setup(g:quickrun_config)
-    let g:watchdogs_check_BufWritePost_enable = 1
-    command! -nargs=0 WatchdogsOff let g:watchdogs_check_BufWritePost_enable=0
-    command! -nargs=0 WatchdogsOn let g:watchdogs_check_BufWritePost_enable=1
-    command! -nargs=? WatchdogsConfig call <SID>watchdogs_config_show(<f-args>)
-
-    function! s:watchdogs_find_config_names(...)
-      let ftype = a:0 > 0 ? a:1 : &filetype
-      let names = []
-      let default_name = ftype . "/watchdogs_checker"
-      let default_type = ""
-      if exists('g:quickrun_config[default_name]')
-        call add(names, default_name)
-        if exists('g:quickrun_config[default_name].type')
-          call add(names, g:quickrun_config[default_name].type)
-          let default_type = g:quickrun_config[default_name].type
-        endif
-      endif
-      for name in keys(g:quickrun_config)
-        if name == default_name || name == default_type
-          continue
-        endif
-        if name =~? 'watchdogs_checker' && name =~? ftype
-          call add(names, name)
-        endif
-      endfor
-      return names
-    endfunction
-
-    function! s:watchdogs_config_show(...)
-      let names = call('s:watchdogs_find_config_names', a:000)
-      let items = []
-      if !empty(names)
-        if exists(':PP')
-          for name in names
-            echo printf("let g:quickrun_config['%s']=", name)
-            exe 'PP' 'g:quickrun_config["' . name . '"]'
-          endfor
-        else
-          for name in names
-            call add(items, printf("let g:quickrun_config['%s'] = %s", name, string(g:quickrun_config[name])))
-          endfor
-          echo join(items, "\n")
-        endif
-      endif
-    endfunction
+        \  'python/watchdogs_checker' : {
+        \    'type' : 'watchdogs_checker/python',
+        \  },
+        \ })
   endif
+  call extend(g:quickrun_config, {
+        \ 'watchdogs_checker/python' : {
+        \   'command' : 'python',
+        \    'exec'    : "%c -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
+        \    'quickfix/errorformat' :
+        \       '%A  File "%f"\, line %l\,%m,' .
+        \       '%C    %.%#,' .
+        \       '%+Z%.%#Error: %.%#,' .
+        \       '%A  File "%f"\, line %l,' .
+        \       '%+C  %.%#,' .
+        \       '%-C%p^,' .
+        \       '%Z%m,' .
+        \       '%-G%.%#'
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'csharp/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/mcs',
+        \ },
+        \ 'watchdogs_checker/mcs' : {
+        \   'command' : 'mcs',
+        \    'exec'    : '%c %o %s:p',
+        \    'cmdopt'  : '--parse',
+        \    'quickfix/errorformat' : '%f(%l\\\,%c):\ error\ CS%n:\ %m',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'objc/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/gcc_objc',
+        \ },
+        \ 'watchdogs_checker/gcc_objc' : {
+        \   'command' : 'gcc',
+        \    'exec'    : '%c -fsyntax-only -lobjc %o %s:p',
+        \    'quickfix/errorformat' : '%-G%f:%s:,'
+        \                           . '%f:%l:%c: %trror: %m,'
+        \                           . '%f:%l:%c: %tarning: %m,'
+        \                           . '%f:%l:%c: %m,'
+        \                           . '%f:%l: %trror: %m,'
+        \                           . '%f:%l: %tarning: %m,'
+        \                           . '%f:%l: %m',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'eruby/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/ruby_erb',
+        \ },
+        \ 'Gemfile/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/ruby',
+        \ },
+        \ 'watchdogs_checker/erubis' : {
+        \   'command' : 'erubis',
+        \    'exec'    : '%c -z %o %s:p',
+        \    'quickfix/errorformat' : '%f:%l:%m',
+        \ },
+        \ 'watchdogs_checker/ruby_erb' : {
+        \   'command' : 'ruby',
+        \    'exec'    : '%c -rerb -e "puts ERB.new('
+        \           . 'File.read(''%s:p'').gsub(''<\%='', ''<\%'')'
+        \           . ', nil, ''-'').src" | %c -c %o',
+        \    'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
+        \ },
+        \ 'cucumber/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/cucumber',
+        \ },
+        \ 'watchdogs_checker/cucumber' : {
+        \   'command' : 'cucumber',
+        \    'exec'    : '%c --dry-run --quiet --strict --format pretty %o %s:p',
+        \    'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'applescript/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/osacompile',
+        \ },
+        \ 'watchdogs_checker/osacompile' : {
+        \   'command' : 'osacompile',
+        \    'exec'    : '%c -o %o %s:p',
+        \    'quickfix/errorformat' : '%f:%l:%m',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'lua/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/luac',
+        \ },
+        \ 'watchdogs_checker/luac' : {
+        \   'command' : 'luac',
+        \    'exec'    : '%c -p %o %s:p',
+        \    'quickfix/errorformat' : 'luac: %#%f:%l: %m',
+        \ },
+        \ 'qml/watchdogs_checker' : {
+        \   'type' : 'watchdogs_checker/qmlscene',
+        \ },
+        \ 'watchdogs_checker/qmlscene' : {
+        \   'command' : 'qmlscene',
+        \    'exec'    : '%c -c %o %s:p',
+        \    'cmdopt' : '--quit',
+        \    'quickfix/errorformat' : 'file:\/\/%f:%l %m',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'watchdogs_checker/sqlplus' : {
+        \   'command' : 'sqlplus',
+        \   'cmdopt'  : '-S %{OracleConnection()}',
+        \   'exec'    : '%c %o \@%s:p',
+        \   'quickfix/errorformat' : '%Eerror\ at\ line\ %l:,%Z%m',
+        \ },
+        \ })
+  " call extend(g:quickrun_config, {
+  "       \ '/watchdogs_checker' : {
+  "       \   'type' : 'watchdogs_checker/',
+  "       \ },
+  "       \ 'watchdogs_checker/' : {
+  "       \   'command' : '',
+  "       \   'exec'    : '%c -c %o %s:p',
+  "       \   'quickfix/errorformat' : '',
+  "       \ },
+  "       \ })
+
+  " watchdogs setup {{{3
+  call watchdogs#setup(g:quickrun_config)
+
+  let g:watchdogs_check_BufWritePost_enable = 1
+
+  " watchdogs helper command {{{3
+  command! -nargs=0 WatchdogsOff let g:watchdogs_check_BufWritePost_enable=0
+  command! -nargs=0 WatchdogsOn let g:watchdogs_check_BufWritePost_enable=1
+  command! -nargs=? WatchdogsConfig call <SID>wd_helper.show_config(<f-args>)
+
+  let s:wd_helper = {}
+  function! s:wd_helper.find_by_names(...) "{{{4
+    let ftype = a:0 > 0 ? a:1 : &filetype
+    let names = []
+    let default_name = ftype . "/watchdogs_checker"
+    let default_type = ""
+    if exists('g:quickrun_config[default_name]')
+      call add(names, default_name)
+      if exists('g:quickrun_config[default_name].type')
+        call add(names, g:quickrun_config[default_name].type)
+        let default_type = g:quickrun_config[default_name].type
+      endif
+    endif
+    for name in keys(g:quickrun_config)
+      if name == default_name || name == default_type
+        continue
+      endif
+      if name =~? 'watchdogs_checker' && name =~? ftype
+        call add(names, name)
+      endif
+    endfor
+    return names
+  endfunction
+
+  function! s:wd_helper.show_config(...) "{{{4
+    let names = call('self.find_by_names', a:000)
+    let items = []
+    if !empty(names)
+      if exists(':PP')
+        for name in names
+          echo printf("let g:quickrun_config['%s']=", name)
+          exe 'PP' 'g:quickrun_config["' . name . '"]'
+        endfor
+      else
+        for name in names
+          call add(items, printf("let g:quickrun_config['%s'] = %s", name, string(g:quickrun_config[name])))
+        endfor
+        echo join(items, "\n")
+      endif
+    endif
+  endfunction
 endif
 
 " quickhl {{{2
-nmap [!space]m <Plug>(quickhl-toggle)
-xmap [!space]m <Plug>(quickhl-toggle)
-nmap [!space]M <Plug>(quickhl-reset)
-xmap [!space]M <Plug>(quickhl-reset)
-nmap [!space], <Plug>(quickhl-match)
+if s:bundle.is_installed('vim-quickhl')
+  nmap [!space]m <Plug>(quickhl-toggle)
+  xmap [!space]m <Plug>(quickhl-toggle)
+  nmap [!space]M <Plug>(quickhl-reset)
+  xmap [!space]M <Plug>(quickhl-reset)
+  nmap [!space], <Plug>(quickhl-match)
+endif
 
 " echodoc {{{2
 let g:echodoc_enable_at_startup=0
@@ -6211,7 +6265,7 @@ if s:bundle.is_installed('memolist.vim')
   let g:memolist_path = $HOME . '/memo'
   let g:memolist_vimfiler = 1
 
-  nmap <silent> [!prefix]mf :exe 'Unite' 'file:'.g:memolist_path<CR>
+  nmap <silent> [!prefix]mf :<C-u>Unite memolist<CR>
   nmap <silent> [!prefix]mc :MemoNew<CR>
   nmap <silent> [!prefix]ml :MemoList<CR>
   nmap <silent> [!prefix]mg :MemoGrep<CR>
