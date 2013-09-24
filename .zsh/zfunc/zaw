@@ -27,6 +27,8 @@ zaw-rc () {
   # bindkey -v '^Xs' zaw-screens
   bindkey -v '^VT' zaw-tmux
   bindkey -v '^Vw' zaw-tmux-window
+  bindkey -v '^Vl' zaw-tmux-pane
+  bindkey -v '^V=' zaw-tmux-layout
   bindkey -v '^Vk' zaw-keybind
   bindkey -v '^Vs' zaw-ssh
   bindkey -v '^Vp' zaw-keepass

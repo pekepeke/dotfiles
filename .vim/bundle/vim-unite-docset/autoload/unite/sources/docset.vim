@@ -26,8 +26,9 @@ let s:unite_docset_sources = {}
 " menu source {{{1
 let s:menu = {
       \ 'name' : 'docset',
-      \ 'default_kind' : 'command',
+      \ 'default_kind' : 'source',
       \ }
+      " \ 'default_kind' : 'command',
 
 function! s:menu.on_init(args, context) "{{{2
 endfunction
@@ -75,12 +76,15 @@ endfunction
 " some utils {{{1
 function! s:create_menu_candidate(source, name) "{{{2
   return {
-        \ 'kind' : 'command',
+        \ 'kind' : 'source',
         \ 'word' : a:name,
         \ 'source' : a:source.name,
-        \ 'action__command' : printf('Unite %s/%s', a:source.name, a:name),
-        \ 'action_type' : ':',
+        \ 'action__source_name' : a:source.name . '/' . a:name,
+        \ 'action__source_args' : [],
         \ }
+        " \ 'kind' : 'command',
+        " \ 'action__command' : printf('Unite %s/%s', a:source.name, a:name),
+        " \ 'action_type' : ':',
 endfunction
 
 function! s:create_candidate(source, key, path) "{{{2

@@ -539,27 +539,30 @@ NeoBundle 'itchyny/lightline.vim'
 " NeoBundleLazy 'Lokaltog/vim-powerline'
 
 " colorscheme {{{3
-NeoBundle 'tomasr/molokai'
-NeoBundle 'mrkn/mrkn256.vim'
 NeoBundle 'tpope/vim-vividchalk'
-NeoBundle 'depuracao/vim-darkdevel'
-NeoBundle 'goatslacker/mango.vim'
-NeoBundle 'jpo/vim-railscasts-theme'
+NeoBundle 'tomasr/molokai'
+NeoBundleLazy 'mrkn/mrkn256.vim', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'depuracao/vim-darkdevel', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'goatslacker/mango.vim', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'jpo/vim-railscasts-theme', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundle 'fmoralesc/vim-vitamins'
-NeoBundle 'jnurmine/Zenburn'
-NeoBundle 'gregsexton/Atom'
-NeoBundle 'vim-scripts/rdark'
-NeoBundle 'vim-scripts/Lucius'
-NeoBundle 'altercation/vim-colors-solarized'
-NeoBundle 'nanotech/jellybeans.vim'
-NeoBundle 'trapd00r/neverland-vim-theme'
-NeoBundle 'StanAngeloff/vim-zend55'
-NeoBundle 'w0ng/vim-hybrid'
-NeoBundle 'veloce/vim-aldmeris'
-NeoBundle 'Pychimp/vim-luna'
-NeoBundle 'croaker/mustang-vim'
-NeoBundle 'jaromero/vim-monokai-refined'
-NeoBundle 'git://gist.github.com/187578.git', {'directory': 'h2u_black'}
+NeoBundleLazy 'jnurmine/Zenburn', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'gregsexton/Atom', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'vim-scripts/rdark', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'vim-scripts/Lucius', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'altercation/vim-colors-solarized', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'nanotech/jellybeans.vim', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'trapd00r/neverland-vim-theme', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'StanAngeloff/vim-zend55', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'w0ng/vim-hybrid', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'veloce/vim-aldmeris', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'Pychimp/vim-luna', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'croaker/mustang-vim', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'jaromero/vim-monokai-refined', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'git://gist.github.com/187578.git', {
+      \ 'autoload': {'unite_sources':['colorscheme'],},
+      \ 'directory': 'h2u_black',
+      \ }
 
 " common {{{3
 " NeoBundle 'git://gist.github.com/5457352.git', {
@@ -596,7 +599,7 @@ NeoBundleLazy 'Shougo/vimfiler.vim', {
       \ { 'name' : 'Edit', 'complete' : 'customlist,vimfiler#complete' },
       \ { 'name' : 'Write', 'complete' : 'customlist,vimfiler#complete' },
       \ 'Read', 'Source'],
-      \ 'mappings' : ['<Plug>(vimfiler_switch)'],
+      \ 'mappings' : ['<Plug>(vimfiler'],
       \ 'explorer' : 1,
       \ }}
 NeoBundle "osyo-manga/unite-filters-collection"
@@ -613,7 +616,7 @@ NeoBundleLazy 'Shougo/vimshell', {
       \ 'complete' : 'customlist,vimshell#complete'},
       \   'VimShellExecute', 'VimShellInteractive',
       \   'VimShellTerminal', 'VimShellPop'],
-      \ 'mappings' : ['<Plug>(vimshell_switch)']
+      \ 'mappings' : ['<Plug>(vimshell']
       \ }}
 NeoBundleLazy 'Shougo/vinarise', { 'autoload': {
       \ 'commands': ['Vinarise'],
@@ -624,25 +627,20 @@ NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
       \ }}
 NeoBundle 'yomi322/vim-gitcomplete'
 NeoBundleLazy 'kana/vim-altr', {'autoload': {
-      \ 'mappings': ['<Plug>(altr-back)', '<Plug>(altr-forward)'],
+      \ 'mappings': ['<Plug>(altr-',],
       \ }}
 NeoBundle 'kana/vim-fakeclip'
 NeoBundle 'kana/vim-smartchr', {'autoload': {'insert':1}}
 NeoBundle 'kana/vim-submode'
 NeoBundleLazy 'kana/vim-niceblock', { 'autoload' : {
-      \ 'mappings' : ['<Plug>(niceblock-I)', '<Plug>(niceblock-A)']
+      \ 'mappings' : ['<Plug>(niceblock-',]
       \ }}
 NeoBundle 'tyru/vim-altercmd'
 NeoBundleLazy 'kana/vim-smartinput', {'autoload': {'insert':1}}
 
 NeoBundleLazy 'tyru/stickykey.vim', {
       \ 'autoload' : {
-      \ 'mappings' : [
-      \ ['icsl', '<Plug>(stickykey-ctrl)', '<Plug>(stickykey-ctrl-remap)',
-      \ '<Plug>(stickykey-alt)', '<Plug>(stickykey-alt-remap)',
-      \ '<Plug>(stickykey-shift)', '<Plug>(stickykey-shift-remap)',
-      \ '<Plug>(stickykey-command)', '<Plug>(stickykey-command-remap)',
-      \ ]]
+      \ 'mappings' : [['icsl', '<Plug>(stickykey-']]
       \ }}
 
 NeoBundleLazy 'chikatoike/concealedyank.vim', { 'autoload' : {
@@ -731,13 +729,10 @@ NeoBundleLazy 'zef/vim-cycle', {'autoload': {
 NeoBundle 'mbbill/undotree'
 NeoBundleLazy 'rhysd/clever-f.vim', {'autoload': {
       \ 'mappings': [
-      \ '<Plug>(clever-f-f)', '<Plug>(clever-f-F)',
-      \ '<Plug>(clever-f-t)', '<Plug>(clever-f-T)',
-      \ '<Plug>(clever-f-reset)', '<Plug>(clever-f-repeat-forward)',
-      \ '<Plug>(clever-f-repeat-back)',
+      \ '<Plug>(clever-f-',
       \ ]}}
 NeoBundleLazy 'terryma/vim-expand-region', {'autoload':{
-      \ 'mappings': ['<Plug>(expand_region_shrink)', '<Plug>(expand_region_expand)']
+      \ 'mappings': ['<Plug>(expand_region_',]
       \ }}
 " NeoBundle 'vim-scripts/ShowMarks7'
 NeoBundle 'kshenoy/vim-signature'
@@ -760,8 +755,7 @@ NeoBundleLazy 'othree/eregex.vim', { 'autoload': {
 NeoBundle 'sjl/gundo.vim'
 NeoBundleLazy 'kana/vim-smartword', { 'autoload' : {
       \ 'mappings' : [['nv',
-      \ '<Plug>(smartword-w)', '<Plug>(smartword-b)',
-      \ '<Plug>(smartword-ge)', '<Plug>(smartword-e)',
+      \ '<Plug>(smartword-',
       \ ]]}}
 " NeoBundle 'pekepeke/golden-ratio'
 " NeoBundle 'scrooloose/nerdtree'
@@ -806,7 +800,9 @@ endif
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'osyo-manga/shabadou.vim'
 NeoBundle 'osyo-manga/vim-watchdogs'
-NeoBundle 'osyo-manga/vim-anzu'
+NeoBundleLazy 'osyo-manga/vim-anzu', {'autoload': {
+      \ 'mappings': [['n', '<Plug>(anzu-']],
+      \ }}
 NeoBundle 'kien/rainbow_parentheses.vim'
 " incompatible with smartinput
 " NeoBundle 'vim-scripts/Highlight-UnMatched-Brackets'
@@ -1677,8 +1673,7 @@ NeoBundleLazy 'osyo-manga/vim-textobj-context', {'autoload':{
       \ ]]}}
 NeoBundleLazy 'akiyan/vim-textobj-xml-attribute', {'autoload':{
       \ 'mappings' : [['nvo',
-      \ '<Plug>(textobj-xmlattribute-xmlattribute)',
-      \ '<Plug>(textobj-xmlattribute-xmlattributenospace)',
+      \ '<Plug>(textobj-xmlattribute-',
       \ ]]}}
 NeoBundleLazy 'hchbaw/textobj-motionmotion.vim', {'autoload':{
       \ 'mappings' : [['nvo',
@@ -1707,10 +1702,7 @@ NeoBundleLazy 'anyakichi/vim-textobj-ifdef', {'autoload':{
       \ ['nvo', '<Plug>(textobj-ifdef-i)', '<Plug>(textobj-ifdef-a)']]
       \ }}
 NeoBundleLazy 'akiyan/vim-textobj-php', {'autoload':{
-      \ 'mappings' : [['nvo',
-      \ '<Plug>(textobj-php-phptag-i)', '<Plug>(textobj-php-phptag-a)',
-      \ '<Plug>(textobj-php-phparray-i)', '<Plug>(textobj-php-phparray-a)',
-      \ ]]}}
+      \ 'mappings' : [['nvo', '<Plug>(textobj-php-', ]]}}
 " NeoBundle 'gorkunov/smartpairs.vim'
 " , {'autoload':{
 "       \ 'mappings' : [['nx',
@@ -2486,7 +2478,9 @@ if s:bundle.tap('vim-anzu')
   " nmap * <Plug>(anzu-star)Nzxzz
   " nmap # <Plug>(anzu-sharp)nzxzz
 
-  nmap n <Plug>(anzu-n)zx
+  " nmap n <Plug>(anzu-n)zx
+  nmap n <Plug>(anzu-jump-n)zx
+  " nmap n <Plug>(anzu-jump-n)zx<Plug>(anzu-echo-search-status)
   nmap N <Plug>(anzu-N)zx
   nmap * <Plug>(anzu-star)Nzx
   nmap # <Plug>(anzu-sharp)nzx
