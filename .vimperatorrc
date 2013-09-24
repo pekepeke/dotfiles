@@ -16,7 +16,7 @@ set status=input,loation,tabcount,position
 set activate=homepage,quickmark,tabopen,paste
 set focuscontent
 set scroll=5
-autocmd VimperatorEnter .* :set statuslinetoolbars=stylish-toolbar-button,abp-toolbarbutton,requestpolicyToolbarButton,scriptish-button
+" autocmd VimperatorEnter .* :set statuslinetoolbars=stylish-toolbar-button,abp-toolbarbutton,requestpolicyToolbarButton,scriptish-button
 " }}}
 
 " {{{ == for completion == "
@@ -104,7 +104,7 @@ map ,b :bmarks!<Space>
 ""map ,p :tabopen chrome://browser/content/places/places.xul<CR>
 map ,n :nno<Space>
 map ,a :applaunch<Space>
-map ,s :tsbar 
+map ,s :tsbar
 " }}}
 
 " {{{ ==================== inputarea keybind ==================== "
