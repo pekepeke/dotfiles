@@ -63,7 +63,7 @@ endfunction
 
 
 if !has('vim_starting')
-  let s:restore_setlocal=join(['setlocal sw=', &sw, ' tw=', &tw, ' sts=', &sts], ' '.(&et ? '' : 'no').'expandtab')
+  let s:restore_setlocal=join(['setlocal sw=', &sw, ' tw=', &tw, ' sts=', &sts, (&et ? '' : 'no').'expandtab'], ' ')
 endif
 
 " reset settings & restore runtimepath {{{2
@@ -840,7 +840,7 @@ NeoBundleLazy 'wesleyche/SrcExpl', {'autoload': {
 NeoBundleLazy 'tpope/vim-commentary', {'autoload': {
       \ 'mappings': [
       \   ['xn', '<Plug>Commentary'],
-      \   ['n', '<Plug>CommentaryLine', '<Plug>CommentaryUndo'],
+      \   ['n', '<Plug>Commentary'],
       \ ],
       \ }}
 " NeoBundle 'scrooloose/nerdcommenter'
@@ -1484,8 +1484,7 @@ NeoBundleLazy 'tyru/open-browser.vim', {'autoload':{
       \ {'name': 'OpenBrowserSmartSearch', 'complete':'customlist,openbrowser#_cmd_complete'},
       \ ],
       \ 'mappings': [
-      \   ['nv', '<Plug>(openbrowser-open)', '<Plug>(openbrowser-search)',
-      \    '<Plug>(openbrowser-smart-search)',]
+      \   ['nv', '<Plug>(openbrowser-',]
       \ ],
       \ }}
 NeoBundleLazy 'tyru/open-browser-github.vim', {'autoload': {
@@ -1535,7 +1534,7 @@ NeoBundleLazy 'kana/vim-operator-replace', {
 NeoBundleLazy 'tyru/operator-camelize.vim', {
       \ 'depends' : 'vim-operator-user', 'autoload' : {
       \ 'mappings' : [
-      \ ['nx', '<Plug>(operator-camelize)', '<Plug>(operator-camelize)']]
+      \ ['nx', '<Plug>(operator-camelize', '<Plug>(operator-decamelize)']]
       \ }}
 NeoBundleLazy 'tyru/operator-html-escape.vim', {
       \ 'depends' : 'vim-operator-user', 'autoload' : {
@@ -2479,7 +2478,7 @@ if s:bundle.tap('vim-anzu')
   " nmap # <Plug>(anzu-sharp)nzxzz
 
   " nmap n <Plug>(anzu-n)zx
-  nmap n <Plug>(anzu-jump-n)zx
+  nmap n <Plug>(anzu-jump-n):<C-u>silent AnzuUpdateSearchStatus<CR>zx
   " nmap n <Plug>(anzu-jump-n)zx<Plug>(anzu-echo-search-status)
   nmap N <Plug>(anzu-N)zx
   nmap * <Plug>(anzu-star)Nzx
@@ -2522,7 +2521,8 @@ if s:bundle.tap('lightline.vim')
   let g:lightline = {
         \ 'colorscheme': 'solarized',
         \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'filename', 'modified', 'anzu' , 'lang_version', ] ]
+        \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'filename', 'modified', 'lang_version', ] ],
+        \   'right': [[ 'lineinfo' ], [ 'percent' ], [ 'anzu', 'fileformat', 'fileencoding', 'filetype',]],
         \ },
         \ 'component_function': {
         \   'fugitive' : 'g:ll_helper.fugitive',
@@ -6257,12 +6257,13 @@ endif
 if s:bundle.is_installed('memolist.vim')
   let g:memolist_memo_suffix = "md"
   let g:memolist_path = $HOME . '/memo'
-  let g:memolist_vimfiler = 1
+  " let g:memolist_vimfiler = 1
 
   nmap <silent> [!prefix]mf :<C-u>Unite memolist<CR>
+  nmap <silent> [!prefix]mg :execute printf('Unite grep:%s', g:memolist_path)<CR>
   nmap <silent> [!prefix]mc :MemoNew<CR>
-  nmap <silent> [!prefix]ml :MemoList<CR>
-  nmap <silent> [!prefix]mg :MemoGrep<CR>
+  " nmap <silent> [!prefix]ml :MemoList<CR>
+  " nmap <silent> [!prefix]mg :MemoGrep<CR>
 endif
 
 " etc functions & commands {{{1
