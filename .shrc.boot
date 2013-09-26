@@ -17,7 +17,7 @@ case $OSTYPE in
   msys*)
     ;;
   darwin*)
-    if which reattach-to-user-namespace >/dev/null 2>&1; then
+    if type reattach-to-user-namespace >/dev/null 2>&1; then
       export TMUX_DEFAULT_COMMAND="reattach-to-user-namespace -l $SHELL"
       export TMUX_PREFIX_COMMAND="reattach-to-user-namespace"
       if [ -n "$TMUX" ]; then
@@ -42,7 +42,7 @@ esac
 shrc_section_title "environments" #{{{1
 export EDITOR=vim
 # stty
-if which stty >/dev/null; then
+if type stty >/dev/null 2>&1; then
   stty stop undef
   stty werase undef
 fi

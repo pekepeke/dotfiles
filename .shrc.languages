@@ -95,9 +95,6 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   # export PYTHONPATH=~/.lib/python:$PYTHONPATH
   export PYTHONSTARTUP=~/.pyrc
   export PIP_DOWNLOAD_CACHE="$HOME/.pip_cache"
-  if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/Library/Homebrew" ] ; then
-    export PYTHONPATH=/usr/local/lib/python:$PYTHONPATH
-  fi
 
   shrc_section_title "for node.js" # {{{2
   # if [ -e ~/.nenv ];then
@@ -188,38 +185,6 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   rvm() {
     [[ $1 == 'use' ]] && rbenv shell $2
   }
-  # if [ -e $HOME/.rbenv ]; then
-  #   PATH="$HOME/.rbenv/bin:$PATH"
-  #   # if [ ~/.rbenv/bin/rbenv -nt ~/.rbenv.$SHELL_NAME -o ! -e ~/.rbenv.$SHELL_NAME ]; then
-  #   #   rbenv init - > ~/.rbenv.$SHELL_NAME
-  #   #   if_compile ~/.rbenv.$SHELL_NAME
-  #   # fi
-  #   # source ~/.rbenv.$SHELL_NAME
-  #   eval "$(rbenv init -)"
-  #   # soft_source ~/.rbenv/completions/rbenv.$SHELL_NAME
-  #   rvm() {
-  #     if [[ $1 == 'use' ]]; then
-  #       rbenv shell $2
-  #     fi
-  #   }
-  # else
-  #   soft_source $HOME/.rvm/scripts/rvm
-  # fi
-  envwhich() {
-    local f=$(which $1)
-    local root=$(dirname $(dirname $f))
-    local real_f
-    if [ -e $root/version ]; then
-      real_f="${root}/versions/$(cat $root/version)/bin/$(basename $f)"
-      if [ -e $real_f ]; then
-        echo $real_f
-        return 0
-      fi
-    fi
-    echo $f
-    return 0
-  }
-
 fi
 shrc_section_title "etc" # {{{2
 # mysqlenv {{{3

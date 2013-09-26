@@ -1,4 +1,6 @@
 # util functions
+type shrc_section_title >/dev/null 2>&1 && return
+
 shrc_section_title() { #{{{1
   # echo "$(date +'%s.%N') : $*"
   return 0
@@ -9,37 +11,41 @@ is_exec() { # {{{1
   type $1 >/dev/null 2>&1
   return $?
 }
+
 is_win() { # {{{1
   [[ $OSTYPE == cygwin* ]] && return 0
   return 1
 }
+
 is_mac() { # {{{1
   [[ $OSTYPE == darwin* ]] && return 0
   return 1
 }
+
 is_freebsd() { # {{{1
   [[ $OSTYPE == freebsd* ]] && return 0
   return 1
 }
+
 is_colinux() { # {{{1
   [ "$ENV_WORKING" = 'colinux' ] && return 0
   return 1
 }
+
 soft_source() { # {{{1
   [ -e "$1" ] && source "$1"
   return $?
 }
+
 source_all() {
   for f in $*; do source $f; done
 }
+
 remove_path() { # {{{1
-  # local rmv
-  # for rmv in $* ; do
-  #   PATH=`echo $PATH| sed -e 's!'$rmv'!!' -e 's/::/:/'`
-  # done
   eval "export PATH=$(perl -e '$p=$ENV{PATH};while($v=shift){$p=~s/^$v:|:$v:|:$v$/:/g}$p=~s/::/:/g;print $p;' $*)"
   return 0
 }
+
 # http://d.hatena.ne.jp/tyru/20090526/1243339840
 env_unique() { # {{{1
   if [ $# = 0 ]; then return; fi
