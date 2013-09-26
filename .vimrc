@@ -3888,6 +3888,9 @@ if s:bundle.tap('unite.vim')
     \     "source" : "file",
     \     "args" : g:memolist_path,
     \  },
+    \  "memolist_rec" : {
+    \     "source" : "file_rec"
+    \  },
     \}
 
 
@@ -3915,6 +3918,9 @@ if s:bundle.tap('unite.vim')
 
     call unite#custom#source('memolist', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
     call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+
+    call unite#custom#source('memolist_rec', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
+    call unite#custom#source('memolist_rec', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
     " 4}}}
 
   endfunction "3}}}
@@ -6403,7 +6409,7 @@ function! s:latest_linenum()
 endfunction
 
 " tiny snippets {{{2
-let g:my_snippets_dir = "$HOME/memos/tiny-snippets"
+let g:my_snippets_dir = $HOME . "/memos/tiny-snippets"
 
 " if s:bundle.is_installed('unite.vim')
 "   let s:unite_action_file_insert = {} " {{{3
@@ -6432,7 +6438,7 @@ let g:my_snippets_dir = "$HOME/memos/tiny-snippets"
 " mapping for tiny-snippets
 nnoremap [!unite]n <Nop>
 nnoremap <silent> [!unite]nn :<C-u>execute printf('Unite file_rec:%s -start-insert', expand(g:my_snippets_dir))<CR>
-nnoremap <silent> [!unite]nm :<C-u>execute 'new' g:my_snippets_dir<CR>
+nnoremap <silent> [!unite]nm :<C-u>execute 'Unite memolist_rec:'.expand(g:my_snippets_dir)<CR>
 
 " filetype command {{{2
 command! EditFt execute expand(':e ~/.vim/after/ftplugin/'.&filetype.'.vim')
