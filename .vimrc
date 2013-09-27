@@ -3678,6 +3678,10 @@ if s:bundle.tap('unite.vim')
   let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
   let g:unite_source_file_rec_max_cache_files = 5000
 
+  " unite fn {{{3
+  function! s:unite_grep(path, ...) "{{{4
+    execute printf('Unite grep:%s %s', a:path, join(a:000, ' '))
+  endfunction
 
   " unite-grep_launcher {{{3
   if !exists('g:grep_launcher_words')
@@ -3882,7 +3886,7 @@ if s:bundle.tap('unite.vim')
       execute 'Unite' 'menu:'.'lang_'.&filetype
     endfunction "5}}}
 
-    " http://d.hatena.ne.jp/osyo-manga/20130919 {{{4
+    " memolist - http://d.hatena.ne.jp/osyo-manga/20130919 {{{4
     let g:unite_source_alias_aliases = {
     \  "memolist" : {
     \     "source" : "file",
@@ -3894,15 +3898,15 @@ if s:bundle.tap('unite.vim')
     \}
 
 
-    let s:filters = {
+    function! s:get_memolist_tags(filepath)
+      return filereadable(a:filepath) ? matchstr(get(filter(readfile(a:filepath, "", 6), 'v:val =~ ''^tags: \[.*\]'''), 0), '^tags: \[\zs.*\ze\]') : ""
+    endfunction
+
+    let s:filter = {
     \  "name" : "converter_add_memolist_tags_word",
     \}
 
-    function! s:get_memolist_tags(filepath)
-      return filereadable(a:filepath) ? matchstr(get(filter(readfile(a:filepath), 'v:val =~ ''^tags: \[.*\]'''), 0), '^tags: \[\zs.*\ze\]') : ""
-    endfunction
-
-    function! s:filters.filter(candidates, context)
+    function! s:filter.filter(candidates, context)
       for candidate in a:candidates
         if !has_key(candidate, "converter_add_ftime_word_base")
           let candidate.converter_add_ftime_word_base = candidate.word
@@ -3913,14 +3917,35 @@ if s:bundle.tap('unite.vim')
       return a:candidates
     endfunction
 
-    call unite#define_filter(s:filters)
-    unlet s:filters
+    call unite#define_filter(s:filter)
+    unlet s:filter
 
-    call unite#custom#source('memolist', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
-    call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+    let s:filter = {
+    \  "name" : "converter_add_memolist_tags_abbr",
+    \}
+    function! s:filter.filter(candidates, context)
+      for candidate in a:candidates
+        " if !has_key(candidate, "converter_add_ftime_word_base")
+        "   let candidate.converter_add_ftime_word_base = candidate.abbr
+        " endif
+        let abbr = get(candidate, "abbr", candidate.word)
+        let candidate.abbr = printf("%s [%s]", abbr, s:get_memolist_tags(get(candidate, "action__path")))
+      endfor
+      return a:candidates
+    endfunction
+    call unite#define_filter(s:filter)
+    unlet s:filter
 
-    call unite#custom#source('memolist_rec', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
-    call unite#custom#source('memolist_rec', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+    call unite#custom_max_candidates("memolist", 500)
+    call unite#custom#source('memolist', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr", 'converter_add_memolist_tags_abbr'])
+    " call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+    " call unite#custom#source('memolist', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
+    " call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+
+    call unite#custom_max_candidates("memolist_rec", 50)
+    call unite#custom#source('memolist_rec', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr", 'converter_add_memolist_tags_abbr'])
+    " call unite#custom#source('memolist_rec', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
+    " call unite#custom#source('memolist_rec', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
     " 4}}}
 
   endfunction "3}}}
@@ -4443,6 +4468,8 @@ let g:surround_custom_mapping.eruby = {
       \ }
 let g:surround_custom_mapping.markdown = {
       \ 'h': "`\r`",
+      \ 'c': "```\n\r\n```",
+      \ '!':  "<!-- \r -->",
       \ }
 let g:surround_custom_mapping.php = {
       \ '-':  "<?php \r ?>",
@@ -6265,11 +6292,14 @@ if s:bundle.is_installed('memolist.vim')
   let g:memolist_path = $HOME . '/memo'
   " let g:memolist_vimfiler = 1
 
-  nmap <silent> [!prefix]mf :<C-u>Unite memolist<CR>
-  nmap <silent> [!prefix]mg :execute printf('Unite grep:%s', g:memolist_path)<CR>
+  if s:bundle.is_installed('unite.vim')
+    nmap <silent> [!prefix]ml :<C-u>Unite memolist<CR>
+    nmap <silent> [!prefix]mg :<C-u>call <SID>unite_grep(g:memolist_path)<CR>
+  else
+    nmap <silent> [!prefix]ml :MemoList<CR>
+    nmap <silent> [!prefix]mg :MemoGrep<CR>
+  endif
   nmap <silent> [!prefix]mc :MemoNew<CR>
-  " nmap <silent> [!prefix]ml :MemoList<CR>
-  " nmap <silent> [!prefix]mg :MemoGrep<CR>
 endif
 
 " etc functions & commands {{{1
@@ -6438,7 +6468,9 @@ let g:my_snippets_dir = $HOME . "/memos/tiny-snippets"
 " mapping for tiny-snippets
 nnoremap [!unite]n <Nop>
 nnoremap <silent> [!unite]nn :<C-u>execute printf('Unite file_rec:%s -start-insert', expand(g:my_snippets_dir))<CR>
+nnoremap <silent> [!unite]ng :<C-u>call <SID>unite_grep(g:my_snippets_dir, '-no-quit')<CR>
 nnoremap <silent> [!unite]nm :<C-u>execute 'Unite memolist_rec:'.expand(g:my_snippets_dir)<CR>
+nnoremap <silent> [!unite]nv :<C-u>execute 'VimFiler' g:my_snippets_dir<CR>
 
 " filetype command {{{2
 command! EditFt execute expand(':e ~/.vim/after/ftplugin/'.&filetype.'.vim')

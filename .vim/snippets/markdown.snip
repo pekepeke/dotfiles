@@ -9,8 +9,14 @@ snippet bold
 snippet strong
 	__${1}__ ${2}
 snippet `
-	`${1:code}` ${2}
+	\`${1:code}\` ${2}
 snippet code
+	\`\`\`${1:lang}
+	${2}
+	\`\`\`
+	${0}
+
+snippet codet
 
 	----
 		${1}
@@ -36,3 +42,11 @@ snippet id
     id="${1:intro}"
 snippet datasca
     data-scale="${1:2}"
+snippet memotitle
+	title: ${1:`expand('%p:t:r')`}
+	==========
+	date: `strftime("%Y-%m-%d %H:%M")`
+	tags: [${2:}]
+	categories: [${3:}]
+	- - -
+	${0}
