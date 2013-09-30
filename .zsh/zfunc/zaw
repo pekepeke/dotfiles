@@ -11,6 +11,13 @@ zaw-rc () {
   source_all ~/.zsh/zfunc/zaw-sources/*
 
   zstyle ':filter-select' case-insensitive yes
+  zstyle ':filter-select' rotate-list yes
+  zstyle ':filter-select' extended-search yes
+
+  # customize keybind
+  autoload -U filter-select; filter-select -i
+  bindkey -M filterselect '^R' beginning-of-history
+  bindkey -M filterselect '^T' end-of-history
 
   # bindkey -v '^X^A' zaw-ack
   # bindkey -v '^Xj' zaw-open-file

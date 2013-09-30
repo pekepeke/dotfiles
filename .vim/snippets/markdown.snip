@@ -2,12 +2,10 @@ snippet link
 	[${1:title}](${2:http://}) ${3}
 snippet anc
 	[${1:title}](#${2:name}) ${3}
-snippet img
-	![IMG](${1:http://} ${2:alt}) ${3}
 snippet bold
-	*${1}* ${2}
+	*${1}*${2}
 snippet strong
-	__${1}__ ${2}
+	**${1}**${2}
 snippet `
 	\`${1:code}\` ${2}
 snippet code
@@ -50,3 +48,48 @@ snippet memotitle
 	categories: [${3:}]
 	- - -
 	${0}
+
+snippet a
+abbr link [label](url)
+	[${1}](${2:http://})${0}
+
+snippet img
+abbr img [label](url)
+	![${1}](${2:http://})${0}
+
+snippet b
+abbr bold
+	**${1}**${0}
+
+snippet u
+abbr underline
+	_${1}_${0}
+
+snippet i
+abbr italic
+	*${1}*
+
+snippet s
+abbr strike
+	<del>${1}</del>${0}
+
+snippet h1
+	# ${1:title}
+	${0}
+
+snippet h2
+	## ${1:title}
+	${0}
+
+snippet h3
+	### ${1:title}
+	${0}
+
+snippet h4
+	#### ${1:title}
+	${0}
+
+snippet h5
+	##### ${1:title}
+	${0}
+

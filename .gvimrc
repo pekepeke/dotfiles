@@ -11,7 +11,6 @@ set cmdheight=1
 " set nomousefocus
 " set mousehide
 
-colorscheme vividchalk
 " autocmd BufReadPost * tab ball
 
 " environment settings "{{{1
@@ -27,7 +26,7 @@ if s:is_win " {{{2
   command! -nargs=0 Ricty set guifont=Ricty:h11 guifontwide=Ricty:h11
   " command! -nargs=0 Ricty set guifont=Ricty:h12 guifontwide=Ricty:h12
 
-  MyAutocmd VimEnter * set transparency=210
+  MyAutocmd GUIEnter * set transparency=210
 
   if filereadable($WINDIR . '\Fonts\Ricty-Regular.ttf')
     Ricty

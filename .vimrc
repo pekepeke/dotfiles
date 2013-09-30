@@ -387,17 +387,13 @@ function! s:gui_colorscheme_init()
   call s:highlights_add()
 endfunction
 
-augroup vimrc-colors "{{{2
+augroup vimrc-color-init "{{{2
   autocmd!
 
   autocmd ColorScheme * call s:highlights_add()
   autocmd Syntax * call s:syntaxes_add()
   " autocmd VimEnter,WinEnter * call s:my_additional_syntaxes()
   autocmd Syntax eruby highlight link erubyRubyDelim Label
-
-  if has('gui_running')
-    autocmd GUIEnter * call <SID>gui_colorscheme_init()
-  endif
 
   " カーソル行 http://d.hatena.ne.jp/thinca/20090530/1243615055
   autocmd CursorMoved,CursorMovedI * call s:auto_cursorline('CursorMoved')
@@ -430,9 +426,9 @@ augroup vimrc-colors "{{{2
 augroup END
 
 
-
-
 if has('gui_running') "{{{2
+  autocmd vimrc-color-init GUIEnter * call <SID>gui_colorscheme_init()
+  colorscheme vividchalk
 elseif &t_Co == 256 || s:is_win
   colorscheme vividchalk
 else
@@ -815,7 +811,7 @@ NeoBundle 'vim-scripts/matchparenpp'
 " if has('python')
 "   NeoBundle 'Valloric/MatchTagAlways'
 " else
-  NeoBundle 'gregsexton/MatchTag'
+NeoBundle 'gregsexton/MatchTag'
 " endif
 " NeoBundle 'Raimondi/delimitMate'
 " NeoBundle 'acustodioo/vim-enter-indent'
@@ -911,6 +907,9 @@ NeoBundleLazy 'yuratomo/dbg.vim', {'autoload':{
       \ {'name':'Dbg', 'complete':'file'},
       \ {'name':'DbgShell', 'complete':'file'},
       \ ],
+      \ }}
+NeoBundleLazy 'mattboehm/vim-unstack', {'autoload': {
+      \ 'mappings': [['nv', '<Leader>s']],
       \ }}
 
 " help {{{4
@@ -2469,7 +2468,7 @@ let g:context_filetype#search_offset = 500
 
 " vim-anzu {{{2
 if s:bundle.tap('vim-anzu')
-  let g:anzu_status_format = "%p(%i/%l)%w"
+  let g:anzu_status_format = "%p(%i/%l)"
   let g:anzu_bottomtop_word = "search hit BOTTOM, continuing at TOP"
   let g:anzu_topbottom_word = "search hit TOP, continuing at BOTTOM"
   " nmap n <Plug>(anzu-n)zxzz
@@ -2478,7 +2477,7 @@ if s:bundle.tap('vim-anzu')
   " nmap # <Plug>(anzu-sharp)nzxzz
 
   " nmap n <Plug>(anzu-n)zx
-  nmap n <Plug>(anzu-jump-n):<C-u>silent AnzuUpdateSearchStatus<CR>zx
+  nmap n <Plug>(anzu-jump-n):<C-u>silent AnzuUpdateSearchStatus\|redraw!<CR>zx
   " nmap n <Plug>(anzu-jump-n)zx<Plug>(anzu-echo-search-status)
   nmap N <Plug>(anzu-N)zx
   nmap * <Plug>(anzu-star)Nzx
@@ -2520,9 +2519,13 @@ if s:bundle.tap('lightline.vim')
   let g:unite_force_overwrite_statusline = 0
   let g:lightline = {
         \ 'colorscheme': 'solarized',
+        \ 'mode_map': {'n': 'N', 'i': 'I', 'R': 'R', 'v': 'V',
+        \ 'V': 'V-LINE', 'c': 'C', "\<C-v>": 'V-BLOCK', 's': 'S',
+        \ 'S': 'S-LINE', "\<C-s>": 'S-BLOCK', '?': ' ',
+        \ },
         \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ], [ 'readonly', 'fugitive', 'filename', 'modified', 'lang_version', ] ],
-        \   'right': [[ 'lineinfo' ], [ 'percent' ], [ 'anzu', 'fileformat', 'fileencoding', 'filetype',]],
+        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'lang_version', ] ],
+        \   'right': [[ 'lineinfo' ], [ 'percent' ], [ 'anzu_or_c', 'fileformat', 'fileencoding', 'filetype',]],
         \ },
         \ 'component_function': {
         \   'fugitive' : 'g:ll_helper.fugitive',
@@ -2530,9 +2533,54 @@ if s:bundle.tap('lightline.vim')
         \   'iminsert' : 'g:ll_helper.iminsert',
         \   'lang_version' : 'g:ll_helper.lang_version',
         \   'anzu': 'g:ll_helper.anzu',
+        \   'anzu_or_charcode': 'g:ll_helper.anzu_or_charcode',
         \ },
         \ }
   let g:ll_helper = {}
+
+  function! g:ll_helper.get(...) "{{{3
+    for s in a:000
+      if !empty(s)
+        return s
+      endif
+    endfor
+    return ""
+  endfunction
+
+  function! g:ll_helper.anzu_or_charcode() "{{{3
+    let s = self.anzu()
+    if empty(s)
+      return self.charcode()
+    endif
+    return s
+  endfunction
+
+  function! g:ll_helper.charcode() "{{{3
+    redir => ascii
+      silent! ascii
+    redir END
+
+    if match(ascii, 'NUL') != -1
+      return 'NUL'
+    endif
+
+    let nrformat = '0x%02x' " Zero pad hex values
+    let encoding = (&fenc == '' ? &enc : &fenc)
+
+    if encoding == 'utf-8' " Zero pad with 4 zeroes in unicode files
+      let nrformat = '0x%04x'
+    endif
+
+    " Get the character and the numeric value from the return value of :ascii
+    " This matches the two first pieces of the return value, e.g.
+    " "<F>  70" => char: 'F', nr: '70'
+    let [str, char, nr; rest] = matchlist(ascii, '\v\<(.{-1,})\>\s*([0-9]+)')
+
+    let nr = printf(nrformat, nr) " Format the numeric value
+
+    return "'". char ."' ". nr
+  endfunction
+
   function! g:ll_helper.anzu() "{{{3
     return exists('*anzu#search_status') ? anzu#search_status() : ''
   endfunction

@@ -118,7 +118,7 @@ snippet doc_h
 	 * @copyright ${4:$2}, `strftime('%d %B, %Y')`
 	 * @package ${5:default}
 	 **/
-	
+
 	/**
 	 * Define DocBlock
 	 *//
@@ -182,17 +182,16 @@ snippet elseif
 snippet t
 	$${1:retVal} = (${2:condition}) ? ${3:a} : ${4:b};${5}
 snippet switch
-	switch ($${1:variable}) {
-		case '${2:value}':
+	switch (${1:$variable}) {
+		case ${2:value}:
 			${3:// code...}
 			break;
-		${5}
 		default:
 			${4:// code...}
 			break;
 	}
 snippet case
-	case '${1:value}':
+	case ${1:value}:
 		${2:// code...}
 		break;${3}
 snippet for
