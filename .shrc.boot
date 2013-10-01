@@ -171,6 +171,23 @@ vundle() { #{{{3
   __NOTIFY "neobundle update" "complete!"
 }
 
+vundle-each() { #{{{3
+  local f cwd=$(pwd)
+  local subcommand=$1
+  if [ x"" = x"$1" ]; then
+    echo "subcommand not found : $1" 1>&2
+  fi
+  # for f in $(find ~/.vim/neobundle -depth 1 -type d); do
+  for f in $(ls --color=no ~/.vim/neobundle); do
+    f=~/.vim/neobundle/$f
+    [ ! -d $f ] && continue
+    echo $f
+    cd $f
+    [ -e .git ] && git $@
+  done
+  cd $cwd
+}
+
 shrc_section_title "emacs" #{{{2
 ## Invoke the ``dired'' of current working directory in Emacs buffer.
 dired () { #{{{3

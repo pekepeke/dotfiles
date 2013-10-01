@@ -1259,7 +1259,8 @@ endif
 " texts {{{4
 " NeoBundle 'plasticboy/vim-markdown' " plasticboy mode -> mkd
 NeoBundle 'tpope/vim-markdown'
-NeoBundle 'thinca/vim-ft-markdown_fold'
+" NeoBundle 'thinca/vim-ft-markdown_fold'
+NeoBundle 'nelstrom/vim-markdown-folding'
 NeoBundleLazyOn FileType markdown 'joker1007/vim-markdown-quote-syntax'
 NeoBundle 'timcharper/textile.vim'
 NeoBundleLazyOn FileType csv 'chrisbra/csv.vim'
@@ -1673,10 +1674,10 @@ NeoBundleLazy 'akiyan/vim-textobj-xml-attribute', {'autoload':{
       \ 'mappings' : [['nvo',
       \ '<Plug>(textobj-xmlattribute-',
       \ ]]}}
-NeoBundleLazy 'hchbaw/textobj-motionmotion.vim', {'autoload':{
-      \ 'mappings' : [['nvo',
-      \ '<Plug>(textobj-motionmotion-i)', '<Plug>(textobj-motionmotion-a)',
-      \ ]]}}
+" NeoBundleLazy 'hchbaw/textobj-motionmotion.vim', {'autoload':{
+"       \ 'mappings' : [['nvo',
+"       \ '<Plug>(textobj-motionmotion-i)', '<Plug>(textobj-motionmotion-a)',
+"       \ ]]}}
 NeoBundleLazy 'anyakichi/vim-textobj-xbrackets', {'autoload':{
       \ 'mappings' : [['vo',
       \ 'aV(', 'aV)', 'aVb', 'aV{', 'aV}', 'aVB', 'av', 'ax(', 'ax)', 'axb', 'a9', 'a0',
@@ -2046,7 +2047,7 @@ nnoremap [!space]= call my#ui#indent_whole_buffer()
 
 " tab switch
 for i in range(10)
-  exe 'nnoremap <silent>' ('[!t]'.i) (((i+10) % 10).'gt')
+  execute 'nnoremap <silent>' ('[!t]'.i) (((i+10) % 10).'gt')
 endfor
 unlet i
 nnoremap <silent> [!t]n gt
@@ -2075,6 +2076,12 @@ nnoremap <silent> <S-Left>  :10wincmd ><CR>
 nnoremap <silent> <S-Right> :10wincmd <<CR>
 nnoremap <silent> <S-Up>    :10wincmd -<CR>
 nnoremap <silent> <S-Down>  :10wincmd +<CR>
+
+" win switch
+for i in range(10)
+  execute 'nnoremap <silent> <C-w>'.i '<C-w>t'.repeat('<C-w>j', (i+9)%10)
+endfor
+unlet i
 
 " replace & grep {{{2
 nnoremap [!space]r :<C-u>%S/
@@ -2525,7 +2532,7 @@ if s:bundle.tap('lightline.vim')
         \ },
         \ 'active': {
         \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'lang_version', ] ],
-        \   'right': [[ 'lineinfo' ], [ 'percent' ], [ 'anzu_or_c', 'fileformat', 'fileencoding', 'filetype',]],
+        \   'right': [[ 'lineinfo' ], [ 'percent' ], [ 'anzu_or_charcode', 'fileformat', 'fileencoding', 'filetype',]],
         \ },
         \ 'component_function': {
         \   'fugitive' : 'g:ll_helper.fugitive',
@@ -2797,6 +2804,8 @@ if s:bundle.tap('vim-cycle')
     call AddCycleGroup(['specify', 'it'])
     call AddCycleGroup(['describe', 'context'])
     call AddCycleGroup(['public', 'protected', 'private'])
+    call AddCycleGroup(['#', '##', '###', '####', '#####'])
+    call AddCycleGroup(["-", "\t-", "\t\t-", "\t\t\t-"])
   endfunction
   call s:bundle.untap()
 endif
@@ -4621,7 +4630,7 @@ if s:bundle.is_installed('vim-textobj-user')
 
   Tmap axa <Plug>(textobj-xmlattribute-xmlattribute)
   Tmap ixa <Plug>(textobj-xmlattribute-xmlattributenospace)
-  TTmap m  motionmotion
+  " TTmap m  motionmotion
 
   TTmap P php-phptag
   TTmap aP php-phparray
@@ -6290,10 +6299,10 @@ if s:bundle.is_installed('vimfiler.vim')
     return context
   endfunction
 
-  MyAutocmd FileType vimfiler call s:vimfiler_my_settings() "{{{3
-  function! s:vimfiler_my_settings() " {{{3
+  MyAutocmd FileType vimfiler call s:vimfiler_init() "{{{3
+  function! s:vimfiler_init() " {{{3
     nnoremap <silent><buffer> E :<C-u>call <SID>vimfiler_do_action('tabopen')<CR>
-    nnoremap <silent><buffer> p :<C-u>call <SID>vimfiler_do_action('split')<CR>
+    nnoremap <silent><buffer> <C-e> :<C-u>call <SID>vimfiler_do_action('split')<CR>
     nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
     hi link ExrenameModified Statement
     "nnoremap <buffer> v V

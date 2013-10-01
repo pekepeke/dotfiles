@@ -199,6 +199,7 @@ _git ()
 	local _ret=1
 	local cur cword prev
 
+  [ -z ${service} ] && return
 	cur=${words[CURRENT]}
 	prev=${words[CURRENT-1]}
 	let cword=CURRENT-1
