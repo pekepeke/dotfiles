@@ -1380,9 +1380,9 @@ NeoBundleLazy 'tacroe/unite-mark', { 'autoload' : {
 NeoBundleLazy 'zhaocai/unite-scriptnames', { 'autoload' : {
       \ 'unite_sources' : ['scriptnames'],
       \ }}
-NeoBundleLazy 'daisuzu/unite-grep_launcher', { 'autoload' : {
-      \ 'unite_sources' : ['grep_launcher'],
-      \ }}
+" NeoBundleLazy 'daisuzu/unite-grep_launcher', { 'autoload' : {
+"       \ 'unite_sources' : ['grep_launcher'],
+"       \ }}
 NeoBundleLazy 'pasela/unite-webcolorname', { 'autoload' : {
       \ 'unite_sources' : ['webcolorname'],
       \ }}
@@ -2088,6 +2088,7 @@ nnoremap [!space]r :<C-u>%S/
 vnoremap [!space]r :S/
 
 " grep
+let s:regexp_todo = 'TODO\|FIXME\|REVIEW\|MARK\|NOTE\|!!!\|\\?\\?\\?\|XXX'
 function! s:set_grep(...) "{{{3
   let retval = 0
   for type in copy(a:000)
@@ -2099,16 +2100,20 @@ function! s:set_grep(...) "{{{3
       let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
 
       let g:unite_source_grep_command = "jvgrep"
-      let g:unite_source_grep_default_opts = '-in --exclude "\.(git|svn|hg|bzr)"'
+      let g:unite_source_grep_default_opts = '-in --color=never --exclude "\.(git|svn|hg|bzr)"'
+      let g:unite_source_grep_recursive_opt = '-R'
+
+      command! Todo silent! exe 'Unite' printf('grep:%s:-n:%s', getcwd(), s:regexp_todo) '-buffer-name=todo' '-no-quit'
       return 1
     elseif type == "ag" && executable(type)
-      set grepprg=ag\ -i\ --nocolor\ --nogroup\ --nopager
+      set grepprg=ag\ -S\ --nocolor\ --nogroup\ --nopager
       set grepformat=%f:%l:%m
-      let g:ackprg="ag -i --nocolor --nogroup --column --nopager"
+      let g:ackprg="ag -S --nocolor --nogroup --column --nopager"
 
       let g:unite_source_grep_command = 'ag'
-      let g:unite_source_grep_default_opts = '-i --noheading --nocolor --nogroup --nopager'
+      let g:unite_source_grep_default_opts = '-S --noheading --nocolor --nogroup --nopager'
       let g:unite_source_grep_recursive_opt = ''
+
       return 1
     elseif type == "ack" && executable(type)
       set grepprg=ack\ -a\ --nocolor\ --nogroup\ --nopager
@@ -3741,12 +3746,14 @@ if s:bundle.tap('unite.vim')
   endfunction
 
   " unite-grep_launcher {{{3
-  if !exists('g:grep_launcher_words')
-    let g:grep_launcher_words = {}
+  if s:bundle.is_installed('unite-grep_launcher')
+    if !exists('g:grep_launcher_words')
+      let g:grep_launcher_words = {}
+    endif
+    call extend(g:grep_launcher_words, {
+      \ 'TODO' : s:regexp_todo,
+      \ })
   endif
-  call extend(g:grep_launcher_words, {
-    \ 'TODO' : 'TODO\|FIXME\|NOTE\|!!!\|\?\?\?\|XXX',
-    \ })
   " unite-history
   let g:unite_source_history_yank_enable = 1
 
@@ -4149,7 +4156,7 @@ if s:bundle.tap('unite.vim')
     inoremap <C-x><C-j> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
   endif
 
-  command! Todo silent! exe 'Unite' printf('grep:%s::TODO\|FIXME\|NOTE\|!!!\|\?\?\?\|XXX', getcwd()) '-buffer-name=todo' '-no-quit'
+  command! Todo silent! exe 'Unite' printf('grep:%s::%s', getcwd(), s:regexp_todo) '-buffer-name=todo' '-no-quit'
 
   function! s:unite_open_ftplugin()
     let dirs = ['after', 'ftplugin', 'snippets', 'template', 'sonictemplate']

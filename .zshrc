@@ -518,7 +518,8 @@ zsh-complete-init() {
   fi
   fpath=(~/.zsh.d/Completion $fpath)
 
-  autoload -U compinit
+  zmodload -i zsh/complist
+  autoload -Uz compinit
   compinit -u
 
   autoload -U bashcompinit
@@ -594,6 +595,17 @@ zsh-complete-init() {
     "$_ssh_known_ips[@]"
     )
   zstyle ':completion:*' hosts $hosts #3}}}
+
+  # completion bindkeys {{{3
+  # vi like
+  # bindkey -M menuselect 'h' vi-backward-char
+  # bindkey -M menuselect 'j' vi-down-line-or-history
+  # bindkey -M menuselect 'k' vi-up-line-or-history
+  # bindkey -M menuselect 'l' vi-forward-char
+  bindkey -M menuselect '^N' vi-down-line-or-history
+  bindkey -M menuselect '^P' vi-up-line-or-history
+  # 3}}}
+
   # 2}}}
 
   unfunction "zsh-complete-init"

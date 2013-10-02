@@ -127,4 +127,12 @@ else " unix setting {{{2
   command! -nargs=0 Ricty set guifont=Ricty\ 14
 endif
 "source $HOME/.vimrc
+
+" some commands {{{1
+function! s:make_gvimrc_first()
+  call writefile(["let g:gvimrc_local_finish = 1"], $VIM . '/gvimrc_local.vim')
+endfunction
+command! -nargs=0 MkGvimrcfirst call s:make_gvimrc_first()
+
+
 " __END__ {{{1
