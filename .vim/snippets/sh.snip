@@ -54,3 +54,19 @@ snippet script_dir
 	script_dir="$(cd "$(dirname "${BASH_SOURCE:-\$0}")"; pwd)"
 snippet script_dir2
 	script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE:-\$0}")"; pwd)"
+
+# http://qiita.com/b4b4r07/items/77c589f21a99db8bb682
+snippet pipe_in
+	if [ -p /dev/stdin ]; then
+		$0
+	fi
+
+snippet pipe_out
+	if [ -p /dev/stdout ];then
+		$0
+	fi
+
+# http://qiita.com/takc923/items/0bc32e2bdc7f82b2462f
+snippet zip_dirs
+	find . -type d -depth 1 | while IFS= read -r dir; do zip -r $dir.zip $dir; done
+

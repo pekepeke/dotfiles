@@ -1,0 +1,2942 @@
+
+# =================================================================
+# attribute
+# =================================================================
+
+snippet xml
+	<?xml version="1.0" encoding="UTF-8"?>
+
+# Tag
+
+snippet opf
+	<?xml version="1.0" encoding="UTF-8"?>
+	<package>
+	<metadata>
+	</metadata>
+	<manifest>
+	</manifest>
+	<spine>
+	</spine>
+	</package>
+
+
+snippet package
+	<package
+	 version="3.0"
+	 unique-identifier="${1:#:identifier id}"
+	>
+	${0}
+	</package>
+
+snippet package#
+	<package
+	 version="3.0"
+	 unique-identifier="${1:#:identifier id}"
+	 ${2:prefix="${3:\}"}
+	 ${4:xml:lang="${5:\}"}
+	 ${6:dir="${7:\}"}
+	 ${8:id="${9:\}"}
+	>
+	${0}
+	</package>
+
+# =================================================================
+# prefix
+# =================================================================
+
+# value
+
+snippet cc
+alias value_prefix_cc
+options word
+	${1: }cc: http://creativecommons.org/ns#
+
+snippet rendition
+alias value_prefix_rendition
+options word
+	${1: }rendition: http://www.idpf.org/vocab/rendition/#
+
+snippet ibooks
+abbr [A]ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/
+alias value_prefix_ibooks
+options word
+	${1: }ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/
+
+snippet foaf
+alias value_prefix_foaf
+options word
+	${1: }foaf: http://xmlns.com/foaf/spec/
+
+snippet dbp
+alias value_prefix_dbp
+options word
+	${1: }dbp: http://dbpedia.org/ontology/
+
+snippet epubj
+alias value_prefix_epubj
+options word
+	${1: }ebpaj: http://www.ebpaj.jp/
+
+# attribute
+
+snippet package_attr_version
+	version="${0}"
+snippet package_attr_unique-identifier
+	unique-identifier="${0}"
+snippet package_attr_prefix
+	prefix="${0}"
+snippet package_attr_xml:lang
+	xml:lang="${0}"
+snippet package_attr_dir
+	dir="${0}"
+snippet package_attr_id
+	id="${0}"
+
+snippet prefix_cc
+alias prefix="cc: http://creativecommons.org/ns#
+	prefix="cc: http://creativecommons.org/ns#"
+
+snippet prefix_rendition
+alias prefix="rendition: http://www.idpf.org/vocab/rendition/#
+	prefix="rendition: http://www.idpf.org/vocab/rendition/#"
+
+snippet prefix_ibooks
+alias [A]prefix="ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/"
+alias prefix="ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/
+	prefix="ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/"
+
+snippet prefix_foaf
+alias prefix="foaf: http://xmlns.com/foaf/spec/
+	prefix="foaf: http://xmlns.com/foaf/spec/"
+
+snippet prefix_dbp
+alias prefix="dbp: http://dbpedia.org/ontology/
+	prefix="dbp: http://dbpedia.org/ontology/"
+
+snippet prefix_epubj
+alias prefix="ebpaj: http://www.ebpaj.jp/
+	prefix="ebpaj: http://www.ebpaj.jp/"
+
+# =================================================================
+# metadata section
+# =================================================================
+
+snippet metadata
+abbr metadata Minimal Set
+	<dc:identifier></dc:identifier>
+	<dc:title></dc:title>
+	<dc:language></dc:language>
+	<meta property="dcterms:modified">YYYY-MM-DDThh:mm:ssZ</meta>${0}
+
+snippet metadata#
+abbr metadata Full Set
+	<dc:identifier></dc:identifier>
+	<dc:title></dc:title>
+	<dc:language></dc:language>
+	<meta property="dcterms:modified">YYYY-MM-DDThh:mm:ssZ</meta>
+	<dc:contributor></dc:contributor>
+	<dc:coverage></dc:coverage>
+	<dc:creator></dc:creator>
+	<dc:date></dc:date>
+	<dc:description></dc:description>
+	<dc:format></dc:format>
+	<dc:publisher></dc:publisher>
+	<dc:relation></dc:relation>
+	<dc:rights></dc:rights>
+	<dc:source></dc:source>
+	<dc:subject></dc:subject>
+	<dc:type></dc:type>${0}
+
+# 必須メタデータ
+# =================================================================
+
+# value
+
+snippet dcterms:modified
+alias value_meta_property_dcterms:modified
+abbr dcterms:modified
+options word
+	dcterms:modified
+
+# attribute
+
+snippet property_dcterms:modified
+abbr property="dcterms:modified"
+alias property="dcterms:modified
+	property="dcterms:modified"
+
+snippet identifier_attr_id
+	id="${0}"
+
+snippet title_attr_id
+	id="${0}"
+snippet title_attr_xml:lang
+	xml:lang="${0}"
+snippet title_attr_dir
+	dir="${0}"
+
+snippet language_attr_id
+	id="${0}"
+
+# Tag
+
+snippet dc_identifier
+	<dc:identifier>${0}</dc:identifier>
+
+snippet dc_identifier#
+	<dc:identifier${1: id="${2:\}"}>${0}</dc:identifier>
+
+snippet dc_title
+	<dc:title>${0}</dc:title>
+
+snippet dc_title#
+	<dc:title${1: id="${2:\}"}${3: xml:lang="${4:\}"}${5: dir="${6:\}"}>${0}</dc:title>
+
+snippet dc_language
+	<dc:language>${0}</dc:language>
+
+snippet dc_language#
+	<dc:language${1: id="${2:\}"}>${0}</dc:language>
+
+snippet meta_property_dcterms:modified
+	<meta property="dcterms:modified">${1:YYYY-MM-DDThh:mm:ssZ}</meta>
+
+# オプション
+# =================================================================
+
+# attribute
+
+snippet contributor_attr_id
+	id="${0}"
+snippet contributor_attr_xml:lang
+	xml:lang="${0}"
+snippet contributor_attr_dir
+	dir="${0}"
+snippet coverage_attr_id
+	id="${0}"
+snippet coverage_attr_xml:lang
+	xml:lang="${0}"
+snippet coverage_attr_dir
+	dir="${0}"
+snippet creator_attr_id
+	id="${0}"
+snippet creator_attr_xml:lang
+	xml:lang="${0}"
+snippet creator_attr_dir
+	dir="${0}"
+snippet date_attr_id
+	id="${0}"
+snippet description_attr_id
+	id="${0}"
+snippet description_attr_xml:lang
+	xml:lang="${0}"
+snippet description_attr_dir
+	dir="${0}"
+snippet format_attr_id
+	id="${0}"
+snippet publisher_attr_id
+	id="${0}"
+snippet publisher_attr_xml:lang
+	xml:lang="${0}"
+snippet publisher_attr_dir
+	dir="${0}"
+snippet relation_attr_id
+	id="${0}"
+snippet relation_attr_xml:lang
+	xml:lang="${0}"
+snippet relation_attr_dir
+	dir="${0}"
+snippet rights_attr_id
+	id="${0}"
+snippet rights_attr_xml:lang
+	xml:lang="${0}"
+snippet rights_attr_dir
+	dir="${0}"
+snippet source_attr_id
+	id="${0}"
+snippet subject_attr_id
+	id="${0}"
+snippet subject_attr_xml:lang
+	xml:lang="${0}"
+snippet subject_attr_dir
+	dir="${0}"
+snippet type_attr_id
+	id="${0}"
+
+# Tag
+
+snippet dc_contributor
+	<dc:contributor>${0}</dc:contributor>
+
+snippet dc_contributor#
+	<dc:contributor${1: id="${2:\}"}${3: xml:lang="${4:\}"}${5: dir="${6:\}"}>${0}</dc:contributor>
+
+snippet dc_coverage
+	<dc:coverage>${0}</dc:coverage>
+
+snippet dc_coverage#
+	<dc:coverage${1: id="${2:\}"}${3: xml:lang="${4:\}"}>${0}</dc:coverage>
+
+snippet dc_creator
+	<dc:creator>${0}</dc:creator>
+
+snippet dc_creator#
+	<dc:creator${1: id="${2:\}"}${3: xml:lang="${4:\}"}>${0}</dc:creator>
+
+snippet dc_date
+	<dc:date>${0}</dc:date>
+
+snippet dc_date#
+	<dc:date${1: id="${2:\}"}>${0}</dc:date>
+
+snippet dc_description
+	<dc:description>${0}</dc:description>
+
+snippet dc_description#
+	<dc:description${1: id="${2:\}"}${3: xml:lang="${4:\}"}>${0}</dc:description>
+
+snippet dc_format
+	<dc:format>${0}</dc:format>
+
+snippet dc_format#
+	<dc:format${1: id="${2:\}"}>${0}</dc:format>
+
+snippet dc_publisher
+	<dc:publisher>${0}</dc:publisher>
+
+snippet dc_publisher#
+	<dc:publisher${1: id="${2:\}"}${3: xml:lang="${4:\}"}>${0}</dc:publisher>
+
+snippet dc_relation
+	<dc:relation>${0}</dc:relation>
+
+snippet dc_relation#
+	<dc:relation${1: id="${2:\}"}${3: xml:lang="${4:\}"}>${0}</dc:relation>
+
+snippet dc_rights
+	<dc:rights>${0}</dc:rights>
+
+snippet dc_rights#
+	<dc:rights${1: id="${2:\}"}${3: xml:lang="${4:\}"}>${0}</dc:rights>
+
+snippet dc_source
+	<dc:source>${0}</dc:source>
+
+snippet dc_source#
+	<dc:source${1: id="${2:\}"}>${0}</dc:source>
+
+snippet dc_subject
+	<dc:subject>${0}</dc:subject>
+
+snippet dc_subject#
+	<dc:subject${1: id="${2:\}"}${3: xml:lang="${4:\}"}>${0}</dc:subject>
+
+snippet dc_type
+	<dc:type>${0}</dc:type>
+
+snippet dc_type#
+	<dc:type${1: id="${2:\}"}>${0}</dc:type>
+
+# meta
+
+# value
+
+snippet alternate-script
+alias value_meta_property_alternate-script
+abbr alternate-script
+options word
+	alternate-script
+
+snippet display-seq
+alias value_meta_property_display-seq
+abbr display-seq
+options word
+	display-seq
+
+snippet file-as
+alias value_meta_property_file-as
+abbr file-as
+options word
+	file-as
+
+snippet group-position
+alias value_meta_property_group-position
+abbr group-position
+options word
+	group-position
+
+snippet identifier-type
+alias value_meta_property_identifier-type
+abbr identifier-type
+options word
+	identifier-type
+
+snippet meta-auth
+alias value_meta_property_meta-auth
+abbr meta-auth
+options word
+	meta-auth
+
+snippet role
+alias value_meta_property_role
+abbr role
+options word
+	role
+
+snippet source-of
+alias value_meta_property_source-of
+abbr source-of
+options word
+	source-of
+
+snippet title-type
+alias value_meta_property_title-type
+abbr title-type
+options word
+	title-type
+
+snippet cover
+alias value_meta_name_cover
+abbr cover
+options word
+	cover
+
+# attribute
+
+snippet meta_attr_property
+	property="${0}"
+snippet meta_attr_refines
+	refines="${0}"
+snippet meta_attr_id
+	id="${0}"
+snippet meta_attr_scheme
+	scheme="${0}"
+
+snippet property_alternate-script
+abbr property="alternate-script"
+alias property="alternate-script
+	property="alternate-script"
+
+snippet property_display-seq
+abbr property="display-seq"
+alias property="display-seq
+	property="display-seq"
+
+snippet property_file-as
+abbr property="file-as"
+alias property="file-as
+	property="file-as"
+
+snippet property_group-position
+abbr property="group-position"
+alias property="group-position
+	property="group-position"
+
+snippet property_identifier-type
+abbr property="identifier-type"
+alias property="identifier-type
+	property="identifier-type"
+
+snippet property_meta-auth
+abbr property="meta-auth"
+alias property="meta-aut
+	property="meta-auth"
+
+snippet property_role
+abbr property="role"
+alias property="role
+	property="role"
+
+snippet property_source-of
+abbr property="source-of"
+alias property="source-of
+	property="source-of"
+
+snippet property_title-type
+abbr property="title-type"
+alias property="title-type
+	property="title-type"
+
+snippet name_cover
+abbr name="cover"
+alias name="cover
+	name="cover"
+
+# Tag
+
+snippet meta
+	<meta property="${1}">${0}</meta>
+
+snippet meta#
+	<meta property=""${1: refines=""}${2: id=""}${3: scheme=""}>${0}</meta>
+
+snippet meta_property_alternate-script
+	<meta property="alternate-script" refines="#${1}" xml:lang="${2}">${3}</meta>
+
+snippet meta_property_display-seq
+	<meta property="display-seq" refines="#${1}">${2}</meta>
+
+snippet meta_property_file-as
+	<meta property="file-as" refines="#${1}">${2}</meta>
+
+snippet meta_property_group-position
+	<meta property="group-position" refines="#${1}">${2:number}</meta>
+
+snippet meta_property_identifier-type
+	<meta property="identifier-type" refines="#${1}" scheme="${2}">${3}</meta>
+
+snippet meta_property_meta-auth
+	<meta property="meta-auth" refines="#${1}" id="${2}">${3}</meta>
+
+snippet meta_property_role_creator
+	<meta property="role" refines="#${1:creator-id}" scheme="${2:marc:relators}">${3}</meta>
+
+snippet meta_property_role_contributor
+	<meta property="role" refines="#${1:contributor-id}" scheme="${2:marc:relators}">${3}</meta>
+
+snippet meta_property_source-of
+	<meta property="source-of" refines="#${1:source}">pagination</meta>
+
+snippet meta_property_title-type_main
+	<meta property="title-type" refines="#${1:title-id}">main</meta>
+
+snippet meta_property_title-type_subtitle
+	<meta property="title-type" refines="#${1:title-id}">subtitle</meta>
+
+snippet meta_property_title-type_short
+	<meta property="title-type" refines="#${1:title-id}">short</meta>
+
+snippet meta_property_title-type_collection
+	<meta property="title-type" refines="#${1:title-id}">collection</meta>
+
+snippet meta_property_title-type_edition
+	<meta property="title-type" refines="#${1:title-id}">edition</meta>
+
+snippet meta_property_title-type_expanded
+	<meta property="title-type" refines="#${1:title-id}">expanded</meta>
+
+snippet meta_cover
+	<meta name="cover" content="${1:item-id}"/>
+
+# link
+# =================================================================
+
+# value
+
+snippet marc21xml-record
+alias value_link_rel_marc21xml-record
+options word
+	marc21xml-record
+
+snippet mods-record
+alias value_link_rel_onix-record
+options word
+	onix-record
+
+snippet xml-signature
+alias value_link_rel_xml-signature
+options word
+	xml-signature
+
+snippet xmp-record
+alias value_link_rel_xmp-record
+options word
+	xmp-record
+
+# attribute
+
+snippet link_attr_href
+	href="${0}"
+snippet link_attr_rel
+	rel="${0}"
+snippet link_attr_id
+	id="${0}"
+snippet link_attr_refines
+	refines="${0}"
+snippet link_attr_media-type
+	media-type="${0}"
+
+snippet rel_marc21xml-record
+abbr [link]rel="marc21xml-record"
+alias rel="marc21xml-record
+	rel="marc21xml-record"
+
+snippet rel_mods-record
+abbr [link]rel="onix-record"
+alias rel="onix-record
+	rel="onix-record"
+
+snippet rel_xml-signature
+abbr [link]rel="xml-signature"
+alias rel="xml-signature
+	rel="xml-signature"
+
+snippet rel_xmp-record
+abbr [link]rel="xmp-record"
+alias rel="xmp-record
+	rel="xmp-record"
+
+# Tag
+
+snippet link
+	<link rel="${1}" href="${2}"/>
+
+snippet link#
+	<link rel="${1}" href="${2}"${3: id="${4:\}"}${5: refines="${6:\}"}/>
+
+snippet link_media
+	<link rel="${1}" href="${2}"${3: id="${4:\}"}${5: refines="${6:\}"}${7: media-type="${8:\}"}/>
+
+snippet link_marc21xml-record
+	<link rel="marc21xml-record" href="${1:TARGET}"/>
+
+snippet link_mods-record
+	<link rel="onix-record" href="${1:TARGET}"/>
+
+snippet link_xml-signature
+	<link rel="xml-signature" refines="#${1:signature-id}" href="${2:TARGET}"/>
+
+snippet link_xmp-record
+	<link rel="xmp-record" href="${1:TARGET}"/>
+
+# Fixed-Layout
+# =================================================================
+
+# value
+
+snippet rendition:layout
+abbr rendition:layout
+alias value_meta_property_rendition:layout
+options word
+	rendition:layout
+
+snippet fixed_value_rendition:layout
+abbr rendition:layout
+alias fixed_value_rendition:layout
+options word
+	rendition:layout
+
+snippet value_property_rendition:layout
+alias property_value_rendition:layout
+options word
+	rendition:layout
+
+snippet rendition:orientation
+abbr [FL]rendition:orientation
+alias value_meta_property_rendition:orientation
+options word
+	rendition:orientation
+
+snippet fixed_value_rendition:orientation
+abbr [FL]rendition:orientation
+alias fixed_value_rendition:orientation
+options word
+	rendition:orientation
+
+snippet rendition:spread
+abbr [FL]rendition:spread
+alias value_meta_property_rendition:spread
+options word
+	rendition:spread
+
+snippet fixed_value_rendition:spread
+abbr [FL]rendition:spread
+alias fixed_value_rendition:spread
+options word
+	rendition:spread
+
+snippet rendition:flow
+abbr [FL]rendition:flow
+alias value_meta_property_rendition:flow
+options word
+	rendition:flow
+
+snippet fixed_value_rendition:flow
+abbr [FL]rendition:flow
+alias fixed_value_rendition:flow
+options word
+	rendition:flow
+
+snippet rendition:viewport
+abbr [FL]rendition:viewport
+alias value_meta_property_rendition:viewport
+options word
+	rendition:viewport
+
+snippet fixed_value_rendition:viewport
+abbr [FL]rendition:viewport
+alias fixed_value_rendition:viewport
+options word
+	rendition:viewport
+
+# attribute
+
+snippet property_layout
+abbr [FL]property="rendition:layout"
+alias property="rendition:layout
+	property="rendition:layout"
+
+snippet fixed_property_layout
+abbr [FL]property="rendition:layout"
+alias fixed_attr_property_rendition:layout
+	property="rendition:layout"
+
+snippet property_orientation
+abbr [FL]property="rendition:orientation"
+alias property="rendition:orientation
+	property="rendition:orientation"
+
+snippet fixed_property_orientation
+abbr [FL]property="rendition:orientation"
+alias fixed_attr_property_rendition:orientation
+	property="rendition:orientation"
+
+snippet property_spread
+abbr [FL]property="rendition:spread"
+alias property="rendition:spread
+	property="rendition:spread"
+
+snippet fixed_property_spread
+abbr [FL]property="rendition:spread"
+alias fixed_attr_property_rendition:spread
+	property="rendition:spread"
+
+snippet property_flow
+abbr property="rendition:flow"
+alias property="rendition:flo
+	property="rendition:flow"
+
+snippet fixed_property_flow
+abbr property="rendition:flow"
+	property="rendition:flow"
+
+snippet property_viewport
+abbr [FL]property="rendition:viewport"
+alias property="rendition:viewport
+	property="rendition:viewport"
+
+snippet fixed_property_viewport
+abbr [FL]property="rendition:viewport"
+alias fixed_attr_property_rendition:viewport
+	property="rendition:viewport"
+
+# Tag
+
+snippet meta_property_rendition:layout
+abbr <meta property="rendition:layout">${0}</meta>
+	<meta property="rendition:layout">${0}</meta>
+
+snippet meta_property_rendition:layout_reflow
+abbr <meta property="rendition:layout">reflowable</meta>
+alias <meta property="rendition:layout">reflowable
+	<meta property="rendition:layout">reflowable</meta>
+
+snippet meta_property_rendition:layout_fix
+abbr [FL]<meta property="rendition:layout">pre-paginated</meta>
+alias <meta property="rendition:layout">pre-paginated
+	<meta property="rendition:layout">pre-paginated</meta>
+
+snippet fixed_tag_meta_property_rendition:layou_pre-paginated
+abbr [FL]<meta property="rendition:layout">pre-paginated</meta>
+	<meta property="rendition:layout">pre-paginated</meta>
+
+snippet meta_property_rendition:orientation
+abbr [FL]<meta property="rendition:orientation">${0}</meta>
+alias fixed_rendition:orientation
+	<meta property="rendition:orientation">${0}</meta>
+
+snippet meta_property_rendition:orientation_auto
+abbr [FL]<meta property="rendition:orientation">auto</meta>
+alias <meta property="rendition:orientation">auto
+	<meta property="rendition:orientation">auto</meta>
+
+snippet fixed_tag_meta_property_rendition:orientation_auto
+abbr [FL]<meta property="rendition:orientation">auto</meta>
+	<meta property="rendition:orientation">auto</meta>
+
+snippet meta_property_rendition:orientation_landscape
+abbr [FL]<meta property="rendition:orientation">landscape</meta
+alias <meta property="rendition:orientation">landscape
+	<meta property="rendition:orientation">landscape</meta>
+
+snippet fixed_tag_meta_property_rendition:orientation_landscape
+abbr [FL]<meta property="rendition:orientation">landscape</meta
+	<meta property="rendition:orientation">landscape</meta>
+
+snippet meta_property_rendition:orientation_portrait
+abbr [FL]<meta property="rendition:orientation">portrait</meta>
+alias <meta property="rendition:orientation">portrait
+	<meta property="rendition:orientation">portrait</meta>
+
+snippet fixed_tag_meta_property_rendition:orientation_portrait
+abbr [FL]<meta property="rendition:orientation">portrait</meta>
+	<meta property="rendition:orientation">portrait</meta>
+
+snippet meta_property_rendition:spread
+abbr [FL]<meta property="rendition:spread">${0}</meta>
+alias fixed_rendition:spread
+	<meta property="rendition:spread">${0}</meta>
+
+snippet meta_property_rendition:spread_auto
+abbr [FL]<meta property="rendition:spread">auto</meta>
+alias <meta property="rendition:spread">auto
+	<meta property="rendition:spread">auto</meta>
+
+snippet fixed_tag_meta_property_rendition:spread_auto
+abbr [FL]<meta property="rendition:spread">auto</meta>
+	<meta property="rendition:spread">auto</meta>
+
+snippet meta_property_rendition:spread_both
+abbr [FL]<meta property="rendition:spread">both</meta>
+alias <meta property="rendition:spread">both
+	<meta property="rendition:spread">both</meta>
+
+snippet fixed_tag_meta_property_rendition:spread_both
+abbr [FL]<meta property="rendition:spread">both</meta>
+	<meta property="rendition:spread">both</meta>
+
+snippet meta_property_rendition:spread_none
+abbr [FL]<meta property="rendition:spread">none</meta>
+alias <meta property="rendition:spread">none
+	<meta property="rendition:spread">none</meta>
+
+snippet fixed_tag_meta_property_rendition:spread_none
+abbr [FL]<meta property="rendition:spread">none</meta>
+	<meta property="rendition:spread">none</meta>
+
+snippet meta_property_rendition:spread_landscape
+abbr [FL]<meta property="rendition:spread">landscape</meta>
+alias <meta property="rendition:spread">landscape
+	<meta property="rendition:spread">landscape</meta>
+
+snippet fixed_tag_meta_property_rendition:spread_landscape
+abbr [FL]<meta property="rendition:spread">landscape</meta>
+	<meta property="rendition:spread">landscape</meta>
+
+snippet meta_property_rendition:spread_portrait
+abbr [FL]<meta property="rendition:spread">portrait</meta>
+alias <meta property="rendition:spread">portrait
+	<meta property="rendition:spread">portrait</meta>
+
+snippet fixed_tag_meta_property_rendition:spread_portrait
+abbr [FL]<meta property="rendition:spread">portrait</meta>
+	<meta property="rendition:spread">portrait</meta>
+
+snippet meta_property_rendition:flow
+abbr <meta property="rendition:flow">${0}</meta>
+alias fixed_rendition:flow
+	<meta property="rendition:flow">${0}</meta>
+
+snippet meta_property_rendition:flow_paginated
+abbr <meta property="rendition:flow">paginated</meta>
+alias <meta property="rendition:flow">paginated
+	<meta property="rendition:flow">paginated</meta>
+
+snippet meta_property_rendition:flow_scrolled-continuous
+abbr <meta property="rendition:flow">scrolled-continuous</meta>
+alias <meta property="rendition:flow">scrolled-continuous
+	<meta property="rendition:flow">scrolled-continuous</meta>
+
+snippet meta_property_rendition:flow_scrolled-doc
+abbr <meta property="rendition:flow">scrolled-doc</meta>
+alias <meta property="rendition:flow">scrolled-doc
+	<meta property="rendition:flow">scrolled-doc</meta>
+
+snippet meta_property_rendition:flow_auto
+abbr <meta property="rendition:flow">auto</meta>
+alias <meta property="rendition:flow">auto
+	<meta property="rendition:flow">auto</meta>
+
+snippet meta_property_rendition:viewport
+abbr [FL]<meta property="rendition:viewport">width=${1}, height=${2}</meta>
+alias fixed_rendition:viewport
+	<meta property="rendition:viewport">width=${1}, height=${2}</meta>
+
+snippet fixed_tag_meta_property_rendition:viewport
+abbr [FL]<meta property="rendition:viewport">width=${1}, height=${2}</meta>
+	<meta property="rendition:viewport">width=${1}, height=${2}</meta>
+
+snippet meta_property_rendition:viewport_refines
+abbr [FL]<meta property="rendition:viewport" refines="#${3}">width=${1}, height=${2}</meta>
+	<meta property="rendition:viewport" refines="#${3}">width=${1}, height=${2}</meta>
+
+# Media Overlay
+# =================================================================
+
+# value
+
+snippet media:active-class
+abbr [MO]media:active-class
+alias value_meta_property_media:active-class
+options word
+	media:active-class
+
+snippet media:duration
+abbr [MO]media:duration
+alias value_meta_property_media:duration
+options word
+	media:duration
+
+snippet media:narrator
+abbr [MO]media:narrator
+alias value_meta_property_media:narrator
+options word
+	media:narrator
+
+snippet media:playback-active-class
+abbr [MO]media:playback-active-class
+alias value_meta_property_media:playback-active-class
+options word
+	media:playback-active-class
+
+# attribute
+
+snippet property_active-class
+abbr [MO]property="media:active-class"
+alias property="media:active-class
+	property="media:active-class"
+
+snippet property_duration
+abbr [MO]property="media:duration"
+alias property="media:duration
+	property="media:duration"
+
+snippet property_narrator
+abbr [MO]property="media:narrator"
+alias property="media:narrator
+	property="media:narrator"
+
+snippet property_playback-active-class
+abbr [MO]property="media:playback-active-class"
+alias property="media:playback-active-clas
+	property="media:playback-active-class"
+
+# Tag
+
+snippet meta_property_active-class
+alias mediaoverlay_active-class
+	<meta property="media:active-class">${1:-epub-media-overlay-active}</meta>
+
+snippet meta_property_duration-full
+alias mediaoverlay_durration-full
+	<meta property="media:duration">${1}</meta>
+
+snippet meta_property_duration
+alias mediaoverlay_duration
+	<meta property="media:duration" refines="#${1:#:item-id}">${2}</meta>
+
+snippet meta_property_narrator
+alias mediaoverlay_narrator
+	<meta property="media:narrator">${1:#:string}</meta>
+
+snippet meta_property_playback-active-class
+alias mediaoverlay_playback-active-class
+	<meta property="media:playback-active-class">${1:-epub-media-overlay-playing}</meta>
+
+# kindle
+# =================================================================
+
+# value
+
+snippet fixed-layout
+abbr [K]fixed-layout
+alias value_meta_name_fixed-layout
+options word
+	fixed-layout
+
+snippet kindle_value_fixed-layout
+abbr [K]fixed-layout
+options word
+	fixed-layout
+
+snippet orientation-lock
+abbr [K]orientation-lock
+alias value_meta_name_orientation-lock
+options word
+	orientation-lock
+
+snippet kindle_value_orientation-lock
+abbr [K]orientation-lock
+options word
+	orientation-lock
+
+snippet RegionMagnification
+abbr [K]RegionMagnification
+alias value_meta_name_RegionMagnification
+options word
+	RegionMagnification
+
+snippet kindle_value_RegionMagnification
+abbr [K]RegionMagnification
+options word
+	RegionMagnification
+
+snippet region-mag
+abbr [K]region-mag
+alias value_meta_name_region-mag
+options word
+	region-mag
+
+snippet kindle_value_region-mag
+abbr [K]region-mag
+options word
+	region-mag
+
+snippet primary-writing-mode
+abbr [K]primary-writing-mode
+alias value_meta_name_primary-writing-mode
+options word
+	primary-writing-mode
+
+snippet kindle_value_primary-writing-mode
+abbr [K]primary-writing-mode
+options word
+	primary-writing-mode
+
+snippet book-type
+abbr [K]book-type
+alias value_meta_name_book-type
+options word
+	book-type
+
+snippet kindle_value_book-type
+abbr [K]book-type
+options word
+	book-type
+
+snippet ke-border-color
+abbr [K]ke-border-color
+alias value_meta_name_ke-border-color
+options word
+	ke-border-color
+
+snippet kindle_value_ke-border-color
+abbr [K]ke-border-color
+	ke-border-color
+
+snippet ke-border-width
+abbr [K]ke-border-width
+alias value_meta_name_ke-border-width
+options word
+	ke-border-width
+
+snippet kindle_value_ke-border-width
+abbr [K]ke-border-width
+options word
+	ke-border-width
+
+snippet zero-gutter
+abbr [K]zero-gutter
+alias value_meta_name_zero-gutter
+options word
+	zero-gutter
+
+snippet kindle_value_zero-gutter
+abbr [K]zero-gutter
+options word
+	zero-gutter
+
+snippet zero-margin
+abbr [K]zero-margin
+options word
+alias value_meta_name_zero-margin
+	zero-margin
+
+snippet kindle_value_zero-margin
+abbr [K]zero-margin
+options word
+	zero-margin
+
+# attribute
+
+snippet name_fixed-layout
+abbr [K]name="fixed-layout"
+alias name="fixed-layout
+	name="fixed-layout"
+
+snippet kindle_name_fixed-layout
+alias kindle_attr_name_fixed-layout
+abbr [K]name="fixed-layout"
+	name="fixed-layout"
+
+snippet name_original-resolution
+abbr [K]name="original-resolution"
+alias name="original-resolution
+	name="original-resolution"
+
+snippet kindle_name_original-resolution
+abbr [K]name="original-resolution"
+alias kindle_attr_name_original-resolution
+	name="original-resolution"
+
+snippet name_RegionMagnification
+abbr [K]name="RegionMagnification"
+alias name="RegionMagnification
+	name="RegionMagnification"
+
+snippet kindle_name_RegionMagnification
+abbr [K]name="RegionMagnification"
+alias kindle_attr_name_RegionMagnification
+	name="RegionMagnification"
+
+snippet name_region-mag
+abbr [K]name="region-mag"
+alias name="region-mag
+	name="region-mag"
+
+snippet kindle_name_region-mag
+abbr [K]name="region-mag"
+alias kindle_attr_name_region-mag
+	name="region-mag"
+
+snippet name_primary-writing-mode
+abbr [K]name="primary-writing-mode"
+alias name="primary-writing-mode
+	name="primary-writing-mode"
+
+snippet kindle_name_primary-writing-mode
+abbr [K]name="primary-writing-mode"
+alias kindle_attr_name_primary-writing-mode
+	name="primary-writing-mode"
+
+snippet name_book-type
+abbr [K]name="book-type"
+alias name="book-type
+	name="book-type"
+
+snippet kindle_name_book-type
+abbr [K]name="book-type"
+alias kindle_attr_name_book-type
+	name="book-type"
+
+snippet name_ke-border-color
+abbr [K]name="ke-border-color"
+alias name="ke-border-color
+	name="ke-border-color"
+
+snippet kindle_name_ke-border-color
+abbr [K]name="ke-border-color"
+alias kindle_attr_name_ke-border-color
+	name="ke-border-color"
+
+snippet name_ke-border-width
+abbr [K]name="ke-border-width"
+alias name="ke-border-width
+	name="ke-border-width"
+
+snippet kindle_name_ke-border-width
+abbr [K]name="ke-border-width"
+alias kindle_attr_name_ke-border-width
+	name="ke-border-width"
+
+snippet name_zero-gutter
+abbr [K]name="zero-gutter"
+alias name="zero-gutter
+	name="zero-gutter"
+
+snippet kindle_name_zero-gutter
+abbr [K]name="zero-gutter"
+alias kindle_attr_name_zero-gutter
+	name="zero-gutter"
+
+snippet name_zero-margin
+abbr [K]name="zero-margin"
+alias name="zero-margin
+	name="zero-margin"
+
+snippet kindle_name_zero-margin
+abbr [K]name="zero-margin"
+alias kindle_attr_name_zero-margin
+	name="zero-margin"
+
+# Tag
+
+snippet dc_kindle_language_en
+alias kindle_language_en
+abbr kindle_lang=en
+	<dc:language>en</dc:language>
+
+snippet dc_kindle_language_de
+alias kindle_language_de
+abbr kindle_lang=de
+	<dc:language>de</dc:language>
+
+snippet dc_kindle_language_fr
+alias kindle_language_fr
+abbr kindle_lang=fr
+	<dc:language>fr</dc:language>
+
+snippet dc_kindle_language_it
+alias kindle_language_it
+abbr kindle_lang=it
+	<dc:language>it</dc:language>
+
+snippet dc_kindle_language_es
+alias kindle_language_es
+abbr kindle_lang=es
+	<dc:language>es</dc:language>
+
+snippet dc_kindle_language_zh
+alias kindle_language_zh
+abbr kindle_lang=zh
+	<dc:language>zh</dc:language>
+
+snippet dc_kindle_language_ja
+alias kindle_language_ja
+abbr kindle_lang=ja
+	<dc:language>ja</dc:language>
+
+snippet dc_kindle_language_pt
+alias kindle_language_pt
+abbr kindle_lang=pt
+	<dc:language>pt</dc:language>
+
+snippet meta_name_fixed-layout
+abbr [K]<meta name="fixed-layout" content="${0}"/>
+alias kindle_meta_fixed-layout
+	<meta name="fixed-layout" content="${0}"/>
+
+snippet meta_name_fixed-layout_false
+abbr [K]<meta name="fixed-layout" content="false"/>
+alias kindle_meta_fixed-layout_false
+	<meta name="fixed-layout" content="false"/>
+
+snippet kindle_tag_name_fixed-layout_false
+abbr [K]<meta name="fixed-layout" content="false"/>
+	<meta name="fixed-layout" content="false"/>
+
+snippet meta_name_fixed-layout_true
+abbr [K]<meta name="fixed-layout" content="true"/>
+alias kindle_meta_fixed_true
+	<meta name="fixed-layout" content="true"/>
+
+snippet kindle_tag_name_fixed-layout_true
+abbr [K]<meta name="fixed-layout" content="true"/>
+	<meta name="fixed-layout" content="true"/>
+
+snippet meta_name_original-resolution
+abbr [K]<meta name="original-resolution" content="${1}x${2}"/>
+alias kindle_meta_original-resolution
+	<meta name="original-resolution" content="${1}x${2}"/>
+
+snippet meta_name_orientation-lock
+abbr [K]<meta name="orientation-lock" content="${0}"/>
+alias kindle_meta_orientation-lock
+	<meta name="orientation-lock" content="${0}"/>
+
+snippet meta_name_orientation-lock_landscape
+abbr [K]<meta name="orientation-lock" content="landscape"/>
+alias kindle_meta_orientation-lock_landscape
+	<meta name="orientation-lock" content="landscape"/>
+
+snippet kindle_tag_name_orientation-lock_landscape
+abbr [K]<meta name="orientation-lock" content="landscape"/>
+	<meta name="orientation-lock" content="landscape"/>
+
+snippet meta_name_orientation-lock_portrait
+abbr [K]<meta name="orientation-lock" content="portrait"/>
+alias kindle_meta_orientation-lock_portrait
+	<meta name="orientation-lock" content="portrait"/>
+
+snippet kindle_tag_name_orientation-lock_portrait
+abbr [K]<meta name="orientation-lock" content="portrait"/>
+	<meta name="orientation-lock" content="portrait"/>
+
+snippet meta_name_orientation-lock_auto
+abbr [K]<meta name="orientation-lock" content="auto"/>
+alias kindle_meta_orientation-lock_auto
+	<meta name="orientation-lock" content="auto"/>
+
+snippet kindle_tag_name_orientation-lock_auto
+abbr [K]<meta name="orientation-lock" content="auto"/>
+	<meta name="orientation-lock" content="auto"/>
+
+snippet meta_name_RegionMagnification
+abbr [K]<meta name="RegionMagnification" content="${0}"/>
+alias kindle_meta_RegionMagnification
+	<meta name="RegionMagnification" content="${0}"/>
+
+snippet meta_name_RegionMagnification_false
+abbr [K]<meta name="RegionMagnification" content="false"/>
+alias kindle_meta_RegionMagnification_false
+	<meta name="RegionMagnification" content="false"/>
+
+snippet kindle_tag_name_RegionMagnification_false
+abbr [K]<meta name="RegionMagnification" content="false"/>
+	<meta name="RegionMagnification" content="false"/>
+
+snippet meta_name_RegionMagnification_true
+abbr [K]<meta name="RegionMagnification" content="true"/>
+alias kindle_meta_RegionMagnification_true
+	<meta name="RegionMagnification" content="true"/>
+
+snippet kindle_tag_name_RegionMagnification_true
+abbr [K]<meta name="RegionMagnification" content="true"/>
+	<meta name="RegionMagnification" content="true"/>
+
+snippet meta_name_region-mag
+abbr [K]<meta name="region-mag" content="${0}"/>
+alias kindle_meta_region-mag
+	<meta name="region-mag" content="${0}"/>
+
+snippet meta_name_region-mag_false
+abbr [K]<meta name="region-mag" content="false"/>
+alias kindle_meta_region-mag_false
+	<meta name="region-mag" content="false"/>
+
+snippet kindle_tag_name_region-mag_false
+abbr [K]<meta name="region-mag" content="false"/>
+	<meta name="region-mag" content="false"/>
+
+snippet meta_name_region-mag_true
+abbr [K]<meta name="region-mag" content="true"/>
+alias kindle_meta_region-mag_true
+	<meta name="region-mag" content="true"/>
+
+snippet kindle_tag_name_region-mag_true
+abbr [K]<meta name="region-mag" content="true"/>
+	<meta name="region-mag" content="true"/>
+
+snippet meta_name_primary-writing-mode
+abbr [K]<meta name="primary-writing-mode" content="${0}"/>
+alias kindle_meta_primary-writing-mode
+	<meta name="primary-writing-mode" content="${0}"/>
+
+snippet meta_name_primary-writing-mode_horizontal-lr
+abbr [K]<meta name="primary-writing-mode" content="horizontal-lr"/>
+alias kindle_meta_primary-writing-mode_horizontal-lr
+	<meta name="primary-writing-mode" content="horizontal-lr"/>
+
+snippet meta_name_primary-writing-mode_horizontal-rl
+abbr [K]<meta name="primary-writing-mode" content="horizontal-rl"/>
+alias kindle_meta_primary-writing-mode_horizontal-rl
+	<meta name="primary-writing-mode" content="horizontal-rl"/>
+
+snippet kindle_tag_name_primary-writing-mode_horizontal-rl
+abbr [K]<meta name="primary-writing-mode" content="horizontal-rl"/>
+	<meta name="primary-writing-mode" content="horizontal-rl"/>
+
+snippet meta_name_primary-writing-mode_vertical-lr
+abbr [K]<meta name="primary-writing-mode" content="vertical-lr"/>
+alias kindle_meta_primary-writing-mode_vertical-lr
+	<meta name="primary-writing-mode" content="vertical-lr"/>
+
+snippet meta_name_primary-writing-mode_vertical-rl
+abbr [K]<meta name="primary-writing-mode" content="vertical-rl"/>
+alias kindle_meta_primary-writing-mode_vertical-rl
+	<meta name="primary-writing-mode" content="vertical-rl"/>
+
+snippet kindle_tag_name_primary-writing-mode_vertical-rl
+abbr [K]<meta name="primary-writing-mode" content="vertical-rl"/>
+	<meta name="primary-writing-mode" content="vertical-rl"/>
+
+snippet meta_name_book-type
+abbr [K]<meta name="book-type" content="${0}"/>
+alias kindle_meta_book-type
+	<meta name="book-type" content="${0}"/>
+
+snippet meta_name_book-type_children
+abbr [K]<meta name="book-type" content="children"/>
+alias kindle_meta_book-type_children
+	<meta name="book-type" content="children"/>
+
+snippet kindle_tag_name_book-type_children
+abbr [K]<meta name="book-type" content="children"/>
+	<meta name="book-type" content="children"/>
+
+snippet meta_name_book-type_comic
+abbr [K]<meta name="book-type" content="comic"/>
+alias kindle_meta_book-type_comic
+	<meta name="book-type" content="comic"/>
+
+snippet kindle_tag_name_book-type_comic
+abbr [K]<meta name="book-type" content="comic"/>
+	<meta name="book-type" content="comic"/>
+
+snippet meta_name_ke-border-color
+abbr [K]<meta name="ke-border-color" content="#${1:color-code}"/>
+alias kindle_meta_ke-border-color
+	<meta name="ke-border-color" content="#${1:color-code}"/>
+
+snippet meta_name_ke-border-width
+abbr [K]<meta name="ke-border-width" content="$[1:number]"/>
+alias kindle_meta_ke-border-width
+	<meta name="ke-border-width" content="$[1:number]"/>
+
+snippet meta_name_zero-guttera
+abbr [K]<meta name="zero-gutter" content="${0}"/>
+alias kindle_meta_zero-gutter
+	<meta name="zero-gutter" content="${0}"/>
+
+snippet meta_name_zero-guttera_false
+abbr [K]<meta name="zero-gutter" content="false"/>
+alias kindle_meta_zero-guttera_false
+	<meta name="zero-gutter" content="false"/>
+
+snippet kindle_tag_name_zero-gutter_false
+abbr [K]<meta name="zero-gutter" content="false"/>
+	<meta name="zero-gutter" content="false"/>
+
+snippet meta_name_zero-guttera_true
+abbr [K]<meta name="zero-gutter" content="true"/>
+alias kindle_meta_zero-guttera_true
+	<meta name="zero-gutter" content="true"/>
+
+snippet kindle_tag_name_zero-gutter_true
+abbr [K]<meta name="zero-gutter" content="true"/>
+	<meta name="zero-gutter" content="true"/>
+
+snippet meta_name_zero-margin
+abbr [K]<meta name="zero-margin" content="${0}"/>
+alias kindle_meta_zero-margin
+	<meta name="zero-margin" content="${0}"/>
+
+snippet meta_name_zero-margin_false
+abbr [K]<meta name="zero-margin" content="false"/>
+alias kindle_meta_zero-margin_false
+	<meta name="zero-margin" content="false"/>
+
+snippet kindle_tag_name_zero-margin_false
+abbr [K]<meta name="zero-margin" content="false"/>
+	<meta name="zero-margin" content="false"/>
+
+snippet meta_name_zero-margin_true
+abbr [K]<meta name="zero-margin" content="true"/>
+alias kindle_meta_zero-margin_true
+	<meta name="zero-margin" content="true"/>
+
+snippet kindle_tag_name_zero-margin_true
+abbr [K]<meta name="zero-margin" content="true"/>
+	<meta name="zero-margin" content="true"/>
+
+# ibooks
+# =================================================================
+
+# value
+
+snippet ibooks:binding
+abbr [A]ibooks:binding
+alias value_meta_ibooks:binding
+options word
+	ibooks:binding
+
+snippet ibooks_value_ibooks:binding
+abbr [A]ibooks:binding
+alias value_ibooks_ibooks:binding
+options word
+	ibooks:binding
+
+snippet ibooks:specified-fonts
+abbr [A]ibooks:specified-fonts
+alias value_meta_ibooks:specified-fonts
+options word
+	ibooks:specified-fonts
+
+snippet ibooks_value_ibooks:specified-fonts
+abbr [A]ibooks:specified-fonts
+alias value_ibooks_ibooks:specified-fonts
+options word
+	ibooks:specified-fonts
+
+# attribute
+
+snippet property_ibooks_binding
+abbr [A]property="ibooks:binding"
+alias property="ibooks:binding
+	property="ibooks:binding"
+
+snippet ibooks_property_binding
+abbr [A]property="ibooks:binding"
+	property="ibooks:binding"
+
+snippet property_ibooks_specified-font
+abbr [A]property="ibooks:specified-fonts
+alias property="ibooks:specified-fonts
+	property="ibooks:specified-fonts"
+
+snippet ibooks_property_specified-fonts
+abbr [A]property="ibooks:specified-fonts
+	property="ibooks:specified-fonts"
+
+snippet ibooks_attr_property_binding
+abbr [A]property="ibooks:binding"
+	property="ibooks:binding"
+
+snippet ibooks_attr_property_specified-fonts
+abbr [A]property="ibooks:specified-fonts
+	property="ibooks:specified-fonts"
+
+# Tag
+
+snippet meta_ibooks_binding_false
+abbr [A]<meta property="ibooks:binding">false</meta>
+alias ibooks_meta_binding_false
+	<meta property="ibooks:binding">false</meta>
+
+snippet meta_ibooks_binding_ture
+abbr [A]<meta property="ibooks:binding">ture</meta>
+alias ibooks_meta_binding_true
+	<meta property="ibooks:binding">ture</meta>
+
+snippet meta_ibooks_specified-font_false
+abbr [A]<meta property="ibooks:specified-fonts">false</meta>
+alias ibooks_meta_specified-font_false
+	<meta property="ibooks:specified-fonts">false</meta>
+
+snippet meta_ibooks_specified-font_ture
+abbr [A]<meta property="ibooks:specified-fonts">true</meta>
+alias ibooks_meta_specified-font_true
+	<meta property="ibooks:specified-fonts">true</meta>
+
+snippet ibooks_tag_property_ibooks:binding_false
+abbr [A]<meta property="ibooks:binding">false</meta>
+	<meta property="ibooks:binding">false</meta>
+
+snippet ibooks_tag_property_ibooks:binding_ture
+abbr [A]<meta property="ibooks:binding">ture</meta>
+	<meta property="ibooks:binding">ture</meta>
+
+snippet ibooks_tag_property_ibooks:specified-fonts_false
+abbr [A]<meta property="ibooks:specified-fonts">false</meta>
+	<meta property="ibooks:specified-fonts">false</meta>
+
+snippet ibooks_tag_property_ibooks:specified-fonts_true
+abbr [A]<meta property="ibooks:specified-fonts">true</meta>
+	<meta property="ibooks:specified-fonts">true</meta>
+
+# =================================================================
+# manifest
+# =================================================================
+
+# attribute
+
+snippet manifest_attr_id
+	id="${0}"
+
+snippet item_attr_id
+	id="${0}"
+snippet item_attr_href
+	href="${0}"
+snippet item_attr_media-type
+	media-type="${0}"
+snippet item_attr_fallback
+	fallback="${0}"
+snippet item_attr_properties
+	properties="${0}"
+snippet item_attr_media-overlay
+	media-overlay="${0}"
+
+# Tags
+
+snippet manifest
+	<manifest>
+	${0}
+	</manifest>
+
+snippet manifestid
+	<manifest id="">
+	${0}
+	</manifest>
+
+snippet item
+	<item media-type="${1}" id="${2}" href="${3}"/>
+
+snippet item#
+	<item media-type="${1}" id="${2}" href="${3}"${4: properties="${5:\}"}${6: fallback="${7:\}"}${8: media-overlay="${9:\}"}/>
+
+# core media type
+
+# value
+
+snippet image/gif
+alias value_item_media-type_gif
+options word
+	image/gif
+
+snippet gif
+options word
+	image/gif
+
+snippet image/jpeg
+alias value_item_media-type_jpeg
+options word
+	image/jpeg
+
+snippet jpg
+alias jpeg
+options word
+	image/jpeg
+
+snippet image/png
+alias value_item_media-type_png
+options word
+	image/png
+
+snippet png
+options word
+	image/png
+
+snippet image/svg+xml
+alias value_item_media-type_svg
+options word
+	image/svg+xml
+
+snippet svg
+options word
+	image/svg+xml
+
+snippet application/xhtml+xml
+alias value_item_media-type_xhtml
+options word
+	application/xhtml+xml
+
+snippet xhtml+xml
+options word
+	application/xhtml+xml
+
+snippet application/vnd.ms-opentype
+alias value_item_media-type_opentype
+options word
+	application/vnd.ms-opentype
+
+snippet opentype
+options word
+	application/vnd.ms-opentype
+
+snippet application/font-woff
+alias value_item_media-type_woff
+options word
+	application/font-woff
+
+snippet woff
+options word
+	application/font-woff
+
+snippet application/smil+xml
+alias value_item_media-type_smil
+options word
+	application/smil+xml
+
+snippet smil
+options word
+	application/smil+xml
+
+snippet application/pls+xml
+alias value_item_media-type_pls
+options word
+	application/pls+xml
+
+snippet pls
+options word
+	application/pls+xml
+
+snippet audio/mpeg
+options word
+alias value_item_media-type_mp3
+	audio/mpeg
+
+snippet mpeg
+alias mp3
+options word
+	audio/mpeg
+
+snippet audio/mp4
+alias value_item_media-type_mp4
+options word
+	audio/mp4
+
+snippet value_item_media-type_aac
+options word
+	audio/mp4
+
+snippet mp4
+alias aac
+options word
+	audio/mp4
+
+snippet text/css
+alias value_item_media-type_css
+options word
+	text/css
+
+snippet css
+options word
+	text/css
+
+snippet text/javascript
+alias value_item_media-type_javascript
+options word
+	text/javascript
+
+snippet javascript
+options word
+	text/javascript
+
+snippet application/x-dtbncx+xml
+alias value_item_media-type_ncx
+options word
+	application/x-dtbncx+xml
+
+snippet ncx
+options word
+	application/x-dtbncx+xml
+
+# attribute
+
+snippet media-type_gif
+alias media-type="image/gif
+	media-type="image/gif"
+
+snippet media-type_jpeg
+alias media-type="image/jpeg
+	media-type="image/jpeg"
+
+snippet media-type_png
+alias media-type="image/png
+	media-type="image/png"
+
+snippet media-type_svg
+alias media-type="image/svg+xml
+	media-type="image/svg+xml"
+
+snippet media-type_xhtml
+alias media-type="application/xhtml+xml
+	media-type="application/xhtml+xml"
+
+snippet media-type_opentype
+alias media-type="application/vnd.ms-opentype
+	media-type="application/vnd.ms-opentype"
+
+snippet media-type_woff
+alias media-type="application/font-woff
+	media-type="application/font-woff"
+
+snippet media-type_smil
+alias media-type="application/smil+xml
+	media-type="application/smil+xml"
+
+snippet media-type_pls
+alias media-type="application/pls+xml
+	media-type="application/pls+xml"
+
+snippet media-type_mp3
+alias media-type="audio/mpeg
+	media-type="audio/mpeg"
+
+snippet media-type_mp4
+alias media-type="audio/mp4
+	media-type="audio/mp4"
+
+snippet media-type_aac
+	media-type="audio/mp4"
+
+snippet media-type_css
+alias media-type="text/css
+	media-type="text/css"
+
+snippet media-type_javascript
+alias media-type="text/javascript
+	media-type="text/javascript"
+
+snippet media-type_ncx
+alias media-type="application/x-dtbncx+xml
+	media-type="application/x-dtbncx+xml"
+
+# Tag
+
+snippet item_media-type_gif
+	<item media-type="image/gif" id="${1}" href="${2}"/>
+
+snippet item_media-type_jpeg
+	<item media-type="image/jpeg" id="${1}" href="${2}"/>
+
+snippet item_media-type_png
+	<item media-type="image/png" id="${1}" href="${2}"/>
+
+snippet item_media-type_svg
+	<item media-type="image/svg+xml" id="${1}" href="${2}"/>
+
+snippet item_media-type_xhtml
+	<item media-type="application/xhtml+xml" id="${1}" href="${2}"/>
+
+snippet item_media-type_nav
+	<item media-type="application/xhtml+xml" id="${1}" href="${2}" properties="nav"/>
+
+snippet item_media-type_opentype
+	<item media-type="application/vnd.ms-opentype" id="${1}" href="${2}"/>
+
+snippet item_media-type_woff
+	<item media-type="application/font-woff" id="${1}" href="${2}"/>
+
+snippet item_media-type_smil
+	<item media-type="application/smil+xml" id="${1}" href="${2}"/>
+
+snippet item_media-type_pls
+	<item media-type="application/pls+xml" id="${1}" href="${2}"/>
+
+snippet item_media-type_mp3
+	<item media-type="audio/mpeg" id="${1}" href="${2}"/>
+
+snippet item_media-type_mp4
+alias item.aac
+	<item media-type="audio/mp4" id="${1}" href="${2}"/>
+
+snippet item_media-type_css
+	<item media-type="text/css" id="${1}" href="${2}"/>
+
+snippet item_media-type_javascript
+	<item media-type="text/javascript" id="${1}" href="${2}"/>
+
+snippet item_media-type_ncx
+	<item media-type="application/x-dtbncx+xml" id="${1}" href="${2}"/>
+
+snippet item_cover-image
+	<item media-type="" id="${1}" href="${2}" properties="cover-image"/>
+
+# item properties
+
+# value
+
+snippet cover-image
+alias value_item_properties_cover-image
+options word
+	cover-image
+
+snippet mathml
+alias value_item_properties_mathml
+options word
+	mathml
+
+snippet value_item_properties_nav
+options word
+	nav
+
+snippet remote-resources
+alias value_item_properties_remote-resources
+options word
+	remote-resources
+
+snippet scripted
+alias value_item_properties_scripted
+options word
+	scripted
+
+snippet value_item_properties_svg
+options word
+	svg
+
+snippet switch
+alias value_item_properties_switch
+options word
+	switch
+
+# attribute
+
+snippet properties_cover-image
+alias properties="cover-image
+	properties="cover-image"
+
+snippet properties_mathml
+alias properties="mathml
+	properties="mathml"
+
+snippet properties_nav
+alias properties="nav
+	properties="nav"
+
+snippet properties_remote-resources
+alias properties="remote-resources
+	properties="remote-resources"
+
+snippet properties_scripted
+alias properties="scripted
+	properties="scripted"
+
+snippet properties_svg
+alias properties="svg
+	properties="svg"
+
+snippet properties_switch
+alias properties="switch
+	properties="switch"
+
+# =================================================================
+# spine
+# =================================================================
+
+# value
+
+snippet value_spine_page-progression-direction_rtl
+options word
+	rtl
+
+snippet value_spine_page-progression-direction_ltr
+options word
+	ltr
+
+snippet value_spine_page-progression-direction_default
+options word
+	default
+
+snippet yes
+alias value_itemref_linear_yes
+options word
+	yes
+
+snippet no
+alias value_itemref_linear_no
+options word
+	no
+
+# attribute
+
+snippet spine_attr_id
+	id="${0}"
+snippet spine_attr_toc
+	toc="${0}"
+snippet spine_attr_page-progression-direction
+	page-progression-direction="${0}"
+
+snippet itemref_attr_idref
+	idref="${0}"
+snippet itemref_attr_linear
+	linear="${0}"
+snippet itemref_attr_id
+	id="${0}"
+snippet itemref_attr_properties
+	properties="${0}"
+
+snippet page-progression-direction_rtl
+alias page-progression-direction="rtl
+	page-progression-direction="rtl"
+snippet page-progression-direction_ltr
+alias page-progression-direction="ltr
+	page-progression-direction="ltr"
+snippet page-progression-direction_default
+alias page-progression-direction="default
+	page-progression-direction="default"
+
+snippet linear_yes
+alias linear="yes
+	linear="yes"
+snippet linear_no
+alias linear="no
+	linear="no"
+
+# Tag
+
+snippet spine
+	<spine page-progression-direction="${1}">
+	${0}
+	</spine>
+
+snippet spine_page-progression-direction_rtl
+	<spine page-progression-direction="rtl">
+	${0}
+	</spine>
+
+snippet spine_page-progression-direction_ltr
+	<spine page-progression-direction="ltr">
+	${0}
+	</spine>
+
+snippet spine_page-progression-direction_default
+	<spine page-progression-direction="default">
+	${0}
+	</spine>
+
+snippet spine#
+	<spine${1: id="${2:\}"}${3: toc="${4:\}"} page-progression-direction="${5}">
+	${0}
+	</spine>
+
+snippet itemref
+	<itemref idref="${1}"/>
+
+snippet itemref#
+	<itemref${1: linear="${2:\}"} idref="${3}"${4: properties="${5:\}"}${6: id="${7:\}"}/>
+
+# Fixed-Layout
+# =================================================================
+
+# value
+
+snippet rendition:align-x-center
+alias value_itemref_properties_rendition:align-x-center
+options word
+	rendition:align-x-center
+
+snippet rendition:flow-auto
+alias value_itemref_properties_rendition:flow-auto
+options word
+	rendition:flow-auto
+
+snippet rendition:flow-paginated
+alias value_itemref_properties_rendition:flow-paginated
+options word
+	rendition:flow-paginated
+
+snippet rendition:flow-scrolled-continuous
+alias value_itemref_properties_rendition:flow-scrolled-continuous
+options word
+	rendition:flow-scrolled-continuous
+
+snippet rendition:flow-scrolled-doc
+alias value_itemref_properties_rendition:flow-scrolled-doc
+options word
+	rendition:flow-scrolled-doc
+
+snippet rendition:layout-pre-paginated
+alias value_itemref_properties_rendition:layout-pre-paginated
+options word
+	rendition:layout-pre-paginated
+
+snippet rendition:layout-reflowable
+alias value_itemref_properties_rendition:layout-reflowable
+options word
+	rendition:layout-reflowable
+
+snippet rendition:orientation-auto
+alias value_itemref_properties_rendition:orientation-auto
+options word
+	rendition:orientation-auto
+
+snippet rendition:orientation-landscape
+alias value_itemref_properties_rendition:orientation-landscape
+options word
+	rendition:orientation-landscape
+
+snippet rendition:orientation-portrait
+alias value_itemref_properties_rendition:orientation-portrait
+options word
+	rendition:orientation-portrait
+
+snippet rendition:page-spread-center
+alias value_itemref_properties_rendition:page-spread-center
+options word
+	rendition:page-spread-center
+
+snippet page-spread-left
+alias value_itemref_properties_page-spread-left
+options word
+	page-spread-left
+
+snippet page-spread-right
+alias value_itemref_properties_page-spread-right
+options word
+	page-spread-right
+
+snippet rendition:spread-auto
+alias value_itemref_properties_rendition:spread-auto
+options word
+	rendition:spread-auto
+
+snippet rendition:spread-both
+alias value_itemref_properties_rendition:spread-both
+options word
+	rendition:spread-both
+
+snippet rendition:spread-landscape
+alias value_itemref_properties_rendition:spread-landscape
+options word
+	rendition:spread-landscape
+
+snippet rendition:spread-none
+alias value_itemref_properties_rendition:spread-none
+options word
+	rendition:spread-none
+
+snippet rendition:spread-portrait
+alias value_itemref_properties_rendition:spread-portrait
+options word
+	rendition:spread-portrait
+
+# attribute
+
+snippet properties_align-x-center
+alias properties="rendition:align-x-center
+	properties="rendition:align-x-center"
+
+snippet properties_flow-auto
+alias properties="rendition:flow-auto
+	properties="rendition:flow-auto"
+
+snippet properties_flow-paginated
+alias properties="rendition:flow-paginated
+	properties="rendition:flow-paginated"
+
+snippet properties_flow-scrolled-continuous
+alias properties="rendition:flow-scrolled-continuous
+	properties="rendition:flow-scrolled-continuous"
+
+snippet properties_flow-scrolled-doc
+alias properties="rendition:flow-scrolled-doc
+	properties="rendition:flow-scrolled-doc"
+
+snippet properties_layout-pre-paginated
+alias properties="rendition:layout-pre-paginated
+	properties="rendition:layout-pre-paginated"
+
+snippet properties_layout-reflowable
+alias properties="rendition:layout-reflowable
+	properties="rendition:layout-reflowable"
+
+snippet properties_orientation-auto
+alias properties="rendition:orientation-auto
+	properties="rendition:orientation-auto"
+
+snippet properties_orientation-landscape
+alias properties="rendition:orientation-landscape
+	properties="rendition:orientation-landscape"
+
+snippet properties_orientation-portrait
+alias properties="rendition:orientation-portrait
+	properties="rendition:orientation-portrait"
+
+snippet properties_page-spread-center
+alias properties="rendition:page-spread-center
+	properties="rendition:page-spread-center"
+
+snippet properties_page-spread-left
+alias properties="page-spread-left
+	properties="page-spread-left"
+
+snippet properties_page-spread-right
+alias properties="page-spread-right
+	properties="page-spread-right"
+
+snippet properties_spread-auto
+alias properties="rendition:spread-auto
+	properties="rendition:spread-auto"
+
+snippet properties_spread-both
+alias properties="rendition:spread-both
+	properties="rendition:spread-both"
+
+snippet properties_spread-landscape
+alias properties="rendition:spread-landscape
+	properties="rendition:spread-landscape"
+
+snippet properties_spread-none
+alias properties="rendition:spread-none
+	properties="rendition:spread-none"
+
+snippet properties_spread-portrait
+alias properties="rendition:spread-portrait
+	properties="rendition:spread-portrait"
+
+# kindle
+
+# value
+
+snippet facing-page-left
+abbr [K]facing-page-left
+alias value_itemref_properties_facing-page-left
+options word
+	facing-page-left
+
+snippet kindle_value_facing-page-left
+abbr [K]facing-page-left
+options word
+	facing-page-left
+
+snippet facing-page-right
+abbr [K]facing-page-right
+alias value_itemref_properties_facing-page-right
+options word
+	facing-page-right
+
+snippet kindle_value_facing-page-right
+abbr [K]facing-page-right
+options word
+	facing-page-right
+
+snippet layout-blank
+abbr [K]layout-blank
+alias value_itemref_properties_layout-blank
+options word
+	layout-blank
+
+snippet kindle_value_layout-blank
+abbr [K]layout-blank
+options word
+	layout-blank
+
+# attribute
+
+snippet properties_facing-page-left
+abbr [K]properties="facing-page-left"
+alias properties="facing-page-left
+	properties="facing-page-left"
+
+snippet kindle_properties_facing-page-lef
+abbr [K]properties="facing-page-left"
+	properties="facing-page-left"
+
+snippet properties_facing-page-right
+abbr [K]properties="facing-page-right"
+alias properties="facing-page-right
+	properties="facing-page-right"
+
+snippet kindle_properties_facing-page-right
+abbr [K]properties="facing-page-right"
+	properties="facing-page-right"
+
+snippet properties_layout-blank
+abbr [K]properties="layout-blank"
+alias properties="layout-blank
+	properties="layout-blank"
+
+snippet kindle_properties_layout-blank
+abbr [K]properties="layout-blank"
+	properties="layout-blank"
+
+# =================================================================
+# collection
+# =================================================================
+
+# attribute
+
+snippet collection_attr_xml:lang
+	xml:lang="${0}"
+snippet collection_attr_dir
+	dir="${0}"
+snippet collection_attr_id
+	id="${0}"
+snippet collection_attr_role
+	role="${0}"
+
+# Tags
+
+snippet collection
+	<collection role="${1}">
+	${0}
+	</collection>
+
+snippet collection#
+	<collection role="${1}"{2: xml:lang="${3:\}"}${4: dir="${5:\}"}{6: id="${7:\}"}>
+	${0}
+	</collection>
+
+# =================================================================
+# guide
+# =================================================================
+
+# value
+
+snippet value_reference_type_cover
+abbr [K]cover
+alias kindle_value_cover
+options word
+	cover
+snippet value_reference_type_toc
+abbr [K]toc
+alias kindle_value_toc
+options word
+	toc
+
+# attribute
+
+snippet type_cover
+abbr [K]type="cover"
+alias type="cover
+	type="cover"
+
+snippet kindle_type_cover
+abbr [K]type="cover"
+	type="cover"
+
+snippet type_toc
+abbr [K]type="toc"
+alias type="toc
+	type="toc"
+
+snippet kindle_type_toc
+abbr [K]type="toc"
+	type="toc"
+
+# Tags
+
+snippet reference_type_cover
+abbr [K]<reference type="cover" title="${1}" href="${2}"/>
+alias kindle_reference_cover
+	<reference type="cover" title="${1}" href="${2}"/>
+
+snippet reference_type_toc
+abbr [K]<reference type="toc" title="${1}" href="${2}"/>
+alias kindle_reference_toc
+	<reference type="toc" title="${1}" href="${2}"/>
+
+snippet guide
+	<guide>
+	${0}
+	</guide>
+
+# =================================================================
+# bindings
+# =================================================================
+
+# Tags
+
+snippet bindings
+	<bindings>
+	${0}
+	</bindings>
+
+# =================================================================
+# bindings
+# =================================================================
+
+# attribute
+
+snippet mediaType_attr_media-type
+	media-type="${0}"
+snippet mediaType_attr_handler
+	handler="${0}"
+
+# Tags
+
+snippet mediaType
+	<mediaType handler="${1}" media-type="${2}"/>
+
+# =================================================================
+# コードサンプル
+# =================================================================
+
+snippet code_epubj_reflow
+abbr epubj reflow epub
+	<?xml version="1.0" encoding="UTF-8"?>
+	<package
+	 xmlns="http://www.idpf.org/2007/opf"
+	 version="3.0"
+	 xml:lang="ja"
+	 unique-identifier="unique-id"
+	 prefix="ebpaj: http://www.ebpaj.jp/"
+	>
+	
+	<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+	
+	<!-- 作品名 -->
+	<dc:title id="title">作品名１</dc:title>
+	<meta refines="#title" property="file-as">セイレツヨウサクヒンメイカナ01</meta>
+	
+	<!-- 著者名 -->
+	<dc:creator id="creator01">著作者名１</dc:creator>
+	<meta refines="#creator01" property="role" scheme="marc:relators">aut</meta>
+	<meta refines="#creator01" property="file-as">セイレツヨウチョサクシャメイカナ01</meta>
+	<meta refines="#creator01" property="display-seq">1</meta>
+	
+	<dc:creator id="creator02">著作者名２</dc:creator>
+	<meta refines="#creator02" property="role" scheme="marc:relators">aut</meta>
+	<meta refines="#creator02" property="file-as">セイレツヨウチョサクシャメイカナ02</meta>
+	<meta refines="#creator02" property="display-seq">2</meta>
+	
+	<!-- 出版社名 -->
+	<dc:publisher id="publisher">出版社名</dc:publisher>
+	<meta refines="#publisher" property="file-as">セイレツヨウシュッパンシャメイカナ</meta>
+	
+	<!-- 言語 -->
+	<dc:language>ja</dc:language>
+	
+	<!-- ファイルid -->
+	<dc:identifier id="unique-id">urn:uuid:d7a8d311-7cd0-40df-9443-65847561decf</dc:identifier>
+	
+	<!-- 更新日 -->
+	<meta property="dcterms:modified">2012-12-07T00:00:00Z</meta>
+	
+	<!-- etc. -->
+	<meta property="ebpaj:guide-version">1.1.1</meta>
+	
+	</metadata>
+	
+	<manifest>
+	<!-- navigation -->
+	<item media-type="application/xhtml+xml" id="toc" href="navigation-documents.xhtml" properties="nav"/>
+	
+	<!-- style -->
+	<item media-type="text/css" id="book-style"     href="style/book-style.css"/>
+	<item media-type="text/css" id="style-reset"    href="style/style-reset.css"/>
+	<item media-type="text/css" id="style-standard" href="style/style-standard.css"/>
+	<item media-type="text/css" id="style-advance"  href="style/style-advance.css"/>
+	<item media-type="text/css" id="style-check"    href="style/style-check.css"/>
+	
+	<!-- image -->
+	<item media-type="image/jpeg" id="cover" href="image/cover.jpg" properties="cover-image"/>
+	<item media-type=""  id="" href=""/>
+	
+	<!-- xhtml -->
+	<item media-type="application/xhtml+xml" id="p-cover" href="xhtml/p-cover.xhtml"/>
+	</manifest>
+	
+	<spine page-progression-direction="rtl">
+	<itemref linear="yes" idref="p-cover" properties="page-spread-left"/>
+	</spine>
+	
+	</package>
+
+snippet code_epubj_fixed
+abbr epubj fixed epub
+	<?xml version="1.0" encoding="UTF-8"?>
+	<package
+	 xmlns="http://www.idpf.org/2007/opf"
+	 version="3.0"
+	 xml:lang="ja"
+	 unique-identifier="unique-id"
+	 prefix="rendition: http://www.idpf.org/vocab/rendition/#
+	         ebpaj: http://www.ebpaj.jp/"
+	>
+	
+	<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+	
+	<!-- 作品名 -->
+	<dc:title id="title">作品名１</dc:title>
+	<meta refines="#title" property="file-as">セイレツヨウサクヒンメイカナ01</meta>
+	
+	<!-- 著者名 -->
+	<dc:creator id="creator01">著作者名１</dc:creator>
+	<meta refines="#creator01" property="role" scheme="marc:relators">aut</meta>
+	<meta refines="#creator01" property="file-as">セイレツヨウチョサクシャメイカナ01</meta>
+	<meta refines="#creator01" property="display-seq">1</meta>
+	
+	<dc:creator id="creator02">著作者名２</dc:creator>
+	<meta refines="#creator02" property="role" scheme="marc:relators">aut</meta>
+	<meta refines="#creator02" property="file-as">セイレツヨウチョサクシャメイカナ02</meta>
+	<meta refines="#creator02" property="display-seq">2</meta>
+	
+	<!-- 出版社名 -->
+	<dc:publisher id="publisher">出版社名</dc:publisher>
+	<meta refines="#publisher" property="file-as">セイレツヨウシュッパンシャメイカナ</meta>
+	
+	<!-- 言語 -->
+	<dc:language>ja</dc:language>
+	
+	<!-- ファイルid -->
+	<dc:identifier id="unique-id">urn:uuid:860ddf31-55a4-449a-8cc9-3c1837657a15</dc:identifier>
+	
+	<!-- 更新日 -->
+	<meta property="dcterms:modified">2012-12-07T00:00:00Z</meta>
+	
+	<!-- Fixed-Layout Documents指定 -->
+	<meta property="rendition:layout">pre-paginated</meta>
+	<meta property="rendition:spread">landscape</meta>
+	
+	<!-- etc. -->
+	<meta property="ebpaj:guide-version">1.1.1</meta>
+	
+	</metadata>
+	
+	<manifest>
+	
+	<!-- navigation -->
+	<item media-type="application/xhtml+xml" id="toc" href="navigation-documents.xhtml" properties="nav"/>
+	
+	<!-- style -->
+	<item media-type="text/css" id="fixed-layout-jp" href="style/fixed-layout-jp.css"/>
+	
+	<!-- image -->
+	<item media-type="image/jpeg" id="cover" href="image/cover.jpg" properties="cover-image"/>
+	
+	<!-- xhtml -->
+	<item media-type="application/xhtml+xml" id="p-cover" href="xhtml/p-cover.xhtml" properties="svg"/>
+	
+	</manifest>
+	
+	<spine page-progression-direction="rtl">
+	
+	<itemref linear="yes" idref="p-cover"    properties="rendition:page-spread-center"/>
+	<itemref linear="yes" idref="p-white"    properties="page-spread-right"/>
+	<itemref linear="yes" idref="p-001"      properties="page-spread-left"/>
+	
+	</spine>
+	
+	</package>
+
+snippet code_kindle_fixed
+abbr kindle fixed
+	<package version="2.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="">
+	<metadata xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<meta content="comic" name="book-type"/>
+	<meta content="true" name="zero-gutter"/>
+	<meta content="true" name="zero-margin"/>
+	<meta content="true" name="fixed-layout"/>
+	<meta content="KindleComicCreator-1.0" name="generator"/>
+	<dc:title>タイトル</dc:title>
+	<dc:language>ja</dc:language>
+	<dc:creator>著者</dc:creator>
+	<dc:publisher>出版社</dc:publisher>
+	<meta content="none" name="orientation-lock"/>
+	<meta content="horizontal-rl" name="primary-writing-mode"/>
+	<meta content="800x1280" name="original-resolution"/>
+	<meta content="false" name="region-mag"/>
+	<meta content="cover-image" name="cover"/>
+	<dc:source>KC2/1.0/d68ce37/win</dc:source>
+	</metadata>
+	<manifest>
+	<item media-type="application/x-dtbncx+xml" id="" href=""/>
+	<item media-type="image/jpg"                id="" href=""/>
+	<item media-type="application/xhtml+xml"    id="" href=""/>
+	</manifest>
+	<spine toc="ncx">
+	<itemref linear="yes" idref="" properties="page-spread-right"/>
+	<itemref linear="yes" idref="" properties="page-spread-left"/>
+	<itemref linear="yes" idref="" properties="page-spread-right layout-blank"/>
+	</spine>
+	</package>
+
+snippet code_epub_fixed
+abbr EPUB fixed
+	<?xml version="1.0" encoding="UTF-8"?>
+	<package
+	 prefix="rendition: http://www.idpf.org/vocab/rendition/#"
+	 unique-identifier="dcterms-identifier"
+	 xmlns="http://www.idpf.org/2007/opf"
+	 version="3.0"
+	 xml:lang="ja"
+	 dir="ltr"
+	>
+	<metadata 
+	 xmlns:dc="http://purl.org/dc/elements/1.1/" 
+	 xmlns:opf="http://www.idpf.org/2007/opf" 
+	>
+	<dc:identifier id="dcterms-identifier">book-id</dc:identifier>
+	<dc:title>タイトル</dc:title>
+	<dc:creator>著者</dc:creator>
+	<dc:publisher>出版社</dc:publisher>
+	<dc:language>ja</dc:language>
+	<meta property="dcterms:modified">YYYY-MM-DDThh:mm:ssZ</meta>
+	<meta property="rendition:layout">pre-paginated</meta>
+	<meta property="rendition:orientation">auto</meta>
+	<meta property="rendition:spread">auto</meta>
+	<meta name="cover" content="cover-image"/>
+	</metadata>
+	<manifest>
+	<item media-type="application/xhtml+xml" id="" href="" properties="nav"/>
+	<item media-type="application/xhtml+xml" id="" href=""/>
+	<item media-type="image/jpeg" id="" href="" properties="cover-image"/>
+	<item media-type="image/jpeg" id="" href=""/>
+	</manifest>
+	<spine page-progression-direction="rtl">
+	<itemref linear="yes" idref=""/>
+	<itemref linear="yes" idref="" properties="page-spread-right"/>
+	<itemref linear="yes" idref="" properties="page-spread-left"/>
+	</spine>
+	</package>
+
+snippet code_epub2kindle_fixed
+abbr EPUB 3 for Kindle Fixed
+	<?xml version='1.0' encoding='UTF-8'?>
+	<package prefix="rendition: http://www.idpf.org/vocab/rendition/#" version="3.0" xmlns="http://www.idpf.org/2007/opf" dir="ltr" xml:lang="ja" unique-identifier="dcterms-identifier">
+	<metadata xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/">
+	<dc:identifier id="dcterms-identifier">book-id</dc:identifier>
+	<dc:title>タイトル</dc:title>
+	<dc:creator>著者</dc:creator>
+	<dc:publisher>出版社</dc:publisher>
+	<dc:language>ja</dc:language>
+	<meta property="dcterms:modified">YYYY-MM-DDThh:mm:ssZ</meta>
+	<meta property="rendition:layout">pre-paginated</meta>
+	<meta property="rendition:orientation">auto</meta>
+	<meta property="rendition:spread">auto</meta>
+	<meta content="cover-image" name="cover"/>
+	<meta content="true" name="fixed-layout"/>
+	<meta content="true" name="region-mag"/>
+	<meta content="comic" name="book-type"/>
+	<meta content="portrait" name="orientation-lock"/>
+	<meta content="horizontal-lr" name="primary-writing-mode"/>
+	<meta content="800x1280" name="original-resolution"/>
+	<meta content="#000000" name="ke-border-color"/>
+	<meta content="3" name="ke-border-width"/>
+	</metadata>
+	<manifest>
+	<item media-type="application/xhtml+xml" id="nav" href="doc/toc.xhtml" properties="nav"/>
+	<item media-type="application/x-dtbncx+xml" href="toc.ncx" id="ncx"/>
+	<item media-type="image/jpeg" id="cover-image" href="" properties="cover-image"/>
+	<item media-type="image/jpeg" id="" href=""/>
+	<item media-type="application/xhtml+xml" id="" href=""/>
+	</manifest>
+	<spine page-progression-direction="rtl" toc="ncx">
+	<itemref idref="item-11" linear="yes"/>
+	<itemref idref="item-12" linear="yes" properties="page-spread-right"/>
+	<itemref idref="item-13" linear="yes" properties="page-spread-left"/>
+	</spine>
+	</package>
+
+# =================================================================
+# value
+# =================================================================
+
+snippet value_cc: http://creativecommons.org/ns#
+options word
+	cc: http://creativecommons.org/ns#
+snippet value_rendition: http://www.idpf.org/vocab/rendition/#
+options word
+	rendition: http://www.idpf.org/vocab/rendition/#
+snippet value_ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/
+abbr [A]ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/
+options word
+	ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/
+snippet value_foaf: http://xmlns.com/foaf/spec/
+options word
+	foaf: http://xmlns.com/foaf/spec/
+snippet value_dbp: http://dbpedia.org/ontology/
+options word
+	dbp: http://dbpedia.org/ontology/
+snippet value_ebpaj: http://www.ebpaj.jp/
+options word
+	ebpaj: http://www.ebpaj.jp/
+
+snippet value_dcterms:modified
+options word
+	dcterms:modified
+snippet value_alternate-script
+options word
+	alternate-script
+snippet value_display-seq
+options word
+	display-seq
+snippet value_file-as
+options word
+	file-as
+snippet value_group-position
+options word
+	group-position
+snippet value_identifier-type
+options word
+	identifier-type
+snippet value_meta-auth
+options word
+	meta-auth
+snippet value_role
+options word
+	role
+snippet value_source-of
+options word
+	source-of
+snippet value_title-type
+options word
+	title-type
+snippet value_cover
+options word
+	cover
+
+snippet value_marc21xml-record
+options word
+	marc21xml-record
+snippet value_mods-record
+options word
+	onix-record
+snippet value_xml-signature
+options word
+	xml-signature
+snippet value_xmp-record
+options word
+	xmp-record
+
+snippet value_layout
+options word
+	rendition:layout
+snippet value_orientation
+options word
+	rendition:orientation
+snippet value_spread
+options word
+	rendition:spread
+snippet value_flow
+options word
+	rendition:flow
+snippet value_viewport
+options word
+	rendition:viewport
+
+snippet value_active-class
+options word
+	media:active-class
+snippet value_duration
+options word
+	media:duration
+snippet value_narrator
+options word
+	media:narrator
+snippet value_playback-active-class
+options word
+	media:playback-active-class
+
+snippet value_fixed-layout
+abbr [K]fixed-layout
+options word
+	fixed-layout
+snippet value_original-resolution
+abbr [K]original-resolution
+options word
+	original-resolution
+snippet value_RegionMagnification
+abbr [K]RegionMagnification
+options word
+	RegionMagnification
+snippet value_region-mag
+abbr [K]region-mag
+options word
+	region-mag
+snippet value_primary-writing-mode
+abbr [K]primary-writing-mode
+options word
+	primary-writing-mode
+snippet value_book-type
+abbr [K]book-type
+options word
+	book-type
+snippet value_ke-border-color
+abbr [K]ke-border-color
+options word
+	ke-border-color
+snippet value_ke-border-width
+abbr [K]ke-border-width
+options word
+	ke-border-width
+snippet value_zero-gutter
+abbr [K]zero-gutter
+options word
+	zero-gutter
+snippet value_zero-margin
+abbr [K]zero-margin
+options word
+	zero-margin
+
+snippet value_false
+options word
+	false
+snippet value_true
+options word
+	true
+snippet value_landscap
+options word
+	landscap
+snippet value_portrait
+options word
+	portrait
+snippet value_auto
+options word
+	auto
+snippet value_horizontal-lr
+options word
+	horizontal-lr
+snippet value_horizontal-rl
+options word
+	horizontal-rl
+snippet value_vertical-lr
+options word
+	vertical-lr
+snippet value_vertical-rl
+options word
+	vertical-rl
+snippet value_children
+options word
+	children
+snippet value_comic
+options word
+	comic
+
+snippet value_ibooks:binding
+abbr [A]ibooks:binding
+options word
+	ibooks:binding
+snippet value_ibooks:specified-fonts
+abbr [A]ibooks:specified-fonts
+options word
+	ibooks:specified-fonts
+
+snippet value_image/gif
+options word
+	image/gif
+snippet value_image/jpeg
+options word
+	image/jpeg
+snippet value_image/png
+options word
+	image/png
+snippet value_image/svg+xml
+options word
+	image/svg+xml
+snippet value_application/xhtml+xml
+options word
+	application/xhtml+xml
+snippet value_application/vnd.ms-opentype
+options word
+	application/vnd.ms-opentype
+snippet value_application/font-woff
+options word
+	application/font-woff
+snippet value_application/smil+xml
+options word
+	application/smil+xml
+snippet value_application/pls+xml
+options word
+	application/pls+xml
+snippet value_audio/mpeg
+options word
+	audio/mpeg
+snippet value_audio/mp4
+options word
+	audio/mp4
+snippet value_text/css
+options word
+	text/css
+snippet value_text/javascript
+options word
+	text/javascript
+snippet value_application/x-dtbncx+xml
+options word
+	application/x-dtbncx+xml
+
+snippet value_cover-image
+options word
+	cover-image
+snippet value_mathml
+options word
+	mathml
+snippet value_nav
+options word
+	nav
+snippet value_remote-resources
+options word
+	remote-resources
+snippet value_scripted
+options word
+	scripted
+snippet value_svg
+options word
+	svg
+snippet value_switch
+options word
+	switch
+
+snippet value_rtl
+options word
+	rtl
+snippet value_ltr
+options word
+	ltr
+snippet value_default
+options word
+	default
+
+snippet value_rendition:align-x-center
+options word
+	rendition:align-x-center
+snippet value_rendition:flow-auto
+options word
+	rendition:flow-auto
+snippet value_rendition:flow-paginated
+options word
+	rendition:flow-paginated
+snippet value_rendition:flow-scrolled-continuous
+options word
+	rendition:flow-scrolled-continuous
+snippet value_rendition:flow-scrolled-doc
+options word
+	rendition:flow-scrolled-doc
+snippet value_rendition:layout-pre-paginated
+options word
+	rendition:layout-pre-paginated
+snippet value_rendition:layout-reflowable
+options word
+	rendition:layout-reflowable
+snippet value_rendition:orientation-auto
+options word
+	rendition:orientation-auto
+snippet value_rendition:orientation-landscape
+options word
+	rendition:orientation-landscape
+snippet value_rendition:orientation-portrait
+options word
+	rendition:orientation-portrait
+snippet value_rendition:page-spread-center
+options word
+	rendition:page-spread-center
+snippet value_page-spread-left
+options word
+	page-spread-left
+snippet value_page-spread-right
+options word
+	page-spread-right
+snippet value_rendition:spread-auto
+options word
+	rendition:spread-auto
+snippet value_rendition:spread-both
+options word
+	rendition:spread-both
+snippet value_rendition:spread-landscape
+options word
+	rendition:spread-landscape
+snippet value_rendition:spread-none
+options word
+	rendition:spread-none
+snippet value_rendition:spread-portrait
+options word
+	rendition:spread-portrait
+
+snippet value_facing-page-left
+abbr [K]facing-page-left
+options word
+	facing-page-left
+snippet value_facing-page-right
+abbr [K]facing-page-right
+options word
+	facing-page-right
+snippet value_layout-blank
+abbr [K]layout-blank
+options word
+	layout-blank
+
+# =================================================================
+# attribute
+# =================================================================
+
+snippet attr_content
+	content="${0}"
+snippet attr_dir
+	dir="${0}"
+snippet attr_encoding
+	encoding="${0}"
+snippet attr_fallback
+	fallback="${0}"
+snippet attr_handler
+	handler="${0}"
+snippet attr_href
+	href="${0}"
+snippet attr_id
+	id="${0}"
+snippet attr_linear
+	linear="${0}"
+snippet attr_media-overlay
+	media-overlay="${0}"
+snippet attr_media-type
+	media-type="${0}"
+snippet attr_name
+	name="${0}"
+snippet attr_page-progression-direction
+	page-progression-direction="${0}"
+snippet attr_prefix
+	prefix="${0}"
+snippet attr_properties
+	properties="${0}"
+snippet attr_property
+	property="${0}"
+snippet attr_refines
+	refines="${0}"
+snippet attr_rel
+	rel="${0}"
+snippet attr_role
+	role="${0}"
+snippet attr_scheme
+	scheme="${0}"
+snippet attr_title
+	title="${0}"
+snippet attr_unique-identifier
+	unique-identifier="${0}"
+snippet attr_version
+	version="${0}"
+snippet attr_xml:lang
+	xml:lang="${0}"
+snippet attr_type
+	type="${0}"
+

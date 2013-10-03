@@ -803,9 +803,6 @@ NeoBundle 'kien/rainbow_parentheses.vim'
 " incompatible with smartinput
 " NeoBundle 'vim-scripts/Highlight-UnMatched-Brackets'
 NeoBundle 'vim-scripts/matchit.zip'
-NeoBundle 'semmons99/vim-ruby-matchit'
-" NeoBundle 'vim-scripts/ruby-matchit'
-NeoBundle 'voithos/vim-python-matchit'
 NeoBundle 'vim-scripts/matchparenpp'
 " NeoBundle 'vimtaku/hl_matchit.vim'
 " if has('python')
@@ -964,6 +961,8 @@ NeoBundle 'hrsh7th/vim-neco-calc'
 
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
+" NeoBundle 'vim-scripts/ruby-matchit'
+NeoBundle 'semmons99/vim-ruby-matchit'
 NeoBundleLazyOn FileType ruby,haml,eruby 'tpope/vim-rails'
 " NeoBundleLazyOn FileType ruby 'tpope/vim-rbenv'
 NeoBundleLazyOn FileType ruby 'tpope/vim-bundler'
@@ -1145,7 +1144,8 @@ NeoBundle 'klen/python-mode'
 NeoBundle 'lambdalisue/vim-python-virtualenv'
 " NeoBundle 'lambdalisue/vim-django-support'
 NeoBundle 'gerardo/vim-django-support'
-NeoBundle 'vim-scripts/python_match.vim'
+" NeoBundle 'vim-scripts/python_match.vim'
+NeoBundle 'voithos/vim-python-matchit'
 NeoBundle 'heavenshell/vim-pydocstring'
 NeoBundleLazy 'hachibeeDI/unite-pythonimport', {'autoload':{
       \ 'unite_sources' : ['pythonimport'],
@@ -1267,6 +1267,7 @@ NeoBundleLazyOn FileType csv 'chrisbra/csv.vim'
 NeoBundleLazyOn FileType yaml 'henrik/vim-yaml-flattener'
 NeoBundle 'aklt/plantuml-syntax'
 NeoBundle 'maxmeyer/vim-taskjuggler'
+NeoBundle 'hara/vim-opf'
 
 NeoBundleLazy 'motemen/hatena-vim', {
       \ 'autoload': {
@@ -1857,7 +1858,7 @@ MyAutocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
       \ | exe "normal! g`\""
       \ | endif
 
-function! s:cmdwin_my_settings() "{{{3
+function! s:vimrc_cmdwin_init() "{{{3
   noremap <buffer><nowait> q :q<CR>
   noremap <buffer> <Esc> :q<CR>
   inoremap <buffer><expr> kk col('.') == 1 ? '<Esc>k' : 'kk'
@@ -1869,7 +1870,7 @@ function! s:cmdwin_my_settings() "{{{3
   endif
   startinsert!
 endfunction " }}}
-MyAutocmd CmdwinEnter * call s:cmdwin_my_settings()
+MyAutocmd CmdwinEnter * call s:vimrc_cmdwin_init()
 
 " vim -b : edit binary using xxd-format! "{{{3
 augroup vimrc-binary
@@ -2177,19 +2178,19 @@ nnoremap [!space]g  :Ack<Space>-i<Space>''<Left>
 nnoremap [!space]gg :Ack<Space>-i<Space>''<Left>
 
 
-function! s:my_quickfix_init()
+function! s:vimrc_quickfix_init()
   " nnoremap <buffer> < :<C-u><CR>
 endfunction
 
 " quickfix のエラー箇所を波線でハイライト
 let g:hier_highlight_group_qf  = "qf_error_ucurl"
-function! s:my_make_init()
+function! s:vimrc_make_init()
   HierUpdate
   QuickfixStatusEnable
 endfunction
 
-MyAutocmd FileType qf call s:my_quickfix_init()
-MyAutocmd QuickfixCmdPost make call s:my_make_init()
+MyAutocmd FileType qf call s:vimrc_quickfix_init()
+MyAutocmd QuickfixCmdPost make call s:vimrc_make_init()
 " MyAutocmd QuickfixCmdPost make,grep,grepadd,vimgrep copen
 " MyAutocmd QuickfixCmdPost l* lopen
 
@@ -2823,8 +2824,8 @@ if s:bundle.tap('vimconsole.vim')
 
 
   function! s:bundle.tapped.hooks.on_source(bundle)
-    MyAutocmd FileType vimconsole call s:vimconsole_my_settings()
-    function! s:vimconsole_my_settings() "{{{3
+    MyAutocmd FileType vimconsole call s:vimrc_vimconsole_init()
+    function! s:vimrc_vimconsole_init() "{{{3
       nnoremap <buffer> <C-l> :<C-u>VimConsoleRedraw<CR>
     endfunction
   endfunction "}}}
@@ -2894,8 +2895,8 @@ if s:bundle.tap('gitv')
   let g:Gitv_DoNotMapCtrlKey = 1
   " http://d.hatena.ne.jp/cohama/20130517/1368806202
   function! s:bundle.tapped.hooks.on_source(bundle)
-    MyAutocmd FileType gitv call s:my_gitv_init()
-    function! s:my_gitv_init()
+    MyAutocmd FileType gitv call s:vimrc_gitv_init()
+    function! s:vimrc_gitv_init()
       setl iskeyword+=/,-,.
 
       nnoremap <silent><buffer> [!space]C :<C-u>Git checkout <C-r><C-w><CR>
@@ -3054,14 +3055,14 @@ endif
 
 " cascading.vim {{{2
 if s:bundle.is_installed('cascading.vim')
-  nmap -^ <Plug>(cascading)
+  nmap <silent> !" <Plug>(cascading)
 endif
 
 " switch.vim {{{2
 if s:bundle.is_installed('switch.vim')
   " let g:switch_custom_definitions = [ {
   "       \ } ]
-  nnoremap ! :<C-u>Switch<CR>
+  nnoremap <silent> !! :<C-u>Switch<CR>
   " let b:switch_custom_definitions = [
   " let g:switch_custom_definitions = [ {'ruby': [
   "       \ ["describe", "context", "specific", "example"],
@@ -3584,7 +3585,7 @@ if s:bundle.tap('vim-rails')
   let g:rails_subversion=0
   let g:rails_default_file='config/database.yml'
 
-  function! s:my_rails_init()
+  function! s:vimrc_rails_init()
     nnoremap <buffer><leader>vv :Rview<CR>
     nnoremap <buffer><leader>cc :Rcontroller<CR>
     nnoremap <buffer><leader>mm :Rmodel<Space>
@@ -3610,7 +3611,7 @@ if s:bundle.tap('vim-rails')
     " nnoremap <buffer><C-H>h           :<C-U>Unite rails/heroku<CR>
   endfunction
 
-  MyAutocmd User Rails call s:my_rails_init()
+  MyAutocmd User Rails call s:vimrc_rails_init()
 endif
 
 " csharp {{{2
@@ -3628,13 +3629,14 @@ let g:pymode_run = 0
 let g:pymode_doc = 0
 let g:pymode_lint = 0
 let g:pymode_virtualenv = 0
+let g:pymode_rope_global_prefix = '[!rope]'
 
 " jedi-vim {{{2
 if s:bundle.is_installed('jedi-vim')
   let g:jedi#auto_initialization = 1
   let g:jedi#popup_on_dot = 0
   let g:jedi#rename_command = '<leader>R'
-  " let g:jedi#show_function_definition = 0
+  " let g:jedi#show_call_signatures = 0
   let g:jedi#show_call_signatures = 0
   let g:jedi#auto_vim_configuration = 0
   MyAutocmd FileType python let b:did_ftplugin = 1
@@ -3687,9 +3689,9 @@ endif
 
 " MyAutocmd FileType
 "       \ c,cpp,javascript,ruby,python,java,perl,php
-"       \ call s:smartchr_my_settings()
+"       \ call s:vimrc_smartchr_init()
 
-function! s:smartchr_my_settings() "{{{3
+function! s:vimrc_smartchr_init() "{{{3
   " http://d.hatena.ne.jp/ampmmn/20080925/1222338972
   " 演算子の間に空白を入れる
   "inoremap <buffer><expr> < search('^#include\%#', 'bcn')? ' <': smartchr#one_of(' < ', ' << ', '<')
@@ -3766,6 +3768,8 @@ if s:bundle.tap('unite.vim')
     call unite#custom#source('repo_files', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
 
     " files {{{4
+    call unite#custom#profile('files', 'smartcase', 1)
+
     call unite#custom#substitute('files', '\$\w\+', '\=eval(submatch(0))', 200)
 
     call unite#custom#substitute('files', '[^~.]\zs/', '*/*', 20)
@@ -3993,7 +3997,23 @@ if s:bundle.tap('unite.vim')
         "   let candidate.converter_add_ftime_word_base = candidate.abbr
         " endif
         let abbr = get(candidate, "abbr", candidate.word)
-        let candidate.abbr = printf("%s [%s]", abbr, s:get_memolist_tags(get(candidate, "action__path")))
+        let candidate.abbr = printf("%s %s", abbr, s:get_memolist_tags(get(candidate, "action__path")))
+      endfor
+      return a:candidates
+    endfunction
+    call unite#define_filter(s:filter)
+    unlet s:filter
+
+    let s:filter = {
+    \  "name" : "converter_add_filename_word",
+    \}
+    function! s:filter.filter(candidates, context)
+      for candidate in a:candidates
+        " if !has_key(candidate, "converter_add_ftime_word_base")
+        "   let candidate.converter_add_ftime_word_base = candidate.abbr
+        " endif
+        let abbr = get(candidate, "abbr", candidate.word)
+        let candidate.abbr = printf("%s %s", abbr, fnamemodify(get(candidate, "action__path"), ":p:t"))
       endfor
       return a:candidates
     endfunction
@@ -4002,14 +4022,15 @@ if s:bundle.tap('unite.vim')
 
     call unite#custom_max_candidates("memolist", 500)
     call unite#custom#source('memolist', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr", 'converter_add_memolist_tags_abbr'])
-    " call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+    call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+    " call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "converter_add_filename_word", "matcher_default"])
     " call unite#custom#source('memolist', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
     " call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
 
     call unite#custom_max_candidates("memolist_rec", 50)
     call unite#custom#source('memolist_rec', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr", 'converter_add_memolist_tags_abbr'])
     " call unite#custom#source('memolist_rec', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
-    " call unite#custom#source('memolist_rec', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+    call unite#custom#source('memolist_rec', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
     " 4}}}
 
   endfunction "3}}}
@@ -4214,8 +4235,8 @@ endfunction
 execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>Unite repo_files -start-insert<CR>"
 execute 'nnoremap' '<silent>' s:get_cmd_t_key("r") ':<C-u>Unite outline -start-insert<CR>'
 
-MyAutocmd FileType unite call s:unite_my_settings() "{{{3
-function! s:unite_my_settings()
+MyAutocmd FileType unite call s:vimrc_unite_init() "{{{3
+function! s:vimrc_unite_init()
 
   imap <buffer> jj <Plug>(unite_insert_leave)j
   imap <buffer> qq <Plug>(unite_exit)
@@ -4294,13 +4315,13 @@ nnoremap <silent> [!space]gp :<C-u>Git push
 nnoremap <silent> [!space]ge :<C-u>Gedit<Space>
 nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
 nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
-function! s:my_git_init()
+function! s:vimrc_git_init()
   setl foldmethod=expr
   " setl foldexpr=getline(v:lnum)!~'^commit'
   setlocal foldexpr=GitLogViewerFoldExpr(v:lnum)
   setlocal foldtext=GitLogViewerFoldText()
 endfunction
-MyAutocmd FileType git call s:my_git_init()
+MyAutocmd FileType git call s:vimrc_git_init()
 
 " TOhtml {{{2
 let g:html_number_lines = 0
@@ -5210,10 +5231,10 @@ if s:bundle.tap('vim-quickrun')
   endif
 
 
-  function! s:quickrun_my_settings() "{{{4
+  function! s:vimrc_quickrun_init() "{{{4
     nmap <buffer> q :quit<CR>
   endfunction "}}}
-  MyAutocmd FileType quickrun call s:quickrun_my_settings()
+  MyAutocmd FileType quickrun call s:vimrc_quickrun_init()
 
   call s:bundle.untap()
 endif
@@ -6656,9 +6677,10 @@ command! Safari call my#ui#launch_browser('safari')
 LCAlias Ie Firefox Opera Chrome Safari
 
 " TSV {{{3
+command! -range Tsvtohtmltable     <line1>,<line2>call my#tsv#to_htmltable()
 command! -range Tsvtosqlwhere      <line1>,<line2>call my#tsv#to_sqlwhere()
 command! -range Tsvtosqlin         <line1>,<line2>call my#tsv#to_sqlin()
-command! -range Tsvexchangematrix  <line1>,<line2>call my#tsv#exchange_matrix()
+command! -range Tsvinvert          <line1>,<line2>call my#tsv#invert()
 command! -range Tsvtosqlinsert     <line1>,<line2>call my#tsv#to_sqlinsert()
 command! -range Tsvtosqlupdate     <line1>,<line2>call my#tsv#to_sqlupdate()
 command! -range Tsvtocsv           <line1>,<line2>call my#tsv#to_csv()

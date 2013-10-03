@@ -1,0 +1,489 @@
+# prefix
+
+snippet prefix.epub
+	xmlns:epub="http://www.idpf.org/2007/ops"
+
+# SMIL
+
+snippet smil
+abbr SMIL Minimal Set
+	<smil xmlns="http://www.w3.org/ns/SMIL"${1: xmlns:epub="http://www.idpf.org/2007/ops"} version="3.0">
+	<body>
+	${0}
+	</body>
+	</smil>
+
+snippet smil#
+abbr SMIL Maximum Set
+	<smil xmlns="http://www.w3.org/ns/SMIL" version="3.0"${1: id="${2\}"}${3: epub:prefix="${4\}"}>
+	<head>
+	</head>
+	<body>
+	</body>
+	</smil>${0}
+
+snippet head
+abbr head
+	<head>
+	${0}
+	</head>
+
+snippet body
+abbr body
+	<body>
+	${1:<par></par>}
+	${2:<seq epub:textref=""></seq>}${0}
+	</body>
+
+snippet body.par
+abbr body > par
+	<body>
+	<par>
+	${0}
+	</par>
+	</body>
+
+snippet body.seq
+abbr body > seq
+	<body>
+	<seq epub:textref="${1}">
+	${0}
+	</seq>
+	</body>
+
+snippet body#
+	<body${1: id="${2\}"}${3: epub:type="${4\}"}${5: epub:textref="${6\}"}>
+	${0}
+	</body>
+
+snippet body.par#
+	<body${1: id="${2\}"}${3: epub:type="${4\}"}${5: epub:textref="${6\}"}>
+	<par>
+	${0}
+	</par>
+	</body>
+
+snippet body.seq#
+	<body${1: id="${2\}"}${3: epub:type="${4\}"}${5: epub:textref="${6\}"}>
+	<seq epub:textref="${1}">
+	${0}
+	</seq>
+	</body>
+
+snippet seq
+	<seq epub:textref="${1}">
+	${0}
+	</seq>
+
+snippet seq#
+	<seq epub:textref="${1}"${2: id=""}${3: epub:type=""}>
+	${0}
+	</seq>
+
+snippet seq.par
+	<seq epub:textref="${1}">
+	<par>
+	${0}
+	</par>
+	</seq>
+
+snippet seq.par#
+	<seq epub:textref="${1}"${2: id=""}${3: epub:type=""}>
+	<par>
+	${0}
+	</par>
+	</seq>
+
+snippet seq.seq
+	<seq epub:textref="${1}">
+	<seq epub:textref="${2}">
+	${0}
+	</seq>
+	</seq>
+
+snippet seq.seq#
+	<seq epub:textref="${1}"${2: id=""}${3: epub:type=""}>
+	<seq epub:textref="${4}">
+	${0}
+	</seq>
+	</seq>
+
+snippet par
+	<par>
+	<text${1: id=""} src="${2}">
+	${3: <audio src=""/>}
+	</par>
+
+snippet par#
+	<par${1: id=""}${2: epub:type=""}>
+	<text${4: id=""} src="${5}">
+	${6: <audio src=""/>}
+	</par>
+
+snippet text
+	<text src="${1}">
+
+snippet text#
+	<text${1: id=""} src="${2}">
+
+snippet audio
+	<audio src="${1}"/>
+
+snippet audio#
+	<audio${1: id=""} src="${2}"${3: clipBegin=""}${4: clipEnd=""}/>
+
+# epub:type
+
+snippet et
+alias epub:type
+	epub:type="${1}"
+
+snippet et.cover
+alias epub:type="cover"
+	epub:type="cover"
+
+snippet et.frontmatter
+alias epub:type="frontmatter"
+	epub:type="frontmatter"
+
+snippet et.bodymatter
+alias epub:type="bodymatter"
+	epub:type="bodymatter"
+
+snippet et.backmatter
+alias epub:type="backmatter"
+	epub:type="backmatter"
+
+snippet et.volume
+alias epub:type="volume"
+	epub:type="volume"
+
+snippet et.part
+alias epub:type="part"
+	epub:type="part"
+
+snippet et.chapter
+alias epub:type="chapter"
+	epub:type="chapter"
+
+snippet et.subchapter
+alias epub:type="subchapter"
+	epub:type="subchapter"
+
+snippet et.division
+alias epub:type="division"
+	epub:type="division"
+
+snippet et.epigraph
+alias epub:type="epigraph"
+	epub:type="epigraph"
+
+snippet et.conclusion
+alias epub:type="conclusion"
+	epub:type="conclusion"
+
+snippet et.afterword
+alias epub:type="afterword"
+	epub:type="afterword"
+
+snippet et.warning
+alias epub:type="warning"
+	epub:type="warning"
+
+snippet et.epilogue
+alias epub:type="epilogue"
+	epub:type="epilogue"
+
+snippet et.foreword
+alias epub:type="foreword"
+	epub:type="foreword"
+
+snippet et.introduction
+alias epub:type="introduction"
+	epub:type="introduction"
+
+snippet et.prologue
+alias epub:type="prologue"
+	epub:type="prologue"
+
+snippet et.preface
+alias epub:type="preface"
+	epub:type="preface"
+
+snippet et.preamble
+alias epub:type="preamble"
+	epub:type="preamble"
+
+snippet et.notice
+alias epub:type="notice"
+	epub:type="notice"
+
+snippet et.landmarks
+alias epub:type="landmarks"
+	epub:type="landmarks"
+
+snippet et.lot
+alias epub:type="lot"
+	epub:type="lot"
+
+snippet et.index
+alias epub:type="index"
+	epub:type="index"
+
+snippet et.colophon
+alias epub:type="colophon"
+	epub:type="colophon"
+
+snippet et.appendix
+alias epub:type="appendix"
+	epub:type="appendix"
+
+snippet et.loi
+alias epub:type="loi"
+	epub:type="loi"
+
+snippet et.toc
+alias epub:type="toc"
+	epub:type="toc"
+
+snippet et.glossary
+alias epub:type="glossary"
+	epub:type="glossary"
+
+snippet et.glossterm
+alias epub:type="glossterm"
+	epub:type="glossterm"
+
+snippet et.glossdef
+alias epub:type="glossdef"
+	epub:type="glossdef"
+
+snippet et.biblioentry
+alias epub:type="biblioentry"
+	epub:type="biblioentry"
+
+snippet et.bibliography
+alias epub:type="bibliography"
+	epub:type="bibliography"
+
+snippet et.imprint
+alias epub:type="imprint"
+	epub:type="imprint"
+
+snippet et.errata
+alias epub:type="errata"
+	epub:type="errata"
+
+snippet et.copyright-page
+alias epub:type="copyright-page"
+	epub:type="copyright-page"
+
+snippet et.acknowledgments
+alias epub:type="acknowledgments"
+	epub:type="acknowledgments"
+
+snippet et.other-credits
+alias epub:type="other-credits"
+	epub:type="other-credits"
+
+snippet et.titlepage
+alias epub:type="titlepage"
+	epub:type="titlepage"
+
+snippet et.imprimatur
+alias epub:type="imprimatur"
+	epub:type="imprimatur"
+
+snippet et.contributors
+alias epub:type="contributors"
+	epub:type="contributors"
+
+snippet et.halftitlepage
+alias epub:type="halftitlepage"
+	epub:type="halftitlepage"
+
+snippet et.dedication
+alias epub:type="dedication"
+	epub:type="dedication"
+
+snippet et.help
+alias epub:type="help"
+	epub:type="help"
+
+snippet et.sidebar
+alias epub:type="sidebar"
+	epub:type="sidebar"
+
+snippet et.annotation
+alias epub:type="annotation"
+	epub:type="annotation"
+
+snippet et.marginalia
+alias epub:type="marginalia"
+	epub:type="marginalia"
+
+snippet et.practice
+alias epub:type="practice"
+	epub:type="practice"
+
+snippet et.note
+alias epub:type="note"
+	epub:type="note"
+
+snippet et.footnote
+alias epub:type="footnote"
+	epub:type="footnote"
+
+snippet et.rearnote
+alias epub:type="rearnote"
+	epub:type="rearnote"
+
+snippet et.footnotes
+alias epub:type="footnotes"
+	epub:type="footnotes"
+
+snippet et.rearnotes
+alias epub:type="rearnotes"
+	epub:type="rearnotes"
+
+snippet et.bridgehead
+alias epub:type="bridgehead"
+	epub:type="bridgehead"
+
+snippet et.title
+alias epub:type="title"
+	epub:type="title"
+
+snippet et.halftitle
+alias epub:type="halftitle"
+	epub:type="halftitle"
+
+snippet et.fulltitle
+alias epub:type="fulltitle"
+	epub:type="fulltitle"
+
+snippet et.subtitle
+alias epub:type="subtitle"
+	epub:type="subtitle"
+
+snippet et.covertitle
+alias epub:type="covertitle"
+	epub:type="covertitle"
+
+snippet et.concluding-sentence
+alias epub:type="concluding-sentence"
+	epub:type="concluding-sentence"
+
+snippet et.keyword
+alias epub:type="keyword"
+	epub:type="keyword"
+
+snippet et.topic-sentence
+alias epub:type="topic-sentence"
+	epub:type="topic-sentence"
+
+snippet et.annoref
+alias epub:type="annoref"
+	epub:type="annoref"
+
+snippet et.noteref
+alias epub:type="noteref"
+	epub:type="noteref"
+
+snippet et.page-list
+alias epub:type="page-list"
+	epub:type="page-list"
+
+snippet et.pagebreak
+alias epub:type="pagebreak"
+	epub:type="pagebreak"
+
+snippet et.table
+alias epub:type="table"
+	epub:type="table"
+
+snippet et.table-row
+alias epub:type="table-row"
+	epub:type="table-row"
+
+snippet et.table-cell
+alias epub:type="table-cell"
+	epub:type="table-cell"
+
+snippet et.list
+alias epub:type="list"
+	epub:type="list"
+
+snippet et.list-item
+alias epub:type="list-item"
+	epub:type="list-item"
+
+# skip epub:type
+
+snippet skip.et.sidebar
+	epub:type="sidebar"
+
+snippet skip.et.practice
+	epub:type="practice"
+
+snippet skip.et.marginalia
+	epub:type="marginalia"
+
+snippet skip.et.annotation
+	epub:type="annotation"
+
+snippet skip.et.help
+	epub:type="help"
+
+snippet skip.et.note
+	epub:type="note"
+
+snippet skip.et.footnote
+	epub:type="footnote"
+
+snippet skip.et.rearnote
+	epub:type="rearnote"
+
+snippet skip.et.pagebreak
+	epub:type="pagebreak"
+
+# サンプルコード
+
+snippet sample.par
+abbr par set
+	<par>
+	<text src="chapter1.xhtml#sentence1"/>
+	<audio src="chapter1_audio.mp3" clipBegin="23s" clipEnd="30s"/>
+	</par>
+
+snippet sample.smil
+abbr smil set
+	<smil xmlns="http://www.w3.org/ns/SMIL" version="3.0">
+	<body>
+	<par id="par1">
+	<text src="chapter1.xhtml#sentence1"/>
+	<audio src="chapter1_audio.mp3" clipBegin="0s" clipEnd="10s"/>
+	</par>
+	<par id="par2">
+	<text src="chapter1.xhtml#sentence2"/>
+	<audio src="chapter1_audio.mp3" clipBegin="10s" clipEnd="20s"/>
+	</par>
+	<par id="par3">
+	<text src="chapter1.xhtml#sentence3"/>
+	<audio src="chapter1_audio.mp3" clipBegin="20s" clipEnd="30s"/>
+	</par>
+	</body>
+	</smil>
+
+snippet sample.seq.epub:type
+abbr set epub:type
+	<smil xmlns="http://www.w3.org/ns/SMIL" xmlns:epub="http://www.idpf.org/2007/ops" version="3.0">
+	<body>
+	<seq id="id1" epub:textref="chapter1.xhtml#sidebar" epub:type="sidebar">
+	<par id="id2">
+	<text src="chapter1.xhtml#sidebartitle"/>
+	<audio src="chapter1_audio.mp3" clipBegin="0:24:15.000" clipEnd="0:24:18.123"/>
+	</par>
+	</seq>
+	</body>
+	</smil>

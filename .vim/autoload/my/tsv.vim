@@ -17,12 +17,40 @@ function! s:escape(s)
   return "'".s."'"
 endfunction
 
+function! my#tsv#to_htmltable() range "{{{2
+  let lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
+  let tsv = csvutil#tsv_reader()
+  let lines = tsv.parse_from_list(lines)
+  if empty(lines)
+    echoerr "empty buffer : stop execute!!"
+    return
+  endif
+  let indent = &shiftwidth
+  let fmt = '%'.indent.'s%s'
+
+  let texts = []
+  let tag = 'th'
+  call add(texts, '<table>')
+  for item in lines
+    call add(texts, printf('%'.indent.'s%s', '', '<tr>'))
+    " call add(texts, printf('%'.(indent * 2).'s%s', '',
+    "       \ join(map(item, 'printf("<%s>%s</%s>", tag, v:val, tag)'),
+    "       \ printf("\r%".(indent * 2)."s", ''))))
+    let texts += map(item, 'printf("%" . (indent * 2) . "s<%s>%s</%s>", "", tag, v:val, tag)')
+    call add(texts, printf('%'.indent.'s%s', '', '</tr>'))
+    let tag = 'td'
+  endfor
+  call add(texts, '</table>')
+
+  call my#util#output_to_buffer('__TSV__', texts)
+endfunction
+
 function! my#tsv#to_sqlwhere() range "{{{2
   let lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
   let tsv = csvutil#tsv_reader()
   let lines = tsv.parse_from_list(lines)
   if empty(lines)
-    echoer "empty buffer : stop execute!!"
+    echoerr "empty buffer : stop execute!!"
     return
   endif
   let head = remove(lines, 0)
@@ -52,7 +80,7 @@ function! my#tsv#to_sqlin() range "{{{2
   let tsv = csvutil#tsv_reader()
   let lines = tsv.parse_from_list(lines)
   if empty(lines)
-    echoer "empty buffer : stop execute!!"
+    echoerr "empty buffer : stop execute!!"
     return
   endif
   let head = remove(lines, 0)
@@ -75,12 +103,12 @@ function! my#tsv#to_sqlin() range "{{{2
   call my#util#output_to_buffer('__TSV__', texts)
 endfunction
 
-function! my#tsv#exchange_matrix() range "{{{2
+function! my#tsv#invert() range "{{{2
   let lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
   let tsv = csvutil#tsv_reader()
   let lines = tsv.parse_from_list(lines)
   if empty(lines)
-    echoer "empty buffer : stop execute!!"
+    echoerr "empty buffer : stop execute!!"
     return
   endif
   let head = remove(lines, 0)
@@ -107,7 +135,7 @@ function! my#tsv#to_sqlinsert() range "{{{2
   let tsv = csvutil#tsv_reader()
   let lines = tsv.parse_from_list(lines)
   if empty(lines)
-    echoer "empty buffer : stop execute!!"
+    echoerr "empty buffer : stop execute!!"
     return
   endif
   let head = remove(lines, 0)
@@ -133,7 +161,7 @@ function! my#tsv#to_sqlupdate() range "{{{2
   let tsv = csvutil#tsv_reader()
   let lines = tsv.parse_from_list(lines)
   if empty(lines)
-    echoer "empty buffer : stop execute!!"
+    echoerr "empty buffer : stop execute!!"
     return
   endif
   let head = remove(lines, 0)
@@ -179,14 +207,14 @@ function! my#tsv#to_sqlupdate() range "{{{2
           \ )
   endfor
   call my#util#output_to_buffer('__TSV__', texts)
-endfunction 
+endfunction
 
 function! my#tsv#to_csv() range "{{{2
   let lines = a:firstline == a:lastline ? getline(1, '$') : getline(a:firstline, a:lastline)
   let tsv = csvutil#tsv_reader()
   let lines = tsv.parse_from_list(lines)
   if empty(lines)
-    echoer "empty buffer : stop execute!!"
+    echoerr "empty buffer : stop execute!!"
     return
   endif
   let csv = csvutil#csv_writer()
@@ -202,7 +230,7 @@ function! my#tsv#to_json() range "{{{2
   let tsv = csvutil#tsv_reader()
   let lines = tsv.parse_from_list(lines)
   if empty(lines)
-    echoer "empty buffer : stop execute!!"
+    echoerr "empty buffer : stop execute!!"
     return
   endif
 
@@ -216,7 +244,7 @@ function! my#tsv#to_flat_json() range "{{{2
   let tsv = csvutil#tsv_reader()
   let lines = tsv.parse_from_list(lines)
   if empty(lines)
-    echoer "empty buffer : stop execute!!"
+    echoerr "empty buffer : stop execute!!"
     return
   endif
 
