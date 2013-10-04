@@ -36,7 +36,8 @@ function! my#util#output_to_buffer(bufname, text_list) " {{{2
   let l:bufnum = bufnr(a:bufname)
   if l:bufnum == -1
     exe 'new '.a:bufname
-    edit +setl\ bufhidden=hide\ buftype=nofile\ noswapfile\ buflisted
+    " edit +setl\ bufhidden=hide\ buftype=nofile\ noswapfile\ buflisted
+    setlocal bufhidden=hide buftype=nofile noswapfile buflisted
   else
     let l:winnum = bufwinnr(l:bufnum)
     if l:winnum != -1
