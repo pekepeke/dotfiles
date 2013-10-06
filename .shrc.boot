@@ -111,9 +111,10 @@ __NOTIFY() { # {{{3
 }
 
 shrc_section_title "basic commands" #{{{2
-alias ll='ls -l $LS_OPTIONS'
-alias la='ls -A $LS_OPTIONS'
-alias l='ls -CF $LS_OPTIONS'
+alias ls="ls $LS_OPTIONS"
+alias ll="ls -l $LS_OPTIONS"
+alias la="ls -A $LS_OPTIONS"
+alias l="ls -CF $LS_OPTIONS"
 
 alias today='date +%Y%m%d'
 

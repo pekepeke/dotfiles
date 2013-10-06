@@ -124,7 +124,9 @@ else " unix setting {{{2
 
   "set guifont=VL\ ゴシック\ 12
   command! -nargs=0 Inconsolata set guifont=Inconsolata\ 11
-  command! -nargs=0 Ricty set guifont=Ricty\ 14
+  " command! -nargs=0 Ricty set guifont=Ricty\ 14
+  command! -nargs=0 Ricty set guifont=Ricty\ 11
+  Ricty
 endif
 "source $HOME/.vimrc
 

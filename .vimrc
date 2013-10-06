@@ -603,7 +603,7 @@ NeoBundle 'Shougo/vimproc.vim', {
       \ 'build' : {
       \     'cygwin' : 'make -f make_cygwin.mak',
       \     'mac'    : 'make -f make_mac.mak',
-      \     'unix'   : 'make -f make_gcc.mak',
+      \     'unix'   : 'make -f make_unix.mak',
       \   }
       \ }
 NeoBundleLazy 'Shougo/vimshell', {
@@ -2232,7 +2232,7 @@ if s:is_mac && has('gui_running')
     execute 'nnoremap <D-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
   endfunction
   MyAutocmd GUIEnter * call s:map_gui()
-elseif has('gui_running')
+elseif s:is_win && has('gui_running')
   function! s:map_gui()
     nnoremap <A-Up>   :<C-u>call <SID>set_transparency('+=5')<CR>
     nnoremap <A-Down> :<C-u>call <SID>set_transparency('-=5')<CR>
