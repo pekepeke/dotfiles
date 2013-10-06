@@ -1,6 +1,10 @@
 #!/bin/sh
 
 FP=$HOME/.ssh/config
+
+[ ! -e ~/.ssh ] && mkdir ~/.ssh && chmod 700 ~/.ssh
+[ ! -e ~/.ssh/id_rsa.pub ] && ssh-keygen -t rsa
+
 if [ -e $FP ] ; then
   echo $FP is already exists.
   exit 0
