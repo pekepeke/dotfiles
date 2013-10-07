@@ -4,8 +4,16 @@ snippet c)
 	`&enc[:2] == "utf" ? "©" : "(c)"` Copyright `strftime("%Y")` ${1:`g:snips_author`}. All Rights Reserved.${2}
 snippet date
 	`strftime("%Y-%m-%d")`
+snippet today
+	`strftime("%Y-%m-%d")`
+snippet todays
+	`strftime("%Y/%m/%d")`
 snippet now
 	`strftime("%Y-%m-%d %H:%M:%S")`
+snippet nows
+	`strftime("%Y/%m/%d %H:%M:%S")`
+snippet time
+	`strftime('%H:%M:%S')`
 snippet file_name
 	`bufname('%') =='[Command Line]' ? expand('#:t:r') : expand('%:t:r')`${0}
 snippet coding:

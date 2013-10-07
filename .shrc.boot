@@ -75,8 +75,11 @@ GREP_OPTIONS="--exclude-dir=.libs $GREP_OPTIONS"
 
 LS_OPTIONS="--show-control-chars"
 
-if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
-  # eval "`dircolors -b`"
+if [ "$TERM" != "dumb" ]; then
+  if [ -x /usr/bin/dircolors ]; then
+    [ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
+    #   # eval "`dircolors -b`"
+  fi
   #alias dir='ls --color=auto --format=vertical'
   #alias vdir='ls --color=auto --format=long'
 
@@ -85,8 +88,7 @@ if [ "$TERM" != "dumb" ] && [ -x /usr/bin/dircolors ]; then
   #alias egrep='egrep --color=auto'
   GREP_OPTIONS="--color=auto $GREP_OPTIONS"
 
-  [ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
-  LS_OPTIONS="--color=auto $LS_OPTIONS"
+  LS_OPTIONS="--color=always $LS_OPTIONS"
 fi
 export GREP_OPTIONS
 export LS_OPTIONS
@@ -111,10 +113,17 @@ __NOTIFY() { # {{{3
 }
 
 shrc_section_title "basic commands" #{{{2
-alias ls="ls $LS_OPTIONS"
-alias ll="ls -l $LS_OPTIONS"
-alias la="ls -A $LS_OPTIONS"
-alias l="ls -CF $LS_OPTIONS"
+if is_exec gls; then
+  alias ls="gls $LS_OPTIONS"
+  alias ll="gls -l $LS_OPTIONS"
+  alias la="gls -A $LS_OPTIONS"
+  alias l="bls -CF $LS_OPTIONS"
+else
+  alias ls="ls $LS_OPTIONS"
+  alias ll="ls -l $LS_OPTIONS"
+  alias la="ls -A $LS_OPTIONS"
+  alias l="ls -CF $LS_OPTIONS"
+fi
 
 alias today='date +%Y%m%d'
 
@@ -216,6 +225,11 @@ cde() { #{{{3
 }
 
 shrc_section_title "lang" #{{{2
+
+is_exec rails && alias r=rails
+alias jsprove='prove --ext=.t.js --exec=node'
+alias phpprove='prove --ext=.t.php --exec=php'
+
 alias iperl='perl -de0'
 alias iphp='php -a'
 alias rol='ruby -n -e '

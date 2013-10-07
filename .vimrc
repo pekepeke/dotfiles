@@ -126,6 +126,7 @@ set fileencoding=utf-8
 set fileformat=unix
 set fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp,cp932
 set fileformats=unix,dos,mac
+set synmaxcol=1500
 
 set display=lastline
 set clipboard=unnamed
@@ -276,7 +277,7 @@ if s:is_mac
   set showbreak=↪
 else
   " set showbreak=↓
-  set showbreak=
+  let &showbreak='+++ '
 endif
 set listchars=tab:^\ ,trail:~,nbsp:%,extends:>,precedes:<
 set smarttab             " インテリジェンスなタブ入力
@@ -742,6 +743,10 @@ NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {
       \ }}
 NeoBundleLazy 'LeafCage/nebula.vim', {'autoload': {
       \ 'commands': ['NebulaPutLazy', 'NebulaPutConfig', 'NebulaYankOptions', 'NebulaPutFromClipboard'],
+      \ }}
+NeoBundleLazy 'deris/vim-rengbang', {'autoload':{
+      \ 'commands': ['RengBang'],
+      \ 'mappings': [['nvx', '<Plug>(operator-rengbang-']],
       \ }}
 
 NeoBundle 'pekepeke/vim-trimr'
@@ -1846,6 +1851,9 @@ augroup END
 
 " alias
 MyAutocmd FileType js set filetype=javascript
+MyAutocmd FileType rb set filetype=ruby
+MyAutocmd FileType pl set filetype=perl
+MyAutocmd FileType py set filetype=python
 MyAutocmd FileType md set filetype=markdown
 " MySQL
 MyAutocmd BufNewFile,BufRead *.sql set filetype=mysql
@@ -2207,6 +2215,48 @@ endif
 nnoremap <silent> [!t]j :<C-u>tag<CR>
 nnoremap <silent> [!t]k :<C-u>pop<CR>
 nnoremap <silent> [!t]l :<C-u>tags<CR>
+
+" [[, ]] {{{2
+let g:square_brackets = {
+      \ 'markdown' : '^#',
+      \ 'textile' : '^*',
+      \ 'html' : '<html\|<head\|<body\|<h\d',
+      \ }
+function! s:nmap_square_brackets() "{{{3
+  if exists('g:square_brackets[&filetype]')
+    if type(g:square_brackets[&filetype]) == type([])
+          \ && len(g:square_brackets[&filetype]) > 2
+      let [pattern, syn] = g:square_brackets[&filetype]
+      nnoremap <silent><buffer> ]] :<C-u>call s:search_with_syntax(pattern, syn, "")<CR>
+      nnoremap <silent><buffer> [[ :<C-u>call s:search_with_syntax(pattern, syn, "b")<CR>
+    else
+      nnoremap <silent><buffer> ]] :<C-u>call search(g:square_brackets[&filetype], "W")<CR>
+      nnoremap <silent><buffer> [[ :<C-u>call search(g:square_brackets[&filetype], "Wb")<CR>
+    endif
+  endif
+endfunction
+
+function! s:search_with_syntax(pattern,syn,flags) "{{{3
+  normal! m'
+  let i = 0
+  let cnt = v:count ? v:count : 1
+  while i < cnt
+    let i = i + 1
+    let line = line('.')
+    let col  = col('.')
+    let pos = search(a:pattern, 'W'.a:flags)
+    while pos != 0
+          \ && synIDattr(synID(line, col, 0),'name') !~# a:syn
+      let pos = search(a:pattern, 'W'.a:flags)
+    endwhile
+    if pos == 0
+      call cursor(line,col)
+      return
+    endif
+  endwhile
+endfunction
+
+MyAutocmd FileType * call s:nmap_square_brackets()
 
 " maps {{{2
 " if &diff
@@ -4315,6 +4365,7 @@ nnoremap <silent> [!space]gp :<C-u>Git push
 nnoremap <silent> [!space]ge :<C-u>Gedit<Space>
 nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
 nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
+command! Gdiffoff diffoff | q | Gedit
 function! s:vimrc_git_init()
   setl foldmethod=expr
   " setl foldexpr=getline(v:lnum)!~'^commit'
@@ -4938,6 +4989,7 @@ endif
 
 " quickrun {{{2
 if s:bundle.tap('vim-quickrun')
+  nnoremap <expr><silent><C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
   "silent! nmap <unique> <Space> <Plug>(quickrun)
   if !exists('g:quickrun_config')
     let g:quickrun_config={}
@@ -4983,6 +5035,11 @@ if s:bundle.tap('vim-quickrun')
         \  },
         \ })
   call extend(g:quickrun_config, {
+        \  'coffee/to_javascript' : {
+        \     'command': 'coffee',
+        \     'cmdopt': '-pb',
+        \     'outputter/buffer/filetype': 'javascript',
+        \  },
         \  'jsx/jsx' : {
         \    'command': 'jsx',
         \    'exec' : '%c %o --run %s',
@@ -6628,6 +6685,13 @@ command! -range -nargs=0 UniqueSort <line1>,<line2>sort u
 " diff {{{2
 command! -nargs=1 -complete=buffer DiffBuf vertical diffsplit <args>
 command! -nargs=1 -complete=file DiffFile vertical diffsplit <args>
+function! s:diff_execute(s)
+  if &diff
+    execute a:s
+  endif
+endfunction
+command! -nargs=0 DiffQuit call <SID>diff_execute('diffoff')
+command! -nargs=0 DQ call <SID>diff_execute('diffoff')
 
 " rename {{{2
 command! -nargs=? -complete=file Rename call my#ui#rename(<q-args>)

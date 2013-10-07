@@ -12,7 +12,7 @@ alias chrome='open -a "Google Chrome"'
 # [ -e ~/Library/Application\ Support/Cyberduck/Queue.plist ] && \
 # find ~/Library/Application\ Support/Cyberduck/Queue.plist -mtime 1 -exec rm -f {} \; > /dev/null 2>&1
 
-alias ls='gls --color=always'
+# alias ls='gls --color=always'
 alias date='gdate'
 alias seq='gseq'
 

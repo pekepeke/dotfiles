@@ -170,25 +170,25 @@ snippet dbim
 	$dbh->{RaiseError} = 1;
 	$dbh->disconnect;
 #Catalyst
-snippet debug
+snippet cdebug
 	$c->log->debug('${1:[ debug ]}: '. ${2:$var});
 	${3}
-snippet warn
+snippet cwarn
 	$c->log->warn('${1:[ warn ]}: '. ${2:$var});
 	${3}
-snippet dumper
+snippet cdumper
 	$c->log->dumper('${1:[ dumper ]}: '. ${2:$var});
 	${3}
-snippet model
+snippet cmodel
 	$c->model('${1:model}')
 	${2}
-snippet view
+snippet cview
 	$c->view('${1:view}')
 	${2}
-snippet template
+snippet ctemplate
 	$c->view('View::TT')->template('${1:name}');
 	${2}
-snippet config
+snippet cconfig
 	$c->config->{${1:name}}
 	${2}
 snippet controller
@@ -287,10 +287,10 @@ snippet autoload
 		goto &$code;
 	}
 # http://perl-users.jp/articles/advent-calendar/2012/casual/13
-snippet     dumper
+snippet dumper
 	use Data::Dumper; warn Dumper(${1:code});
 
-snippet     querylog
+snippet querylog
     require DBIx::QueryLog; my $guard = DBIx::QueryLog->guard();
 # http://qiita.com/Cside_/items/b36c9bb1c3b3a2d73bff
 snippet u
