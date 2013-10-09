@@ -41,7 +41,7 @@ snippet id
 snippet datasca
     data-scale="${1:2}"
 snippet memotitle
-	title: ${1:`expand('%p:t:r')`}
+	title: ${1:`substitute(expand('%:p:t:r'), '_', ' ', 'g')`}
 	==========
 	date: `strftime("%Y-%m-%d %H:%M")`
 	tags: [${2:}]

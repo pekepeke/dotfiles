@@ -68,5 +68,9 @@ snippet pipe_out
 
 # http://qiita.com/takc923/items/0bc32e2bdc7f82b2462f
 snippet zip_dirs
-	find . -type d -depth 1 | while IFS= read -r dir; do zip -r $dir.zip $dir; done
+	find . -type d -depth 1 | while IFS= read -r dir; do zip -r \$dir.zip \$dir; done
+
+# http://qiita.com/ngyuki/items/4286e16ceee14f6aad2f
+snippet ip_addr
+	/sbin/ip -o route get 255.255.255.255 | grep -Eo 'src\s+\S+' | awk '{print \$2}'
 

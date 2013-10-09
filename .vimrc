@@ -1306,7 +1306,7 @@ NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
 NeoBundle 'vim-scripts/phpcomplete.vim'
 " NeoBundle 'vim-scripts/php_localvarcheck.vim'
-NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
+" NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
 NeoBundle 'beyondwords/vim-twig'
 NeoBundle 'tokutake/twig-indent'
 NeoBundleLazyOn FileType php 'violetyk/cake.vim'
@@ -2525,6 +2525,52 @@ if s:is_mac
   vnoremap <MiddleMouse> <Nop>
 endif
 
+" languages plugin {{{1
+" perl {{{2
+let g:perl_compiler_force_warnings = 0
+let g:perl_extended_vars           = 1
+let g:perl_include_pod             = 1
+let g:perl_moose_stuff             = 1
+let g:perl_no_scope_in_variables   = 1
+let g:perl_no_sync_on_global_var   = 1
+let g:perl_no_sync_on_sub          = 1
+let g:perl_nofold_packages         = 1
+let g:perl_pod_formatting          = 1
+let g:perl_pod_spellcheck_headings = 1
+let g:perl_string_as_statement     = 1
+let g:perl_sync_dist               = 1000
+let g:perl_want_scope_in_variables = 1
+"let g:perl_fold = 1
+"let g:perl_fold_blocks = 1
+
+" php {{{2
+"let g:php_folding = 1
+let g:php_sql_query = 1
+let g:php_baselib = 1
+let g:php_htmlInStrings = 1
+let g:php_noShortTags = 1
+let g:php_parent_error_close = 1
+let g:php_parent_error_open = 1
+"let g:php_sync_method = x
+
+let g:php_folding = 0
+" phpfolding.vim
+let g:DisableAutoPHPFolding = 1
+
+" let g:PHP_autoformatcomment=0
+"" php-doc.vim
+let g:pdv_cfg_Type = 'mixed'
+let g:pdv_cfg_Package = ""
+let g:pdv_cfg_Version = '$id$'
+if exists('g:author') && exists('g:email')
+  let g:pdv_cfg_Author = g:author . ' <' . g:email . '>'
+else
+  let g:pdv_cfg_Author = ''
+endif
+let g:pdv_cfg_Copyright = ""
+let g:pdv_cfg_License = 'PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}'
+let g:pdv_cfg_CommentEnd = "// }}}"
+
 " plugin settings {{{1
 " context_filetype {{{2
 let g:context_filetype#search_offset = 500
@@ -2937,6 +2983,7 @@ if s:bundle.tap('cake.vim')
   MyAutocmd User PluginCakephpInitializeAfter call s:init_cakephp()
   call s:bundle.untap()
 endif
+
 
 " gitv {{{2
 if s:bundle.tap('gitv')
