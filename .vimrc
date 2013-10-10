@@ -1586,20 +1586,20 @@ NeoBundleLazy 'kana/vim-textobj-diff', {'autoload': {
       \ ],
       \ }}
 NeoBundleLazy 'kana/vim-textobj-entire', {'autoload':{
-      \ 'mappings': [['vo', 'ie', 'ae']],
+      \ 'mappings': [['vo', '<Plug>(textobj-entire-', ]],
       \ }}
-      " \ 'mappings': [['nvx', '<Plug>(textobj-entire-i)', '<Plug>(textobj-entire-a)']],
+      " \ 'mappings': [['vo', 'ie', 'ae']],
 NeoBundleLazy 'kana/vim-textobj-fold', {'autoload':{
       \ 'mappings': [['nvx', '<Plug>(textobj-fold-i)', '<Plug>(textobj-fold-a)']],
       \ }}
-NeoBundleLazy 'kana/vim-textobj-jabraces', {'autoload':{
-      \ 'mappings' : [['ov',
-      \ 'ajb', 'aj(', 'aj)', 'ajr', 'aj[', 'aj]', 'ajB', 'aj{', 'aj}', 'aja', 'aj<', 'aj>', 'ajA',
-      \ 'ajk', 'ajK', 'ajy', 'ajY', 'ajt', 'ajs',
-      \ 'ijb', 'ij(', 'ij)', 'ijr', 'ij[', 'ij]', 'ijB', 'ij{', 'ij}', 'ija', 'ij<', 'ij>', 'ijA',
-      \ 'ijk', 'ijK', 'ijy', 'ijY', 'ijt', 'ijs',
-      \ ]],
-      \ }}
+" NeoBundleLazy 'kana/vim-textobj-jabraces', {'autoload':{
+"       \ 'mappings' : [['ov',
+"       \ 'ajb', 'aj(', 'aj)', 'ajr', 'aj[', 'aj]', 'ajB', 'aj{', 'aj}', 'aja', 'aj<', 'aj>', 'ajA',
+"       \ 'ajk', 'ajK', 'ajy', 'ajY', 'ajt', 'ajs',
+"       \ 'ijb', 'ij(', 'ij)', 'ijr', 'ij[', 'ij]', 'ijB', 'ij{', 'ij}', 'ija', 'ij<', 'ij>', 'ijA',
+"       \ 'ijk', 'ijK', 'ijy', 'ijY', 'ijt', 'ijs',
+"       \ ]],
+"       \ }}
 NeoBundleLazy 'kana/vim-textobj-lastpat', {'autoload': {
       \ 'mappings' : [['vo', 'a/', 'i/', 'a?', 'i?' ]],
       \ }}
@@ -1614,7 +1614,7 @@ NeoBundleLazy 'kana/vim-textobj-line', {'autoload':{
       \ }}
 NeoBundleLazy 'kana/vim-textobj-underscore', {'autoload':{
       \ 'mappings': [['nvx', '<Plug>(textobj-quoted-i)', '<Plug>(textobj-quoted-a)']],
-      \ }}
+     \ }}
 NeoBundleLazy 'thinca/vim-textobj-between', {
       \ 'depends' : 'vim-textobj-user',
       \ 'autoload' : {
@@ -1684,16 +1684,16 @@ NeoBundleLazy 'akiyan/vim-textobj-xml-attribute', {'autoload':{
 "       \ 'mappings' : [['nvo',
 "       \ '<Plug>(textobj-motionmotion-i)', '<Plug>(textobj-motionmotion-a)',
 "       \ ]]}}
-NeoBundleLazy 'anyakichi/vim-textobj-xbrackets', {'autoload':{
-      \ 'mappings' : [['vo',
-      \ 'aV(', 'aV)', 'aVb', 'aV{', 'aV}', 'aVB', 'av', 'ax(', 'ax)', 'axb', 'a9', 'a0',
-      \ 'ax<', 'ax[', 'ax{', 'axB', 'axs(', 'axsb', 'axs<', 'axs[', 'axs{', 'axsB',
-      \ 'axs){', 'ay(', 'ayb', 'ay<', 'ay[', 'ay{', 'ayB', 'ays(', 'aysb', 'ays<',
-      \ 'iV(', 'iV)', 'iVb', 'iV{', 'iV}', 'iVB', 'iv', 'ix(', 'ix)', 'ixb', 'i9', 'i0',
-      \ 'ix<', 'ix[', 'ix{', 'ixB', 'ixs(', 'ixsb', 'ixs<', 'ixs[', 'ixs{', 'ixsB',
-      \ 'ixs){', 'iy(', 'iyb', 'iy<', 'iy[', 'iy{', 'iyB', 'iys(', 'iysb', 'iys<',
-      \ 'iys[', 'iys{', 'iysB', 'iys){',
-      \ ]]}}
+" NeoBundleLazy 'anyakichi/vim-textobj-xbrackets', {'autoload':{
+"       \ 'mappings' : [['vo',
+"       \ 'aV(', 'aV)', 'aVb', 'aV{', 'aV}', 'aVB', 'av', 'ax(', 'ax)', 'axb', 'a9', 'a0',
+"       \ 'ax<', 'ax[', 'ax{', 'axB', 'axs(', 'axsb', 'axs<', 'axs[', 'axs{', 'axsB',
+"       \ 'axs){', 'ay(', 'ayb', 'ay<', 'ay[', 'ay{', 'ayB', 'ays(', 'aysb', 'ays<',
+"       \ 'iV(', 'iV)', 'iVb', 'iV{', 'iV}', 'iVB', 'iv', 'ix(', 'ix)', 'ixb', 'i9', 'i0',
+"       \ 'ix<', 'ix[', 'ix{', 'ixB', 'ixs(', 'ixsb', 'ixs<', 'ixs[', 'ixs{', 'ixsB',
+"       \ 'ixs){', 'iy(', 'iyb', 'iy<', 'iy[', 'iy{', 'iyB', 'iys(', 'iysb', 'iys<',
+"       \ 'iys[', 'iys{', 'iysB', 'iys){',
+"       \ ]]}}
 NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
       \ 'mappings' : [
       \ ['nvo', '<Plug>(textobj-lastinserted-i)', '<Plug>(textobj-lastinserted-a)']]
@@ -2268,6 +2268,12 @@ map <leader>3 :echo '<Leader>2 = merges from target branch(left buffer), <Leader
 
 " nmaps {{{3
 MyAutocmd FileType help,ref,git-status,git-log nnoremap <buffer><nowait> q <C-w>c
+
+function! s:execute_motionless(expr)
+  let wv = winsaveview()
+  execute a:expr
+  call winrestview(wv)
+endfunction
 
 function! s:set_transparency(op)
   exe 'set transparency'.(a:op =~# '^[-+=]' ? a:op : '=' . a:op)
@@ -4736,6 +4742,9 @@ if s:bundle.is_installed('vim-textobj-user')
   " Tmap a? <Plug>(textobj-lastpat-N)
   " Tmap i? <Plug>(textobj-lastpat-N)
 
+  TTmap e entire
+  nnoremap <silent> yie :<C-u>call <SID>execute_motionless("normal y\<Plug>(textobj-entire-i)")<CR>
+  nnoremap <silent> yae :<C-u>call <SID>execute_motionless("normal y\<Plug>(textobj-entire-a)")<CR>
   TTmap y syntax
   TTmap ,_ quoted
   TTmap f function
