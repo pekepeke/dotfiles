@@ -375,6 +375,11 @@ function! s:highlights_add() "{{{2
   " highlight CursorLine ctermbg=black guibg=black
   highlight link VimShellError WarningMsg
   highlight qf_error_ucurl term=underline cterm=underline ctermfg=darkred ctermbg=none gui=undercurl guisp=red
+  " http://qiita.com/kenjiskywalker/items/6ccaf6fb8f1f139230e6
+  if has('gui_running') && (has('multi_byte_ime') || has('xim'))
+    " highlight Cursor guifg=NONE guibg=White
+    highlight CursorIM guifg=NONE guibg=DarkRed
+  endif
 endfunction
 
 function! s:syntaxes_add() "{{{2

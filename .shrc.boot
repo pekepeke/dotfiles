@@ -99,17 +99,11 @@ __NOTIFY() { # {{{3
   local title=$1
   shift
 
-  if is_win ; then
-    is_exec growlnotify && growlnotify -t $title -m "$*" --image ~/bin/data/growl_i.png
-  elif is_mac ; then
-    is_exec growlnotify && growlnotify -t $title -m "$*" --image ~/bin/data/growl_i.png
-  else
-    if is_exec growlnotify ; then
-      growlnotify -t $title -m "$*" --image ~/bin/data/growl_i.png
-    elif is_exec notify-send ; then
-      notify-send $title "$*"
-    fi
+  if is_exec notify-send ; then
+    notify-send "$title" "$*" -i ~/bin/data/growl_i.png
   fi
+  # is_exec growlnotify && growlnotify -t $title -m "$*" --image ~/bin/data/growl_i.png
+  # is_exec notify-send && notify-send $title "$*"
 }
 
 shrc_section_title "basic commands" #{{{2
