@@ -1,0 +1,164 @@
+# Conky sample configuration
+#
+# the list of variables has been removed from this file in favour
+# of keeping the documentation more maintainable.
+# Check http://conky.sf.net for an up-to-date-list.
+# set to yes if you want Conky to be forked in the background
+#バックグラウンドで動かす
+background no
+# X font when Xft is disabled, you can pick one with program xfontsel
+#font 5x7
+#font 6x10
+#font 7x13
+#font 8x13
+#font 9x15
+#font *mintsmild.se*
+#font -*-*-*-*-*-*-34-*-*-*-*-*-*-*
+# Use Xft?
+#フォントを指定するか
+use_xft yes
+# Xft font when Xft is enabled
+#フォントを指定
+#xftfont UmePlus Gothic:size=11
+xftfont Ricty:size=10
+# Text alpha when using Xft
+xftalpha 0.8
+# Print everything to stdout?
+# out_to_console no
+# MPD host/port
+# mpd_host localhost
+# mpd_port 6600
+# mpd_password tinker_bell
+# Print everything to console?
+# out_to_console no
+# mail spool
+#mail_spool $MAIL
+# Update interval in seconds
+#データの更新間隔
+update_interval 2.0
+# This is the number of times Conky will update before quitting.
+# Set to zero to run forever.
+total_run_times 0
+#以下の4つの設定はCompiz Fusionとの共存に必要
+# Create own window instead of using desktop (required in nautilus)
+#独立したウィンドウで表示するか
+#own_window no
+own_window 1
+# If own_window is yes, you may use type normal, desktop or override
+#own_window_type desktop
+own_window_type override
+# Use pseudo transparency with own_window?
+#own_window_transparent yes
+own_window_transparent 1
+# If own_window is yes, these window manager hints may be used
+#own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+# If own_window_transparent is set to no, you can set the background colour here
+own_window_colour hotpink
+# Use double buffering (reduces flicker, may not work for everyone)
+#conkyがちらつく場合yesにする
+double_buffer yes
+# Minimum size of text area
+#minimum_size 280 5
+# Draw shades?
+draw_shades no
+# Draw outlines?
+draw_outline yes
+
+# Draw borders around text
+draw_borders no
+# Draw borders around graphs
+draw_graph_borders yes
+# Stippled borders?
+stippled_borders 8
+# border margins
+border_margin 4
+# border width
+border_width 1
+# Default colors and also border colors
+#デフォルトの文字の色
+default_color white
+default_shade_color black
+default_outline_color black
+
+# Text alignment, other possible values are commented
+#表示位置。右上ならtop_right、左下ならbottom_left
+#alignment top_left
+#alignment top_right
+#alignment bottom_left
+alignment bottom_right
+#alignment none
+# Gap between borders of screen and text
+# same thing as passing -x at command line
+gap_x 12
+gap_y 30
+# Subtract file system buffers from used memory?
+no_buffers yes
+# set to yes if you want all text to be in uppercase
+#アルファベットを全て大文字で表示する
+uppercase no
+# number of cpu samples to average
+# set to 1 to disable averaging
+cpu_avg_samples 2
+# number of net samples to average
+# set to 1 to disable averaging
+net_avg_samples 2
+# Force UTF8? note that UTF8 support required XFT
+#文字コードがUTF-8かどうか
+override_utf8_locale yes
+# Add spaces to keep things from moving about? This only affects certan objects.
+use_spacer none
+# Allow each port monitor to track at most this many connections (if 0 or not set, default is 256)
+#max_port_monitor_connections 256
+# Maximum number of special things, e.g. fonts, offsets, aligns, etc.
+#max_specials 512
+# Maximum size of buffer for user text, i.e. below TEXT line.
+#max_user_text 16384
+# Timing interval for music player thread, e.g. mpd, audacious
+#music_player_interval (update_interval is default)
+# variable is given either in format $variable or in ${variable}. Latter
+# allows characters right after the variable and must be used in network
+# stuff because of an argument
+# stuff after 'TEXT' will be formatted on screen
+# ${texeci 100 ping -c 1 pxs143 | tail -n 4}
+
+TEXT
+${font ouhod-14}$nodename${font}
+$sysname $kernel on $machine
+${color lightgrey}Uptime:$color $uptime ${color lightgrey}- Load:$color $loadavg
+${color lightgrey}CPU1:${color grey} ${cpu cpu1}% ${alignr}$color${cpubar cpu1 5,250}
+${color lightgrey}CPU2:${color grey} ${cpu cpu2}% ${alignr}$color${cpubar cpu2 5,250}
+${color blue}${cpugraph cpu1 30,160 0000ff 00ff00}$alignr${color blue}${cpugraph cpu2 30,160 0000ff 00ff00}
+${color lightgrey}RAM Usage :$color $mem / $memmax - $memperc% ${alignr}${membar 5,70}
+${color lightgrey}Swap Usage :$color $swap / $swapmax - $swapperc% ${alignr}${swapbar 5,70}
+${color lightgrey}Processes :$color $processes ${color grey}Running:$color $running_processes
+${color lightgrey}IP Address :$color ${addr eth1}
+${color lightgrey}Networking :
+Down:${color #8844ee} ${downspeed eth1} k/s ${alignr}${totaldown eth1} total
+${color lightgrey} Up: ${color #22ccff} ${upspeed eth1} k/s ${alignr}${totalup eth1} total
+${color #8844ee}${downspeedgraph eth1 20,160 ff0000 0000ff} ${alignr}${color #22ccff}${upspeedgraph eth1 20,160 0000ff ff0000}
+${color lightgrey}File systems:
+${color green}/$color | ${fs_used /} / ${fs_size /} | ${color green}${fs_used_perc /}% ${alignr}$color${fs_bar 6,60 /}
+${color green}/home$color | ${fs_used /home} / ${fs_size /home} | ${color green}${fs_used_perc /home}% ${alignr}$color${fs_bar 6,60 /home}
+${color #0077ff}Disk I/O all Disk: $color${diskio}$alignr${color #0077ff}${diskiograph 14,100 104E8B 0077ff 750}
+${color}Name PID CPU% MEM%
+${color #ddaa00} ${top name 1} ${top pid 1} ${top cpu 1} ${top mem 1}
+${color lightgrey} ${top name 2} ${top pid 2} ${top cpu 2} ${top mem 2}
+${color lightgrey} ${top name 3} ${top pid 3} ${top cpu 3} ${top mem 3}
+${color lightgrey} ${top name 4} ${top pid 4} ${top cpu 4} ${top mem 4}
+${color}Mem usage
+${color #ddaa00} ${top_mem name 1} ${top_mem pid 1} ${top_mem cpu 1} ${top_mem mem 1}
+${color lightgrey} ${top_mem name 2} ${top_mem pid 2} ${top_mem cpu 2} ${top_mem mem 2}
+${color lightgrey} ${top_mem name 3} ${top_mem pid 3} ${top_mem cpu 3} ${top_mem mem 3}
+${color #0077ff}Port(s)${alignr}#Connections
+$color Inbound: ${tcp_portmon 1 32767 count} Outbound: ${tcp_portmon 32768 61000 count}${alignr}ALL: ${tcp_portmon 1 65535 count}
+${color #0077ff}Inbound Connection ${alignr} Local Service/Port$color
+${tcp_portmon 1 32767 rhost 0} ${alignr} ${tcp_portmon 1 32767 lservice 0}
+${tcp_portmon 1 32767 rhost 1} ${alignr} ${tcp_portmon 1 32767 lservice 1}
+${tcp_portmon 1 32767 rhost 2} ${alignr} ${tcp_portmon 1 32767 lservice 2}
+${tcp_portmon 1 32767 rhost 3} ${alignr} ${tcp_portmon 1 32767 lservice 3}
+${color #0077ff}Outbound Connection ${alignr} Remote Service/Port$color
+${tcp_portmon 32768 61000 rhost 0} ${alignr} ${tcp_portmon 32768 61000 rservice 0}
+${tcp_portmon 32768 61000 rhost 1} ${alignr} ${tcp_portmon 32768 61000 rservice 1}
+${tcp_portmon 32768 61000 rhost 2} ${alignr} ${tcp_portmon 32768 61000 rservice 2}
+${tcp_portmon 32768 61000 rhost 3} ${alignr} ${tcp_portmon 32768 61000 rservice 3}
