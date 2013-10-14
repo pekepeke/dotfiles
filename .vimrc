@@ -671,7 +671,11 @@ NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {
       \ }}
 " NeoBundle 'tpope/vim-surround'
 " NeoBundle 't9md/vim-surround_custom_mapping'
-NeoBundle 'anyakichi/vim-surround'
+NeoBundleLazy 'anyakichi/vim-surround', {'autoload':{
+      \ 'mappings': [['n', 'ds', 'cs', 'ys', 'yS', 'yss', 'ygs', 'ygS', 'ygss', 'ygsgs'],
+      \ ['x', 's', 'S', 'gs', 'gS'],
+      \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
+      \ }}
 NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
       \ 'commands': [
       \ {'name': 'Abolish'}, {'name': 'Subvert'},
@@ -812,7 +816,10 @@ NeoBundleLazy 'osyo-manga/vim-anzu', {'autoload': {
 NeoBundle 'kien/rainbow_parentheses.vim'
 " incompatible with smartinput
 " NeoBundle 'vim-scripts/Highlight-UnMatched-Brackets'
-NeoBundle 'vim-scripts/matchit.zip'
+NeoBundleLazy 'vim-scripts/matchit.zip', {'autoload': {
+      \ 'filetypes': ['html', 'xhtml', 'xml', 'ruby', 'python'],
+      \ 'mappings' : [['nx', '%']],
+      \ }}
 NeoBundle 'vim-scripts/matchparenpp'
 " NeoBundle 'vimtaku/hl_matchit.vim'
 " if has('python')
@@ -1019,6 +1026,9 @@ NeoBundleLazy 'basyura/unite-rails', { 'autoload' : {
       \   'rails/stylesheet', 'rails/view'
       \ ],
       \ }}
+NeoBundleLazy 'basyura/unite-stepdefs', { 'autoload' : {
+      \ 'unite_sources': ['stepdefs'],
+      \ }}
 
 if has("signs") && has("clientserver") && v:version > 700
   NeoBundleLazyOn FileType ruby 'astashov/vim-ruby-debugger'
@@ -1058,7 +1068,7 @@ NeoBundle 'vim-scripts/html_FileCompletion'
 NeoBundle 'tpope/vim-haml'
 NeoBundle 'digitaltoad/vim-jade'
 " NeoBundle 'mattn/zencoding-vim'
-NeoBundleLazyOn FileType html,eruby,php 'mattn/emmet-vim'
+NeoBundleLazyOn FileType html,eruby,php,css,scss 'mattn/emmet-vim'
 " NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
 NeoBundle 'juvenn/mustache.vim'
 NeoBundleLazy 'https://gist.github.com/6576341', {
@@ -1078,9 +1088,9 @@ NeoBundle 'cakebaker/scss-syntax.vim'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'wavded/vim-stylus'
 NeoBundle 'slim-template/vim-slim'
-NeoBundleLazy 'csscomb/CSScomb-for-Vim', {'autoload': {
-      \ 'commands': ['CSSComb'],
-      \ }}
+" NeoBundleLazy 'csscomb/CSScomb-for-Vim', {'autoload': {
+"       \ 'commands': ['CSSComb'],
+"       \ }}
 NeoBundleLazy 'vim-scripts/cssbaseline.vim', {'autoload': {
       \ 'commands': ['Baseline', 'Baseline1'],
       \ }}
@@ -3172,7 +3182,9 @@ if s:bundle.is_installed('switch.vim')
   "       \ } ]
   nnoremap <silent> !! :<C-u>Switch<CR>
   " let b:switch_custom_definitions = [
-  " let g:switch_custom_definitions = [ {'ruby': [
+
+  " let g:switch_custom_definitions = [
+  "       \ {'ruby': [
   "       \ ["describe", "context", "specific", "example"],
   "       \ ['before', 'after'],
   "       \ ['be_true', 'be_false'],
@@ -3182,7 +3194,7 @@ if s:bundle.is_installed('switch.vim')
   "       \ ['.to_not', '.to'],
   "       \ { '([^. ]+).should(_not|)': 'expect(\1).to \2' },
   "       \ { 'expect(([^. ]+)).to(_not|)': '\1.should \2' },
-  "       \ ]
+  "       \ ]} ]
 endif
 
 " undotree {{{2
@@ -5701,6 +5713,10 @@ if s:bundle.is_installed('neosnippet.vim')
         let pos = pos+1
       endwhile
       return repeat("\<Right>", pos - org_pos + 1)
+    endif
+    if s:bundle.is_installed('emmet-vim')
+          \ && &filetype =~# 'x\?html\|s\?css\|php\|eruby'
+      return "\<Plug>(EmmetExpandAbbr)"
     endif
     return "\<TAB>"
   endfunction
