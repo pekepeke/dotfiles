@@ -1466,7 +1466,15 @@ if executable('w3m')
         \   'depends' : 'yuratomo/w3m.vim',
         \   'unite_sources' : ['w3m', 'w3m/history'],
         \ }
-  NeoBundle 'yuratomo/w3m.vim'
+  NeoBundleLazy 'yuratomo/w3m.vim', {'autoload':{
+        \ 'commands':[
+        \ {'name': 'W3m', 'complete':'customlist,w3m#search_engine#List'},
+        \ {'name': 'W3mTab', 'complete':'customlist,w3m#search_engine#List'},
+        \ {'name': 'W3mSplit', 'complete':'customlist,w3m#search_engine#List'},
+        \ {'name': 'W3mVSplit', 'complete':'customlist,w3m#search_engine#List'},
+        \ {'name': 'W3mLocal', 'complete':'customlist,w3m#search_engine#List'},
+        \ 'W3mHistory', 'W3mHistoryClear',
+        \ ]}}
 endif
 
 " NeoBundle 'pekepeke/vim-unite-sonictemplate'
