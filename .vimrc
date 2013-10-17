@@ -1568,7 +1568,10 @@ NeoBundleLazy 'tyru/operator-camelize.vim', {
 NeoBundleLazy 'tyru/operator-html-escape.vim', {
       \ 'depends' : 'vim-operator-user', 'autoload' : {
       \ 'mappings' : [
-      \ ['nx', '<Plug>(operator-html-escape)', '<Plug>(operator-html-unescape)']]
+      \ ['nx', '<Plug>(operator-html-']]
+      \ }}
+NeoBundleLazy 'rhysd/vim-operator-surround', {'autoload': {
+      \ 'mappings': [['', '<Plug>(operator-surround-']]
       \ }}
 NeoBundleLazy 'pekepeke/vim-operator-shuffle', {
       \ 'depends' : 'vim-operator-user', 'autoload' : {
@@ -1579,14 +1582,7 @@ NeoBundleLazy 'pekepeke/vim-operator-tabular', {
       \ 'depends': 'pekepeke/vim-csvutil',
       \ 'autoload' : {
       \ 'mappings' : [
-      \ ['nx',
-      \ '<Plug>(operator-md_tabularize_tsv)', '<Plug>(operator-md_untabularize_tsv)',
-      \ '<Plug>(operator-textile_tabularize_tsv)', '<Plug>(operator-textile_untabularize_tsv)',
-      \ '<Plug>(operator-backlog_tabularize_tsv)', '<Plug>(operator-backlog_untabularize_tsv)',
-      \ '<Plug>(operator-md_tabularize_csv)', '<Plug>(operator-md_untabularize_csv)',
-      \ '<Plug>(operator-textile_tabularize_csv)', '<Plug>(operator-textile_untabularize_csv)',
-      \ '<Plug>(operator-backlog_tabularize_csv)', '<Plug>(operator-backlog_untabularize_csv)',
-      \ ]]
+      \ ['nx', '<Plug>(operator-tabular-', ]]
       \ }}
 NeoBundleLazy 'pekepeke/vim-operator-normalize-utf8mac', {
       \ 'depends' : 'vim-operator-user',
@@ -1997,8 +1993,8 @@ noremap [!t] <Nop>
 nmap t [!t]
 nnoremap <silent> [!t]e t
 
-noremap [!s] <Nop>
-nmap s [!s]
+" noremap [!s] <Nop>
+" nmap [!s] s
 
 noremap [!prefix] <Nop>
 nmap , [!prefix]
@@ -2048,8 +2044,8 @@ nnoremap <silent> [!SW]D "_D
 " nnoremap <silent> x "_x
 " nnoremap <silent> X "_X
 " " x はたまに使う
-" nnoremap <silent> [!s]x x
-" nnoremap <silent> [!s]X X
+" nnoremap <silent> sx x
+" nnoremap <silent> sX X
 
 " http://vim-users.jp/2009/10/hack91/
 cnoremap <expr> /  getcmdtype() == '/' ? '\/' : '/'
@@ -2090,7 +2086,7 @@ nnoremap <silent> [!t]* :<C-u>tabedit %<CR>*
 nnoremap <silent> [!t]# :<C-u>tabedit %<CR>#
 
 " redraw map
-nmap <silent> [!s]r :redraw!<CR>
+nmap <silent> sr :redraw!<CR>
 
 " for gui
 nnoremap <M-a> ggVG
@@ -3597,8 +3593,8 @@ if s:bundle.is_installed('vim-submode')
 
   " browser {{{3
   if s:is_mac
-    call submode#enter_with('cscroll', 'n', '', '[!s]b', ':ChromeScrollDown<CR>')
-    " call submode#enter_with('cscroll', 'n', '', '[!s]k', ':ChromeScrollUp<CR>')
+    call submode#enter_with('cscroll', 'n', '', 'sb', ':ChromeScrollDown<CR>')
+    " call submode#enter_with('cscroll', 'n', '', 'sk', ':ChromeScrollUp<CR>')
     call submode#map('cscroll', 'n', '', 'j', ':ChromeScrollDown<CR>')
     call submode#map('cscroll', 'n', '', 'k', ':ChromeScrollUp<CR>')
     call submode#map('cscroll', 'n', '', 'l', ':ChromeTabRight<CR>')
@@ -3626,7 +3622,7 @@ if s:bundle.is_installed('vim-submode')
   endif
 
   " Change current window size {{{3
-  call submode#enter_with('winsize', 'n', '', '[!s]w', '<Nop>')
+  call submode#enter_with('winsize', 'n', '', 'sw', '<Nop>')
   call submode#leave_with('winsize', 'n', '', '<Esc>')
   call submode#map       ('winsize', 'n', '', 'j', '<C-w>-:redraw<CR>')
   call submode#map       ('winsize', 'n', '', 'k', '<C-w>+:redraw<CR>')
@@ -3645,8 +3641,8 @@ if s:bundle.is_installed('vim-submode')
   call submode#map       ('undo/redo', 'n', '', '+', 'g+')
 
   " Tab walker. {{{3
-  call submode#enter_with('tabwalker', 'n', '', '[!s]t', '<Nop>')
-  call submode#enter_with('tabwalker', 'n', '', '[!s]e', '<Nop>')
+  call submode#enter_with('tabwalker', 'n', '', 'st', '<Nop>')
+  call submode#enter_with('tabwalker', 'n', '', 'se', '<Nop>')
   call submode#leave_with('tabwalker', 'n', '', '<Esc>')
   call submode#map       ('tabwalker', 'n', '', 'h', 'gT:redraw<CR>')
   call submode#map       ('tabwalker', 'n', '', 'l', 'gt:redraw<CR>')
@@ -3658,10 +3654,10 @@ if s:bundle.is_installed('vim-submode')
   call submode#map       ('tabwalker', 'n', '', 'o', ':execute "tabonly"<CR>')
 
   " winmove {{{3
-  call submode#enter_with('winmove', 'n', '', '[!s]j', '<C-w>j')
-  call submode#enter_with('winmove', 'n', '', '[!s]k', '<C-w>k')
-  call submode#enter_with('winmove', 'n', '', '[!s]h', '<C-w>h')
-  call submode#enter_with('winmove', 'n', '', '[!s]l', '<C-w>l')
+  call submode#enter_with('winmove', 'n', '', 'sj', '<C-w>j')
+  call submode#enter_with('winmove', 'n', '', 'sk', '<C-w>k')
+  call submode#enter_with('winmove', 'n', '', 'sh', '<C-w>h')
+  call submode#enter_with('winmove', 'n', '', 'sl', '<C-w>l')
   call submode#leave_with('winmove', 'n', '', '<Esc>')
   call submode#map       ('winmove', 'n', '', 'j', '<C-w>j')
   call submode#map       ('winmove', 'n', '', 'k', '<C-w>k')
@@ -3677,7 +3673,7 @@ if s:bundle.is_installed('vim-submode')
   call submode#map       ('winsize', 'n', '', '>', '<C-w>>:redraw<CR>')
 
   " Quickfix {{{3
-  call submode#enter_with('quickfix', 'n', '',  '[!s]q', '<Nop>')
+  call submode#enter_with('quickfix', 'n', '',  'sq', '<Nop>')
   call submode#leave_with('quickfix', 'n', '',  '<Esc>')
   call submode#map       ('quickfix', 'n', '',  'j', ':cn<CR>')
   call submode#map       ('quickfix', 'n', '',  'k', ':cp<CR>')
@@ -4618,8 +4614,8 @@ function! s:exec_ctags(path) "{{{3
 endfunction
 
 " surround.vim {{{2
-nmap [!s]s <Plug>Yssurround
-" nmap [!s]s <Plug>Ysurround
+nmap ss <Plug>Yssurround
+" nmap ss <Plug>Ysurround
 imap <C-g>y <Esc><Plug>Yssurround
 
 let g:surround_custom_mapping = {}
@@ -4737,9 +4733,18 @@ if s:bundle.is_installed('vim-operator-user')
   map ;u <Plug>(operator-uniq)
   map ;k <Plug>(operator-trimright)
 
-  map <Leader>tm <Plug>(operator-md_tabularize_tsv)
-  map <Leader>Tm <Plug>(operator-md_untabularize_tsv)
+  map <Leader>tm <Plug>(operator-tabular-tsv2md))
+  map <Leader>Tm <Plug>(operator-tabular-md2tsv)
   map <Leader>nm <Plug>(operator-normalize_utf8mac)
+
+  if s:bundle.is_installed('vim-operator-surround')
+    map <silent>sa <Plug>(operator-surround-append)
+    map <silent>sd <Plug>(operator-surround-delete)
+    map <silent>sr <Plug>(operator-surround-replace)
+    map <silent>sba <Plug>(operator-surround-append)<Plug>(textobj-multiblock-a)
+    map <silent>sbd <Plug>(operator-surround-delete)<Plug>(textobj-multiblock-a)
+    map <silent>sbr <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
+  endif
 endif
 
 " textobj {{{2
@@ -5723,6 +5728,7 @@ if s:bundle.is_installed('neosnippet.vim')
       return repeat("\<Right>", pos - org_pos + 1)
     endif
     if s:bundle.is_installed('emmet-vim')
+          \ && line[pos] =~# '[a-zA-Z]'
           \ && &filetype =~# 'x\?html\|s\?css\|php\|eruby'
       return "\<Plug>(EmmetExpandAbbr)"
     endif
