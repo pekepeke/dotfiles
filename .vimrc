@@ -816,10 +816,10 @@ NeoBundleLazy 'osyo-manga/vim-anzu', {'autoload': {
 NeoBundle 'kien/rainbow_parentheses.vim'
 " incompatible with smartinput
 " NeoBundle 'vim-scripts/Highlight-UnMatched-Brackets'
-NeoBundleLazy 'vim-scripts/matchit.zip', {'autoload': {
-      \ 'filetypes': ['html', 'xhtml', 'xml', 'ruby', 'python'],
+NeoBundle 'vim-scripts/matchit.zip', {'autoload': {
       \ 'mappings' : [['nx', '%']],
       \ }}
+      " \ 'filetypes': ['html', 'xhtml', 'xml', 'ruby', 'python'],
 NeoBundle 'vim-scripts/matchparenpp'
 " NeoBundle 'vimtaku/hl_matchit.vim'
 " if has('python')
@@ -1026,7 +1026,7 @@ NeoBundleLazy 'basyura/unite-rails', { 'autoload' : {
       \   'rails/stylesheet', 'rails/view'
       \ ],
       \ }}
-NeoBundleLazy 'basyura/unite-stepdefs', { 'autoload' : {
+NeoBundleLazy 'moro/unite-stepdefs', { 'autoload' : {
       \ 'unite_sources': ['stepdefs'],
       \ }}
 
@@ -1088,9 +1088,9 @@ NeoBundle 'cakebaker/scss-syntax.vim'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'wavded/vim-stylus'
 NeoBundle 'slim-template/vim-slim'
-" NeoBundleLazy 'csscomb/CSScomb-for-Vim', {'autoload': {
-"       \ 'commands': ['CSSComb'],
-"       \ }}
+NeoBundleLazy 'csscomb/csscomb-for-vim', {'autoload': {
+      \ 'commands': ['CSSComb'],
+      \ }}
 NeoBundleLazy 'vim-scripts/cssbaseline.vim', {'autoload': {
       \ 'commands': ['Baseline', 'Baseline1'],
       \ }}
@@ -1284,7 +1284,9 @@ NeoBundle 'nelstrom/vim-markdown-folding'
 NeoBundleLazyOn FileType markdown 'joker1007/vim-markdown-quote-syntax'
 NeoBundle 'timcharper/textile.vim'
 NeoBundleLazyOn FileType csv 'chrisbra/csv.vim'
-NeoBundleLazyOn FileType yaml 'henrik/vim-yaml-flattener'
+" NeoBundleLazyOn FileType yaml 'henrik/vim-yaml-flattener', {'autoload':{
+"       \ 'commands': ['YAMLToggleFlatness']
+"       \ }}
 NeoBundle 'aklt/plantuml-syntax'
 NeoBundle 'maxmeyer/vim-taskjuggler'
 NeoBundle 'hara/vim-opf'
