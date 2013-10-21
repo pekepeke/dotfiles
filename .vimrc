@@ -780,8 +780,12 @@ NeoBundleLazy 'thinca/vim-editvar', {'autoload': {
       \ 'commands': [{'name': 'Editvar', 'complete': 'var'}],
       \ 'unite_sources': ['variable'],
       \ }}
+
+" if has('conceal')
+"   NeoBundle 'Yggdroot/indentLine'
+" endif
 NeoBundle 'nathanaelkane/vim-indent-guides'
-" NeoBundle 'Yggdroot/indentLine'
+
 NeoBundleLazy 'pekepeke/cascading.vim', {'autoload':{
       \ 'commands': ['Cascading'],
       \ 'mappings': [['n', '<Plug>(cascading)']]
@@ -927,10 +931,33 @@ NeoBundleLazy 'mattboehm/vim-unstack', {'autoload': {
       \ }}
 
 " help {{{4
-NeoBundle 'thinca/vim-ref'
-NeoBundle 'pekepeke/ref-javadoc'
-NeoBundle 'soh335/vim-ref-jquery'
-NeoBundle 'yuku-t/vim-ref-ri'
+NeoBundle 'thinca/vim-ref', { 'autoload' : {
+      \ 'commands' : {
+      \   'name' : 'Ref',
+      \   'complete' : 'customlist,ref#complete',
+      \ },
+      \ 'unite_sources' : [
+      \   'ref/erlang', 'ref/man', 'ref/perldoc',
+      \   'ref/phpmanual', 'ref/pydoc', 'ref/redis', 'ref/refe', 'ref/webdict'
+      \ ],
+      \ 'mappings' : ['n', 'K', '<Plug>(ref-']
+      \ }}
+NeoBundle 'pekepeke/ref-javadoc', {
+      \ 'depends': 'thinca/vim-ref', 'autoload': {
+      \ 'unite_sources': [
+      \   'ref/javadoc',
+      \ ], }}
+NeoBundle 'soh335/vim-ref-jquery', {
+      \ 'depends': 'thinca/vim-ref', 'autoload': {
+      \ 'unite_sources': [
+      \   'ref/jquery',
+      \ ], }}
+NeoBundle 'taka84u9/vim-ref-ri', {
+      \ 'depends': 'thinca/vim-ref', 'autoload': {
+      \ 'unite_sources': [
+      \   'ref/ri',
+      \ ], }}
+
 " NeoBundle 'nishigori/vim-ref-phpunit'
 " NeoBundle 'eiiches/vim-ref-gtkdoc'
 " NeoBundle 'eiiches/vim-ref-info'
@@ -1894,8 +1921,10 @@ function! s:vimrc_cmdwin_init() "{{{3
   inoremap <buffer><expr> <BS> col('.') == 1 ? '<Esc>:quit<CR>' : '<BS>'
 
   if s:bundle.is_installed('vim-ambicmd')
-    imap <expr><buffer> <Space> ambicmd#expand("\<Space>")
-    imap <expr><buffer> <CR> ambicmd#expand("\<CR>")
+    " imap <expr><buffer> <Space> ambicmd#expand("\<Space>")
+    " imap <expr><buffer> <CR> ambicmd#expand("\<CR>")
+    imap <expr><buffer> <Space> <SID>ambicmd_expand("\<Space>", 'i', getcmdline())
+    imap <expr><buffer> <CR> <SID>ambicmd_expand("\<CR>", 'i', getcmdline())
   endif
   startinsert!
 endfunction " }}}
@@ -3189,6 +3218,29 @@ if s:bundle.is_installed('switch.vim')
   nnoremap <silent> !! :<C-u>Switch<CR>
   " let b:switch_custom_definitions = [
 
+  let s:switch_definitions = {
+        \ '_': [
+        \ ['get', 'post', 'put', 'delete'],
+        \ ]
+        \ }
+  function! s:switch_definitions_deploy()
+    if empty(s:switch_definitions) || empty(&filetype)
+      return
+    endif
+    let dict = exists('b:switch_custom_definitions') ? b:switch_custom_definitions : {}
+
+    for ft in split(&filetype, '\.')
+      if has_key(s:switch_definitions, ft)
+        let dict = extend(dict, s:switch_definitions[ft])
+      endif
+    endfor
+    if exists('s:switch_definitions._')
+      let dict = extend(dict, s:switch_definitions._))
+    endif
+
+    let b:switch_custom_definitions = dict
+  endfunction
+  MyAutocmd filetype * call <SID>switch_definitions_deploy()
   " let g:switch_custom_definitions = [
   "       \ {'ruby': [
   "       \ ["describe", "context", "specific", "example"],
@@ -3440,8 +3492,16 @@ endif
 
 " ambicmd {{{2
 if s:bundle.is_installed('vim-ambicmd')
-  cmap <expr> <Space> ambicmd#expand("\<Space>")
-  cmap <expr> <CR> ambicmd#expand("\<CR>")
+  function! s:ambicmd_expand(key, mode, line)
+    " give priority to altercmd.vim
+    if hasmapto(a:line, a:mode, 1)
+      return a:key
+    endif
+    return ambicmd#expand(a:key)
+  endfunction
+
+  cmap <expr> <Space> <SID>ambicmd_expand("\<Space>", "c", getcmdline())
+  cmap <expr> <CR> <SID>ambicmd_expand("\<CR>", "c", getcmdline())
   " cnoremap <expr> <C-l> ambicmd#expand("\<Space>")
   " cnoremap <expr> <Space> ambicmd#expand("\<Space>")
   " cnoremap <expr> <CR> ambicmd#expand("\<CR>")
@@ -3483,6 +3543,13 @@ if s:bundle.tap('vim-indent-guides')
     call s:bundle.untap()
   endif
 endif
+
+if s:bundle.tap('indentLine')
+  let g:indentLine_char = '¦'
+  " let g:indentLine_color_term = 236
+  " let g:indentLine_color_gui = '#A4E57E'
+endif
+
 
 " smartword {{{2
 if s:bundle.is_installed('vim-smartword')
@@ -5865,6 +5932,7 @@ if s:bundle.is_installed('neocomplcache.vim') "{{{3
   " javascript
   let g:neocomplcache_omni_functions.javascript = 'nodejscomplete#CompleteJS'
   let g:node_usejscomplete = 1
+  let g:jscomplete_use = ['dom', 'es6th', 'moz']
   " haxe
   let g:neocomplcache_omni_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
   " autohotkey
