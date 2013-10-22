@@ -25,6 +25,9 @@
 # tags
 TAGS
 tags
+GPATH
+GRTAGS
+GTAGS
 
 # Windows
 Thumbs.db

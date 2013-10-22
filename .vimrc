@@ -1478,14 +1478,19 @@ NeoBundleLazy 'eiiches/unite-tselect', { 'autoload' : {
 NeoBundleLazy 'tsukkee/unite-tag', { 'autoload' : {
       \ 'unite_sources' : ['tag', 'tag/file', 'tag/include'],
       \ }}
+NeoBundleLazy 'hewes/unite-gtags', {'autoload': {
+      \ 'unite_sources': [
+      \ 'gtags/context' , 'gtags/ref' , 'gtags/def' , 'gtags/grep' , 'gtags/completion',
+      \ ],
+      \ }}
 
 " NeoBundle 'ujihisa/unite-launch'
 NeoBundleLazy 'ujihisa/quicklearn', { 'autoload' : {
       \ 'unite_sources' : ['quicklearn'],
       \ }}
-NeoBundleLazy "osyo-manga/unite-airline_themes", {'autoload':{
-      \ 'unite_sources' : ['airline_themes'],
-      \ }}
+" NeoBundleLazy "osyo-manga/unite-airline_themes", {'autoload':{
+"       \ 'unite_sources' : ['airline_themes'],
+"       \ }}
 NeoBundleLazy "osyo-manga/unite-fold", {'autoload':{
       \ 'unite_sources' : ['fold'],
       \ }}
@@ -1943,21 +1948,83 @@ augroup vimrc-binary
 augroup END
 
 
-" alias commands {{{1
-" basic {{{2
+" some commands & altercmd {{{1
+" some commands {{{2
+command! -nargs=? -complete=dir Ctags call s:exec_ctags(<q-args>)
+command! -nargs=? -complete=dir Gtags call s:system_with_lcd("gtags", <q-args>)
+
 command! -nargs=0 -bang MyQ
       \ if tabpagenr('$') == 1 && winnr('$') == 1 | enew
       \ | else | quit<bang> | endif
 
 command! -nargs=0 -bang MyWQ write<bang> | MyQ<bang>
 
-function! s:toggle_option(opt)
+function! s:system(cmd) "{{{3
+  if s:bundle.is_installed('vimproc.vim')
+    call vimproc#system_bg(a:cmd)
+  else
+    execute "!" a:cmd
+  endif
+endfunction
+
+function! s:system_with_lcd(cmd, ...) "{{{3
+  let dir = empty(a:000) ? "" : a:1
+
+  if empty(dir)
+    let dir = input("cd : ", getcwd(), "dir")
+  endif
+  if empty(dir)
+    return
+  endif
+  let cwd = getcwd()
+
+  execute 'lcd' dir
+  call s:system(cmd)
+  execute 'lcd' cwd
+endfunction
+
+function! s:exec_ctags(path) "{{{3
+  let path = a:path
+  let options = ' --exclude=".git"'
+  if &filetype != 'javascript'
+    let options .= ' --exclude="*.js"'
+  elseif &filetype != 'coffee'
+    let options .= ' --exclude="*.coffee"'
+  endif
+  let ctags_cmd = "ctags -R"
+  if empty(path)
+    " let path = input("input base dir : ", expand('%:p:h'))
+    let path = input("cd : ", getcwd(), "dir")
+  endif
+  if empty(path)
+    return
+  endif
+  let cwd = getcwd()
+  if !empty(a:path) && isdirectory(a:path)
+    execute 'lcd' a:path
+  endif
+  if s:bundle.is_installed('vimproc.vim')
+    call vimproc#system_bg(ctags_cmd)
+  else
+    execute "!" ctags_cmd
+    if s:bundle.is_installed('neocomplcache.vim')
+      NeoComplCacheCachingTags
+    elseif s:bundle.is_installed('neocomplete.vim')
+      NeoCompleteTagMakeCache
+    endif
+  endif
+  if !empty(a:path) && isdirectory(a:path)
+    execute 'lcd' cwd
+  endif
+endfunction
+
+function! s:toggle_option(opt) "{{{3
   exe "setl inv".a:opt
   let sts = eval('&'.a:opt)
   echo printf("set %s : %s", a:opt, sts ? "ON" : "OFF")
 endfunction
 
-function! s:initialize_global_dict(prefix, names)
+function! s:initialize_global_dict(prefix, names) "{{{3
   if type(a:prefix) == type([])
     let prefix = ""
     let names = a:prefix
@@ -1972,7 +2039,7 @@ function! s:initialize_global_dict(prefix, names)
   endfor
 endfunction
 
-function! s:bulk_dict_variables(defines)
+function! s:bulk_dict_variables(defines) "{{{3
   for var in a:defines
     for name in var.names
       let var.dict[name] = var.value
@@ -3227,7 +3294,7 @@ if s:bundle.is_installed('switch.vim')
     if empty(s:switch_definitions) || empty(&filetype)
       return
     endif
-    let dict = exists('b:switch_custom_definitions') ? b:switch_custom_definitions : {}
+    let dict = exists('b:switch_custom_definitions') ? b:switch_custom_definitions : []
 
     for ft in split(&filetype, '\.')
       if has_key(s:switch_definitions, ft)
@@ -3235,7 +3302,7 @@ if s:bundle.is_installed('switch.vim')
       endif
     endfor
     if exists('s:switch_definitions._')
-      let dict = extend(dict, s:switch_definitions._))
+      let dict = extend(dict, s:switch_definitions._)
     endif
 
     let b:switch_custom_definitions = dict
@@ -4247,7 +4314,7 @@ if s:bundle.tap('unite.vim')
 
   nmap [!unite]u  :<C-u>Unite<Space>
 
-  UniteNMap   s         source
+  " UniteNMap   s         source
   UniteNMap   <Space>   buffer
   UniteNMap   j         buffer_tab
   UniteNMap   k         tab
@@ -4258,18 +4325,23 @@ if s:bundle.tap('unite.vim')
   UniteNMap   <Leader>r quickrun_config
   UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR> -profile-name=files
   UniteNMap   m         file_mru -default-action=open -profile-name=files
-  UniteNMap   t         sonictemplate
+  UniteNMap   y         sonictemplate
   UniteNMap   c         webcolorname
   UniteNMap   i         jump
   UniteNMap   o         outline
   UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep -auto-preview
   UniteNMap!  gr        grep -buffer-name=grep
-  UniteNMap!  gt        grep:<C-r>=getcwd()<CR>:TODO\|FIXME\|XXX\|NOTE\|!!!\|\?\?\? -buffer-name=todo -auto-preview
-  UniteNMap   gl        grep_launcher
+  " UniteNMap!  gt        grep:<C-r>=getcwd()<CR>:TODO\|FIXME\|XXX\|NOTE\|!!!\|\?\?\? -buffer-name=todo -auto-preview
+  " UniteNMap   gl        grep_launcher
   UniteNMap!  gi        git_grep -buffer-name=git_grep
+  UniteNMap!  tt        gtags/context -buffer-name=tag
+  UniteNMap!  tr        gtags/ref -buffer-name=tag
+  UniteNMap!  td        gtags/def -buffer-name=tag
+  UniteNMap!  tg        gtags/grep -buffer-name=tag
+  UniteNMap!  ti        gtags/completion -buffer-name=tag
   UniteNMap!  q         quickfix -buffer-name=qfix
   UniteNMap   p         history/yank
-  UniteNMap   @         quickrun_config
+  " UniteNMap   @         quickrun_config
   " UniteNMap   :         history/command command
   " UniteNMap   /         history/search
   UniteNMap   bb        bookmark -default-action=open
@@ -4366,8 +4438,10 @@ if s:bundle.tap('unite.vim')
 
   if s:bundle.is_installed('neocomplcache.vim')
     inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
+    inoremap <C-x>i <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
   elseif s:bundle.is_installed('neocomplete.vim')
     inoremap <C-x><C-j> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
+    inoremap <C-x>i <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
   endif
 
   command! Todo silent! exe 'Unite' printf('grep:%s::%s', getcwd(), s:regexp_todo) '-buffer-name=todo' '-no-quit'
@@ -4641,46 +4715,9 @@ else "{{{4
   nnoremap <silent> [!prefix]to :<C-u>TagbarOpen<CR>1<C-w>h
 endif "}}}
 
-command! -nargs=? Ctags call s:exec_ctags(<q-args>)
-
 " SrcExpl {{{2
 nnoremap <silent> [!prefix]t<Space> :<C-u>SrcExplToggle<CR>
 let g:SrcExpl_refreshTime = 1000
-
-function! s:exec_ctags(path) "{{{3
-  let path = a:path
-  let options = ' --exclude=".git"'
-  if &filetype != 'javascript'
-    let options .= ' --exclude="*.js"'
-  elseif &filetype != 'coffee'
-    let options .= ' --exclude="*.coffee"'
-  endif
-  let ctags_cmd = "ctags -R"
-  if empty(path)
-    " let path = input("input base dir : ", expand('%:p:h'))
-    let path = input("input base dir : ", getcwd())
-  endif
-  if empty(path)
-    return
-  endif
-  let cwd = getcwd()
-  if !empty(a:path) && isdirectory(a:path)
-    exe 'lcd' a:path
-  endif
-  if s:bundle.is_installed('vimproc.vim')
-    call vimproc#system_bg(ctags_cmd)
-  else
-    execute "!" ctags_cmd
-    if s:bundle.is_installed('neocomplcache.vim')
-      NeoComplCacheCachingTags
-    elseif s:bundle.is_installed('neocomplete.vim')
-      NeoCompleteTagMakeCache
-    endif
-  endif
-  if !empty(a:path) && isdirectory(a:path)
-    exe 'lcd' cwd
-  endif
-endfunction
 
 " surround.vim {{{2
 nmap ss <Plug>Yssurround
