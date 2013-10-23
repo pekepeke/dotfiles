@@ -1068,22 +1068,22 @@ if executable('alpaca_complete')
         \ 'autoload' : { 'filetypes' : 'ruby'},
         \  }
 endif
-if executable('rails_best_practices')
-  NeoBundleLazy 'alpaca-tc/unite-rails_best_practices', {
-        \ 'depends' : [ 'Shougo/unite.vim', 'romanvbabenko/rails.vim' ],
-        \ 'autoload': {
-        \ 'unite_sources': ['rails_best_practices']
-        \ }}
-else
-  NeoBundleLazy 'alpaca-tc/unite-rails_best_practices'
-endif
-if executable('reek')
-  NeoBundle 'alpaca-tc/unite-reek', {'autoload':{
-        \ 'unite_sources': ['reek'],
-        \ }}
-else
-  NeoBundleLazy 'alpaca-tc/unite-reek'
-endif
+" if executable('rails_best_practices')
+"   NeoBundleLazy 'alpaca-tc/unite-rails_best_practices', {
+"         \ 'depends' : [ 'Shougo/unite.vim', 'romanvbabenko/rails.vim' ],
+"         \ 'autoload': {
+"         \ 'unite_sources': ['rails_best_practices']
+"         \ }}
+" else
+"   NeoBundleLazy 'alpaca-tc/unite-rails_best_practices'
+" endif
+" if executable('reek')
+"   NeoBundle 'alpaca-tc/unite-reek', {'autoload':{
+"         \ 'unite_sources': ['reek'],
+"         \ }}
+" else
+"   NeoBundleLazy 'alpaca-tc/unite-reek'
+" endif
 
 " html {{{4
 NeoBundle 'othree/html5.vim'
@@ -5835,6 +5835,7 @@ if s:bundle.is_installed('neosnippet.vim')
     endif
     if s:bundle.is_installed('emmet-vim')
           \ && line[pos] =~# '[a-zA-Z]'
+          \ && line[pos+1] =~# '[^<>"'']'
           \ && &filetype =~# 'x\?html\|s\?css\|php\|eruby'
       return "\<Plug>(EmmetExpandAbbr)"
     endif
