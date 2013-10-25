@@ -4136,11 +4136,12 @@ if s:bundle.tap('unite.vim')
     \   ["mappings"           , "Unite mapping"]                           ,
     \   ["todo"               , "Todo"]                                    ,
     \   ["repl"               , "Unite menu:repl"]                         ,
-    \   ["help"               , "Unite menu:help"]                         ,
+    \   ["vim help"           , "Unite menu:vimhelp"]                      ,
+    \   ["os menu"            , "Unite menu:os"]                           ,
     \   ["fold"               , "Unite fold"]                              ,
     \   ["quickrun config"    , "Unite quickrun_config"]                   ,
     \ ])
-    let g:unite_source_menu_menus["help"] = s:unite_menu_create(
+    let g:unite_source_menu_menus["vimhelp"] = s:unite_menu_create(
     \ 'Help', [
     \   ['Vimscript functions' , 'help function-list']         ,
     \   ['Vimscript grammar'   , 'help usr_41']                ,
@@ -4167,6 +4168,29 @@ if s:bundle.tap('unite.vim')
     \   ["VimShellPop"        , "VimShellPop"]                             ,
     \   ["VimConsole"         , "VimConsoleOpen"]                          ,
     \ ])
+    if s:is_win
+      let g:unite_source_menu_menus["os"] = s:unite_menu_create(
+            \ 'Windows', [
+            \   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
+            \ ])
+    elseif s:is_mac
+      let g:unite_source_menu_menus["os"] = s:unite_menu_create(
+            \ 'Mac', [
+            \   ["Library"              , "VimFiler ~/Library"]                                                  ,
+            \   ["Desktop"              , "VimFiler ~/Desktop"]                                                  ,
+            \   ["Downloads"            , "VimFiler ~/Downloads"]                                                ,
+            \   ["Sites"                , "VimFiler ~/Sites"]                                                    ,
+            \   ["Documents"            , "VimFiler ~/Documents"]                                                ,
+            \   ["Log"                  , "VimFiler ~/Library/Logs/"]                                            ,
+            \   ["SystemLog"            , "VimFiler /var/log/"]                                                  ,
+            \   ["Keyremap4macbook xml" , "tabnew ~/Library/Application\\ Support/Keyremap4macbook/private.xml"] ,
+            \ ])
+    else
+      let g:unite_source_menu_menus["os"] = s:unite_menu_create(
+            \ 'Unix', [
+            \   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
+            \ ])
+    endif
 
     " lang menu {{{6
     let g:unite_source_menu_menus["lang_perl"] = s:unite_menu_create(
