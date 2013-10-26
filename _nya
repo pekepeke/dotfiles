@@ -17,6 +17,10 @@ which{
 		end
     end
 }
+if /%OS%/ == /Windows_NT/ then
+    suffix vbs   cscript //nologo
+    suffix js    cscript //nologo
+endif
 
 
 #print %0 reading ...
@@ -36,6 +40,7 @@ suffix jar java -jar
 suffix awk awk -f
 suffix vbs cscript
 suffix js  cscript
+suffix lua lua
 
 option uncompletechar ,;=
 option tilde   on
@@ -44,6 +49,24 @@ option histfilesize 4000
 option +backquote
 option +keep_bottom_line
 # option +standalone
+option +history
+option +nullcomplete
+option +tilde
+option +glob
+
+# _nya.d\ 以下のスクリプトをロードする
+foreach module "%0.d"\*.ny "%0.d"\*.lua
+    if exist $module then
+        source $module
+    endif
+end
+foreach module "%0.d"\scripts\*.ny "%0.d"\scripts\*.lua
+    if exist $module then
+        source $module
+    endif
+end
+
+set standalone=(set)
 if $standalone = (set) then
 	foreach i ( dir mkdir rmdir )
 		alias $i $COMSPEC /c $i
