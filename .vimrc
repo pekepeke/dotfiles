@@ -1146,7 +1146,9 @@ NeoBundleLazy 'afshinm/npm.vim', {'autoload': {
       \ 'commands': ['Npm']
       \ }}
 NeoBundle 'othree/javascript-libraries-syntax.vim'
-NeoBundle 'teramako/jscomplete-vim'
+" NeoBundle 'teramako/jscomplete-vim'
+NeoBundle 'aereal/jscomplete-vim'
+NeoBundle 'igetgames/vim-backbone-jscomplete'
 NeoBundle 'myhere/vim-nodejs-complete'
 NeoBundle 'claco/jasmine.vim'
 NeoBundleLazyOn FileType javascript 'mklabs/grunt.vim'
@@ -5993,8 +5995,6 @@ if s:bundle.is_installed('neocomplcache.vim') "{{{3
   let g:neocomplcache_include_patterns.scala = '^import'
   " javascript
   let g:neocomplcache_omni_functions.javascript = 'nodejscomplete#CompleteJS'
-  let g:node_usejscomplete = 1
-  let g:jscomplete_use = ['dom', 'es6th', 'moz']
   " haxe
   let g:neocomplcache_omni_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
   " autohotkey
@@ -6162,7 +6162,6 @@ elseif s:bundle.is_installed('neocomplete.vim') "{{{3
   " let g:neocomplete#sources#omni#functions.javascript = 'jscomplete#CompleteJS'
   let g:neocomplete#sources#omni#input_patterns.javascript =
         \ '\h\w*\|[^. \t]\.\w*'
-  let g:node_usejscomplete = 1
 
   " haxe
   let g:neocomplete#sources#omni#input_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
@@ -6261,6 +6260,17 @@ elseif s:bundle.is_installed('neocomplete.vim') "{{{3
 endif
 
 " completes {{{3
+let g:nodejs_complete_config = {
+      \ 'max_node_compl_len': 15,
+      \ }
+if s:bundle.is_installed('tern_for_vim')
+  let g:nodejs_complete_config.js_compl_fn = 'tern#Complete'
+elseif s:bundle.is_installed('jscomplete-vim')
+  let g:nodejs_complete_config.js_compl_fn= 'jscomplete#CompleteJS'
+endif
+" let g:node_usejscomplete = 1
+let g:jscomplete_use = ['dom', 'es6th', 'moz']
+
 if exists("+omnifunc") " {{{4
   MyAutocmd FileType php           setl omnifunc=phpcomplete#CompletePHP
   MyAutocmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
