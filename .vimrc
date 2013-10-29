@@ -1095,7 +1095,7 @@ NeoBundle 'vim-scripts/html_FileCompletion'
 NeoBundle 'tpope/vim-haml'
 NeoBundle 'digitaltoad/vim-jade'
 " NeoBundle 'mattn/zencoding-vim'
-NeoBundleLazyOn FileType html,eruby,php,css,scss 'mattn/emmet-vim'
+NeoBundleLazyOn FileType html,xhtml,eruby,php,css,scss 'mattn/emmet-vim'
 " NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
 NeoBundle 'juvenn/mustache.vim'
 NeoBundleLazy 'https://gist.github.com/6576341', {
@@ -1150,6 +1150,7 @@ NeoBundle 'othree/javascript-libraries-syntax.vim'
 NeoBundle 'aereal/jscomplete-vim'
 NeoBundle 'igetgames/vim-backbone-jscomplete'
 NeoBundle 'myhere/vim-nodejs-complete'
+
 NeoBundle 'claco/jasmine.vim'
 NeoBundleLazyOn FileType javascript 'mklabs/grunt.vim'
 NeoBundle 'elzr/vim-json'
@@ -1168,12 +1169,13 @@ NeoBundleLazy 'chikatoike/sourcemap.vim', {'autoload':{
 \   'SourceMapConvertLocListToOriginal', 'SourceMapAddOriginalToQuickfix',
 \   'SourceMapAddOriginalToLocList',]
 \ }}
+NeoBundle 'briancollins/vim-jst'
+" NeoBundle 'jeyb/vim-jst'
 NeoBundle 'nono/vim-handlebars'
 
 NeoBundle 'vim-scripts/Dart'
 NeoBundleLazyOn FileType haxe,hxml,nmml 'jdonaldson/vaxe'
 " NeoBundle 'MarcWeber/vim-haxe'
-NeoBundle 'jeyb/vim-jst'
 NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'leafgarland/typescript-vim'
 NeoBundleLazy 'clausreinke/typescript-tools', {
@@ -5859,7 +5861,7 @@ if s:bundle.is_installed('neosnippet.vim')
       endwhile
       return repeat("\<Right>", pos - org_pos + 1)
     endif
-    if s:bundle.is_installed('emmet-vim')
+    if s:bundle.is_sourced('emmet-vim')
           \ && line[pos] =~# '[a-zA-Z]'
           \ && line[pos+1] =~# '[^<>"'']'
           \ && &filetype =~# 'x\?html\|s\?css\|php\|eruby'
