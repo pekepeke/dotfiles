@@ -3,6 +3,9 @@
     "browser",
     "jquery"
   ],
+  "loadEagerly": [
+    "**/*.js"
+  ],
   "plugins": {
     "requirejs": {
       "baseURL": "./",

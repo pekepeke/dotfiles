@@ -11,5 +11,10 @@ inoremap <expr> <buffer> { smartchr#loop('{', '#{', '{{')
 inoremap <buffer><expr> > synchat#not_src()?'>':smartchr#one_of('>', '->', '>>')
 inoremap <buffer><expr> - synchat#not_src()?'-':smartchr#one_of('-', '->', '--')
 inoremap <buffer><expr> \ synchat#not_src()?'\':smartchr#one_of('\', '->', '=>', '\\')
+inoremap <buffer><expr> . synchat#not_src()?'\':smartchr#one_of('.', '->', '..')
+inoremap <buffer><expr> ) synchat#not_src()?'\':smartchr#one_of(')', ') ->', '))')
+if &omnifunc == 'tern#Complete'
+  call tern#Enable()
+endif
 
 let &cpo = s:save_cpo

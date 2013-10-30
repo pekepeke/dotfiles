@@ -9,13 +9,18 @@ snippet proto
 		${4:// body...}
 	};
 # Function
-snippet fun
+snippet function
 	function ${1:function_name} (${2:argument}) {
 		${3:// body...}
 	}
+snippet func
+	function(${1:}){${2:}}${3}
+
+snippet fn
+	function(d, i) {${1}}${2}
 # Anonymous Function
 snippet f
-	function(${1}) {${2}};
+	function(${1}) {${2}}${3}
 # if
 snippet if
 	if (${1:true}) {${2}};
@@ -123,10 +128,10 @@ snippet ajaxgetif
 	});
 
 snippet ajaxpost
-	$.post('<+/path/to/file.cgi+>',{
-	 <+<+param1+>: "<+value1+>", <+param2+>: "<+value2+>"+>}
+	$.post('${1:/path/to/file.cgi}',{
+	 ${2:param1}: "${3:value1}", ${4:param2}: "${4:value2}"
 	 , function(){
-		<+//stuff to do after event occurs;+>
+		${5://stuff to do after event occurs;}
 	});
 
 snippet ajaxsend
@@ -286,10 +291,10 @@ snippet get
 	${1:obj}.get(${2:element index})${3}
 
 snippet getjson
-	$.getJSON('<+/path/to/file.cgi+>',{
-	 <+<+param1+>: "<+value1+>", <+param2+>: "<+value2+>"+>}
-	 , function(json){
-		<+//stuff to do after event occurs;+>
+	$.getJSON('${1:/path/to/file.cgi}',{
+	 ${2:param1}: "${3:value1}", ${4:param2}: "${4:value2}"
+	 , function(){
+		${5://stuff to do after event occurs;}
 	});
 
 snippet getscript
@@ -333,13 +338,14 @@ snippet load
 	});
 
 snippet loadf
-	<+obj+>.load('<+/path/to/file.htm+>', { <+<+param1+>: "<+value1+>", <+param2+>: "<+value2+>"+> }, function() {
-		<+// Stuff to do after the page is loaded+>
+	${1:obj}.load('${2:/path/to/file.htm}', { ${3:param1}: "${4:value1}", ${5:param2}: "${6:value2}" }, function() {
+		${7:// Stuff to do after the page is loaded}
 	});
 snippet loadif
-	<+obj+>.loadIfModified('<+/path/to/file.htm+>', { <+<+param1+>: "<+value1+>", <+param2+>: "<+value2+>"+> }, function() {
-		<+// Stuff to do after the page is loaded+>
+	${1:obj}.loadIfModified('${2:/path/to/file.htm}', { ${3:param1}: "${4:value1}", ${5:param2}: "${6:value2}" }, function() {
+		${7:// Stuff to do after the page is loaded}
 	});
+
 snippet mdown
 	${1:obj}.mousedown(function() {
 		${2:// Act on the event}
@@ -584,9 +590,6 @@ snippet fs.writeFile
 		${4: }
 	});
 
-snippet func
-	function(${1:}){${2:}}
-
 snippet http.createClient
 	http.createClient(${1:80}, '${2:www.google.com}');
 
@@ -694,7 +697,7 @@ snippet websocket
 			${5:}
 		});
 		client.on('disconnect', function(){
-				${6:}
+			${6:}
 		});
 	});
 
@@ -795,4 +798,17 @@ snippet processOnUncaughtException
         // handle the error safely
         console.log(err);
     });
+
+snippet .at
+	.attr(${1})${2}
+
+snippet .attr
+	.attr(${1})${2}
+
+
+snippet .css
+	.css(${1})${2}
+
+snippet .on
+	.on('${1}', ${2})${3}
 

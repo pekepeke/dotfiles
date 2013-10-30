@@ -460,7 +460,11 @@ if has('vim_starting')
     return neobundle#is_installed(a:bundle)
   endfunction " }}}
 
-  function! s:bundle.config(config) " {{{
+  function! s:bundle.config(config, ...) " {{{
+    if a:0 >= 2
+      call neobundle#config(a:config, a:1)
+      return
+    endif
     if exists("self.tapped") && self.tapped != {}
       call neobundle#config(self.tapped.name, a:config)
     endif
@@ -1127,6 +1131,11 @@ NeoBundleLazy 'bae22/prefixer', {'autoload': {
       \ }}
 
 " javascript {{{4
+" NeoBundle 'lukaszb/vim-web-indent'
+" NeoBundle 'vim-scripts/IndentAnything'
+" NeoBundle 'itspriddle/vim-javascript-indent'
+NeoBundle 'guileen/simple-javascript-indenter'
+" NeoBundle 'jiangmiao/simple-javascript-indenter'
 NeoBundle 'pangloss/vim-javascript'
 if has('python')
   NeoBundle 'marijnh/tern_for_vim', {
@@ -1140,12 +1149,15 @@ if has('python')
         " \   'autoload' : {},
         " \   'rtp' : 'vim',
 endif
+" NeoBundle 'drslump/vim-syntax-js'
+NeoBundle  'vim-scripts/jQuery'
 " NeoBundle 'mmalecki/vim-node.js'
 NeoBundle 'moll/vim-node'
 NeoBundleLazy 'afshinm/npm.vim', {'autoload': {
       \ 'commands': ['Npm']
       \ }}
 NeoBundle 'othree/javascript-libraries-syntax.vim'
+
 " NeoBundle 'teramako/jscomplete-vim'
 NeoBundle 'aereal/jscomplete-vim'
 NeoBundle 'igetgames/vim-backbone-jscomplete'
@@ -1154,12 +1166,7 @@ NeoBundle 'myhere/vim-nodejs-complete'
 NeoBundle 'claco/jasmine.vim'
 NeoBundleLazyOn FileType javascript 'mklabs/grunt.vim'
 NeoBundle 'elzr/vim-json'
-" NeoBundle 'drslump/vim-syntax-js'
-NeoBundle  'vim-scripts/jQuery'
-" NeoBundle 'lukaszb/vim-web-indent'
-" NeoBundle 'vim-scripts/IndentAnything'
-" NeoBundle 'itspriddle/vim-javascript-indent'
-" NeoBundle 'jiangmiao/simple-javascript-indenter'
+
 NeoBundle 'pekepeke/titanium-vim'
 NeoBundle 'pekepeke/ref-jsextra-vim'
 NeoBundleLazy 'chikatoike/sourcemap.vim', {'autoload':{
@@ -1278,8 +1285,8 @@ NeoBundleLazy 'nwertzberger/javacomplete', {
       \   'autoload' : { 'filetypes' : 'java' },
       \ }
 NeoBundleLazyOn FileType java 'vim-scripts/jcommenter.vim'
-NeoBundle 'vim-scripts/groovy.vim'
 NeoBundle 'vim-scripts/groovyindent'
+NeoBundle 'vim-scripts/groovy.vim'
 NeoBundleLazy 'thinca/vim-logcat', {'autoload':{
       \ 'commands': ['Logcat', 'LogcatClear'],
       \ }}
@@ -1345,18 +1352,18 @@ NeoBundle 'elixir-lang/vim-elixir'
 " php {{{4
 " NeoBundleLazyOn FileType php 'spf13/PIV'
 " NeoBundleLazyOn FileType php 'justinrainbow/php-doc.vim'
-NeoBundle 'Gasol/vim-php'
-NeoBundle 'StanAngeloff/php.vim'
-" NeoBundleLazyOn FileType php 'pekepeke/php.vim-html-enhanced'
 NeoBundle 'captbaritone/better-indent-support-for-php-with-html'
 NeoBundle '2072/PHP-Indenting-for-VIm'
+" NeoBundleLazyOn FileType php 'pekepeke/php.vim-html-enhanced'
+NeoBundle 'Gasol/vim-php'
+NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
 NeoBundle 'vim-scripts/phpcomplete.vim'
 " NeoBundle 'vim-scripts/php_localvarcheck.vim'
 " NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
-NeoBundle 'beyondwords/vim-twig'
 NeoBundle 'tokutake/twig-indent'
+NeoBundle 'beyondwords/vim-twig'
 NeoBundleLazyOn FileType php 'violetyk/cake.vim'
 " NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
 " NeoBundleLazy 'heavenshell/unite-zf', { 'autoload' : {
@@ -2697,6 +2704,14 @@ endif
 let g:pdv_cfg_Copyright = ""
 let g:pdv_cfg_License = 'PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}'
 let g:pdv_cfg_CommentEnd = "// }}}"
+
+" javascript {{{2
+if s:bundle.is_installed('simple-javascript-indenter')
+  " この設定入れるとshiftwidthを1にしてインデントしてくれる
+  let g:SimpleJsIndenter_BriefMode = 1
+  " この設定入れるとswitchのインデントがいくらかマシに
+  let g:SimpleJsIndenter_CaseIndentLevel = -1
+endif
 
 " plugin settings {{{1
 " context_filetype {{{2
@@ -5577,7 +5592,8 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \ 'watchdogs_checker/haml' : {
         \   'command' : 'haml',
         \    'exec'    : '%c -c %o %s:p',
-        \    'quickfix/errorformat' : 'Haml error on line %l: %m,Syntax error on line %l: %m,%-G%.%#',
+        \    'quickfix/errorformat' : 'Haml error on line %l: %m,'
+        \                           . 'Syntax error on line %l: %m,%-G%.%#',
         \ },
         \ })
   call extend(g:quickrun_config, {
@@ -5587,7 +5603,8 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \ 'watchdogs_checker/jsonlint' : {
         \   'command' : 'jsonlint',
         \    'exec'    : '%c %s:p --compact',
-        \    'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
+        \    'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,'
+        \                           . '%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
         \ },
         \ 'watchdogs_checker/jsonval' : {
         \   'command' : 'jsonval',
@@ -5599,7 +5616,15 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \ },
         \ 'watchdogs_checker/coffee' : {
         \   'command' : 'coffee',
-        \   'exec'    : '%c -c %o %s:p',
+        \   'exec'    : '%c -c -p %o %s:p',
+        \   'quickfix/errorformat' : '%f:%l:%c:\ error:%m,'
+        \                          . '%Z%m,'
+        \                          . '%C%m,'
+        \                          . '%-G%.%#',
+        \ },
+        \ 'watchdogs_checker/_coffee' : {
+        \   'command' : 'coffee',
+        \   'exec'    : '%c -c -p %o %s:p',
         \   'quickfix/errorformat' : 'Error: In %f\, %m on line %l,'
         \                          . 'Error: In %f\, Parse error on line %l: %m,'
         \                          . 'SyntaxError: In %f\, %m,'
@@ -5835,12 +5860,12 @@ if s:bundle.is_installed('neosnippet.vim')
   endfunction
   let s:pair_closes = [ "]", "}", ")", "'", '"', ">", "|" , ","]
   function! s:imap_tab()
-    " if neosnippet#expandable()
-    "   return "\<Plug>(neosnippet_expand)"
-    " elseif neosnippet#jumpable()
-    "   return "\<Plug>(neosnippet_jump)"
-    if s:can_snip()
-      return "\<Plug>(neosnippet_jump_or_expand)"
+    if neosnippet#expandable()
+      return "\<Plug>(neosnippet_expand)"
+    elseif neosnippet#jumpable()
+      return "\<Plug>(neosnippet_jump)"
+    " if s:can_snip()
+    "   return "\<Plug>(neosnippet_jump_or_expand)"
     elseif pumvisible()
       return "\<C-n>"
     endif
@@ -5996,7 +6021,12 @@ if s:bundle.is_installed('neocomplcache.vim') "{{{3
 
   let g:neocomplcache_include_patterns.scala = '^import'
   " javascript
-  let g:neocomplcache_omni_functions.javascript = 'nodejscomplete#CompleteJS'
+  if s:bundle.is_installed('tern_for_vim')
+    let g:neocomplcache_omni_functions.javascript = 'tern#Complete'
+  elseif s:bundle.is_installed('vim-nodejs-complete')
+    let g:neocomplcache_omni_functions.javascript = 'nodejscomplete#CompleteJS'
+  endif
+
   " haxe
   let g:neocomplcache_omni_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
   " autohotkey
@@ -6160,9 +6190,17 @@ elseif s:bundle.is_installed('neocomplete.vim') "{{{3
   let g:neocomplete#sources#include#patterns.scala = '^import'
 
   " javascript
-  let g:neocomplete#sources#omni#functions.javascript = 'nodejscomplete#CompleteJS'
+  if s:bundle.is_installed('tern_for_vim')
+    let g:neocomplete#sources#omni#functions.javascript = 'tern#Complete'
+    let g:neocomplete#sources#omni#functions.coffee = 'tern#Complete'
+    " MyAutocmd FileType coffee call tern#Enable()
+  elseif s:bundle.is_installed('vim-nodejs-complete')
+    let g:neocomplete#sources#omni#functions.javascript = 'nodejscomplete#CompleteJS'
+  endif
   " let g:neocomplete#sources#omni#functions.javascript = 'jscomplete#CompleteJS'
   let g:neocomplete#sources#omni#input_patterns.javascript =
+        \ '\h\w*\|[^. \t]\.\w*'
+  let g:neocomplete#sources#omni#input_patterns.coffee =
         \ '\h\w*\|[^. \t]\.\w*'
 
   " haxe
@@ -6278,7 +6316,13 @@ if exists("+omnifunc") " {{{4
   MyAutocmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
   MyAutocmd FileType python        setl omnifunc=pythoncomplete#Complete
   " MyAutocmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
-  MyAutocmd FileType javascript    setl omnifunc=jscomplete#CompleteJS
+  " MyAutocmd FileType javascript    setl omnifunc=jscomplete#CompleteJS
+  if s:bundle.is_installed('tern_for_vim')
+    " mark
+    MyAutocmd FileType coffee    setl omnifunc=tern#Complete
+  elseif s:bundle.is_installed('vim-nodejs-complete')
+    MyAutocmd FileType javascript,coffee    setl omnifunc=nodejscomplete#CompleteJS
+  endif
   MyAutocmd FileType java          setl omnifunc=javacomplete#Complete completefunc=javacomplete#CompleteParamsInfo
   MyAutocmd FileType xml           setl omnifunc=xmlcomplete#CompleteTags
   MyAutocmd FileType css           setl omnifunc=csscomplete#CompleteCSS

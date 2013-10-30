@@ -7,8 +7,8 @@ setl noexpandtab
 setl comments=:REM\ ,
 setl commentstring=REM\ %s
 
-if &modifiable && &fileformat == 'dos'
-  setl ff=dos fenc=cp932
+if &modifiable " && &fileformat == 'dos'
+  setl fileformat=dos fileencoding=cp932
 endif
 
 let &cpo = s:save_cpo

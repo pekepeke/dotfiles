@@ -2,7 +2,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-setl comments=s1:{*,ex:*}
-setl commentstring={*%s*}
+setlocal comments=s1:{*,ex:*}
+setlocal commentstring={*%s*}
 
 let &cpo = s:save_cpo

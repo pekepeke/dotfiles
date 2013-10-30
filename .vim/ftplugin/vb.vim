@@ -2,8 +2,8 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-if &modifiable && &fileformat == 'dos'
-  setl ff=dos fenc=cp932
+if &modifiable " && &fileformat == 'dos'
+  setl fileformat=dos fileencoding=cp932
 endif
 setl dictionary=~/.vim/dict/vbscript.dict
 setl dictionary+=~/.vim/dict/wsh.dict

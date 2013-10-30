@@ -4,7 +4,7 @@ set cpo&vim
 let s:number = type(0)
 let s:float = type(0.0)
 
-function! s:escape(s)
+function! s:escape(s) "{{{2
   let t = type(a:s)
   if (a:s == '')
     return 'NULL'
@@ -251,11 +251,21 @@ function! my#tsv#to_flat_json() range "{{{2
   let head = remove(lines, 0)
   let src = []
   for item in lines
-    call add(src, map(head), 'get(item, v:key, "")')
+    call add(src, s:zip(head, item))
+    " call add(src, map(head, 'get(item, v:key, "")'))
   endfor
   let texts = string(src)
 
   call my#util#output_to_buffer('__TSV__', texts)
+endfunction
+
+function! s:zip(...)
+  let item = map(range(min(map(copy(a:000), 'len(v:val)'))), "map(copy(a:000), 'v:val['.v:val.']')")
+  let hash = {}
+  for [k, v] in item
+    let hash[k] = v
+  endfor
+  return hash
 endfunction
 
 let &cpo = s:save_cpo

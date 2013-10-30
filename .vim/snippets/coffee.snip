@@ -148,7 +148,7 @@ snippet expcon
 	expect(${1:predicate}).toContain ${2:value}
 
 snippet befe
-	# Configuration 
+	# Configuration
 	beforeEach ->
 		${1}
 
@@ -173,3 +173,20 @@ snippet log
 # Require
 snippet req
 	${2:$1} = require '${1:sys}'${3}
+
+snippet fn
+	function(d, i) {${1}}${2}
+
+snippet .at
+	.attr(${1})${2}
+
+snippet .attr
+	.attr(${1})${2}
+
+
+snippet .css
+	.css(${1})${2}
+
+snippet .on
+	.on('${1}', ${2})${3}
+
