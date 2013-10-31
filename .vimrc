@@ -483,14 +483,8 @@ if has('vim_starting')
   function! s:bundle.is_installed(name) "{{{
     return neobundle#is_installed(a:name)
   endfunction "}}}
-endif
 
-call neobundle#rc(expand("~/.vim/neobundle"))
-NeoBundleLocal ~/.vim/bundle
-
-" lazy util {{{3
-if has('vim_starting')
-  function! s:neobundle_lazy_on(on, modes, source)
+  function! s:bundle.install_lazy_on(on, modes, source) "{{{
     if a:on =~? "filetype"
       let opt = {
             \ 'autoload' : {
@@ -498,8 +492,9 @@ if has('vim_starting')
             \ }}
       execute printf('NeoBundleLazy %s,%s', a:source, string(opt))
     endif
-  endfunction
-  function! s:neobundle_summary()
+  endfunction " }}}
+
+  function! s:bundle.summary_report() "{{{
     let bundles = neobundle#config#get_neobundles()
     let msgs = [
           \ printf("Installed   : %d", len(bundles)),
@@ -512,9 +507,9 @@ if has('vim_starting')
           \   'v:val.name'), "\n")),
           \ ]
     echo join(msgs, "\n")
-  endfunction
+  endfunction " }}}
 
-  function! s:neobundle_validate()
+  function! s:bundle.validate_report() "{{{
     let bundles = neobundle#config#get_neobundles()
     let lazies = filter(copy(bundles), 'v:val.lazy && v:val.sourced')
     let plugins = []
@@ -528,13 +523,15 @@ if has('vim_starting')
       echo printf("Following plugins looks good should not be delayed\n%s",
             \ join(map(plugins, 'v:val.name'), "\n"))
     endif
-  endfunction
+  endfunction " }}}
 
-  command! -nargs=+ NeoBundleLazyOn call <SID>neobundle_lazy_on(<f-args>)
-  command! NeoBundleSummary call s:neobundle_summary()
-  command! NeoBundleValidate call s:neobundle_validate()
+  command! -nargs=+ NeoBundleLazyOn call s:bundle.install_lazy_on(<f-args>)
+  command! NeoBundleSummary call s:bundle.summary_report()
+  command! NeoBundleValidate call s:bundle.validate_report()
 endif
 
+call neobundle#rc(expand("~/.vim/neobundle"))
+NeoBundleLocal ~/.vim/bundle
 
 " vundles {{{2
 " statusline {{{3
@@ -3554,6 +3551,34 @@ if s:bundle.tap('vim-smartinput')
       call smartinput#map_to_trigger('i', '<Plug>(smartinput_CR)',
             \   '<Enter>',
             \   '<Enter>')
+      " http://qiita.com/hatchinee/items/c5bc19a656925ce33882
+      " classとかの定義時に:までを入れる
+      call smartinput#define_rule({
+            \   'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#',
+            \   'char'     : '(',
+            \   'input'    : '():<Left><Left>',
+            \   'filetype' : ['python'],
+            \   })
+      " が、すでに:がある場合は重複させない. (smartinputでは、atの定義が長いほど適用の優先度が高くなる)
+      call smartinput#define_rule({
+            \   'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#.*:',
+            \   'char'     : '(',
+            \   'input'    : '()<Left>',
+            \   'filetype' : ['python'],
+            \   })
+      " 末尾:の手前でも、エンターとか:で次の行にカーソルを移動させる
+      call smartinput#define_rule({
+            \   'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#:$',
+            \   'char'     : ':',
+            \   'input'    : '<Right><CR>',
+            \   'filetype' : ['python'],
+            \   })
+      call smartinput#define_rule({
+            \   'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#:$',
+            \   'char'     : '<CR>',
+            \   'input'    : '<Right><CR>',
+            \   'filetype' : ['python'],
+            \   })
     endfunction "}}}
 
     command! SmartinputOff call smartinput#clear_rules()
@@ -4399,6 +4424,7 @@ if s:bundle.tap('unite.vim')
   nnoremap <silent> [!unite]ba :<C-u>UniteBookmarkAdd<CR>
   " UniteNMap   rr        quicklearn -immediately
   nnoremap [!space]R :<C-u>Unite quicklearn -immediately<CR>
+  nnoremap <Leader>qr :<C-u>Unite quicklearn -immediately<CR>
 
   nnoremap <silent> [!unite]v :Unite menu:shortcut<CR>
   nnoremap <silent> [!unite]V :call <SID>unite_context_menu()<CR>
@@ -5537,7 +5563,7 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
   NeoBundleSource shabadou.vim vim-watchdogs
 
   " run ok
-  "  python, jsonlint
+  "  python, jsonlint, coffee
   " \   'hook/back_window/enable_exit' : 1,
   " \   'hook/unite_quickfix/no_focus' : 1,
   " watchdogs g:quickrun_config {{{3
@@ -5553,7 +5579,7 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \ })
   call extend(g:quickrun_config, {
         \ 'perl/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/vimparse.pl',
+        \   'type' : 'watchdogs_checker/perl-projectlibs',
         \ },
         \ 'cpanfile/watchdogs_checker': {
         \   'type' : 'watchdogs_checker/cpanfile',
@@ -7298,6 +7324,53 @@ command! -nargs=0 ThisSyntaxName echo synIDattr(synID(line("."), col("."), 1), "
 command! -nargs=0 ThisSyntax echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
                         \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
                         \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
+
+" util {{{2
+function! s:to_scratch() "{{{3
+  if empty(expand('%:p'))
+    setlocal buftype=nofile
+    setlocal bufhidden=hide
+    setlocal noswapfile
+    setlocal buflisted
+  endif
+endfunction " }}}
+command! -nargs=0 ToScratch call s:to_scratch()
+
+" errorformat tester {{{2
+let g:efm_tester_fmt = '%f:%l:%c:%m'
+let g:efm_tester_after_execute = 'cwindow'
+function! s:efm_tester(msg) "{{{3
+  let org_efm = &g:errorformat
+  try
+    let &g:errorformat = g:efm_tester_fmt
+    cgetexpr a:msg
+    if !empty(g:efm_tester_after_execute)
+      execute g:efm_tester_after_execute
+    endif
+  finally
+    let &g:errorformat = org_efm
+  endtry
+endfunction " }}}
+function! s:efm_tester_exec(count, l1, l2, text) "{{{3
+  if a:count == 0 && empty(a:text)
+    let msg = join(getline(1, '$'), "\n")
+  else
+    let msg = a:count == 0 ? a:text : join(getline(a:l1, a:l2), "\n")
+  endif
+  call s:efm_tester(msg)
+endfunction " }}}
+function! s:efm_tester_set(count, l1, l2, text)
+  let msg = a:count == 0 ? a:text : join(getline(a:l1, a:l2), "\n")
+  if empty(msg)
+    echo "set efm_tester_fmg=" . string(msg)
+  else
+    echohl Error
+    echomsg "can't set efm_tester_fmg=" . string(msg)
+    echohl None
+  endif
+endfunction
+command! -nargs=? -range=0 ErrorformatTestr call s:efm_tester_exec(<count>, <line1>, <line2>, <q-args>)
+command! -nargs=? -range=0 ErrorformatTestrSet call s:efm_tester_set(<count>, <line1>, <line2>, <q-args>)
 
 " after initializes {{{1
 if !has('vim_starting')

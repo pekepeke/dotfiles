@@ -14,7 +14,7 @@ let g:operator_splitline_no_default_key_mappings =
 call operator#user#define('splitline', 'operator#splitline#do')
 
 if !g:operator_splitline_no_default_key_mappings
-  map <CR> <Plug>(operator-splitline)
+  map <Leader><CR> <Plug>(operator-splitline)
 endif
 
 let &cpo = s:save_cpo
