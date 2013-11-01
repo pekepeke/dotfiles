@@ -6,5 +6,7 @@
     livereload:
       options: true
       files: ["**/*"]
+    options:
+      spawn: false
 
 

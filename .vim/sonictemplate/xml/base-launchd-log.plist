@@ -1,0 +1,5 @@
+  <key>StandardOutPath</key>
+  <string>/tmp/mylaunchd.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/mylaunchd-err.log</string>
+

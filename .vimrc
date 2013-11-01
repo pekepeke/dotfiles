@@ -5628,13 +5628,23 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \ },
         \ 'watchdogs_checker/jsonlint' : {
         \   'command' : 'jsonlint',
-        \    'exec'    : '%c %s:p --compact',
+        \    'exec'    : '%c %s:p %o --compact',
         \    'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,'
         \                           . '%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
         \ },
+        \ 'watchdogs_checker/nodejs' : {
+        \   'command' : 'node',
+        \    'exec'    : '%c %o %s:p',
+        \    'quickfix/errorformat' : '%AError: %m,%AEvalError: %m,'
+        \                           . '%ARangeError: %m,%AReferenceError: %m,'
+        \                           . '%ASyntaxError: %m,%ATypeError: %m,'
+        \                           .  '%Z%*[\ ]at\ %f:%l:%c,%Z%*[\ ]%m (%f:%l:%c),'
+        \                           .  '%*[\ ]%m (%f:%l:%c),%*[\ ]at\ %f:%l:%c,%Z%p^,'
+        \                           .  '%A%f:%l,%C%m,%-G%.%#'
+        \ },
         \ 'watchdogs_checker/jsonval' : {
         \   'command' : 'jsonval',
-        \    'exec'    : '%c %s:p',
+        \    'exec'    : '%c %o %s:p',
         \    'quickfix/errorformat' : '%E%f: %m at line %l,%-G%.%#',
         \ },
         \ 'coffee/watchdogs_checker' : {
@@ -5661,7 +5671,7 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \ },
         \ 'watchdogs_checker/tsc' : {
         \   'command' : 'tsc',
-        \    'exec'    : '%c %s:p',
+        \    'exec'    : '%c %o %s:p',
         \    'quickfix/errorformat' : '%+A %#%f %#(%l\,%c): %m,%C%m',
         \ },
         \ })
@@ -5671,7 +5681,7 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \ },
         \ 'watchdogs_checker/csslint' : {
         \   'command' : 'csslint',
-        \    'exec'    : '%c --format=compact %s:p',
+        \    'exec'    : '%c %o --format=compact %s:p',
         \    'quickfix/errorformat' : '%-G,%-G%f: lint free!,%f: line %l\, col %c\, %trror - %m,%f: line %l\, col %c\, %tarning - %m,%f: line %l\, col %c\, %m,',
         \ },
         \ })
@@ -5685,7 +5695,7 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
   call extend(g:quickrun_config, {
         \ 'watchdogs_checker/python' : {
         \   'command' : 'python',
-        \    'exec'    : "%c -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
+        \    'exec'    : "%c %o -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
         \    'quickfix/errorformat' :
         \       '%A  File "%f"\, line %l\,%m,' .
         \       '%C    %.%#,' .
@@ -7360,17 +7370,16 @@ function! s:efm_tester_exec(count, l1, l2, text) "{{{3
   call s:efm_tester(msg)
 endfunction " }}}
 function! s:efm_tester_set(count, l1, l2, text)
-  let msg = a:count == 0 ? a:text : join(getline(a:l1, a:l2), "\n")
-  if empty(msg)
-    echo "set efm_tester_fmg=" . string(msg)
+  let s = a:count == 0 ? a:text : join(getline(a:l1, a:l2), "\n")
+  if empty(fmt)
+    echo "set g:efm_tester_fmt=" . string(fmt)
+    let g:efm_tester_fmt = fmt
   else
-    echohl Error
-    echomsg "can't set efm_tester_fmg=" . string(msg)
-    echohl None
+    echo "g:efm_tester_fmt=" . string(g:efm_tester_fmt)
   endif
 endfunction
-command! -nargs=? -range=0 ErrorformatTestr call s:efm_tester_exec(<count>, <line1>, <line2>, <q-args>)
-command! -nargs=? -range=0 ErrorformatTestrSet call s:efm_tester_set(<count>, <line1>, <line2>, <q-args>)
+command! -nargs=? -range=0 EfmTest call s:efm_tester_exec(<count>, <line1>, <line2>, <q-args>)
+command! -nargs=? -range=0 EfmSetFormat call s:efm_tester_set(<count>, <line1>, <line2>, <q-args>)
 
 " after initializes {{{1
 if !has('vim_starting')

@@ -7,6 +7,9 @@
     livereload: {
       options: true,
       files: ["public/**/*"]
+    },
+    options: {
+      spawn: false
     }
   },
 
