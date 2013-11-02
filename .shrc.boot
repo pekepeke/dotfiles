@@ -76,7 +76,7 @@ GREP_OPTIONS="--exclude-dir=.libs $GREP_OPTIONS"
 LS_OPTIONS="--show-control-chars"
 
 if [ "$TERM" != "dumb" ]; then
-  if [ -x /usr/bin/dircolors ]; then
+  if [ -z "$MSYSTEM" -a -x /usr/bin/dircolors ]; then
     [ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
     #   # eval "`dircolors -b`"
   fi

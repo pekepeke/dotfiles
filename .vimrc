@@ -88,19 +88,31 @@ if s:is_win
     set shellxquote=\"
   endfunction
   command! -nargs=0 CmdEnable call s:cmd_init()
-  if executable('nyacus')
-    function! s:nyacus_init()
-      " Use NYAOS.
-      set shell=nyacus.exe
-      set shellcmdflag=-e
-      if executable('tee') | set shellpipe=\|&\ tee | endif
-      set shellredir=>%s\ 2>&1
-      set shellxquote=\"
-    endfunction
-    command! -nargs=0 NyacusEnable call s:nyacus_init()
+
+  function! s:nyacus_init()
+    " Use NYAOS.
+    set shell=nyacus.exe
+    set shellcmdflag=-e
+    if executable('tee') | set shellpipe=\|&\ tee | endif
+    set shellredir=>%s\ 2>&1
+    set shellxquote=\"
+  endfunction
+  command! -nargs=0 NyacusEnable call s:nyacus_init()
+
+  function! s:sh_init()
+    set shell=bash.exe
+    set shellcmdflag=--login\ -c
+    if executable('tee') | set shellpipe=\|&\ tee | endif
+    set shellredir=>%s\ 2>&1
+    set shellxquote=\"
+  endfunction
+  command! -nargs=0 ShEnable call s:sh_init()
+
     " call s:nyacus_init()
-    call s:cmd_init()
+  if !empty($MSYSTEM)
   else
+    " if executable('nyacus')
+    " endif
     call s:cmd_init()
   endif
 else
