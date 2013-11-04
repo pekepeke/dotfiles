@@ -24,14 +24,44 @@ endif
 
 
 #print %0 reading ...
+set standalone=(set)
+if $standalone = (set) then
+	foreach i ( dir mkdir rmdir )
+		alias $i $COMSPEC /c $i
+	end
+else
+	foreach i ( dir mkdir rmdir for )
+		alias cmd $i $COMSPEC /c $i
+	end
+endif
 
-alias cp cp -i
-alias rm rm -i
-alias mv mv -i
+#alias ls ls.exe -F
+#alias ll ls.exe -lF
+#alias la ls.exe -aF
+alias ll ls -l
+alias la ls -a
+
+# alias cp cp -i
+# alias rm rm -i
+# alias mv mv -i
+
+set RMCMD=`which rm`
+if not exist "$RMCMD" then
+	# alias rmf $COMSPEC /c del /f
+	alias rm $COMSPEC /c del
+	alias mv $COMSPEC /c move
+endif
+
 #alias bcc bcc32
+#alias lha lhcm
+#alias zip mzp
 #alias zipinfo unzip -l
 #alias dir\w dir /w
+
 alias vim gvim
+alias cpf cp -v
+
+alias edit notepad
 
 suffix ny %nyatype% -f
 suffix pl perl
@@ -66,47 +96,11 @@ foreach module "%0.d"\scripts\*.ny "%0.d"\scripts\*.lua
     endif
 end
 
-set standalone=(set)
-if $standalone = (set) then
-	foreach i ( dir mkdir rmdir )
-		alias $i $COMSPEC /c $i
-	end
-else
-	foreach i ( dir mkdir rmdir for )
-		alias cmd$i $COMSPEC /c $i
-	end
-endif
-
 bindkey CTRL_P vzlike-previous-history
 bindkey CTRL_N vzlike-next-history
 
 # customize
 option prompt [%USERNAME% $W]$G
-
-#alias ls ls.exe -F
-#alias ll ls.exe -lF
-#alias la ls.exe -aF
-alias ll ls -l
-alias la ls -a
-
-alias cpf cp -v
-
-## for nyacus
-alias cp xcopy
-
-if "`which rm`" == "" then
-	alias rmf del /f
-	alias rm del
-	alias mv move
-endif
-
-#alias bcc bcc32
-#alias lha lhcm
-#alias zip mzp
-#alias zipinfo unzip -l
-
-alias ex. explorer .
-alias edit notepad
 
 # フォルダショートカット
 if exist "%USERPROFILE%\デスクトップ" then

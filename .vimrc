@@ -108,13 +108,9 @@ if s:is_win
   endfunction
   command! -nargs=0 ShEnable call s:sh_init()
 
-    " call s:nyacus_init()
-  if !empty($MSYSTEM)
-  else
-    " if executable('nyacus')
-    " endif
-    call s:cmd_init()
-  endif
+  " if !empty($MSYSTEM)
+  " if executable('nyacus')
+  call s:cmd_init()
 else
   let $PAGER='less'
   " if s:is_mac && has('macvim')
@@ -2896,8 +2892,12 @@ if s:bundle.tap('lightline.vim')
           break
         endif
       endfor
+      let b:[var] = -1
     endif
     let ver = get(b:, var, '')
+    if ver <= 0
+      return ""
+    endif
     return a:name . ':' . ver
   endfunction
 
