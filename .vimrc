@@ -5633,6 +5633,14 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \    'quickfix/errorformat' : 'Haml error on line %l: %m,'
         \                           . 'Syntax error on line %l: %m,%-G%.%#',
         \ },
+        \ 'watchdogs_checker/slimrb' : {
+        \   'command' : 'slimrb',
+        \    'exec'    : '%c -c %o %s:p',
+        \    'quickfix/errorformat' : '%C\ %#%f\, Line %l\, Column %c,'.
+        \                             '%-G\ %.%#,'.
+        \                             '%ESlim::Parser::SyntaxError: %m,'.
+        \                             '%+C%.%#'
+        \ },
         \ })
   call extend(g:quickrun_config, {
         \ 'json/watchdogs_checker' : {
@@ -5665,18 +5673,23 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \ 'watchdogs_checker/coffee' : {
         \   'command' : 'coffee',
         \   'exec'    : '%c -c -p %o %s:p',
-        \   'quickfix/errorformat' : '%f:%l:%c:\ error:%m,'
-        \                          . '%Z%m,'
-        \                          . '%C%m,'
-        \                          . '%-G%.%#',
+        \   'quickfix/errorformat' : '%E%f:%l:%c: %trror: %m,' .
+        \                            'Syntax%trror: In %f\, %m on line %l,' .
+        \                            '%EError: In %f\, Parse error on line %l: %m,' .
+        \                            '%EError: In %f\, %m on line %l,' .
+        \                            '%W%f(%l): lint warning: %m,' .
+        \                            '%W%f(%l): warning: %m,' .
+        \                            '%E%f(%l): SyntaxError: %m,' .
+        \                            '%-Z%p^,' .
+        \                            '%-G%.%#'
         \ },
-        \ 'watchdogs_checker/_coffee' : {
-        \   'command' : 'coffee',
-        \   'exec'    : '%c -c -p %o %s:p',
-        \   'quickfix/errorformat' : 'Error: In %f\, %m on line %l,'
-        \                          . 'Error: In %f\, Parse error on line %l: %m,'
-        \                          . 'SyntaxError: In %f\, %m,'
-        \                          . '%-G%.%#',
+        \ 'watchdogs_checker/coffeelint' : {
+        \   'command' : 'coffeelint',
+        \   'exec'    : '%c -csv %o %s:p',
+        \   'quickfix/errorformat' : '%f\,%l\,%\d%#\,%trror\,%m,' .
+        \                            '%f\,%l\,%trror\,%m,' .
+        \                            '%f\,%l\,%\d%#\,%tarn\,%m,' .
+        \                            '%f\,%l\,%tarn\,%m'
         \ },
         \ 'typescript/watchdogs_checker' : {
         \   'type' : 'watchdogs_checker/tsc',
@@ -5769,9 +5782,14 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \   'type' : 'watchdogs_checker/cucumber',
         \ },
         \ 'watchdogs_checker/cucumber' : {
-        \   'command' : 'cucumber',
-        \    'exec'    : '%c --dry-run --quiet --strict --format pretty %o %s:p',
+        \   'command': 'cucumber',
+        \    'exec'  : '%c --dry-run --quiet --strict --format pretty %o %s:p',
         \    'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
+        \ },
+        \ 'watchdogs_checker/foodcritic': {
+        \   'command': 'foodcritic',
+        \   'exec'   : '%c %o %s:p',
+        \   'quickfix/errorformat': 'FC%n: %m: %f:%l',
         \ },
         \ })
   call extend(g:quickrun_config, {
@@ -5809,6 +5827,13 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \   'cmdopt'  : '-S %{OracleConnection()}',
         \   'exec'    : '%c %o \@%s:p',
         \   'quickfix/errorformat' : '%Eerror\ at\ line\ %l:,%Z%m',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'watchdogs_checker/twig-lint' : {
+        \   'command' : 'twig-lint',
+        \   'exec'    : '%c lint --format=csv %o %s:p',
+        \   'quickfix/errorformat' : '"%f"\,%l\,%m',
         \ },
         \ })
   " call extend(g:quickrun_config, {
@@ -6950,13 +6975,13 @@ command! ToWindowsBuffer set fileformat=dos fileencoding=cp932
 command! ToMacBuffer set fileformat=mac fileencoding=utf8
 command! TrimRSpace %s/ \+$//
 command! ConvChilder %s/〜/～/g
-command! Tosass call my#util#newfile_with_text(expand('%:p:r').".sass",
+command! ToSass call my#util#newfile_with_text(expand('%:p:r').".sass",
       \ system(printf('sass-convert -F css -T sass "%s"', expand('%:p')))
       \ )
-command! Toscss call my#util#newfile_with_text(expand('%:p:r').".scss",
+command! ToScss call my#util#newfile_with_text(expand('%:p:r').".scss",
       \ system(printf('sass-convert -F css -T scss "%s"', expand('%:p')))
       \ )
-command! Tocoffee call my#util#newfile_with_text(expand('%:p:r').".coffee",
+command! ToCoffee call my#util#newfile_with_text(expand('%:p:r').".coffee",
       \ system(printf('js2coffee < "%s"', expand('%:p')))
       \ )
       " \ system(printf('js2coffee "%s"', expand('%:p')))
