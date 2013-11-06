@@ -1,7 +1,8 @@
 scriptencoding utf-8
+set nocompatible
 
+" environment {{{1
 let $VIM_CACHE = $HOME . '/.cache'
-syntax enable
 
 let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
@@ -16,39 +17,119 @@ function! s:has_plugin(plugin_path)
   return strlen(globpath(&rtp, a:plugin_path))
 endfunction
 
-set nocompatible
-set hidden
-set showcmd
+augroup vimrc-myautocmd
+  autocmd!
+augroup END
+command! -bang -nargs=* MyAutoCmd autocmd<bang> vimrc-myautocmd <args>
+command! -nargs=* Lazy autocmd vimrc-myautocmd VimEnter * <args>
+" }}}
 
-set ts=2 sw=2 tw=1000
-set termencoding=utf-8
-set encoding=japan
-set fileencodings=ucs-bom,utf-8,iso-2022-jp,cp932,euc-jp
-" set fenc=utf-8
-set enc=utf-8
+" basic settings {{{1
+" set encoding=japan
+set encoding=utf-8
 if s:is_win
   set termencoding=cp932
 else
   set termencoding=utf-8
 endif
+" set fileencoding=utf-8
+set fileformat=unix
+set fileencodings=ucs-bom,utf-8,iso-2022-jp,cp932,euc-jp
+set fileformats=unix,dos,mac
 
-set number ruler
 set display=lastline
-set nowrap
-set nrformats=hex
-set updatetime=1000
+set clipboard=unnamed
+if has('unnamedplus')
+  set clipboard+=unnamedplus
+endif
+
+" set nospell
+set spell
+set spelllang=en_us
+set spellfile=~/.vim/spell/spellfile.utf-8.add
+set noautochdir
+set shellslash
+set directory=$VIM_CACHE,/var/tmp,/tmp
+call s:mkdir($VIM_CACHE)
+
+set viminfo&
+set viminfo+=! viminfo+=n$VIM_CACHE/pager-viminfo.txt
+
+" diff {{{2
 set diffopt& diffopt-=filler diffopt+=iwhite
+
+" display {{{2
+set lazyredraw ttyfast
+set scrolloff=10000000
+set sidescrolloff=999
+set number ruler
+
+set mouse=nch
+set nomousefocus
+set mousehide
+set timeoutlen=1000
+set ttimeoutlen=50
+
+set showmatch showcmd showfulltag
+set backspace=indent,eol,start
+set nolinebreak
+set textwidth=1000
+set formatoptions& formatoptions+=mM
+set whichwrap=b,s,h,l,<,>,[,]
+
+set splitbelow splitright
+set switchbuf=useopen
+set title
+
+set hidden
+set sidescroll=5
 set visualbell
-set mouse=a
+set noerrorbells
+
+set guioptions& guioptions+=T guioptions-=m guioptions-=M
+let did_install_syntax_menu = 1
+set noequalalways
+set langmenu=none
+set helplang=ja,en
+set keywordprg=":help"
+set foldmethod=marker
+
+" tab character {{{2
+set autoindent smartindent cindent
+set list
+set listchars=tab:^\ ,trail:~,nbsp:%,extends:>,precedes:<
+set smarttab             " インテリジェンスなタブ入力
+set noexpandtab
+"set softtabstop=4 tabstop=4 shiftwidth=4
+set softtabstop=0 tabstop=2 shiftwidth=2
+
+if exists('&ambiwidth')
+  set ambiwidth=double
+endif
+
+
+set nowrap
+set nrformats-=octal
+set updatetime=200
+if has('winaltkeys')
+  set winaltkeys=no
+endif
+set modeline
+set modelines=10
+
+" search {{{2
 set ignorecase smartcase wrapscan
 set incsearch hlsearch
 set virtualedit+=block
 
-set directory=$VIM_CACHE,/var/tmp,/tmp
-set viminfo+=n$VIM_CACHE/viminfo.txt
+" backup {{{2
+set nobackup noswapfile nowritebackup
+set autoread
+set backupcopy=yes
+set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*.tmp,crontab.*
+set backupdir=$VIM_CACHE/vim-backups
 set viewdir=$VIM_CACHE/vim-views
-
-call s:mkdir($VIM_CACHE)
+call s:mkdir(&backupdir)
 call s:mkdir(&viewdir)
 if has('persistent_undo')
   set undodir=$VIM_CACHE/vim-undo
@@ -56,25 +137,41 @@ if has('persistent_undo')
   set undofile
 endif
 
-set scrolloff=3
-set autoindent
-set smarttab
-set expandtab
-set showmatch matchtime=3
-set backspace=indent,eol,start
-
+" completion {{{2
 set wildmenu
 set wildmode=list:longest,full
 set wildchar=<tab>
+set wildignore+=*.o,*.obj,.git,*.rbc,.class,.svn
+set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
+set wildignore+=*.so,*.swp,*.pdf,*.dmg
+set wildignore+=*.luac,*.jar,*.pyc,*.stats
 set completeopt=menuone,preview
 set complete=.,w,b,u,t,i,k
 
+" statusline {{{2
 set laststatus=2
 set modeline
 set modelines=10
-let &statusline="%<%f %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']['.&ft.']'
-      \ }%=%l,%c%V%8P"
+function! MyStatusLine()
+  let s = ''
+  let s .= '%<'
+  let s .= '%f ' " filename
+  let s .= '%m' " modified flag
+  let s .= '%r' " readonly flag
+  let s .= '%h' " help flag
+  let s .= '%w' " preview flag
+  let s .= '%='
+  let s .= '[%{&l:fenc}]'
+  let s .= '[%{&l:ff}] %{&l:ft} '
+  let s .= '< L%l:%c%V ' " current line status
+  let s .= '%8P'
+  return s
+endfunction
+set statusline=%!MyStatusLine()
 
+" }}}
+
+" mappings {{{1
 cnoremap <C-x> <C-r>=expand('%:p:h')<CR>/
 nnoremap q <Nop>
 nnoremap Q q
@@ -82,21 +179,18 @@ nnoremap Q q
 nnoremap / :nohl<CR>/
 nnoremap ? :nohl<CR>?
 
-nnoremap tr t
+nnoremap te t
 nnoremap <silent> tt <C-]>
 nnoremap <silent> tj :<C-u>tag<CR>
 nnoremap <silent> tk :<C-u>pop<CR>
 nnoremap <silent> tl :<C-u>tags<CR>
-
-silent call pathogen#infect()
-
-filetype indent plugin on
-
-set background=dark
-colorscheme vividchalk
+" }}}
 
 if v:version > 702
-else
+elseif 0 " plugin load {{{1
+  filetype off
+  silent call pathogen#infect()
+
   " mkdir -p ~/.vim/autoload ~/.vim/bundle; curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim; mkdir -p ~/.vim/bundle ; cd ~/.vim/bundle;
   " git clone https://github.com/Shougo/vimfiler.git
   " git clone https://github.com/Shougo/unite.vim.git
@@ -142,7 +236,15 @@ else
     endfunction
     command! -nargs=0 PluginInstall call s:plugin_install()
   endif
-endif
+endif "}}}
+
+filetype indent plugin on
+syntax enable
+
+set background=dark
+colorscheme vividchalk
+
+" some autoload {{{1
 
 " __END__ {{{1
 " vim:fdm=marker sw=2 ts=2 ft=vim expandtab:
