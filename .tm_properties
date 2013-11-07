@@ -6,12 +6,22 @@ fontSize = 12
 showInvisibles = true
 
 softWrap = true
-tabSize = 2
+tabSize = 4
+softTabs = true
 
 [.git/COMMIT_EDITMSG]
 spellChecking = true
 spellingLanguage = 'en'
 
+[*.coffee]
+tabSize = 2
+
+[*.rb]
+tabSize = 2
+
+[*.{md,mkd,markdown}]
+tabSize = 2
+softTabs = false
 
 [*.{jpg, jpeg, png, gif, tif, tiff, pdf, psd, ico, icns, xls, xlsx, ppt, doc, docx}]
 binary = true

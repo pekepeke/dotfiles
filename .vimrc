@@ -17,7 +17,7 @@ let $VIM_CACHE = $HOME . '/.cache'
 augroup vimrc-myautocmd
   autocmd!
 augroup END
-command! -bang -nargs=* MyAutocmd autocmd<bang> vimrc-myautocmd <args>
+command! -bang -nargs=* MyAutoCmd autocmd<bang> vimrc-myautocmd <args>
 command! -nargs=* Lazy autocmd vimrc-myautocmd VimEnter * <args>
 
 
@@ -141,10 +141,6 @@ set clipboard=unnamed
 if has('unnamedplus')
   set clipboard+=unnamedplus
 endif
-" set mouse=a
-set mouse=nv
-set nomousefocus
-set mousehide
 
 set nospell
 set spelllang=en_us
@@ -152,12 +148,14 @@ set spellfile=~/.vim/spell/spellfile.utf-8.add
 set noautochdir
 set shellslash
 set directory=$VIM_CACHE,/var/tmp,/tmp
+set viminfo& viminfo+=!
 set viminfo+=n$VIM_CACHE/viminfo.txt
+call s:mkdir($VIM_CACHE)
 
 " IME の設定 {{{2
 if has('kaoriya') | set iminsert=0 imsearch=0 | endif
 
-MyAutocmd BufEnter * call <SID>autochdir()
+MyAutoCmd BufEnter * call <SID>autochdir()
 if !exists('g:my_lcd_autochdir')
   let g:my_lcd_autochdir = 1
 endif
@@ -226,14 +224,17 @@ endfunction
 set diffopt& diffopt-=filler diffopt+=iwhite
 
 " 表示周り {{{2
-set lazyredraw
-set ttyfast
+set lazyredraw ttyfast
 set scrolloff=10000000         " 中央に表示
 set sidescrolloff=999
 set number                     " 行番号の表示
 set ruler
 
 set mouse=nch                  " use mouse normal/command/help
+" set mouse=a
+" set mouse=nv
+set nomousefocus
+set mousehide
 set timeoutlen=1000
 set ttimeoutlen=50
 
@@ -249,12 +250,10 @@ if exists('&colorcolumn') | set colorcolumn=+1 | endif
 set splitbelow                 " 横分割は下に
 set splitright                 " 縦分割は右に
 set switchbuf=useopen          " 再利用
-set background=dark
 set title
 
 set hidden                     " 編集中でも他のファイルを開けるように
 set sidescroll=5
-set viminfo& viminfo+=!
 set visualbell
 set noerrorbells
 
@@ -346,9 +345,6 @@ set wildignore+=*.o,*.obj,.git,*.rbc,.class,.svn
 set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
 set wildignore+=*.so,*.swp,*.pdf,*.dmg
 set wildignore+=*.luac,*.jar,*.pyc,*.stats
-" set completeopt=menu,preview,longest,menuone
-" set complete=.,w,b,u,t,i,k                   " 補完候補の設定
-" set completeopt=menuone,preview
 set completeopt=menuone
 set complete=.,w,b,u,t,i,k
 
@@ -1833,20 +1829,20 @@ function! s:status_generator.get_line() "{{{3
 
   return s
 endfunction "}}}3
-function! MyStatusline()
+function! MyStatusLine()
   return s:status_generator.get_line()
 endfunction
-set statusline=%!MyStatusline()
+set statusline=%!MyStatusLine()
 
 
 " for filetypes {{{1
 " shebang {{{2
 if !s:is_win
-  MyAutocmd BufWritePost *
+  MyAutoCmd BufWritePost *
         \ if getline(1) =~ "^#!"
         \ | exe "silent !chmod +x %"
         \ | endif
-  MyAutocmd BufEnter *
+  MyAutoCmd BufEnter *
         \ if bufname("") !~ "^\[A-Za-z0-9\]*://"
         \ | silent! exe '!echo -n "k%\\"'
         \ | endif
@@ -1866,7 +1862,7 @@ augroup END
 " etc hacks {{{2
 " http://d.hatena.ne.jp/uasi/20110523/1306079612
 " if s:is_mac
-"   MyAutocmd BufWritePost * call <SID>set_utf8_attr(escape(expand("<afile>"), "*[]?{}' "))
+"   MyAutoCmd BufWritePost * call <SID>set_utf8_attr(escape(expand("<afile>"), "*[]?{}' "))
 "   function! s:set_utf8_attr(file)
 "     let is_utf8 = &fileencoding == "utf-8" || (&fileencoding == "" && &encoding == "utf-8")
 "     if s:is_mac && is_utf8
@@ -1875,14 +1871,14 @@ augroup END
 "   endfunction
 " endif
 
-MyAutocmd BufReadPost *
+MyAutoCmd BufReadPost *
       \   if &modifiable && !search('[^\x00-\x7F]', 'cnw')
       \ |   setlocal fileencoding=
       \ | endif
 
 " http://vim-users.jp/2009/10/hack84/
-MyAutocmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
-MyAutocmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
+MyAutoCmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
+MyAutoCmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
 set viewoptions=cursor
 
 " setfiletype {{{2
@@ -1919,19 +1915,19 @@ augroup filetypedetect
 augroup END
 
 " alias
-MyAutocmd FileType js set filetype=javascript
-MyAutocmd FileType rb set filetype=ruby
-MyAutocmd FileType pl set filetype=perl
-MyAutocmd FileType py set filetype=python
-MyAutocmd FileType md set filetype=markdown
+MyAutoCmd FileType js set filetype=javascript
+MyAutoCmd FileType rb set filetype=ruby
+MyAutoCmd FileType pl set filetype=perl
+MyAutoCmd FileType py set filetype=python
+MyAutoCmd FileType md set filetype=markdown
 " MySQL
-MyAutocmd BufNewFile,BufRead *.sql set filetype=mysql
+MyAutoCmd BufNewFile,BufRead *.sql set filetype=mysql
 " IO
-MyAutocmd BufNewFile,BufRead *.io set filetype=io
+MyAutoCmd BufNewFile,BufRead *.io set filetype=io
 " command
-MyAutocmd BufNewFile,BufRead *.command set filetype=sh
+MyAutoCmd BufNewFile,BufRead *.command set filetype=sh
 
-MyAutocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
+MyAutoCmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
       \ | exe "normal! g`\""
       \ | endif
 
@@ -1949,7 +1945,7 @@ function! s:vimrc_cmdwin_init() "{{{3
   endif
   startinsert!
 endfunction " }}}
-MyAutocmd CmdwinEnter * call s:vimrc_cmdwin_init()
+MyAutoCmd CmdwinEnter * call s:vimrc_cmdwin_init()
 
 " vim -b : edit binary using xxd-format! "{{{3
 augroup vimrc-binary
@@ -2330,10 +2326,10 @@ function! s:vimrc_make_init()
   QuickfixStatusEnable
 endfunction
 
-MyAutocmd FileType qf call s:vimrc_quickfix_init()
-MyAutocmd QuickfixCmdPost make call s:vimrc_make_init()
-" MyAutocmd QuickfixCmdPost make,grep,grepadd,vimgrep copen
-" MyAutocmd QuickfixCmdPost l* lopen
+MyAutoCmd FileType qf call s:vimrc_quickfix_init()
+MyAutoCmd QuickfixCmdPost make call s:vimrc_make_init()
+" MyAutoCmd QuickfixCmdPost make,grep,grepadd,vimgrep copen
+" MyAutoCmd QuickfixCmdPost l* lopen
 
 
 " tags-and-searches {{{2
@@ -2354,6 +2350,8 @@ let g:square_brackets = {
       \ 'markdown' : '^#',
       \ 'textile' : '^*',
       \ 'html' : '<html\|<head\|<body\|<h\d',
+      \ 'rst' : '^-\+\|^=\+',
+      \ 'coffee' : '->\s*$\|^\s*class\s',
       \ }
 function! s:nmap_square_brackets() "{{{3
   if exists('g:square_brackets[&filetype]')
@@ -2389,7 +2387,7 @@ function! s:search_with_syntax(pattern,syn,flags) "{{{3
   endwhile
 endfunction
 
-MyAutocmd FileType * call s:nmap_square_brackets()
+MyAutoCmd FileType * call s:nmap_square_brackets()
 
 " maps {{{2
 " if &diff
@@ -2400,7 +2398,7 @@ map <leader>3 :echo '<Leader>2 = merges from target branch(left buffer), <Leader
 " endif
 
 " nmaps {{{3
-MyAutocmd FileType help,ref,git-status,git-log nnoremap <buffer><nowait> q <C-w>c
+MyAutoCmd FileType help,ref,git-status,git-log nnoremap <buffer><nowait> q <C-w>c
 
 function! s:execute_motionless(expr)
   let wv = winsaveview()
@@ -2420,7 +2418,7 @@ if s:is_mac && has('gui_running')
     nnoremap <D-Right> :<C-u>call <SID>set_transparency(90)<CR>
     execute 'nnoremap <D-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
   endfunction
-  MyAutocmd GUIEnter * call s:map_gui()
+  MyAutoCmd GUIEnter * call s:map_gui()
 elseif s:is_win && has('gui_running')
   function! s:map_gui()
     nnoremap <A-Up>   :<C-u>call <SID>set_transparency('+=5')<CR>
@@ -2428,7 +2426,7 @@ elseif s:is_win && has('gui_running')
     nnoremap <A-Right> :<C-u>call <SID>set_transparency(230)<CR>
     execute 'nnoremap <A-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
   endfunction
-  MyAutocmd GUIEnter * call s:map_gui()
+  MyAutoCmd GUIEnter * call s:map_gui()
 endif
 " win move
 nnoremap [!space]. :source ~/.vimrc<CR>
@@ -2512,7 +2510,7 @@ if 1 " {{{4 http://vim-users.jp/2011/04/hack213/
   set scrolloff=0
   " Hack for <LeftMouse> not to adjust ('scrolloff') when single-clicking.
   " Implement 'scrolloff' by auto-command to control the fire.
-  MyAutocmd CursorMoved * call s:reinventing_scrolloff()
+  MyAutoCmd CursorMoved * call s:reinventing_scrolloff()
   let s:last_lnum = -1
   function! s:reinventing_scrolloff()
     if s:last_lnum > 0 && line('.') ==# s:last_lnum
@@ -2741,8 +2739,8 @@ if s:bundle.tap('vim-anzu')
   function! s:bundle.tapped.hooks.on_source(bundle)
     " 一定時間キー入力がないとき、ウインドウを移動したとき、タブを移動したときに
     " 検索ヒット数の表示を消去する
-    " MyAutocmd CursorHold,CursorHoldI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
-    MyAutocmd CursorMoved,CursorMovedI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
+    " MyAutoCmd CursorHold,CursorHoldI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
+    MyAutoCmd CursorMoved,CursorMovedI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
   endfunction
   call s:bundle.untap()
 endif
@@ -2764,7 +2762,7 @@ endif
 " detectindent {{{2
 if s:bundle.tap('detectindent')
   function! s:bundle.tapped.hooks.on_source(bundle)
-    MyAutocmd FileType * DetectIndent
+    MyAutoCmd FileType * DetectIndent
     let g:detectindent_preferred_expandtab = 1
   endfunction
   call s:bundle.untap()
@@ -3071,7 +3069,7 @@ if s:bundle.tap('vimconsole.vim')
 
 
   function! s:bundle.tapped.hooks.on_source(bundle)
-    MyAutocmd FileType vimconsole call s:vimrc_vimconsole_init()
+    MyAutoCmd FileType vimconsole call s:vimrc_vimconsole_init()
     function! s:vimrc_vimconsole_init() "{{{3
       nnoremap <buffer> <C-l> :<C-u>VimConsoleRedraw<CR>
     endfunction
@@ -3131,7 +3129,7 @@ if s:bundle.tap('cake.vim')
     endif
   endfunction " }}}
 
-  MyAutocmd User PluginCakephpInitializeAfter call s:init_cakephp()
+  MyAutoCmd User PluginCakephpInitializeAfter call s:init_cakephp()
   call s:bundle.untap()
 endif
 
@@ -3143,7 +3141,7 @@ if s:bundle.tap('gitv')
   let g:Gitv_DoNotMapCtrlKey = 1
   " http://d.hatena.ne.jp/cohama/20130517/1368806202
   function! s:bundle.tapped.hooks.on_source(bundle)
-    MyAutocmd FileType gitv call s:vimrc_gitv_init()
+    MyAutoCmd FileType gitv call s:vimrc_gitv_init()
     function! s:vimrc_gitv_init()
       setl iskeyword+=/,-,.
 
@@ -3335,7 +3333,7 @@ if s:bundle.is_installed('switch.vim')
 
     let b:switch_custom_definitions = dict
   endfunction
-  MyAutocmd filetype * call <SID>switch_definitions_deploy()
+  MyAutoCmd filetype * call <SID>switch_definitions_deploy()
   " let g:switch_custom_definitions = [
   "       \ {'ruby': [
   "       \ ["describe", "context", "specific", "example"],
@@ -3378,8 +3376,8 @@ endif
 " let-modeline.vim {{{2
 if s:bundle.tap('let-modeline.vim')
   function! s:bundle.tapped.hooks.on_source(bundle)
-    MyAutocmd BufEnter * call FirstModeLine()
-    " MyAutocmd BufNewFile * let b:this_is_new_buffer=1
+    MyAutoCmd BufEnter * call FirstModeLine()
+    " MyAutoCmd BufNewFile * let b:this_is_new_buffer=1
   endfunction
   call s:bundle.untap()
 endif
@@ -3457,7 +3455,7 @@ endif
 " rainbow_parentheses {{{2
 if s:bundle.tap('rainbow_parentheses.vim')
   function! s:bundle.tapped.hooks.on_source(bundle)
-    MyAutocmd VimEnter * RainbowParenthesesToggleAll
+    MyAutoCmd VimEnter * RainbowParenthesesToggleAll
   endfunction
   call s:bundle.untap()
 endif
@@ -3465,7 +3463,7 @@ endif
 " vim-smartinput {{{2
 if s:bundle.tap('vim-smartinput')
   " clear auto cmaps(for altercmd.vim)
-  " MyAutocmd VimEnter * call <SID>smartinput_init()
+  " MyAutoCmd VimEnter * call <SID>smartinput_init()
 
   function! s:bundle.tapped.hooks.on_source(bundle)
     function! s:sminput_define_rules() "{{{
@@ -3737,7 +3735,7 @@ if s:bundle.tap('vim-template')
     call s:mkvars(['g:email', 'g:author', 'g:homepage_url'], '')
 
     "autocmd BufNewFile * execute 'TemplateLoad'
-    MyAutocmd User plugin-template-loaded call s:template_keywords()
+    MyAutoCmd User plugin-template-loaded call s:template_keywords()
   endfunction
 
   call s:bundle.untap()
@@ -3927,14 +3925,14 @@ if s:bundle.tap('vim-rails')
     " nnoremap <buffer><C-H>h           :<C-U>Unite rails/heroku<CR>
   endfunction
 
-  MyAutocmd User Rails call s:vimrc_rails_init()
+  MyAutoCmd User Rails call s:vimrc_rails_init()
 endif
 
 " csharp {{{2
 if s:bundle.is_installed('dotnet-complete')
-  MyAutocmd BufNewFile,BufRead *.xaml    setf xml | setl omnifunc=xaml#complete
-  MyAutocmd BufNewFile,BufRead *.cs      setl omnifunc=cs#complete
-  MyAutocmd BufNewFile,BufRead *.cs      setl bexpr=cs#balloon() | setl ballooneval
+  MyAutoCmd BufNewFile,BufRead *.xaml    setf xml | setl omnifunc=xaml#complete
+  MyAutoCmd BufNewFile,BufRead *.cs      setl omnifunc=cs#complete
+  MyAutoCmd BufNewFile,BufRead *.cs      setl bexpr=cs#balloon() | setl ballooneval
 endif
 
 " python {{{2
@@ -3955,7 +3953,7 @@ if s:bundle.is_installed('jedi-vim')
   " let g:jedi#show_call_signatures = 0
   let g:jedi#show_call_signatures = 0
   let g:jedi#auto_vim_configuration = 0
-  MyAutocmd FileType python let b:did_ftplugin = 1
+  MyAutoCmd FileType python let b:did_ftplugin = 1
         \ | setlocal omnifunc=jedi#complete
 endif
 " pydiction {{{2
@@ -4003,7 +4001,7 @@ if s:bundle.is_installed('vim-smartchr')
   inoremap <expr>, smartchr#one_of(', ', ',')
 endif
 
-" MyAutocmd FileType
+" MyAutoCmd FileType
 "       \ c,cpp,javascript,ruby,python,java,perl,php
 "       \ call s:vimrc_smartchr_init()
 
@@ -4583,7 +4581,7 @@ endfunction
 execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>Unite repo_files -start-insert<CR>"
 execute 'nnoremap' '<silent>' s:get_cmd_t_key("r") ':<C-u>Unite outline -start-insert<CR>'
 
-MyAutocmd FileType unite call s:vimrc_unite_init() "{{{3
+MyAutoCmd FileType unite call s:vimrc_unite_init() "{{{3
 function! s:vimrc_unite_init()
 
   imap <buffer> jj <Plug>(unite_insert_leave)j
@@ -4670,7 +4668,7 @@ function! s:vimrc_git_init()
   setlocal foldexpr=GitLogViewerFoldExpr(v:lnum)
   setlocal foldtext=GitLogViewerFoldText()
 endfunction
-MyAutocmd FileType git call s:vimrc_git_init()
+MyAutoCmd FileType git call s:vimrc_git_init()
 
 " TOhtml {{{2
 let g:html_number_lines = 0
@@ -5522,8 +5520,8 @@ if s:bundle.tap('vim-quickrun')
   nnoremap <Leader><Leader>r :<C-u>QuickRun command/cat<CR>
 
   " for testcase {{{3
-  MyAutocmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
-  MyAutocmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
+  MyAutoCmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
+  MyAutoCmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
   function! s:gen_phpunit_skel()
     let old_cwd = getcwd()
     let cwd = expand('%:p:h')
@@ -5540,8 +5538,8 @@ if s:bundle.tap('vim-quickrun')
     silent exe 'lcd' old_cwd
   endfunction
   command! PhpUnitSkelGen call <SID>gen_phpunit_skel()
-  MyAutocmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
-  MyAutocmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
+  MyAutoCmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
+  MyAutoCmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
 
   if s:bundle.is_installed('vim-ref')
     augroup vimrc-plugin-ref
@@ -5564,7 +5562,7 @@ if s:bundle.tap('vim-quickrun')
   function! s:vimrc_quickrun_init() "{{{4
     nmap <buffer> q :quit<CR>
   endfunction "}}}
-  MyAutocmd FileType quickrun call s:vimrc_quickrun_init()
+  MyAutoCmd FileType quickrun call s:vimrc_quickrun_init()
 
   call s:bundle.untap()
 endif
@@ -5633,6 +5631,14 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \    'quickfix/errorformat' : 'Haml error on line %l: %m,'
         \                           . 'Syntax error on line %l: %m,%-G%.%#',
         \ },
+        \ 'watchdogs_checker/slimrb' : {
+        \   'command' : 'slimrb',
+        \    'exec'    : '%c -c %o %s:p',
+        \    'quickfix/errorformat' : '%C\ %#%f\, Line %l\, Column %c,'.
+        \                             '%-G\ %.%#,'.
+        \                             '%ESlim::Parser::SyntaxError: %m,'.
+        \                             '%+C%.%#'
+        \ },
         \ })
   call extend(g:quickrun_config, {
         \ 'json/watchdogs_checker' : {
@@ -5665,18 +5671,23 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \ 'watchdogs_checker/coffee' : {
         \   'command' : 'coffee',
         \   'exec'    : '%c -c -p %o %s:p',
-        \   'quickfix/errorformat' : '%f:%l:%c:\ error:%m,'
-        \                          . '%Z%m,'
-        \                          . '%C%m,'
-        \                          . '%-G%.%#',
+        \   'quickfix/errorformat' : '%E%f:%l:%c: %trror: %m,' .
+        \                            'Syntax%trror: In %f\, %m on line %l,' .
+        \                            '%EError: In %f\, Parse error on line %l: %m,' .
+        \                            '%EError: In %f\, %m on line %l,' .
+        \                            '%W%f(%l): lint warning: %m,' .
+        \                            '%W%f(%l): warning: %m,' .
+        \                            '%E%f(%l): SyntaxError: %m,' .
+        \                            '%-Z%p^,' .
+        \                            '%-G%.%#'
         \ },
-        \ 'watchdogs_checker/_coffee' : {
-        \   'command' : 'coffee',
-        \   'exec'    : '%c -c -p %o %s:p',
-        \   'quickfix/errorformat' : 'Error: In %f\, %m on line %l,'
-        \                          . 'Error: In %f\, Parse error on line %l: %m,'
-        \                          . 'SyntaxError: In %f\, %m,'
-        \                          . '%-G%.%#',
+        \ 'watchdogs_checker/coffeelint' : {
+        \   'command' : 'coffeelint',
+        \   'exec'    : '%c -csv %o %s:p',
+        \   'quickfix/errorformat' : '%f\,%l\,%\d%#\,%trror\,%m,' .
+        \                            '%f\,%l\,%trror\,%m,' .
+        \                            '%f\,%l\,%\d%#\,%tarn\,%m,' .
+        \                            '%f\,%l\,%tarn\,%m'
         \ },
         \ 'typescript/watchdogs_checker' : {
         \   'type' : 'watchdogs_checker/tsc',
@@ -5769,9 +5780,14 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \   'type' : 'watchdogs_checker/cucumber',
         \ },
         \ 'watchdogs_checker/cucumber' : {
-        \   'command' : 'cucumber',
-        \    'exec'    : '%c --dry-run --quiet --strict --format pretty %o %s:p',
+        \   'command': 'cucumber',
+        \    'exec'  : '%c --dry-run --quiet --strict --format pretty %o %s:p',
         \    'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
+        \ },
+        \ 'watchdogs_checker/foodcritic': {
+        \   'command': 'foodcritic',
+        \   'exec'   : '%c %o %s:p',
+        \   'quickfix/errorformat': 'FC%n: %m: %f:%l',
         \ },
         \ })
   call extend(g:quickrun_config, {
@@ -5809,6 +5825,13 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \   'cmdopt'  : '-S %{OracleConnection()}',
         \   'exec'    : '%c %o \@%s:p',
         \   'quickfix/errorformat' : '%Eerror\ at\ line\ %l:,%Z%m',
+        \ },
+        \ })
+  call extend(g:quickrun_config, {
+        \ 'watchdogs_checker/twig-lint' : {
+        \   'command' : 'twig-lint',
+        \   'exec'    : '%c lint --format=csv %o %s:p',
+        \   'quickfix/errorformat' : '"%f"\,%l\,%m',
         \ },
         \ })
   " call extend(g:quickrun_config, {
@@ -6241,7 +6264,7 @@ elseif s:bundle.is_installed('neocomplete.vim') "{{{3
   if s:bundle.is_installed('tern_for_vim')
     let g:neocomplete#sources#omni#functions.javascript = 'tern#Complete'
     let g:neocomplete#sources#omni#functions.coffee = 'tern#Complete'
-    " MyAutocmd FileType coffee call tern#Enable()
+    " MyAutoCmd FileType coffee call tern#Enable()
   elseif s:bundle.is_installed('vim-nodejs-complete')
     let g:neocomplete#sources#omni#functions.javascript = 'nodejscomplete#CompleteJS'
   endif
@@ -6360,23 +6383,23 @@ endif
 let g:jscomplete_use = ['dom', 'es6th', 'moz']
 
 if exists("+omnifunc") " {{{4
-  MyAutocmd FileType php           setl omnifunc=phpcomplete#CompletePHP
-  MyAutocmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
-  MyAutocmd FileType python        setl omnifunc=pythoncomplete#Complete
-  " MyAutocmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
-  " MyAutocmd FileType javascript    setl omnifunc=jscomplete#CompleteJS
+  MyAutoCmd FileType php           setl omnifunc=phpcomplete#CompletePHP
+  MyAutoCmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
+  MyAutoCmd FileType python        setl omnifunc=pythoncomplete#Complete
+  " MyAutoCmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
+  " MyAutoCmd FileType javascript    setl omnifunc=jscomplete#CompleteJS
   if s:bundle.is_installed('tern_for_vim')
     " mark
-    MyAutocmd FileType coffee    setl omnifunc=tern#Complete
+    MyAutoCmd FileType coffee    setl omnifunc=tern#Complete
   elseif s:bundle.is_installed('vim-nodejs-complete')
-    MyAutocmd FileType javascript,coffee    setl omnifunc=nodejscomplete#CompleteJS
+    MyAutoCmd FileType javascript,coffee    setl omnifunc=nodejscomplete#CompleteJS
   endif
-  MyAutocmd FileType java          setl omnifunc=javacomplete#Complete completefunc=javacomplete#CompleteParamsInfo
-  MyAutocmd FileType xml           setl omnifunc=xmlcomplete#CompleteTags
-  MyAutocmd FileType css           setl omnifunc=csscomplete#CompleteCSS
-  MyAutocmd FileType c             setl omnifunc=ccomplete#Complete
-  MyAutocmd FileType actionscript  setl omnifunc=actionscriptcomplete#CompleteAS
-  MyAutocmd FileType *
+  MyAutoCmd FileType java          setl omnifunc=javacomplete#Complete completefunc=javacomplete#CompleteParamsInfo
+  MyAutoCmd FileType xml           setl omnifunc=xmlcomplete#CompleteTags
+  MyAutoCmd FileType css           setl omnifunc=csscomplete#CompleteCSS
+  MyAutoCmd FileType c             setl omnifunc=ccomplete#Complete
+  MyAutoCmd FileType actionscript  setl omnifunc=actionscriptcomplete#CompleteAS
+  MyAutoCmd FileType *
         \ if &l:omnifunc == ''
         \ | setlocal omnifunc=syntaxcomplete#Complete
         \ | endif
@@ -6390,7 +6413,7 @@ endif
 "   let g:rsenseHome=$RSENSE_HOME
 "   let g:rsenseUseOmniFunc=0
 " elseif exists('+omnifunc')
-"   "MyAutocmd FileType ruby setl omnifunc=rubycomplete#Complete
+"   "MyAutoCmd FileType ruby setl omnifunc=rubycomplete#Complete
 " endif
 
 " vimproc {{{2
@@ -6489,7 +6512,7 @@ if s:bundle.is_installed('vimshell')
     return a:cmdline
   endfunction
 
-  MyAutocmd FileType vimshell call s:vimshell_init()
+  MyAutoCmd FileType vimshell call s:vimshell_init()
   function! s:vimshell_init() " {{{3
     setl textwidth=0
     "autocmd FileType vimshell
@@ -6711,7 +6734,7 @@ if s:bundle.is_installed('vimfiler.vim')
     return context
   endfunction
 
-  MyAutocmd FileType vimfiler call s:vimfiler_init() "{{{3
+  MyAutoCmd FileType vimfiler call s:vimfiler_init() "{{{3
   function! s:vimfiler_init() " {{{3
     nnoremap <silent><buffer> E :<C-u>call <SID>vimfiler_do_action('tabopen')<CR>
     nnoremap <silent><buffer> <C-e> :<C-u>call <SID>vimfiler_do_action('split')<CR>
@@ -6950,13 +6973,13 @@ command! ToWindowsBuffer set fileformat=dos fileencoding=cp932
 command! ToMacBuffer set fileformat=mac fileencoding=utf8
 command! TrimRSpace %s/ \+$//
 command! ConvChilder %s/〜/～/g
-command! Tosass call my#util#newfile_with_text(expand('%:p:r').".sass",
+command! ToSass call my#util#newfile_with_text(expand('%:p:r').".sass",
       \ system(printf('sass-convert -F css -T sass "%s"', expand('%:p')))
       \ )
-command! Toscss call my#util#newfile_with_text(expand('%:p:r').".scss",
+command! ToScss call my#util#newfile_with_text(expand('%:p:r').".scss",
       \ system(printf('sass-convert -F css -T scss "%s"', expand('%:p')))
       \ )
-command! Tocoffee call my#util#newfile_with_text(expand('%:p:r').".coffee",
+command! ToCoffee call my#util#newfile_with_text(expand('%:p:r').".coffee",
       \ system(printf('js2coffee < "%s"', expand('%:p')))
       \ )
       " \ system(printf('js2coffee "%s"', expand('%:p')))

@@ -39,6 +39,7 @@ python_path=(./lib)
 
 shrc_section_title "autoload" #{{{1
 autoload -U zmv
+alias zmv='noglob zmv -W'
 autoload -Uz add-zsh-hook
 autoload -U colors
 autoload -Uz url-quote-magic
