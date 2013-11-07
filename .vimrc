@@ -150,6 +150,7 @@ set shellslash
 set directory=$VIM_CACHE,/var/tmp,/tmp
 set viminfo& viminfo+=!
 set viminfo+=n$VIM_CACHE/viminfo.txt
+call s:mkdir($VIM_CACHE)
 
 " IME の設定 {{{2
 if has('kaoriya') | set iminsert=0 imsearch=0 | endif
@@ -2349,6 +2350,8 @@ let g:square_brackets = {
       \ 'markdown' : '^#',
       \ 'textile' : '^*',
       \ 'html' : '<html\|<head\|<body\|<h\d',
+      \ 'rst' : '^-\+\|^=\+',
+      \ 'coffee' : '->\s*$\|^\s*class\s',
       \ }
 function! s:nmap_square_brackets() "{{{3
   if exists('g:square_brackets[&filetype]')
