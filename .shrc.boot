@@ -40,7 +40,7 @@ case $OSTYPE in
 esac
 
 shrc_section_title "environments" #{{{1
-export EDITOR=vim
+export EDITOR="vim -u ~/.vimpagerrc"
 # stty
 if type stty >/dev/null 2>&1; then
   stty stop undef
