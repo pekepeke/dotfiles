@@ -4921,6 +4921,7 @@ if s:bundle.is_installed('vim-operator-user')
   map <Leader>tm <Plug>(operator-tabular-tsv2md))
   map <Leader>Tm <Plug>(operator-tabular-md2tsv)
   map <Leader>nm <Plug>(operator-normalize_utf8mac)
+  map ;s <Plug>(operator-shuffle)
 
   if s:bundle.is_installed('vim-operator-surround')
     map <silent>sa <Plug>(operator-surround-append)
