@@ -254,7 +254,11 @@ set title
 
 set hidden                     " 編集中でも他のファイルを開けるように
 set sidescroll=5
-set visualbell
+if s:is_mac
+  set visualbell
+else
+  set novisualbell
+endif
 set noerrorbells
 
 set guioptions& guioptions+=T guioptions-=m guioptions-=M
@@ -596,6 +600,10 @@ NeoBundleLazy 'osyo-manga/vim-jplus', {'autoload':{
       \   '<Plug>(jplus-getchar)', '<Plug>(jplus-getchar-with-space)',
       \   '<Plug>(jplus-input)', '<Plug>(jplus-input-with-space)',
       \ ]]}}
+NeoBundleLazy 'osyo-manga/vim-over', {'autoload':{
+      \ 'commands': ['OverCommandLine'],
+      \ 'insert': 1,
+      \ }}
 NeoBundleLazy 'mattn/benchvimrc-vim'
 NeoBundle 'Shougo/context_filetype.vim'
 NeoBundleLazy 'Shougo/vimfiler.vim', {
@@ -3882,6 +3890,7 @@ endif
 
 " netrw {{{2
 let g:netrw_home = $VIM_CACHE
+let g:netrw_list_hide = '\~$,^tags$,\(^\|\s\s\)\zs\.\.\S\+'
 
 " yankring {{{2
 let g:yankring_history_dir = $VIM_CACHE

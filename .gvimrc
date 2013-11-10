@@ -11,7 +11,7 @@ set cmdheight=1
 " set nomousefocus
 " set mousehide
 
-" autocmd BufReadPost * tab ball
+" MyAutoCmd BufReadPost * tab ball
 
 " environment settings "{{{1
 let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') ||
@@ -26,7 +26,7 @@ if s:is_win " {{{2
   command! -nargs=0 Ricty set guifont=Ricty:h11 guifontwide=Ricty:h11
   " command! -nargs=0 Ricty set guifont=Ricty:h12 guifontwide=Ricty:h12
 
-  MyAutocmd GUIEnter * set transparency=210
+  MyAutoCmd GUIEnter * set transparency=210
 
   if filereadable($WINDIR . '\Fonts\Ricty-Regular.ttf')
     Ricty
@@ -71,6 +71,8 @@ elseif s:is_mac "{{{2
     command! -nargs=0 Monaco set antialias guifont=Monaco:h12 guifontwide=HiraKakuPro-W3:h14
     command! -nargs=0 Menlo set antialias guifont=Menlo:h12 guifontwide=HiraKakuPro-W3:h14
     command! -nargs=0 Ricty set antialias guifont=Ricty:h14 guifontwide=Ricty:h14
+
+    command! -nargs=0 OsakaBig set antialias guifont=Osaka-Mono:h18 guifontwide=Osaka-Mono:h18
     " Monaco
     " OsakaMonaco
     Ricty
@@ -93,7 +95,7 @@ elseif s:is_mac "{{{2
 
     " full screen
     set fuoptions=maxvert,maxhorz
-    " MyAutocmd GUIEnter * set fullscreen
+    " MyAutoCmd GUIEnter * set fullscreen
 
     " keybinds {{{3
     function! s:set_transparency(ope)
@@ -126,7 +128,9 @@ else " unix setting {{{2
   command! -nargs=0 Inconsolata set guifont=Inconsolata\ 11
   " command! -nargs=0 Ricty set guifont=Ricty\ 14
   command! -nargs=0 Ricty set guifont=Ricty\ 11
-  Ricty
+  if filereadable($HOME . '/.local/share/fonts/Ricty-Regular.ttf')
+    Ricty
+  endif
 endif
 "source $HOME/.vimrc
 
