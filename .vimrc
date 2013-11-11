@@ -2346,12 +2346,17 @@ if s:bundle.is_installed('unite-tselect')
   nnoremap <silent> [!t]t :<C-u>Unite tselect:<C-r>=expand('<cword>')<CR> -immediately<CR>
   nnoremap <silent> <C-w>tt <C-w>s:<C-u>Unite tselect:<C-r>=expand('<cword>')<CR> -immediately<CR>
 else
-  nnoremap <silent> [!t]t g<C-]>
-  nnoremap <silent> <C-w>tt <C-w>sg<C-]>
+  " nnoremap <silent> [!t]t g<C-]>
+  " nnoremap <silent> <C-w>tt <C-w>sg<C-]>
+  nnoremap <silent> [!t]t :<C-u>call <SID>tselect_immediately()<CR>
+  nnoremap <silent> <C-w>tt <C-w>s:<C-u>call <SID>tselect_immediately()<CR>
 endif
+function! s:tselect_immediately()
+  execute 'normal!' (len(taglist(expand('<cword>'))) > 1 ? "g" : "")."\<C-]>"
+endfunction
 nnoremap <silent> [!t]j :<C-u>tag<CR>
 nnoremap <silent> [!t]k :<C-u>pop<CR>
-nnoremap <silent> [!t]l :<C-u>tags<CR>
+nnoremap <silent> [!t]l :<C-u>tselect<CR>
 
 " [[, ]] {{{2
 let g:square_brackets = {
