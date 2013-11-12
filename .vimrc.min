@@ -191,6 +191,19 @@ nnoremap <silent> [!t]k :<C-u>pop<CR>
 nnoremap <silent> [!t]l :<C-u>tselect<CR>
 " }}}
 
+" commands {{{1
+function! SudoWrite(url) abort
+  let file = a:url == "<afile>" ? expand(a:url) ? a:url
+  let prot=matchstr(file,'^\(sudo\)\ze:')
+  if '' != prot
+    let file=strpart(file,strlen(prot)+1)
+  endif
+  set nomodified
+  execute '%write !sudo tee >/dev/null "'.file.'"'
+endf
+command! -nargs=1 SudoWrite call SudoWrite(<f-args>)
+" }}}
+
 if v:version > 702
 elseif 0 " plugin load {{{1
   filetype off

@@ -9,6 +9,9 @@ softWrap = true
 tabSize = 4
 softTabs = true
 
+include = "{.tm_properties,.htaccess}"
+exclude = "{$exclude,*.tmproj}"
+
 [.git/COMMIT_EDITMSG]
 spellChecking = true
 spellingLanguage = 'en'
@@ -18,6 +21,9 @@ tabSize = 2
 
 [*.rb]
 tabSize = 2
+
+[*.{txt}]
+softTabs = false
 
 [*.{md,mkd,markdown}]
 tabSize = 2
@@ -29,6 +35,16 @@ binary = true
 
 ["{README, INSTALL, LICENSE, TODO}"]
 fileType = "text.plain"
+
+[ text ]
+softWrap = true
+softTabs = false
+
+[ source.markdown ]
+softTabs = false
+
+[attr.untitled]
+softTabs = false
 
 [attr.file.unknown-type]
 fileType = text

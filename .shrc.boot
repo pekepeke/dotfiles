@@ -150,8 +150,9 @@ alias vimrcinspect='vim --startuptime "$HOME/vimrc-read.txt" +q && vim vimrc-rea
 alias vimrcprofile='vim --cmd "profile start vimrc-profile.txt" --cmd "profile file $HOME/.vimrc" +q && vim vimrc-profile.txt'
 alias vimrcprofileall='vim --cmd "profile start vimrc-profileall.txt" --cmd "profile! file $HOME/.vimrc" +q && vim vimrc-profileall.txt'
 alias vimsafe='vim -u NONE -i NONE'
-alias vimf='vim -u '
-alias view='view -u $HOME/.vimpagerrc'
+alias vimnone='vim -u NONE'
+alias vimmin='vim -u ~/.vimrc.min'
+alias view='view -u ~/.vimrc.min'
 alias ctags-rb='ctags --langmap=RUBY:.rb --exclude="*.js"  --exclude=".git*"'
 
 dot-submodules-update() { #{{{3

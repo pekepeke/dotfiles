@@ -142,8 +142,13 @@ if has('unnamedplus')
   set clipboard+=unnamedplus
 endif
 
-set nospell
-set spelllang=en_us
+if v:version > 704 || (v:version == 704 && has('patch088'))
+  set spell
+  set spelllang=en_us,cjk
+else
+  set nospell
+  set spelllang=en_us
+endif
 set spellfile=~/.vim/spell/spellfile.utf-8.add
 set noautochdir
 set shellslash
