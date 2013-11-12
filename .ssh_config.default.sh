@@ -26,8 +26,10 @@ Host *
   RemoteForward 52698 127.0.0.1:52698
 
 Host github.com
+  # User xxx
+  HostName github.com
   Compression yes
-  Ciphers arcfour256
+  # Ciphers arcfour256
 
 #Host name
 #  HostName xxx.xxx.xxx.xxx
