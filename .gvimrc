@@ -25,6 +25,8 @@ if s:is_win " {{{2
   command! -nargs=0 Consolas set guifont=Consolas:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
   command! -nargs=0 Ricty set guifont=Ricty:h11 guifontwide=Ricty:h11
   " command! -nargs=0 Ricty set guifont=Ricty:h12 guifontwide=Ricty:h12
+  command! -nargs=0 ConsolasBig set guifont=Consolas:h18,Lucida_Console:h18:w5 guifontwide=MS_Gothic:h18
+  command! -nargs=0 RictyBig set guifont=Ricty:h20 guifontwide=Ricty:h20
 
   MyAutoCmd GUIEnter * set transparency=210
 
@@ -34,9 +36,9 @@ if s:is_win " {{{2
     Consolas
   endif
 
-  if has('directx') && &encoding == 'utf-8'
-    silent! exe 'set' 'renderoptions=type:directx'
-  endif
+  " if has('directx') && &encoding == 'utf-8'
+  "   silent! exe 'set' 'renderoptions=type:directx'
+  " endif
 
   if has('printer')
     set printfont=MS_Gothic:h12:cSHIFTJIS
@@ -73,6 +75,9 @@ elseif s:is_mac "{{{2
     command! -nargs=0 Ricty set antialias guifont=Ricty:h14 guifontwide=Ricty:h14
 
     command! -nargs=0 OsakaBig set antialias guifont=Osaka-Mono:h18 guifontwide=Osaka-Mono:h18
+    command! -nargs=0 MonacoBig set antialias guifont=Monaco:h18 guifontwide=HiraKakuPro-W3:h20
+    command! -nargs=0 MenloBig set antialias guifont=Menlo:h18 guifontwide=HiraKakuPro-W3:h20
+    command! -nargs=0 RictyBig set antialias guifont=Ricty:h20 guifontwide=Ricty:h20
     " Monaco
     " OsakaMonaco
     Ricty
@@ -128,6 +133,9 @@ else " unix setting {{{2
   command! -nargs=0 Inconsolata set guifont=Inconsolata\ 11
   " command! -nargs=0 Ricty set guifont=Ricty\ 14
   command! -nargs=0 Ricty set guifont=Ricty\ 11
+
+  command! -nargs=0 InconsolataBig set guifont=Inconsolata\ 18
+  command! -nargs=0 RictyBig set guifont=Ricty\ 20
   if filereadable($HOME . '/.local/share/fonts/Ricty-Regular.ttf')
     Ricty
   endif

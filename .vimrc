@@ -2425,7 +2425,7 @@ function! s:execute_motionless(expr)
 endfunction
 
 function! s:set_transparency(op)
-  exe 'set transparency'.(a:op =~# '^[-+=]' ? a:op : '=' . a:op)
+  silent! execute 'set transparency'.(a:op =~# '^[-+=]' ? a:op : '=' . a:op)
   echo &transparency
 endfunction
 
