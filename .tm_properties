@@ -10,7 +10,7 @@ softWrap = true
 tabSize = 4
 softTabs = true
 
-# include = "{.tm_properties,.htaccess}"
+include = "{*,.tm_properties,.htaccess,.gitignore,.*rc,.*profile}"
 exclude = "{$exclude,*.tmproj}"
 
 [.git/COMMIT_EDITMSG]

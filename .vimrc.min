@@ -13,8 +13,11 @@ function! s:mkdir(path)
   endif
 endfunction
 
-function! s:has_plugin(plugin_path)
-  return strlen(globpath(&rtp, a:plugin_path))
+function! s:has_plugin(plugin)
+  if exists(':NeoBundle')
+    return neobundle#is_installed(a:plugin)
+  endif
+  return strlen(globpath(&rtp, '*/'.a:plugin))
 endfunction
 
 augroup vimrc-myautocmd
@@ -43,9 +46,13 @@ if has('unnamedplus')
   set clipboard+=unnamedplus
 endif
 
-" set nospell
-set spell
-set spelllang=en_us
+set nospell
+" set spell
+if v:version > 704 || (v:version == 704 && has('patch088'))
+  set spelllang=en_us,cjk
+else
+  set spelllang=en_us
+endif
 set spellfile=~/.vim/spell/spellfile.utf-8.add
 set noautochdir
 set shellslash
@@ -205,40 +212,46 @@ command! -nargs=1 SudoWrite call SudoWrite(<f-args>)
 " }}}
 
 if v:version > 702
-elseif 0 " plugin load {{{1
-  filetype off
-  silent call pathogen#infect()
+  if 1
+    if has('vim_starting')
+      set runtimepath+=~/.vim/neobundle.vim
+    endif
+    call neobundle#rc(expand("~/.vim/neobundle"))
 
-  " mkdir -p ~/.vim/autoload ~/.vim/bundle; curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim; mkdir -p ~/.vim/bundle ; cd ~/.vim/bundle;
-  " git clone https://github.com/Shougo/vimfiler.git
-  " git clone https://github.com/Shougo/unite.vim.git
-  " curl -L https://github.com/Shougo/vimfiler/tarball/master | tar zxv
-  " curl -L https://github.com/Shougo/unite.vim/tarball/master | tar zxv
+    " minimum plugin
+    NeoBundle 'Shougo/unite.vim', {
+          \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
+          \ }
+    NeoBundle 'kana/vim-operator-user'
+    NeoBundleLazy 'kana/vim-operator-replace', {
+          \ 'depends' : 'vim-operator-user', 'autoload' : {
+          \ 'mappings' : [
+          \ ['nx', '_', '<Plug>(operator-replace)']]
+          \ }}
+    NeoBundleLazy 'anyakichi/vim-surround', {'autoload':{
+          \ 'mappings': [['n', 'ds', 'cs', 'ys', 'yS', 'yss', 'ygs', 'ygS', 'ygss', 'ygsgs'],
+          \ ['x', 's', 'S', 'gs', 'gS'],
+          \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
+          \ }}
 
-  let g:vimfiler_as_default_explorer = 1
-  let g:vimfiler_safe_mode_by_default = 0
-  " let g:vimfiler_edit_command = 'new'
+  elseif 0 " plugin load {{{1
+    if has('vim_starting')
+      filetype off
+      silent call pathogen#infect()
+    endif
 
-  if s:has_plugin(plugin_path, 'plugin/unite.vim')
-    nnoremap [unite] <Nop>
-    nmap     f       [unite]
-    nnoremap [unite]f f
-    let g:unite_enable_start_insert=0
-    let g:unite_source_file_mru_limit=200
-    let g:unite_source_file_mru_time_format = ''
-    let g:unite_winheight = 20
-    let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
+    " mkdir -p ~/.vim/autoload ~/.vim/bundle; curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim; mkdir -p ~/.vim/bundle ; cd ~/.vim/bundle;
+    " git clone https://github.com/Shougo/vimfiler.git
+    " git clone https://github.com/Shougo/unite.vim.git
+    " curl -L https://github.com/Shougo/vimfiler/tarball/master | tar zxv
+    " curl -L https://github.com/Shougo/unite.vim/tarball/master | tar zxv
 
-    nmap <silent> [unite]j       :<C-u>Unite buffer_tab<CR>
-    nmap <silent> [unite]l       :<C-u>Unite file<CR>
-    nmap <silent> [unite]m       :<C-u>Unite file_mru directory_mru<CR>
-    nmap <silent> [unite]k       :<C-u>Unite tab<CR>
-  else
     function! s:plugin_install()
       if input("install plugin? [y/n]:") != "y"
         echo "Canceled."
         return
       endif
+      call mkdir(exppand('~/.vim'))
       call mkdir(expand("~/.vim/autoload"))
       call mkdir(expand("~/.vim/bundle"))
       call system("curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim")
@@ -263,7 +276,36 @@ syntax enable
 set background=dark
 colorscheme vividchalk
 
-" some autoload {{{1
+" some autocmd {{{1
+MyAutoCmd FileType txt,rst,markdown,gitcommit setlocal spell
 
-" __END__ {{{1
+" plugin settings {{{1
+" vimfiler
+let g:vimfiler_as_default_explorer = 1
+let g:vimfiler_safe_mode_by_default = 0
+" let g:vimfiler_edit_command = 'new'
+
+" unite.vim
+if s:has_plugin('unite.vim')
+  let g:unite_data_directory = $VIM_CACHE . '/vim-unite'
+  nnoremap [unite] <Nop>
+  nmap     f       [unite]
+  nnoremap [unite]f f
+  let g:unite_enable_start_insert=0
+  let g:unite_source_file_mru_limit=200
+  let g:unite_source_file_mru_time_format = ''
+  let g:unite_winheight = 20
+  let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
+
+  nmap <silent> [unite]j       :<C-u>Unite buffer_tab<CR>
+  nmap <silent> [unite]l       :<C-u>Unite file<CR>
+  nmap <silent> [unite]m       :<C-u>Unite file_mru directory_mru<CR>
+  nmap <silent> [unite]k       :<C-u>Unite tab<CR>
+endif
+
+if s:has_plugin('vim-operator-replace')
+  map _ <Plug>(operator-replace)
+endif
+
+  " __END__ {{{1
 " vim:fdm=marker sw=2 ts=2 ft=vim expandtab:
