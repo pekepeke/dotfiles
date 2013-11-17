@@ -1,0 +1,9 @@
+alias l=ll
+alias ll='ls -alt'
+alias la='ls -at'
+alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias emacs='vim'
+alias e='vim'
+alias time='exe time'
