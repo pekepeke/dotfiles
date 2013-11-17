@@ -62,7 +62,7 @@
 [merge]
 	; tool = vimdiff
 	tool = mvimfugitive
-	ff = false
+	; ff = false
 [mergetool "p4merge"]
 	path = p4merge
 	keepTemporaries = false

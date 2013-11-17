@@ -4664,10 +4664,10 @@ nnoremap <silent> [!space]gD :<C-u>Gdiff<CR>
 nnoremap <silent> [!space]gs :<C-u>Gstatus<CR>
 nnoremap [!space]gl :<C-u>silent Glog <Bar> Unite -no-quit quickfix<CR>
 nnoremap [!space]gL :<C-u>silent Glog -- <Bar> Unite -no-quit quickfix<CR>
-nnoremap [!space]gg :<C-u>call s:git_qfix('Ggrep -i "%s"')<CR>
+nnoremap [!space]gg :<C-u>call <SID>git_qfix('Ggrep -i "%s"')<CR>
 nnoremap [!space]ggr :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
-nnoremap [!space]ggm :<C-u>call s:git_qfix('Glog --grep="%s"')<CR>
-nnoremap [!space]ggl :<C-u>call s:git_qfix('Glog -S="%s"')<CR>
+nnoremap [!space]ggm :<C-u>call <SID>git_qfix('Glog --grep="%s"')<CR>
+nnoremap [!space]ggl :<C-u>call <SID>git_qfix('Glog -S="%s"')<CR>
 nnoremap [!space]gR :<C-u>Gremove<CR>
 nnoremap [!space]gm :<C-u>Gmove<Space>
 nnoremap [!space]ga :<C-u>Gwrite<CR>
@@ -6539,11 +6539,11 @@ if s:bundle.is_installed('vimshell')
     call vimshell#altercmd#define('g'  , 'git')
     call vimshell#altercmd#define('i'  , 'iexe')
     call vimshell#altercmd#define('t'  , 'texe')
-    call vimshell#set_alias('l'  , 'll')
-    call vimshell#set_alias('ll' , 'ls -l')
-    call vimshell#set_alias('la' , 'ls -a')
-    call vimshell#set_alias('e' , 'vim')
-    call vimshell#set_alias('time' , 'exe time')
+    " call vimshell#set_alias('l'  , 'll')
+    " call vimshell#set_alias('ll' , 'ls -l')
+    " call vimshell#set_alias('la' , 'ls -a')
+    " call vimshell#set_alias('e' , 'vim')
+    " call vimshell#set_alias('time' , 'exe time')
 
     if !s:is_win
       let g:vimshell_execute_file_list['zip'] = 'zipinfo'

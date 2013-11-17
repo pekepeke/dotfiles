@@ -143,8 +143,8 @@ fi
 #   # alias less=$PAGER
 #   # alias zless=$PAGER
 # fi
-alias vimfiler='vim -c VimFiler'
-alias vimshell='vim -c VimShell'
+alias vimfiler='vim -u ~/.vimrc.min -c VimFiler'
+alias vimshell='vim -u ~/.vimrc.min -c VimShell'
 
 alias vimrcinspect='vim --startuptime "$HOME/vimrc-read.txt" +q && vim vimrc-read.txt'
 alias vimrcprofile='vim --cmd "profile start vimrc-profile.txt" --cmd "profile file $HOME/.vimrc" +q && vim vimrc-profile.txt'

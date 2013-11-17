@@ -222,6 +222,30 @@ if v:version > 702
     NeoBundle 'Shougo/unite.vim', {
           \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
           \ }
+    NeoBundleLazy 'Shougo/vimfiler.vim', {
+          \ 'depends': 'Shougo/unite.vim', 'autoload' : {
+          \ 'commands' : [
+          \ { 'name' : 'VimFiler', 'complete' : 'customlist,vimfiler#complete' },
+          \ { 'name' : 'VimFilerExplorer', 'complete' : 'customlist,vimfiler#complete' },
+          \ { 'name' : 'Edit', 'complete' : 'customlist,vimfiler#complete' },
+          \ { 'name' : 'Write', 'complete' : 'customlist,vimfiler#complete' },
+          \ 'Read', 'Source'],
+          \ 'mappings' : ['<Plug>(vimfiler'],
+          \ 'explorer' : 1,
+          \ }}
+    NeoBundle 'Shougo/vimproc.vim', { 'build' : {
+          \ 'cygwin' : 'make -f make_cygwin.mak',
+          \ 'mac'    : 'make -f make_mac.mak',
+          \ 'unix'   : 'make -f make_unix.mak',
+          \ }}
+    NeoBundleLazy 'Shougo/vimshell', {
+          \ 'depends': 'Shougo/vimproc.vim', 'autoload' : {
+          \ 'commands' : [{ 'name' : 'VimShell',
+          \ 'complete' : 'customlist,vimshell#complete'},
+          \   'VimShellExecute', 'VimShellInteractive',
+          \   'VimShellTerminal', 'VimShellPop'],
+          \ 'mappings' : ['<Plug>(vimshell']
+          \ }}
     NeoBundle 'kana/vim-operator-user'
     NeoBundleLazy 'kana/vim-operator-replace', {
           \ 'depends' : 'vim-operator-user', 'autoload' : {
@@ -233,7 +257,7 @@ if v:version > 702
           \ ['x', 's', 'S', 'gs', 'gS'],
           \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
           \ }}
-
+    NeoBundle 'tpope/vim-fugitive'
   elseif 0 " plugin load {{{1
     if has('vim_starting')
       filetype off
@@ -301,6 +325,14 @@ if s:has_plugin('unite.vim')
   nmap <silent> [unite]l       :<C-u>Unite file<CR>
   nmap <silent> [unite]m       :<C-u>Unite file_mru directory_mru<CR>
   nmap <silent> [unite]k       :<C-u>Unite tab<CR>
+endif
+
+if s:has_plugin('vimshell')
+  let g:vimshell_temporary_directory = $VIM_CACHE . "/vimshell"
+  let g:vimshell_enable_smart_case = 1
+  let g:vimshell_enable_auto_slash = 1
+
+  let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 endif
 
 if s:has_plugin('vim-operator-replace')
