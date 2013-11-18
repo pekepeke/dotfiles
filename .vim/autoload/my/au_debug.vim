@@ -1,0 +1,112 @@
+let s:save_cpo = &cpo
+set cpo&vim
+
+let s:log = { 'data':[] }
+function! s:log.put(...)
+    call add(self.log, strftime('[%Y-%m-%d %H:%M:%S]') . join(" ", a:000))
+endfunction
+
+function! s:log.show()
+    echo join("\n", self.log)
+endfunction
+
+function! my#au_debug#start()
+  augroup vimrc-ac-debug
+    autocmd!
+    autocmd BufAdd * call s:log.put("BufAdd")
+    autocmd BufCreate * call s:log.put("BufCreate")
+    autocmd BufDelete * call s:log.put("BufDelete")
+    autocmd BufEnter * call s:log.put("BufEnter")
+    autocmd BufFilePost * call s:log.put("BufFilePost")
+    autocmd BufFilePre * call s:log.put("BufFilePre")
+    autocmd BufHidden * call s:log.put("BufHidden")
+    autocmd BufLeave * call s:log.put("BufLeave")
+    autocmd BufNew * call s:log.put("BufNew")
+    autocmd BufNewFile * call s:log.put("BufNewFile")
+    autocmd BufRead * call s:log.put("BufRead")
+    autocmd BufReadPost * call s:log.put("BufReadPost")
+    autocmd BufReadCmd * call s:log.put("BufReadCmd")
+    autocmd BufReadPre * call s:log.put("BufReadPre")
+    autocmd BufUnload * call s:log.put("BufUnload")
+    autocmd BufWinEnter * call s:log.put("BufWinEnter")
+    autocmd BufWinLeave * call s:log.put("BufWinLeave")
+    autocmd BufWipeout * call s:log.put("BufWipeout")
+    autocmd BufWrite * call s:log.put("BufWrite")
+    autocmd BufWritePre * call s:log.put("BufWritePre")
+    autocmd BufWriteCmd * call s:log.put("BufWriteCmd")
+    autocmd BufWritePost * call s:log.put("BufWritePost")
+    autocmd CmdwinEnter * call s:log.put("CmdwinEnter")
+    autocmd CmdwinLeave * call s:log.put("CmdwinLeave")
+    autocmd ColorScheme * call s:log.put("ColorScheme")
+    autocmd CursorHold * call s:log.put("CursorHold")
+    autocmd CursorHoldI * call s:log.put("CursorHoldI")
+    autocmd CursorMoved * call s:log.put("CursorMoved")
+    autocmd CursorMovedI * call s:log.put("CursorMovedI")
+    autocmd EncodingChanged * call s:log.put("EncodingChanged")
+    autocmd FileAppendCmd * call s:log.put("FileAppendCmd")
+    autocmd FileAppendPost * call s:log.put("FileAppendPost")
+    autocmd FileAppendPre * call s:log.put("FileAppendPre")
+    autocmd FileChangedRO * call s:log.put("FileChangedRO")
+    autocmd FileChangedShell * call s:log.put("FileChangedShell")
+    autocmd FileChangedShellPost * call s:log.put("FileChangedShellPost")
+    autocmd FileEncoding * call s:log.put("FileEncoding")
+    autocmd FileReadCmd * call s:log.put("FileReadCmd")
+    autocmd FileReadPost * call s:log.put("FileReadPost")
+    autocmd FileReadPre * call s:log.put("FileReadPre")
+    autocmd FileType * call s:log.put("FileType")
+    autocmd FileWriteCmd * call s:log.put("FileWriteCmd")
+    autocmd FileWritePost * call s:log.put("FileWritePost")
+    autocmd FileWritePre * call s:log.put("FileWritePre")
+    autocmd FilterReadPost * call s:log.put("FilterReadPost")
+    autocmd FilterReadPre * call s:log.put("FilterReadPre")
+    autocmd FilterWritePost * call s:log.put("FilterWritePost")
+    autocmd FilterWritePre * call s:log.put("FilterWritePre")
+    autocmd FocusGained * call s:log.put("FocusGained")
+    autocmd FocusLost * call s:log.put("FocusLost")
+    autocmd FuncUndefined * call s:log.put("FuncUndefined")
+    autocmd GUIEnter * call s:log.put("GUIEnter")
+    autocmd GUIFailed * call s:log.put("GUIFailed")
+    autocmd InsertChange * call s:log.put("InsertChange")
+    autocmd InsertCharPre * call s:log.put("InsertCharPre")
+    autocmd InsertEnter * call s:log.put("InsertEnter")
+    autocmd InsertLeave * call s:log.put("InsertLeave")
+    autocmd MenuPopup * call s:log.put("MenuPopup")
+    autocmd QuickFixCmdPre * call s:log.put("QuickFixCmdPre")
+    autocmd QuickFixCmdPost * call s:log.put("QuickFixCmdPost")
+    autocmd RemoteReply * call s:log.put("RemoteReply")
+    autocmd SessionLoadPost * call s:log.put("SessionLoadPost")
+    autocmd ShellCmdPost * call s:log.put("ShellCmdPost")
+    autocmd ShellFilterPost * call s:log.put("ShellFilterPost")
+    autocmd SourcePre * call s:log.put("SourcePre")
+    autocmd SourceCmd * call s:log.put("SourceCmd")
+    autocmd SpellFileMissing * call s:log.put("SpellFileMissing")
+    autocmd StdinReadPost * call s:log.put("StdinReadPost")
+    autocmd StdinReadPre * call s:log.put("StdinReadPre")
+    autocmd SwapExists * call s:log.put("SwapExists")
+    autocmd Syntax * call s:log.put("Syntax")
+    autocmd TabEnter * call s:log.put("TabEnter")
+    autocmd TabLeave * call s:log.put("TabLeave")
+    autocmd TermChanged * call s:log.put("TermChanged")
+    autocmd TermResponse * call s:log.put("TermResponse")
+    autocmd User * call s:log.put("User")
+    autocmd UserGettingBored * call s:log.put("UserGettingBored")
+    autocmd VimEnter * call s:log.put("VimEnter")
+    autocmd VimLeave * call s:log.put("VimLeave")
+    autocmd VimLeavePre * call s:log.put("VimLeavePre")
+    autocmd VimResized * call s:log.put("VimResized")
+    autocmd WinEnter * call s:log.put("WinEnter")
+    autocmd WinLeave * call s:log.put("WinLeave")
+  augroup END
+endfunction
+
+function! my#au_debug#end()
+  augroup vimrc-ac-debug
+    autocmd!
+  augroup END
+endfunction
+
+function! my#au_debug#end()
+  call s:log.show()
+endfunction
+
+let &cpo = s:save_cpo

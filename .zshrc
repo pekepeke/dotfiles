@@ -228,20 +228,24 @@ zstyle ':zle:*' word-style unspecified
 
 # enter key {{{3
 function do_enter() {
-    if [ -n "$BUFFER" ]; then
-        zle accept-line
-        return 0
-    fi
-    echo
-    # ls
-    ls_abbrev
-    if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = 'true' ]; then
-        echo
-        echo -e "\e[0;33m--- git status ---\e[0m"
-        git status -sb
-    fi
-    zle reset-prompt
+  if [ -n "$BUFFER" ]; then
+    zle accept-line
     return 0
+  fi
+  echo
+  # ls
+  ls_abbrev
+  if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = 'true' ]; then
+    echo
+    echo -e "\e[0;33m--- git status ---\e[0m"
+    if is_exec timeout; then
+      timeout -k 1 git status -sb
+    else
+      timeout.pl -t 1 git status -sb
+    fi
+  fi
+  zle reset-prompt
+  return 0
 }
 zle -N do_enter
 bindkey '^m' do_enter
@@ -483,6 +487,10 @@ preexec_multiterm() {
 if is_exec notify-send; then
   notify-preexec-hook() {
     zsh_notifier_cmd="$1"
+    if [[ "${zsh_notifier_cmd}" =~ "^(tmux|ssh|vim|telnet)" ]];then
+      zsh_notifier_cmd=
+      return
+    fi
     zsh_notifier_time="`date +%s`"
   }
 

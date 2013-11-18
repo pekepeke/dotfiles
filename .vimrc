@@ -1178,7 +1178,15 @@ NeoBundle 'igetgames/vim-backbone-jscomplete'
 NeoBundle 'myhere/vim-nodejs-complete'
 
 NeoBundle 'claco/jasmine.vim'
-NeoBundleLazyOn FileType javascript 'mklabs/grunt.vim'
+NeoBundleLazyOn FileType javascript 'mklabs/grunt.vim', {
+      \ 'build': {
+      \ 'cygwin': 'npm install',
+      \ 'windows': 'npm install',
+      \ 'mac': 'npm install',
+      \ 'unix': 'npm install',
+      \ }, 'autoload': {
+      \ 'filetypes': ['javascript', 'coffee'],
+      \ }}
 NeoBundle 'elzr/vim-json'
 
 NeoBundle 'pekepeke/titanium-vim'
