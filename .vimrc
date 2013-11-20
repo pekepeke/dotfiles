@@ -30,6 +30,8 @@ endif
 " platform detection {{{2
 let s:is_win = has('win16') || has('win32') || has('win64')
 let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim')
+let s:type_s = type('')
+let s:type_a = type([])
 " || (executable('uname') && system('uname') =~? '^darwin')
 
 function! s:nop(...) "{{{3
@@ -52,8 +54,8 @@ function! s:mkdir(path) "{{{3
 endfunction
 
 function! s:mkvars(names, val) "{{{3
-  let val = type(a:val) == type('') ? string(a:val) : a:val
-  let names = type(a:names) == type([]) ? a:names : [a:names]
+  let val = type(a:val) == s:type_s ? string(a:val) : a:val
+  let names = type(a:names) == s:type_a ? a:names : [a:names]
   for name in a:names
     if !exists(name)
       silent execute 'let' name '=' val
@@ -1178,7 +1180,7 @@ NeoBundle 'igetgames/vim-backbone-jscomplete'
 NeoBundle 'myhere/vim-nodejs-complete'
 
 NeoBundle 'claco/jasmine.vim'
-NeoBundleLazyOn FileType javascript 'mklabs/grunt.vim', {
+NeoBundleLazy 'mklabs/grunt.vim', {
       \ 'build': {
       \ 'cygwin': 'npm install',
       \ 'windows': 'npm install',
@@ -2058,7 +2060,7 @@ function! s:toggle_option(opt) "{{{3
 endfunction
 
 function! s:initialize_global_dict(prefix, names) "{{{3
-  if type(a:prefix) == type([])
+  if type(a:prefix) == s:type_a
     let prefix = ""
     let names = a:prefix
   else
@@ -2381,7 +2383,7 @@ let g:square_brackets = {
       \ }
 function! s:nmap_square_brackets() "{{{3
   if exists('g:square_brackets[&filetype]')
-    if type(g:square_brackets[&filetype]) == type([])
+    if type(g:square_brackets[&filetype]) == s:type_a
           \ && len(g:square_brackets[&filetype]) > 2
       let [pattern, syn] = g:square_brackets[&filetype]
       nnoremap <silent><buffer> ]] :<C-u>call s:search_with_syntax(pattern, syn, "")<CR>
@@ -2777,10 +2779,11 @@ if s:bundle.tap('editorconfig-vim')
     function! s:editorconfig_init()
       if filereadable('.editorconfig')
         NeoBundleSource editorconfig-vim
+        silent EditorConfigReload
         autocmd!
       endif
     endfunction
-    autocmd FileReadPre * call s:editorconfig_init()
+    autocmd BufReadPost * call s:editorconfig_init()
   augroup END
   call s:bundle.untap()
 endif
@@ -4493,7 +4496,7 @@ if s:bundle.tap('unite.vim')
       let &l:isk = isk
     endif
     let name = ref#detect()
-    let names = type(name) == type("") ? [name] : name
+    let names = type(name) == s:type_s ? [name] : name
     unlet name
 
     let completable = keys(filter(ref#available_sources(), 'exists("v:val.complete")'))
@@ -4521,7 +4524,7 @@ if s:bundle.tap('unite.vim')
     let &l:isk = isk
 
     let types = ref#detect()
-    if type('') == type(types)
+    if s:type_s == type(types)
       unlet types
       let types = ['man']
     endif
@@ -6061,17 +6064,28 @@ if s:bundle.is_installed('neocomplcache.vim') "{{{3
 
   function! s:neocomplcache_dictionary_config() "{{{4
     for fp in split(globpath("~/.vim/dict", "*.dict"), "\n")
-      let _name = fnamemodify(fp, ":p:r")
+      let _name = fnamemodify(fp, ":p:t:r")
       let g:neocomplcache_dictionary_filetype_lists[_name] = fp
     endfor
 
     call extend(g:neocomplcache_dictionary_filetype_lists, {
           \ 'default'     : '',
           \ 'vimshell'    : $VIM_CACHE . '/vimshell/command-history',
+          \ })
+    " \ 'javascript'  : $HOME . '/.vim/dict/javascript.dict',
+
+    for [key, val] in items({
+          \ 'vimshell'    : $VIM_CACHE . '/vimshell/command-history',
           \ 'javascript'  : $HOME . '/.vim/dict/node.dict',
           \ 'eruby'       : $HOME . '/.vim/dict/ruby.dict',
           \ })
-    " \ 'javascript'  : $HOME . '/.vim/dict/javascript.dict',
+      if exists('g:neocomplcache_dictionary_filetype_lists[key]')
+        let g:neocomplcache_dictionary_filetype_lists[key] .= ",".val
+      else
+        let g:neocomplcache_dictionary_filetype_lists[key] = val
+      endif
+
+    endfor
   endfunction "}}}
   call s:neocomplcache_dictionary_config()
 
@@ -6236,16 +6250,26 @@ elseif s:bundle.is_installed('neocomplete.vim') "{{{3
 
   function! s:neocomplete_dictionary_config() "{{{4
     for fp in split(globpath("~/.vim/dict", "*.dict"), "\n")
-      let _name = fnamemodify(fp, ":p:r")
+      let _name = fnamemodify(fp, ":p:t:r")
       let g:neocomplete#sources#dictionary#dictionaries[_name] = fp
     endfor
 
     call extend(g:neocomplete#sources#dictionary#dictionaries, {
           \ 'default'     : '',
           \ 'vimshell'    : $VIM_CACHE . '/vimshell/command-history',
+          \ })
+    for [key, val] in items({
+          \ 'vimshell'    : $VIM_CACHE . '/vimshell/command-history',
           \ 'javascript'  : $HOME . '/.vim/dict/node.dict',
           \ 'eruby'       : $HOME . '/.vim/dict/ruby.dict',
           \ })
+      if exists('g:neocomplete#sources#dictionary#dictionaries[key]')
+        let g:neocomplete#sources#dictionary#dictionaries[key] .= ",".val
+      else
+        let g:neocomplete#sources#dictionary#dictionaries[key] = val
+      endif
+
+    endfor
     " \ 'javascript'  : $HOME . '/.vim/dict/javascript.dict',
   endfunction "}}}
   call s:neocomplete_dictionary_config()
