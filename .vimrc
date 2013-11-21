@@ -2380,6 +2380,8 @@ let g:square_brackets = {
       \ 'html' : '<html\|<head\|<body\|<h\d',
       \ 'rst' : '^-\+\|^=\+',
       \ 'coffee' : '->\s*$\|^\s*class\s',
+      \ 'git-log.git-diff' : '^@@\|^diff ',
+      \ 'git' : '^@@\|^diff ',
       \ }
 function! s:nmap_square_brackets() "{{{3
   if exists('g:square_brackets[&filetype]')
@@ -2607,6 +2609,7 @@ inoremap <C-t> <C-v><Tab>
 inoremap <C-f> <Right>
 inoremap <C-b> <Left>
 inoremap <C-d> <Delete>
+inoremap <C-a> <Home>
 
 inoremap <C-]>a <Home>
 inoremap <C-]>e <End>
@@ -2664,6 +2667,7 @@ onoremap ik i)
 vnoremap ik i)
 
 " vmaps {{{3
+vnoremap . :normal .<CR>
 " vnoremap <Leader>te    :ExciteTranslate<CR>
 vnoremap <Leader>tg    :GingerRange<CR>
 " vnoremap <Leader>tj    :GoogleTranslate ja<CR>
@@ -3174,12 +3178,25 @@ if s:bundle.tap('gitv')
     function! s:vimrc_gitv_init()
       setl iskeyword+=/,-,.
 
-      nnoremap <silent><buffer> [!space]C :<C-u>Git checkout <C-r><C-w><CR>
-      nnoremap <buffer> [!space]rb :<C-u>Git rebase <C-r>=GitvGetCurrentHash()<CR><Space>
-      nnoremap <buffer> [!space]R :<C-u>Git revert <C-r>=GitvGetCurrentHash()<CR><CR>
-      nnoremap <buffer> [!space]h :<C-u>Git cherry-pick <C-r>=GitvGetCurrentHash()<CR><CR>
-      nnoremap <buffer> [!space]rh :<C-u>Git reset --hard <C-r>=GitvGetCurrentHash()<CR>
+      " nnoremap <silent><buffer> [!space]C :<C-u>Git checkout <C-r>=GitvGetCurrentHash()<CR><CR>
+      " nnoremap <buffer> [!space]rb :<C-u>Git rebase <C-r>=GitvGetCurrentHash()<CR><Space>
+      " nnoremap <buffer> [!space]R :<C-u>Git revert <C-r>=GitvGetCurrentHash()<CR><CR>
+      " nnoremap <buffer> [!space]h :<C-u>Git cherry-pick <C-r>=GitvGetCurrentHash()<CR><CR>
+      " nnoremap <buffer> [!space]rh :<C-u>Git reset --hard <C-r>=GitvGetCurrentHash()<CR>
       nnoremap <buffer> G :<C-u>Gbrowse <C-r>=GitvGetCurrentHash()<CR><CR>
+      nnoremap <buffer><nowait> [!space] :<C-u>Unite menu:gitv<CR>
+      if s:bundle.is_installed('unite.vim')
+        let g:unite_source_menu_menus["gitv"] = s:unite_menu_create(
+        \ 'Gitv', [
+        \ ['logview', "execute 'GitLogViewer' eval('GitvGetCurrentHash()')"],
+        \ ['gbrowse', "execute 'Gbrowse' eval('GitvGetCurrentHash()')"],
+        \ ['checkout', "execute 'Git checkout' eval('GitvGetCurrentHash())"],
+        \ ['rebase', "execute 'Git rebase' eval('GitvGetCurrentHash())"],
+        \ ['revert', "execute 'Git revert' eval('GitvGetCurrentHash())"],
+        \ ['cherry-pick', "execute 'Git cherry-pick' eval('GitvGetCurrentHash())"],
+        \ ['reset --hard', "execute 'Git reset --hard' eval('GitvGetCurrentHash())"],
+        \ ])
+      endif
     endfunction
 
     function! GitvGetCurrentHash()
@@ -6173,7 +6190,7 @@ if s:bundle.is_installed('neocomplcache.vim') "{{{3
     endif
 
     " inoremap <expr> <C-y>  neocomplcache#close_popup()
-    inoremap <expr> <C-e>  neocomplcache#cancel_popup()
+    inoremap <expr> <C-e>  pumvisible() ? neocomplcache#cancel_popup() : "\<End>"
 
     inoremap <expr> <C-j> pumvisible() ? neocomplcache#close_popup() : "\<CR>"
 
@@ -6402,7 +6419,7 @@ elseif s:bundle.is_installed('neocomplete.vim') "{{{3
   endif
 
   " inoremap <expr> <C-y>  neocomplete#close_popup()
-  inoremap <expr> <C-e>  neocomplete#cancel_popup()
+  inoremap <expr> <C-e> pumvisible() ? neocomplete#cancel_popup() : "\<End>"
 
   inoremap <expr> <C-j> pumvisible() ? neocomplete#close_popup() : "\<CR>"
 
@@ -6849,13 +6866,14 @@ endif
 " etc functions & commands {{{1
 " git "{{{2
 " special git log viewer {{{3
-function! s:git_log_viewer()
+function! s:git_log_viewer(commit)
   " vnew
   new
   setl buftype=nofile
   setl buflisted
   "VimProcRead git log -u 'HEAD@{1}..HEAD' --reverse
-  VimProcRead git log -u 'ORIG_HEAD..HEAD'
+  let commit = empty(a:commit) ? 'ORIG_HEAD..HEAD' : a:commit . ' -n 1'
+  execute 'VimProcRead git log -u ' commit
   set filetype=git-log.git-diff
   setl foldmethod=expr
   " setl foldexpr=getline(v:lnum)!~'^commit'
@@ -6926,7 +6944,7 @@ function! GitLogViewerFoldText()
   return join([datestr, time, author, message], ' ')
 endfunction
 
-command! GitLogViewer call s:git_log_viewer()
+command! -nargs=? GitLogViewer call s:git_log_viewer(<q-args>)
 
 " Git Diff -> The file {{{3
 function! SGoDiff()

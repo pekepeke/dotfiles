@@ -812,3 +812,12 @@ snippet .css
 snippet .on
 	.on('${1}', ${2})${3}
 
+snippet direct_exec
+	if (!module.parent) {
+		${1}
+	}
+
+snippet require_delete
+	require('${1}');
+	delete(require.cache[path.resolve('$1')]);
+

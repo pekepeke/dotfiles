@@ -105,6 +105,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
       # alias nodebrew='CFLAGS="-D__DARWIN_64_BIT_INO_T" CXXFLAGS="-D__DARWIN_64_BIT_INO_T" nodebrew'
     fi
   fi
+  PATH=node_modules/.bin:$PATH
 
   shrc_section_title "java" # {{{2
   if ! is_mac ; then
