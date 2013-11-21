@@ -40,6 +40,9 @@ zaw-rc () {
   bindkey -v '^Vs' zaw-ssh
   bindkey -v '^Vp' zaw-keepass
 
+  bindkey -v '^Vg' zaw-preview-file
+  bindkey -v '^Va' zaw-applications
+
   (( $+functions[zaw-src-tmuxinator] )) && bindkey -v '^Vm' zaw-tmuxinator
   (( $+functions[zaw-src-finder] )) && bindkey -v '^Vf' zaw-finder
 }

@@ -161,6 +161,7 @@ bindkey -a 'H' run-help
 bindkey -a '^A' beginning-of-line
 bindkey -a '^E' end-of-line
 
+
 ## cheat-sheet # {{{3
 cheat-sheet () { zle -M "`cat ~/.zsh/cheat/zsh-cheat.conf`" }
 zle -N cheat-sheet
@@ -177,6 +178,7 @@ bindkey -v "\e[1~" begginning-of-line   # Home
 bindkey -v "\e[4~" end-of-line          # End
 bindkey -v "^[[3~" delete-char          # Del
 bindkey -v "\e[Z" reverse-menu-complete # S-Tab
+(( $+functions[search-clipmenu] )) && bindkey -v '^Xp' search-clipmenu
 
 ## emacs like {{{3
 bindkey -v '^D' delete-char
