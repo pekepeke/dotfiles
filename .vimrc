@@ -32,6 +32,7 @@ let s:is_win = has('win16') || has('win32') || has('win64')
 let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim')
 let s:type_s = type('')
 let s:type_a = type([])
+let s:type_h = type({})
 " || (executable('uname') && system('uname') =~? '^darwin')
 
 function! s:nop(...) "{{{3
@@ -3512,7 +3513,10 @@ if s:bundle.tap('vim-smartinput')
   " MyAutoCmd VimEnter * call <SID>smartinput_init()
 
   function! s:bundle.tapped.hooks.on_source(bundle)
-    function! s:sminput_define_rules() "{{{
+    function! s:sminput_define_rules(is_load_default_rules) "{{{
+      if a:is_load_default_rules
+        call smartinput#define_default_rules()
+      endif
       call smartinput#define_rule({
             \   'at':       '(\%#)',
             \   'char':     '<Space>',
@@ -3638,7 +3642,22 @@ if s:bundle.tap('vim-smartinput')
     endfunction "}}}
 
     command! SmartinputOff call smartinput#clear_rules()
-    command! SmartinputOn call <SID>sminput_define_rules()
+    command! SmartinputOn call s:sminput_define_rules(1) | call s:smartinput_init()
+    command! -nargs=? SmartinputBufferMapClear call s:sminput_buffer_mapclear(<q-args>)
+
+    function! s:sminput_buffer_mapclear(mode)
+      let mode = empty(a:mode) ? '*' : a:mode
+      let vars = smartinput#scope()
+      let hash = {}
+      let rules = filter(get(vars, 'available_nrules', []), 'v:val._char =~# "^[a-zA-Z0-9!-/:-@\\[-`{-~]\\+$"')
+      for item in copy(filter(rules, 'mode == "*" || mode == v:val.mode'))
+        if get(hash, item._char, 1)
+          let char = substitute(item._char, '[|]', '\\\1', 'g')
+          execute printf("%smap \<buffer> %s %s", item.mode, char, char)
+          let hash[item._char] = 0
+        endif
+      endfor
+    endfunction
 
     function! s:smartinput_init()
       if hasmapto('<CR>', 'c')
@@ -3646,7 +3665,7 @@ if s:bundle.tap('vim-smartinput')
       endif
     endfunction
 
-    call s:sminput_define_rules()
+    call s:sminput_define_rules(0)
     call s:smartinput_init()
   endfunction
   call s:bundle.untap()
@@ -4458,6 +4477,7 @@ if s:bundle.tap('unite.vim')
   UniteNMap!  gr        grep -buffer-name=grep
   " UniteNMap!  gt        grep:<C-r>=getcwd()<CR>:TODO\|FIXME\|XXX\|NOTE\|!!!\|\?\?\? -buffer-name=todo -auto-preview
   " UniteNMap   gl        grep_launcher
+  UniteNMap!  gl        line -start-insert
   UniteNMap!  gi        git_grep -buffer-name=git_grep
   UniteNMap!  tt        gtags/context -buffer-name=tag
   UniteNMap!  tr        gtags/ref -buffer-name=tag
@@ -4545,7 +4565,7 @@ if s:bundle.tap('unite.vim')
       unlet types
       let types = ['man']
     endif
-    let types = filter(types, 'type(ref#available_sources(v:val)) == type({})')
+    let types = filter(types, 'type(ref#available_sources(v:val)) == s:type_h')
     if !empty(types)
       execute 'Unite' '-default-action=below' '-input='.kwd join(map(types, '"ref/".v:val'), ' ')
     else
@@ -4643,6 +4663,9 @@ function! s:vimrc_unite_init()
   nmap <buffer> t <Plug>(unite_choose_action)
   nmap <buffer> l <Plug>(unite_do_default_action)
   nmap <buffer> P <Plug>(unite_toggle_auto_preview)
+  if s:bundle.is_installed('vim-smartinput') && exists(':SmartinputBufferMapClear')
+    SmartinputBufferMapClear
+  endif
 endfunction
 
 " milkode http://qiita.com/items/abe5df7c5b21160532b8 "{{{3

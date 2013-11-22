@@ -237,15 +237,19 @@ function do_enter() {
   echo
   # ls
   ls_abbrev
-  if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = 'true' ]; then
-    echo
-    echo -e "\e[0;33m--- git status ---\e[0m"
-    if is_exec timeout; then
-      timeout -k 1 git status -sb
-    else
-      timeout.pl -t 1 git status -sb
-    fi
-  fi
+
+  # if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = 'true' ]; then
+  #   echo
+  #   echo -e "\e[0;33m--- git status ---\e[0m"
+
+  #   local CMD="git status -sb"
+  #   if is_exec timeout; then
+  #     timeout -k 1 $CMD
+  #   else
+  #     timeout.pl -t 1 $CMD
+  #     [ $? -eq 2 ] && notify-send "Killed" "$CMD"
+  #   fi
+  # fi
   zle reset-prompt
   return 0
 }
