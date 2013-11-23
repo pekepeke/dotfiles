@@ -426,29 +426,34 @@ if [[ $ZSH_VERSION == (<5->|4.<4->|4.3.<10->)* ]]; then
       branch="$vcs_info_msg_2_"
 
       if [[ -n "$vcs_info_msg_4_" ]]; then # staged
-        branch="%F{green}$branch%f"
+        # branch="%F{green}$branch%f"
+        branch="%{$K{green} $branch%k"
       elif [[ -n "$vcs_info_msg_5_" ]]; then # unstaged
-        branch="%F{red}$branch%f"
+        # branch="%F{red}$branch%f"
+        branch="%K{red} $branch%k"
       else
-        branch="%F{blue}$branch%f"
+        # branch="%F{blue}$branch%f"
+        branch="%K{blue} $branch%k"
       fi
 
-      print -n "[%25<..<"
-      print -n "%F{yellow}$vcs_info_msg_1_%F"
-      print -n "%<<]"
+      print -n "%F{white}%K{black} %25<..<"
+      print -n "$vcs_info_msg_1_%F"
+      print -n "%<<%k%f"
 
-      print -n "[%25<..<"
-      print -nD "%F{yellow}$repos%f"
-      print -n "@$branch"
-      print -n "%<<]"
+      print -n "%F{white}%K{black} | %25<..<"
+      print -nD "$repos %k%f"
+      print -n "$branch"
+      print -n "%<<"
 
     else
-      print -nD "[%F{yellow}%60<..<%~%<<%f]"
+      # print -nD "[%F{yellow}%60<..<%~%<<%f]"
+      print -nD "%F{white}%K{black}%60<..< %~ %<<%k%f"
     fi
   }
 else
   echo_rprompt() {
-    print -nD "[%F{yellow}%60<..<%~%<<%f]"
+    # print -nD "[%F{yellow}%60<..<%~%<<%f]"
+    print -nD "%F{white}%K{black}%60<..< %~ %<<%k%f"
   }
 fi
 precmd_rprompt() {
@@ -521,10 +526,28 @@ add-zsh-hook precmd precmd_rprompt
 # add-zsh-hook precmd precmd_multiterm
 add-zsh-hook preexec preexec_multiterm
 add-zsh-hook chpwd chpwd_multiterm
-local __user='%{$fg[yellow]%}%n@%{$fg[yellow]%}%m%{$reset_color%}'
+
+# local __user='%{$fg[yellow]%}%n@%{$fg[yellow]%}%m%{$reset_color%}'
+local __user='%{$bg[black]%}%{$fg[white]%} %n@%m %{$reset_color%}$ '
+
+local vi_n="%{$bg[magenta]%}%{$fg_bold[white]%} N %{$reset_color%}"
+local vi_i="%{$bg[blue]%}%{$fg_bold[white]%} I %{$reset_color%}"
+function zle-line-init zle-keymap-select {
+  case $KEYMAP in
+    vicmd)
+      PROMPT="${vi_n}${__user}"
+    ;;
+    main|viins)
+      PROMPT="${vi_i}${__user}"
+    ;;
+  esac
+  zle reset-prompt
+}
+zle -N zle-line-init
+zle -N zle-keymap-select
 
 # export PROMPT="[%n@%m %3d]%(#.#.$) "
-PROMPT="${__user}$ "
+PROMPT="${vi_i}${__user}"
 RPROMPT=""
 # case "$TERM" in
 #   cygwin|xterm|xterm*|kterm|mterm|rxvt*)
