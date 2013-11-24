@@ -95,16 +95,6 @@ export LS_OPTIONS
 
 shrc_section_title "aliases" #{{{1
 shrc_section_title "notify" #{{{2
-__NOTIFY() { # {{{3
-  local title=$1
-  shift
-
-  if is_exec notify-send ; then
-    notify-send "$title" "$*" -i ~/bin/data/growl_i.png
-  fi
-  # is_exec growlnotify && growlnotify -t $title -m "$*" --image ~/bin/data/growl_i.png
-  # is_exec notify-send && notify-send $title "$*"
-}
 
 shrc_section_title "basic commands" #{{{2
 if is_exec gls; then
@@ -154,26 +144,12 @@ alias vimnone='vim -u NONE'
 alias vimmin='vim -u ~/.vimrc.min'
 alias view='view -u ~/.vimrc.min'
 alias ctags-rb='ctags --langmap=RUBY:.rb --exclude="*.js"  --exclude=".git*"'
-
-dot-submodules-update() { #{{{3
-  local cwd=$(pwd)
-  cd ~/.github-dotfiles
-  git submodule init
-  git submodule foreach 'git checkout master; git pull --ff --rebase origin master; git pull --ff --rebase'
-  if [ -e ~/.osx_library ]; then
-    cd ~/.osx_library
-    git submodule init
-    git submodule foreach 'git checkout master; git pull --ff --rebase origin master; git pull --ff --rebase'
+gvi () {
+  if is_mac ;then
+    command mvim --remote-silent "$@" || mvim "$@"
+  else
+    command gvim --remote-silent "$@" || gvim "$@"
   fi
-  cd ${cwd}
-  __NOTIFY "update .github-dotfiles" "complete!"
-}
-vundle() { #{{{3
-  dot-submodules-update
-  # find ~/.vim/neobundle -name tags | grep doc | grep -v .git | xargs rm
-  # vim -c "silent NeoBundleInstall" -c "let g:vimproc_dll_path=''" -c "silent NeoBundleUpdate" -c "quitall"
-  vim -c "silent NeoBundleInstall" -c "silent NeoBundleUpdate" -c "quitall"
-  __NOTIFY "neobundle update" "complete!"
 }
 
 vundle-each() { #{{{3

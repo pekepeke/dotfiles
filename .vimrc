@@ -1167,7 +1167,7 @@ if has('python')
         " \   'rtp' : 'vim',
 endif
 " NeoBundle 'drslump/vim-syntax-js'
-NeoBundle  'vim-scripts/jQuery'
+" NeoBundle  'vim-scripts/jQuery'
 " NeoBundle 'mmalecki/vim-node.js'
 NeoBundle 'moll/vim-node'
 NeoBundleLazy 'afshinm/npm.vim', {'autoload': {
@@ -4282,6 +4282,7 @@ if s:bundle.tap('unite.vim')
     \   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
     \   ["perl"               , "VimShellInteractive reply"]               ,
     \   ["javascript"         , "VimShellInteractive node"]                ,
+    \   ["coffee"             , "VimShellInteractive coffee -i --nodejs"]                ,
     \   ["ghci"               , "VimShellInteractive ghci"]                ,
     \   ["python"             , "VimShellInteractive python"]              ,
     \   ["php"                , "VimShellInteractive phpa-norl"]           ,
