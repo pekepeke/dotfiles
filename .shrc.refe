@@ -1,21 +1,9 @@
 [ -n $CPPREF_DOCROOT ] && return
 shrc_section_title "MAN" # {{{1
-LMANDIR=$HOME/.bin/apps
-if [ ! -e $LMANDIR ]; then
-  mkdir -p $LMANDIR
-fi
-
-export CPPREF_DOCROOT=$LMANDIR/cppref/doc/
-export JSREF_DOCROOT=$LMANDIR/jsref/doc/
-export TIMOBILEREF_DOCROOT=$LMANDIR/timobileref/doc/
-export TIDESKTOPREF_DOCROOT=$LMANDIR/tidesktopref/doc/
-
-# shrc_section_title "RSENSE" # {{{1
-# if [ -e ~/.bin/apps ]; then
-#   export RSENSE_HOME=$(find $HOME/.bin/apps -name 'rsense*' -maxdepth 1 -type d | sort -r | head -1)
-#   alias rsense-updaterc='ruby $RSENSE_HOME/etc/config.rb > ~/.rsense'
-# fi
-unset LMANDIR
+export CPPREF_DOCROOT=~/.cache/docs/cppref/doc/
+export JSREF_DOCROOT=~/.cache/docs/jsref/doc/
+export TIMOBILEREF_DOCROOT=~/.cache/docs/timobileref/doc/
+export TIDESKTOPREF_DOCROOT=~/.cache/docs/tidesktopref/doc/
 
 # __END__ {{{1
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:

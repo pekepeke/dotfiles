@@ -64,7 +64,7 @@ esac
 shrc_section_title "block multi load" # {{{1
 # [ x$__VMLANG_INITIALIZED != x ] && return 0
 # export __VMLANG_INITIALIZED=1
-PATH=$HOME/bin:$HOME/.bin:$PATH
+PATH=$HOME/bin:$HOME/.cache/bin:$PATH
 
 shrc_section_title "languages" # {{{1
 if [ -z "$SHRC_LANGUAGE_LOADED" ]; then

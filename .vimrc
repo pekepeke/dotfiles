@@ -466,10 +466,10 @@ if has('vim_starting')
   set runtimepath+=~/.vim/neobundle.vim
 
   " http://blog.supermomonga.com/articles/vim/neobundle-sugoibenri.html {{{2
-  let s:bundle = {}
+  let s:bundle = {'uninstalled':{}}
   function! s:bundle.tap(bundle) " {{{
     let self.tapped = neobundle#get(a:bundle)
-    return neobundle#is_installed(a:bundle)
+    return self.is_installed(a:bundle)
   endfunction " }}}
 
   function! s:bundle.config(config, ...) " {{{
@@ -493,7 +493,11 @@ if has('vim_starting')
   endfunction "}}}
 
   function! s:bundle.is_installed(name) "{{{
-    return neobundle#is_installed(a:name)
+    let ret = neobundle#is_installed(a:name)
+    if !ret
+      let self.uninstalled[a:name] = 1
+    endif
+    return ret
   endfunction "}}}
 
   function! s:bundle.install_lazy_on(on, modes, source) "{{{
@@ -514,9 +518,10 @@ if has('vim_starting')
           \ printf("Lazy        : %d", len(filter(copy(bundles), 'v:val.lazy'))),
           \ printf("Not Sourced : %d", len(filter(copy(bundles), '!v:val.sourced'))),
           \ printf("Sourced     : %d", len(filter(copy(bundles), 'v:val.sourced'))),
-          \ printf("Sourced plugins\n%s", join(map(
+          \ printf("### Sourced plugins\n%s", join(map(
           \   filter(copy(bundles), 'v:val.lazy && v:val.sourced'),
           \   'v:val.name'), "\n")),
+          \ printf("### Uninstalled plugins\n%s", join(keys(self.uninstalled), "\n")),
           \ ]
     echo join(msgs, "\n")
   endfunction " }}}
@@ -547,11 +552,7 @@ NeoBundleLocal ~/.vim/bundle
 
 " vundles {{{2
 " statusline {{{3
-" NeoBundle 'bling/vim-airline'
 NeoBundle 'itchyny/lightline.vim'
-" NeoBundleLazy 'Lokaltog/powerline', { 'rtp' : 'powerline/bindings/vim'}
-" NeoBundle 'zhaocai/linepower.vim'
-" NeoBundleLazy 'Lokaltog/vim-powerline'
 
 " colorscheme {{{3
 NeoBundle 'tpope/vim-vividchalk'
@@ -666,7 +667,6 @@ NeoBundleLazy 'chikatoike/concealedyank.vim', { 'autoload' : {
       \ 'mappings' : [
       \ ['nx', '<Plug>(operator-concealedyank)']]
       \ }}
-" NeoBundle 'vim-scripts/let-modeline.vim'
 " NeoBundle 'dannyob/quickfixstatus'
 NeoBundleLazy 'pekepeke/quickfixstatus', {'autoload': {
       \ 'commands': ['QuickfixStatusEnable', 'QuickfixStatusDisable'],
@@ -1253,7 +1253,6 @@ NeoBundleLazy 'nosami/Omnisharp', {
       \     'unix': 'xbuild server/OmniSharp.sln',
       \   }
       \ }
-" NeoBundle 'yuratomo/dotnet-complete'
 if s:is_win
   NeoBundleLazyOn FileType cs 'yuratomo/ildasm.vim'
 endif
@@ -1444,9 +1443,6 @@ NeoBundleLazy 'tacroe/unite-mark', { 'autoload' : {
 NeoBundleLazy 'zhaocai/unite-scriptnames', { 'autoload' : {
       \ 'unite_sources' : ['scriptnames'],
       \ }}
-" NeoBundleLazy 'daisuzu/unite-grep_launcher', { 'autoload' : {
-"       \ 'unite_sources' : ['grep_launcher'],
-"       \ }}
 NeoBundleLazy 'pasela/unite-webcolorname', { 'autoload' : {
       \ 'unite_sources' : ['webcolorname'],
       \ }}
@@ -1502,9 +1498,6 @@ NeoBundleLazy 'hewes/unite-gtags', {'autoload': {
 NeoBundleLazy 'ujihisa/quicklearn', { 'autoload' : {
       \ 'unite_sources' : ['quicklearn'],
       \ }}
-" NeoBundleLazy "osyo-manga/unite-airline_themes", {'autoload':{
-"       \ 'unite_sources' : ['airline_themes'],
-"       \ }}
 NeoBundleLazy "osyo-manga/unite-fold", {'autoload':{
       \ 'unite_sources' : ['fold'],
       \ }}
@@ -2971,25 +2964,6 @@ if s:bundle.tap('lightline.vim')
   call s:bundle.untap()
 endif
 
-" airline {{{2
-if s:bundle.tap('vim-airline')
-  let g:airline_left_sep='|'
-  let g:airline_right_sep='|'
-  let g:airline_linecolumn_prefix = ':'
-  let g:airline_branch_prefix = 'BR:'
-  let g:airline_paste_symbol = '[P]'
-  let g:airline_readonly_symbol = '[R]'
-
-  let g:airline_enable_syntastic=0
-  " let g:airline_powerline_fonts=0
-  let g:airline_enable_branch=1
-  let g:airline_detect_modified=1
-  let g:airline_detect_paste=1
-  let g:airline_detect_iminsert=1
-  let g:airline_theme='powerlineish'
-  call s:bundle.untap()
-endif
-
 "  jplus {{{2
 if s:bundle.tap('vim-jplus')
   nmap <Leader>j <Plug>(jplus-getchar-with-space)
@@ -3239,76 +3213,6 @@ let g:colorv_cache_file = $VIM_CACHE . "/vim_colorv_cache"
 " trans.vim {{{2
 let g:trans_default_lang = "en-ja"
 
-" vim-powerline {{{2
-if s:bundle.is_installed('vim-powerline')
-  if !has('vim_starting') && exists('*Pl#UpdateStatusline')
-    call Pl#UpdateStatusline(1)
-  endif
-endif
-" powerline {{{2
-if s:bundle.is_installed('powerline')
-  let g:unite_force_overwrite_statusline = 0
-  " let g:powerline_config_path = expand('~/.vim/powerline')
-  let g:powerline_config_overrides = {
-        \  "common": {
-        \    "dividers": {
-        \      "left": {
-        \        "hard": " > ",
-        \        "soft": "|",
-        \      },
-        \      "right": {
-        \        "hard": " < ",
-        \        "soft": " | ",
-        \      }
-        \    },
-        \  },
-        \ }
-  let g:powerline_theme_overrides__default = {
-        \  "segment_data": {
-        \    "mode" : {
-        \      "args": {
-        \        "override": {
-        \          "n": "NORMAL",
-        \          "v": "VISUAL",
-        \          "i": "INSERT",
-        \          "R": "REPLACE",
-        \          "!": "SHELL",
-        \        },
-        \      },
-        \    },
-        \    "branch": {
-        \      "before": "BR:",
-        \    },
-        \    "modified_indicator": {
-        \      "args": { "text": "+" },
-        \    },
-        \    "readonly_indicator": {
-        \      "args": { "text": "[R]" },
-        \    },
-        \    "line_percent": {
-        \      "after": "%"
-        \    },
-        \    "line_current_symbol": {
-        \      "contents": "LN",
-        \    },
-        \  },
-        \ }
-  if s:bundle.is_installed('linepower.vim')
-    if !s:is_win && !isdirectory(expand('~/.config/powerline'))
-      call system(printf("cp -r %s ~/.config/powerline",
-            \ neobundle#get('linepower.vim').path . "/config" ))
-    endif
-    " let g:powerline_config_path = neobundle#get('linepower.vim').path . "/config"
-    " let g:powerline_config_path = neobundle#get('powerline').path . "/powerline/config_files"
-  endif
-
-  if !has('vim_starting') && exists('*PowerlineNew')
-    set statusline=%!PowerlineNew()
-    call PowerlineNew()
-    redraw!
-  endif
-endif
-
 " inline_edit {{{2
 if s:bundle.is_installed('inline_edit.vim')
   let g:inline_edit_autowrite = 1
@@ -3397,15 +3301,6 @@ if s:bundle.is_installed('vim-localrc')
   endif
 endif
 
-
-" let-modeline.vim {{{2
-if s:bundle.tap('let-modeline.vim')
-  function! s:bundle.tapped.hooks.on_source(bundle)
-    MyAutoCmd BufEnter * call FirstModeLine()
-    " MyAutoCmd BufNewFile * let b:this_is_new_buffer=1
-  endfunction
-  call s:bundle.untap()
-endif
 
 " eregex.vim {{{2
 let g:eregex_default_enable=0
@@ -3974,12 +3869,6 @@ if s:bundle.tap('vim-rails')
   MyAutoCmd User Rails call s:vimrc_rails_init()
 endif
 
-" csharp {{{2
-if s:bundle.is_installed('dotnet-complete')
-  MyAutoCmd BufNewFile,BufRead *.xaml    setf xml | setl omnifunc=xaml#complete
-  MyAutoCmd BufNewFile,BufRead *.cs      setl omnifunc=cs#complete
-  MyAutoCmd BufNewFile,BufRead *.cs      setl bexpr=cs#balloon() | setl ballooneval
-endif
 
 " python {{{2
 let g:pymode_rope = 1
@@ -4107,15 +3996,6 @@ if s:bundle.tap('unite.vim')
     execute printf('Unite grep:%s %s', a:path, join(a:000, ' '))
   endfunction
 
-  " unite-grep_launcher {{{3
-  if s:bundle.is_installed('unite-grep_launcher')
-    if !exists('g:grep_launcher_words')
-      let g:grep_launcher_words = {}
-    endif
-    call extend(g:grep_launcher_words, {
-      \ 'TODO' : s:regexp_todo,
-      \ })
-  endif
   " unite-history
   let g:unite_source_history_yank_enable = 1
 
@@ -4645,7 +4525,7 @@ function! s:vimrc_unite_init()
   nmap <buffer> l <Plug>(unite_do_default_action)
   nmap <buffer> P <Plug>(unite_toggle_auto_preview)
   if s:bundle.is_installed('vim-smartinput') && exists(':SmartinputBufferMapClear')
-    SmartinputBufferMapClear
+    SmartinputBufferMapClear i
   endif
 endfunction
 
@@ -5237,17 +5117,19 @@ if s:bundle.is_installed('vim-ref')
 
   " langs {{{4
   let g:ref_source_webdict_sites.default = 'alc'
-  let g:ref_phpmanual_path=$HOME.'/.bin/apps/phpman/'
-  let g:ref_javadoc_path = $HOME.'/.bin/apps/jdk-6-doc/ja'
-  let g:ref_jquery_path = $HOME.'/.bin/apps/jqapi-latest/docs'
-  let g:ref_html_path=expand('~/.bin/apps/htmldoc/www.aptana.com/reference/html/api')
-  let g:ref_html5_path=expand('~/.bin/apps/html5doc/dist')
-  let g:ref_jscore_path=expand('~/.bin/apps/jscore/www.aptana.com/reference/html/api')
-  let g:ref_jsdom_path=expand('~/.bin/apps/jscore/www.aptana.com/reference/html/api')
+  let g:ref_phpmanual_path=$VIM_CACHE.'/docs/phpman/'
+  let g:ref_javadoc_path = $VIM_CACHE.'/docs/jdk-6-doc/ja'
+  let g:ref_jquery_path = $VIM_CACHE.'/docs/jqapi-latest/docs'
+  let g:ref_html_path=$VIM_CACHE.'/docs/htmldoc/www.aptana.com/reference/html/api'
+  let g:ref_html5_path=$VIM_CACHE.'/docs/html5doc/dist'
+  let g:ref_jscore_path=$VIM_CACHE.'/docs/jscore/www.aptana.com/reference/html/api'
+  let g:ref_jsdom_path=$VIM_CACHE.'/docs/jscore/www.aptana.com/reference/html/api'
   "let g:ref_jquery_use_cache = 1
-  if isdirectory($HOME."/.nodebrew")
-    let g:ref_nodejsdoc_dir = my#dir#find("~/.nodebrew/src/node-v*").last() . "/doc"
-  endif
+  let g:ref_nodejsdoc_dir=$VIM_CACHE.'/docs/nodejs/doc'
+
+  " if isdirectory($HOME."/.nodebrew")
+  "   let g:ref_nodejsdoc_dir = my#dir#find("~/.nodebrew/src/node-v*").last() . "/doc"
+  " endif
 
   if executable('rurema')
     let g:ref_refe_cmd     = "rurema"
@@ -7516,18 +7398,6 @@ if !has('vim_starting')
     execute s:restore_setlocal
     unlet s:restore_setlocal
   endif
-else
-  " function! s:powerline_init()
-  "   if &diff || &filetype =~# 'gitcommit\|svn\|hgcommit'
-  "     " do nothing
-  "   elseif !s:is_win && (has('python') || has('python3'))
-  "     NeoBundleSource powerline
-  "   else
-  "     NeoBundleSource vim-powerline
-  "   endif
-  " endfunction
-  " Lazy call s:powerline_init()
-
 endif
 " __END__ {{{1
 " vim: set ft=vim fdm=marker sw=2 ts=2 et:
