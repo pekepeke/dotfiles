@@ -142,6 +142,7 @@ alias vimrcprofileall='vim --cmd "profile start vimrc-profileall.txt" --cmd "pro
 alias vimsafe='vim -u NONE -i NONE'
 alias vimnone='vim -u NONE'
 alias vimmin='vim -u ~/.vimrc.min'
+alias vi='vim -u ~/.vimrc.min'
 alias view='view -u ~/.vimrc.min'
 alias ctags-rb='ctags --langmap=RUBY:.rb --exclude="*.js"  --exclude=".git*"'
 gvi () {

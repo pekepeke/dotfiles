@@ -10,7 +10,6 @@
 "   \__\::::/      \__\/         /__/:/       |__|:|~       \  \:\
 "       ~~~~                     \__\/         \__\|         \__\/
 " init setup {{{1
-scriptencoding utf-8
 let $VIM_CACHE = $HOME . '/.cache'
 
 " defun macros {{{2
@@ -22,7 +21,7 @@ command! -nargs=* Lazy autocmd vimrc-myautocmd VimEnter * <args>
 
 
 if v:version > 703 || (v:version == 703 && has('patch970'))
-  Lazy set regexpengine=0
+  " Lazy set regexpengine=0
   command! -nargs=0 RegexpEngineNFA set regexpengine=0
   command! -nargs=0 RegexpEngineOLD set regexpengine=1
 endif
@@ -30,10 +29,10 @@ endif
 " platform detection {{{2
 let s:is_win = has('win16') || has('win32') || has('win64')
 let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim')
+" || (executable('uname') && system('uname') =~? '^darwin')
 let s:type_s = type('')
 let s:type_a = type([])
 let s:type_h = type({})
-" || (executable('uname') && system('uname') =~? '^darwin')
 
 function! s:nop(...) "{{{3
 endfunction
@@ -73,13 +72,8 @@ endif
 " let s:configured_runtimepath = &runtimepath
 set all&
 
-if has('vim_starting')
-  set runtimepath^=$HOME/.vim
-  set runtimepath+=$HOME/.vim/after
-else
-  " let &runtimepath=s:configured_runtimepath
-endif
-" unlet s:configured_runtimepath
+set runtimepath^=$HOME/.vim
+set runtimepath+=$HOME/.vim/after
 
 " reset os env {{{2
 if s:is_win
@@ -138,6 +132,8 @@ set fileformat=unix
 set fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp,cp932
 set fileformats=unix,dos,mac
 set synmaxcol=1500
+
+scriptencoding utf-8
 
 set display=lastline
 set clipboard=unnamed
@@ -731,7 +727,7 @@ NeoBundleLazy 'h1mesuke/vim-alignta', {'autoload': {
 " NeoBundle 'maxbrunsfeld/vim-yankstack'
 " NeoBundle 'chrismetcalf/vim-yankring'
 " NeoBundle 'the-isz/MinYankRing.vim'
-" TODO :
+
 NeoBundleLazy 'AndrewRadev/switch.vim', {'autoload': {
       \ 'commands': ['Switch']
       \ }}
@@ -763,7 +759,7 @@ NeoBundleLazy 'terryma/vim-expand-region', {'autoload':{
       \ }}
 " NeoBundle 'vim-scripts/ShowMarks7'
 NeoBundle 'kshenoy/vim-signature'
-" TODO : try
+
 if has('python')
   NeoBundleLazy 'editorconfig/editorconfig-vim'
 endif
@@ -911,8 +907,6 @@ NeoBundleLazy 'gregsexton/gitv', {
       \     'commands' : ['Gitv'],
       \   },
       \ }
-" TODO : --;;;;
-" NeoBundle 'violetyk/gitquick.vim'
 NeoBundleLazy 'Shougo/vim-vcs', {'autoload': {
       \ 'functions': ['vcs#info'],
       \ }}
@@ -939,7 +933,7 @@ NeoBundleLazy 'AndrewRadev/linediff.vim', {'autoload': {
       \ 'commands': ['Linediff', 'LinediffReset'],
       \ }}
 NeoBundle 'vim-scripts/ConflictDetection', {
-      \   'depends': 'vim-scripts/ingo-library',
+      \ 'depends': 'vim-scripts/ingo-library',
       \ }
 NeoBundleLazy 'yuratomo/dbg.vim', {'autoload':{
       \ 'commands': [
@@ -1089,22 +1083,6 @@ if executable('alpaca_complete')
         \ 'autoload' : { 'filetypes' : 'ruby'},
         \  }
 endif
-" if executable('rails_best_practices')
-"   NeoBundleLazy 'alpaca-tc/unite-rails_best_practices', {
-"         \ 'depends' : [ 'Shougo/unite.vim', 'romanvbabenko/rails.vim' ],
-"         \ 'autoload': {
-"         \ 'unite_sources': ['rails_best_practices']
-"         \ }}
-" else
-"   NeoBundleLazy 'alpaca-tc/unite-rails_best_practices'
-" endif
-" if executable('reek')
-"   NeoBundle 'alpaca-tc/unite-reek', {'autoload':{
-"         \ 'unite_sources': ['reek'],
-"         \ }}
-" else
-"   NeoBundleLazy 'alpaca-tc/unite-reek'
-" endif
 
 " html {{{4
 NeoBundle 'othree/html5.vim'
@@ -2764,7 +2742,7 @@ if s:bundle.tap('vim-anzu')
   " nmap # <Plug>(anzu-sharp)nzxzz
 
   " nmap n <Plug>(anzu-n)zx
-  nmap n <Plug>(anzu-jump-n):<C-u>silent AnzuUpdateSearchStatus\|redraw!<CR>zx
+  nmap n <Plug>(anzu-n)zx:<C-u>silent AnzuUpdateSearchStatus\|redraw!<CR>zx
   " nmap n <Plug>(anzu-jump-n)zx<Plug>(anzu-echo-search-status)
   nmap N <Plug>(anzu-N)zx
   nmap * <Plug>(anzu-star)Nzx
@@ -3643,12 +3621,14 @@ if s:bundle.tap('vim-smartinput')
 
     command! SmartinputOff call smartinput#clear_rules()
     command! SmartinputOn call s:sminput_define_rules(1) | call s:smartinput_init()
+    " --;;;;;;;;
     command! -nargs=? SmartinputBufferMapClear call s:sminput_buffer_mapclear(<q-args>)
 
-    function! s:sminput_buffer_mapclear(mode)
+    function! s:sminput_buffer_mapclear(mode) "{{{
       let mode = empty(a:mode) ? '*' : a:mode
       let vars = smartinput#scope()
       let hash = {}
+      " TODO special keys
       let rules = filter(get(vars, 'available_nrules', []), 'v:val._char =~# "^[a-zA-Z0-9!-/:-@\\[-`{-~]\\+$"')
       for item in copy(filter(rules, 'mode == "*" || mode == v:val.mode'))
         if get(hash, item._char, 1)
@@ -3657,7 +3637,7 @@ if s:bundle.tap('vim-smartinput')
           let hash[item._char] = 0
         endif
       endfor
-    endfunction
+    endfunction "}}}
 
     function! s:smartinput_init()
       if hasmapto('<CR>', 'c')
@@ -5509,7 +5489,9 @@ if s:bundle.tap('vim-quickrun')
         \  'diag/diag' : {
         \    'exec': [
         \       '%c -a %s -o %{expand("%:r")}.png',
-        \       printf("%s %{expand(%:r)}.png", s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'gnome-open')),
+        \       printf("%s %{expand(%:r)}.png %s",
+        \         s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'xdg-open'),
+        \         s:is_win ? "" : "&"),
         \    ],
         \    'outputter': 'message',
         \ },
@@ -7096,10 +7078,17 @@ elseif s:is_win "{{{3
   command! -nargs=1 -complete=file That silent execute '!explorer' shellescape(expand(<f-args>), 1)
 else "{{{3
   " TODO
-  command! Here silent execute '!gnome-open' expand('%:p:h')
+  " command! Here silent execute '!gnome-open' expand('%:p:h')
+  command! Here silent execute '!xdg-open' expand('%:p:h') '&'
   command! This silent execute '!"%"'
-  command! In silent execute '!gnome-terminal -e "cd '.shellescape(expand('%:p:h')).'"'
-  command! -nargs=1 -complete=file That silent execute '!gnome-open' shellescape(expand(<f-args>), 1)
+  if executable('gnome-terminal')
+    command! In silent execute '!gnome-terminal --working-directory="'.shellescape(expand('%:p:h')).'"' '&'
+  elseif executable('konsole')
+    command! In silent execute '!konsole --workdir="'.shellescape(expand('%:p:h')).'"' '&'
+  else
+    command! In silent execute '!kterm -e "cd '.shellescape(expand('%:p:h')).'; exec $SHELL"' '&'
+  endif
+  command! -nargs=1 -complete=file That silent execute '!xdg-open' shellescape(expand(<f-args>), 1) '&'
 endif
 "}}}
 LCAlias Here This That
