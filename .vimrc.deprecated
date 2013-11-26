@@ -1,3 +1,42 @@
+" scroll {{{1
+if 1 " {{{4 http://vim-users.jp/2011/04/hack213/
+
+else " {{{4 altanative
+  augroup vimrc-scroll-mouse
+    autocmd!
+
+    let s:org_scrolloff=-1
+    function! s:noscrolloff_leftmouse()
+      set eventignore=CursorMoved,CursorMovedI
+      if s:org_scrolloff < 0
+        let s:org_scrolloff = &scrolloff
+      endif
+      let &scrolloff = 0
+      exe 'normal!' "\<LeftMouse>"
+      " let &scrolloff = org_scrolloff
+      autocmd CursorMoved * call s:restore_noscrolloff()
+      set eventignore=
+    endfunction
+
+    function! s:restore_noscrolloff()
+      autocmd!
+      if s:org_scrolloff < 0
+        return
+      endif
+      let &scrolloff = s:org_scrolloff
+      let s:org_scrolloff = -1
+    endfunction
+    " autocmd CursorMoved * call s:restore_noscrolloff()
+    nnoremap <silent> <LeftMouse>       :call <SID>noscrolloff_leftmouse()<CR>
+    nnoremap          <2-LeftMouse>     g*
+  augroup END
+endif "}}}
+" vmap              <LeftMouse> <Plug>(visualstar-g*)
+
+" translate maps {{{1
+" vnoremap <Leader>tj    :GoogleTranslate ja<CR>
+" vnoremap <Leader>tj    :BingTranslate ja<CR>
+
 " unite-greplauncher {{{1
 " NeoBundleLazy 'daisuzu/unite-grep_launcher', { 'autoload' : {
 "       \ 'unite_sources' : ['grep_launcher'],

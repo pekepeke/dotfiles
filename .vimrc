@@ -2507,73 +2507,42 @@ function! s:replace_at_caret_data_scheme() " {{{4
         \ )
 endfunction
 
-if 1 " {{{4 http://vim-users.jp/2011/04/hack213/
-  let g:scrolloff = &scrolloff
-  set scrolloff=0
-  " Hack for <LeftMouse> not to adjust ('scrolloff') when single-clicking.
-  " Implement 'scrolloff' by auto-command to control the fire.
-  MyAutoCmd CursorMoved * call s:reinventing_scrolloff()
-  let s:last_lnum = -1
-  function! s:reinventing_scrolloff()
-    if s:last_lnum > 0 && line('.') ==# s:last_lnum
-      return
+" {{{4 http://vim-users.jp/2011/04/hack213/
+let g:scrolloff = &scrolloff
+set scrolloff=0
+" Hack for <LeftMouse> not to adjust ('scrolloff') when single-clicking.
+" Implement 'scrolloff' by auto-command to control the fire.
+MyAutoCmd CursorMoved * call s:reinventing_scrolloff()
+let s:last_lnum = -1
+function! s:reinventing_scrolloff()
+  if s:last_lnum > 0 && line('.') ==# s:last_lnum
+    return
+  endif
+  let s:last_lnum = line('.')
+  let winline     = winline()
+  let winheight   = winheight(0)
+  let middle      = winheight / 2
+  let upside      = (winheight / winline) >= 2
+  " If upside is true, add winlines to above the cursor.
+  " If upside is false, add winlines to under the cursor.
+  if upside
+    let up_num = g:scrolloff - winline + 1
+    let up_num = winline + up_num > middle ? middle - winline : up_num
+    if up_num > 0
+      execute 'normal!' up_num."\<C-y>"
     endif
-    let s:last_lnum = line('.')
-    let winline     = winline()
-    let winheight   = winheight(0)
-    let middle      = winheight / 2
-    let upside      = (winheight / winline) >= 2
-    " If upside is true, add winlines to above the cursor.
-    " If upside is false, add winlines to under the cursor.
-    if upside
-      let up_num = g:scrolloff - winline + 1
-      let up_num = winline + up_num > middle ? middle - winline : up_num
-      if up_num > 0
-        execute 'normal!' up_num."\<C-y>"
-      endif
-    else
-      let down_num = g:scrolloff - (winheight - winline)
-      let down_num = winline - down_num < middle ? winline - middle : down_num
-      if down_num > 0
-        execute 'normal!' down_num."\<C-e>"
-      endif
+  else
+    let down_num = g:scrolloff - (winheight - winline)
+    let down_num = winline - down_num < middle ? winline - middle : down_num
+    if down_num > 0
+      execute 'normal!' down_num."\<C-e>"
     endif
-  endfunction
-  nnoremap <silent> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>
-  nnoremap          <2-LeftMouse>     g*
-  nnoremap <silent> <ScrollWheelUp>   <Esc>:set eventignore=all<CR><ScrollWheelUp>:set eventignore=<CR>
-  nnoremap <silent> <ScrollWheelDown> <Esc>:set eventignore=all<CR><ScrollWheelDown>:set eventignore=<CR>
-else " {{{4 altanative
-  augroup vimrc-scroll-mouse
-    autocmd!
-
-    let s:org_scrolloff=-1
-    function! s:noscrolloff_leftmouse()
-      set eventignore=CursorMoved,CursorMovedI
-      if s:org_scrolloff < 0
-        let s:org_scrolloff = &scrolloff
-      endif
-      let &scrolloff = 0
-      exe 'normal!' "\<LeftMouse>"
-      " let &scrolloff = org_scrolloff
-      autocmd CursorMoved * call s:restore_noscrolloff()
-      set eventignore=
-    endfunction
-
-    function! s:restore_noscrolloff()
-      autocmd!
-      if s:org_scrolloff < 0
-        return
-      endif
-      let &scrolloff = s:org_scrolloff
-      let s:org_scrolloff = -1
-    endfunction
-    " autocmd CursorMoved * call s:restore_noscrolloff()
-    nnoremap <silent> <LeftMouse>       :call <SID>noscrolloff_leftmouse()<CR>
-    nnoremap          <2-LeftMouse>     g*
-  augroup END
-endif "}}}
-" vmap              <LeftMouse> <Plug>(visualstar-g*)
+  endif
+endfunction
+nnoremap <silent> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:set eventignore=<CR>
+nnoremap          <2-LeftMouse>     g*
+nnoremap <silent> <ScrollWheelUp>   <Esc>:set eventignore=all<CR><ScrollWheelUp>:set eventignore=<CR>
+nnoremap <silent> <ScrollWheelDown> <Esc>:set eventignore=all<CR><ScrollWheelDown>:set eventignore=<CR>
 
 " imaps {{{3
 inoremap <C-t> <C-v><Tab>
@@ -2642,8 +2611,6 @@ vnoremap ik i)
 vnoremap . :normal .<CR>
 " vnoremap <Leader>te    :ExciteTranslate<CR>
 vnoremap <Leader>tg    :GingerRange<CR>
-" vnoremap <Leader>tj    :GoogleTranslate ja<CR>
-" vnoremap <Leader>tj    :BingTranslate ja<CR>
 vnoremap <Leader>te    :GTransEnJa<CR>
 vnoremap <Leader>tj    :GTransJaEn<CR>
 vnoremap <Tab>   >gv
@@ -3052,7 +3019,6 @@ if s:bundle.tap('vimconsole.vim')
   let g:vimconsole#auto_redraw = 1
 
   nnoremap [!space]v :<C-u>VimConsoleToggle<CR>
-
 
   function! s:bundle.tapped.hooks.on_source(bundle)
     MyAutoCmd FileType vimconsole call s:vimrc_vimconsole_init()
@@ -6659,7 +6625,7 @@ if s:bundle.is_installed('vimfiler.vim')
   endfunction
 
   function! s:vimfiler_tree_tabopen() " {{{4
-    call s:vimfiler_tabopen()
+    call s:vimfiler_do_action('tabopen')
     silent! exe printf('vsplit +wincmd\ H\|wincmd\ l #%d', bnr)
   endfunction
 
