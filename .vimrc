@@ -142,7 +142,7 @@ if has('unnamedplus')
 endif
 
 if v:version > 704 || (v:version == 704 && has('patch088'))
-  set spell
+  set nospell
   set spelllang=en_us,cjk
 else
   set nospell
@@ -159,7 +159,7 @@ call s:mkdir($VIM_CACHE)
 " IME の設定 {{{2
 if has('kaoriya') | set iminsert=0 imsearch=0 | endif
 
-MyAutoCmd BufEnter * call <SID>autochdir()
+MyAutoCmd BufEnter,BufRead * call <SID>autochdir()
 if !exists('g:my_lcd_autochdir')
   let g:my_lcd_autochdir = 1
 endif
@@ -1321,7 +1321,7 @@ endif
 NeoBundle 'tpope/vim-markdown'
 " NeoBundle 'thinca/vim-ft-markdown_fold'
 NeoBundle 'nelstrom/vim-markdown-folding'
-NeoBundleLazyOn FileType markdown 'joker1007/vim-markdown-quote-syntax'
+NeoBundleLazy 'joker1007/vim-markdown-quote-syntax'
 NeoBundle 'timcharper/textile.vim'
 NeoBundleLazyOn FileType csv 'chrisbra/csv.vim'
 " NeoBundleLazyOn FileType yaml 'henrik/vim-yaml-flattener', {'autoload':{
@@ -2212,7 +2212,7 @@ nnoremap <silent> <S-Down>  :10wincmd +<CR>
 
 " win switch
 for i in range(10)
-  execute 'nnoremap <silent> <C-w>'.i '<C-w>t'.repeat('<C-w>j', (i+9)%10)
+  execute 'nnoremap <silent> <C-w>'.i '<C-w>t'.repeat('<C-w>w', (i+9)%10)
 endfor
 unlet i
 
@@ -2688,6 +2688,35 @@ if s:bundle.is_installed('simple-javascript-indenter')
 endif
 
 " plugin settings {{{1
+" vim-markdown-quote-syntax {{{2
+let s:mdquote_defaults = keys(extend(
+      \ get(g:, 'markdown_quote_syntax_defaults', {})
+      \ , get(g:, 'markdown_quote_syntax_defaults', {})
+      \ ))
+function! s:vimrc_mdquote_syntax_init(pos, is_initialize)
+  let s = join(getline(a:pos, a:pos + 5), "\n")
+  let types = empty(s:mdquote_defaults) ?
+  \ ['sh', 'html', 'cpp', 'ocaml', 'erlang', 'python',
+  \ 'vim', 'c', 'haskell', 'java', 'javascript', 'perl', 'diff', 'ruby', 'sql']
+  \ : s:mdquote_defaults
+  let ft = '\('.join(types, '\|').'\)'
+  if match(s, '^```'.ft) != -1
+    silent NeoBundleSource vim-markdown-quote-syntax
+    silent autocmd! vimrc-mdquote-syntax
+    doautocmd Syntax
+    return
+  endif
+  if a:is_initialize
+    autocmd vimrc-mdquote-syntax CursorHold <buffer> call s:vimrc_mdquote_syntax_init(line("."), 0)
+  endif
+endfunction
+
+augroup vimrc-mdquote-syntax
+  autocmd!
+  autocmd FileType markdown,mkd call s:vimrc_mdquote_syntax_init(1, 1)
+augroup END
+
+
 " context_filetype {{{2
 let g:context_filetype#search_offset = 500
 
@@ -6575,7 +6604,7 @@ if s:bundle.is_installed('vimfiler.vim')
     call s:vimfiler_smart_tree_h("\<Plug>(vimfiler_smart_h)")
   endfunction
 
-  function! s:vimfiler_tree_edit(method) "{{{4
+  function! s:vimfiler_tree_edit(method, ...) "{{{4
     " let file = vimfiler#get_file()
     " if empty(file) || empty(a:method) | return | endif
     " let path = file.action__path
@@ -6585,12 +6614,15 @@ if s:bundle.is_installed('vimfiler.vim')
     if empty(a:method) | return | endif
     let linenr = line('.')
     let context = s:vimfiler_create_action_context(a:method, linenr)
-    "wincmd p
     let cur_nr = bufnr('%')
-    silent wincmd l
+    " silent wincmd l
+    silent wincmd p
     if cur_nr == bufnr('%')
       silent wincmd v
     endif
+    for cmd in a:000
+      execute cmd
+    endfor
     " call vimfiler#mappings#do_action(a:method, linenr)
     call context.execute()
     unlet context
@@ -6624,10 +6656,6 @@ if s:bundle.is_installed('vimfiler.vim')
     unlet context
   endfunction
 
-  function! s:vimfiler_tree_tabopen() " {{{4
-    call s:vimfiler_do_action('tabopen')
-    silent! exe printf('vsplit +wincmd\ H\|wincmd\ l #%d', bnr)
-  endfunction
 
   let s:vimfiler_context = {} " {{{4
   function! s:vimfiler_context.new(...)
@@ -6680,7 +6708,8 @@ if s:bundle.is_installed('vimfiler.vim')
         " endif
       elseif exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
         nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('open')<CR>
-        nnoremap <silent><buffer> E :call <SID>vimfiler_tree_tabopen()<CR>
+        nnoremap <silent><buffer> E :call <SID>vimfiler_tree_edit('open', 'wincmd s')<CR>
+        nnoremap <silent><buffer> <C-e> :call <SID>vimfiler_do_action('tabopen')<CR>
         nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
         if exists('g:scrolloff')
           nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>:call <SID>vimfiler_smart_tree_l('', 1)<CR>:set eventignore=<CR>
