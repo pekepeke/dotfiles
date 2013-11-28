@@ -1,8 +1,10 @@
 " basic settings "{{{1
 scriptencoding utf-8
 
-set columns=100
-set lines=70
+if has('vim_starting')
+  set columns=100
+  set lines=70
+endif
 set cmdheight=1
 " set guioptions-=T
 " set nohlsearch

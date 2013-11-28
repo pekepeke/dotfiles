@@ -10,7 +10,7 @@ softWrap = true
 tabSize = 4
 softTabs = true
 
-includeFiles=".tm_properties,.htaccess,.editorconfig,.hgignore,.gitignore,.*rc,.*profile"
+includeFiles=".tm_properties,.htaccess,.editorconfig,.hgignore,.gitignore,.*rc,.*profile,.bin"
 include = "{*,$includeFiles}"
 exclude = "{$exclude,*.tmproj}"
 

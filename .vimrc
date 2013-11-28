@@ -6621,7 +6621,7 @@ if s:bundle.is_installed('vimfiler.vim')
       silent wincmd v
     endif
     for cmd in a:000
-      execute cmd
+      silent execute cmd
     endfor
     " call vimfiler#mappings#do_action(a:method, linenr)
     call context.execute()
@@ -6632,16 +6632,16 @@ if s:bundle.is_installed('vimfiler.vim')
     let file = vimfiler#get_file()
     if empty(file)
       if (a:0 > 0 && a:1 == 1)
-        exe 'normal' "\<Plug>(vimfiler_smart_h)"
+        execute 'normal' "\<Plug>(vimfiler_smart_h)"
       endif
       return
     endif
     let path = file.action__path
     if file.vimfiler__is_directory
       if (a:0 > 0 && a:1 == 2)
-        exe 'normal' "\<Plug>(vimfiler_smart_l)"
+        execute 'normal' "\<Plug>(vimfiler_smart_l)"
       else
-        exe 'normal' "\<Plug>(vimfiler_expand_tree)"
+        execute 'normal' "\<Plug>(vimfiler_expand_tree)"
       endif
       normal! ^
       return

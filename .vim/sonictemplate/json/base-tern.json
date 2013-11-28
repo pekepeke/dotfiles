@@ -1,0 +1,22 @@
+{
+  "libs": [
+    "browser",
+    "jquery"
+  ],
+  "loadEagerly": [
+    "importantfile.js"
+  ],
+  "plugins": {
+	"doc_comment": {},
+	"nodejs" : {
+		"dontLoad": false,
+		"load": /.*/,
+		"modules": {}
+	},
+    "requirejs": {
+      "baseURL": "./",
+      "paths": {}
+    },
+	"angular": {}
+  }
+}
