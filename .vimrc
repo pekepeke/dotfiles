@@ -1867,10 +1867,25 @@ augroup END
 " endif
 
 MyAutoCmd BufReadPost *
-      \   if &modifiable && !search('[^\x00-\x7F]', 'cnw')
-      \ |   setlocal fileencoding=
-      \ | endif
+\   if &modifiable && !search('[^\x00-\x7F]', 'cnw')
+\ |   setlocal fileencoding=
+\ | endif
 
+function! s:filetype_check()
+  if !empty(&filetype)
+    return
+  endif
+
+  redir! => fts
+  silent filetype
+  redir END
+  let status = filter(map(split(fts, " "), 'split(v:val, ":")'), '!empty(v:val)')
+  call remove(status, 0)
+  if len(filter(status, 'v:val[1] == "OFF"')) > 0
+    filetype plugin indent on
+  endif
+endfunction
+MyAutoCmd BufRead,BufNew * call s:filetype_check()
 " http://vim-users.jp/2009/10/hack84/
 MyAutoCmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
 MyAutoCmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
@@ -2185,6 +2200,8 @@ endfor
 unlet i
 nnoremap <silent> [!t]n gt
 nnoremap <silent> [!t]p gT
+nnoremap <silent> [!t]h gt
+nnoremap <silent> [!t]l gT
 nnoremap <silent> [!t]c :<C-u>tabnew<CR>
 nnoremap <silent> [!t]C :<C-u>tabnew %<CR>
 nnoremap <silent> [!t]* :<C-u>tabedit %<CR>*
@@ -4874,10 +4891,10 @@ if s:bundle.is_installed('vim-textobj-user')
   endfunction
   command! -nargs=+ TTmap call s:textobj_mapping_by_name(<f-args>)
 
-  Tmap i<Space>f <Plug>(textobj-function-i)
-  Tmap a<Space>f <Plug>(textobj-function-a)
-  Tmap i<Space>i <Plug>(textobj-indent-i)
-  Tmap a<Space>i <Plug>(textobj-indent-a)
+  Tmap if <Plug>(textobj-function-i)
+  Tmap af <Plug>(textobj-function-a)
+  Tmap ii <Plug>(textobj-indent-i)
+  Tmap ai <Plug>(textobj-indent-a)
 
   " Tmap a/ <Plug>(textobj-lastpat-n)
   " Tmap i/ <Plug>(textobj-lastpat-n)
@@ -4936,38 +4953,40 @@ if s:bundle.is_installed('vim-textobj-user')
   let g:textboj_php_no_default_key_mappings=1
 
   let g:textobj_multiblock_blocks = [
-        \ [ '(', ')' ],
-        \ [ '[', ']' ],
-        \ [ '{', '}' ],
-        \ [ '<', '>', 1 ],
-        \ [ '"', '"', 1 ],
-        \ [ "'", "'", 1 ],
-        \ [ "_", "_", 1 ],
-        \]
+  \ [ '(', ')' ],
+  \ [ '[', ']' ],
+  \ [ '{', '}' ],
+  \ [ '<', '>', 1 ],
+  \ [ '"', '"', 1 ],
+  \ [ "'", "'", 1 ],
+  \ [ "_", "_", 1 ],
+  \]
 
   let g:textobj_multitextobj_textobjects_i = [
-        \ "\<Plug>(textobj-url-i)",
-        \ "\<Plug>(textobj-multiblock-i)",
-        \ "\<Plug>(textobj-ruby-any-i)",
-        \ "\<Plug>(textobj-function-i)",
-        \]
-        " \ "\<Plug>(textobj-entire-i)",
+  \ "\<Plug>(textobj-url-i)",
+  \ "\<Plug>(textobj-multiblock-i)",
+  \ "\<Plug>(textobj-ruby-any-i)",
+  \ "\<Plug>(textobj-function-i)",
+  \ "\<Plug>(textobj-indent-i)",
+  \]
+  " \ "\<Plug>(textobj-entire-i)",
 
   let g:textobj_multitextobj_textobjects_a = [
-        \ "\<Plug>(textobj-url-a)",
-        \ "\<Plug>(textobj-multiblock-a)",
-        \ "\<Plug>(textobj-ruby-any-i)",
-        \ "\<Plug>(textobj-function-a)",
-        \]
-        " \ "\<Plug>(textobj-entire-a)",
+  \ "\<Plug>(textobj-url-a)",
+  \ "\<Plug>(textobj-multiblock-a)",
+  \ "\<Plug>(textobj-ruby-any-i)",
+  \ "\<Plug>(textobj-function-a)",
+  \ "\<Plug>(textobj-indent-i)",
+  \]
+  " \ "\<Plug>(textobj-entire-a)",
 
   let g:textobj_multitextobj_textobjects_group_i = {
-        \ "A" : [
-        \   "\<Plug>(textobj-url-i)",
-        \   "\<Plug>(textobj-wiw-i)",
-        \   "iw",
-        \ ]
-        \}
+  \ "A" : [
+  \   "\<Plug>(textobj-url-i)",
+  \   "\<Plug>(textobj-wiw-i)",
+  \   "iw",
+  \ ]
+  \}
 endif
 
 " vim-niceblock {{{2

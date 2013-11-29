@@ -286,3 +286,11 @@ snippet flo
 snippet abs
 	abs(${1:value})
 
+snippet ifp
+	@if compass-env() == 'production' {
+		${1}
+	}
+snippet ifd
+	@if compass-env() == 'development' {
+		${1}
+	}
