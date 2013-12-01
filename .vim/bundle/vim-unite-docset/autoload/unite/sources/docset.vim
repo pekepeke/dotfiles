@@ -5,17 +5,32 @@ set cpo&vim
 " let g:unite_docset_debug = 1
 let g:unite_docset_debug = get(g:, 'unite_docset_debug', 0)
 
-let g:unite_docset_docsetutil_command = get(g:, 'unite_docset_docsetutil_command', '/Applications/Xcode.app/Contents/Developer/usr/bin/docsetutil')
-if !executable(g:unite_docset_docsetutil_command)
-  let g:unite_docset_docsetutil_command = '/Developer/usr/bin/docsetutil'
+function! s:find_executable(...) "{{{2
+  for bin in a:000
+    if executable(bin)
+      return bin
+    endif
+  endfor
+  return ""
+endfunction
+
+" set variablies {{{2
+if !exists('g:unite_docset_docsetutil_command')
+  let g:unite_docset_docsetutil_command = s:find_executable(
+        \ '/Applications/Xcode.app/Contents/Developer/usr/bin/docsetutil',
+        \ '/Developer/usr/bin/docsetutil'
+        \ )
 endif
-let g:unite_docset_sqlite3_command = get(g:, 'unite_docset_sqlite3_command', '/usr/bin/sqlite3')
-let g:unite_docset_search_option = get(g:, 'unite_docset_search_option', '-query "*" -skip-text')
+let g:unite_docset_sqlite3_command =
+      \ get(g:, 'unite_docset_sqlite3_command', '/usr/bin/sqlite3')
+let g:unite_docset_search_option =
+      \ get(g:, 'unite_docset_search_option', '-query "*" -skip-text')
 
 if !exists('g:unite_docset_scan_directories')
   let g:unite_docset_scan_directories = [
         \ '~/Library/Developer/Shared/Documentation/DocSets/',
         \ '~/Library/Application\ Support/Dash/DocSets/*/',
+        \ '~/.local/share/zeal/docsets/',
         \ ]
 endif
 let g:unite_docset_files = get(g:, 'unite_docset_files', [])
@@ -111,7 +126,7 @@ endfunction
 function! s:cache.dir() "{{{3
   let path = g:unite_data_directory . '/docset/'
   if !isdirectory(path)
-    call mkdir(path)
+    call mkdir(path, "p")
   endif
   return path
 endfunction
@@ -152,7 +167,8 @@ endfunction
 
 function! s:fetch_index(docset_path) "{{{2
   let docset = fnamemodify(expand(a:docset_path), ':p')
-  if filereadable(docset . "/Contents/Resources/docset.toc")
+  if !empty(g:unite_docset_docsetutil_command) &&
+    \ filereadable(docset . "/Contents/Resources/docset.toc")
     let bin = fnamemodify(expand(g:unite_docset_docsetutil_command), ':p')
     let command = printf('"%s" search "%s" %s', bin, docset, g:unite_docset_search_option)
   else
@@ -162,7 +178,7 @@ function! s:fetch_index(docset_path) "{{{2
     let command = printf('%s -noheader -cmd "%s" "%s" < %s',
           \ bin,
           \ sql,
-          \ docset . '/Contents/Resources/docset.dsidx',
+          \ docset . '/Contents/Resources/docSet.dsidx',
           \ "/dev/null"
           \ )
     " echoerr command
@@ -236,7 +252,9 @@ endfunction
 
 
 function! unite#sources#docset#define() "{{{1
-  return executable(g:unite_docset_docsetutil_command) ? [s:menu] + s:create_sources() : []
+  return !empty(g:unite_docset_docsetutil_command) ||
+        \ executable(g:unite_docset_sqlite3_command)
+        \ ? [s:menu] + s:create_sources() : []
 endfunction
 
 let &cpo = s:save_cpo

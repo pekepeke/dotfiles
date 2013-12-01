@@ -43,14 +43,15 @@ total_run_times 0
 # Create own window instead of using desktop (required in nautilus)
 #独立したウィンドウで表示するか
 #own_window no
-own_window 1
+own_window yes
 # If own_window is yes, you may use type normal, desktop or override
 #own_window_type desktop
 # own_window_type override
-own_window_type normal
+# own_window_type normal
+own_window_type override
 # Use pseudo transparency with own_window?
 #own_window_transparent yes
-own_window_transparent 1
+own_window_transparent yes
 # If own_window is yes, these window manager hints may be used
 #own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
 own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
@@ -131,13 +132,16 @@ ${color lightgrey}CPU1:${color grey} ${cpu cpu1}% ${alignr}$color${cpubar cpu1 5
 ${color lightgrey}CPU2:${color grey} ${cpu cpu2}% ${alignr}$color${cpubar cpu2 5,250}
 ${color blue}${cpugraph cpu1 30,160 0000ff 00ff00}$alignr${color blue}${cpugraph cpu2 30,160 0000ff 00ff00}
 ${color lightgrey}RAM Usage :$color $mem / $memmax - $memperc% ${alignr}${membar 5,70}
-${color lightgrey}Swap Usage :$color $swap / $swapmax - $swapperc% ${alignr}${swapbar 5,70}
+${color lightgrey}Swap Usage:$color $swap / $swapmax - $swapperc% ${alignr}${swapbar 5,70}
 ${color lightgrey}Processes :$color $processes ${color grey}Running:$color $running_processes
-${color lightgrey}IP Address :$color ${addr eth1}
-${color lightgrey}Networking :
+${color lightgrey}LAN :$color ${addr eth1}
 Down:${color #8844ee} ${downspeed eth1} k/s ${alignr}${totaldown eth1} total
-${color lightgrey} Up: ${color #22ccff} ${upspeed eth1} k/s ${alignr}${totalup eth1} total
+${color lightgrey}Up  : ${color #22ccff} ${upspeed eth1} k/s ${alignr}${totalup eth1} total
 ${color #8844ee}${downspeedgraph eth1 20,160 ff0000 0000ff} ${alignr}${color #22ccff}${upspeedgraph eth1 20,160 0000ff ff0000}
+${color lightgrey}Wifi:$color ${addr wlan0}
+Down:${color #8844ee} ${downspeed wlan0} k/s ${alignr}${totaldown wlan0} total
+${color lightgrey}Up  : ${color #22ccff} ${upspeed wlan0} k/s ${alignr}${totalup wlan0} total
+${color #8844ee}${downspeedgraph wlan0 20,160 ff0000 0000ff} ${alignr}${color #22ccff}${upspeedgraph wlan0 20,160 0000ff ff0000}
 ${color lightgrey}File systems:
 ${color green}/$color | ${fs_used /} / ${fs_size /} | ${color green}${fs_used_perc /}% ${alignr}$color${fs_bar 6,60 /}
 ${color green}/home$color | ${fs_used /home} / ${fs_size /home} | ${color green}${fs_used_perc /home}% ${alignr}$color${fs_bar 6,60 /home}

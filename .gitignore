@@ -47,24 +47,25 @@ doc/tags
 doc/tags-ja
 
 # vim
-.vim/vundle
-.vim/neobundle
+/.vim/vundle
+/.vim/neobundle
+/.vim/doc/xml-plugin.txt
 
 #emacs
-.emacs.d/cache
-.emacs.d/elisp.d
+/.emacs.d/cache
+/.emacs.d/elisp.d
 
 # freemind
-.freemind/log.*
-.freemind/auto.mmfilter
-.freemind/*.mm
+/.freemind/log.*
+/.freemind/auto.mmfilter
+/.freemind/*.mm
 
 # xmonad
-.xmonad/xmonad-*
-.xmonad/xmonad.errors
-.xmonad/xmonad.hi
-.xmonad/xmonad.o
+/.xmonad/xmonad-*
+/.xmonad/xmonad.errors
+/.xmonad/xmonad.hi
+/.xmonad/xmonad.o
 
 # pip
-.pip/pip.log
+/.pip/pip.log
 

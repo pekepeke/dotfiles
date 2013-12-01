@@ -34,7 +34,7 @@ purge_files() {
   local RED="\033[1;31m"
   local DEFAULT="\033[00m"
 
-  for f in $(find ~ -type l -maxdepth 1 -name '.*'); do
+  for f in $(find ~ -maxdepth 1 -type l -name '.*'); do
     if [ ! -e "$(readlink $f)" ] ; then
       echo -e ${RED}rm "$f"${DEFAULT}
       rm "$f"
@@ -65,19 +65,26 @@ exec_install() {
       mv $HOME/$F $HOME/.rc-org
     done
   fi
+  local skipfiles=""
+  local execfiles=""
   for F in .?* ;do
     if matchin "$F" $SKIP_FILES ; then
-      echo -e "${GRAY}skip object $F${DEFAULT}"
+      # echo -e "${GRAY}skip object $F${DEFAULT}"
+      skipfiles="$skipfiles\n${GRAY}skip object $F${DEFAULT}"
     elif [ -e "$HOME/$F" ]; then
-      echo -e "${GRAY}skip $F${DEFAULT}"
+      # echo -e "${GRAY}skip $F${DEFAULT}"
+      skipfiles="$skipfiles\n${GRAY}skip $F${DEFAULT}"
     elif matchin "$F" $COPY_FILES ; then
-      echo -e "${GREEN}cp $CDIR/$f $HOME${DEFAULT}"
+      execfiles="$execfiles\n${GREEN}cp $CDIR/$f $HOME${DEFAULT}"
       cp $CDIR/$f $HOME
     else
-      echo -e "${YELLOW}ln -s $CDIR/$F $HOME${DEFAULT}"
+      execfiles="$execfiles\n${YELLOW}ln -s $CDIR/$F $HOME${DEFAULT}"
       ln -s $CDIR/$F $HOME
     fi
   done
+  [ x"$skipfiles" != x"" ] && echo -e $skipfiles
+  [ x"$execfiles" != x"" ] && echo -e $execfiles
+
   if [ -e "$CDIR/.gitmodules" ]; then
     git submodule init
     git submodule update
@@ -108,7 +115,7 @@ exec_uninstall() {
 
   cat <<EOM
 
-### please exec below command
+### please exec following commands
 
 rm $LOCAL_DIR
 

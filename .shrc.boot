@@ -261,15 +261,15 @@ alc() { #{{{2
   fi
 }
 
-function gte() { #{{{2
+gte() { #{{{2
   google_translate "$*" "en-ja"
 }
 
-function gtj() { #{{{2
+gtj() { #{{{2
   google_translate "$*" "ja-en"
 }
 
-function google_translate() { #{{{2
+google_translate() { #{{{2
   local str opt cond
 
   if [ $# != 0 ]; then
@@ -286,6 +286,24 @@ function google_translate() { #{{{2
 
   opt="${opt}&text=${str}"
   w3m +13 "http://translate.google.com/${opt}"
+}
+
+cdtask() { #{{{2
+  local name="$1"
+  local target
+  if ! [[ "$name" =~ ^[0-9]+_ ]]; then
+    target=$(find ~/Desktop/ -maxdepth 1 -type d -name "*${name}*" -regex '.*/[0-9]+_.*$' | sort | awk 'NR==1')
+    if [ -e "${target}" ]; then
+      cd "$target"
+      return
+    fi
+  fi
+  target=~/Desktop/$name
+  if [ -e "${target}" ]; then
+    cd "$target"
+    return
+  fi
+  echo "directory not found: $name" 1>&2
 }
 
 shrc_section_title "GNU screen setting" #{{{1

@@ -1,0 +1,27 @@
+#compdef cdtask
+
+typeset -A opt_args
+local context state line ret=1
+
+_arguments -C \
+  '1: :->cmds' \
+  '*:: :->args' && ret=0
+
+cdtask-filenames() {
+  find ~/Desktop/ -maxdepth 1 -type d -regex '.*/[0-9]+_.*$' -exec basename {} \;
+  find ~/Desktop/ -maxdepth 1 -type d -regex '.*/[0-9]+_.*$' -exec basename {} \; | sed -e 's/^[0-9]\+_//'
+}
+
+case $state in
+  cmds)
+    local -a _entries
+    _entries=(${(f)"$(cdtask-filenames)"})
+
+    _describe -t files 'Working Folders' _entries && ret=0
+    ;;
+  args)
+    _message 'no more arguments' && ret=0
+    ;;
+esac
+
+return $ret

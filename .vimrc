@@ -42,7 +42,7 @@ function! s:SID() "{{{3
 endfunction
 
 function! s:path_push(...) "{{{3
-  let sep = s:is_win ? ';' : ':'
+  let sep = s:is_win && !has('cygwin') ? ';' : ':'
   let pathes = s:is_win ? map(copy(a:000), 'substitute(v:val, "/", "\\", "g")') : a:000
   let $PATH .= sep . join(pathes, sep)
 endfunction
@@ -77,6 +77,23 @@ set runtimepath+=$HOME/.vim/after
 
 " reset os env {{{2
 if s:is_win
+  if !exists('$VCVARSALL')
+    let s:save_ssl = &shellslash
+    set noshellslash
+    if exists('$VS120COMNTOOLS')
+      let $VCVARSALL = shellescape($VS120COMNTOOLS . '..\..\VC\vcvarsall.bat')
+    elseif exists('$VS110COMNTOOLS')
+      let $VCVARSALL = shellescape($VS110COMNTOOLS . '..\..\VC\vcvarsall.bat')
+    elseif exists('$VS100COMNTOOLS')
+      let $VCVARSALL = shellescape($VS100COMNTOOLS . '..\..\VC\vcvarsall.bat')
+    elseif exists('$VS90COMNTOOLS')
+      let $VCVARSALL = shellescape($VS90COMNTOOLS  . '..\..\VC\vcvarsall.bat')
+    elseif exists('$VS80COMNTOOLS')
+      let $VCVARSALL = shellescape($VS80COMNTOOLS  . '..\..\VC\vcvarsall.bat')
+    endif
+  let &shellslash = s:save_ssl
+  unlet s:save_ssl
+  endif
   let $HOME=substitute($HOME, '\\', '/', 'ge')
   function! s:cmd_init()
     set shell=$COMSPEC
@@ -625,10 +642,12 @@ NeoBundleLazy 'Shougo/vimfiler.vim', {
 NeoBundle "osyo-manga/unite-filters-collection"
 NeoBundle 'Shougo/vimproc.vim', {
       \ 'build' : {
-      \     'cygwin' : 'make -f make_cygwin.mak',
-      \     'mac'    : 'make -f make_mac.mak',
-      \     'unix'   : 'make -f make_unix.mak',
-      \   }
+      \ 'windows' : $VCVARSALL . ' ' . $PROCESSOR_ARCHITECTURE . ' & ' .
+      \ 'nmake -f Make_msvc.mak nodebug=1',
+      \ 'cygwin' : 'make -f make_cygwin.mak',
+      \ 'mac'    : 'make -f make_mac.mak',
+      \ 'unix'   : 'make -f make_unix.mak',
+      \ }
       \ }
 NeoBundleLazy 'Shougo/vimshell', {
       \ 'depends': 'Shougo/vimproc.vim', 'autoload' : {
@@ -639,8 +658,16 @@ NeoBundleLazy 'Shougo/vimshell', {
       \ 'mappings' : ['<Plug>(vimshell']
       \ }}
 NeoBundleLazy 'Shougo/vinarise', { 'autoload': {
-      \ 'commands': ['Vinarise'],
-      \ }}
+      \ 'commands' : [
+      \ {'name' : 'Vinarise',
+      \  'complete' : 'customlist,vinarise#complete'},
+      \ {'name' : 'VinariseDump',
+      \  'complete' : 'customlist,vinarise#complete'},
+      \ {'name' : 'VinariseScript2Hex',
+      \  'complete' : 'customlist,vinarise#complete'}],
+      \ 'unite_sources' : 'vinarise/analysis'
+      \ },
+      \ 'depends' : 'rbtnn/hexript.vim'}
 NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
       \ 'commands' : ['JunkfileOpen'],
       \ 'unite_sources' : ['junkfile', 'junkfile/new'],
@@ -817,14 +844,15 @@ NeoBundleLazy 'mileszs/ack.vim', { 'autoload': {
       \ }}
 NeoBundleLazy 'vim-scripts/MultipleSearch'
 " NeoBundle 'terryma/vim-multiple-cursors'
-NeoBundle 'vim-scripts/sudo.vim'
-if s:is_mac
-  if has('gui_running')
-    NeoBundle 'gmarik/sudo-gui.vim'
-  else
-    NeoBundleLazy 'gmarik/sudo-gui.vim'
-  endif
-endif
+" NeoBundle 'vim-scripts/sudo.vim'
+NeoBundle 'chrisbra/SudoEdit.vim'
+" if s:is_mac
+"   if has('gui_running')
+"     NeoBundle 'gmarik/sudo-gui.vim'
+"   else
+"     NeoBundleLazy 'gmarik/sudo-gui.vim'
+"   endif
+" endif
 
 " lang {{{3
 " basic {{{4
@@ -1449,6 +1477,9 @@ NeoBundleLazy 'pasela/unite-webcolorname', { 'autoload' : {
 NeoBundleLazy 'ujihisa/unite-colorscheme', { 'autoload' : {
       \ 'unite_sources' : ['colorscheme'],
       \ }}
+NeoBundleLazy 'LeafCage/unite-gvimrgb', {'autoload': {
+      \ 'unite_sources': ['gvimrgb'],
+      \ }}
 " NeoBundle 'ujihisa/unite-font'
 " NeoBundle 'tacroe/unite-alias'
 " NeoBundle 'hakobe/unite-script'
@@ -1842,7 +1873,7 @@ if !s:is_win
         \ | silent! exe '!echo -n "k%\\"'
         \ | endif
 endif
-" create directory automatically {{{2
+" auto mkdir {{{2
 augroup vimrc-auto-mkdir
     autocmd!
     autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
@@ -2705,13 +2736,19 @@ if s:bundle.is_installed('simple-javascript-indenter')
 endif
 
 " plugin settings {{{1
+
+let g:loaded_getscriptPlugin = 1
+let g:loaded_vimballPlugin = 1
+let g:loaded_monday=1
+
 " vim-markdown-quote-syntax {{{2
 let s:mdquote_defaults = keys(extend(
       \ get(g:, 'markdown_quote_syntax_defaults', {})
       \ , get(g:, 'markdown_quote_syntax_defaults', {})
       \ ))
 function! s:vimrc_mdquote_syntax_init(pos, is_initialize)
-  let s = join(getline(a:pos, a:pos + 5), "\n")
+  let pos = a:pos < 1 ? 1 : a:pos
+  let s = join(getline(pos, pos + 5), "\n")
   let types = empty(s:mdquote_defaults) ?
   \ ['sh', 'html', 'cpp', 'ocaml', 'erlang', 'python',
   \ 'vim', 'c', 'haskell', 'java', 'javascript', 'perl', 'diff', 'ruby', 'sql']
@@ -2724,7 +2761,8 @@ function! s:vimrc_mdquote_syntax_init(pos, is_initialize)
     return
   endif
   if a:is_initialize
-    autocmd vimrc-mdquote-syntax CursorHold <buffer> call s:vimrc_mdquote_syntax_init(line("."), 0)
+    autocmd vimrc-mdquote-syntax CursorHold
+    \ <buffer> call s:vimrc_mdquote_syntax_init(line(".") - 2, 0)
   endif
 endfunction
 
@@ -3004,10 +3042,6 @@ if s:bundle.tap('ShowMultiBase')
   noremap <silent> <Leader>h= :ShowMultiBase 16<CR>
   call s:bundle.untap()
 endif
-
-" monday {{{2
-" kill monday.vim
-let g:loaded_monday=1
 
 " speeddating {{{2
 if s:bundle.tap('vim-speeddating')
@@ -3920,6 +3954,7 @@ if s:is_mac && has('gui_running') && s:bundle.is_installed('sudo-gui.vim')
   command! -bang SW SudoWriteMacGUI
 else
   command! SW w sudo:%
+  command! SR read sudo:%
 endif
 
 " hatena.vim {{{2
@@ -4074,14 +4109,13 @@ if s:bundle.tap('unite.vim')
     endfunction
     call unite#custom_action('file', 'narrow_or_insert', s:unite_action_narrow_or_insert)
     unlet! s:unite_action_narrow_or_insert
-    " menu {{{4
 
-    " unite-menu {{{5
+    " unite-menu {{{4
     if !exists("g:unite_source_menu_menus")
        let g:unite_source_menu_menus = {}
     endif
     " http://d.hatena.ne.jp/osyo-manga/20130225/1361794133
-    function! s:unite_menu_create(desc, ...) "{{{6
+    function! s:unite_menu_create(desc, ...) "{{{5
       let commands = {
       \   'description' : a:desc,
       \}
@@ -4111,7 +4145,7 @@ if s:bundle.tap('unite.vim')
       endfunction
       return commands
     endfunction "5}}}
-    " menu {{{6
+    " shortcut {{{5
     let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
     \ 'Shortcut', [
     \   ["edit .vimrc"        , $MYVIMRC]                                  ,
@@ -4133,6 +4167,7 @@ if s:bundle.tap('unite.vim')
     \   ["fold"               , "Unite fold"]                              ,
     \   ["quickrun config"    , "Unite quickrun_config"]                   ,
     \ ])
+    " vimhelp {{{5
     let g:unite_source_menu_menus["vimhelp"] = s:unite_menu_create(
     \ 'Help', [
     \   ['Vimscript functions' , 'help function-list']         ,
@@ -4149,6 +4184,7 @@ if s:bundle.tap('unite.vim')
     \   ['FtPlugin'            , 'help write-filetype-plugin'] ,
     \   ['Helpfile'            , 'help help-writing']          ,
     \ ])
+    " repl {{{5
     let g:unite_source_menu_menus["repl"] = s:unite_menu_create(
     \ 'Repl', [
     \   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
@@ -4161,6 +4197,7 @@ if s:bundle.tap('unite.vim')
     \   ["VimShellPop"        , "VimShellPop"]                             ,
     \   ["VimConsole"         , "VimConsoleOpen"]                          ,
     \ ])
+    " os {{{5
     if s:is_win
       let g:unite_source_menu_menus["os"] = s:unite_menu_create(
             \ 'Windows', [
@@ -4185,12 +4222,13 @@ if s:bundle.tap('unite.vim')
             \ ])
     endif
 
-    " lang menu {{{6
+    " perl {{{5
     let g:unite_source_menu_menus["lang_perl"] = s:unite_menu_create(
     \ 'Perl Menu', [
     \   ["local module"  , "Unite perl/local"]  ,
     \   ["global module" , "Unite perl/global"] ,
     \ ])
+    " ruby {{{5
     let g:unite_source_menu_menus["lang_ruby"] = s:unite_menu_create(
     \ 'Ruby Menu', [
     \   ["rake"             , "Unite rake"]              ,
@@ -4210,6 +4248,11 @@ if s:bundle.tap('unite.vim')
     \   ['chef source'      , 'ChefFindSource']          ,
     \   ['chef related'     , 'ChefFindRelated']         ,
     \ ])
+    " vmap...
+    " \   ['Extract constant', 'RExtractConstant'],
+    " \   ['Rename local var', 'RRenameLocalVariable'],
+    " \   ['Rename instance var', 'RRenameInstanceVariable'],
+    " \   ['Rename instance var', 'RExtractMethod'],
     let g:unite_source_menu_menus["lang_java"] = s:unite_menu_create(
     \ 'Java Menu' , [
     \   ["import" , "Unite javaimport"] ,

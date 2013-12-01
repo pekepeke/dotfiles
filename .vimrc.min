@@ -3,6 +3,7 @@ set nocompatible
 
 " environment {{{1
 let $VIM_CACHE = $HOME . '/.cache'
+let s:standalone = 0
 
 let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
@@ -26,7 +27,6 @@ augroup END
 command! -bang -nargs=* MyAutoCmd autocmd<bang> vimrc-myautocmd <args>
 command! -nargs=* Lazy autocmd vimrc-myautocmd VimEnter * <args>
 " }}}
-
 " basic settings {{{1
 " set encoding=japan
 set encoding=utf-8
@@ -197,24 +197,52 @@ nnoremap <silent> [!t]j :<C-u>tag<CR>
 nnoremap <silent> [!t]k :<C-u>pop<CR>
 nnoremap <silent> [!t]l :<C-u>tselect<CR>
 " }}}
-
 " commands {{{1
-function! SudoWrite(url) abort
-  let file = a:url == "<afile>" ? expand(a:url) : a:url
-  let prot=matchstr(file,'^\(sudo\)\ze:')
-  if '' != prot
-    let file=strpart(file,strlen(prot)+1)
-  endif
-  set nomodified
-  execute '%write !sudo tee >/dev/null "'.file.'"'
-endf
-command! -nargs=1 SudoWrite call SudoWrite(<f-args>)
-command! SW w sudo:%
+if s:standalone
+  function! SudoRead(url) "{{{2
+    if a:url=="<afile>"
+      let file=expand(a:url)
+    else
+      let file=a:url
+    endif
+    let prot=matchstr(file,'^\(sudo\)\ze:')
+    if '' != prot
+      let file=strpart(file,strlen(prot)+1)
+    endif
+    0,$d
+    call setline(1,"foo")
+    exec '1read !sudo cat "'.file.'" '
+    1d
+    set nomod
+    filetype detect
+  endfunction
 
+  function! SudoWrite(url) abort "{{{2
+    let file = a:url == "<afile>" ? expand(a:url) : a:url
+    let prot=matchstr(file,'^\(sudo\)\ze:')
+    if '' != prot
+      let file=strpart(file,strlen(prot)+1)
+    endif
+    set nomodified
+    execute '%write !sudo tee >/dev/null "'.file.'"'
+  endf
+ " commands {{{2
+  command! -nargs=1 SudoRead call SudoRead(<f-args>)
+  command! -nargs=1 SudoWrite call SudoWrite(<f-args>)
+  command! SW w sudo:%
+  command! SR read sudo:%
+  augroup Sudo
+    autocmd!
+    au BufReadCmd	sudo:*,sudo:*/* SudoRead <afile>
+    au FileReadCmd	sudo:*,sudo:*/* SudoRead <afile>
+    au BufWriteCmd	sudo:*,sudo:*/* SudoWrite <afile>
+    au FileWriteCmd	sudo:*,sudo:*/* SudoWrite <afile>
+  augroup END
+endif
 " }}}
 
 if v:version > 702
-  if 1
+  if !s:standalone
     if has('vim_starting')
       set runtimepath+=~/.vim/neobundle.vim
     endif
@@ -260,7 +288,8 @@ if v:version > 702
           \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
           \ }}
     NeoBundle 'tpope/vim-fugitive'
-  elseif 0 " plugin load {{{1
+    NeoBundle 'chrisbra/SudoEdit.vim'
+  elseif s:standalone " plugin load {{{1
     if has('vim_starting')
       filetype off
       silent call pathogen#infect()
@@ -295,7 +324,7 @@ if v:version > 702
     command! -nargs=0 PluginInstall call s:plugin_install()
   endif
 endif "}}}
-
+" plugin and colors {{{1
 filetype indent plugin on
 syntax enable
 
@@ -306,12 +335,12 @@ colorscheme vividchalk
 MyAutoCmd FileType txt,rst,markdown,gitcommit setlocal spell
 
 " plugin settings {{{1
-" vimfiler
+" vimfiler "{{{2
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
 " let g:vimfiler_edit_command = 'new'
 
-" unite.vim
+" unite.vim "{{{2
 if s:has_plugin('unite.vim')
   let g:unite_data_directory = $VIM_CACHE . '/vim-unite'
   nnoremap [unite] <Nop>
@@ -329,7 +358,7 @@ if s:has_plugin('unite.vim')
   nmap <silent> [unite]k       :<C-u>Unite tab<CR>
 endif
 
-if s:has_plugin('vimshell')
+if s:has_plugin('vimshell') "{{{2
   let g:vimshell_temporary_directory = $VIM_CACHE . "/vimshell"
   let g:vimshell_enable_smart_case = 1
   let g:vimshell_enable_auto_slash = 1
@@ -337,8 +366,13 @@ if s:has_plugin('vimshell')
   let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 endif
 
-if s:has_plugin('vim-operator-replace')
+if s:has_plugin('vim-operator-replace') "{{{2
   map _ <Plug>(operator-replace)
+endif
+
+if s:has_plugin('sudo.vim') || s:has_plugin('SudoEdit.vim')"{{{2
+  command! SW w sudo:%
+  command! SR read sudo:%
 endif
 
   " __END__ {{{1

@@ -17,7 +17,7 @@ for /F %%i in ('dir /A:A-S /b .*') do if not %%i == .git call :F_MKLINK %HOME%\%
 for /F %%i in ('dir /A:A-S /b _*') do if not %%i == .git call :F_MKLINK %HOME%\%%i %~dp0%%i
 
 echo ####################################################
-echo # please execute under commands
+echo # please execute following commands
 echo # git submodule init
 echo # git submodule update
 echo ####################################################

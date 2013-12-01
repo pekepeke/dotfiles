@@ -73,4 +73,6 @@ snippet zip_dirs
 # http://qiita.com/ngyuki/items/4286e16ceee14f6aad2f
 snippet ip_addr
 	/sbin/ip -o route get 255.255.255.255 | grep -Eo 'src\s+\S+' | awk '{print \$2}'
-
+snippet echoerr
+  echo ${1} 1>&2
+  ${2}
