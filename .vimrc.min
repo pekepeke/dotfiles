@@ -240,9 +240,9 @@ if s:standalone
   augroup END
 endif
 " }}}
-
+" plugin {{{1
 if v:version > 702
-  if !s:standalone
+  if !s:standalone "{{{2
     if has('vim_starting')
       set runtimepath+=~/.vim/neobundle.vim
     endif
@@ -289,11 +289,14 @@ if v:version > 702
           \ }}
     NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'chrisbra/SudoEdit.vim'
-  elseif s:standalone " plugin load {{{1
+  elseif s:standalone " plugin load {{{2
     if has('vim_starting')
       filetype off
       silent call pathogen#infect()
     endif
+
+    " enable some plugin {{{3
+    runtime macros/matchit.vim
 
     " mkdir -p ~/.vim/autoload ~/.vim/bundle; curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim; mkdir -p ~/.vim/bundle ; cd ~/.vim/bundle;
     " git clone https://github.com/Shougo/vimfiler.git
@@ -301,7 +304,13 @@ if v:version > 702
     " curl -L https://github.com/Shougo/vimfiler/tarball/master | tar zxv
     " curl -L https://github.com/Shougo/unite.vim/tarball/master | tar zxv
 
-    function! s:plugin_install()
+    function! s:plugin_install() " {{{3
+      let repos = [
+      \ 'https://github.com/Shougo/vimfiler',
+      \ 'https://github.com/Shougo/unite.vim',
+      \ 'https://github.com/kana/vim-operator-replace',
+      \ 'https://github.com/kana/vim-operator-user',
+      \ ]
       if input("install plugin? [y/n]:") != "y"
         echo "Canceled."
         return
@@ -312,13 +321,15 @@ if v:version > 702
       call system("curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim")
       let cwd = getcwd()
       execute 'lcd' expand('~/.vim/bundle')
-      if executable('git')
-        call system('git clone https://github.com/Shougo/vimfiler.git')
-        call system('git clone https://github.com/Shougo/unite.vim.git')
-      else
-        call system('curl -L https://github.com/Shougo/vimfiler/tarball/master | tar zxv')
-        call system('curl -L https://github.com/Shougo/unite.vim/tarball/master | tar zxv')
-      endif
+      for repo in repos
+        if executable('git')
+          call system(printf('git clone %s.git', repo))
+          call system('git clone https://github.com/Shougo/unite.vim.git')
+        else
+          call system(printf('curl -L %s/tarball/master | tar zxv', repo))
+        endif
+      endfor
+
       execute 'lcd' cwd
     endfunction
     command! -nargs=0 PluginInstall call s:plugin_install()

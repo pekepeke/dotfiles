@@ -283,6 +283,7 @@ endif
 set noerrorbells
 
 set guioptions& guioptions+=T guioptions-=m guioptions-=M
+let did_install_default_menus = 1
 let did_install_syntax_menu = 1
 set noequalalways
 set langmenu=none
@@ -2735,12 +2736,12 @@ if s:bundle.is_installed('simple-javascript-indenter')
   let g:SimpleJsIndenter_CaseIndentLevel = -1
 endif
 
-" plugin settings {{{1
-
+" disables plugin {{{1
 let g:loaded_getscriptPlugin = 1
 let g:loaded_vimballPlugin = 1
-let g:loaded_monday=1
+let g:loaded_netrwPlugin = 1
 
+" plugin settings {{{1
 " vim-markdown-quote-syntax {{{2
 let s:mdquote_defaults = keys(extend(
       \ get(g:, 'markdown_quote_syntax_defaults', {})
@@ -3183,18 +3184,8 @@ if s:bundle.tap('gitv')
       " nnoremap <buffer> [!space]h :<C-u>Git cherry-pick <C-r>=GitvGetCurrentHash()<CR><CR>
       " nnoremap <buffer> [!space]rh :<C-u>Git reset --hard <C-r>=GitvGetCurrentHash()<CR>
       nnoremap <buffer> G :<C-u>Gbrowse <C-r>=GitvGetCurrentHash()<CR><CR>
-      nnoremap <buffer><nowait> [!space] :<C-u>Unite menu:gitv<CR>
       if s:bundle.is_installed('unite.vim')
-        let g:unite_source_menu_menus["gitv"] = s:unite_menu_create(
-        \ 'Gitv', [
-        \ ['logview', "execute 'GitLogViewer' eval('GitvGetCurrentHash()')"],
-        \ ['gbrowse', "execute 'Gbrowse' eval('GitvGetCurrentHash()')"],
-        \ ['checkout', "execute 'Git checkout' eval('GitvGetCurrentHash())"],
-        \ ['rebase', "execute 'Git rebase' eval('GitvGetCurrentHash())"],
-        \ ['revert', "execute 'Git revert' eval('GitvGetCurrentHash())"],
-        \ ['cherry-pick', "execute 'Git cherry-pick' eval('GitvGetCurrentHash())"],
-        \ ['reset --hard', "execute 'Git reset --hard' eval('GitvGetCurrentHash())"],
-        \ ])
+        nnoremap <buffer><nowait> [!space] :<C-u>Unite menu:ft_gitv<CR>
       endif
     endfunction
 
@@ -4223,13 +4214,13 @@ if s:bundle.tap('unite.vim')
     endif
 
     " perl {{{5
-    let g:unite_source_menu_menus["lang_perl"] = s:unite_menu_create(
+    let g:unite_source_menu_menus["ft_perl"] = s:unite_menu_create(
     \ 'Perl Menu', [
     \   ["local module"  , "Unite perl/local"]  ,
     \   ["global module" , "Unite perl/global"] ,
     \ ])
     " ruby {{{5
-    let g:unite_source_menu_menus["lang_ruby"] = s:unite_menu_create(
+    let g:unite_source_menu_menus["ft_ruby"] = s:unite_menu_create(
     \ 'Ruby Menu', [
     \   ["rake"             , "Unite rake"]              ,
     \   ["rails controller" , "Unite rails/controller"]  ,
@@ -4253,25 +4244,37 @@ if s:bundle.tap('unite.vim')
     " \   ['Rename local var', 'RRenameLocalVariable'],
     " \   ['Rename instance var', 'RRenameInstanceVariable'],
     " \   ['Rename instance var', 'RExtractMethod'],
-    let g:unite_source_menu_menus["lang_java"] = s:unite_menu_create(
+    " java {{{5
+    let g:unite_source_menu_menus["ft_java"] = s:unite_menu_create(
     \ 'Java Menu' , [
     \   ["import" , "Unite javaimport"] ,
     \   ["gradle" , "Unite gradle"]     ,
     \ ])
+    " gitv {{{5
+    let g:unite_source_menu_menus["ft_gitv"] = s:unite_menu_create(
+    \ 'Gitv', [
+    \ ['logview', "execute 'GitLogViewer' eval('GitvGetCurrentHash()')"],
+    \ ['gbrowse', "execute 'Gbrowse' eval('GitvGetCurrentHash()')"],
+    \ ['checkout', "execute 'Git checkout' eval('GitvGetCurrentHash())"],
+    \ ['rebase', "execute 'Git rebase' eval('GitvGetCurrentHash())"],
+    \ ['revert', "execute 'Git revert' eval('GitvGetCurrentHash())"],
+    \ ['cherry-pick', "execute 'Git cherry-pick' eval('GitvGetCurrentHash())"],
+    \ ['reset --hard', "execute 'Git reset --hard' eval('GitvGetCurrentHash())"],
+    \ ])
 
-    " let g:unite_source_menu_menus["lang_"] = s:unite_menu_create(
+    " let g:unite_source_menu_menus["ft_"] = s:unite_menu_create(
     " \ '', [
     " \  ["", ""],
     " \ ])
 
     function! s:unite_context_menu() "{{{6
-      if !exists('g:unite_source_menu_menus["lang_' . &filetype . '"]')
+      if !exists('g:unite_source_menu_menus["ft_' . &filetype . '"]')
         echohl Error
         echon "menu not found"
         echohl None
         return
       endif
-      execute 'Unite' 'menu:'.'lang_'.&filetype
+      execute 'Unite' 'menu:'.'ft_'.&filetype
     endfunction "5}}}
 
     " memolist - http://d.hatena.ne.jp/osyo-manga/20130919 {{{4
