@@ -9,7 +9,7 @@ else
   SHELL_NAME=bash
 fi
 
-vmenv-init() {
+xenv-init() {
   local VMNAME=$1
   if [ -e "$HOME/.${VMNAME}" ]; then
     PATH=$HOME/.${VMNAME}/bin:$PATH
@@ -69,7 +69,7 @@ PATH=$HOME/bin:$HOME/.cache/bin:$PATH
 shrc_section_title "languages" # {{{1
 if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   shrc_section_title "for perl" # {{{2
-  if ! vmenv-init plenv; then
+  if ! xenv-init plenv; then
   #   PATH=$HOME/.plenv/bin:$PATH
   #   if [ -n $SHELL_INTERACTIVE ]; then
   #     eval $(plenv init -)
@@ -85,7 +85,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   fi
 
   shrc_section_title "for Python" # {{{2
-  if ! vmenv-init pyenv; then
+  if ! xenv-init pyenv; then
     export PYTHONBREW_ROOT=$HOME/.pythonbrew
     [ -e $PYTHONBREW_ROOT/etc/bashrc ] && source $PYTHONBREW_ROOT/etc/bashrc
   fi
@@ -96,8 +96,8 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
 
   shrc_section_title "for node.js" # {{{2
   # if [ -e ~/.nenv ];then
-  #   vmenv-init nenv
-  if ! vmenv-init nodenv; then
+  #   xenv-init nenv
+  if ! xenv-init nodenv; then
     if [ -e ~/.nodebrew ]; then
       PATH=$HOME/.nodebrew/current/bin:$PATH
       export NODE_PATH=$HOME/.nodebrew/current/lib/node:$HOME/.nodebrew/current/lib/node_modules
@@ -132,7 +132,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
 
   shrc_section_title "php" # {{{2
   # must be after eval $(rbenv init)
-  vmenv-init phpenv
+  xenv-init phpenv
   # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-cgi --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql --with-pear"
   export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-cgi --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql --with-pear"
 
@@ -173,7 +173,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   fi
 
   # go {{{2
-  # vmenv-init goenv
+  # xenv-init goenv
   # export GOPATH=~/.gopath
   # if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/bin/go" ]; then
   #   export GOPATH=$(dirname $(dirname $HOMEBREW_PREFIX/bin/go/$(readlink /usr/local/bin/go)))
@@ -185,7 +185,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   PATH=${HOME}/.cabal/bin:$PATH
 
   shrc_section_title "for Ruby" # {{{2
-  vmenv-init rbenv
+  xenv-init rbenv
   rvm() {
     [[ $1 == 'use' ]] && rbenv shell $2
   }

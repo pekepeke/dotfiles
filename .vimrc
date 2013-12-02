@@ -2728,7 +2728,6 @@ endif
 let g:pdv_cfg_Copyright = ""
 let g:pdv_cfg_License = 'PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}'
 let g:pdv_cfg_CommentEnd = "// }}}"
-
 " javascript {{{2
 if s:bundle.is_installed('simple-javascript-indenter')
   " この設定入れるとshiftwidthを1にしてインデントしてくれる
@@ -2836,14 +2835,14 @@ if s:bundle.tap('lightline.vim')
         \ 'S': 'S-LINE', "\<C-s>": 'S-BLOCK', '?': ' ',
         \ },
         \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'lang_version', ] ],
+        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'xenv_version', ] ],
         \   'right': [[ 'lineinfo' ], [ 'percent' ], [ 'anzu_or_charcode', 'fileformat', 'fileencoding', 'filetype',]],
         \ },
         \ 'component_function': {
         \   'fugitive' : 'g:ll_helper.fugitive',
         \   'filename' : 'g:ll_helper.filename',
         \   'iminsert' : 'g:ll_helper.iminsert',
-        \   'lang_version' : 'g:ll_helper.lang_version',
+        \   'xenv_version' : 'g:ll_helper.xenv_version',
         \   'anzu': 'g:ll_helper.anzu',
         \   'anzu_or_charcode': 'g:ll_helper.anzu_or_charcode',
         \ },
@@ -2926,61 +2925,46 @@ if s:bundle.tap('lightline.vim')
     return &iminsert ? "IME" : ''
   endfunction
 
-  function! g:ll_helper.lang_version() "{{{3
-    return join(map(copy(self.lang_items), 'self[v:val]()'), '')
+  function! g:ll_helper.xenv_version() "{{{3
+    if has_key(self.xenvs, &filetype)
+      return self.get_xenv_version(&filetype, self.xenvs[&filetype])
+    endif
+    return ""
+    " return join(map(copy(self.lang_items), 'self[v:val]()'), '')
     " return g:ll_helper.virtualenv().g:ll_helper.rbenv()
   endfunction
-  let g:ll_helper.lang_items = [
-        \ 'rbenv', 'pyenv',
-        \ 'plenv', 'nodenv', 'phpenv',
-        \ ]
 
-  function! g:ll_helper.env_version(ft, name) "{{{3
+  let g:ll_helper.xenvs = {
+        \ 'ruby': 'rbenv',
+        \ 'python': 'pyenv',
+        \ 'perl': 'plenv',
+        \ 'javascript': 'nodenv',
+        \ 'php': 'phpenv',
+        \ }
+
+  function! g:ll_helper.get_xenv_version(ft, name) "{{{3
     if &filetype != a:ft
       return ""
     endif
 
+    if a:ft == "ruby" && exists('$RBENV_VERSION')
+      return "rbenv:" . $RBENV_VERSION
+    endif
     let var = a:name . '_version'
     if !exists('b:'.var)
+      let b:[var] = -1
       for f in ['.'.a:name.'-version', expand('~/.'.a:name.'/version')]
         if filereadable(f)
           let b:[var] = readfile(f)[0]
           break
         endif
       endfor
-      let b:[var] = -1
     endif
     let ver = get(b:, var, '')
-    if ver <= 0
+    if empty(ver)
       return ""
     endif
     return a:name . ':' . ver
-  endfunction
-
-  function! g:ll_helper.plenv() "{{{3
-    return self.env_version('perl', 'plenv')
-  endfunction
-
-  function! g:ll_helper.pyenv() "{{{3
-    return self.env_version('python', 'pyenv')
-  endfunction
-
-  function! g:ll_helper.phpenv() "{{{3
-    return self.env_version('php', 'phpenv')
-  endfunction
-
-  function! g:ll_helper.nodenv() "{{{3
-    return self.env_version('javascript', 'nodenv')
-  endfunction
-
-  function! g:ll_helper.rbenv() "{{{3
-    if &filetype == 'ruby'
-      if exists('$RBENV_VERSION')
-        return "rbenv:" . $RBENV_VERSION
-      endif
-      return self.env_version('ruby', 'rbenv')
-    endif
-    return ''
   endfunction
 
   function! g:ll_helper.virtualenv() "{{{3
