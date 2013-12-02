@@ -2,11 +2,13 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-setlocal comments=s1:{*,ex:*}
 if search('<\(div\|body\|html\|head\|script\|span\|p\|ul\|ol\|li\)', 'cnw')
-  setlocal commentstring={*<!--%s-->*}
-else
-  setlocal commentstring={*%s*}
+  if exists('b:current_syntax')
+    unlet b:current_syntax
+  endif
+  runtime! syntax/html.vim
+  " unlet b:current_syntax
+  setl commentstring={#<!--%s-->#}
 endif
 
 let &cpo = s:save_cpo

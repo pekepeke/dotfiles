@@ -125,7 +125,7 @@ elseif s:is_mac "{{{2
     nnoremap <D-Down> zj
 
     " unbind menu keys {{{3
-    macmenu File.New\ Tab key=<nop>
+    silent! macmenu File.New\ Tab key=<nop>
 
   endif
 else " unix setting {{{2

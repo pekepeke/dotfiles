@@ -8,8 +8,8 @@ _arguments -C \
   '*:: :->args' && ret=0
 
 cdtask-filenames() {
-  find ~/Desktop/ -maxdepth 1 -type d -regex '.*/[0-9]+_.*$' -exec basename {} \;
-  find ~/Desktop/ -maxdepth 1 -type d -regex '.*/[0-9]+_.*$' -exec basename {} \; | sed -e 's/^[0-9]\+_//'
+  find ~/Desktop/ -maxdepth 1 -type d -regex '.*/[0-9]*_.*$' -exec basename {} \;
+  find ~/Desktop/ -maxdepth 1 -type d -regex '.*/[0-9]*_.*$' -exec basename {} \; | sed -e 's/^[0-9]\+_//'
 }
 
 case $state in

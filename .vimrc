@@ -158,11 +158,10 @@ if has('unnamedplus')
   set clipboard+=unnamedplus
 endif
 
+set nospell
 if v:version > 704 || (v:version == 704 && has('patch088'))
-  set nospell
   set spelllang=en_us,cjk
 else
-  set nospell
   set spelllang=en_us
 endif
 set spellfile=~/.vim/spell/spellfile.utf-8.add
@@ -283,7 +282,9 @@ endif
 set noerrorbells
 
 set guioptions& guioptions+=T guioptions-=m guioptions-=M
-let did_install_default_menus = 1
+if !s:is_mac
+  let did_install_default_menus = 1
+endif
 let did_install_syntax_menu = 1
 set noequalalways
 set langmenu=none
@@ -2232,8 +2233,8 @@ endfor
 unlet i
 nnoremap <silent> [!t]n gt
 nnoremap <silent> [!t]p gT
-nnoremap <silent> [!t]h gt
-nnoremap <silent> [!t]l gT
+nnoremap <silent> [!t]h gT
+nnoremap <silent> [!t]l gt
 nnoremap <silent> [!t]c :<C-u>tabnew<CR>
 nnoremap <silent> [!t]C :<C-u>tabnew %<CR>
 nnoremap <silent> [!t]* :<C-u>tabedit %<CR>*
@@ -2392,7 +2393,7 @@ function! s:tselect_immediately()
 endfunction
 nnoremap <silent> [!t]j :<C-u>tag<CR>
 nnoremap <silent> [!t]k :<C-u>pop<CR>
-nnoremap <silent> [!t]l :<C-u>tselect<CR>
+" nnoremap <silent> [!t]l :<C-u>tselect<CR>
 
 " [[, ]] {{{2
 let g:square_brackets = {
@@ -4026,7 +4027,26 @@ if s:bundle.tap('unite.vim')
   let g:unite_winheight = 20
   " let g:unite_winwidth = &columns - 12
   "let g:unite_split_rule = 'botright'
-  let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
+
+  call unite#custom#source('file',
+        \ 'ignore_pattern',
+        \ '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/')
+
+  call unite#custom#source('file_rec,file_rec/async',
+      \ 'ignore_pattern', join([
+      \ '\.git/',
+      \ '\.svn/',
+      \ '\.hg/',
+      \ '.ico',
+      \ '.png',
+      \ '.jpg',
+      \ 'node_modules',
+      \ 'bower_components',
+      \ 'dist',
+      \ 'coverage',
+      \ '.sass_cache',
+      \ ], '\|'))
+  call unite#custom#source('file_rec/async', 'ignore_pattern', '\.abc$')
   let g:unite_source_file_rec_max_cache_files = 5000
 
   " unite fn {{{3
