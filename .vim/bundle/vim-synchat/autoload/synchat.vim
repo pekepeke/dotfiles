@@ -32,7 +32,7 @@ function! synchat#is_src() "{{{2
   return !synchat#is(s:get_pattern())
 endfunction
 
-function! synchat#not_src() "{{{2
+function! synchat#isnt_src() "{{{2
   return synchat#is(s:get_pattern())
 endfunction
 

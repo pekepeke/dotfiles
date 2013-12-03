@@ -30,11 +30,11 @@ endif
 " if neobundle#is_installed('PIV') && neobundle#is_installed('neocomplcache')
 "   inoremap <buffer><expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
 " endif
-inoremap <buffer><expr> [ synchat#not_src()?'[':smartchr#one_of('[', 'array(', '[[')
-inoremap <buffer><expr> ] synchat#not_src()?']':smartchr#one_of(']', ')', ']]')
-inoremap <buffer><expr> \ synchat#not_src()?'\':smartchr#one_of('\', 'function', '\\')
-inoremap <buffer><expr> @ synchat#not_src()?'@':smartchr#one_of('@', '$this->', 'self::$', '@@')
-inoremap <buffer><expr> . synchat#not_src()?'.':smartchr#one_of('.', '->', '..')
-inoremap <buffer><expr> > synchat#not_src()?'>':smartchr#one_of('>', '=>', '>>')
+inoremap <buffer><expr> [ synchat#isnt_src()?'[':smartchr#one_of('[', 'array(', '[[')
+inoremap <buffer><expr> ] synchat#isnt_src()?']':smartchr#one_of(']', ')', ']]')
+inoremap <buffer><expr> \ synchat#isnt_src()?'\':smartchr#one_of('\', 'function', '\\')
+inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', '$this->', 'self::$', '@@')
+inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
+inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '=>', '>>')
 
 let &cpo = s:save_cpo

@@ -18,9 +18,9 @@ nmap <silent> <buffer> [t]pm :PerlUseInsertionCWord<CR>
 
 nnoremap <buffer> <silent> [!comment-doc] :call <SID>my_pod_header()<CR>
 
-inoremap <buffer><expr> @ synchat#not_src()?'@':smartchr#one_of('@', '$self->', '@@')
-inoremap <buffer><expr> . synchat#not_src()?'.':smartchr#one_of('.', '->', '..')
-inoremap <buffer><expr> > synchat#not_src()?'>':smartchr#one_of('>', '=>', '>>')
+inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', '$self->', '@@')
+inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
+inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '=>', '>>')
 
 
 let &cpo = s:save_cpo

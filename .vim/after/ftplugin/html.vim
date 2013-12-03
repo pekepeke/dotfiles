@@ -27,7 +27,7 @@ endif
 " setl dictionary+=~/.vim/dict/css.dict
 " setl noexpandtab tabstop=2 shiftwidth=2 textwidth=0
 
-inoremap <buffer> <expr> \ synchat#not_src()?'\':smartchr#one_of('\', 'function(', '\\')
+inoremap <buffer> <expr> \ synchat#isnt_src()?'\':smartchr#one_of('\', 'function(', '\\')
 
 if exists('g:loaded_html_after_ftplugin')
   finish

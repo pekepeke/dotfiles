@@ -8,14 +8,14 @@ setl formatoptions-=r formatoptions-=o
 " setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
 
 inoremap <expr> <buffer> { smartchr#loop('{', '#{', '{{')
-inoremap <buffer><expr> > synchat#not_src()?'>':smartchr#one_of('>', '->', '>>')
-inoremap <buffer><expr> - synchat#not_src()?'-':smartchr#one_of('-', '->', '--')
-inoremap <buffer><expr> \ synchat#not_src()?'\':smartchr#one_of('\', '->', '=>', '\\')
-inoremap <buffer><expr> . synchat#not_src()?'.':smartchr#one_of('.', '->', '..')
+inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '->', '>>')
+inoremap <buffer><expr> - synchat#isnt_src()?'-':smartchr#one_of('-', '->', '--')
+inoremap <buffer><expr> \ synchat#isnt_src()?'\':smartchr#one_of('\', '->', '=>', '\\')
+inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
 inoremap <expr><buffer> #
       \ synchat#is('coffeeString\|coffeeInterporation\|coffeeInterporationDelimiter')
       \ ? smartchr#loop('#', '#{', '##') : '#'
-" inoremap <buffer><expr> ) synchat#not_src()?'\':smartchr#one_of(')', ') ->', '))')
+" inoremap <buffer><expr> ) synchat#isnt_src()?'\':smartchr#one_of(')', ') ->', '))')
 if &omnifunc == 'tern#Complete'
   call tern#Enable()
 endif
