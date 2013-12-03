@@ -491,6 +491,10 @@ if has('vim_starting')
     return self.is_installed(a:bundle)
   endfunction " }}}
 
+  function! s:bundle.get(bundle) "{{{
+    return neobundle#get(a:bundle)
+  endfunction
+
   function! s:bundle.config(config, ...) " {{{
     if a:0 >= 2
       call neobundle#config(a:config, a:1)
@@ -1836,7 +1840,7 @@ endif
 
 " statusline {{{1
 set laststatus=2  " ステータス表示用変数
-let s:status_generator = { 'cfi':neobundle#is_installed('current-func-info.vim') }
+let s:status_generator = { 'cfi':s:bundle.is_installed('current-func-info.vim') }
 function! s:status_generator.get_line() "{{{3
   let s = ''
 
@@ -2397,8 +2401,8 @@ nnoremap <silent> [!t]k :<C-u>pop<CR>
 
 " [[, ]] {{{2
 let g:square_brackets = {
-      \ 'markdown' : '^#',
-      \ 'textile' : '^*',
+      \ 'markdown' : ['^#', 'markdownHeadingDelimiter'],
+      \ 'textile' : ['^*', 'txtListBullet\d'],
       \ 'html' : '<html\|<head\|<body\|<h\d',
       \ 'rst' : '^-\+\|^=\+',
       \ 'coffee' : '->\s*$\|^\s*class\s',
@@ -2408,10 +2412,14 @@ let g:square_brackets = {
 function! s:nmap_square_brackets() "{{{3
   if exists('g:square_brackets[&filetype]')
     if type(g:square_brackets[&filetype]) == s:type_a
-          \ && len(g:square_brackets[&filetype]) > 2
+      \ && len(g:square_brackets[&filetype]) >= 2
       let [pattern, syn] = g:square_brackets[&filetype]
-      nnoremap <silent><buffer> ]] :<C-u>call s:search_with_syntax(pattern, syn, "")<CR>
-      nnoremap <silent><buffer> [[ :<C-u>call s:search_with_syntax(pattern, syn, "b")<CR>
+      silent execute printf('nnoremap <silent><buffer> ]] ' .
+            \ ':<C-u>call <SID>search_with_syntax(%s, %s, "")<CR>',
+            \ string(pattern), string(syn))
+      silent execute printf('nnoremap <silent><buffer> [[ ' .
+            \ ':<C-u>call <SID>search_with_syntax(%s, %s, "b")<CR>',
+            \ string(pattern), string(syn))
     else
       nnoremap <silent><buffer> ]] :<C-u>call search(g:square_brackets[&filetype], "W")<CR>
       nnoremap <silent><buffer> [[ :<C-u>call search(g:square_brackets[&filetype], "Wb")<CR>
@@ -2429,7 +2437,7 @@ function! s:search_with_syntax(pattern,syn,flags) "{{{3
     let col  = col('.')
     let pos = search(a:pattern, 'W'.a:flags)
     while pos != 0
-          \ && synIDattr(synID(line, col, 0),'name') !~# a:syn
+          \ && synIDattr(synID(line('.'), col('.'), 0),'name') !~# a:syn
       let pos = search(a:pattern, 'W'.a:flags)
     endwhile
     if pos == 0
@@ -3098,7 +3106,7 @@ endif
 " perlomni {{{2
 if s:bundle.tap('perlomni.vim')
   function! s:bundle.tapped.hooks.on_source(bundle)
-    call s:path_push(neobundle#get('perlomni.vim').path . '/bin')
+    call s:path_push(s:bundle.get('perlomni.vim').path . '/bin')
   endfunction
   call s:bundle.untap()
 endif
@@ -6427,7 +6435,7 @@ if exists("+omnifunc") " {{{4
 endif
 
 if s:bundle.is_installed('rsense')
-  let $RSENSE_HOME = neobundle#get('rsense').path
+  let $RSENSE_HOME = s:bundle.get('rsense').path
 endif
 
 " if exists('$RSENSE_HOME') " {{{4 RSENSE
@@ -6441,7 +6449,7 @@ endif
 if s:bundle.is_installed('vimproc.vim')
   function! s:setup_vimproc_dll() " {{{3
     let path = ""
-    let vimproc_root = neobundle#get('vimproc.vim').path
+    let vimproc_root = s:bundle.get('vimproc.vim').path
     if s:is_win
       if has('unix')
         let path = expand(vimproc_root . '/autoload/proc_cygwin.dll')
