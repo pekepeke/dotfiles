@@ -91,7 +91,7 @@ function! my#tsv#to_sqlin() range "{{{2
   let texts = []
   let rows = map(copy(head), '[v:val]')
   for items in lines
-    if empty(line)
+    if empty(items)
       continue
     endif
     call map(rows, 'v:val + [get(items, v:key, "")]')

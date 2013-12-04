@@ -4670,6 +4670,25 @@ function! s:vimrc_git_init()
   setlocal foldtext=GitLogViewerFoldText()
 endfunction
 MyAutoCmd FileType git call s:vimrc_git_init()
+function! s:vimrc_fugitive_bufread_init()
+  if exists('b:fugitive_type')
+    if b:fugitive_type == "commit"
+      " if exists('b:fugitive_display_format') && !b:fugitive_display_format
+      "   normal a
+      " endif
+      normal! G
+      if line('.') == 3
+        setlocal modifiable
+        normal! o
+        execute "r! git show --no-color " . fugitive#buffer().sha1()
+        setlocal nomodified nomodifiable
+      endif
+      normal! gg
+    endif
+  endif
+endfunction
+" MyAutoCmd BufReadPost  fugitive://**//[0-9a-f][0-9a-f]* call s:vimrc_fugitive_bufread_init()
+" MyAutoCmd User Fugitive call s:vimrc_fugitive_init()
 
 " TOhtml {{{2
 let g:html_number_lines = 0
@@ -6834,7 +6853,8 @@ function! s:git_log_viewer(commit)
   "VimProcRead git log -u 'HEAD@{1}..HEAD' --reverse
   let commit = empty(a:commit) ? 'ORIG_HEAD..HEAD' : a:commit . ' -n 1'
   execute 'VimProcRead git log -u ' commit
-  set filetype=git-log.git-diff
+  " set filetype=git-log.git-diff
+  set filetype=git
   setl foldmethod=expr
   " setl foldexpr=getline(v:lnum)!~'^commit'
   setlocal foldexpr=GitLogViewerFoldExpr(v:lnum)

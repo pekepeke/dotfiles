@@ -6,7 +6,7 @@ function! my#mysql#to_tsv() range " {{{1
     let s = getline(line)
     let s = substitute(s, '^[+\-]\+$', '', 'g')
     let s = substitute(s, '^|\s\+\|\s\+|$', '', 'g')
-    let s = substitute(s, '\s\*|\s\+', "\t", 'g')
+    let s = substitute(s, '\s*|\s\+', "\t", 'g')
     call setline(line, s)
   endfor
 endfunction "}}}
