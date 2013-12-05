@@ -295,7 +295,7 @@ cdtask() { #{{{2
   local name="$1"
   local target
   if ! [[ "$name" =~ ^[0-9]+_ ]]; then
-    target=$(find ~/Desktop/ -maxdepth 1 -type d -name "*${name}*" -regex '.*/[0-9]+_.*$' | sort | awk 'NR==1')
+    target=$(find ~/Desktop/ -maxdepth 1 -type d -name "*${name}*" -regex '.*/[0-9]*_.*$' | sort | awk 'NR==1')
     if [ -e "${target}" ]; then
       cd "$target"
       return

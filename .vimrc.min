@@ -289,6 +289,12 @@ if v:version > 702
           \ }}
     NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'chrisbra/SudoEdit.vim'
+    NeoBundleLazy 'tpope/vim-commentary', {'autoload': {
+          \ 'mappings': [
+          \   ['xn', '<Plug>Commentary'],
+          \   ['n', '<Plug>Commentary'],
+          \ ],
+          \ }}
   elseif s:standalone " plugin load {{{2
     if has('vim_starting')
       filetype off
@@ -384,6 +390,13 @@ endif
 if s:has_plugin('sudo.vim') || s:has_plugin('SudoEdit.vim')"{{{2
   command! SW w sudo:%
   command! SR read sudo:%
+endif
+
+if s:has_plugin('vim-commentary')
+  xmap gc <Plug>Commentary
+  nmap gc <Plug>Commentary
+  nmap gcc <Plug>CommentaryLine
+  nmap gcu <Plug>CommentaryUndo
 endif
 
   " __END__ {{{1

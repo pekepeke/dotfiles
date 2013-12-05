@@ -429,7 +429,6 @@ augroup vimrc-color-init "{{{2
 
   autocmd ColorScheme * call s:highlights_add()
   autocmd Syntax * call s:syntaxes_add()
-  " autocmd VimEnter,WinEnter * call s:my_additional_syntaxes()
   autocmd Syntax eruby highlight link erubyRubyDelim Label
 
   " カーソル行 http://d.hatena.ne.jp/thinca/20090530/1243615055
@@ -1910,9 +1909,12 @@ MyAutoCmd BufReadPost *
 
 function! s:filetype_check()
   if !empty(&filetype)
+    " if !get(g:, 'syntax_on', 0)
+    "   call vimconsole#log("syntax enable")
+    "   syntax enable
+    " endif
     return
   endif
-
   redir! => fts
   silent filetype
   redir END
@@ -1922,7 +1924,7 @@ function! s:filetype_check()
     filetype plugin indent on
   endif
 endfunction
-MyAutoCmd BufRead,BufNew * call s:filetype_check()
+" MyAutoCmd BufReadPost,BufEnter * call s:filetype_check()
 " http://vim-users.jp/2009/10/hack84/
 MyAutoCmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
 MyAutoCmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
@@ -3119,7 +3121,8 @@ if s:bundle.tap('cake.vim')
 
   if !s:bundle.is_sourced('cake.vim')
     function! s:bundle.tapped.on_post_source(bundle)
-      doautocmd VimEnter
+      " doautocmd VimEnter
+      call cake#init_app('')
     endfunction
   endif
 
