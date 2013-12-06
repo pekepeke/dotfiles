@@ -138,10 +138,11 @@ endif
 
 " basic settings {{{1
 " 文字コード周り {{{2
-set encoding=utf-8
-if s:is_win && (!has('win32unix') || !has('gui_running'))
+if s:is_win && (!has('win32unix'))
+  set encoding=cp932
   set termencoding=cp932
 else
+  set encoding=utf-8
   set termencoding=utf-8
 endif
 set fileencoding=utf-8
@@ -2300,7 +2301,15 @@ function! s:set_grep(...) "{{{3
       let g:ackprg="ag -S --nocolor --nogroup --column --nopager"
 
       let g:unite_source_grep_command = 'ag'
-      let g:unite_source_grep_default_opts = '-S --noheading --nocolor --nogroup --nopager'
+      let opts = [
+            \ '-S --noheading --nocolor --nogroup --nopager',
+            \ '--ignore', '".hg"',
+            \ '--ignore', '".git"',
+            \ '--ignore', '".bzr"',
+            \ '--ignore', '".svn"',
+            \ '--ignore', '"node_modules"',
+            \ ]
+      let g:unite_source_grep_default_opts = join(opts, " ")
       let g:unite_source_grep_recursive_opt = ''
 
       return 1
@@ -4023,25 +4032,6 @@ if s:bundle.tap('unite.vim')
   " let g:unite_winwidth = &columns - 12
   "let g:unite_split_rule = 'botright'
 
-  call unite#custom#source('file',
-        \ 'ignore_pattern',
-        \ '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/')
-
-  call unite#custom#source('file_rec,file_rec/async',
-      \ 'ignore_pattern', join([
-      \ '\.git/',
-      \ '\.svn/',
-      \ '\.hg/',
-      \ '.ico',
-      \ '.png',
-      \ '.jpg',
-      \ 'node_modules',
-      \ 'bower_components',
-      \ 'dist',
-      \ 'coverage',
-      \ '.sass_cache',
-      \ ], '\|'))
-  call unite#custom#source('file_rec/async', 'ignore_pattern', '\.abc$')
   let g:unite_source_file_rec_max_cache_files = 5000
 
   " unite fn {{{3
@@ -4056,10 +4046,22 @@ if s:bundle.tap('unite.vim')
   " unite hooks.on_source {{{3
   function! s:bundle.tapped.hooks.on_source(bundle)
     " file_rec {{{4
-    call unite#custom#source('file_rec/async', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
-    call unite#custom#source('file_rec', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
-    call unite#custom#source('repo_files', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
+    " call unite#custom#source('file_rec/async', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
+    " call unite#custom#source('file_rec', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
+    " call unite#custom#source('repo_files', 'ignore_pattern', '\.\(png\|gif\|jpeg\|jpg\|tiff\)$')
 
+    call unite#custom#source('file',
+          \ 'ignore_pattern',
+          \ '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/')
+
+    call unite#custom#source('file_rec,file_rec/async,repo_files',
+        \ 'ignore_pattern', join([
+        \ '\.git/', '\.svn/', '\.hg/',
+        \ '.ico', '.png', '.jpg',
+        \ 'node_modules', 'bower_components', 'dist',
+        \ 'coverage',
+        \ '.sass_cache',
+        \ ], '\|'))
     " files {{{4
     call unite#custom#profile('files', 'smartcase', 1)
 
