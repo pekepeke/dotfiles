@@ -850,8 +850,8 @@ NeoBundleLazy 'mileszs/ack.vim', { 'autoload': {
       \ }}
 NeoBundleLazy 'vim-scripts/MultipleSearch'
 " NeoBundle 'terryma/vim-multiple-cursors'
-" NeoBundle 'vim-scripts/sudo.vim'
-NeoBundle 'chrisbra/SudoEdit.vim'
+NeoBundle 'vim-scripts/sudo.vim'
+" NeoBundle 'chrisbra/SudoEdit.vim'
 " if s:is_mac
 "   if has('gui_running')
 "     NeoBundle 'gmarik/sudo-gui.vim'

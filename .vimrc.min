@@ -288,7 +288,8 @@ if v:version > 702
           \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
           \ }}
     NeoBundle 'tpope/vim-fugitive'
-    NeoBundle 'chrisbra/SudoEdit.vim'
+    NeoBundle 'vim-scripts/sudo.vim'
+    " NeoBundle 'chrisbra/SudoEdit.vim'
     NeoBundleLazy 'tpope/vim-commentary', {'autoload': {
           \ 'mappings': [
           \   ['xn', '<Plug>Commentary'],
