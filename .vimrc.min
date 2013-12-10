@@ -29,10 +29,10 @@ command! -nargs=* Lazy autocmd vimrc-myautocmd VimEnter * <args>
 " }}}
 " basic settings {{{1
 " set encoding=japan
-set encoding=utf-8
 if s:is_win
   set termencoding=cp932
 else
+  set encoding=utf-8
   set termencoding=utf-8
 endif
 " set fileencoding=utf-8
@@ -351,6 +351,19 @@ colorscheme vividchalk
 
 " some autocmd {{{1
 MyAutoCmd FileType txt,rst,markdown,gitcommit setlocal spell
+if !s:is_win
+  MyAutoCmd BufWritePost *
+        \ if getline(1) =~ "^#!"
+        \ | exe "silent !chmod +x %"
+        \ | endif
+endif
+function! s:auto_mkdir(dir, force) "{{{
+  if !isdirectory(a:dir) && (a:force ||
+        \ input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
+    call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
+  endif
+endfunction "}}}
+MyAutoCmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
 
 " plugin settings {{{1
 " vimfiler "{{{2

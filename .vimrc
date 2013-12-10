@@ -1880,16 +1880,13 @@ if !s:is_win
         \ | endif
 endif
 " auto mkdir {{{2
-augroup vimrc-auto-mkdir
-    autocmd!
-    autocmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
-    function! s:auto_mkdir(dir, force)
-        if !isdirectory(a:dir) && (a:force ||
-            \ input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
-            call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
-        endif
-    endfunction
-augroup END
+MyAutoCmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
+function! s:auto_mkdir(dir, force)
+  if !isdirectory(a:dir) && (a:force ||
+        \ input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
+    call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
+  endif
+endfunction
 
 " etc hacks {{{2
 " http://d.hatena.ne.jp/uasi/20110523/1306079612
@@ -1932,38 +1929,6 @@ MyAutoCmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadvi
 set viewoptions=cursor
 
 " setfiletype {{{2
-" override default filetypedetect
-augroup filetypedetect
-  " html for E127 error
-  autocmd! BufNewFile,BufRead *.html,*.htm,*.htm,*.shtml,*.stm
-  autocmd BufNewFile,BufRead *.html,*.htm,*.htm,*.shtml,*.stm  call <SID>detect_ft_html()
-  function! s:detect_ft_html() " {{{3
-    let n = 1
-    let lines = []
-    while n < 10 && n < line("$")
-      let a_line = getline(n)
-      if a_line =~ '{%\|{{\|{#'
-        set filetype=htmldjango
-        return
-      elseif a_line =~ '<?php\s\+'
-        set filetype=php
-        return
-      endif
-      call add(lines, a_line)
-      let n = n + 1
-    endwhile
-
-    for a_line in lines
-      if a_line =~ '\<DTD\s\+XHTML\s'
-        set filetype=xhtml
-        return
-      endif
-    endfor
-
-    set filetype=html
-  endfunction "}}}3
-augroup END
-
 " alias
 MyAutoCmd FileType js set filetype=javascript
 MyAutoCmd FileType rb set filetype=ruby
@@ -6719,7 +6684,10 @@ if s:bundle.is_installed('vimfiler.vim')
     " silent wincmd l
     silent wincmd p
     if cur_nr == bufnr('%')
-      silent wincmd v
+      silent wincmd l
+      if cur_nr == bufnr('%')
+        silent wincmd v
+      endif
     endif
     for cmd in a:000
       silent execute cmd

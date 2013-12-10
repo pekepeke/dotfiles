@@ -10,4 +10,6 @@ function! s:detect_tpl()
     endif
   endfor
 endfunction
-autocmd BufNewFile,BufRead *.tpl call s:detect_tpl()
+
+call s:detect_tpl()
+
