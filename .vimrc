@@ -145,13 +145,13 @@ else
   set encoding=utf-8
   set termencoding=utf-8
 endif
+scriptencoding utf-8
 set fileencoding=utf-8
 set fileformat=unix
 set fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp,cp932
 set fileformats=unix,dos,mac
 set synmaxcol=1500
 
-scriptencoding utf-8
 
 set display=lastline
 set clipboard=unnamed
@@ -2812,6 +2812,8 @@ endif
 " lightline {{{2
 if s:bundle.tap('lightline.vim')
   let g:unite_force_overwrite_statusline = 0
+  let g:vimfiler_force_overwrite_statusline = 0
+  let g:vimshell_force_overwrite_statusline = 0
   let g:lightline = {
         \ 'colorscheme': 'solarized',
         \ 'mode_map': {'n': 'N', 'i': 'I', 'R': 'R', 'v': 'V',
@@ -2982,7 +2984,28 @@ if s:bundle.tap('lightline.vim')
   function! g:ll_helper.filename() "{{{3
     return join([self.readonly(), self.get_filename(), self.modified()], '')
   endfunction
+
+  MyAutoCmd ColorScheme * call s:lightline_update()
+  function! s:lightline_update() "{{{3
+    if !exists('g:loaded_lightline')
+      return
+    endif
+    try
+      if g:colors_name =~# 'wombat\|solarized\|landscape\|jellybeans\|Tomorrow'
+        let g:lightline.colorscheme =
+              \ substitute(substitute(g:colors_name, '-', '_', 'g'), '256.*', '', '') .
+              \ (g:colors_name ==# 'solarized' ? '_' . &background : '')
+      endif
+      call lightline#init()
+      call lightline#colorscheme()
+      call lightline#update()
+      endif
+    catch
+    endtry
+  endfunction
+
   call s:bundle.untap()
+
 endif
 
 "  jplus {{{2
@@ -3666,24 +3689,22 @@ if s:bundle.tap('vim-template')
   let g:template_files = 'template/**'
   let g:template_free_pattern = 'template'
 
-  function! s:bundle.tapped.hooks.on_source(bundle)
-    function! s:template_keywords() "{{{3
-      silent! %s/<+FILENAME_NOEXTUC+>/\=toupper(expand('%:t:r'))/g
-      silent! %s/<+FILENAME_NOEXT+>/\=expand('%:t:r')/g
-      silent! %s/<+FILENAME+>/\=expand('%:t')/g
-      silent! %s/<+EMAIL+>/\=g:email/g
-      silent! %s/<+AUTHOR+>/\=g:author/g
-      silent! %s/<+HOMEPAGE_URL+>/\=g:homepage_url/g
-      silent! exe "normal! gg"
-      "" expand eval
-      %s/<%=\(.\{-}\)%>/\=eval(submatch(1))/ge
-    endfunction
-
-    call s:mkvars(['g:email', 'g:author', 'g:homepage_url'], '')
-
-    "autocmd BufNewFile * execute 'TemplateLoad'
-    MyAutoCmd User plugin-template-loaded call s:template_keywords()
+  function! s:template_keywords() "{{{3
+    silent! %s/<+FILENAME_NOEXTUC+>/\=toupper(expand('%:t:r'))/g
+    silent! %s/<+FILENAME_NOEXT+>/\=expand('%:t:r')/g
+    silent! %s/<+FILENAME+>/\=expand('%:t')/g
+    silent! %s/<+EMAIL+>/\=g:email/g
+    silent! %s/<+AUTHOR+>/\=g:author/g
+    silent! %s/<+HOMEPAGE_URL+>/\=g:homepage_url/g
+    silent! exe "normal! gg"
+    "" expand eval
+    %s/<%=\(.\{-}\)%>/\=eval(submatch(1))/ge
   endfunction
+
+  call s:mkvars(['g:email', 'g:author', 'g:homepage_url'], '')
+
+  "autocmd BufNewFile * execute 'TemplateLoad'
+  MyAutoCmd User plugin-template-loaded call s:template_keywords()
 
   call s:bundle.untap()
 endif
@@ -5416,6 +5437,18 @@ if s:bundle.tap('vim-quickrun')
         \    'command' : 'markdown',
         \  },
         \ })
+  call extend(g:quickrun_config, {
+        \  'markdown/md2backlog' : {
+        \    'command' : 'md2backlog',
+        \  },
+        \  'markdown/vim-helpfile' : {
+        \    'command' : 'vim-helpfile',
+        \  },
+        \  'markdown/markdown2pod' : {
+        \    'command' : 'markdown2pod',
+        \  },
+        \ })
+
   call extend(g:quickrun_config, {
         \  'processing/osascript' : {
         \    'command': 'osascript',

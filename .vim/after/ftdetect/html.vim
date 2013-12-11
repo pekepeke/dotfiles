@@ -1,6 +1,3 @@
-let s:save_cpo = &cpo
-set cpo&vim
-
 function! s:set_ft(ft) " {{{
   if &ft != a:ft
     execute 'setfiletype' a:ft
@@ -32,6 +29,6 @@ function! s:detect_ft_html() " {{{
 
   call s:set_ft('html')
 endfunction "}}}
-call s:detect_ft_html()
 
-let &cpo = s:save_cpo
+autocmd BufNewFile,BufRead *.html call s:detect_ft_html()
+
