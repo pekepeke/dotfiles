@@ -1977,6 +1977,7 @@ augroup END
 
 " some commands & altercmd {{{1
 " some commands {{{2
+command! -narg=0 SynReload source $VIMRUNTIME/syntax/syntax.vim
 command! -nargs=? -complete=dir Ctags call s:exec_ctags(<q-args>)
 command! -nargs=? -complete=dir Gtags call s:system_with_lcd("gtags", <q-args>)
 
