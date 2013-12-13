@@ -1,4 +1,4 @@
-# vim:fdm=marker sw=2 ts=2 ft=ini expandtab:
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 encoding = "UTF-8"
 
 fontName = "Monaco"
@@ -8,50 +8,62 @@ showInvisibles = true
 
 softWrap = true
 tabSize = 4
-softTabs = true
+softTabs = false
 
-includeFiles=".tm_properties,.htaccess,.editorconfig,.hgignore,.gitignore,.*rc,.*profile,.bin"
-include = "{*,$includeFiles}"
+dotFiles = ".tm_properties,.htaccess,.editorconfig"
+dotFiles = "$includeFiles,.hgignore,.gitignore,.gitmodules"
+dotFiles = "$includeFiles,.*rc,.*profile,.bin"
+include = "{$include,$dotFiles}"
+
+excludeInFolderSearch = "{$excludeInFolderSearch,log,node_modules,vendor,tmp,META-INF,.svn}"
+excludeFilesInBrowser = "{$exclude,*.tmproj}"
+excludeDirectories = "{.svn}"
 exclude = "{$exclude,*.tmproj}"
 
-[.git/COMMIT_EDITMSG]
+[ .git/COMMIT_EDITMSG ]
 spellChecking = true
 spellingLanguage = 'en'
 
-[*.coffee]
-tabSize = 2
-
-[*.{txt}]
-softTabs = false
-
-[*.{md,mkd,markdown}]
-tabSize = 2
-softTabs = false
-
 [*.{jpg, jpeg, png, gif, tif, tiff, pdf, psd, ico, icns, xls, xlsx, ppt, doc, docx}]
 binary = true
-
-
-["{README, INSTALL, LICENSE, TODO}"]
-fileType = "text.plain"
 
 [ text ]
 softWrap = true
 softTabs = false
 
+[ attr.untitled ]
+softTabs = false
+
+[ attr.file.unknown-type ]
+fileType = text
+
+[ attr.file.unknown-encoding ]
+encoding = cp932
+
+[ source ]
+softTabs = true
+tabSize = 2
+
+[ source.python ]
+tabSize = 4
+softTabs = true
+
 [ source.ruby ]
 tabSize = 2
 softTabs = true
 
+[ source.coffee ]
+tabSize = 2
+softTabs = true
+
 [ source.markdown ]
+tabSize = 2
 softTabs = false
+spellChecking = true
+spellingLanguage = 'en'
 
-[attr.untitled]
-softTabs = false
-
-[attr.file.unknown-type]
-fileType = text
-
-[attr.file.unknown-encoding]
-encoding = cp932
+["{README, INSTALL, LICENSE, TODO}"]
+fileType = "text.plain"
+spellChecking = true
+spellingLanguage = 'en'
 

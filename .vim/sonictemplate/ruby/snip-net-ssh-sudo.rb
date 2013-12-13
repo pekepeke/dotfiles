@@ -1,4 +1,4 @@
-requre 'net/ssh'
+require 'net/ssh'
 
 class Net::SSH::Connection::Session
   def sudo(password, cmd)
