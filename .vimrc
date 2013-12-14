@@ -7348,7 +7348,69 @@ endfunction
 " command define {{{3
 command! -nargs=0 -range GingerRange call s:ginger.range()
 command! -nargs=+ Ginger echo s:ginger.get(<q-args>)
+" dash & zeal {{{2
+function! s:docset_keywords_gather(root) "{{{
+  let plists = split(globpath(a:root,
+        \ '*.docset/Contents/Info.plist'), "\n")
+  let keywords = []
+  for plist in plists
+    let buf = readfile(plist)
+    let is_identifier = 0
+    for line in buf
+      if is_identifier
+        call add(keywords, substitute(line, '</\?string>', '', 'g'))
+        break
+      endif
+      if line =~? "CFBundleIdentifier"
+        let is_identifier = 1
+      endif
+    endfor
+  endfor
+  return keywords
+endfunction "}}}
 
+function! s:dash(...)
+  let word = len(a:000) == 0 ?
+  \ input('Dash search: ', expand('<cword>'),
+  \ 'customlist,'.s:SID().'dash_complete') : a:1
+  call system(printf("open dash://'%s'", word))
+endfunction
+let s:dash_keywords = []
+function! s:dash_complete(A, L, P) "{{{
+  if empty(s:dash_keywords)
+    let s:dash_keywords =
+          \ s:docset_keywords_gather(expand('~/Library/Application\ Support/Dash/DocSets/'))
+  endif
+  if stridx(a:A, ":") != -1
+    return []
+  endif
+  let matches = filter(copy(s:dash_keywords),'v:val =~? "^".a:A')
+  return map(matches, 'v:val.":"')
+endfunction "}}}
+
+command! -nargs=? -complete=customlist,s:dash_complete Dash call s:dash(<f-args>)
+
+function! s:zeal(...)
+  let word = len(a:000) == 0 ?
+  \ input('Zeal search: ',
+  \ expand('<cword>'), 'customlist,'.s:SID().'zeal_complete') : a:1
+  call system(printf("zeal --query %s &", shellescape(word)))
+endfunction
+let s:zeal_keywords = []
+
+function! s:zeal_complete(A, L, P) "{{{
+  if empty(s:zeal_keywords)
+    let s:zeal_keywords =
+          \ s:docset_keywords_gather(expand('~/.local/share/zeal/docsets'))
+  endif
+  if stridx(a:A, ":") != -1
+    return []
+  endif
+  let matches = filter(copy(s:zeal_keywords),'v:val =~? "^".a:A')
+  return map(matches, 'v:val.":"')
+endfunction "}}}
+
+command! -nargs=? -complete=customlist,s:zeal_complete Zeal call s:zeal(<f-args>)
 " ctags {{{2
 let s:ctagsutil = {}  "{{{3
 function s:ctagsutil.parse(...) "{{{4

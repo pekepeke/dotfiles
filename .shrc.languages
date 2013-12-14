@@ -189,6 +189,8 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   rvm() {
     [[ $1 == 'use' ]] && rbenv shell $2
   }
+  # vim {{{2
+  xenv-init vimenv
 fi
 shrc_section_title "etc" # {{{2
 # mysqlenv {{{3
