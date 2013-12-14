@@ -189,3 +189,31 @@ if s:bundle.is_installed('dotnet-complete')
   MyAutoCmd BufNewFile,BufRead *.cs      setl omnifunc=cs#complete
   MyAutoCmd BufNewFile,BufRead *.cs      setl bexpr=cs#balloon() | setl ballooneval
 endif
+
+" tiny-snippets {{{2
+" if s:bundle.is_installed('unite.vim')
+"   let s:unite_action_file_insert = {} " {{{3
+"   function! s:unite_action_file_insert.func(candicate)
+"     "echo a:candicate
+"     let l:path = a:candicate.word
+"     if isdirectory(l:path)
+"       call unite#do_action('narrow')
+"     elseif filereadable(l:path)
+"       let linesread=line('$')
+"       let l:old_cpoptions=&cpoptions
+"       setlocal cpoptions-=a
+"       :execute 'read '.l:path
+"       let &cpoptions = l:old_cpoptions
+"       let linesread=line('$')-linesread-1
+"       if linesread >= 0
+"         silent exe 'normal! ='.linesread.'+'
+"       endif
+"     endif
+"   endfunction
+"   call unite#custom_action('file', 'insert_file', s:unite_action_file_insert)
+"   unlet! s:unite_action_file_insert
+" endif
+
+" }}}
+
+" __END__ {{{1

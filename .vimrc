@@ -465,12 +465,12 @@ augroup END
 
 if has('gui_running') "{{{2
   autocmd vimrc-color-init GUIEnter * call <SID>gui_colorscheme_init()
-  colorscheme vividchalk
+  autocmd vimrc-color-init GUIEnter * colorscheme vividchalk
 elseif &t_Co == 256 || s:is_win
-  colorscheme vividchalk
+  autocmd vimrc-color-init VimEnter * colorscheme vividchalk
 else
   " colorscheme wombat
-  colorscheme desert
+  autocmd vimrc-color-init VimEnter * colorscheme desert
 endif
 
 " preexec for runtimepath {{{1
@@ -6990,30 +6990,6 @@ endfunction
 " tiny snippets {{{2
 let g:my_snippets_dir = $HOME . "/memos/tiny-snippets"
 
-" if s:bundle.is_installed('unite.vim')
-"   let s:unite_action_file_insert = {} " {{{3
-"   function! s:unite_action_file_insert.func(candicate)
-"     "echo a:candicate
-"     let l:path = a:candicate.word
-"     if isdirectory(l:path)
-"       call unite#do_action('narrow')
-"     elseif filereadable(l:path)
-"       let linesread=line('$')
-"       let l:old_cpoptions=&cpoptions
-"       setlocal cpoptions-=a
-"       :execute 'read '.l:path
-"       let &cpoptions = l:old_cpoptions
-"       let linesread=line('$')-linesread-1
-"       if linesread >= 0
-"         silent exe 'normal! ='.linesread.'+'
-"       endif
-"     endif
-"   endfunction
-"   call unite#custom_action('file', 'insert_file', s:unite_action_file_insert)
-"   unlet! s:unite_action_file_insert
-" endif
-
-" }}}
 " mapping for tiny-snippets
 nnoremap [!unite]n <Nop>
 nnoremap <silent> [!unite]nn :<C-u>execute printf('Unite file_rec:%s -start-insert', expand(g:my_snippets_dir))<CR>
@@ -7058,7 +7034,6 @@ elseif s:is_win "{{{3
   command! In silent execute '!start cmd /k cd "'.substitute(expand('%:p:h'), '/', '\', 'g').'"'
   command! -nargs=1 -complete=file That silent execute '!explorer' shellescape(expand(<f-args>), 1)
 else "{{{3
-  " TODO
   " command! Here silent execute '!gnome-open' expand('%:p:h')
   command! Here silent execute '!xdg-open' expand('%:p:h') '&'
   command! This silent execute '!"%"'
@@ -7097,8 +7072,6 @@ endif
 command! -range -nargs=0 UniqueSort <line1>,<line2>sort u
 
 " diff {{{2
-command! -nargs=1 -complete=buffer DiffBuf vertical diffsplit <args>
-command! -nargs=1 -complete=file DiffFile vertical diffsplit <args>
 function! s:diff_execute(s)
   if &diff
     execute a:s
@@ -7411,6 +7384,13 @@ function! s:zeal_complete(A, L, P) "{{{
 endfunction "}}}
 
 command! -nargs=? -complete=customlist,s:zeal_complete Zeal call s:zeal(<f-args>)
+function! s:docset_cache_remove()
+  let s:dash_keywords = []
+  let s:zeal_keywords = []
+endfunction
+command! -nargs=0 ZealRemoveCache call s:docset_cache_remove()
+command! -nargs=0 DashRemoveCache call s:docset_cache_remove()
+
 " ctags {{{2
 let s:ctagsutil = {}  "{{{3
 function s:ctagsutil.parse(...) "{{{4
