@@ -234,7 +234,10 @@ function! my#tsv#to_json() range "{{{2
     return
   endif
 
-  let texts = string(lines)
+  silent! let texts = webapi#json#encode(lines)
+  if !exists('texts')
+    let texts = string(lines)
+  endif
 
   call my#util#output_to_buffer('__TSV__', texts)
 endfunction
@@ -254,7 +257,10 @@ function! my#tsv#to_flat_json() range "{{{2
     call add(src, s:zip(head, item))
     " call add(src, map(head, 'get(item, v:key, "")'))
   endfor
-  let texts = string(src)
+  silent! let texts = webapi#json#encode(src)
+  if !exists('texts')
+    let texts = string(src)
+  endif
 
   call my#util#output_to_buffer('__TSV__', texts)
 endfunction

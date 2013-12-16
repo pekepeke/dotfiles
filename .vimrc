@@ -309,7 +309,7 @@ augroup END
 set autoindent smartindent cindent  " インデント設定
 set list
 if s:is_mac
-  set showbreak=↪
+  set showbreak=↓
 else
   " set showbreak=↓
   let &showbreak='+++ '
@@ -464,13 +464,14 @@ augroup END
 
 
 if has('gui_running') "{{{2
-  autocmd vimrc-color-init GUIEnter * call <SID>gui_colorscheme_init()
-  autocmd vimrc-color-init GUIEnter * colorscheme vividchalk
+  colorscheme vividchalk
+  autocmd vimrc-color-init GUIEnter * colorscheme vividchalk |
+        \ call <SID>gui_colorscheme_init()
 elseif &t_Co == 256 || s:is_win
-  autocmd vimrc-color-init VimEnter * colorscheme vividchalk
+  colorscheme vividchalk
 else
   " colorscheme wombat
-  autocmd vimrc-color-init VimEnter * colorscheme desert
+  colorscheme desert
 endif
 
 " preexec for runtimepath {{{1
@@ -736,13 +737,17 @@ NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
 NeoBundle 'rhysd/endwize.vim', {'autoload': {'insert':1}}
 NeoBundleLazy 't9md/vim-quickhl', {'autoload': {
       \ 'commands': [
-      \ 'QuickhlList', 'QuickhlDump', 'QuickhlReset', 'QuickhlColors',
-      \ 'QuickhlReloadColors', 'QuickhlAdd', 'QuickhlDel', 'QuickhlLock',
-      \ 'QuickhlUnLock', 'QuickhlMatch', 'QuickhlMatchClear', 'QuickhlMatchAuto',
-      \ 'QuickhlMatchNoAuto',
+      \ 'QuickhlManualEnable', 'QuickhlManualDisable', 'QuickhlManualList',
+      \ 'QuickhlManualReset', 'QuickhlManualColors', 'QuickhlManualAdd',
+      \ 'QuickhlManualDelete', 'QuickhlManualLock', 'QuickhlManualUnlock',
+      \ 'QuickhlManualLockToggle', 'QuickhlManualLockWindow', 'QuickhlManualUnlockWindow',
+      \ 'QuickhlManualLockWindowToggle', 'QuickhlCwordEnable', 'QuickhlCwordDisable',
+      \ 'QuickhlCwordToggle', 'QuickhlTagEnable', 'QuickhlTagDisable',
+      \ 'QuickhlTagToggle',
       \ ],
-      \ 'mappings': [['n', '<Plug>(quickhl-match)'],
-      \ ['nv', '<Plug>(quickhl-toggle)', '<Plug>(quickhl-reset)']],
+      \ 'function_prefix':'quickhl',
+      \ 'mappings': [['nv', '<Plug>(quickhl-',
+      \ '<Plug>(operator-quickhl-manual-this-motion)']],
       \ }}
 NeoBundleLazy 't9md/vim-textmanip'
 NeoBundleLazy 'bkad/CamelCaseMotion', { 'autoload' : {
@@ -1651,6 +1656,14 @@ NeoBundleLazy 'tyru/operator-html-escape.vim', {
 NeoBundleLazy 'rhysd/vim-operator-surround', {'autoload': {
       \ 'mappings': [['', '<Plug>(operator-surround-']]
       \ }}
+NeoBundleLazy 'sgur/vim-operator-openbrowser', {'autoload': {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(operator-openbrowser)']]
+      \ }}
+NeoBundleLazy 'yomi322/vim-operator-suddendeath', {'autoload': {
+      \ 'mappings' : [
+      \ ['nx', '<Plug>(operator-suddendeath)']]
+      \ }}
 NeoBundleLazy 'pekepeke/vim-operator-shuffle', {
       \ 'depends' : 'vim-operator-user', 'autoload' : {
       \ 'mappings' : [
@@ -2247,17 +2260,18 @@ vnoremap [!space]r :S/
 let s:regexp_todo = 'TODO\|FIXME\|REVIEW\|MARK\|NOTE\|!!!\|\\?\\?\\?\|XXX'
 function! s:set_grep(...) "{{{3
   let retval = 0
+  let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
+  let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
+  let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
   for type in copy(a:000)
     if type == "jvgrep" && executable(type)
       set grepprg=jvgrep
       set grepformat=%f:%l:%m
       " set grepprg=jvgrep\ -n
-      let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
-      let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
 
       let g:unite_source_grep_command = "jvgrep"
-      let g:unite_source_grep_default_opts = '-in --color=never --exclude "\.(git|svn|hg|bzr)"'
-      let g:unite_source_grep_recursive_opt = '-R'
+      let g:unite_source_grep_default_opts = '-in --exclude "\.(git|svn|hg|bzr)"'
+      let g:unite_source_grep_recursive_opt = ''
 
       command! Todo silent! exe 'Unite' printf('grep:%s:-n:%s', getcwd(), s:regexp_todo) '-buffer-name=todo' '-no-quit'
       return 1
@@ -2306,9 +2320,6 @@ function! s:set_grep(...) "{{{3
 
   set grepprg=grep\ -n\ $*\ /dev/null
   "set grepprg=grep\ -n\ $*\ /dev/null\ --exclude\ \"\*\.svn\*\"
-  let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
-  let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
-  let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
 
   let g:unite_source_grep_command = 'grep'
   let g:unite_source_grep_default_opts = '-iRHn'
@@ -2725,6 +2736,20 @@ endif
 let g:loaded_getscriptPlugin = 1
 let g:loaded_vimballPlugin = 1
 let g:loaded_netrwPlugin = 1
+" $VIM/plugins/kaoriya/plugin/autodate.vim
+" let plugin_autodate_disable  = 1
+" $VIM/plugins/kaoriya/plugin/cmdex.vim
+let plugin_cmdex_disable     = 1
+" $VIM/plugins/kaoriya/plugin/dicwin.vim
+let plugin_dicwin_disable    = 1
+" $VIMRUNTIME/plugin/plugin/format.vim
+let plugin_format_disable    = 1
+" $VIM/plugins/kaoriya/plugin/hz_ja.vim
+let plugin_hz_ja_disable     = 1
+" $VIM/plugins/kaoriya/plugin/scrnmode.vim
+let plugin_scrnmode_disable  = 1
+" $VIM/plugins/kaoriya/plugin/verifyenc.vim
+let plugin_verifyenc_disable = 1
 
 " plugin settings {{{1
 " vim-markdown-quote-syntax {{{2
@@ -2971,9 +2996,9 @@ if s:bundle.tap('lightline.vim')
     elseif &filetype == 'tagbar'
       return 'Tagbar ' . tagbar#currenttag("%s", "")
     elseif exists('t:undotree')
-      if filetype == 'undotree' && exists('*t:undotree.GetStatusLine')
+      if &filetype == 'undotree' && exists('*t:undotree.GetStatusLine')
         return t:undotree.GetStatusLine()
-      elseif &filetype == 'diff' exists('*t:diffpanel.GetStatusLine')
+      elseif &filetype == 'diff' && exists('*t:diffpanel.GetStatusLine')
         return t:diffpanel.GetStatusLine()
       endif
     elseif expand('%t')
@@ -4903,21 +4928,24 @@ let g:surround_custom_mapping.vim= {
       \ }
 
 " operator {{{2
-" http://labs.timedia.co.jp/2011/07/vim-excel-and-sql.html
-if s:bundle.is_installed('vim-operator-user')
-  call operator#user#define('excelize', 'OperatorExcelize')
-  function! OperatorExcelize(motion_wise)
-    let b = line("'[")
-    let e = line("']")
-    execute b ',' e 'substitute/\v(\''?)(\$?\u+\$?\d+)(\''?)/\1" \& \2 \& "\3/g'
-    execute b 'substitute/^/="/'
-    execute e 'substitute/$/"/'
-  endfunction
+if s:bundle.tap('vim-operator-user')
+  function! s:bundle.tapped.hooks.on_post_source(bundle)
+    " http://labs.timedia.co.jp/2011/07/vim-excel-and-sql.html
+    call operator#user#define('excelize', 'OperatorExcelize')
+    function! OperatorExcelize(motion_wise)
+      let b = line("'[")
+      let e = line("']")
+      execute b ',' e 'substitute/\v(\''?)(\$?\u+\$?\d+)(\''?)/\1" \& \2 \& "\3/g'
+      execute b 'substitute/^/="/'
+      execute e 'substitute/$/"/'
+    endfunction
 
-  call operator#user#define_ex_command('retab', 'retab')
-  call operator#user#define_ex_command('join', 'join')
-  call operator#user#define_ex_command('uniq', 'sort u')
-  call operator#user#define_ex_command('trimright', 's/\s\+$//')
+    call operator#user#define_ex_command('retab', 'retab')
+    call operator#user#define_ex_command('join', 'join')
+    call operator#user#define_ex_command('uniq', 'sort u')
+    call operator#user#define_ex_command('trimright', 's/\s\+$//')
+  endfunction
+  call s:bundle.untap()
 
   map _ <Plug>(operator-replace)
   map ;e <Plug>(operator-excelize)
@@ -4929,6 +4957,10 @@ if s:bundle.is_installed('vim-operator-user')
   map ;j <Plug>(operator-join)
   map ;u <Plug>(operator-uniq)
   map ;k <Plug>(operator-trimright)
+
+  map ;q <Plug>(operator-quickhl-manual-this-motion)
+  map ;u <Plug>(operator-openbrowser)
+  map ;S <Plug>(operator-suddendeath)
 
   map <Leader>tm <Plug>(operator-tabular-tsv2md))
   map <Leader>Tm <Plug>(operator-tabular-md2tsv)
@@ -5931,11 +5963,14 @@ endif
 
 " quickhl {{{2
 if s:bundle.is_installed('vim-quickhl')
-  nmap [!space]m <Plug>(quickhl-toggle)
-  xmap [!space]m <Plug>(quickhl-toggle)
-  nmap [!space]M <Plug>(quickhl-reset)
-  xmap [!space]M <Plug>(quickhl-reset)
-  nmap [!space], <Plug>(quickhl-match)
+  let g:quickhl_manual_enable_at_startup = 1
+  let g:quickhl_cword_enable_at_startup = 1
+  let g:quickhl_tag_enable_at_startup = 1
+  nmap [!space]m <Plug>(quickhl-cword-toggle)
+  xmap [!space]m <Plug>(quickhl-cword-toggle)
+  nmap [!space]M <Plug>(quickhl-manual-reset)
+  xmap [!space]M <Plug>(quickhl-manual-reset)
+  nmap [!space], <Plug>(quickhl-manual-this)
 endif
 
 " echodoc {{{2
@@ -6670,8 +6705,33 @@ if s:bundle.is_installed('vimfiler.vim')
   command! -nargs=? -complete=file FTree call s:vimfiler_tree_launch(<f-args>)
 
   function! s:vimfiler_tree_launch(...) "{{{4
-    let fpath = a:0 > 0 ? a:1 : getcwd()
-    execute 'VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:' . fpath
+    let fpath = expand('%:p')
+    let dir = a:0 > 0 ? a:1 : getcwd()
+    execute 'VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:' . dir
+
+    if &filetype == "vimfiler"
+      let pos = stridx(fpath, dir)
+      if pos != -1
+        let fpath = strpart(strpart(fpath, pos), strlen(dir))
+        let paths = split(fpath, "/")
+        let index = 0
+        let max_index = len(paths) - 1
+        if len(filter(copy(paths), 'v:val =~# "^\\."')) > 0
+          normal "\<Plug>(vimfiler_toggle_visible_ignore_files)"
+        endif
+
+        normal "\<Plug>(vimfiler_cursor_top)"
+        while index <= max_index
+          let item = paths[index]
+          let pattern = escape(item . (max_index == index ? " " : "/"), '\.')
+          if search(pattern, "W") == 0
+            break
+          endif
+          normal "\<Plug>(vimfiler_expand_tree)"
+          let index = index + 1
+        endwhile
+      endif
+    endif
   endfunction
 
   function! s:vimfiler_smart_tree_h(...) "{{{4
@@ -7322,16 +7382,20 @@ endfunction
 command! -nargs=0 -range GingerRange call s:ginger.range()
 command! -nargs=+ Ginger echo s:ginger.get(<q-args>)
 " dash & zeal {{{2
-function! s:docset_keywords_gather(root) "{{{
+function! s:docset_keywords_gather(root, is_dash) "{{{
+  let pattern = '*.docset/Contents/Info.plist'
+  if a:is_dash
+    let pattern = '*/' . pattern
+  endif
   let plists = split(globpath(a:root,
-        \ '*.docset/Contents/Info.plist'), "\n")
+        \ pattern), "\n")
   let keywords = []
   for plist in plists
     let buf = readfile(plist)
     let is_identifier = 0
     for line in buf
       if is_identifier
-        call add(keywords, substitute(line, '</\?string>', '', 'g'))
+        call add(keywords, substitute(line, '\(\s\+\|</\?string>\)', '', 'g'))
         break
       endif
       if line =~? "CFBundleIdentifier"
@@ -7352,7 +7416,7 @@ let s:dash_keywords = []
 function! s:dash_complete(A, L, P) "{{{
   if empty(s:dash_keywords)
     let s:dash_keywords =
-          \ s:docset_keywords_gather(expand('~/Library/Application\ Support/Dash/DocSets/'))
+          \ s:docset_keywords_gather(expand('~/Library/Application\ Support/Dash/DocSets/'), 1)
   endif
   if stridx(a:A, ":") != -1
     return []
@@ -7374,7 +7438,7 @@ let s:zeal_keywords = []
 function! s:zeal_complete(A, L, P) "{{{
   if empty(s:zeal_keywords)
     let s:zeal_keywords =
-          \ s:docset_keywords_gather(expand('~/.local/share/zeal/docsets'))
+          \ s:docset_keywords_gather(expand('~/.local/share/zeal/docsets'), 0)
   endif
   if stridx(a:A, ":") != -1
     return []
