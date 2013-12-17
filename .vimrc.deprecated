@@ -1,3 +1,35 @@
+" experimental {{{1
+
+" XXX
+" nnoremap <silent> o :call <SID>smart_comment_map("o")<CR>
+" nnoremap <silent> O :call <SID>smart_comment_map("O")<CR>
+"
+" function! s:smart_comment_map(key)
+"   let line = getline('.')
+"   " TODO
+"   let mark = "*"
+"   let org=&formatoptions
+"   if line =~ '^\s*'. substitute(mark, '\([\*\$]\)', '\\\1', 'g')
+"     setl formatoptions+=r formatoptions+=o
+"   else
+"     setl formatoptions-=r formatoptions-=o
+"   endif
+"   execute 'normal!' a:key
+"   let &formatoptions=org
+"   startinsert
+" endfunction
+
+" deprecated {{{1
+" macvim {{{1
+
+  " if s:is_mac && has('macvim')
+  "   let $RUBY_DLL = "/usr/local/lib/libruby.1.8.dylib"
+  "   let $PYTHON_DLL = "/usr/local/lib/libpython2.7.dylib"
+  "   if executable('/usr/local/Frameworks/Python.framework/Versions/3.3/Python')
+  "     let $PYTHON3_DLL='/usr/local/Frameworks/Python.framework/Versions/3.3/Python'
+  "   endif
+  " endif
+
 " scroll {{{1
 if 1 " {{{4 http://vim-users.jp/2011/04/hack213/
 
@@ -36,6 +68,95 @@ endif "}}}
 " translate maps {{{1
 " vnoremap <Leader>tj    :GoogleTranslate ja<CR>
 " vnoremap <Leader>tj    :BingTranslate ja<CR>
+
+" mygrep.vim…
+"nmap [!space]gg :EGrep<CR>
+"nmap [!space]gr :RGrep<CR>
+" nnoremap [!space]gg :Grep<CR>
+" nnoremap [!space]gr :REGrep<CR>
+
+" plugins ================= {{{1
+" NeoBundle 'git://gist.github.com/5457352.git', {
+"       \ 'directory' : 'ginger',
+"       \ 'script_type' : 'plugin',
+"       \ }
+" NeoBundle 'pekepeke/golden-ratio'
+" NeoBundle 'scrooloose/nerdtree'
+" NeoBundle 'scrooloose/nerdcommenter'
+NeoBundleLazy 'mklabs/vim-fetch', { 'autoload' : {
+      \ 'commands' : [
+      \   {'name': 'Fetch', 'complete':'customlist,s:Completion'},
+      \   'FetchManage',
+      \ ], }}
+
+" NeoBundle 'petdance/vim-perl'
+"NeoBundleLazyOn FileType cpp 'OmniCppComplete'
+" NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
+" NeoBundleLazy 'heavenshell/unite-zf', { 'autoload' : {
+"       \ 'unite_sources' : [
+"       \   'zf/app', 'zf/controllers', 'zf/models', 'zf/views',
+"       \   'zf/helpers', 'zf/configs', 'zf/layouts', 'zf/modules',
+"       \   'zf/tests', 'zf/services',
+"       \ ],
+"       \ }}
+" NeoBundle 'heavenshell/unite-sf2', { 'autoload' : {
+"       \ 'unite_sources' : [
+"       \   'sf2/', 'sf2/app', 'sf2/app', 'sf2/app/config', 'sf2/app/views',
+"       \   'sf2/app/web', 'sf2/bundles',
+"       \ ],
+"       \ }}
+
+" if executable('python')
+"   NeoBundle 'mattn/mkdpreview-vim', {
+"       \   'build' : {
+"       \     'cygwin' : 'chmod u+x static/mkdpreview.py',
+"       \     'mac'    : 'chmod u+x static/mkdpreview.py',
+"       \     'unix'   : 'chmod u+x static/mkdpreview.py',
+"       \   }
+"       \ }
+" endif
+" NeoBundle 'mattn/googletranslate-vim'
+" NeoBundle 'mattn/bingtranslate-vim'
+" NeoBundle 'Rykka/trans.vim'
+
+" NeoBundleLazy 'kana/vim-textobj-jabraces', {'autoload':{
+"       \ 'mappings' : [['ov',
+"       \ 'ajb', 'aj(', 'aj)', 'ajr', 'aj[', 'aj]', 'ajB', 'aj{', 'aj}', 'aja', 'aj<', 'aj>', 'ajA',
+"       \ 'ajk', 'ajK', 'ajy', 'ajY', 'ajt', 'ajs',
+"       \ 'ijb', 'ij(', 'ij)', 'ijr', 'ij[', 'ij]', 'ijB', 'ij{', 'ij}', 'ija', 'ij<', 'ij>', 'ijA',
+"       \ 'ijk', 'ijK', 'ijy', 'ijY', 'ijt', 'ijs',
+"       \ ]],
+"       \ }}
+" NeoBundleLazy 'hchbaw/textobj-motionmotion.vim', {'autoload':{
+"       \ 'mappings' : [['nvo',
+"       \ '<Plug>(textobj-motionmotion-i)', '<Plug>(textobj-motionmotion-a)',
+"       \ ]]}}
+" NeoBundleLazy 'anyakichi/vim-textobj-xbrackets', {'autoload':{
+"       \ 'mappings' : [['vo',
+"       \ 'aV(', 'aV)', 'aVb', 'aV{', 'aV}', 'aVB', 'av', 'ax(', 'ax)', 'axb', 'a9', 'a0',
+"       \ 'ax<', 'ax[', 'ax{', 'axB', 'axs(', 'axsb', 'axs<', 'axs[', 'axs{', 'axsB',
+"       \ 'axs){', 'ay(', 'ayb', 'ay<', 'ay[', 'ay{', 'ayB', 'ays(', 'aysb', 'ays<',
+"       \ 'iV(', 'iV)', 'iVb', 'iV{', 'iV}', 'iVB', 'iv', 'ix(', 'ix)', 'ixb', 'i9', 'i0',
+"       \ 'ix<', 'ix[', 'ix{', 'ixB', 'ixs(', 'ixsb', 'ixs<', 'ixs[', 'ixs{', 'ixsB',
+"       \ 'ixs){', 'iy(', 'iyb', 'iy<', 'iy[', 'iy{', 'iyB', 'iys(', 'iysb', 'iys<',
+"       \ 'iys[', 'iys{', 'iysB', 'iys){',
+"       \ ]]}}
+
+" NeoBundle 'gorkunov/smartpairs.vim'
+" , {'autoload':{
+"       \ 'mappings' : [['nx',
+"       \ '<Plug>(textobj--i)', '<Plug>(textobj--a)',
+"       \ ]]}}
+
+" metarw {{{3
+" NeoBundle "mattn/vim-metarw"
+" NeoBundle "mattn/vim-metarw-gist"
+" NeoBundle "mattn/vim-metarw-git"
+" NeoBundle "sorah/metarw-simplenote.vim"
+
+" pydiction {{{1
+" pydiction {{{2
+let g:pydiction_location = '~/.vim/dict/pydiction-complete-dict'
 
 " unite-greplauncher {{{1
 " NeoBundleLazy 'daisuzu/unite-grep_launcher', { 'autoload' : {
@@ -189,6 +310,8 @@ if s:bundle.is_installed('dotnet-complete')
   MyAutoCmd BufNewFile,BufRead *.cs      setl omnifunc=cs#complete
   MyAutoCmd BufNewFile,BufRead *.cs      setl bexpr=cs#balloon() | setl ballooneval
 endif
+
+" others
 
 " tiny-snippets {{{2
 " if s:bundle.is_installed('unite.vim')

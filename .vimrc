@@ -131,13 +131,6 @@ if s:is_win
   call s:cmd_init()
 else
   let $PAGER='less'
-  " if s:is_mac && has('macvim')
-  "   let $RUBY_DLL = "/usr/local/lib/libruby.1.8.dylib"
-  "   let $PYTHON_DLL = "/usr/local/lib/libpython2.7.dylib"
-  "   if executable('/usr/local/Frameworks/Python.framework/Versions/3.3/Python')
-  "     let $PYTHON3_DLL='/usr/local/Frameworks/Python.framework/Versions/3.3/Python'
-  "   endif
-  " endif
 endif
 
 " basic settings {{{1
@@ -609,15 +602,6 @@ NeoBundleLazy 'git://gist.github.com/187578.git', {
       \ }
 
 " common {{{3
-" NeoBundle 'git://gist.github.com/5457352.git', {
-"       \ 'directory' : 'ginger',
-"       \ 'script_type' : 'plugin',
-"       \ }
-NeoBundleLazy 'mklabs/vim-fetch', { 'autoload' : {
-      \ 'commands' : [
-      \   {'name': 'Fetch', 'complete':'customlist,s:Completion'},
-      \   'FetchManage',
-      \ ], }}
 NeoBundle 'osyo-manga/vim-reanimate', {'autoload': {
       \ 'commands': [
       \ 'ReanimateSave', 'ReanimateSaveCursorHold', 'ReanimateSaveInput',
@@ -695,12 +679,10 @@ NeoBundleLazy 'kana/vim-niceblock', { 'autoload' : {
       \ }}
 NeoBundle 'tyru/vim-altercmd'
 NeoBundleLazy 'kana/vim-smartinput', {'autoload': {'insert':1}}
-
 NeoBundleLazy 'tyru/stickykey.vim', {
       \ 'autoload' : {
       \ 'mappings' : [['icsl', '<Plug>(stickykey-']]
       \ }}
-
 NeoBundleLazy 'chikatoike/concealedyank.vim', { 'autoload' : {
       \ 'mappings' : [
       \ ['nx', '<Plug>(operator-concealedyank)']]
@@ -826,8 +808,6 @@ NeoBundleLazy 'kana/vim-smartword', { 'autoload' : {
       \ 'mappings' : [['nv',
       \ '<Plug>(smartword-',
       \ ]]}}
-" NeoBundle 'pekepeke/golden-ratio'
-" NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'thinca/vim-qfreplace'
 NeoBundle 'thinca/vim-localrc'
 NeoBundleLazy 'thinca/vim-prettyprint', { 'autoload': {
@@ -917,7 +897,6 @@ NeoBundleLazy 'tpope/vim-commentary', {'autoload': {
       \   ['n', '<Plug>Commentary'],
       \ ],
       \ }}
-" NeoBundle 'scrooloose/nerdcommenter'
 NeoBundle 'thinca/vim-template'
 NeoBundleLazy 'mattn/sonictemplate-vim', {'autoload': {
       \ 'commands': [
@@ -1177,15 +1156,13 @@ NeoBundle 'guileen/simple-javascript-indenter'
 NeoBundle 'pangloss/vim-javascript'
 if has('python')
   NeoBundle 'marijnh/tern_for_vim', {
-        \   'build' : {
-        \    'cygwin': 'npm install',
-        \    'windows': 'npm install',
-        \    'mac': 'npm install',
-        \    'unix': 'npm install',
-        \   },
-        \ }
-        " \   'autoload' : {},
-        " \   'rtp' : 'vim',
+  \   'build' : {
+  \    'cygwin': 'npm install',
+  \    'windows': 'npm install',
+  \    'mac': 'npm install',
+  \    'unix': 'npm install',
+  \   },
+  \ }
 endif
 " NeoBundle 'drslump/vim-syntax-js'
 " NeoBundle  'vim-scripts/jQuery'
@@ -1268,7 +1245,6 @@ endif
 " endif
 
 " perl {{{4
-" NeoBundle 'petdance/vim-perl'
 NeoBundle 'vim-perl/vim-perl'
 NeoBundle 'moznion/vim-cpanfile'
 NeoBundle 'c9s/perlomni.vim'
@@ -1284,7 +1260,6 @@ NeoBundleLazy 'soh335/unite-perl-module', {'autoload' : {
 NeoBundleLazyOn FileType c,cpp 'vim-scripts/DoxygenToolkit.vim'
 NeoBundleLazyOn FileType c,cpp,objc 'Rip-Rip/clang_complete'
 NeoBundle 'peterhoeg/vim-qml'
-"NeoBundleLazyOn FileType cpp 'OmniCppComplete'
 
 " C# {{{4
 NeoBundleLazyOn FileType cs 'OrangeT/vim-csharp'
@@ -1410,20 +1385,6 @@ NeoBundle 'vim-scripts/phpcomplete.vim'
 NeoBundle 'tokutake/twig-indent'
 NeoBundle 'beyondwords/vim-twig'
 NeoBundleLazyOn FileType php 'violetyk/cake.vim'
-" NeoBundleLazyOn FileType php 'oppara/vim-unite-cake'
-" NeoBundleLazy 'heavenshell/unite-zf', { 'autoload' : {
-"       \ 'unite_sources' : [
-"       \   'zf/app', 'zf/controllers', 'zf/models', 'zf/views',
-"       \   'zf/helpers', 'zf/configs', 'zf/layouts', 'zf/modules',
-"       \   'zf/tests', 'zf/services',
-"       \ ],
-"       \ }}
-" NeoBundle 'heavenshell/unite-sf2', { 'autoload' : {
-"       \ 'unite_sources' : [
-"       \   'sf2/', 'sf2/app', 'sf2/app', 'sf2/app/config', 'sf2/app/views',
-"       \   'sf2/app/web', 'sf2/bundles',
-"       \ ],
-"       \ }}
 
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim'
@@ -1608,21 +1569,9 @@ NeoBundleLazy 'tyru/open-browser-github.vim', {'autoload': {
       \   'OpenGithubPullReq']
       \ }}
 NeoBundle 'mattn/webapi-vim'
-" if executable('python')
-"   NeoBundle 'mattn/mkdpreview-vim', {
-"       \   'build' : {
-"       \     'cygwin' : 'chmod u+x static/mkdpreview.py',
-"       \     'mac'    : 'chmod u+x static/mkdpreview.py',
-"       \     'unix'   : 'chmod u+x static/mkdpreview.py',
-"       \   }
-"       \ }
-" endif
-" NeoBundle 'mattn/googletranslate-vim'
-" NeoBundle 'mattn/bingtranslate-vim'
 NeoBundleLazy 'mattn/excitetranslate-vim', {'autoload': {
       \ 'commands': ['ExciteTranslate'],
       \ }}
-" NeoBundle 'Rykka/trans.vim'
 NeoBundle 'thinca/vim-ambicmd'
 NeoBundleLazy 'mattn/gist-vim', {'autoload': {
       \ 'commands': ['Gist'],
@@ -1706,14 +1655,6 @@ NeoBundleLazy 'kana/vim-textobj-entire', {'autoload':{
 NeoBundleLazy 'kana/vim-textobj-fold', {'autoload':{
       \ 'mappings': [['nvx', '<Plug>(textobj-fold-i)', '<Plug>(textobj-fold-a)']],
       \ }}
-" NeoBundleLazy 'kana/vim-textobj-jabraces', {'autoload':{
-"       \ 'mappings' : [['ov',
-"       \ 'ajb', 'aj(', 'aj)', 'ajr', 'aj[', 'aj]', 'ajB', 'aj{', 'aj}', 'aja', 'aj<', 'aj>', 'ajA',
-"       \ 'ajk', 'ajK', 'ajy', 'ajY', 'ajt', 'ajs',
-"       \ 'ijb', 'ij(', 'ij)', 'ijr', 'ij[', 'ij]', 'ijB', 'ij{', 'ij}', 'ija', 'ij<', 'ij>', 'ijA',
-"       \ 'ijk', 'ijK', 'ijy', 'ijY', 'ijt', 'ijs',
-"       \ ]],
-"       \ }}
 NeoBundleLazy 'kana/vim-textobj-lastpat', {'autoload': {
       \ 'mappings' : [['vo', 'a/', 'i/', 'a?', 'i?' ]],
       \ }}
@@ -1794,20 +1735,6 @@ NeoBundleLazy 'akiyan/vim-textobj-xml-attribute', {'autoload':{
       \ 'mappings' : [['nvo',
       \ '<Plug>(textobj-xmlattribute-',
       \ ]]}}
-" NeoBundleLazy 'hchbaw/textobj-motionmotion.vim', {'autoload':{
-"       \ 'mappings' : [['nvo',
-"       \ '<Plug>(textobj-motionmotion-i)', '<Plug>(textobj-motionmotion-a)',
-"       \ ]]}}
-" NeoBundleLazy 'anyakichi/vim-textobj-xbrackets', {'autoload':{
-"       \ 'mappings' : [['vo',
-"       \ 'aV(', 'aV)', 'aVb', 'aV{', 'aV}', 'aVB', 'av', 'ax(', 'ax)', 'axb', 'a9', 'a0',
-"       \ 'ax<', 'ax[', 'ax{', 'axB', 'axs(', 'axsb', 'axs<', 'axs[', 'axs{', 'axsB',
-"       \ 'axs){', 'ay(', 'ayb', 'ay<', 'ay[', 'ay{', 'ayB', 'ays(', 'aysb', 'ays<',
-"       \ 'iV(', 'iV)', 'iVb', 'iV{', 'iV}', 'iVB', 'iv', 'ix(', 'ix)', 'ixb', 'i9', 'i0',
-"       \ 'ix<', 'ix[', 'ix{', 'ixB', 'ixs(', 'ixsb', 'ixs<', 'ixs[', 'ixs{', 'ixsB',
-"       \ 'ixs){', 'iy(', 'iyb', 'iy<', 'iy[', 'iy{', 'iyB', 'iys(', 'iysb', 'iys<',
-"       \ 'iys[', 'iys{', 'iysB', 'iys){',
-"       \ ]]}}
 NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
       \ 'mappings' : [
       \ ['nvo', '<Plug>(textobj-lastinserted-i)', '<Plug>(textobj-lastinserted-a)']]
@@ -1822,16 +1749,6 @@ NeoBundleLazy 'anyakichi/vim-textobj-ifdef', {'autoload':{
       \ }}
 NeoBundleLazy 'akiyan/vim-textobj-php', {'autoload':{
       \ 'mappings' : [['nvo', '<Plug>(textobj-php-', ]]}}
-" NeoBundle 'gorkunov/smartpairs.vim'
-" , {'autoload':{
-"       \ 'mappings' : [['nx',
-"       \ '<Plug>(textobj--i)', '<Plug>(textobj--a)',
-"       \ ]]}}
-" metarw {{{3
-" NeoBundle "mattn/vim-metarw"
-" NeoBundle "mattn/vim-metarw-gist"
-" NeoBundle "mattn/vim-metarw-git"
-" NeoBundle "sorah/metarw-simplenote.vim"
 
 " afterexec for runtimepath {{{1
 filetype plugin indent on
@@ -2194,25 +2111,6 @@ nnoremap <silent> [!SW]D "_D
 cnoremap <expr> /  getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr> ?  getcmdtype() == '?' ? '\?' : '?'
 
-" XXX
-" nnoremap <silent> o :call <SID>smart_comment_map("o")<CR>
-" nnoremap <silent> O :call <SID>smart_comment_map("O")<CR>
-"
-" function! s:smart_comment_map(key)
-"   let line = getline('.')
-"   " TODO
-"   let mark = "*"
-"   let org=&formatoptions
-"   if line =~ '^\s*'. substitute(mark, '\([\*\$]\)', '\\\1', 'g')
-"     setl formatoptions+=r formatoptions+=o
-"   else
-"     setl formatoptions-=r formatoptions-=o
-"   endif
-"   execute 'normal!' a:key
-"   let &formatoptions=org
-"   startinsert
-" endfunction
-
 " indent whole buffer
 nnoremap [!space]= call my#ui#indent_whole_buffer()
 
@@ -2347,14 +2245,8 @@ let Grep_OpenQuickfixWindow = 1
 let MyGrep_ExcludeReg = '[~#]$\|\.bak$\|\.o$\|\.obj$\|\.exe$\|\.dll$\|\.pdf$\|\.doc$\|\.xls$\|[/\\]tags$\|^tags$'
 let MyGrepcmd_useropt = '--exclude="*\.\(svn\|git\|hg)*"'
 
-" mygrep.vim…
-"nmap [!space]gg :EGrep<CR>
-"nmap [!space]gr :RGrep<CR>
-" nnoremap [!space]gg :Grep<CR>
-" nnoremap [!space]gr :REGrep<CR>
 nnoremap [!space]g  :Ack<Space>-i<Space>''<Left>
 nnoremap [!space]gg :Ack<Space>-i<Space>''<Left>
-
 
 function! s:vimrc_quickfix_init()
   " nnoremap <buffer> < :<C-u><CR>
@@ -4037,9 +3929,6 @@ if s:bundle.is_installed('jedi-vim')
   MyAutoCmd FileType python let b:did_ftplugin = 1
         \ | setlocal omnifunc=jedi#complete
 endif
-" pydiction {{{2
-let g:pydiction_location = '~/.vim/dict/pydiction-complete-dict'
-
 " html5.vim {{{2
 let g:event_handler_attributes_complete = 1
 let g:rdfa_attributes_complete = 1
