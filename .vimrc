@@ -65,7 +65,11 @@ endfunction
 
 
 if !has('vim_starting')
-  let s:restore_setlocal=join(['setlocal sw=', &sw, ' tw=', &tw, ' sts=', &sts, (&et ? '' : 'no').'expandtab'], ' ')
+  let s:restore_setlocal=join([
+  \ 'setlocal', 'sw='.&sw, 'tw='.&tw, 'sts='.&sts,
+  \ 'filetype='.&filetype,
+  \ (&et ? '' : 'no').'expandtab',
+  \ ], ' ')
 endif
 
 " reset settings & restore runtimepath {{{2
@@ -2745,7 +2749,7 @@ let plugin_dicwin_disable    = 1
 " $VIMRUNTIME/plugin/plugin/format.vim
 let plugin_format_disable    = 1
 " $VIM/plugins/kaoriya/plugin/hz_ja.vim
-let plugin_hz_ja_disable     = 1
+" let plugin_hz_ja_disable     = 1
 " $VIM/plugins/kaoriya/plugin/scrnmode.vim
 let plugin_scrnmode_disable  = 1
 " $VIM/plugins/kaoriya/plugin/verifyenc.vim
@@ -2840,6 +2844,7 @@ if s:bundle.tap('lightline.vim')
   let g:unite_force_overwrite_statusline = 0
   let g:vimfiler_force_overwrite_statusline = 0
   let g:vimshell_force_overwrite_statusline = 0
+  " TODO : color
   let g:lightline = {
         \ 'colorscheme': 'solarized',
         \ 'mode_map': {'n': 'N', 'i': 'I', 'R': 'R', 'v': 'V',
@@ -2848,12 +2853,14 @@ if s:bundle.tap('lightline.vim')
         \ },
         \ 'active': {
         \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'xenv_version', ] ],
-        \   'right': [[ 'lineinfo' ], [ 'percent' ], [ 'anzu_or_charcode', 'fileformat', 'fileencoding', 'filetype',]],
+        \   'right': [[ 'lineinfo' ], [ 'percent' ],
+        \     [ 'qfcount', 'anzu_or_charcode', 'fileformat', 'fileencoding', 'filetype',]],
         \ },
         \ 'component_function': {
         \   'fugitive' : 'g:ll_helper.fugitive',
         \   'filename' : 'g:ll_helper.filename',
         \   'iminsert' : 'g:ll_helper.iminsert',
+        \   'qfcount' : 'g:ll_helper.qfcount',
         \   'xenv_version' : 'g:ll_helper.xenv_version',
         \   'anzu': 'g:ll_helper.anzu',
         \   'anzu_or_charcode': 'g:ll_helper.anzu_or_charcode',
@@ -2876,6 +2883,14 @@ if s:bundle.tap('lightline.vim')
       return self.charcode()
     endif
     return s
+  endfunction
+
+  function! g:ll_helper.qfcount() "{{{3
+    let c = len(getqflist())
+    if c <= 0
+      return ""
+    endif
+    return "qf:" . c
   endfunction
 
   function! g:ll_helper.charcode() "{{{3
@@ -7455,6 +7470,49 @@ endfunction
 command! -nargs=0 ZealRemoveCache call s:docset_cache_remove()
 command! -nargs=0 DashRemoveCache call s:docset_cache_remove()
 
+" onsave {{{2
+let g:autoexec = {
+\ 'coffee': 'cd %:p:h && coffee -c %:p',
+\ 'scss': 'cd %:p:h && compass compile %:p',
+\ 'sass': 'cd %:p:h && compass compile %:p',
+\ 'less': 'cd %:p:h && lessc %:p %:p:r.css',
+\ }
+augroup vimrc-autoexec
+  autocmd!
+augroup END
+
+function! s:autoexec_format_command(args)
+  if empty(a:args)
+    let command = get(g:autoexec, &filetype, '')
+  else
+    let command = join(a:args, " ")
+  endif
+  if empty(command)
+    return command
+  endif
+  return substitute(command, '%\(:\w\)*', '\=expand(submatch(0))', 'g')
+endfunction
+
+function! s:autoexec(bang, ...)
+  if a:bang
+    autocmd! vimrc-autoexec BufWritePost <buffer>
+  endif
+  let command = s:autoexec_format_command(a:000)
+  if empty(command)
+    autocmd vimrc-autoexec
+    return
+  endif
+  if s:bundle.is_installed('vimproc.vim')
+    execute 'autocmd vimrc-autoexec BufWritePost <buffer> call vimproc#system_bg('.string(command).')'
+  else
+    autocmd vimrc-autoexec BufWritePost <buffer> execute '!' command
+  endif
+  autocmd! vimrc-autoexec BufLeave <buffer>
+endfunction
+
+command! -nargs=* -bang Autoexec call s:autoexec(<bang>0, <f-args>)
+
+
 " ctags {{{2
 let s:ctagsutil = {}  "{{{3
 function s:ctagsutil.parse(...) "{{{4
@@ -7592,16 +7650,19 @@ if !has('vim_starting')
     execute 'source' expand("~/.gvimrc")
   endif
 
-  if has('gui_running')
-    " doautocmd GUIEnter,BufRead
-    doautocmd VimEnter,GUIEnter
-  else
-    doautocmd VimEnter
-  endif
+  " if has('gui_running')
+  "   " doautocmd GUIEnter,BufRead
+  "   doautocmd VimEnter,GUIEnter
+  " else
+  "   doautocmd VimEnter
+  " endif
 
   if exists('s:restore_setlocal')
     execute s:restore_setlocal
     unlet s:restore_setlocal
+  endif
+  if s:bundle.is_sourced('lightline')
+    call lightline#update()
   endif
 endif
 " __END__ {{{1
