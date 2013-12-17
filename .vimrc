@@ -2844,28 +2844,105 @@ if s:bundle.tap('lightline.vim')
   let g:unite_force_overwrite_statusline = 0
   let g:vimfiler_force_overwrite_statusline = 0
   let g:vimshell_force_overwrite_statusline = 0
-  " TODO : color
+
   let g:lightline = {
-        \ 'colorscheme': 'solarized',
-        \ 'mode_map': {'n': 'N', 'i': 'I', 'R': 'R', 'v': 'V',
-        \ 'V': 'V-LINE', 'c': 'C', "\<C-v>": 'V-BLOCK', 's': 'S',
-        \ 'S': 'S-LINE', "\<C-s>": 'S-BLOCK', '?': ' ',
-        \ },
-        \ 'active': {
-        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'xenv_version', ] ],
-        \   'right': [[ 'lineinfo' ], [ 'percent' ],
-        \     [ 'qfcount', 'anzu_or_charcode', 'fileformat', 'fileencoding', 'filetype',]],
-        \ },
-        \ 'component_function': {
-        \   'fugitive' : 'g:ll_helper.fugitive',
-        \   'filename' : 'g:ll_helper.filename',
-        \   'iminsert' : 'g:ll_helper.iminsert',
-        \   'qfcount' : 'g:ll_helper.qfcount',
-        \   'xenv_version' : 'g:ll_helper.xenv_version',
-        \   'anzu': 'g:ll_helper.anzu',
-        \   'anzu_or_charcode': 'g:ll_helper.anzu_or_charcode',
-        \ },
-        \ }
+  \ 'colorscheme': 'vimrc',
+  \ 'mode_map': {'n': 'N', 'i': 'I', 'R': 'R', 'v': 'V',
+  \ 'V': 'V-LINE', 'c': 'C', "\<C-v>": 'V-BLOCK', 's': 'S',
+  \ 'S': 'S-LINE', "\<C-s>": 'S-BLOCK', '?': ' ',
+  \ },
+  \ 'active': {
+  \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'xenv_version', ] ],
+  \   'right': [[ 'lineinfo' ], [ 'percent' ],
+  \     [ 'anzu_or_charcode', 'fileformat', 'fileencoding', 'filetype',],
+  \     [ 'qfcount', ],
+  \   ],
+  \ },
+  \ 'component_function': {
+  \   'fugitive' : 'g:ll_helper.fugitive',
+  \   'filename' : 'g:ll_helper.filename',
+  \   'iminsert' : 'g:ll_helper.iminsert',
+  \   'qfcount' : 'g:ll_helper.qfcount',
+  \   'xenv_version' : 'g:ll_helper.xenv_version',
+  \   'anzu': 'g:ll_helper.anzu',
+  \   'anzu_or_charcode': 'g:ll_helper.anzu_or_charcode',
+  \ },
+  \ }
+  " http://cocopon.me/blog/?p=3522
+  function! s:build_ll_colorscheme()
+    let mono0 = '#1d1f21'
+    let mono1 = '#282a2e'
+    let mono2 = '#303030'
+    let mono3 = '#373b41'
+    let mono4 = '#707880'
+    let mono5 = '#c5c8c6'
+
+    let red    = '#cc6666'
+    let green  = '#b5bd68'
+    let blue   = '#81a2be'
+    let orange = '#de935f'
+
+    let p = {
+    \ 'normal':   {},
+    \ 'inactive': {},
+    \ 'insert':   {},
+    \ 'replace':  {},
+    \ 'visual':   {},
+    \ 'tabline':  {}}
+    let p.normal.middle = [
+    \ {'bg': mono1, 'fg': mono4}]
+    let p.normal.left = [
+    \ {'bg': green, 'fg': mono0},
+    \ {'bg': mono3, 'fg': mono5}]
+    let p.normal.right = [
+    \ {'fg': 'gray5', 'bg': 'gray10'},
+    \ {'fg': 'gray9', 'bg': 'gray4'},
+    \ {'fg': 'gray8', 'bg': 'gray2'},
+    \ {'fg': 'white', 'bg': red},
+    \ ]
+    " let p.normal.right = [
+    " \ {'bg': mono4, 'fg': mono0},
+    " \ {'bg': mono4, 'fg': mono0}]
+    let p.inactive.middle = [
+    \ {'bg': mono2, 'fg': mono4}]
+    let p.inactive.right = [
+    \ p.inactive.middle[0],
+    \ p.inactive.middle[0]]
+    let p.inactive.left = [
+    \ p.inactive.middle[0],
+    \ p.inactive.middle[0]]
+
+    let p.insert.left = [
+    \ {'bg': blue, 'fg': mono0},
+    \ p.normal.left[1]]
+    let p.replace.left = [
+    \ {'bg': red, 'fg': mono0},
+    \ p.normal.left[1]]
+    let p.visual.left = [
+    \ {'bg': orange, 'fg': mono0},
+    \ p.normal.left[1]]
+    let p.tabline.middle = [
+    \ {'bg': mono4, 'fg': mono0}]
+    let p.tabline.right = [
+    \ {'bg': mono1, 'fg': mono4},
+    \ {'bg': mono4, 'fg': mono0}]
+    let p.tabline.left = [
+    \ {'bg': mono1, 'fg': mono4}]
+    let p.tabline.tabsel = [
+    \ {'bg': mono0, 'fg': mono5}]
+    let p = copy(p)
+
+    for mode in values(p)
+      for colors in values(mode)
+        for i in range(len(colors))
+          let colors[i] = [colors[i].fg, colors[i].bg]
+        endfor
+      endfor
+    endfor
+
+    let g:lightline#colorscheme#vimrc#palette = lightline#colorscheme#fill(p)
+  endfunction
+  call s:build_ll_colorscheme()
   let g:ll_helper = {}
 
   function! g:ll_helper.get(...) "{{{3
