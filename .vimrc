@@ -2745,9 +2745,10 @@ if s:bundle.tap('lightline.vim')
   \ },
   \ 'active': {
   \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'xenv_version', ] ],
-  \   'right': [[ 'lineinfo' ], [ 'percent' ],
-  \     [ 'anzu_or_charcode', 'fileformat', 'fileencoding', 'filetype',],
+  \   'right': [
   \     [ 'qfcount', ],
+  \     [ 'lineinfo' ], [ 'percent' ],
+  \     [ 'anzu_or_charcode', 'fileformat', 'fileencoding', 'filetype',],
   \   ],
   \ },
   \ 'component_function': {
@@ -2787,14 +2788,12 @@ if s:bundle.tap('lightline.vim')
     \ {'bg': green, 'fg': mono0},
     \ {'bg': mono3, 'fg': mono5}]
     let p.normal.right = [
+    \ {'fg': 'white', 'bg': 'red'},
     \ {'fg': 'gray5', 'bg': 'gray10'},
     \ {'fg': 'gray9', 'bg': 'gray4'},
     \ {'fg': 'gray8', 'bg': 'gray2'},
-    \ {'fg': 'white', 'bg': red},
     \ ]
-    " let p.normal.right = [
-    " \ {'bg': mono4, 'fg': mono0},
-    " \ {'bg': mono4, 'fg': mono0}]
+    " \ {'fg': 'white', 'bg': red},
     let p.inactive.middle = [
     \ {'bg': mono2, 'fg': mono4}]
     let p.inactive.right = [
@@ -2944,7 +2943,10 @@ if s:bundle.tap('lightline.vim')
     endif
 
     if a:ft == "ruby" && exists('$RBENV_VERSION')
-      return "rbenv:" . $RBENV_VERSION
+      if winwidth(0) > 70
+        return "rbenv:" . $RBENV_VERSION
+      endif
+      return $RBENV_VERSION
     endif
     let var = a:name . '_version'
     if !exists('b:'.var)
@@ -2960,7 +2962,10 @@ if s:bundle.tap('lightline.vim')
     if empty(ver)
       return ""
     endif
-    return a:name . ':' . ver
+    if winwidth(0) > 70
+      return a:name . ':' . ver
+    endif
+    return ver
   endfunction
 
   function! g:ll_helper.virtualenv() "{{{3
@@ -7438,10 +7443,10 @@ command! -nargs=0 DashRemoveCache call s:docset_cache_remove()
 
 " onsave {{{2
 let g:autoexec = {
-\ 'coffee': 'cd %:p:h && coffee -c %:p',
-\ 'scss': 'cd %:p:h && compass compile %:p',
-\ 'sass': 'cd %:p:h && compass compile %:p',
-\ 'less': 'cd %:p:h && lessc %:p %:p:r.css',
+\ 'coffee': 'coffee -c %:p',
+\ 'scss': 'sass -scss --compass compile %:p > %:p:r.css',
+\ 'sass': 'sass --compass compile %:p > %:p:r.css',
+\ 'less': 'lessc %:p %:p:r.css',
 \ }
 augroup vimrc-autoexec
   autocmd!
@@ -7461,7 +7466,7 @@ endfunction
 
 function! s:autoexec(bang, ...)
   if a:bang
-    autocmd! vimrc-autoexec BufWritePost <buffer>
+    autocmd! vimrc-autoexec * <buffer>
   endif
   let command = s:autoexec_format_command(a:000)
   if empty(command)
@@ -7473,10 +7478,11 @@ function! s:autoexec(bang, ...)
   else
     autocmd vimrc-autoexec BufWritePost <buffer> execute '!' command
   endif
-  autocmd! vimrc-autoexec BufLeave <buffer>
+  autocmd! vimrc-autoexec BufUnload <buffer> autocmd! vimrc-autoexec * <buffer>
 endfunction
 
 command! -nargs=* -bang Autoexec call s:autoexec(<bang>0, <f-args>)
+command! -nargs=* -bang AutoexecStatus autocmd vimrc-autoexec
 
 
 " ctags {{{2
