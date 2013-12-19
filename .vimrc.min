@@ -366,6 +366,7 @@ endfunction "}}}
 MyAutoCmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
 
 " plugin settings {{{1
+let g:vimrc_enabled_plugins = {}
 " vimfiler "{{{2
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0

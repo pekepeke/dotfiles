@@ -30,11 +30,13 @@ endif
 " if neobundle#is_installed('PIV') && neobundle#is_installed('neocomplcache')
 "   inoremap <buffer><expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
 " endif
-inoremap <buffer><expr> [ synchat#isnt_src()?'[':smartchr#one_of('[', 'array(', '[[')
-inoremap <buffer><expr> ] synchat#isnt_src()?']':smartchr#one_of(']', ')', ']]')
-inoremap <buffer><expr> \ synchat#isnt_src()?'\':smartchr#one_of('\', 'function', '\\')
-inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', '$this->', 'self::$', '@@')
-inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
-inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '=>', '>>')
+if get(g:vimrc_enabled_plugins, 'smartchr', 0)
+  inoremap <buffer><expr> [ synchat#isnt_src()?'[':smartchr#one_of('[', 'array(', '[[')
+  inoremap <buffer><expr> ] synchat#isnt_src()?']':smartchr#one_of(']', ')', ']]')
+  inoremap <buffer><expr> \ synchat#isnt_src()?'\':smartchr#one_of('\', 'function', '\\')
+  inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', '$this->', 'self::$', '@@')
+  inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
+  inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '=>', '>>')
+endif
 
 let &cpo = s:save_cpo

@@ -2336,9 +2336,11 @@ MyAutoCmd FileType * call s:nmap_square_brackets()
 " maps {{{2
 " if &diff
 " //2 = target-branch, //3 = merge branch
-map <leader>1 :diffget //2 \| duffupdate<CR>
-map <leader>2 :diffget //3 \| duffupdate<CR>
-map <leader>3 :echo '<Leader>2 = merges from target branch(left buffer), <Leader>3 = merges from merge branch(right buffer)'<CR>
+map <leader>1 :diffget //2 <Bar> duffupdate<CR>
+map <leader>2 :diffget //3 <Bar> duffupdate<CR>
+map <leader>3 :echo '<Leader>1 = merges from target branch(left buffer), '
+      \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
+      \ <Bar> diffupdate<CR>
 " endif
 
 " nmaps {{{3
@@ -2648,6 +2650,10 @@ let plugin_scrnmode_disable  = 1
 let plugin_verifyenc_disable = 1
 
 " plugin settings {{{1
+" flags {{{2
+let g:vimrc_enabled_plugins = {
+      \ 'smartchr': s:bundle.is_installed('vim-smartchr'),
+      \ }
 " vim-markdown-quote-syntax {{{2
 let s:mdquote_defaults = keys(extend(
       \ get(g:, 'markdown_quote_syntax_defaults', {})
@@ -2751,9 +2757,16 @@ if s:bundle.tap('lightline.vim')
   \     [ 'anzu_or_charcode', 'fileformat', 'fileencoding', 'filetype',],
   \   ],
   \ },
+  \ 'iactive': {
+  \   'left': [ [ 'absfilename' ] ],
+  \   'right': [
+  \      [ 'lineinfo' ], [ 'percent' ]
+  \   ],
+  \ },
   \ 'component_function': {
   \   'fugitive' : 'g:ll_helper.fugitive',
   \   'filename' : 'g:ll_helper.filename',
+  \   'absfilename' : 'g:ll_helper.get_absfilename',
   \   'iminsert' : 'g:ll_helper.iminsert',
   \   'qfcount' : 'g:ll_helper.qfcount',
   \   'xenv_version' : 'g:ll_helper.xenv_version',
@@ -2976,6 +2989,14 @@ if s:bundle.tap('lightline.vim')
   endfunction
 
   function! g:ll_helper.get_filename() "{{{3
+    let filename = self.get_special_filename()
+    if !empty(filename)
+      return filename
+    endif
+    return expand('%:t')
+  endfunction
+
+  function! g:ll_helper.get_special_filename() "{{{3
     if &filetype == 'vimfiler'
       return vimfiler#get_status_string()
     elseif &filetype == 'unite'
@@ -2990,10 +3011,25 @@ if s:bundle.tap('lightline.vim')
       elseif &filetype == 'diff' && exists('*t:diffpanel.GetStatusLine')
         return t:diffpanel.GetStatusLine()
       endif
-    elseif expand('%t')
+    elseif expand('%:t') == ""
       return '[No Name]'
     endif
-    return expand('%t')
+    return ""
+  endfunction
+
+  " TODO
+  function! g:ll_helper.get_absfilename() "{{{3
+    let filename = self.get_special_filename()
+    if !empty(filename)
+      return filename
+    endif
+    let filename = expand('%:p')
+    " if filename =~? '^fugitive://'
+    let win_w = winwidth(0)
+    if win_w < strlen(filename)
+      return strpart(filename, floor(win_w / 2))
+    endif
+    return filename
   endfunction
 
   function! g:ll_helper.filename() "{{{3
@@ -4901,6 +4937,19 @@ let g:surround_custom_mapping.php = {
       \ }
 let g:surround_custom_mapping.javascript = {
       \ 'f':  "function(){ \r }"
+      \ }
+let g:surround_custom_mapping.coffee = {
+      \ '-':  "<% \r %>",
+      \ '=':  "<%= \r %>",
+      \ '9':  "(\r)",
+      \ 'r':  "///\r///",
+      \ '#':  "#{\r}",
+      \ '3':  "#{\r}",
+      \ 'e':  "begin \r end",
+      \ 'E':  '""" \r """',
+      \ 'i':  "if \1if\1 \r",
+      \ 'u':  "unless \1unless\1 \r",
+      \ 'c':  "class \1class\1 \r",
       \ }
 let g:surround_custom_mapping.lua = {
       \ 'f':  "function(){ \r }"

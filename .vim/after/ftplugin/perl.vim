@@ -18,9 +18,11 @@ nmap <silent> <buffer> [t]pm :PerlUseInsertionCWord<CR>
 
 nnoremap <buffer> <silent> [!comment-doc] :call <SID>my_pod_header()<CR>
 
-inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', '$self->', '@@')
-inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
-inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '=>', '>>')
+if get(g:vimrc_enabled_plugins, 'smartchr', 0)
+  inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', '$self->', '@@')
+  inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
+  inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '=>', '>>')
+endif
 
 
 let &cpo = s:save_cpo
