@@ -644,7 +644,7 @@ NeoBundle 'Shougo/vimproc.vim', {
       \ 'unix'   : 'make -f make_unix.mak',
       \ }
       \ }
-NeoBundleLazy 'Shougo/vimshell', {
+NeoBundleLazy 'Shougo/vimshell.vim', {
       \ 'depends': 'Shougo/vimproc.vim', 'autoload' : {
       \ 'commands' : [{ 'name' : 'VimShell',
       \ 'complete' : 'customlist,vimshell#complete'},
