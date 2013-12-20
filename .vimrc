@@ -384,7 +384,7 @@ elseif executable('cmigemo')
 endif
 
 " color settings "{{{1
-"set t_Co=256
+" set t_Co=256
 set background=dark
 
 function! s:highlights_add() "{{{2
@@ -1911,7 +1911,7 @@ augroup END
 
 " some commands & altercmd {{{1
 " some commands {{{2
-command! -narg=0 SynReload source $VIMRUNTIME/syntax/syntax.vim
+command! -narg=0 SynReload syntax off <Bar> syntax enable
 command! -nargs=? -complete=dir Ctags call s:exec_ctags(<q-args>)
 command! -nargs=? -complete=dir Gtags call s:system_with_lcd("gtags", <q-args>)
 
@@ -3171,6 +3171,8 @@ if s:bundle.tap('cake.vim')
     function! s:bundle.tapped.on_post_source(bundle)
       " doautocmd VimEnter
       call cake#init_app('')
+      call s:init_cakephp()
+      MyAutoCmd User PluginCakephpInitializeAfter call s:init_cakephp()
     endfunction
   endif
 
@@ -3206,7 +3208,6 @@ if s:bundle.tap('cake.vim')
     endif
   endfunction " }}}
 
-  MyAutoCmd User PluginCakephpInitializeAfter call s:init_cakephp()
   call s:bundle.untap()
 endif
 
@@ -6724,49 +6725,69 @@ if s:bundle.is_installed('vimfiler.vim')
     let g:vimfiler_tree_closed_icon = '▸'
   endif
   " let g:vimfiler_marked_file_icon = '*'
-  if s:is_mac
-    let g:vimfiler_readonly_file_icon = '✗'
-    let g:vimfiler_marked_file_icon = '✓'
-  else
-    let g:vimfiler_readonly_file_icon = 'x'
-    let g:vimfiler_marked_file_icon = 'v'
-  endif
+  let g:vimfiler_readonly_file_icon = 'x'
+  let g:vimfiler_marked_file_icon = 'v'
 
   " keymaps {{{3
-  nnoremap <silent> [!space]f  :call <SID>vimfiler_tree_launch()<CR>
+  nnoremap <silent> [!space]f  :call <SID>vimfiler_tree_launch_or_enter()<CR>
+  nnoremap <silent> [!space]fr :call <SID>vimfiler_tree_launch_or_enter()<CR>
   nnoremap <silent> [!space]ff :call <SID>vimfiler_tree_launch()<CR>
   nnoremap <silent> [!space]fg :call <SID>vimfiler_tree_launch(fnameescape(expand('%:p:h')))<CR>
   command! -nargs=? -complete=file VimFilerTree call s:vimfiler_tree_launch(<f-args>)
   command! -nargs=? -complete=file FTree call s:vimfiler_tree_launch(<f-args>)
 
+  function! s:vimfiler_tree_launch_or_enter() "{{{4
+    let fpath = expand('%:p')
+    if !exists('b:vimfiler')
+      wincmd h
+      if !exists('b:vimfiler')
+        wincmd p
+        call s:vimfiler_tree_launch()
+        return
+      endif
+      call s:vimfiler_tree_expand_file(fpath)
+    endif
+  endfunction
+
+  function! s:vimfiler_tree_expand_file(fpath)
+    if !exists('b:vimfiler.current_dir')
+      return
+    endif
+    let dir = b:vimfiler.current_dir
+    let fpath = a:fpath
+    let pos = stridx(fpath, dir)
+    if pos != -1
+      let fpath = strpart(strpart(fpath, pos), strlen(dir))
+      let paths = split(fpath, "/")
+      let index = 0
+      let max_index = len(paths) - 1
+      if len(filter(copy(paths), 'v:val =~# "^\\."')) > 0
+        execute "normal \<Plug>(vimfiler_toggle_visible_ignore_files)"
+      endif
+
+      execute "normal \<Plug>(vimfiler_cursor_top)"
+      while index <= max_index
+        let item = paths[index]
+        " call vimconsole#log("start : %s", item)
+        let pattern = escape(" " . item . (max_index == index ? " " : "/"), '\.')
+        if search(pattern, "W") == 0
+          " call vimconsole#log("stop : %s,pattern=%s", item, pattern)
+          break
+        endif
+        let file = vimfiler#get_file()
+        if file.vimfiler__is_directory && !file.vimfiler__is_opened
+          execute "normal \<Plug>(vimfiler_expand_tree)"
+        endif
+        let index = index + 1
+      endwhile
+    endif
+  endfunction
+
   function! s:vimfiler_tree_launch(...) "{{{4
     let fpath = expand('%:p')
     let dir = a:0 > 0 ? a:1 : getcwd()
     execute 'VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:' . dir
-
-    if &filetype == "vimfiler"
-      let pos = stridx(fpath, dir)
-      if pos != -1
-        let fpath = strpart(strpart(fpath, pos), strlen(dir))
-        let paths = split(fpath, "/")
-        let index = 0
-        let max_index = len(paths) - 1
-        if len(filter(copy(paths), 'v:val =~# "^\\."')) > 0
-          normal "\<Plug>(vimfiler_toggle_visible_ignore_files)"
-        endif
-
-        normal "\<Plug>(vimfiler_cursor_top)"
-        while index <= max_index
-          let item = paths[index]
-          let pattern = escape(item . (max_index == index ? " " : "/"), '\.')
-          if search(pattern, "W") == 0
-            break
-          endif
-          normal "\<Plug>(vimfiler_expand_tree)"
-          let index = index + 1
-        endwhile
-      endif
-    endif
+    call s:vimfiler_tree_expand_file(fpath)
   endfunction
 
   function! s:vimfiler_smart_tree_h(...) "{{{4
@@ -7466,14 +7487,23 @@ function! s:zeal(...)
   let word = len(a:000) == 0 ?
   \ input('Zeal search: ',
   \ expand('<cword>'), 'customlist,'.s:SID().'zeal_complete') : a:1
-  call system(printf("zeal --query %s &", shellescape(word)))
+  if s:is_mac
+    call system(printf("/Applications/zeal.app/Contents/MacOS/zeal --query %s &", shellescape(word)))
+  else
+    call system(printf("zeal --query %s &", shellescape(word)))
+  endif
 endfunction
 let s:zeal_keywords = []
 
 function! s:zeal_complete(A, L, P) "{{{
   if empty(s:zeal_keywords)
-    let s:zeal_keywords =
-          \ s:docset_keywords_gather(expand('~/.local/share/zeal/docsets'), 0)
+    if s:is_mac
+      let s:zeal_keywords =
+        \ s:docset_keywords_gather(expand('~/Library/Application Support/zeal/docsets'), 0)
+    else
+      let s:zeal_keywords =
+        \ s:docset_keywords_gather(expand('~/.local/share/zeal/docsets'), 0)
+  endif
   endif
   if stridx(a:A, ":") != -1
     return []
@@ -7488,7 +7518,9 @@ function! s:docset_cache_remove()
   let s:zeal_keywords = []
 endfunction
 command! -nargs=0 ZealRemoveCache call s:docset_cache_remove()
-command! -nargs=0 DashRemoveCache call s:docset_cache_remove()
+command! -nargs=0 DashRemoveCace call s:docset_cache_remove()
+nnoremap [!space]ss :Zeal<Space>
+nnoremap [!space]sw :Zeal<Space><C-r>=expand('<cword>')<CR>
 
 " onsave {{{2
 let g:autoexec = {

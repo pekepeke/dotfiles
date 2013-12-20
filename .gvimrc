@@ -4,6 +4,7 @@ scriptencoding utf-8
 if has('vim_starting')
   set columns=100
   set lines=70
+  set t_Co=256
 endif
 set cmdheight=1
 " set guioptions-=T
