@@ -37,7 +37,7 @@ function! my#ui#complete_encodings(A, L, P) "{{{2
   endfor
 
   return matches
-endfunction 
+endfunction
 
 function! my#ui#cmd_capture(q_args) "{{{2
   redir => output
@@ -52,11 +52,6 @@ function! my#ui#cmd_capture(q_args) "{{{2
   call setline(1, split(output, '\n'))
 endfunction
 
-function! my#ui#indent_whole_buffer() " {{{2
-  let l:p = getpos(".")
-  normal gg=G
-  call setpos(".", l:p)
-endfunction "}}}
 function! my#ui#launch_browser(appname) "{{{2
   let path = ""
   if a:appname == "ie"
@@ -120,7 +115,7 @@ function! my#ui#preview_browser() range "{{{2
     redraw!
     return
   endif
-  let lines = a:firstline == a:lastline 
+  let lines = a:firstline == a:lastline
         \ ? getline(1, "$") : getline(a:firstline, a:lastline)
   "let lines = a:lines
   if empty(lines)
@@ -135,7 +130,7 @@ function! my#ui#preview_browser() range "{{{2
   silent execute "sleep 2"
   if filewritable(fpath) | call delete(fpath) | endif
   redraw!
-endfunction 
+endfunction
 
 let &cpo = s:save_cpo
 

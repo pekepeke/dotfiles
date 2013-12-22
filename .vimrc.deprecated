@@ -19,6 +19,25 @@
 "   startinsert
 " endfunction
 
+function! s:filetype_check()
+  if !empty(&filetype)
+    " if !get(g:, 'syntax_on', 0)
+    "   call s:log("syntax enable")
+    "   syntax enable
+    " endif
+    return
+  endif
+  redir! => fts
+  silent filetype
+  redir END
+  let status = filter(map(split(fts, " "), 'split(v:val, ":")'), '!empty(v:val)')
+  call remove(status, 0)
+  if len(filter(status, 'v:val[1] == "OFF"')) > 0
+    filetype plugin indent on
+  endif
+endfunction
+" MyAutoCmd BufReadPost,BufEnter * call s:filetype_check()
+
 " deprecated {{{1
 " macvim {{{1
 
@@ -88,6 +107,28 @@ NeoBundleLazy 'mklabs/vim-fetch', { 'autoload' : {
       \   {'name': 'Fetch', 'complete':'customlist,s:Completion'},
       \   'FetchManage',
       \ ], }}
+" NeoBundle 'tpope/vim-endwise'
+" NeoBundle 'vim-scripts/YankRing.vim'
+" NeoBundle 'maxbrunsfeld/vim-yankstack'
+" NeoBundle 'chrismetcalf/vim-yankring'
+" NeoBundle 'the-isz/MinYankRing.vim'
+" NeoBundle 'Raimondi/delimitMate'
+" NeoBundle 'acustodioo/vim-enter-indent'
+  " NeoBundleLazy 'Shougo/neocomplcache.vim'
+  " NeoBundle 'pekepeke/neocomplcache-rsense.vim', 'neocompleteFeature'
+
+" NeoBundle 'houtsnip/vim-emacscommandline'
+
+" NeoBundle 'ap/vim-css-color'
+
+" NeoBundle 'lukaszb/vim-web-indent'
+" NeoBundle 'vim-scripts/IndentAnything'
+" NeoBundle 'itspriddle/vim-javascript-indent'
+" NeoBundle 'jiangmiao/simple-javascript-indenter'
+" NeoBundle 'drslump/vim-syntax-js'
+" NeoBundle  'vim-scripts/jQuery'
+" NeoBundle 'mmalecki/vim-node.js'
+" NeoBundle 'thinca/vim-ft-markdown_fold'
 
 " NeoBundle 'petdance/vim-perl'
 "NeoBundleLazyOn FileType cpp 'OmniCppComplete'
@@ -154,9 +195,43 @@ NeoBundleLazy 'mklabs/vim-fetch', { 'autoload' : {
 " NeoBundle "mattn/vim-metarw-git"
 " NeoBundle "sorah/metarw-simplenote.vim"
 
+
+" plugin settings {{{1
+" hl_matchit {{{2
+if s:bundle.tap('hl_matchit.vim')
+  let g:hl_matchit_enable_on_vim_startup = 0
+  let g:hl_matchit_hl_groupname = 'Title'
+  let g:hl_matchit_allow_ft_regexp = 'html\|eruby\|eco'
+  let s:hl_matchit_running = get(g:, 'hl_matchit_enable_on_vim_startup', 0)
+  let s:hl_matchit_last_off_time = 0
+
+  function! s:bundle.tapped.hooks.on_source(bundle)
+    function! s:hl_matchit_fire(on)
+      if a:on
+        call hl_matchit#do_highlight()
+        " HiMatchOn
+      elseif !a:on
+        HiMatchOff
+      endif
+    endfunction
+    if !get(g:, 'hl_matchit_enable_on_vim_startup', 0)
+      augroup vimrc-plugin-hl_matchit
+        autocmd!
+        autocmd CursorHold * call s:hl_matchit_fire(1)
+        autocmd CursorMoved * call s:hl_matchit_fire(0)
+      augroup END
+    endif
+  endfunction
+  call s:bundle.untap()
+endif
+
 " pydiction {{{1
 " pydiction {{{2
 let g:pydiction_location = '~/.vim/dict/pydiction-complete-dict'
+
+" grep {{{1
+nnoremap [!space]g  :Ack<Space>-i<Space>''<Left>
+nnoremap [!space]gg :Ack<Space>-i<Space>''<Left>
 
 " unite-greplauncher {{{1
 " NeoBundleLazy 'daisuzu/unite-grep_launcher', { 'autoload' : {
@@ -338,5 +413,57 @@ endif
 " endif
 
 " }}}
+
+" neocomplcache {{{1
+  " let g:neocomplcache_enable_auto_delimiter               = 1
+  " let g:neocomplcache_plugin_completion_length     = {
+  " let g:neocomplcache_auto_completion_start_length        = 2
+  " let g:neocomplcache_manual_completion_start_length      = 1
+  " let g:neocomplcache_min_keyword_length                  = 3
+  " let g:neocomplcache_ignore_case                         = 0
+  " \ 'snipMate_complete' : 1,
+  " \ 'buffer_complete'   : 1,
+  " \ 'include_complete'  : 2,
+  " \ 'syntax_complete'   : 2,
+  " \ 'filename_complete' : 2,
+  " \ 'keyword_complete'  : 2,
+  " \ 'omni_complete'     : 1,
+  " \ }
+  " inoremap <expr><CR>  neocomplcache#smart_close_popup() . "\<CR>"
+  " inoremap <silent> <CR> <C-R>=neocomplcache#smart_close_popup()<CR><CR>
+  " endwise
+  " inoremap <silent> <cr> <c-r>=EnterIndent()<cr>
+  " if s:bundle.is_installed('vim-indent_cr')
+    " Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")
+    "       \ ."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
+  " else
+    " Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplcache#smart_close_popup():"")
+    "       \ ."\<CR>\<C-r>=endwize#crend()\<CR>"
+  " endif
+
+  " <TAB>: completion.
+  " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+    " inoremap <expr> <C-h>  neocomplcache#smart_close_popup()
+    "       \ . eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<C-h>")')
+    " inoremap <expr> <BS>   neocomplcache#smart_close_popup()
+    "       \ .eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<BS>")')
+
+" neocomplete {{{1
+  " inoremap <expr><CR>  neocomplete#smart_close_popup() . "\<CR>"
+  " inoremap <silent> <CR> <C-R>=neocomplete#smart_close_popup()<CR><CR>
+  " endwise
+  " inoremap <silent> <cr> <c-r>=EnterIndent()<cr>
+  " if s:bundle.is_installed('vim-enter-indent')
+  "   Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplete#smart_close_popup():"")."\<C-r>=indent_cr#enter()\<CR>\<C-r>=endwize#crend()\<CR>"
+  " else
+  "   Lazy inoremap <silent><expr> <CR> (pumvisible()?neocomplete#smart_close_popup():"")."\<CR>\<C-r>=endwize#crend()\<CR>"
+  " endif
+  " <TAB>: completion.
+  " inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
+    " inoremap <expr> <C-h>  neocomplete#smart_close_popup()
+    "       \ . eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<C-h>")')
+    " inoremap <expr> <BS>   neocomplete#smart_close_popup()
+    "       \ .eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<BS>")')
 
 " __END__ {{{1

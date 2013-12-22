@@ -1,0 +1,4 @@
+-I /usr/include/
+-fms-extensions -fgnu-runtime
+-include malloc.h
+
