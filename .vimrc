@@ -991,6 +991,11 @@ NeoBundle 'taka84u9/vim-ref-ri', {
 
 " vim {{{4
 NeoBundle 'kana/vim-vspec'
+NeoBundleLazy 'vim-jp/vital.vim', {'autoload': {
+      \ 'commands': [{
+      \ 'name': 'Vitalize', 'complete':'customlist,vitalizer#complete'
+      \ }]
+      \ }}
 
 " vim-help {{{4
 NeoBundle 'mattn/learn-vimscript'
@@ -1881,6 +1886,56 @@ command! -nargs=0 -bang MyQ
 
 command! -nargs=0 -bang MyWQ write<bang> | MyQ<bang>
 
+" util class "{{{3
+let s:bufutil = {}
+function! s:bufutil.new(...) "{{{
+  let obj = copy(self)
+  if a:0 > 0
+    return extend(obj, a:1)
+  endif
+  return obj
+endfunction "}}}
+
+function! s:bufutil.buffer_init() "{{{
+  setlocal buftype=nofile
+  setlocal bufhidden=hide
+  setlocal noswapfile
+  setlocal buflisted
+  resize 8
+endfunction "}}}
+
+function! s:bufutil.set_text(bufname, text) "{{{
+  let bufname = a:bufname
+  let bufnum = bufnr(bufname)
+  if bufnum == -1
+    execute 'new' bufname
+    call self.buffer_init()
+  else
+    let winnum = bufwinnr(bufnum)
+    if winnum != -1
+      if bufwinnr('%') != winnum
+        execute winnum . "wincmd w"
+      endif
+    else
+      silent execute 'split +buffer' bufname
+    endif
+  endif
+
+  normal! "Gzz"
+  call append(line('$'), a:text)
+endfunction "}}}
+
+function! s:bufutil.command(count, l1, l2, ...) "{{{
+  let args = copy(a:000)
+  if a:count != 0
+    let text = join(getline(a:l1, a:l2), "\n")
+
+    call remove(args, len(args) - 1)
+    let args += [text]
+  endif
+  call self.execute(args)
+endfunction"}}}
+
 function! s:system(cmd) "{{{3
   if s:bundle.is_installed('vimproc.vim')
     call vimproc#system_bg(a:cmd)
@@ -2508,9 +2563,9 @@ vnoremap ik i)
 " vmaps {{{3
 vnoremap . :normal .<CR>
 " vnoremap <Leader>te    :ExciteTranslate<CR>
-vnoremap <Leader>tg    :GingerRange<CR>
-vnoremap <Leader>te    :GTransEnJa<CR>
-vnoremap <Leader>tj    :GTransJaEn<CR>
+vnoremap <Leader>tg    :Ginger<CR>
+vnoremap <Leader>te    :Gte<CR>
+vnoremap <Leader>tj    :Gtj<CR>
 vnoremap <Tab>   >gv
 vnoremap <S-Tab> <gv
 "nnoremap : q:
@@ -4805,6 +4860,65 @@ nmap ss <Plug>Yssurround
 " nmap ss <Plug>Ysurround
 imap <C-g>y <Esc><Plug>Yssurround
 
+nmap si :Qsurround Yss<CR>
+vmap W :Qsurround VS<CR>
+command! -nargs=1 -range Qsurround call s:qsurround.exec(<q-args>)
+command! -nargs=1 QsurroundSet call s:qsurround.set(<q-args>)
+command! -range QsurroundRangeSet call s:qsurround.rangeset(<count>, <line1>, <line2>, <q-args>)
+let s:qsurround = {'data': ['', ''], 'pending':''}
+
+function! s:qsurround.rangeset(count, l1, l2, text)
+  let strs = a:count == 0 ? split(a:text, "\n") : getline(a:l1, a:l2)
+  if len(strs) == 1
+    let strs = [s, '']
+  elseif len(strs) > 2
+    let s = remove(strs, 0)
+    let strs = [s,  join(strs, "\n")]
+  endif
+  let self.data = strs
+endfunction
+
+function! s:qsurround.set(s)
+  if !empty(self.pending)
+    let self.data = [self.pending, a:s]
+    let self.pending = ''
+  else
+    let self.pending = a:s
+  endif
+endfunction
+
+function! s:qsurround.exec(mode)
+  call self.surround(a:mode, self.data[0], self.data[1])
+endfunction
+
+function! s:qsurround.surround(mode, head, tail)
+  " if exists("b:surround_".char2nr('Z'))
+  "   let org = b:surrond_{char2nr('Z')}
+  " else
+  "   let org = ''
+  " endif
+  if !exists('b:surround_objects')
+    let b:surround_objects = {}
+  endif
+  let org = get(b:surround_objects, 'Z', '')
+  let b:surround_objects.Z = a:head . "\n\r\n" . a:tail
+
+  let char = tolower(a:mode[0:0])
+  let op = ""
+  if char == "v"
+    let op = "gv"
+  endif
+  execute "normal " . op . "\<Plug>" . a:mode . "urroundZ"
+
+  if !empty(org)
+    let b:surround_objects['Z'] = org
+    " let b:surrond_{char2nr('Z')} = org
+  else
+    unlet b:surround_objects['Z']
+    " unlet b:surrond_{char2nr('Z')}
+  endif
+endfunction
+
 let g:surround_custom_mapping = {}
 let g:surround_custom_mapping._ = {
       \ "\<CR>" : "\n\r\n",
@@ -5204,13 +5318,13 @@ if s:bundle.is_installed('vim-ref')
   let g:ref_source_webdict_sites.default = 'alc'
 
   " webdict command {{{4
-  function! s:ref_webdict_search(source, count, l1, l2, text)
-    " let text = a:firstline == 0 ? a:text : join(getline(a:firstline, a:lastline), "\n")
-    let text = a:count == 0 ? a:text : join(getline(a:l1, a:l2), "\n")
-    execute "Ref" "webdict" a:source text
+  let s:ref_gtrans = s:bufutil.new()
+  function! s:ref_gtrans.execute(args)
+    let [source, text] = a:args
+    execute "Ref" "webdict" source text
   endfunction
-  command! -nargs=? -range=0 GTransEnJa call s:ref_webdict_search('en_ja', <count>, <line1>, <line2>, <q-args>)
-  command! -nargs=? -range=0 GTransJaEn call s:ref_webdict_search('ja_en', <count>, <line1>, <line2>, <q-args>)
+  command! -nargs=? -range=0 GTransEnJa call s:ref_gtrans.command(<count>, <line1>, <line2>, 'en_ja',<q-args>)
+  command! -nargs=? -range=0 GTransJaEn call s:ref_gtrans.command(<count>, <line1>, <line2>, 'ja_en',<q-args>)
 
   " langs {{{4
   let g:ref_source_webdict_sites.default = 'alc'
@@ -7277,58 +7391,77 @@ else
   " TODO :
 endif
 
-" ginger {{{2
-let s:ginger = {}
-let s:ginger.endpoint = 'http://services.gingersoftware.com/Ginger/correct/json/GingerTheText'
-let s:ginger.apikey = '6ae0c3a0-afdc-4532-a810-82ded0054236'
+" gtrans {{{2
+let s:gtrans = s:bufutil.new({
+  \ 'endpoint': 'http://translate.google.co.jp/translate_a/t',
+  \ 'header': {
+  \ 'User-Agent': 'w3m/0.5.3',
+  \ },
+  \ 'query' : {
+  \ 'client': 't',
+  \ 'sl': 'en',
+  \ 'tl': 'ja',
+  \ 'hl': 'ja',
+  \ 'sc': '2',
+  \ 'ie': 'UTF-8',
+  \ 'oe': 'UTF-8',
+  \ 'oc': '1',
+  \ 'otf': '1',
+  \ 'ssel': '0',
+  \ 'tsel': '0',
+  \ },
+  \ })
 
-augroup vimrc-ginger
-  autocmd!
-  autocmd BufNewFile __Ginger__ call s:ginger.buffer_init()
-augroup END
-
-function! s:ginger.buffer_init() "{{{3
-  setlocal buftype=nofile
-  setlocal bufhidden=hide
-  setlocal noswapfile
-  setlocal buflisted
-  resize 8
-endfunction
-
-function! s:ginger.range() range  "{{{3
-  let text = join(getline(a:firstline, a:lastline), "\n")
-  let [mistake, correct] = self.get(text)
-
-  let bufname = "__Ginger__"
-  let bufnum = bufnr(bufname)
-  if bufnum == -1
-    execute 'new' bufname
+function s:gtrans.execute(args) "{{{
+  let [sltl, text] = a:args
+  if strlen(sltl) > 3
+    let sl = sltl[0:1]
+    let tl = sltl[2:3]
   else
-    let winnum = bufwinnr(bufnum)
-    if winnum != -1 && winnr() != winnum
-      execute winnum . "wincmd w"
-    else
-      silent execute 'split +buffer' bufname
-    endif
+    let sl = "en"
+    let tl = "ja"
   endif
 
-  normal! "Gzz"
-  call append(line('$'), "Original: ".text)
-  call append(line('$'), "Correct : ".correct)
-endfunction
+  let query = extend(copy(self.query), {
+    \ 'q': text,
+    \ 'sl': sl,
+    \ 'tl': tl,
+    \ })
+  let res = webapi#http#get(self.endpoint, query, self.header)
+  if res.status != 200
+    return
+  endif
+  let s = substitute(res.content, ',\+', ',', 'g')
+  let json = webapi#json#decode(s)
+  if exists('json[0][0][1]')
+    let lines = split(printf("Original: %s\nTranslated: %s",
+      \ json[0][0][1], json[0][0][0]), "\n")
+    call self.set_text("[Google Translate]", lines)
+  endif
+endfunction "}}}
+command! -nargs=? -range=0 Gte call s:gtrans.command(<count>, <line1>, <line2>, "enja", <q-args>)
+command! -nargs=? -range=0 Gtj call s:gtrans.command(<count>, <line1>, <line2>, "jaen", <q-args>)
 
-function! s:ginger.echo(text)  "{{{3
+" ginger {{{2
+let s:ginger = s:bufutil.new({
+  \ 'endpoint' : 'http://services.gingersoftware.com/Ginger/correct/json/GingerTheText',
+  \ 'apikey' : '6ae0c3a0-afdc-4532-a810-82ded0054236',
+  \ })
+
+function! s:ginger.execute(args) "{{{3
+  let [text] = a:args
   let [mistake, correct] = self.get(text)
-  echon "Mistake: " . mistake
-  echon "Correct: " . correct
+
+  let texts = split(printf("Original: %s\nCorrect: %s", text, correct), "\n")
+  call self.set_text("[Ginger]", texts)
 endfunction
 
 function! s:ginger.get(text)  "{{{3
   let res = webapi#json#decode(webapi#http#get(self.endpoint, {
-        \ 'lang': 'US',
-        \ 'clientVersion': '2.0',
-        \ 'apiKey': self.apikey,
-        \ 'text': a:text}).content)
+    \ 'lang': 'US',
+    \ 'clientVersion': '2.0',
+    \ 'apiKey': self.apikey,
+    \ 'text': a:text}).content)
   let i = 0
   let mistake = ''
   let correct = ''
@@ -7359,8 +7492,7 @@ function! s:ginger.get(text)  "{{{3
   return [mistake, correct]
 endfunction
 " command define {{{3
-command! -nargs=0 -range GingerRange call s:ginger.range()
-command! -nargs=+ Ginger echo s:ginger.get(<q-args>)
+command! -nargs=? -range=0 Ginger call s:ginger.command(<count>, <line1>, <line2>, <q-args>)
 " dash & zeal {{{2
 function! s:docset_keywords_gather(root, is_dash) "{{{
   let pattern = '*.docset/Contents/Info.plist'
@@ -7489,7 +7621,6 @@ endfunction
 command! -nargs=* -bang Autoexec call s:autoexec(<bang>0, <f-args>)
 command! -nargs=* -bang AutoexecStatus autocmd vimrc-autoexec
 
-
 " ctags {{{2
 let s:ctagsutil = {}  "{{{3
 function s:ctagsutil.parse(...) "{{{4
@@ -7567,13 +7698,13 @@ function! s:ctagsutil.tagbar_source(...) "{{{4
   echo join(m, "\n")
 endfunction
 " TagsConfigExample {{{3
-command! -nargs=0 TagsConfigExample call s:ctagsutil.show()
+command! -nargs=0 CTagsConfigSample call s:ctagsutil.show()
 
 " for vim {{{3
 command! -nargs=0 ThisSyntaxName echo synIDattr(synID(line("."), col("."), 1), "name")
 command! -nargs=0 ThisSyntax echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
-                        \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
-                        \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
+  \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+  \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
 
 " util {{{2
 function! s:to_scratch() "{{{3
@@ -7601,6 +7732,7 @@ function! s:efm_tester(msg) "{{{3
     let &g:errorformat = org_efm
   endtry
 endfunction " }}}
+
 function! s:efm_tester_exec(count, l1, l2, text) "{{{3
   if a:count == 0 && empty(a:text)
     let msg = join(getline(1, '$'), "\n")
@@ -7609,7 +7741,8 @@ function! s:efm_tester_exec(count, l1, l2, text) "{{{3
   endif
   call s:efm_tester(msg)
 endfunction " }}}
-function! s:efm_tester_set(count, l1, l2, text)
+
+function! s:efm_tester_set(count, l1, l2, text) "{{{
   let s = a:count == 0 ? a:text : join(getline(a:l1, a:l2), "\n")
   if empty(fmt)
     echo "set g:efm_tester_fmt=" . string(fmt)
@@ -7617,7 +7750,7 @@ function! s:efm_tester_set(count, l1, l2, text)
   else
     echo "g:efm_tester_fmt=" . string(g:efm_tester_fmt)
   endif
-endfunction
+endfunction "}}}
 command! -nargs=? -range=0 EfmTest call s:efm_tester_exec(<count>, <line1>, <line2>, <q-args>)
 command! -nargs=? -range=0 EfmSetFormat call s:efm_tester_set(<count>, <line1>, <line2>, <q-args>)
 

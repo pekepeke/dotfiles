@@ -181,6 +181,9 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   PATH=$GOPATH/bin:$PATH
   # fi
 
+  # lua {{{2
+  xenv-init luaenv
+
   # haskell {{{2
   PATH=${HOME}/.cabal/bin:$PATH
 
