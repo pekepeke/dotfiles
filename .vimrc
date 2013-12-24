@@ -2772,7 +2772,7 @@ if s:bundle.tap('lightline.vim')
   \     [ 'anzu_or_charcode', 'fileformat', 'fileencoding', 'filetype',],
   \   ],
   \ },
-  \ 'iactive': {
+  \ 'inactive': {
   \   'left': [ [ 'absfilename' ] ],
   \   'right': [
   \      [ 'lineinfo' ], [ 'percent' ]
@@ -6766,7 +6766,7 @@ if s:bundle.is_installed('vimfiler.vim')
 
   " keymaps {{{3
   nnoremap <silent> [!space]f  :call <SID>vimfiler_tree_launch_or_enter()<CR>
-  nnoremap <silent> [!space]fr :call <SID>vimfiler_tree_launch_or_enter()<CR>
+  nnoremap <silent> [!space]fr :call <SID>vimfiler_tree_launch_or_enter()<CR>:wincmd p<CR>
   nnoremap <silent> [!space]ff :call <SID>vimfiler_tree_launch()<CR>
   nnoremap <silent> [!space]fg :call <SID>vimfiler_tree_launch(fnameescape(expand('%:p:h')))<CR>
   command! -nargs=? -complete=file VimFilerTree call s:vimfiler_tree_launch(<f-args>)
@@ -6951,29 +6951,21 @@ if s:bundle.is_installed('vimfiler.vim')
     "nnoremap <buffer> v V
     if exists('b:vimfiler') && !exists('b:my_vimfiler_init')
       let b:my_vimfiler_init=1
-      if exists('b:vimfiler.context.explorer') && b:vimfiler.context.explorer "{{{4
-        " nmap <silent><buffer> L <Plug>(vimfiler_smart_l)
-        " nmap <silent><buffer> E :call <SID>vimfiler_tabopen()<CR>
-        " " smart_h ができない…ｼｮﾎﾞﾝﾇ(´Д｀)
-        " " nmap <silent><buffer> H <Plug>(vimfiler_smart_h)
-        " if exists('g:scrolloff')
-        "   nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>
-        "   nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>:set eventignore=<CR>
-        " else
-        "   nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>
-        "   nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
-        " endif
-      elseif exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
+      if exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
         nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('open')<CR>
         nnoremap <silent><buffer> E :call <SID>vimfiler_tree_edit('open', 'wincmd s')<CR>
         nnoremap <silent><buffer> <C-e> :call <SID>vimfiler_do_action('tabopen')<CR>
         nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
         if exists('g:scrolloff')
-          nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>:call <SID>vimfiler_smart_tree_l('', 1)<CR>:set eventignore=<CR>
-          nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=<CR><LeftMouse>:<C-u>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
+          nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>
+            \:<C-u>:call <SID>vimfiler_smart_tree_l('', 1)<CR>:set eventignore=<CR>
+          nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=<CR><LeftMouse>
+            \ :<C-u>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
         else
-          nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('', 1)<CR>
-          nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
+          nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>
+            \ :call <SID>vimfiler_smart_tree_l('', 1)<CR>
+          nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>
+            \ :call <SID>vimfiler_smart_tree_l('open', 2)<CR>
         endif
         " nmap <buffer> l <Plug>(vimfiler_expand_tree)
         nmap <buffer> L <Plug>(vimfiler_smart_l)
@@ -7515,7 +7507,7 @@ function! s:docset_keywords_gather(root, is_dash) "{{{
       endif
     endfor
   endfor
-  return keywords
+  return map(keywords, 'tolower(v:val)')
 endfunction "}}}
 
 function! s:dash(...)
@@ -7528,7 +7520,7 @@ let s:dash_keywords = []
 function! s:dash_complete(A, L, P) "{{{
   if empty(s:dash_keywords)
     let s:dash_keywords =
-          \ s:docset_keywords_gather(expand('~/Library/Application\ Support/Dash/DocSets/'), 1)
+    \ s:docset_keywords_gather(expand('~/Library/Application\ Support/Dash/DocSets/'), 1)
   endif
   if stridx(a:A, ":") != -1
     return []

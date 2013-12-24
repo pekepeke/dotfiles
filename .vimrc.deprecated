@@ -466,4 +466,17 @@ endif
     " inoremap <expr> <BS>   neocomplete#smart_close_popup()
     "       \ .eval(smartinput#sid().'_trigger_or_fallback("\<BS>", "\<BS>")')
 
+" vimfiler {{{1
+      if exists('b:vimfiler.context.explorer') && b:vimfiler.context.explorer "{{{4
+        " nmap <silent><buffer> L <Plug>(vimfiler_smart_l)
+        " nmap <silent><buffer> E :call <SID>vimfiler_tabopen()<CR>
+        " " smart_h ができない…ｼｮﾎﾞﾝﾇ(´Д｀)
+        " " nmap <silent><buffer> H <Plug>(vimfiler_smart_h)
+        " if exists('g:scrolloff')
+        "   nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>:set eventignore=<CR>
+        "   nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=all<CR><LeftMouse>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>:set eventignore=<CR>
+        " else
+        "   nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>
+        "   nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
+        " endif
 " __END__ {{{1
