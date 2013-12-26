@@ -3032,7 +3032,6 @@ if s:bundle.tap('lightline.vim')
     return ""
   endfunction
 
-  " TODO
   function! g:ll_helper.get_absfilename() "{{{3
     let filename = self.get_special_filename()
     if !empty(filename)
@@ -3040,9 +3039,9 @@ if s:bundle.tap('lightline.vim')
     endif
     let filename = expand('%:p')
     " if filename =~? '^fugitive://'
-    let win_w = winwidth(0)
+    let win_w = winwidth(bufnr('%')) + 30
     if win_w < strlen(filename)
-      return strpart(filename, floor(win_w / 2))
+      return "..." . strpart(filename, float2nr(floor(win_w / 2)))
     endif
     return filename
   endfunction

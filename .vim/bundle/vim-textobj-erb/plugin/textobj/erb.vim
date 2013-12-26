@@ -10,9 +10,14 @@ set cpo&vim
 
 call textobj#user#plugin('erb', {
 \   'tag': {
-\       '*pattern*': ['<%\(=\|-\|\s*#\)\?[[:blank:][:return:]\n]*','[[:blank:][:return:]\n]*%>'],
-\       'select-a': 'a5',
-\       'select-i': 'i5',
+\     '*pattern*': ['<%\(=\|-\|\s*#\)\?[[:blank:][:return:]\n]*','[[:blank:][:return:]\n]*%>'],
+\     'select-a': 'a5',
+\     'select-i': 'i5',
+\   },
+\   'string': {
+\     '*pattern*': ['#{[[:blank:][:return:]\n]*','[[:blank:][:return:]\n]*}'],
+\     'select-a': 'a3',
+\     'select-i': 'i3',
 \   },
 \})
 
