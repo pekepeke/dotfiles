@@ -72,7 +72,7 @@ endif
 
 " reset settings & restore runtimepath {{{2
 " let s:configured_runtimepath = &runtimepath
-set all&
+set all& guioptions+=T guioptions-=m guioptions-=M
 
 set runtimepath^=$HOME/.vim
 set runtimepath+=$HOME/.vim/after
@@ -276,11 +276,6 @@ else
 endif
 set noerrorbells
 
-set guioptions& guioptions+=T guioptions-=m guioptions-=M
-if !s:is_mac
-  let did_install_default_menus = 1
-endif
-let did_install_syntax_menu = 1
 set noequalalways
 set langmenu=none
 set helplang=ja,en
@@ -2640,6 +2635,11 @@ if s:bundle.is_installed('simple-javascript-indenter')
 endif
 
 " disables plugin {{{1
+if !s:is_mac
+  let did_install_default_menus = 1
+endif
+let did_install_syntax_menu = 1
+
 let g:loaded_getscriptPlugin = 1
 let g:loaded_vimballPlugin = 1
 " let g:loaded_netrwPlugin = 1
