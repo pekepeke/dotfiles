@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0                                     # version of an app.
+Name[en_US]=yEd                                 # name of an app.
+GenericName=GUI Port Scanner                    # longer name of an app.
+Exec=java -jar /opt/yed-3.11.1/yed.jar          # command used to launch an app.
+Terminal=false                                  # whether an app requires to be run in a terminal.
+Icon[en_US]=/opt/yed-3.11.1/icons/yicon32.png   # location of icon file.
+Type=Application                                # type.
+Categories=Application;Network;Security;        # categories in which this app should be listed.
+Comment[en_US]=yEd Graph Editor                 # comment which appears as a tooltip.
+
