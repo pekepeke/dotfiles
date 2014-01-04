@@ -102,6 +102,12 @@ endif "}}}
 " NeoBundle 'pekepeke/golden-ratio'
 " NeoBundle 'scrooloose/nerdtree'
 " NeoBundle 'scrooloose/nerdcommenter'
+" NeoBundle 'vim-scripts/Highlight-UnMatched-Brackets' " incompatible with smartinput
+" NeoBundle 'vimtaku/hl_matchit.vim'
+" if has('python')
+"   NeoBundle 'Valloric/MatchTagAlways'
+" else
+" endif
 NeoBundleLazy 'mklabs/vim-fetch', { 'autoload' : {
       \ 'commands' : [
       \   {'name': 'Fetch', 'complete':'customlist,s:Completion'},
@@ -189,6 +195,36 @@ NeoBundleLazy 'mklabs/vim-fetch', { 'autoload' : {
 "       \ '<Plug>(textobj--i)', '<Plug>(textobj--a)',
 "       \ ]]}}
 
+" NeoBundle 'vim-scripts/ruby-matchit'
+" NeoBundleLazyOn FileType ruby 'tpope/vim-rbenv'
+" NeoBundle 'tpope/vim-rake'
+" NeoBundle 'robbevan/Vagrantfile.vim'
+
+" heavy...
+" NeoBundleLazyOn FileType html,php 'vim-scripts/indenthtml.vim'
+" NeoBundleLazyOn FileType html,php 'vim-scripts/html-improved-indentation'
+" NeoBundleLazyOn FileType html,eruby,php 'vim-scripts/closetag.vim'
+
+NeoBundleLazy 'mklabs/grunt.vim', {
+      \ 'build': {
+      \ 'cygwin': 'npm install',
+      \ 'windows': 'npm install',
+      \ 'mac': 'npm install',
+      \ 'unix': 'npm install',
+      \ }, 'autoload': {
+      \ 'filetypes': ['javascript', 'coffee'],
+      \ }}
+
+NeoBundleLazy 'motemen/hatena-vim', {
+      \ 'autoload': {
+      \   'commands': ['HatenaEdit', 'HatenaUpdate', 'HatenaUpdateTrivial',
+      \     {'name' : 'HatenaEnumUsers', 'complete': 'customlist,HatenaEnumUsers'}
+      \ ]}}
+
+" NeoBundleLazy 'coderifous/textobj-word-column.vim', {'autoload':{
+"       \ 'mappings' : [['xo', 'ac', 'aC', 'ic', 'iC']]
+"       \ }}
+
 " metarw {{{3
 " NeoBundle "mattn/vim-metarw"
 " NeoBundle "mattn/vim-metarw-gist"
@@ -197,6 +233,20 @@ NeoBundleLazy 'mklabs/vim-fetch', { 'autoload' : {
 
 
 " plugin settings {{{1
+" git-vim {{{2
+" let g:git_no_map_default = 1
+" let g:git_command_edit = 'rightbelow vnew'
+" nnoremap [!space]gd :<C-u>GitDiff --cached<Enter>
+" nnoremap [!space]gD :<C-u>GitDiff<Enter>
+" nnoremap [!space]gs :<C-u>GitStatus<Enter>
+" nnoremap [!space]gl :<C-u>GitLog<Enter>
+" nnoremap [!space]gL :<C-u>GitLog -u \| head -10000<Enter>
+" nnoremap [!space]ga :<C-u>GitAdd<Enter>
+" nnoremap [!space]gA :<C-u>GitAdd <cfile><Enter>
+" nnoremap [!space]gc :<C-u>GitCommit<Enter>
+" nnoremap [!space]gC :<C-u>GitCommit --amend<Enter>
+" nnoremap [!space]gp :<C-u>Git push
+
 " hl_matchit {{{2
 if s:bundle.tap('hl_matchit.vim')
   let g:hl_matchit_enable_on_vim_startup = 0
@@ -479,4 +529,20 @@ endif
         "   nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_expand_tree)"<CR>
         "   nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>:<C-u>execute "normal \<Plug>(vimfiler_execute_system_associated)"<CR>
         " endif
+
+" other settings {{{1
+" chm launcher {{{2
+if exists('g:my_chm_dir') && (s:is_win || (!s:is_win && !empty(g:my_chm_command)))
+  command! -nargs=1 -complete=customlist,my#chm#complete
+        \ Chm call my#chm#open("<args>")
+  LCAlias Chm
+endif
+
+if exists('g:my_cheatsheets_dir')
+  command! -nargs=1 -complete=customlist,my#cheatsheet#complete
+        \ CheatSheet call my#cheatsheet#open("<args>")
+  LCAlias CheatSheet
+endif
+
+
 " __END__ {{{1

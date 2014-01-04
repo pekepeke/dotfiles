@@ -7,6 +7,13 @@ let s:is_win = has('win16') || has('win32') || has('win64')
 let g:hatena_user                     = ''
 let g:hatena_group_name               = ''
 
+" hatenablog {{{2
+let g:hatenablog_config = {
+\ 'username'  :hatena_id,
+\ 'domain'    :blog_domain,
+\ 'password'  :api_key
+\}
+
 " changelog {{{2
 let g:changelog_timeformat            = "%Y-%m-%d"
 let g:changelog_username              = ""
