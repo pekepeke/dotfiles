@@ -471,6 +471,7 @@ if has('vim_starting')
   " pathogen
   " call pathogen#infect()
   set runtimepath+=~/.vim/neobundle.vim
+  let g:neobundle#log_filename = $VIM_CACHE . '/neobundle.log'
 
   " http://blog.supermomonga.com/articles/vim/neobundle-sugoibenri.html {{{3
   let s:bundle = {'uninstalled':{}}
@@ -569,8 +570,19 @@ NeoBundleLocal ~/.vim/bundle
 NeoBundle 'itchyny/lightline.vim'
 
 " colorscheme {{{3
+NeoBundleLazy 'cocopon/svss.vim', {'autoload': {
+\ 'commands': [
+\ 'SvssSource', 'SvssScan', 'SvssDevInspect',
+\ {'name': 'SvssCompile', 'complete':'file'},
+\ ],
+\ }}
+NeoBundleLazy 'cocopon/colorswatch.vim', {'autoload': {
+\ 'commands': ['ColorSwatchGenerate'],
+\ }}
 NeoBundle 'tpope/vim-vividchalk'
 NeoBundle 'tomasr/molokai'
+NeoBundleLazy 'cocopon/iceberg.vim', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundleLazy 'itchyny/landscape.vim', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundleLazy 'mrkn/mrkn256.vim', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundleLazy 'depuracao/vim-darkdevel', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundleLazy 'goatslacker/mango.vim', {'autoload': {'unite_sources':['colorscheme']}}
@@ -1304,7 +1316,7 @@ NeoBundleLazy 'motemen/hatena-vim', {
 \   'commands': ['HatenaEdit', 'HatenaUpdate', 'HatenaUpdateTrivial',
 \     {'name' : 'HatenaEnumUsers', 'complete': 'customlist,HatenaEnumUsers'}
 \ ]}}
-NeoBundle 'toymarinyon/hatenablog-vim', {'depends' : 'mattn/webapi-vim' }
+NeoBundle 'toyamarinyon/hatenablog-vim', {'depends' : 'mattn/webapi-vim' }
 NeoBundle 'moro/vim-review'
 NeoBundle 'nvie/vim-rst-tables'
 NeoBundle 'vim-scripts/sequence'
