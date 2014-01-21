@@ -779,7 +779,7 @@ NeoBundleLazy 'rhysd/clever-f.vim', {'autoload': {
 \ '<Plug>(clever-f-',
 \ ]}}
 NeoBundleLazy 't9md/vim-smalls', {'autoload': {
-      \ 'mappings': [['nxo', '<Plug>(smalls)']]
+      \ 'mappings': [['nxo', '<Plug>(smalls']]
       \ }}
 NeoBundleLazy 'terryma/vim-expand-region', {'autoload':{
 \ 'mappings': ['<Plug>(expand_region_',]
@@ -3432,9 +3432,9 @@ endif
 
 " smalls {{{2
 if s:bundle.is_installed('vim-smalls')
-  nmap ,s <Plug>(smalls)
-  omap ,s <Plug>(smalls)
-  xmap ,s <Plug>(smalls)
+  nmap [!space]s <Plug>(smalls)
+  omap [!space]s <Plug>(smalls)
+  xmap [!space]s <Plug>(smalls)
   let g:smalls_auto_excursion_min_input_length = 2
 endif
 
