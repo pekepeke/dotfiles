@@ -1272,6 +1272,7 @@ NeoBundleLazy 'nwertzberger/javacomplete', {
 NeoBundleLazyOn FileType java 'vim-scripts/jcommenter.vim'
 NeoBundle 'vim-scripts/groovyindent'
 NeoBundle 'vim-scripts/groovy.vim'
+" NeoBundle 'nobeans/unite-grails'
 NeoBundleLazy 'thinca/vim-logcat', {'autoload':{
 \ 'commands': ['Logcat', 'LogcatClear'],
 \ }}
@@ -2768,7 +2769,7 @@ if s:bundle.tap('lightline.vim')
   \ 'inactive': {
   \   'left': [ [ 'absfilename' ] ],
   \   'right': [
-  \     [ 'linestat' ], [ 'filetype' ],
+  \     [ 'winnr' ], [ 'filetype' ],
   \   ],
   \ },
   \ 'component': {
@@ -2784,6 +2785,8 @@ if s:bundle.tap('lightline.vim')
   \   'anzu': 'g:ll_helper.anzu',
   \   'anzu_or_charcode': 'g:ll_helper.anzu_or_charcode',
   \   'fileinfo': 'g:ll_helper.fileinfo',
+  \   'winnr': 'g:ll_helper.winnr',
+  \   'bufwinnr': 'g:ll_helper.bufwinnr',
   \ },
   \ }
   " http://cocopon.me/blog/?p=3522
@@ -3047,6 +3050,12 @@ if s:bundle.tap('lightline.vim')
 
   function! g:ll_helper.filename() "{{{3
     return join([self.readonly(), self.get_filename(), self.modified()], '')
+  endfunction
+  function! g:ll_helper.winnr() "{{{3
+    return join(["W:", winnr()], '')
+  endfunction
+  function! g:ll_helper.bufwinnr() "{{{3
+    return join(["W:", bufwinnr('%')], '')
   endfunction
 
   MyAutoCmd ColorScheme * call s:lightline_update()
