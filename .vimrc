@@ -788,7 +788,8 @@ NeoBundleLazy 'terryma/vim-expand-region', {'autoload':{
 NeoBundle 'kshenoy/vim-signature'
 
 if has('python')
-  NeoBundleLazy 'editorconfig/editorconfig-vim'
+  NeoBundle 'editorconfig/editorconfig-vim'
+  " NeoBundleLazy 'editorconfig/editorconfig-vim'
 endif
 NeoBundleLazy 'kien/ctrlp.vim'
 NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {
@@ -2724,16 +2725,16 @@ endif
 
 " editorconfig {{{2
 if s:bundle.tap('editorconfig-vim')
-  augroup vimrc-editorconfig
-    function! s:editorconfig_init()
-      if filereadable('.editorconfig')
-        NeoBundleSource editorconfig-vim
-        silent EditorConfigReload
-        autocmd!
-      endif
-    endfunction
-    autocmd BufReadPost * call s:editorconfig_init()
-  augroup END
+  " augroup vimrc-editorconfig
+  "   function! s:editorconfig_init()
+  "     if filereadable('.editorconfig')
+  "       NeoBundleSource editorconfig-vim
+  "       silent EditorConfigReload
+  "       autocmd!
+  "     endif
+  "   endfunction
+  "   autocmd BufReadPost * call s:editorconfig_init()
+  " augroup END
   call s:bundle.untap()
 endif
 
@@ -3398,7 +3399,8 @@ if s:bundle.is_installed('undotree')
   nnoremap <Leader>u :<C-u>UndotreeToggle<CR>
 
   let g:undotree_SetFocusWhenToggle = 1
-  let g:undotree_SplitLocation = 'topleft'
+  " let g:undotree_SplitLocation = 'topleft'
+  let g:undotree_WindowLayout = 'topleft'
   let g:undotree_SplitWidth = 35
   let g:undotree_diffAutoOpen = 1
   let g:undotree_diffpanelHeight = 25
@@ -4324,82 +4326,84 @@ if s:bundle.tap('unite.vim')
     endfunction "5}}}
 
     " memolist - http://d.hatena.ne.jp/osyo-manga/20130919 {{{4
-    let g:unite_source_alias_aliases = {
-    \  "memolist" : {
-    \     "source" : "file",
-    \     "args" : g:memolist_path,
-    \  },
-    \  "memolist_rec" : {
-    \     "source" : "file_rec"
-    \  },
-    \}
+    if s:bundle.is_installed('memolist.vim')
+      let g:unite_source_alias_aliases = {
+      \  "memolist" : {
+      \     "source" : "file",
+      \     "args" : g:memolist_path,
+      \  },
+      \  "memolist_rec" : {
+      \     "source" : "file_rec"
+      \  },
+      \}
 
 
-    function! s:get_memolist_tags(filepath)
-      return filereadable(a:filepath) ? matchstr(get(filter(readfile(a:filepath, "", 6), 'v:val =~ ''^tags: \[.*\]'''), 0), '^tags: \[\zs.*\ze\]') : ""
-    endfunction
+      function! s:get_memolist_tags(filepath)
+        return filereadable(a:filepath) ? matchstr(get(filter(readfile(a:filepath, "", 6), 'v:val =~ ''^tags: \[.*\]'''), 0), '^tags: \[\zs.*\ze\]') : ""
+      endfunction
 
-    let s:filter = {
-    \  "name" : "converter_add_memolist_tags_word",
-    \}
+      let s:filter = {
+      \  "name" : "converter_add_memolist_tags_word",
+      \}
 
-    function! s:filter.filter(candidates, context)
-      for candidate in a:candidates
-        if !has_key(candidate, "converter_add_ftime_word_base")
-          let candidate.converter_add_ftime_word_base = candidate.word
-        endif
-        let word = get(candidate, "converter_add_ftime_word_base", candidate.action__path)
-        let candidate.word = s:get_memolist_tags(get(candidate, "action__path")) . " " . word
-      endfor
-      return a:candidates
-    endfunction
+      function! s:filter.filter(candidates, context)
+        for candidate in a:candidates
+          if !has_key(candidate, "converter_add_ftime_word_base")
+            let candidate.converter_add_ftime_word_base = candidate.word
+          endif
+          let word = get(candidate, "converter_add_ftime_word_base", candidate.action__path)
+          let candidate.word = s:get_memolist_tags(get(candidate, "action__path")) . " " . word
+        endfor
+        return a:candidates
+      endfunction
 
-    call unite#define_filter(s:filter)
-    unlet s:filter
+      call unite#define_filter(s:filter)
+      unlet s:filter
 
-    let s:filter = {
-    \  "name" : "converter_add_memolist_tags_abbr",
-    \}
-    function! s:filter.filter(candidates, context)
-      for candidate in a:candidates
-        " if !has_key(candidate, "converter_add_ftime_word_base")
-        "   let candidate.converter_add_ftime_word_base = candidate.abbr
-        " endif
-        let abbr = get(candidate, "abbr", candidate.word)
-        let candidate.abbr = printf("%s %s", abbr, s:get_memolist_tags(get(candidate, "action__path")))
-      endfor
-      return a:candidates
-    endfunction
-    call unite#define_filter(s:filter)
-    unlet s:filter
+      let s:filter = {
+      \  "name" : "converter_add_memolist_tags_abbr",
+      \}
+      function! s:filter.filter(candidates, context)
+        for candidate in a:candidates
+          " if !has_key(candidate, "converter_add_ftime_word_base")
+          "   let candidate.converter_add_ftime_word_base = candidate.abbr
+          " endif
+          let abbr = get(candidate, "abbr", candidate.word)
+          let candidate.abbr = printf("%s %s", abbr, s:get_memolist_tags(get(candidate, "action__path")))
+        endfor
+        return a:candidates
+      endfunction
+      call unite#define_filter(s:filter)
+      unlet s:filter
 
-    let s:filter = {
-    \  "name" : "converter_add_filename_word",
-    \}
-    function! s:filter.filter(candidates, context)
-      for candidate in a:candidates
-        " if !has_key(candidate, "converter_add_ftime_word_base")
-        "   let candidate.converter_add_ftime_word_base = candidate.abbr
-        " endif
-        let abbr = get(candidate, "abbr", candidate.word)
-        let candidate.abbr = printf("%s %s", abbr, fnamemodify(get(candidate, "action__path"), ":p:t"))
-      endfor
-      return a:candidates
-    endfunction
-    call unite#define_filter(s:filter)
-    unlet s:filter
+      let s:filter = {
+      \  "name" : "converter_add_filename_word",
+      \}
+      function! s:filter.filter(candidates, context)
+        for candidate in a:candidates
+          " if !has_key(candidate, "converter_add_ftime_word_base")
+          "   let candidate.converter_add_ftime_word_base = candidate.abbr
+          " endif
+          let abbr = get(candidate, "abbr", candidate.word)
+          let candidate.abbr = printf("%s %s", abbr, fnamemodify(get(candidate, "action__path"), ":p:t"))
+        endfor
+        return a:candidates
+      endfunction
+      call unite#define_filter(s:filter)
+      unlet s:filter
 
-    call unite#custom_max_candidates("memolist", 500)
-    call unite#custom#source('memolist', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr", 'converter_add_memolist_tags_abbr'])
-    call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
-    " call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "converter_add_filename_word", "matcher_default"])
-    " call unite#custom#source('memolist', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
-    " call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+      call unite#custom_max_candidates("memolist", 500)
+      call unite#custom#source('memolist', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr", 'converter_add_memolist_tags_abbr'])
+      call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+      " call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "converter_add_filename_word", "matcher_default"])
+      " call unite#custom#source('memolist', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
+      " call unite#custom#source('memolist', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
 
-    call unite#custom_max_candidates("memolist_rec", 50)
-    call unite#custom#source('memolist_rec', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr", 'converter_add_memolist_tags_abbr'])
-    " call unite#custom#source('memolist_rec', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
-    call unite#custom#source('memolist_rec', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+      call unite#custom_max_candidates("memolist_rec", 50)
+      call unite#custom#source('memolist_rec', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr", 'converter_add_memolist_tags_abbr'])
+      " call unite#custom#source('memolist_rec', 'converters', ["converter_file_firstline_abbr", "converter_add_ftime_abbr"])
+      call unite#custom#source('memolist_rec', 'matchers', ["converter_file_firstline_word", "converter_add_memolist_tags_word", "matcher_default"])
+    endif
     " 4}}}
 
   endfunction "3}}}
