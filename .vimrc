@@ -1201,7 +1201,7 @@ NeoBundleLazy 'hachibeeDI/unite-pythonimport', {'autoload':{
 
 if has('python')
   NeoBundleLazy 'davidhalter/jedi-vim', {
-  \   'autoload' : { 'filetypes' : 'python' },
+  \   'autoload' : { 'filetypes' : ['python', 'python3'], },
   \ }
 else
   NeoBundleLazy 'davidhalter/jedi-vim'
@@ -2181,6 +2181,16 @@ function! s:set_grep(...) "{{{3
 
       command! Todo silent! exe 'Unite' printf('grep:%s:-n:%s', getcwd(), s:regexp_todo) '-buffer-name=todo' '-no-quit'
       return 1
+    elseif type == "pt" && executable(type)
+      set grepprg=pt\ --nocolor\ --nogroup
+      set grepformat=%f:%l:%m
+      let g:ackprg="pt -S --nocolor --nogroup --column --nopager"
+
+      let g:unite_source_grep_command = 'pt'
+      let g:unite_source_grep_default_opts = '--nogroup --nocolor'
+      let g:unite_source_grep_recursive_opt = ''
+
+      return 1
     elseif type == "ag" && executable(type)
       set grepprg=ag\ -S\ --nocolor\ --nogroup\ --nopager
       set grepformat=%f:%l:%m
@@ -2236,11 +2246,12 @@ endfunction
 command! -nargs=0 SetJvgrep call s:set_grep("jvgrep")
 command! -nargs=0 SetAck call s:set_grep("ack-grep")
 command! -nargs=0 SetAg call s:set_grep("ag")
+command! -nargs=0 SetPt call s:set_grep("pt")
 
 if s:is_win
-  call s:set_grep("jvgrep", "ag", "ack-grep")
+  call s:set_grep("pt", "jvgrep", "ag", "ack-grep")
 else
-  call s:set_grep("ag", "jvgrep", "ack-grep")
+  call s:set_grep("pt", "ag", "jvgrep", "ack-grep")
 endif
 
 let Grep_Default_Options = '-i'
@@ -2881,7 +2892,12 @@ if s:bundle.tap('lightline.vim')
   endfunction
 
   function! g:ll_helper.qfcount() "{{{3
-    let c = len(getqflist())
+    let qflist = getqflist()
+    " let nr = bufnr('%')
+    " let c = len(filter(qflist, 'v:val.bufnr == nr'))
+    " unlet qflist nr
+    let c = len(filter(qflist, 'v:val.lnum != 0'))
+    unlet qflist
     if c <= 0
       return ""
     endif
@@ -3019,7 +3035,7 @@ if s:bundle.tap('lightline.vim')
       return vimfiler#get_status_string()
     elseif &filetype == 'unite'
       return unite#get_status_string()
-    elseif &filetype == 'vimshell'
+    elseif &filetype == 'vimshell' && exists('b:vimshell.current_dir')
       return substitute(b:vimshell.current_dir, expand('~'), '~', '')
     elseif &filetype == 'tagbar'
       return 'Tagbar ' . tagbar#currenttag("%s", "")
@@ -3764,9 +3780,14 @@ if s:bundle.tap('vim-template')
     silent! %s/<+EMAIL+>/\=g:email/g
     silent! %s/<+AUTHOR+>/\=g:author/g
     silent! %s/<+HOMEPAGE_URL+>/\=g:homepage_url/g
-    silent! exe "normal! gg"
+    silent! %s/<+DATE+>/\=strftime('%Y-%m-%d')/g
+    silent! execute "normal! gg"
     "" expand eval
     %s/<%=\(.\{-}\)%>/\=eval(submatch(1))/ge
+
+    if search('<+CURSOR+>')
+      silent! execute 'normal! "_da>'
+    endif
   endfunction
 
   call s:mkvars(['g:email', 'g:author', 'g:homepage_url'], '')
@@ -6385,18 +6406,18 @@ elseif s:bundle.is_installed('neocomplete.vim') "{{{3
   let g:use_zen_complete_tag=1
 
   call extend(g:neocomplete#sources#vim#complete_functions, {
-        \ 'Ref'   : 'ref#complete',
-        \ 'Unite' : 'unite#complete_source',
-        \ 'VimShellExecute' :
-        \   'vimshell#vimshell_execute_complete',
-        \ 'VimShellInteractive' :
-        \   'vimshell#vimshell_execute_complete',
-        \ 'VimShellTerminal' :
-        \   'vimshell#vimshell_execute_complete',
-        \ 'VimShell' : 'vimshell#complete',
-        \ 'VimFiler' : 'vimfiler#complete',
-        \ 'Vinarise' : 'vinarise#complete',
-        \ })
+  \ 'Ref'   : 'ref#complete',
+  \ 'Unite' : 'unite#complete_source',
+  \ 'VimShellExecute' :
+  \   'vimshell#vimshell_execute_complete',
+  \ 'VimShellInteractive' :
+  \   'vimshell#vimshell_execute_complete',
+  \ 'VimShellTerminal' :
+  \   'vimshell#vimshell_execute_complete',
+  \ 'VimShell' : 'vimshell#complete',
+  \ 'VimFiler' : 'vimfiler#complete',
+  \ 'Vinarise' : 'vinarise#complete',
+  \ })
 
   " clang
   let g:neocomplete#force_omni_input_patterns.c =
@@ -6602,30 +6623,59 @@ if s:bundle.is_installed('vimproc.vim')
 endif
 
 " vimshell {{{2
-if s:bundle.is_installed('vimshell.vim')
+if s:bundle.tap('vimshell.vim')
   let g:vimshell_temporary_directory = $VIM_CACHE . "/vimshell"
   let g:vimshell_enable_smart_case = 1
   let g:vimshell_enable_auto_slash = 1
+  let g:vimshell_enable_transient_user_prompt = 1
 
-  let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-  if s:bundle.is_installed('vim-fugitive')
-    " let g:vimshell_right_prompt = '"[" . fugitive#head() . "]"'
-    let g:vimshell_right_prompt = 'fugitive#statusline()'
-  endif
-  " if s:bundle.is_installed('vim-vcs')
-  "   let g:vimshell_right_prompt = 'vcs#info("(%s)-[%b]", "(%s)-[%b|%a]")'
-  " endif
+  function! s:bundle.tapped.hooks.on_source(bundle) "{{{3
+    " prompt
+    let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
+    if s:bundle.is_installed('vim-fugitive')
+      let g:vimshell_right_prompt = 'fugitive#statusline()'
+    endif
 
-  if s:is_win " {{{3
-    " Display user name on Windows.
-    let g:vimshell_prompt = $USERNAME."% "
-    let g:vimshell_use_ckw = 1
-    "let g:vimproc_dll_path = expand("~/.vim/lib/vimproc/win32/proc.dll")
-  else " {{{3
-    " Display user name
-    let g:vimshell_prompt = $USER."$ "
-  endif
+    if s:is_win
+      " Display user name on Windows.
+      let g:vimshell_prompt = $USERNAME."% "
+      " let g:vimshell_use_terminal_command = 'ckw -e'
+    else
+      let g:vimshell_prompt = $USER."$ " " Display user name
+      let g:vimshell_external_history_path = expand('~/.zsh-history')
+    endif
 
+    if s:is_win
+    elseif s:is_mac
+      let g:vimshell_use_terminal_command = 'open'
+    else
+      let g:vimshell_use_terminal_command = 'gnome-terminal -e'
+    endif
+  endfunction "}}}
+
+  function! s:bundle.tapped.hooks.on_post_source(bundle) "{{{3
+    let g:vimshell_execute_file_list = get(g:, 'vimshell_execute_file_list', {})
+
+    let g:vimshell_execute_file_list['rb'] = 'ruby'
+    let g:vimshell_execute_file_list['pl'] = 'perl'
+    let g:vimshell_execute_file_list['py'] = 'python'
+    call vimshell#set_execute_file('html,xhtml', 'gexe firefox')
+
+    if !s:is_win
+      let g:vimshell_execute_file_list['zip'] = 'zipinfo'
+      call vimshell#set_execute_file('tgz,gz', 'gzcat')
+      call vimshell#set_execute_file('tbz,bz2', 'bzcat')
+      if s:is_mac
+        " call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe open')
+        " call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe open')
+      else
+        call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
+        call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
+      endif
+    endif
+  endfunction "}}}
+
+  MyAutoCmd FileType vimshell call s:vimshell_init()
   let s:vimshell_hooks = {} "{{{3
   function! s:vimshell_hooks.chpwd(args, context)
     if len(split(glob('*'), '\n')) < 100
@@ -6635,7 +6685,7 @@ if s:bundle.is_installed('vimshell.vim')
     endif
   endfunction
   function! s:vimshell_hooks.emptycmd(cmdline, context)
-    call vimshell#set_prompt_command('ls')
+    call vimshell#execute('ls')
     return 'ls'
   endfunction
 
@@ -6653,25 +6703,20 @@ if s:bundle.is_installed('vimshell.vim')
 
     return a:cmdline
   endfunction
+  " }}}
 
-  MyAutoCmd FileType vimshell call s:vimshell_init()
   function! s:vimshell_init() " {{{3
     setl textwidth=0
-    "autocmd FileType vimshell
+
     call vimshell#altercmd#define('g'  , 'git')
     call vimshell#altercmd#define('i'  , 'iexe')
     call vimshell#altercmd#define('t'  , 'texe')
-    " call vimshell#set_alias('l'  , 'll')
-    " call vimshell#set_alias('ll' , 'ls -l')
-    " call vimshell#set_alias('la' , 'ls -a')
-    " call vimshell#set_alias('e' , 'vim')
-    " call vimshell#set_alias('time' , 'exe time')
 
-    if !s:is_win
-      let g:vimshell_execute_file_list['zip'] = 'zipinfo'
-      call vimshell#set_execute_file('tgz,gz', 'gzcat')
-      call vimshell#set_execute_file('tbz,bz2', 'bzcat')
-    endif
+    call vimshell#set_alias('j', ':Unite -buffer-name=files
+    \ -default-action=lcd -no-split -input=$$args directory_mru')
+    call vimshell#set_alias('z', ':Unite -buffer-name=files
+    \ -default-action=lcd -no-split -input=$$args z')
+
     if s:is_mac
       call vimshell#set_alias('gvim'  , 'gexe mvim')
       call vimshell#set_alias('mvim'  , 'gexe mvim')
@@ -6679,27 +6724,13 @@ if s:bundle.is_installed('vimshell.vim')
       call vimshell#set_alias('gvim'  , 'gexe gvim')
       call vimshell#set_alias('mvim'  , 'gexe gvim')
     endif
-    if s:is_win
-    elseif s:is_mac
-      " call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe open')
-      " call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe open')
-      let g:vimshell_use_terminal_command = 'open'
-    else
-      call vimshell#set_execute_file('bmp,jpg,png,gif', 'gexe eog')
-      call vimshell#set_execute_file('mp3,m4a,ogg', 'gexe amarok')
-      let g:vimshell_use_terminal_command = 'gnome-terminal -e'
-    endif
-
-    if executable('pry')
-      call vimshell#set_alias('pry' , 'iexe irb')
-      call vimshell#set_alias('irb' , 'iexe irb')
-    endif
 
     call vimshell#hook#add('chpwd'     , 'my_chpwd', s:vimshell_hooks.chpwd)
     call vimshell#hook#add('emptycmd'  , 'my_emptycmd', s:vimshell_hooks.emptycmd)
     call vimshell#hook#add('preprompt' , 'my_preprompt', s:vimshell_hooks.preprompt)
     call vimshell#hook#add('preexec'   , 'my_preexec', s:vimshell_hooks.preexec)
 
+    "autocmd FileType vimshell
     if s:bundle.is_installed('concealedyank.vim')
       nmap y <Plug>(operator-concealedyank)
       xmap y <Plug>(operator-concealedyank)
@@ -6713,8 +6744,7 @@ if s:bundle.is_installed('vimshell.vim')
     elseif s:bundle.is_installed('neocomplete.vim')
       inoremap <expr><buffer> <C-j> pumvisible() ? neocomplete#close_popup() : ""
     endif
-  endfunction
-
+  endfunction "}}}
 
   nmap [!space]vp :<C-u>VimShellPop<CR>
   nmap [!space]vv :<C-u>VimShellTab<CR>
@@ -6724,6 +6754,7 @@ if s:bundle.is_installed('vimshell.vim')
 
   command! IRB VimShellInteractive irb
   LCAlias IRB
+  call s:bundle.untap()
 endif
 
 " vimfiler {{{2
@@ -6731,6 +6762,7 @@ if s:bundle.is_installed('vimfiler.vim')
   let g:vimfiler_data_directory = $VIM_CACHE . '/vimfiler'
   let g:vimfiler_as_default_explorer=1
   let g:vimfiler_safe_mode_by_default=0
+  " let g:vimfiler_enable_auto_cd = 1
   " let g:vimfiler_edit_action = 'below'
   " let g:vimfiler_edit_action = 'tabopen'
 
@@ -6746,6 +6778,14 @@ if s:bundle.is_installed('vimfiler.vim')
   " let g:vimfiler_marked_file_icon = '*'
   let g:vimfiler_readonly_file_icon = 'x'
   let g:vimfiler_marked_file_icon = 'v'
+
+  if s:is_win
+		let g:vimfiler_quick_look_command = 'maComfort.exe -ql'
+  elseif s:is_mac
+		let g:vimfiler_quick_look_command = 'qlmanage -p'
+  else
+		let g:vimfiler_quick_look_command = 'gloobus-preview'
+  endif
 
   " keymaps {{{3
   nnoremap <silent> [!space]f  :call <SID>vimfiler_tree_launch_or_enter()<CR>
