@@ -1347,7 +1347,7 @@ NeoBundle 'Gasol/vim-php'
 NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
-NeoBundle 'vim-scripts/phpcomplete.vim'
+NeoBundle 'shawncplus/phpcomplete.vim'
 " NeoBundle 'vim-scripts/php_localvarcheck.vim'
 " NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
 NeoBundle 'tokutake/twig-indent'
@@ -6459,7 +6459,7 @@ elseif s:bundle.is_installed('neocomplete.vim') "{{{3
   let g:neocomplete#sources#omni#input_patterns.haxe = '\v([\]''"]|\w)(\.|\()\w*'
 
   " php
-  let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+  " let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
   let g:neocomplete#delimiter_patterns.php = ['->', '::', '\']
   let g:neocomplete#sources#member#prefix_patterns.php = '->\|::'
   call s:bulk_dict_variables([{
@@ -6546,7 +6546,7 @@ endif
 let g:jscomplete_use = ['dom', 'es6th', 'moz']
 
 if exists("+omnifunc") " {{{4
-  MyAutoCmd FileType php           setl omnifunc=phpcomplete#CompletePHP
+  " MyAutoCmd FileType php           setl omnifunc=phpcomplete#CompletePHP
   MyAutoCmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
   MyAutoCmd FileType python        setl omnifunc=pythoncomplete#Complete
   " MyAutoCmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
