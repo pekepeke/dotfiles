@@ -1,3 +1,5 @@
 # vim:fdm=marker sw=2 ts=2 ft=sh noexpandtab:
 export PATH=~/.prax-app/bin:$PATH
 is_exec chkconfig || alias chkconfig='sudo sysv-rc-conf'
+export MOZ_PLUGIN_PATH="/usr/lib/mozilla/plugins"
+

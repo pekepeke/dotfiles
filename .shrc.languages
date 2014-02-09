@@ -106,6 +106,10 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
     fi
   fi
   PATH=node_modules/.bin:$PATH
+  if [ -e /usr/local/googkit ]; then
+    export GOOGKIT_HOME=/usr/local/googkit
+    export PATH=$PATH:$GOOGKIT_HOME/bin
+  fi
 
   shrc_section_title "java" # {{{2
   if ! is_mac ; then
