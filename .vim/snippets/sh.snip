@@ -76,3 +76,19 @@ snippet ip_addr
 snippet echoerr
   echo ${1} 1>&2
   ${2}
+
+snippet echoerrfn
+	echoerr() {
+		echo "$@" >&2
+	}
+	$0
+snippet echocolorfn
+	echored() {
+		echo -e "\e[00;31m$*\e[00m"
+	}
+	echogreen() {
+		echo -e "\e[00;32m$*\e[00m"
+	}
+	echoyellow() {
+		echo -e "\e[00;33m$*\e[00m"
+	}
