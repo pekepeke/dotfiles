@@ -2,4 +2,5 @@
 export PATH=~/.prax-app/bin:$PATH
 is_exec chkconfig || alias chkconfig='sudo sysv-rc-conf'
 export MOZ_PLUGIN_PATH="/usr/lib/mozilla/plugins"
+export LANG=C xdg-user-dirs-gtk-update
 
