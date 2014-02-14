@@ -461,10 +461,6 @@ else
   colorscheme desert
 endif
 
-" preexec for runtimepath {{{1
-" set nocompatible
-filetype off
-
 " vundle {{{1
 " setup {{{2
 if has('vim_starting')
@@ -561,7 +557,9 @@ if has('vim_starting')
   command! NeoBundleValidate call s:bundle.validate_report()
 endif
 
-" neobundle {{{2
+" load neobundle {{{2
+" set nocompatible
+" filetype off
 call neobundle#rc(expand("~/.vim/neobundle"))
 NeoBundleLocal ~/.vim/bundle
 
@@ -858,7 +856,12 @@ if s:is_win
   \ 'unite_sources':['startmenu']
   \ }}
   " NeoBundle 'istepura/vim-toolbar-icons-silk'
+elseif s:is_mac
+  NeoBundleLazy 'rhysd/unite-mac-apps', {'autoload': {
+  \ 'unite_sources':['apps']
+  \ }}
 endif
+
 " lang {{{3
 " basic {{{4
 NeoBundle 'thinca/vim-quickrun'
@@ -1309,6 +1312,9 @@ endif
 NeoBundleLazy 'hachibeeDI/vim-vbnet', {'autoload':{
 \ 'filetypes': ['vbnet'],
 \ }}
+" NeoBundleLazy 'rbtnn/vbnet_indent.vim', {'autoload':{
+" \ 'filetypes': ['vbnet'],
+" \ }}
 
 " java, android {{{4
 NeoBundleLazy 'mikelue/vim-maven-plugin', {'autoload':{
@@ -3293,7 +3299,9 @@ endif
 " perlomni {{{2
 if s:bundle.tap('perlomni.vim')
   function! s:bundle.tapped.hooks.on_source(bundle)
-    call s:path_push(s:bundle.get('perlomni.vim').path . '/bin')
+    if &filetype == "perl"
+      call s:path_push(s:bundle.get('perlomni.vim').path . '/bin')
+    endif
   endfunction
   call s:bundle.untap()
 endif
@@ -3306,10 +3314,12 @@ if s:bundle.tap('cake.vim')
 
   if !s:bundle.is_sourced('cake.vim')
     function! s:bundle.tapped.on_post_source(bundle)
-      " doautocmd VimEnter
-      call cake#init_app('')
-      call s:init_cakephp()
-      MyAutoCmd User PluginCakephpInitializeAfter call s:init_cakephp()
+      if &filetype == "php"
+        " doautocmd VimEnter
+        call cake#init_app('')
+        call s:init_cakephp()
+        MyAutoCmd User PluginCakephpInitializeAfter call s:init_cakephp()
+      endif
     endfunction
   endif
 
@@ -4578,8 +4588,10 @@ if s:bundle.tap('unite.vim')
   UniteNMap   bb        bookmark -default-action=open
   if s:is_win
     UniteNMap ,         everything -start-insert
+    UniteNMap e         startmenu
   elseif s:is_mac
     UniteNMap ,         spotlight -start-insert
+    UniteNMap e         apps
   else
     UniteNMap ,         locate -start-insert
   endif
