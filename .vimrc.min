@@ -2,7 +2,7 @@ scriptencoding utf-8
 set nocompatible
 
 " environment {{{1
-let $VIM_CACHE = $HOME . '/.cache'
+let $VIM_CACHE = $HOME . '/.cache/vim'
 let s:standalone = 0
 
 let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') || (executable('uname') && system('uname') =~? '^darwin')
