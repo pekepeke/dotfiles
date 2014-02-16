@@ -10,7 +10,7 @@
 "   \__\::::/      \__\/         /__/:/       |__|:|~       \  \:\
 "       ~~~~                     \__\/         \__\|         \__\/
 " init setup {{{1
-let $VIM_CACHE = $HOME . '/.cache'
+let $VIM_CACHE = $HOME . '/.cache/vim'
 
 " defun macros {{{2
 augroup vimrc-myautocmd
@@ -143,7 +143,8 @@ endif
 scriptencoding utf-8
 set fileencoding=utf-8
 set fileformat=unix
-set fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp,cp932
+set fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp
+set fileencodings+=cp932
 set fileformats=unix,dos,mac
 set synmaxcol=1500
 
@@ -630,10 +631,12 @@ NeoBundle 'Shougo/context_filetype.vim'
 NeoBundleLazy 'Shougo/vimfiler.vim', {
 \ 'depends': 'Shougo/unite.vim', 'autoload' : {
 \ 'commands' : [
-\ { 'name' : 'VimFiler', 'complete' : 'customlist,vimfiler#complete' },
-\ { 'name' : 'VimFilerExplorer', 'complete' : 'customlist,vimfiler#complete' },
-\ { 'name' : 'Edit', 'complete' : 'customlist,vimfiler#complete' },
-\ { 'name' : 'Write', 'complete' : 'customlist,vimfiler#complete' },
+\ { 'name': 'VimFiler', 'complete': 'customlist,vimfiler#complete' },
+\ { 'name': 'VimFilerTab', 'complete': 'customlist,vimfiler#complete' },
+\ { 'name': 'VimFilerBufferDir', 'complete': 'customlist,vimfiler#complete' },
+\ { 'name': 'VimFilerExplorer', 'complete': 'customlist,vimfiler#complete' },
+\ { 'name': 'Edit', 'complete': 'customlist,vimfiler#complete' },
+\ { 'name': 'Write', 'complete': 'customlist,vimfiler#complete' },
 \ 'Read', 'Source'],
 \ 'mappings' : ['<Plug>(vimfiler'],
 \ 'explorer' : 1,
@@ -861,6 +864,25 @@ elseif s:is_mac
   \ 'unite_sources':['apps']
   \ }}
 endif
+NeoBundleLazy 'koron/chalice', {'autoload': {
+\ 'commands': ['JumplistClear', 'JumpListAdd', 'JumplistPrev',
+\   'JumplistNext', 'JumplistDump',
+\   'ChaliceQuit', 'ChaliceQuitAll', 'ChaliceGoBoardList',
+\   'ChaliceGoThread', 'ChaliceGoArticle', 'Article',
+\   'ChaliceOpenBoard', 'ChaliceOpenThread', 'ChaliceHandleJump',
+\   'ChaliceHandleJumpExt', 'ChaliceReloadBoardList',
+\   'ChaliceReloadThreadList', 'ChaliceReloadThread',
+\   'ChaliceReloadThreadInc', 'ChaliceReformat', 'ChaliceDoWrite',
+\   'ChaliceWrite', 'ChaliceHandleURL', 'ChaliceBookmarkToggle',
+\   'ChaliceBookmarkAdd', 'ChaliceJumplist', 'ChaliceJumplistNext',
+\   'ChaliceJumplistPrev', 'ChaliceDeleteThreadDat', 'ChaliceAboneThreadDat',
+\   'ChaliceToggleNetlineStatus', 'ChalicePreview', 'ChalicePreviewClose',
+\   'ChalicePreviewToggle', 'ChaliceCruise', 'ChaliceShowNum',
+\   'ChaliceCheckThread', 'Chalice2HTML', 'ChaliceAdjWinsize',
+\   'ChaliceDatdirOn', 'Chalice',
+\   'ALexecute', 'ALsystem',
+\ ],
+\ }}
 
 " lang {{{3
 " basic {{{4
@@ -3100,7 +3122,7 @@ if s:bundle.tap('lightline.vim')
     endif
     let var = a:name . '_version'
     if !exists('b:'.var)
-      let b:[var] = -1
+      let b:[var] = ""
       for f in ['.'.a:name.'-version', expand('~/.'.a:name.'/version')]
         if filereadable(f)
           let b:[var] = readfile(f)[0]
@@ -6214,6 +6236,13 @@ if s:bundle.is_installed('vim-quickhl')
   nmap [!space], <Plug>(quickhl-manual-this)
 endif
 
+" chalice {{{2
+if s:bundle.is_installed('chalice')
+  let g:chalice_bookmark = $VIM_CACHE . "/chalice_bmk"
+  let g:chalice_cachedir = $VIM_CACHE . "/chalice_cache"
+  call s:mkdir(g:chalice_cachedir)
+endif
+
 " echodoc {{{2
 let g:echodoc_enable_at_startup=0
 
@@ -6822,7 +6851,7 @@ if s:bundle.tap('vimshell.vim')
     endif
   endfunction
   function! s:vimshell_hooks.emptycmd(cmdline, context)
-    call vimshell#execute('ls')
+    " call vimshell#execute('ls')
     return 'ls'
   endfunction
 
@@ -7065,6 +7094,13 @@ if s:bundle.is_installed('vimfiler.vim')
     endif
     call s:vimfiler_tree_edit(a:method)
   endfunction "}}}
+
+  function! s:vimfiler_tabopen_silently() " {{{4
+    let curt = tabpagenr()
+    silent call s:vimfiler_do_action('tabopen')
+    execute curt."tabnext"
+  endfunction "}}}
+
   function! s:vimfiler_do_action(action) " {{{4
     let bnr = bufnr('%')
     let linenr = line('.')
@@ -7072,7 +7108,6 @@ if s:bundle.is_installed('vimfiler.vim')
     call context.execute()
     unlet context
   endfunction
-
 
   let s:vimfiler_context = {} " {{{4
   function! s:vimfiler_context.new(...)
@@ -7105,6 +7140,7 @@ if s:bundle.is_installed('vimfiler.vim')
   MyAutoCmd FileType vimfiler call s:vimfiler_init() "{{{3
   function! s:vimfiler_init() " {{{3
     nnoremap <silent><buffer> E :<C-u>call <SID>vimfiler_do_action('tabopen')<CR>
+    nnoremap <silent><buffer> T :<C-u>call <SID>vimfiler_tabopen_silently()<CR>
     nnoremap <silent><buffer> <C-e> :<C-u>call <SID>vimfiler_do_action('split')<CR>
     nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
     hi link ExrenameModified Statement

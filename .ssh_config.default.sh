@@ -1,16 +1,16 @@
 #!/bin/sh
 
-FP=$HOME/.ssh/config
+FILE=$HOME/.ssh/config
 
 [ ! -e ~/.ssh ] && mkdir ~/.ssh && chmod 700 ~/.ssh
 [ ! -e ~/.ssh/id_rsa.pub ] && ssh-keygen -t rsa
 
-if [ -e $FP ] ; then
-  echo $FP is already exists.
-  exit 0
+if [ -e $FILE ] ; then
+  echo "already exists: $FILE"
+  exit 1
 fi
 
-cat <<EOM > $FP
+cat <<EOM > $FILE
 # ~/.ssh/config
 # vim:sw=2 ts=2 expandtab fdm=expr foldexpr=getline(v\\:lnum)=~'^\\\\s*$'&&getline(v\\:lnum+1)=~'^Host\\\\s\\\\+\\\\S'?'<1'\\:1
 
