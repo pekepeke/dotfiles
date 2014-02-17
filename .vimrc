@@ -1512,9 +1512,13 @@ NeoBundle 'glidenote/keepalived-syntax.vim'
 NeoBundle 'Shougo/vim-nyaos'
 
 " unite.vim {{{3
-NeoBundle 'Shougo/unite.vim', {
+NeoBundleLazy 'Shougo/unite.vim', {
 \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
 \ }
+NeoBundle 'Shougo/neomru.vim', {'autoload': {
+\ 'unite_sources': ['file_mru', 'directory_mru',
+\   'neomru/file', 'neomru/directory']
+\}}
 NeoBundleLazy 'thinca/vim-unite-history', {'autoload':{
 \ 'unite_sources': ['history/command', 'history/search'],
 \ }}
