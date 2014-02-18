@@ -11,8 +11,8 @@ tabSize = 4
 softTabs = false
 
 dotFiles = ".tm_properties,.htaccess,.editorconfig"
-dotFiles = "$includeFiles,.hgignore,.gitignore,.gitmodules"
-dotFiles = "$includeFiles,.*rc,.*profile,.bin"
+dotFiles = "$dotFiles.hgignore,.gitignore,.gitmodules"
+dotFiles = "$dotFiles,.*rc,.*profile,.bin"
 include = "{$include,$dotFiles}"
 
 excludeInFolderSearch = "{$excludeInFolderSearch,log,node_modules,vendor,tmp,META-INF,.svn}"
