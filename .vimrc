@@ -622,11 +622,11 @@ NeoBundleLazy 'osyo-manga/vim-jplus', {'autoload':{
 \   '<Plug>(jplus-getchar)', '<Plug>(jplus-getchar-with-space)',
 \   '<Plug>(jplus-input)', '<Plug>(jplus-input-with-space)',
 \ ]]}}
-NeoBundleLazy 'osyo-manga/vim-over', {'autoload':{
-\ 'commands': ['OverCommandLine'],
-\ 'insert': 1,
-\ }}
-NeoBundleLazy 'mattn/benchvimrc-vim'
+" NeoBundleLazy 'osyo-manga/vim-over', {'autoload':{
+" \ 'commands': ['OverCommandLine'],
+" \ 'insert': 1,
+" \ }}
+" NeoBundleLazy 'mattn/benchvimrc-vim'
 NeoBundle 'Shougo/context_filetype.vim'
 NeoBundleLazy 'Shougo/vimfiler.vim', {
 \ 'depends': 'Shougo/unite.vim', 'autoload' : {
@@ -686,33 +686,33 @@ NeoBundleLazy 'kana/vim-niceblock', { 'autoload' : {
 \ }}
 NeoBundle 'tyru/vim-altercmd'
 NeoBundleLazy 'kana/vim-smartinput', {'autoload': {'insert':1}}
-NeoBundleLazy 'tyru/stickykey.vim', {
-\ 'autoload' : {
-\ 'mappings' : [['icsl', '<Plug>(stickykey-']]
-\ }}
+" NeoBundleLazy 'tyru/stickykey.vim', {
+" \ 'autoload' : {
+" \ 'mappings' : [['icsl', '<Plug>(stickykey-']]
+" \ }}
 NeoBundleLazy 'chikatoike/concealedyank.vim', { 'autoload' : {
 \ 'mappings' : [
 \ ['nx', '<Plug>(operator-concealedyank)']]
 \ }}
-" NeoBundle 'dannyob/quickfixstatus'
+" "" NeoBundle 'dannyob/quickfixstatus'
 NeoBundleLazy 'pekepeke/quickfixstatus', {'autoload': {
 \ 'commands': ['QuickfixStatusEnable', 'QuickfixStatusDisable'],
 \ }}
-" NeoBundle 'jceb/vim-hier'
+" "" NeoBundle 'jceb/vim-hier'
 NeoBundleLazy 'cohama/vim-hier', {'autoload':{
 \ 'commands': ['HierUpdate', 'HierClear', 'HierStart', 'HierStop',],
 \}}
-" NeoBundle 'tomtom/quickfixsigns_vim'
+" "" NeoBundle 'tomtom/quickfixsigns_vim'
 NeoBundle 'tpope/vim-repeat'
-NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {
-\ 'commands': [
-\ {'name': 'FocusDispatch', 'complete': 'custom,dispatch#command_complete'},
-\ {'name': 'Dispatch', 'complete': 'custom,dispatch#command_complete'},
-\ {'name': 'Start', 'complete': 'custom,dispatch#command_complete'},
-\ {'name': 'Make', 'complete': 'file'},
-\ {'name': 'Copen'},
-\ ],
-\ }}
+" NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {
+" \ 'commands': [
+" \ {'name': 'FocusDispatch', 'complete': 'custom,dispatch#command_complete'},
+" \ {'name': 'Dispatch', 'complete': 'custom,dispatch#command_complete'},
+" \ {'name': 'Start', 'complete': 'custom,dispatch#command_complete'},
+" \ {'name': 'Make', 'complete': 'file'},
+" \ {'name': 'Copen'},
+" \ ],
+" \ }}
 " NeoBundle 'tpope/vim-surround'
 " NeoBundle 't9md/vim-surround_custom_mapping'
 NeoBundleLazy 'anyakichi/vim-surround', {'autoload':{
@@ -741,7 +741,7 @@ NeoBundleLazy 't9md/vim-quickhl', {'autoload': {
 \ 'mappings': [['nv', '<Plug>(quickhl-',
 \ '<Plug>(operator-quickhl-manual-this-motion)']],
 \ }}
-NeoBundleLazy 't9md/vim-textmanip'
+" NeoBundleLazy 't9md/vim-textmanip'
 NeoBundleLazy 'bkad/CamelCaseMotion', { 'autoload' : {
 \ 'mappings' : ['<Plug>CamelCaseMotion_w',
 \ '<Plug>CamelCaseMotion_b'],
@@ -781,11 +781,11 @@ NeoBundleLazy 'rhysd/clever-f.vim', {'autoload': {
 \ '<Plug>(clever-f-',
 \ ]}}
 NeoBundleLazy 't9md/vim-smalls', {'autoload': {
-      \ 'mappings': [['nxo', '<Plug>(smalls']]
-      \ }}
-NeoBundleLazy 'terryma/vim-expand-region', {'autoload':{
-\ 'mappings': ['<Plug>(expand_region_',]
+\ 'mappings': [['nxo', '<Plug>(smalls']]
 \ }}
+" NeoBundleLazy 'terryma/vim-expand-region', {'autoload':{
+" \ 'mappings': ['<Plug>(expand_region_',]
+" \ }}
 " NeoBundle 'vim-scripts/ShowMarks7'
 NeoBundle 'kshenoy/vim-signature'
 
@@ -793,18 +793,18 @@ if has('python')
   NeoBundle 'editorconfig/editorconfig-vim'
   " NeoBundleLazy 'editorconfig/editorconfig-vim'
 endif
-NeoBundleLazy 'kien/ctrlp.vim'
+" NeoBundleLazy 'kien/ctrlp.vim'
 NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {
 \ 'commands': ['MemoNew', 'MemoGrep', 'MemoList']
 \ }}
-NeoBundleLazy 'LeafCage/nebula.vim', {'autoload': {
-\ 'commands': ['NebulaPutLazy', 'NebulaPutConfig', 'NebulaYankOptions', 'NebulaPutFromClipboard'],
-\ }}
+" doesn't work well
+" NeoBundleLazy 'LeafCage/nebula.vim', {'autoload': {
+" \ 'commands': ['NebulaPutLazy', 'NebulaPutConfig', 'NebulaYankOptions', 'NebulaPutFromClipboard'],
+" \ }}
 NeoBundleLazy 'deris/vim-rengbang', {'autoload':{
 \ 'commands': ['RengBang'],
 \ 'mappings': [['nvx', '<Plug>(operator-rengbang-']],
 \ }}
-
 NeoBundle 'pekepeke/vim-trimr'
 NeoBundleLazy 'othree/eregex.vim', { 'autoload': {
 \ 'commands': ['E2v', 'M', 'S', 'G', 'V'],
@@ -910,9 +910,9 @@ if s:is_win
 else
   NeoBundle 'majutsushi/tagbar'
 endif
-NeoBundleLazy 'wesleyche/SrcExpl', {'autoload': {
-\ 'commands': ['SrcExpl', 'SrcExplClose', 'SrcExplToggle',],
-\ }}
+" NeoBundleLazy 'wesleyche/SrcExpl', {'autoload': {
+" \ 'commands': ['SrcExpl', 'SrcExplClose', 'SrcExplToggle',],
+" \ }}
 " NeoBundle 'abudden/TagHighlight'
 " NeoBundle 'tomtom/tcomment_vim'
 NeoBundleLazy 'tpope/vim-commentary', {'autoload': {
@@ -1091,7 +1091,6 @@ NeoBundleLazy 'ecomba/vim-ruby-refactoring', {'autoload':{
 \ 'filetypes': ['ruby'],
 \ }}
 
-
 NeoBundle 'tpope/vim-cucumber'
 NeoBundle 'yaymukund/vim-rabl'
 NeoBundle 'vim-scripts/eruby.vim'
@@ -1180,10 +1179,10 @@ NeoBundleLazy 'csscomb/csscomb-for-vim', {'autoload': {
 NeoBundleLazy 'vim-scripts/cssbaseline.vim', {'autoload': {
 \ 'commands': ['Baseline', 'Baseline1'],
 \ }}
-NeoBundleLazy 'bae22/prefixer', {'autoload': {
-\ 'commands': ['Prefixer', 'Prefixer1', 'Prefixer1a',
-\   'Prefixer2', 'Prefixer2a'],
-\ }}
+" NeoBundleLazy 'bae22/prefixer', {'autoload': {
+" \ 'commands': ['Prefixer', 'Prefixer1', 'Prefixer1a',
+" \   'Prefixer2', 'Prefixer2a'],
+" \ }}
 
 " javascript {{{4
 NeoBundle 'guileen/simple-javascript-indenter'
@@ -2798,6 +2797,9 @@ let plugin_verifyenc_disable = 1
 let g:vimrc_enabled_plugins = {
       \ 'smartchr': s:bundle.is_installed('vim-smartchr'),
       \ }
+" tern_for_vim {{{2
+let g:tern_show_argument_hints=1
+
 " vim-markdown-quote-syntax {{{2
 let s:mdquote_defaults = keys(extend(
       \ get(g:, 'markdown_quote_syntax_defaults', {})
@@ -4989,8 +4991,10 @@ else "{{{4
 endif "}}}
 
 " SrcExpl {{{2
-nnoremap <silent> [!prefix]t<Space> :<C-u>SrcExplToggle<CR>
-let g:SrcExpl_refreshTime = 1000
+if s:bundle.is_installed('SrcExpl')
+  nnoremap <silent> [!prefix]t<Space> :<C-u>SrcExplToggle<CR>
+  let g:SrcExpl_refreshTime = 1000
+endif
 
 " surround.vim {{{2
 nmap ss <Plug>Yssurround
@@ -5495,15 +5499,22 @@ if s:bundle.is_installed('vim-ref')
   " }}}
 
   LCAlias Ref
-  for src in ['refe', 'ri', 'perldoc', 'man'
-        \ , 'pydoc', 'jsref', 'jquery'
-        \ , 'cppref', 'cheat', 'nodejs', ]
-    silent! exe 'Alias' src 'Ref' src
-  endfor
+  " for src in ['refe', 'ri', 'perldoc', 'man'
+  "       \ , 'pydoc', 'jsref', 'jquery'
+  "       \ , 'cppref', 'cheat', 'nodejs', ]
+  "   silent! exe 'Alias' src 'Ref' src
+  " endfor
+  Alias rd Ref ri
+  Alias pd Ref perldoc
+  Alias phd Ref phpmanual
+  Alias pyd Ref pydoc
+  Alias jsd Ref jsref
+  Alias jqd Ref jquery
+  Alias cppd Ref phpmanual
+  Alias nd Ref nodejs
   Alias webd[ict] Ref webdict
   Alias mr Ref webdict
-  Alias alc Ref webdict alc
-  Alias php[manual] Ref phpmanual
+  Alias al[c] Ref webdict alc
   Alias timo Ref timobileref
   Alias tide Ref tidesktopref
 
