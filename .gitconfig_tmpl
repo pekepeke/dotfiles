@@ -48,11 +48,14 @@
 	trustExitCode = false
 [difftool "p4diff"]
 	path = p4diff
+[difftool "vimdiff"]
+	cmd = vim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
+	trustExitCode = false
 [difftool "gvimdiff"]
-	cmd = gvim -f -d "$LOCAL" "$REMOTE"
+	cmd = gvim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
 	trustExitCode = false
 [difftool "mvimdiff"]
-	cmd = mvim -f -d "$LOCAL" "$REMOTE"
+	cmd = mvim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
 	trustExitCode = false
 ; [difftool "WinMerge"]
 ;   path = C:/Apps/WinMerge/WinMergeU.exe
@@ -61,7 +64,7 @@
 ;   cmd = "p4merge.exe $LOCAL $REMOTE"
 [merge]
 	; tool = vimdiff
-	tool = mvimfugitive
+	tool = vimfugitive
 	; ff = false
 [mergetool "p4merge"]
 	path = p4merge
@@ -70,19 +73,23 @@
 [mergetool "kdiff3"]
 	path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
 	trustExitCode = false
+[mergetool "vimfugitive"]
+	; cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
+	cmd = vim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
+	trustExitCode = false
 [mergetool "gvimdiff"]
 	cmd = gvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
 	trustExitCode = false
 [mergetool "gvimfugitive"]
-		; cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
-	cmd = gvim -f -c "Gdiff" "$MERGED"
+	; cmd = gvim -f -c "Gdiff" "$MERGED"
+	cmd = gvim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
 	trustExitCode = false
 [mergetool "mvimdiff"]
 	cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
 	trustExitCode = false
 [mergetool "mvimfugitive"]
-		; cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
-	cmd = mvim -f -c "Gdiff" "$MERGED"
+	; cmd = mvim -f -c "Gdiff" "$MERGED"
+	cmd = mvim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
 	trustExitCode = false
 ; [mergetool "WinMerge"]
 ;   path = C:/Apps/WinMerge/WinMergeU.exe

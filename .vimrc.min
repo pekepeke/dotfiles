@@ -474,5 +474,35 @@ if s:has_plugin('vim-commentary')
   nmap gcu <Plug>CommentaryUndo
 endif
 
-  " __END__ {{{1
+if s:has_plugin('vim-fugitive')
+  map <leader>1 :diffget //2 <Bar> duffupdate<CR>
+  map <leader>2 :diffget //3 <Bar> duffupdate<CR>
+  map <leader>3 :echo '<Leader>1 = merges from target branch(left buffer), '
+        \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
+        \ <Bar> diffupdate<CR>
+
+  nnoremap <silent> [!space]gd :<C-u>Gdiff --cached<CR>
+  nnoremap <silent> [!space]gD :<C-u>Gdiff<CR>
+  nnoremap <silent> [!space]gs :<C-u>Gstatus<CR>
+  nnoremap [!space]gl :<C-u>silent Glog <Bar> Unite -no-quit quickfix<CR>
+  nnoremap [!space]gL :<C-u>silent Glog -- <Bar> Unite -no-quit quickfix<CR>
+  nnoremap [!space]gg :<C-u>call <SID>git_qfix('Ggrep -i "%s"')<CR>
+  nnoremap [!space]ggr :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
+  nnoremap [!space]ggm :<C-u>call <SID>git_qfix('Glog --grep="%s"')<CR>
+  nnoremap [!space]ggl :<C-u>call <SID>git_qfix('Glog -S="%s"')<CR>
+  nnoremap [!space]gR :<C-u>Gremove<CR>
+  nnoremap [!space]gm :<C-u>Gmove<Space>
+  nnoremap [!space]ga :<C-u>Gwrite<CR>
+  nnoremap [!space]gA :<C-u>Gwrite <cfile><CR>
+  nnoremap <silent> [!space]gc :<C-u>Gcommit<CR>
+  nnoremap <silent> [!space]gC :<C-u>Gcommit --amend<CR>
+  nnoremap <silent> [!space]gb :<C-u>Gblame<CR>
+  nnoremap <silent> [!space]gB :<C-u>Gbrowse<CR>
+  nnoremap <silent> [!space]gp :<C-u>Git push
+  nnoremap <silent> [!space]ge :<C-u>Gedit<Space>
+  nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
+  nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
+  command! Gdiffoff diffoff | q | Gedit
+endif
+" __END__ {{{1
 " vim:fdm=marker sw=2 ts=2 ft=vim expandtab:

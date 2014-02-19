@@ -1448,7 +1448,9 @@ NeoBundle 'Gasol/vim-php'
 NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
-NeoBundle 'shawncplus/phpcomplete.vim'
+" NeoBundle 'shawncplus/phpcomplete.vim'
+NeoBundle 'm2mdas/phpcomplete-extended'
+NeoBundle 'beberlei/vim-php-refactor'
 " NeoBundle 'vim-scripts/php_localvarcheck.vim'
 " NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
 NeoBundle 'tokutake/twig-indent'
@@ -2472,15 +2474,6 @@ endfunction
 MyAutoCmd FileType * call s:nmap_square_brackets()
 
 " maps {{{2
-" if &diff
-" //2 = target-branch, //3 = merge branch
-map <leader>1 :diffget //2 <Bar> duffupdate<CR>
-map <leader>2 :diffget //3 <Bar> duffupdate<CR>
-map <leader>3 :echo '<Leader>1 = merges from target branch(left buffer), '
-      \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
-      \ <Bar> diffupdate<CR>
-" endif
-
 " nmaps {{{3
 MyAutoCmd FileType help,ref,git-status,git-log nnoremap <buffer><nowait> q <C-w>c
 
@@ -4817,28 +4810,39 @@ function! s:git_qfix(...)
   Unite -no-quit quickfix
 endfunction
 
-nnoremap <silent> [!space]gd :<C-u>Gdiff --cached<CR>
-nnoremap <silent> [!space]gD :<C-u>Gdiff<CR>
-nnoremap <silent> [!space]gs :<C-u>Gstatus<CR>
-nnoremap [!space]gl :<C-u>silent Glog <Bar> Unite -no-quit quickfix<CR>
-nnoremap [!space]gL :<C-u>silent Glog -- <Bar> Unite -no-quit quickfix<CR>
-nnoremap [!space]gg :<C-u>call <SID>git_qfix('Ggrep -i "%s"')<CR>
-nnoremap [!space]ggr :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
-nnoremap [!space]ggm :<C-u>call <SID>git_qfix('Glog --grep="%s"')<CR>
-nnoremap [!space]ggl :<C-u>call <SID>git_qfix('Glog -S="%s"')<CR>
-nnoremap [!space]gR :<C-u>Gremove<CR>
-nnoremap [!space]gm :<C-u>Gmove<Space>
-nnoremap [!space]ga :<C-u>Gwrite<CR>
-nnoremap [!space]gA :<C-u>Gwrite <cfile><CR>
-nnoremap <silent> [!space]gc :<C-u>Gcommit<CR>
-nnoremap <silent> [!space]gC :<C-u>Gcommit --amend<CR>
-nnoremap <silent> [!space]gb :<C-u>Gblame<CR>
-nnoremap <silent> [!space]gB :<C-u>Gbrowse<CR>
-nnoremap <silent> [!space]gp :<C-u>Git push
-nnoremap <silent> [!space]ge :<C-u>Gedit<Space>
-nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
-nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
-command! Gdiffoff diffoff | q | Gedit
+if s:bundle.is_installed('vim-fugitive')
+  " if &diff
+  " //2 = target-branch, //3 = merge branch
+  map <leader>1 :diffget //2 <Bar> duffupdate<CR>
+  map <leader>2 :diffget //3 <Bar> duffupdate<CR>
+  map <leader>3 :echo '<Leader>1 = merges from target branch(left buffer), '
+        \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
+        \ <Bar> diffupdate<CR>
+  " endif
+
+  nnoremap <silent> [!space]gd :<C-u>Gdiff --cached<CR>
+  nnoremap <silent> [!space]gD :<C-u>Gdiff<CR>
+  nnoremap <silent> [!space]gs :<C-u>Gstatus<CR>
+  nnoremap [!space]gl :<C-u>silent Glog <Bar> Unite -no-quit quickfix<CR>
+  nnoremap [!space]gL :<C-u>silent Glog -- <Bar> Unite -no-quit quickfix<CR>
+  nnoremap [!space]gg :<C-u>call <SID>git_qfix('Ggrep -i "%s"')<CR>
+  nnoremap [!space]ggr :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
+  nnoremap [!space]ggm :<C-u>call <SID>git_qfix('Glog --grep="%s"')<CR>
+  nnoremap [!space]ggl :<C-u>call <SID>git_qfix('Glog -S="%s"')<CR>
+  nnoremap [!space]gR :<C-u>Gremove<CR>
+  nnoremap [!space]gm :<C-u>Gmove<Space>
+  nnoremap [!space]ga :<C-u>Gwrite<CR>
+  nnoremap [!space]gA :<C-u>Gwrite <cfile><CR>
+  nnoremap <silent> [!space]gc :<C-u>Gcommit<CR>
+  nnoremap <silent> [!space]gC :<C-u>Gcommit --amend<CR>
+  nnoremap <silent> [!space]gb :<C-u>Gblame<CR>
+  nnoremap <silent> [!space]gB :<C-u>Gbrowse<CR>
+  nnoremap <silent> [!space]gp :<C-u>Git push
+  nnoremap <silent> [!space]ge :<C-u>Gedit<Space>
+  nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
+  nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
+  command! Gdiffoff diffoff | q | Gedit
+endif
 function! s:vimrc_git_init()
   setl foldmethod=expr
   " setl foldexpr=getline(v:lnum)!~'^commit'
@@ -6720,6 +6724,9 @@ let g:jscomplete_use = ['dom', 'es6th', 'moz']
 
 if exists("+omnifunc") " {{{4
   " MyAutoCmd FileType php           setl omnifunc=phpcomplete#CompletePHP
+  if s:bundle.is_installed('phpcomplete-extended')
+    MyAutoCmd FileType php           setl omnifunc=phpcomplete_extended#CompletePHP
+  endif
   MyAutoCmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
   if s:bundle.is_installed('jedi-vim')
     MyAutoCmd FileType python let b:did_ftplugin = 1
