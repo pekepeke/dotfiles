@@ -4,5 +4,9 @@ dbext_pg:
      -- dbext:type=PGSQL:host=127.0.0.1:user=@askb:passwd=@askb
 dbext_sq:
      -- dbext:type=SQLITE:dbname=${1:path/to/db}
-
-
+CREATE TABLE id:
+    CREATE TABLE ${1:name} (
+        id int unsigned NOT NULL AUTO_INCREMENT,
+        ${2}
+        PRIMARY KEY (id)
+    )

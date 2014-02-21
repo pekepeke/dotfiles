@@ -7630,8 +7630,12 @@ function! s:docset_cache_remove()
 endfunction
 command! -nargs=0 ZealRemoveCache call s:docset_cache_remove()
 command! -nargs=0 DashRemoveCace call s:docset_cache_remove()
+
 nnoremap [!space]ss :Zeal<Space>
-nnoremap [!space]sw :Zeal<Space><C-r>=expand('<cword>')<CR>
+nnoremap [!space]sw :Zeal<Space><C-r>=expand('<cword>')<CR><CR>
+if s:is_mac
+  nnoremap <D-k> :Zeal<Space><C-r>=expand('<cword>')<CR><CR>
+endif
 
 " onsave {{{2
 let g:autoexec = {
