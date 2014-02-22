@@ -39,6 +39,90 @@ endfunction
 " MyAutoCmd BufReadPost,BufEnter * call s:filetype_check()
 
 " deprecated {{{1
+" plugin {{{1
+" NeoBundleLazy 'osyo-manga/vim-over', {'autoload':{
+" \ 'commands': ['OverCommandLine'],
+" \ 'insert': 1,
+" \ }}
+" NeoBundleLazy 'mattn/benchvimrc-vim'
+" NeoBundleLazy 'tyru/stickykey.vim', {
+" \ 'autoload' : {
+" \ 'mappings' : [['icsl', '<Plug>(stickykey-']]
+" \ }}
+" "" NeoBundle 'tomtom/quickfixsigns_vim'
+" NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {
+" \ 'commands': [
+" \ {'name': 'FocusDispatch', 'complete': 'custom,dispatch#command_complete'},
+" \ {'name': 'Dispatch', 'complete': 'custom,dispatch#command_complete'},
+" \ {'name': 'Start', 'complete': 'custom,dispatch#command_complete'},
+" \ {'name': 'Make', 'complete': 'file'},
+" \ {'name': 'Copen'},
+" \ ],
+" \ }}
+" NeoBundleLazy 't9md/vim-textmanip'
+" NeoBundle 'vim-scripts/ShowMarks7'
+  " NeoBundleLazy 'editorconfig/editorconfig-vim'
+" NeoBundleLazy 'kien/ctrlp.vim'
+" doesn't work well
+" NeoBundleLazy 'LeafCage/nebula.vim', {'autoload': {
+" \ 'commands': ['NebulaPutLazy', 'NebulaPutConfig', 'NebulaYankOptions', 'NebulaPutFromClipboard'],
+" \ }}
+" conflict with Fugitive
+" NeoBundleLazy 'sjl/splice.vim', {'autoload': {
+" \ 'commands': [
+" \   'SpliceInit', 'SpliceGrid', 'SpliceLoupe',
+" \   'SpliceCompare', 'SplicePath', 'SpliceOriginal',
+" \   'SpliceOne', 'SpliceTwo', 'SpliceResult',
+" \   'SpliceDiff', 'SpliceDiffoff', 'SpliceScroll',
+" \   'SpliceLayout', 'SpliceNext', 'SplicePrev',
+" \   'SpliceUse', 'SpliceUse1', 'SpliceUse2',
+" \ ],
+" \ }}
+NeoBundleLazy 'thinca/vim-editvar', {'autoload': {
+\ 'commands': [{'name': 'Editvar', 'complete': 'var'}],
+\ 'unite_sources': ['variable'],
+\ }}
+NeoBundleLazy 'pekepeke/cascading.vim', {'autoload':{
+\ 'commands': ['Cascading'],
+\ 'mappings': [['n', '<Plug>(cascading)']]
+\ }}
+" NeoBundle 'terryma/vim-multiple-cursors'
+" NeoBundle 'chrisbra/SudoEdit.vim'
+" if s:is_mac
+"   if has('gui_running')
+"     NeoBundle 'gmarik/sudo-gui.vim'
+"   else
+"     NeoBundleLazy 'gmarik/sudo-gui.vim'
+"   endif
+" endif
+
+" NeoBundleLazy 'wesleyche/SrcExpl', {'autoload': {
+" \ 'commands': ['SrcExpl', 'SrcExplClose', 'SrcExplToggle',],
+" \ }}
+" NeoBundle 'abudden/TagHighlight'
+" NeoBundle 'motemen/git-vim'
+NeoBundle 'int3/vim-extradite'
+NeoBundleLazy 'Shougo/vim-vcs', {'autoload': {
+\ 'functions': ['vcs#info'],
+\ }}
+" NeoBundleLazy 'mbadran/headlights'
+
+" unite {{{1
+" NeoBundle 'ujihisa/unite-font'
+" NeoBundle 'tacroe/unite-alias'
+" NeoBundle 'hakobe/unite-script'
+" NeoBundle 'mattn/unite-remotefile'
+" NeoBundle 'pekepeke/unite-fileline'
+" NeoBundle 'sgur/unite-qf'
+NeoBundleLazy 'kmnk/vim-unite-giti', { 'autoload' : {
+\ 'unite_sources' : ['giti', 'giti/branch', 'giti/config',
+\   'giti/log', 'giti/remote', 'giti/status',],
+\ }}
+NeoBundleLazy 'kmnk/vim-unite-svn', { 'autoload' : {
+\ 'unite_sources' : ['svn/status', 'svn/diff', 'svn/blame',
+\   ],
+\ }}
+
 " macvim {{{1
 
   " if s:is_mac && has('macvim')

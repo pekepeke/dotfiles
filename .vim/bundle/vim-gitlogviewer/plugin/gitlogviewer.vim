@@ -15,7 +15,7 @@ function! s:git_log_viewer(commit) "{{{
   setl buftype=nofile
   setl buflisted
   "VimProcRead git log -u 'HEAD@{1}..HEAD' --reverse
-  let commit = empty(a:commit) ? 'ORIG_HEAD..HEAD' : a:commit . ' -n 1'
+  let commit = empty(a:commit) ? '' : a:commit . ' -n 1'
   execute 'VimProcRead git log -u ' commit
   " set filetype=git-log.git-diff
   set filetype=git
