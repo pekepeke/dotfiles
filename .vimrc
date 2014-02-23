@@ -553,6 +553,47 @@ if has('vim_starting')
     endif
   endfunction " }}}
 
+  " http://d.hatena.ne.jp/osyo-manga/20140212/1392216949
+  let s:bundle.updatetime = -1
+  function! s:bundle.lazy_source() "{{{
+    if !self.active_auto_source
+      return
+    endif
+    let sources = map(filter(self.lazy_plugins(),
+      \ "self.is_not_sourced(v:val)"), "v:val")
+    if empty(sources)
+      augroup neobundle-auto-source
+        autocmd!
+      augroup END
+      return
+    endif
+    echom "source:" . sources[0]
+    call neobundle#source(sources[0])
+    echom "sourced:" . sources[0]
+  endfunction " }}}
+
+  function! s:bundle.lazy_plugins() "{{{
+    return [
+    \ "vim-markdown-quote-syntax",
+    \ "unite.vim",
+    \ "vimfiler.vim",
+    \ "vimshell.vim",
+    \ "vim-quickrun",
+    \ ] + map(filter(neobundle#config#get_neobundles(), "v:val.lazy"), "v:val.name")
+  endfunction " }}}
+
+  function! s:bundle.is_not_sourced(source) "{{{
+    return self.is_installed(a:source) && !self.is_sourced(a:source)
+  endfunction " }}}
+
+  let s:bundle.active_auto_source = 0
+  augroup neobundle-auto-source
+      autocmd!
+      autocmd CursorHold * call s:bundle.lazy_source()
+      autocmd FocusLost * let s:bundle.active_auto_source = 1
+      autocmd FocusGained * let s:bundle.active_auto_source = 0
+  augroup END
+
   command! -nargs=+ NeoBundleLazyOn call s:bundle.install_lazy_on(<f-args>)
   command! NeoBundleSummary call s:bundle.summary_report()
   command! NeoBundleValidate call s:bundle.validate_report()
@@ -795,10 +836,10 @@ NeoBundleLazy 'thinca/vim-prettyprint', { 'autoload': {
 \   { 'name' : 'PrettyPrint', 'complete': 'expression'},
 \ ]}}
 
-" if has('conceal')
-"   NeoBundle 'Yggdroot/indentLine'
-" endif
-NeoBundle 'nathanaelkane/vim-indent-guides'
+if has('conceal')
+  NeoBundle 'Yggdroot/indentLine'
+endif
+" NeoBundle 'nathanaelkane/vim-indent-guides'
 
 NeoBundleLazy 'mileszs/ack.vim', { 'autoload': {
 \ 'commands': [
@@ -976,6 +1017,7 @@ if has('lua') && (v:version > 703 ||
       \ (v:version == 703 && has('patch885')))
   NeoBundleLazy 'Shougo/neocomplete.vim', {'autoload':{
   \ 'insert':1,
+  \ 'unite_sources': ['neocomplete'],
   \ }}
   NeoBundle 'supermomonga/neocomplete-rsense.vim'
 else
@@ -1083,7 +1125,7 @@ endif
 " html {{{4
 NeoBundle 'othree/html5.vim'
 NeoBundle 'amirh/HTML-AutoCloseTag'
-NeoBundle 'vim-scripts/html_FileCompletion'
+" NeoBundle 'vim-scripts/html_FileCompletion'
 NeoBundle 'tpope/vim-haml'
 NeoBundle 'digitaltoad/vim-jade'
 NeoBundleLazy 'mattn/emmet-vim', {'autoload':{
@@ -2242,13 +2284,13 @@ function! s:set_grep(...) "{{{3
 
       return 1
     elseif type == "ag" && executable(type)
-      set grepprg=ag\ -S\ --nocolor\ --nogroup\ --nopager
+      set grepprg=ag\ --smartcase\ -S\ --nocolor\ --nogroup\ --nopager
       set grepformat=%f:%l:%m
-      let g:ackprg="ag -S --nocolor --nogroup --column --nopager"
+      let g:ackprg="ag --smartcase -S --nocolor --nogroup --column --nopager"
 
       let g:unite_source_grep_command = 'ag'
       let opts = [
-        \ '-S --noheading --nocolor --nogroup --nopager',
+        \ '-S --smartcase --noheading --nocolor --nogroup --nopager',
         \ '--ignore', '".hg"',
         \ '--ignore', '".git"',
         \ '--ignore', '".bzr"',
@@ -2260,12 +2302,11 @@ function! s:set_grep(...) "{{{3
 
       return 1
     elseif type == "ack" && executable(type)
-      set grepprg=ack\ -a\ --nocolor\ --nogroup\ --nopager
+      set grepprg=ack\ --smartcase\ -a\ --nocolor\ --nogroup\ --nopager
       set grepformat=%f:%l:%m
-
-      let g:ackprg="ack -H --nocolor --nogroup --column --nopager"
+      let g:ackprg="ack -H --smartcase --nocolor --nogroup --column --nopager"
       let g:unite_source_grep_command = 'ack'
-      let g:unite_source_grep_default_opts = '--no-heading --nocolor -a --nogroup --nopager'
+      let g:unite_source_grep_default_opts = '--smartcase --no-heading --nocolor --nogroup --nopager'
       let g:unite_source_grep_recursive_opt = ''
       return 1
     elseif type == "ack-grep"  && executable(type)
@@ -2648,6 +2689,7 @@ let g:perl_want_scope_in_variables = 1
 
 " php {{{2
 "let g:php_folding = 1
+let g:php_folding = 0
 let g:php_sql_query = 1
 let g:php_baselib = 1
 let g:php_htmlInStrings = 1
@@ -2655,8 +2697,6 @@ let g:php_noShortTags = 1
 let g:php_parent_error_close = 1
 let g:php_parent_error_open = 1
 "let g:php_sync_method = x
-
-let g:php_folding = 0
 " phpfolding.vim
 let g:DisableAutoPHPFolding = 1
 
@@ -2673,11 +2713,12 @@ endif
 let g:pdv_cfg_Copyright = ""
 let g:pdv_cfg_License = 'PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}'
 let g:pdv_cfg_CommentEnd = "// }}}"
+
 " javascript {{{2
 if s:bundle.is_installed('simple-javascript-indenter')
-  " この設定入れるとshiftwidthを1にしてインデントしてくれる
+  " shiftwidthを1に
   let g:SimpleJsIndenter_BriefMode = 1
-  " この設定入れるとswitchのインデントがいくらかマシに
+  " better switch indent
   let g:SimpleJsIndenter_CaseIndentLevel = -1
 endif
 
@@ -2741,6 +2782,10 @@ let s:mdquote_defaults = keys(extend(
       \ , get(g:, 'markdown_quote_syntax_filetypes', {})
       \ ))
 function! s:vimrc_mdquote_syntax_init(pos, is_initialize)
+  if s:bundle.is_sourced('vim-markdown-quote-syntax')
+    silent autocmd! vimrc-mdquote-syntax
+    return
+  endif
   let pos = a:pos < 1 ? 1 : a:pos
   let s = join(getline(pos, pos + 5), "\n")
   let types = empty(s:mdquote_defaults) ?
@@ -3529,11 +3574,20 @@ if s:bundle.is_installed('clever-f.vim')
 endif
 
 " smalls {{{2
-if s:bundle.is_installed('vim-smalls')
-  nmap [!space]s <Plug>(smalls)
-  omap [!space]s <Plug>(smalls)
-  xmap [!space]s <Plug>(smalls)
+if s:bundle.tap('vim-smalls')
+  nmap [!prefix]f <Plug>(smalls)
+  omap [!prefix]f <Plug>(smalls)
+  xmap [!prefix]f <Plug>(smalls)
   let g:smalls_auto_excursion_min_input_length = 2
+
+  function s:bundle.tapped.hooks.on_source(bundle)
+    let cli_table_custom = {
+    \ "\<C-g>": 'do_cancel',
+    \ "\<C-j>": 'do_jump',
+    \ "\<CR>": 'do_set',
+    \ }
+    call smalls#keyboard#cli#extend_table(cli_table_custom)
+  endfunction
 endif
 
 " dirdiff.vim {{{2
@@ -3792,8 +3846,11 @@ endif
 
 if s:bundle.tap('indentLine')
   let g:indentLine_char = '¦'
-  " let g:indentLine_color_term = 236
-  " let g:indentLine_color_gui = '#A4E57E'
+  let g:indentLine_color_term = 236
+  let g:indentLine_color_gui = '#333'
+  let g:indentLine_fileTypeExclude = [
+  \ 'help', 'nerdtree', 'calendar', 'thumbnail', 'tweetvim',
+  \ ]
 endif
 
 
@@ -4127,7 +4184,7 @@ if s:bundle.tap('unite.vim')
 
   " unite basic settings {{{3
   let g:unite_data_directory = $VIM_CACHE . '/vim-unite'
-  let g:unite_update_time=1000
+  let g:unite_update_time=600
   let g:unite_source_history_yank_enable=0
   "let g:unite_enable_start_insert=1
   let g:unite_enable_start_insert=0
@@ -4657,10 +4714,10 @@ if s:bundle.tap('unite.vim')
 
   if s:bundle.is_installed('neocomplcache.vim')
     inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
-    inoremap <C-x>i <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
+    inoremap <C-x><C-i> <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
   elseif s:bundle.is_installed('neocomplete.vim')
     inoremap <C-x><C-j> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
-    inoremap <C-x>i <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
+    inoremap <C-x><C-i> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
   endif
 
   command! Todo silent! exe 'Unite' printf('grep:%s::%s', getcwd(), s:regexp_todo) '-buffer-name=todo' '-no-quit'
@@ -5909,13 +5966,17 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
         \ },
         \ })
+  if executable('tidy')
+    call extend(g:quickrun_config, {
+    \ 'html/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/tidy',
+    \ },
+    \ 'xhtml/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/tidy',
+    \ },
+    \ })
+  endif
   call extend(g:quickrun_config, {
-        \ 'html/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/tidy',
-        \ },
-        \ 'xhtml/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/tidy',
-        \ },
         \ 'watchdogs_checker/tidy' : {
         \   'command' : 'tidy',
         \    'exec'    : '%c -raw -quiet -errors --gnu-emacs yes %o %s:p',
