@@ -824,7 +824,7 @@ NeoBundleLazy 'othree/eregex.vim', { 'autoload': {
 \ }}
 NeoBundle 'mbbill/undotree'
 " NeoBundle 'sjl/gundo.vim'
-NeoBundleLazy 'kana/vim-smartword', { 'autoload' : {
+NeoBundle 'kana/vim-smartword', { 'autoload' : {
 \ 'mappings' : [['nv',
 \ '<Plug>(smartword-',
 \ ]]}}
