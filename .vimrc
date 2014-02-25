@@ -836,10 +836,11 @@ NeoBundleLazy 'thinca/vim-prettyprint', { 'autoload': {
 \   { 'name' : 'PrettyPrint', 'complete': 'expression'},
 \ ]}}
 
-if has('conceal')
+if has('conceal') && !s:is_mac
   NeoBundle 'Yggdroot/indentLine'
+else
+  NeoBundle 'nathanaelkane/vim-indent-guides'
 endif
-" NeoBundle 'nathanaelkane/vim-indent-guides'
 
 NeoBundleLazy 'mileszs/ack.vim', { 'autoload': {
 \ 'commands': [
@@ -929,7 +930,7 @@ NeoBundleLazy 'ciaranm/detectindent', {'autoload': {
 \ 'commands' : ['DetectIndent'],
 \ }}
 NeoBundle 'ujihisa/shadow.vim'
-NeoBundle 'mhinz/vim-startify'
+" NeoBundle 'mhinz/vim-startify'
 NeoBundle 'mhinz/vim-hugefile'
 if !s:is_win
   NeoBundle 'mhinz/vim-signify'
@@ -1426,7 +1427,7 @@ NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
 " NeoBundle 'shawncplus/phpcomplete.vim'
-NeoBundle 'm2mdas/phpcomplete-extended'
+" NeoBundle 'm2mdas/phpcomplete-extended'
 NeoBundle 'beberlei/vim-php-refactor'
 " NeoBundle 'vim-scripts/php_localvarcheck.vim'
 " NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
@@ -1726,23 +1727,23 @@ NeoBundleLazy 'kana/vim-textobj-syntax', {'autoload': {
 \ ]],
 \ }}
 NeoBundleLazy 'kana/vim-textobj-line', {'autoload':{
-\ 'mappings': [['vo', '<Plug>(textobj-line-i)', '<Plug>(textobj-line-a)']],
+\ 'mappings': [['vo', 'al', 'il', '<Plug>(textobj-line-',]],
 \ }}
 NeoBundleLazy 'kana/vim-textobj-underscore', {'autoload':{
-\ 'mappings': [['nvx', '<Plug>(textobj-quoted-i)', '<Plug>(textobj-quoted-a)']],
+\ 'mappings': [['nvx', '<Plug>(textobj-quoted-', ]],
 \ }}
 NeoBundleLazy 'thinca/vim-textobj-between', {
 \ 'depends' : 'vim-textobj-user',
 \ 'autoload' : {
 \ 'mappings' : [
-\ ['nvx', '<Plug>(textobj-between-i)', '<Plug>(textobj-between-a)']]
+\ ['nvx', '<Plug>(textobj-between-',]]
 \ }}
 " NeoBundle 'thinca/vim-textobj-comment'
 NeoBundleLazy 'kana/vim-textobj-function', {
 \ 'depends' : 'vim-textobj-user',
 \ 'autoload' : {
 \ 'mappings' : [
-\ ['nvx', '<Plug>(textobj-function-i)', '<Plug>(textobj-function-a)']]
+\ ['nvx', '<Plug>(textobj-function-',]]
 \ }}
 NeoBundle 'thinca/vim-textobj-function-javascript'
 NeoBundle 'thinca/vim-textobj-function-perl'
@@ -1752,7 +1753,7 @@ NeoBundleLazy 'nelstrom/vim-textobj-rubyblock', {'autoload':{
 \ }}
 NeoBundleLazy 'deris/vim-textobj-enclosedsyntax', {'autoload':{
 \ 'mappings' : [['nvo',
-\ '<Plug>(textobj-enclosedsyntax-i)', '<Plug>(textobj-enclosedsyntax-a)',
+\ '<Plug>(textobj-enclosedsyntax-',
 \ ]]}}
 NeoBundleLazy "osyo-manga/vim-textobj-multitextobj", {
 \ 'depends' : 'vim-textobj-user',
@@ -1800,11 +1801,11 @@ NeoBundleLazy 'akiyan/vim-textobj-xml-attribute', {'autoload':{
 \ ]]}}
 NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
 \ 'mappings' : [
-\ ['nvo', '<Plug>(textobj-lastinserted-i)', '<Plug>(textobj-lastinserted-a)']]
+\ ['nvo', '<Plug>(textobj-lastinserted-']]
 \ }}
 NeoBundleLazy 'mattn/vim-textobj-url', {'autoload':{
 \ 'mappings' : [
-\ ['nvo', '<Plug>(textobj-url-i)', '<Plug>(textobj-url-a)']]
+\ ['nvo', '<Plug>(textobj-url-']]
 \ }}
 NeoBundleLazy 'anyakichi/vim-textobj-ifdef', {'autoload':{
 \ 'mappings' : [
@@ -5291,7 +5292,7 @@ if s:bundle.is_installed('vim-textobj-user')
 
   " let g:textobj_entire_no_default_key_mappings=1
   let g:textobj_parameter_no_default_key_mappings=1
-  let g:textobj_line_no_default_key_mappings=1
+  " let g:textobj_line_no_default_key_mappings=1
   let g:textobj_between_no_default_key_mappings=1
   let g:textboj_fold_no_default_key_mappings=1
   let g:textboj_enclosedsyntax_no_default_key_mappings=1
@@ -6738,9 +6739,10 @@ endif
 let g:jscomplete_use = ['dom', 'es6th', 'moz']
 
 if exists("+omnifunc") " {{{4
-  " MyAutoCmd FileType php           setl omnifunc=phpcomplete#CompletePHP
   if s:bundle.is_installed('phpcomplete-extended')
     MyAutoCmd FileType php           setl omnifunc=phpcomplete_extended#CompletePHP
+  elseif s:bundle.is_installed('phpcomplete.vim')
+    MyAutoCmd FileType php           setl omnifunc=phpcomplete#CompletePHP
   endif
   MyAutoCmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
   if s:bundle.is_installed('jedi-vim')
