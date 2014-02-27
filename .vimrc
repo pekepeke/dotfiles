@@ -549,7 +549,7 @@ if has('vim_starting')
       echo printf("Following plugins looks good should not be Lazy\n%s",
             \ join(map(plugins, 'v:val.name'), "\n"))
     else
-      echo print("Finish validate")
+      echo "Finish validate"
     endif
   endfunction " }}}
 
@@ -588,10 +588,10 @@ if has('vim_starting')
 
   let s:bundle.active_auto_source = 0
   augroup neobundle-auto-source
-      autocmd!
-      autocmd CursorHold * call s:bundle.lazy_source()
-      autocmd FocusLost * let s:bundle.active_auto_source = 1
-      autocmd FocusGained * let s:bundle.active_auto_source = 0
+    autocmd!
+    autocmd CursorHold * call s:bundle.lazy_source()
+    autocmd FocusLost * let s:bundle.active_auto_source = 1
+    autocmd FocusGained * let s:bundle.active_auto_source = 0
   augroup END
 
   command! -nargs=+ NeoBundleLazyOn call s:bundle.install_lazy_on(<f-args>)
@@ -610,12 +610,12 @@ NeoBundleLocal ~/.vim/bundle
 NeoBundle 'itchyny/lightline.vim'
 
 " colorscheme {{{3
-NeoBundleLazy 'cocopon/svss.vim', {'autoload': {
-\ 'commands': [
-\ 'SvssSource', 'SvssScan', 'SvssDevInspect',
-\ {'name': 'SvssCompile', 'complete':'file'},
-\ ],
-\ }}
+" NeoBundleLazy 'cocopon/svss.vim', {'autoload': {
+" \ 'commands': [
+" \ 'SvssSource', 'SvssScan', 'SvssDevInspect',
+" \ {'name': 'SvssCompile', 'complete':'file'},
+" \ ],
+" \ }}
 NeoBundleLazy 'cocopon/colorswatch.vim', {'autoload': {
 \ 'commands': ['ColorSwatchGenerate'],
 \ }}
@@ -664,7 +664,7 @@ NeoBundleLazy 'osyo-manga/vim-jplus', {'autoload':{
 \   '<Plug>(jplus-input)', '<Plug>(jplus-input-with-space)',
 \ ]]}}
 NeoBundle 'Shougo/context_filetype.vim'
-NeoBundleLazy 'Shougo/vimfiler.vim', {
+NeoBundle 'Shougo/vimfiler.vim', {
 \ 'depends': 'Shougo/unite.vim', 'autoload' : {
 \ 'commands' : [
 \ { 'name': 'VimFiler', 'complete': 'customlist,vimfiler#complete' },
@@ -687,7 +687,7 @@ NeoBundle 'Shougo/vimproc.vim', {
 \ 'unix'   : 'make -f make_unix.mak',
 \ }
 \ }
-NeoBundleLazy 'Shougo/vimshell.vim', {
+NeoBundle 'Shougo/vimshell.vim', {
 \ 'depends': 'Shougo/vimproc.vim', 'autoload' : {
 \ 'commands' : [{ 'name' : 'VimShell',
 \ 'complete' : 'customlist,vimshell#complete'},
@@ -711,33 +711,33 @@ NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
 \ 'unite_sources' : ['junkfile', 'junkfile/new'],
 \ }}
 NeoBundle 'yomi322/vim-gitcomplete'
-NeoBundleLazy 'kana/vim-altr', {'autoload': {
+NeoBundle 'kana/vim-altr', {'autoload': {
 \ 'mappings': ['<Plug>(altr-',],
 \ }}
 NeoBundle 'kana/vim-fakeclip'
 NeoBundle 'kana/vim-smartchr', {'autoload': {'insert':1}}
 NeoBundle 'kana/vim-submode'
-NeoBundleLazy 'kana/vim-niceblock', { 'autoload' : {
+NeoBundle 'kana/vim-niceblock', { 'autoload' : {
 \ 'mappings' : ['<Plug>(niceblock-',]
 \ }}
 NeoBundle 'tyru/vim-altercmd'
-NeoBundleLazy 'kana/vim-smartinput', {'autoload': {'insert':1}}
+NeoBundle 'kana/vim-smartinput', {'autoload': {'insert':1}}
 NeoBundleLazy 'chikatoike/concealedyank.vim', { 'autoload' : {
 \ 'mappings' : [
 \ ['nx', '<Plug>(operator-concealedyank)']]
 \ }}
 " "" NeoBundle 'dannyob/quickfixstatus'
-NeoBundleLazy 'pekepeke/quickfixstatus', {'autoload': {
+NeoBundle 'pekepeke/quickfixstatus', {'autoload': {
 \ 'commands': ['QuickfixStatusEnable', 'QuickfixStatusDisable'],
 \ }}
 " "" NeoBundle 'jceb/vim-hier'
-NeoBundleLazy 'cohama/vim-hier', {'autoload':{
+NeoBundle 'cohama/vim-hier', {'autoload':{
 \ 'commands': ['HierUpdate', 'HierClear', 'HierStart', 'HierStop',],
 \}}
 NeoBundle 'tpope/vim-repeat'
 " NeoBundle 'tpope/vim-surround'
 " NeoBundle 't9md/vim-surround_custom_mapping'
-NeoBundleLazy 'anyakichi/vim-surround', {'autoload':{
+NeoBundle 'anyakichi/vim-surround', {'autoload':{
 \ 'mappings': [['n', 'ds', 'cs', 'ys', 'yS', 'yss', 'ygs', 'ygS', 'ygss', 'ygsgs'],
 \ ['x', 's', 'S', 'gs', 'gS'],
 \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
@@ -796,7 +796,7 @@ NeoBundleLazy 'zef/vim-cycle', {'autoload': {
 \ 'mappings': ['<Plug>CycleNext', '<Plug>CyclePrevious'],
 \ 'functions': ['AddCycleGroup']
 \ }}
-NeoBundleLazy 'rhysd/clever-f.vim', {'autoload': {
+NeoBundle 'rhysd/clever-f.vim', {'autoload': {
 \ 'mappings': [
 \ '<Plug>(clever-f-',
 \ ]}}
@@ -888,7 +888,7 @@ NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'mattn/quickrunex-vim'
 NeoBundle 'osyo-manga/shabadou.vim'
 NeoBundle 'osyo-manga/vim-watchdogs'
-NeoBundleLazy 'osyo-manga/vim-anzu', {'autoload': {
+NeoBundle 'osyo-manga/vim-anzu', {'autoload': {
 \ 'mappings': [['n', '<Plug>(anzu-']],
 \ }}
 NeoBundle 'kien/rainbow_parentheses.vim'
@@ -909,14 +909,14 @@ else
   NeoBundle 'majutsushi/tagbar'
 endif
 " NeoBundle 'tomtom/tcomment_vim'
-NeoBundleLazy 'tpope/vim-commentary', {'autoload': {
+NeoBundle 'tpope/vim-commentary', {'autoload': {
 \ 'mappings': [
 \   ['xn', '<Plug>Commentary'],
 \   ['n', '<Plug>Commentary'],
 \ ],
 \ }}
 NeoBundle 'thinca/vim-template'
-NeoBundleLazy 'mattn/sonictemplate-vim', {'autoload': {
+NeoBundle 'mattn/sonictemplate-vim', {'autoload': {
 \ 'commands': [
 \   {'name': 'Template', 'complete': 'complete=customlist,sonictemplate#complete'},
 \   {'name': '', 'complete': 'complete=customlist,sonictemplate#complete'},
@@ -926,7 +926,7 @@ NeoBundleLazy 'mattn/sonictemplate-vim', {'autoload': {
 \ ],
 \ 'unite_sources': ['sonictemplate'],
 \ }}
-NeoBundleLazy 'ciaranm/detectindent', {'autoload': {
+NeoBundle 'ciaranm/detectindent', {'autoload': {
 \ 'commands' : ['DetectIndent'],
 \ }}
 NeoBundle 'ujihisa/shadow.vim'
@@ -1016,13 +1016,13 @@ NeoBundle 'mattn/learn-vimscript'
 " completion {{{4
 if has('lua') && (v:version > 703 ||
       \ (v:version == 703 && has('patch885')))
-  NeoBundleLazy 'Shougo/neocomplete.vim', {'autoload':{
+  NeoBundle 'Shougo/neocomplete.vim', {'autoload':{
   \ 'insert':1,
   \ 'unite_sources': ['neocomplete'],
   \ }}
   NeoBundle 'supermomonga/neocomplete-rsense.vim'
 else
-  NeoBundleLazy 'Shougo/neocomplcache.vim', {'autoload':{
+  NeoBundle 'Shougo/neocomplcache.vim', {'autoload':{
   \ 'insert':1,
   \ }}
   NeoBundle 'Shougo/neocomplcache-rsense.vim'
@@ -1035,7 +1035,7 @@ NeoBundleLazy 'm2ym/rsense', {
 \    'mac': 'ruby etc/config.rb > ~/.rsense',
 \    'unix': 'ruby etc/config.rb > ~/.rsense',
 \ } }
-NeoBundleLazy 'Shougo/neosnippet.vim', {
+NeoBundle 'Shougo/neosnippet.vim', {
 \ 'lazy' : 1,
 \ 'autoload' : {
 \ 'commands' : ['NeoSnippetEdit', 'NeoSnippetSource'],
@@ -1490,7 +1490,7 @@ NeoBundle 'glidenote/keepalived-syntax.vim'
 NeoBundle 'Shougo/vim-nyaos'
 
 " unite.vim {{{3
-NeoBundleLazy 'Shougo/unite.vim', {
+NeoBundle 'Shougo/unite.vim', {
 \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
 \ }
 NeoBundle 'Shougo/neomru.vim', {'autoload': {
