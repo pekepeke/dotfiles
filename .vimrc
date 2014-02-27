@@ -4512,7 +4512,7 @@ if s:bundle.tap('unite.vim')
     " \ ])
 
     function! s:unite_context_menu() "{{{5
-      let menus = map(filter(keys(g:unite_source_menu_menus),
+      let menus = map(filter(sort(keys(g:unite_source_menu_menus)),
       \ 'v:val =~# "^ft_".&filetype'), '"menu:".v:val')
       " if !exists('g:unite_source_menu_menus["ft_' . &filetype . '"]')
       if len(menus) <= 0
