@@ -1537,9 +1537,10 @@ NeoBundleLazy 'osyo-manga/unite-quickfix', { 'autoload' : {
 NeoBundleLazy "osyo-manga/unite-quickrun_config", { 'autoload' : {
 \ 'unite_sources' : ['quickrun_config'],
 \ }}
-NeoBundleLazy 'eiiches/unite-tselect', { 'autoload' : {
-\ 'unite_sources' : ['tselect'],
-\ }}
+" TODO : pr
+" NeoBundleLazy 'eiiches/unite-tselect', { 'autoload' : {
+" \ 'unite_sources' : ['tselect'],
+" \ }}
 NeoBundleLazy 'tsukkee/unite-tag', { 'autoload' : {
 \ 'unite_sources' : ['tag', 'tag/file', 'tag/include'],
 \ }}
@@ -4301,6 +4302,10 @@ if s:bundle.tap('unite.vim')
     if !exists("g:unite_source_menu_menus")
        let g:unite_source_menu_menus = {}
     endif
+    function s:gui_manual(name) " {{{5
+      return "Zeal ".a:name.":"
+    endfunction " }}}
+
     " http://d.hatena.ne.jp/osyo-manga/20130225/1361794133
     function! s:unite_menu_create(desc, ...) "{{{5
       let commands = {
@@ -4333,6 +4338,7 @@ if s:bundle.tap('unite.vim')
       return commands
     endfunction "5}}}
     " shortcut {{{5
+
     let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
     \ 'Shortcut', [
     \   ["edit .vimrc"        , $MYVIMRC]                                  ,
@@ -4426,6 +4432,27 @@ if s:bundle.tap('unite.vim')
     \   ["local module"  , "Unite perl/local"]  ,
     \   ["global module" , "Unite perl/global"] ,
     \ ])
+    " php {{{5
+    let g:unite_source_menu_menus["ft_php"] = s:unite_menu_create(
+    \ 'PHP Menu', [
+    \   ["Man php"  , s:gui_manual("php")]  ,
+    \ ])
+    let g:unite_source_menu_menus["ft_php_cake"] = s:unite_menu_create(
+    \ 'CakePHP Menu', [
+    \   ["Man cakephp", s:gui_manual("cakephp")],
+    \   ["CakePHP controller", "Unite cake_controller"],
+    \   ["CakePHP model", "Unite cake_model"],
+    \   ["CakePHP view", "Unite cake_view"],
+    \   ["CakePHP helper", "Unite cake_helper"],
+    \   ["CakePHP component", "Unite cake_component"],
+    \   ["CakePHP behavior", "Unite cake_behavior"],
+    \   ["CakePHP lib", "Unite cake_lib"],
+    \   ["CakePHP shell", "Unite cake_shell"],
+    \   ["CakePHP task", "Unite cake_task"],
+    \   ["CakePHP config", "Unite cake_config"],
+    \   ["CakePHP core", "Unite cake_core"],
+    \   ["CakePHP fixture", "Unite cake_fixture"],
+    \ ])
     " ruby {{{5
     let g:unite_source_menu_menus["ft_ruby"] = s:unite_menu_create(
     \ 'Ruby Menu', [
@@ -4457,6 +4484,17 @@ if s:bundle.tap('unite.vim')
     \   ["import" , "Unite javaimport"] ,
     \   ["gradle" , "Unite gradle"]     ,
     \ ])
+    " javascript {{{5
+    let g:unite_source_menu_menus["ft_javascript"] = s:unite_menu_create(
+    \ 'Javascript Menu' , [
+    \   ["Man angularjs"  , s:gui_manual("angularjs")]  ,
+    \   ["Man d3"         , s:gui_manual("d3")]         ,
+    \   ["Man nodejs"     , s:gui_manual("nodejs")]     ,
+    \   ["Man jquery"     , s:gui_manual("jquery")]     ,
+    \   ["Man jqueryui"   , s:gui_manual("jqueryui")]   ,
+    \   ["Man underscore" , s:gui_manual("underscore")] ,
+    \   ["Man javascript" , s:gui_manual("javascript")] ,
+    \ ])
     " gitv {{{5
     let g:unite_source_menu_menus["ft_gitv"] = s:unite_menu_create(
     \ 'Gitv', [
@@ -4473,14 +4511,17 @@ if s:bundle.tap('unite.vim')
     " \  ["", ""],
     " \ ])
 
-    function! s:unite_context_menu() "{{{6
-      if !exists('g:unite_source_menu_menus["ft_' . &filetype . '"]')
+    function! s:unite_context_menu() "{{{5
+      let menus = map(filter(keys(g:unite_source_menu_menus),
+      \ 'v:val =~# "^ft_".&filetype'), '"menu:".v:val')
+      " if !exists('g:unite_source_menu_menus["ft_' . &filetype . '"]')
+      if len(menus) <= 0
         echohl Error
         echon "menu not found"
         echohl None
         return
       endif
-      execute 'Unite' 'menu:'.'ft_'.&filetype
+      execute 'Unite' join(menus, " ")
     endfunction "5}}}
 
     " memolist - http://d.hatena.ne.jp/osyo-manga/20130919 {{{4
@@ -4635,7 +4676,7 @@ if s:bundle.tap('unite.vim')
 
   nnoremap <silent> [!unite]v :Unite menu:shortcut<CR>
   nnoremap <silent> [!unite]e :Unite menu:edit<CR>
-  nnoremap <silent> [!unite]V :call <SID>unite_context_menu()<CR>
+  nnoremap <silent> [!unite]s :call <SID>unite_context_menu()<CR>
 
   " filepath insert TODO : don't works well...--;
   nnoremap <C-y><C-f> :<C-u>Unite -default-action=narrow_or_insert file<CR>
