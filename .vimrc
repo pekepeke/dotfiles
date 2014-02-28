@@ -1538,9 +1538,9 @@ NeoBundleLazy "osyo-manga/unite-quickrun_config", { 'autoload' : {
 \ 'unite_sources' : ['quickrun_config'],
 \ }}
 " TODO : pr
-" NeoBundleLazy 'eiiches/unite-tselect', { 'autoload' : {
-" \ 'unite_sources' : ['tselect'],
-" \ }}
+NeoBundleLazy 'eiiches/unite-tselect', { 'autoload' : {
+\ 'unite_sources' : ['tselect'],
+\ }}
 NeoBundleLazy 'tsukkee/unite-tag', { 'autoload' : {
 \ 'unite_sources' : ['tag', 'tag/file', 'tag/include'],
 \ }}
@@ -4197,8 +4197,25 @@ if s:bundle.tap('unite.vim')
   let g:unite_winheight = 20
   " let g:unite_winwidth = &columns - 12
   "let g:unite_split_rule = 'botright'
-
   let g:unite_source_file_rec_max_cache_files = 5000
+
+  function! s:unite_set_rm_command(command)
+    if executable(a:command)
+      let g:unite_kind_file_delete_file_command = a:command." $srcs"
+      let g:unite_kind_file_delete_directory_command = a:command." $srcs"
+      return 1
+    endif
+    return 0
+  endfunction
+
+
+  if s:is_win
+  elseif s:is_mac
+    if s:unite_set_rm_command("rmtrash") || s:unite_set_rm_command('trash')
+    endif
+  else
+    call s:unite_set_rm_command("trash-put")
+  endif
 
   " unite fn {{{3
   function! s:unite_grep(path, ...) "{{{4
