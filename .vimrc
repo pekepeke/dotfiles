@@ -375,7 +375,11 @@ if has('kaoriya') && has('migemo')
 endif
 
 " color settings "{{{1
-" set t_Co=256
+if !has('gui_running')
+  let s:t_Co=&t_Co
+  MyAutoCmd VimLeave * let &l:t_Co=s:t_Co
+endif
+set t_Co=256
 set background=dark
 
 function! s:highlights_add() "{{{2
@@ -696,6 +700,8 @@ NeoBundle 'Shougo/vimshell.vim', {
 \   'VimShellTerminal', 'VimShellPop'],
 \ 'mappings' : ['<Plug>(vimshell']
 \ }}
+" coflict with vimshell...--;;;;;;
+" NeoBundle 'yomi322/vim-gitcomplete'
 NeoBundleLazy 'Shougo/vinarise', { 'autoload': {
 \ 'commands' : [
 \ {'name' : 'Vinarise',
@@ -711,7 +717,6 @@ NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
 \ 'commands' : ['JunkfileOpen'],
 \ 'unite_sources' : ['junkfile', 'junkfile/new'],
 \ }}
-" NeoBundle 'yomi322/vim-gitcomplete'
 NeoBundle 'kana/vim-altr', {'autoload': {
 \ 'mappings': ['<Plug>(altr-',],
 \ }}
@@ -1757,25 +1762,25 @@ NeoBundleLazy 'deris/vim-textobj-enclosedsyntax', {'autoload':{
 \ 'mappings' : [['nvo',
 \ '<Plug>(textobj-enclosedsyntax-',
 \ ]]}}
-NeoBundleLazy "osyo-manga/vim-textobj-multitextobj", {
+NeoBundle "osyo-manga/vim-textobj-multitextobj", {
 \ 'depends' : 'vim-textobj-user',
 \ 'autoload' : {
 \ 'mappings' : [
 \ ['nvo', '<Plug>(textobj-multitextobj-i)', '<Plug>(textobj-multitextobj-a)']]
 \ }}
-NeoBundleLazy 'osyo-manga/vim-textobj-multiblock', {
+NeoBundle 'osyo-manga/vim-textobj-multiblock', {
 \ 'depends' : 'vim-textobj-user',
 \ 'autoload' : {
 \ 'mappings' : [
 \ ['nvo', '<Plug>(textobj-multiblock-i)', '<Plug>(textobj-multiblock-a)']]
 \ }}
-NeoBundleLazy 'vim-scripts/textobj-indent', {
+NeoBundle 'vim-scripts/textobj-indent', {
 \ 'depends' : 'vim-textobj-user',
 \ 'autoload' : {
 \ 'mappings' : [
 \ ['nvo', '<Plug>(textobj-indent-i)', '<Plug>(textobj-indent-a)']]
 \ }}
-NeoBundleLazy 'sgur/vim-textobj-parameter', {
+NeoBundle 'sgur/vim-textobj-parameter', {
 \ 'depends' : 'vim-textobj-user',
 \ 'autoload' : {
 \ 'mappings' : [
@@ -1805,7 +1810,7 @@ NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
 \ 'mappings' : [
 \ ['nvo', '<Plug>(textobj-lastinserted-']]
 \ }}
-NeoBundleLazy 'mattn/vim-textobj-url', {'autoload':{
+NeoBundle 'mattn/vim-textobj-url', {'autoload':{
 \ 'mappings' : [
 \ ['nvo', '<Plug>(textobj-url-']]
 \ }}
@@ -1813,7 +1818,7 @@ NeoBundleLazy 'anyakichi/vim-textobj-ifdef', {'autoload':{
 \ 'mappings' : [
 \ ['nvo', '<Plug>(textobj-ifdef-i)', '<Plug>(textobj-ifdef-a)']]
 \ }}
-NeoBundleLazy 'akiyan/vim-textobj-php', {'autoload':{
+NeoBundle 'akiyan/vim-textobj-php', {'autoload':{
 \ 'mappings' : [['nvo', '<Plug>(textobj-php-', ]]}}
 
 " afterexec for runtimepath {{{1
@@ -2626,7 +2631,9 @@ cnoremap <C-]><C-f> <S-Right>
 cnoremap <C-]><C-b> <S-Left>
 cnoremap <C-]><C-d> <Delete>
 cnoremap <C-]><C-i> <C-d>
-
+if !s:is_win && !s:is_mac
+  cnoremap <S-Insert> <C-r>+
+endif
 
 " v+omap
 onoremap aa a>
@@ -2687,6 +2694,9 @@ let g:perl_want_scope_in_variables = 1
 "let g:perl_fold_blocks = 1
 
 " php {{{2
+let g:php_special_functions = 1
+let g:php_alt_comparisons = 1
+let g:php_alt_AssignByReference = 1
 "let g:php_folding = 1
 let g:php_folding = 0
 let g:php_sql_query = 1
@@ -2712,6 +2722,10 @@ endif
 let g:pdv_cfg_Copyright = ""
 let g:pdv_cfg_License = 'PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}'
 let g:pdv_cfg_CommentEnd = "// }}}"
+
+" ruby {{{2
+let g:ruby_operators = 1
+let g:ruby_no_expensive = 1
 
 " javascript {{{2
 if s:bundle.is_installed('simple-javascript-indenter')
@@ -4187,14 +4201,14 @@ if s:bundle.tap('unite.vim')
   let g:unite_source_history_yank_enable=0
   "let g:unite_enable_start_insert=1
   let g:unite_enable_start_insert=0
-  " let g:unite_source_file_mru_limit=100
-  let g:unite_source_file_mru_limit=200
-  let g:unite_source_file_mru_time_format = ''
-  "let g:unite_source_file_mru_time_format = '%Y-%m-%d %H:%M:%S'
   let g:unite_winheight = 20
   " let g:unite_winwidth = &columns - 12
   "let g:unite_split_rule = 'botright'
   let g:unite_source_file_rec_max_cache_files = 5000
+
+  let g:neomru#do_validate = 0
+  let g:neomru#file_mru_limit = 200
+  let g:neomru#file_mru_ignore_pattern = 'COMMIT_EDITMSG'
 
   function! s:unite_set_rm_command(command)
     if executable(a:command)
@@ -5374,7 +5388,8 @@ if s:bundle.is_installed('vim-textobj-user')
   let g:textobj_multitextobj_textobjects_i = [
   \ "\<Plug>(textobj-url-i)",
   \ "\<Plug>(textobj-multiblock-i)",
-  \ "\<Plug>(textobj-ruby-any-i)",
+  \ "\<Plug>(textobj-parameter-i)",
+  \ "\<Plug>(textobj-php-i)",
   \ "\<Plug>(textobj-function-i)",
   \ "\<Plug>(textobj-indent-i)",
   \]
@@ -5383,9 +5398,10 @@ if s:bundle.is_installed('vim-textobj-user')
   let g:textobj_multitextobj_textobjects_a = [
   \ "\<Plug>(textobj-url-a)",
   \ "\<Plug>(textobj-multiblock-a)",
-  \ "\<Plug>(textobj-ruby-any-i)",
+  \ "\<Plug>(textobj-parameter-a)",
+  \ "\<Plug>(textobj-php-a)",
   \ "\<Plug>(textobj-function-a)",
-  \ "\<Plug>(textobj-indent-i)",
+  \ "\<Plug>(textobj-indent-a)",
   \]
   " \ "\<Plug>(textobj-entire-a)",
 
