@@ -575,6 +575,7 @@ if has('vim_starting')
   function! s:bundle.lazy_plugins() "{{{
     return [
     \ "vim-markdown-quote-syntax",
+    \ "vim-ruby-heredoc-syntax",
     \ "unite.vim",
     \ "vimfiler.vim",
     \ "vimshell.vim",
@@ -710,7 +711,7 @@ NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
 \ 'commands' : ['JunkfileOpen'],
 \ 'unite_sources' : ['junkfile', 'junkfile/new'],
 \ }}
-NeoBundle 'yomi322/vim-gitcomplete'
+" NeoBundle 'yomi322/vim-gitcomplete'
 NeoBundle 'kana/vim-altr', {'autoload': {
 \ 'mappings': ['<Plug>(altr-',],
 \ }}
@@ -722,7 +723,7 @@ NeoBundle 'kana/vim-niceblock', { 'autoload' : {
 \ }}
 NeoBundle 'tyru/vim-altercmd'
 NeoBundle 'kana/vim-smartinput', {'autoload': {'insert':1}}
-NeoBundleLazy 'chikatoike/concealedyank.vim', { 'autoload' : {
+NeoBundle 'chikatoike/concealedyank.vim', { 'autoload' : {
 \ 'mappings' : [
 \ ['nx', '<Plug>(operator-concealedyank)']]
 \ }}
@@ -775,7 +776,7 @@ NeoBundleLazy 'h1mesuke/vim-alignta', {'autoload': {
 \ 'unite_sources': ['alignta']
 \ }}
 
-NeoBundleLazy 'AndrewRadev/switch.vim', {'autoload': {
+NeoBundle 'AndrewRadev/switch.vim', {'autoload': {
 \ 'commands': ['Switch']
 \ }}
 NeoBundle 'tpope/vim-speeddating', {'autoload': {
@@ -791,7 +792,7 @@ NeoBundleLazy 'AndrewRadev/inline_edit.vim', {'autoload': {
 \ {'name': 'InlineEdit'},
 \ ],
 \ }}
-NeoBundleLazy 'zef/vim-cycle', {'autoload': {
+NeoBundle 'zef/vim-cycle', {'autoload': {
 \ 'commands': ['CycleNext', 'CyclePrevious'],
 \ 'mappings': ['<Plug>CycleNext', '<Plug>CyclePrevious'],
 \ 'functions': ['AddCycleGroup']
@@ -842,15 +843,15 @@ else
   NeoBundle 'nathanaelkane/vim-indent-guides'
 endif
 
-NeoBundleLazy 'mileszs/ack.vim', { 'autoload': {
-\ 'commands': [
-\   {'name': 'Ack', 'complete': 'file'}, {'name': 'AckAdd', 'complete': 'file'},
-\   {'name': 'AckFromSearch', 'complete': 'file'}, {'name': 'LAck', 'complete': 'file'},
-\   {'name': 'LAckAdd', 'complete': 'file'}, {'name': 'AckFile', 'complete': 'file'},
-\   {'name': 'AckHelp', 'complete': 'file'}, {'name': 'LAckHelp', 'complete': 'file'},
-\ ],
-\ }}
-NeoBundleLazy 'vim-scripts/MultipleSearch'
+" NeoBundleLazy 'mileszs/ack.vim', { 'autoload': {
+" \ 'commands': [
+" \   {'name': 'Ack', 'complete': 'file'}, {'name': 'AckAdd', 'complete': 'file'},
+" \   {'name': 'AckFromSearch', 'complete': 'file'}, {'name': 'LAck', 'complete': 'file'},
+" \   {'name': 'LAckAdd', 'complete': 'file'}, {'name': 'AckFile', 'complete': 'file'},
+" \   {'name': 'AckHelp', 'complete': 'file'}, {'name': 'LAckHelp', 'complete': 'file'},
+" \ ],
+" \ }}
+" NeoBundleLazy 'vim-scripts/MultipleSearch'
 NeoBundle 'vim-scripts/sudo.vim'
 if s:is_win
   NeoBundleLazy 'mattn/startmenu-vim', {'autoload': {
@@ -960,15 +961,15 @@ NeoBundleLazy 'AndrewRadev/linediff.vim', {'autoload': {
 NeoBundle 'vim-scripts/ConflictDetection', {
 \ 'depends': 'vim-scripts/ingo-library',
 \ }
-NeoBundleLazy 'yuratomo/dbg.vim', {'autoload':{
-\ 'commands': [
-\ {'name':'Dbg', 'complete':'file'},
-\ {'name':'DbgShell', 'complete':'file'},
-\ ],
-\ }}
-NeoBundleLazy 'mattboehm/vim-unstack', {'autoload': {
-\ 'mappings': [['nv', '<Leader>s']],
-\ }}
+" NeoBundleLazy 'yuratomo/dbg.vim', {'autoload':{
+" \ 'commands': [
+" \ {'name':'Dbg', 'complete':'file'},
+" \ {'name':'DbgShell', 'complete':'file'},
+" \ ],
+" \ }}
+" NeoBundleLazy 'mattboehm/vim-unstack', {'autoload': {
+" \ 'mappings': [['nv', '<Leader>s']],
+" \ }}
 
 " help {{{4
 NeoBundle 'thinca/vim-ref', { 'autoload' : {
@@ -1140,7 +1141,7 @@ NeoBundleLazy 'https://gist.github.com/6576341', {
 \ }
 
 " css {{{4
-NeoBundleLazy 'Rykka/colorv.vim', {'autoload':{
+NeoBundle 'Rykka/colorv.vim', {'autoload':{
 \ 'filetypes': ['html','javascript','css','sass','scss','less','slim','stylus'],
 \ }}
 
@@ -1176,9 +1177,9 @@ if has('python')
   \ }
 endif
 NeoBundle 'moll/vim-node'
-NeoBundleLazy 'afshinm/npm.vim', {'autoload': {
-\ 'commands': ['Npm']
-\ }}
+" NeoBundleLazy 'afshinm/npm.vim', {'autoload': {
+" \ 'commands': ['Npm']
+" \ }}
 NeoBundle 'othree/javascript-libraries-syntax.vim'
 
 " NeoBundle 'teramako/jscomplete-vim'
@@ -1654,7 +1655,7 @@ NeoBundleLazy 'pekepeke/vim-gf-vundle', {'autoload':{
 
 " operator {{{3
 NeoBundle 'kana/vim-operator-user'
-NeoBundleLazy 'kana/vim-operator-replace', {
+NeoBundle 'kana/vim-operator-replace', {
 \ 'depends' : 'vim-operator-user', 'autoload' : {
 \ 'mappings' : [
 \ ['nx', '<Plug>(operator-replace)']]
@@ -2260,9 +2261,6 @@ vnoremap [!space]r :S/
 let s:regexp_todo = 'TODO\|FIXME\|REVIEW\|MARK\|NOTE\|!!!\|\\?\\?\\?\|XXX'
 function! s:set_grep(...) "{{{3
   let retval = 0
-  let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
-  let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
-  let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
   for type in copy(a:000)
     if type == "jvgrep" && executable(type)
       set grepprg=jvgrep
@@ -2272,8 +2270,6 @@ function! s:set_grep(...) "{{{3
       let g:unite_source_grep_command = "jvgrep"
       let g:unite_source_grep_default_opts = '-in --exclude "\.(git|svn|hg|bzr)"'
       let g:unite_source_grep_recursive_opt = ''
-
-      command! Todo silent! exe 'Unite' printf('grep:%s:-n:%s', getcwd(), s:regexp_todo) '-buffer-name=todo' '-no-quit'
       return 1
     elseif type == "pt" && executable(type)
       set grepprg=pt\ --nocolor\ --nogroup
@@ -2283,16 +2279,15 @@ function! s:set_grep(...) "{{{3
       let g:unite_source_grep_command = 'pt'
       let g:unite_source_grep_default_opts = '--nogroup --nocolor'
       let g:unite_source_grep_recursive_opt = ''
-
       return 1
     elseif type == "ag" && executable(type)
-      set grepprg=ag\ --smartcase\ -S\ --nocolor\ --nogroup\ --nopager
+      set grepprg=ag\ -S\ --nocolor\ --nogroup\ --nopager
       set grepformat=%f:%l:%m
-      let g:ackprg="ag --smartcase -S --nocolor --nogroup --column --nopager"
+      let g:ackprg="ag -S --nocolor --nogroup --column --nopager"
 
       let g:unite_source_grep_command = 'ag'
       let opts = [
-        \ '-S --smartcase --noheading --nocolor --nogroup --nopager',
+        \ '-S --noheading --nocolor --nogroup --nopager',
         \ '--ignore', '".hg"',
         \ '--ignore', '".git"',
         \ '--ignore', '".bzr"',
@@ -2301,12 +2296,11 @@ function! s:set_grep(...) "{{{3
         \ ]
       let g:unite_source_grep_default_opts = join(opts, " ")
       let g:unite_source_grep_recursive_opt = ''
-
       return 1
     elseif type == "ack" && executable(type)
-      set grepprg=ack\ --smartcase\ -a\ --nocolor\ --nogroup\ --nopager
+      set grepprg=ack\ --smart-case\ -a\ --nocolor\ --nogroup\ --nopager
       set grepformat=%f:%l:%m
-      let g:ackprg="ack -H --smartcase --nocolor --nogroup --column --nopager"
+      let g:ackprg="ack -H --smart-case --nocolor --nogroup --column --nopager"
       let g:unite_source_grep_command = 'ack'
       let g:unite_source_grep_default_opts = '--smartcase --no-heading --nocolor --nogroup --nopager'
       let g:unite_source_grep_recursive_opt = ''
@@ -2341,6 +2335,9 @@ command! -nargs=0 SetAck call s:set_grep("ack-grep")
 command! -nargs=0 SetAg call s:set_grep("ag")
 command! -nargs=0 SetPt call s:set_grep("pt")
 
+let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
+let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
+let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
 if s:is_win
   call s:set_grep("pt", "jvgrep", "ag", "ack-grep")
 else

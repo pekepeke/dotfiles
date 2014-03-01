@@ -3,12 +3,14 @@
 
 ;; setup package.el
 (require 'package)
-(setq package-user-dir "~/.emacs.d/elisp.d/package-el/")
-(add-to-list 'package-archives
-			 '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'package-archives
-			 '("marmalade" . "http://marmalade-repo.org/packages/"))
+(setq package-user-dir "~/.emacs.d/elisp.d/elpa/")
+(setq package-archives (list '("melpa" . "http://melpa.milkbox.net/packages/")))
+;; (add-to-list 'package-archives
+;; 			 '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;; (add-to-list 'package-archives
+;; 			 '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
+
 ;; setup el-get
 (setq el-get-dir "~/.emacs.d/elisp.d/el-get/")
 (add-to-list 'load-path "~/.emacs.d/elisp.d/el-get/el-get/")
@@ -21,23 +23,22 @@
     (goto-char (point-max))
     (eval-print-last-sexp)))
 
-;; install packages by package.el
-(mapc
- (lambda (package)
-   (or (package-installed-p package)
-       (package-install package)))
- '(
+(defvar my/packages
+  '(
+
    ;;; write some package
-   popwin
-   auto-complete
+          popwin
+          auto-complete
    quickrun
    helm
    helm-descbinds
+		  grep-edit
+		  smartchr
+   yasnippet
+   evil
    ;; grep-edit
    ;; smartchr
-   yasnippet
    ;; yasnippet-config
-   evil
    ;; evil-surround
    ;; mode-compile
    color-theme
@@ -51,7 +52,7 @@
 										; html5
    haml-mode js2-mode
    coffee-mode sass-mode zencoding-mode
-   ;; haskell-mode 
+   ;; haskell-mode
    clojure-mode
    ;; rst-mode
    textile-mode markdown-mode
@@ -61,9 +62,44 @@
    ;; run-test
    google-translate
    init-loader
-   ))
+    ) "A list of packages to install")
+(defvar my/el-get-packages
+  '(
+		  ;; popup
+		  ;; yasnippet
+		  ;; yasnippet-config
+		  ;; evil
+		  evil-surround
+		  ;; ;; eshell-manual
+		  mode-compile
+		  ;; color-theme
+		  ;; color-theme-molokai
+		  ;; highlight-parentheses
+		  historyf
+		  ;; perl-completion
+		  tmt-mode
+		  ;; ruby-mode rinari rhtml-mode rsense
+		  ;; python-mode
+		  ;; ; html5
+		  ;; haml-mode js2-mode
+		  ;; coffee-mode sass-mode zencoding-mode
+		  ;; ;; haskell-mode
+		  ;; clojure-mode
+		  rst-mode
+		  ;; textile-mode markdown-mode
+		  ;; yaml-mode
+		  ;; apache-mode
+		  ;; applescript-mode
+		  run-test
+		  ;; google-translate
+		  ;; init-loader
+    ) "A list of packages to install by el-get")
 
-(package-initialize)
+;; install packages by package.el
+(dolist (package my/packages)
+  (when (or (not (package-installed-p package)))
+    (package-install package)))
+
 
 ;; install packages by el-get
 (setq el-get-sources '(
@@ -135,42 +171,7 @@
 			 :type github
 			 :pkgname "emacsmirror/mode-compile")
 		       ))
-(el-get 'sync '(
-		  ;; popup
-		  ;; popwin
-		  ;; auto-complete
-		  ;; helm
-		  ;; helm-descbinds
-		  grep-edit
-		  smartchr
-		  ;; yasnippet
-		  ;; yasnippet-config
-		  ;; evil
-		  evil-surround
-		  ;; ;; eshell-manual
-		  mode-compile
-		  ;; color-theme
-		  ;; color-theme-molokai
-		  ;; highlight-parentheses
-		  historyf
-		  ;; perl-completion
-		  tmt-mode
-		  ;; ruby-mode rinari rhtml-mode rsense
-		  ;; python-mode
-		  ;; ; html5
-		  ;; haml-mode js2-mode
-		  ;; coffee-mode sass-mode zencoding-mode
-		  ;; ;; haskell-mode 
-		  ;; clojure-mode
-		  rst-mode
-		  ;; textile-mode markdown-mode
-		  ;; yaml-mode
-		  ;; apache-mode
-		  ;; applescript-mode
-		  run-test
-		  ;; google-translate
-		  ;; init-loader
-		  ))
+(el-get 'sync my/el-get-packages)
 
 ;;; define local vars
 (defvar local-assets-directory "~/.emacs.d/assets")

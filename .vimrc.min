@@ -337,12 +337,12 @@ if v:version > 702
           \ 'mappings' : ['<Plug>(vimshell']
           \ }}
     NeoBundle 'kana/vim-operator-user'
-    NeoBundleLazy 'kana/vim-operator-replace', {
+    NeoBundle 'kana/vim-operator-replace', {
           \ 'depends' : 'vim-operator-user', 'autoload' : {
           \ 'mappings' : [
           \ ['nx', '_', '<Plug>(operator-replace)']]
           \ }}
-    NeoBundleLazy 'anyakichi/vim-surround', {'autoload':{
+    NeoBundle 'anyakichi/vim-surround', {'autoload':{
           \ 'mappings': [['n', 'ds', 'cs', 'ys', 'yS', 'yss', 'ygs', 'ygS', 'ygss', 'ygsgs'],
           \ ['x', 's', 'S', 'gs', 'gS'],
           \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
@@ -350,7 +350,7 @@ if v:version > 702
     NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'vim-scripts/sudo.vim'
     " NeoBundle 'chrisbra/SudoEdit.vim'
-    NeoBundleLazy 'tpope/vim-commentary', {'autoload': {
+    NeoBundle 'tpope/vim-commentary', {'autoload': {
           \ 'mappings': [
           \   ['xn', '<Plug>Commentary'],
           \   ['n', '<Plug>Commentary'],

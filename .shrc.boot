@@ -40,7 +40,7 @@ case $OSTYPE in
 esac
 
 shrc_section_title "environments" #{{{1
-export EDITOR="vim -u ~/.vimpagerrc"
+export EDITOR="vim -u ~/.vimrc.min"
 # stty
 if type stty >/dev/null 2>&1; then
   stty stop undef
@@ -133,8 +133,8 @@ fi
 #   # alias less=$PAGER
 #   # alias zless=$PAGER
 # fi
-alias vimfiler='vim -u ~/.vimrc.min -c VimFiler'
-alias vimshell='vim -u ~/.vimrc.min -c VimShell'
+alias vimfiler="$EDITOR -c VimFiler"
+alias vimshell="$EDITOR -c VimShell"
 
 alias vimrcinspect='vim --startuptime "$HOME/vimrc-read.txt" +q && vim ~/vimrc-read.txt'
 alias gvimrcinspect='gvim --startuptime "$HOME/gvimrc-read.txt" && gvim --remote-silent ~/gvimrc-read.txt'
@@ -144,8 +144,8 @@ alias gvimrcprofile='gvim --cmd "profile start ~/gvimrc-profile.txt" --cmd "prof
 alias gvimrcprofileall='gvim --cmd "profile start ~/gvimrc-profileall.txt" --cmd "profile! file $HOME/.vimrc" && gvim --remote-silent ~/gvimrc-profileall.txt'
 alias vimsafe='vim -u NONE -i NONE'
 alias vimnone='vim -u NONE'
-alias vimmin='vim -u ~/.vimrc.min'
-alias vi='vim -u ~/.vimrc.min'
+alias vimmin="$EDITOR"
+alias vi="$EDITOR"
 alias view='view -u ~/.vimrc.min'
 alias ctags-rb='ctags --langmap=RUBY:.rb --exclude="*.js"  --exclude=".git*"'
 gvi () {
