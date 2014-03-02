@@ -220,8 +220,6 @@
 	(ad-activate 'flymake-post-syntax-check)
 	(setq flymake-allowed-file-name-masks (append flymake-allowed-file-name-masks flymake-allowed-perl-file-name-masks))
 	(setq flymake-err-line-patterns flymake-perl-err-line-patterns)
-	(package-install 'file "set-perl5lib.el" 'set-perl5lib nil
-	 "http://svn.coderepos.org/share/lang/elisp/set-perl5lib/")
 	(set-perl5lib)
 	(flymake-mode t))
 

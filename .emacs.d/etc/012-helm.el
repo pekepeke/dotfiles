@@ -2,6 +2,8 @@
 (helm-descbinds-mode t)
 ;; (require 'helm-migemo)
 ;; (setq helm-use-migemo t)
+(require 'helm-ag)
+(require 'helm-dired-recent-dirs)
 
 (let ((key-and-func
        `((,(kbd "C-x b")   helm-for-files)

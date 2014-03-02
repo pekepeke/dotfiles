@@ -31,7 +31,7 @@
 ;; colorize
 (global-font-lock-mode t)
 ;;; ウィンドウ内に収まらないときだけ括弧内も光らせる。
-(setq show-paren-style 'mixed)
+;; (setq show-paren-style 'mixed)
 (setq blink-matching-paren t)
 
 ;; マーク領域を色付けする

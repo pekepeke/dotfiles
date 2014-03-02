@@ -1,4 +1,5 @@
-(autoload 'zencoding-mode "zencoding-mode" nil t)
+;; elisp
+(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 
 (add-hook 'c-mode-common-hook
 		  '(lambda ()
@@ -48,9 +49,32 @@
 			 (define-key lisp-mode-map (kbd "C-c C-e") 'edebug-defun)
 			 ))
 
+;;; web-mode
+(require 'web-mode)
+(when (< emacs-major-version 24)
+  (defalias 'prog-mode 'fundamental-mode))
+
+;;; 適用する拡張子
+(add-to-list 'auto-mode-alist '("\\.phtml$"     . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tpl\\.php$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.jsp$"       . web-mode))
+(add-to-list 'auto-mode-alist '("\\.as[cp]x$"   . web-mode))
+(add-to-list 'auto-mode-alist '("\\.erb$"       . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?$"     . web-mode))
+
+;;; インデント数
+(defun web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-html-offset   4)
+  (setq web-mode-css-offset    4)
+  (setq web-mode-script-offset 4)
+  (setq web-mode-php-offset    4)
+  (setq web-mode-java-offset   4)
+  (setq web-mode-asp-offset    4))
+(add-hook 'web-mode-hook 'web-mode-hook)
 ;;; nxml-mode
 (setq auto-mode-alist
-	  (cons '("\\.\\(xml\\|xsl\\|rng\\|x?html?\\)\\'" . nxml-mode)
+	  (cons '("\\.\\(xml\\|xsl\\|rng\\)\\'" . nxml-mode)
 			auto-mode-alist))
 
 (eval-after-load "nxml-mode"
@@ -84,16 +108,18 @@
 			))))
 	 ))
 
-;;; Zen Coding Mode
-(autoload 'zencoding-mode "zencoding-mode" nil t)
-(defun zencoding-mode-init ()
-  (zencoding-mode)
-  (define-key zencoding-mode-keymap (kbd "C-l" 'zencoding-expand-line))
+;;; Zen Coding
+(autoload 'emmet-mode "emmet-mode" nil t)
+(defun emmet-mode-init ()
+  (emmet-mode)
+  (setq emmet-indentation 4)
+  (define-key emmet-mode-keymap (kbd "C-l" 'emmet-expand-line))
   )
-(add-hook 'sgml-mode-hook 'zencoding-mode-init)
-(add-hook 'html-mode-hook 'zencoding-mode-init)
-(add-hook 'ngml-mode-hook 'zencoding-mode-init)
-(add-hook 'text-mode-hook 'zencoding-mode-init)
+(add-hook 'sgml-mode-hook 'emmet-mode-init)
+(add-hook 'html-mode-hook 'emmet-mode-init)
+(add-hook 'css-mode-hook 'emmet-mode-init)
+(add-hook 'ngml-mode-hook 'emmet-mode-init)
+(add-hook 'text-mode-hook 'emmet-mode-init)
 
 
 ;;; perl
@@ -160,6 +186,11 @@
 	 (ido-mode t)
 	 (require 'rinari)
 	 (require 'rsense)
+	 (setq ruby-deep-indent-paren-style nil)
+	 (make-local-variable 'ac-omni-completion-sources)
+	 (make-local-variable 'ac-ignore-case)
+	 (setq ac-ignore-case nil)
+	 (setq ac-omni-completion-sources '(("\\.\\=" . (ac-source-rcodetools))))
 	 ;(make-local-variable 'ac-sources)
 	 ;(add-to-list 'ac-sources 'ac-source-rsense-method)
 	 ;(add-to-list 'ac-sources 'ac-source-rsense-constant)
@@ -212,15 +243,35 @@
 (eval-after-load "php-mode"
   '(progn
 	 (setq php-intelligent-tab nil)
-	 ;;(setq intelligent-tab nil)
-	 (setq indent-tabs-mode t)
-	 ;;(setq c-basic-offset 4)
-	 ;;(setq tab-width 4)
-
-	 (package-install 'emacswiki "php-completion.el" 'php-completion)
+	 (when (require 'php-completion)
+	   (php-completion-mode t))
+	 (define-key php-mode-map (kbd "C-o") 'phpcmp-complete)
+	 (define-key php-mode-map (kbd "[") (smartchr "[]" "array()" "[[]]"))
+	 (define-key php-mode-map (kbd "]") (smartchr "array " "]" "]]"))
+	 (make-local-variable 'ac-sources)
+	 (setq ac-sources
+		   '(
+			 ac-source-words-in-same-mode-buffers
+			 ac-source-php-completion
+			 ac-source-filename
+			 ac-source-etags
+			 ))
+	 (let ((my/php-offset 4))
+	   (setq tab-width my/php-offset
+			 c-basic-offset my/php-offset
+			 indent-tabs-mode nil)
+	   (c-set-offset 'case-label' my/php-offset)
+	   (c-set-offset 'arglist-intro' my/php-offset)
+	   (c-set-offset 'arglist-cont-nonempty' my/php-offset)
+	   (c-set-offset 'arglist-close' 0))
 	 ; (make-variable-buffer-local 'ac-sources)
 	 ; (add-to-list 'ac-sources 'ac-source-php-completion)
 	 ))
+
+;;; markdown
+(autoload 'markdown-mode "markdown mode" nil t)
+(add-to-list 'auto-mode-alist
+			 '("\\.\\(md\\|markdown\\|mkd\\)\\'" . markdown-mode))
 
 ;;; Apple script
 (autoload 'applescript-mode "applescript mode" nil t)

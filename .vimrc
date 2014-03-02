@@ -700,8 +700,7 @@ NeoBundle 'Shougo/vimshell.vim', {
 \   'VimShellTerminal', 'VimShellPop'],
 \ 'mappings' : ['<Plug>(vimshell']
 \ }}
-" coflict with vimshell...--;;;;;;
-" NeoBundle 'yomi322/vim-gitcomplete'
+NeoBundle 'pekepeke/vim-gitcomplete', 'develop'
 NeoBundleLazy 'Shougo/vinarise', { 'autoload': {
 \ 'commands' : [
 \ {'name' : 'Vinarise',

@@ -4,9 +4,9 @@
 ;; setup package.el
 (require 'package)
 (setq package-user-dir "~/.emacs.d/elisp.d/elpa/")
-(setq package-archives (list '("melpa" . "http://melpa.milkbox.net/packages/")))
-;; (add-to-list 'package-archives
-;; 			 '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;; (setq package-archives (list '("melpa" . "http://melpa.milkbox.net/packages/")))
+(add-to-list 'package-archives
+			 '("melpa" . "http://melpa.milkbox.net/packages/") t)
 ;; (add-to-list 'package-archives
 ;; 			 '("marmalade" . "http://marmalade-repo.org/packages/"))
 (package-initialize)
@@ -27,64 +27,103 @@
   '(
     ;; write some package
     popwin
-    auto-complete
+	ac-emmet
+	ac-etags ac-inf-ruby ac-ispell ac-js2 ac-math
+	color-moccur
+	company
+	recentf-ext
     quickrun
+    yasnippet
     helm
     helm-descbinds
-    yasnippet
+	helm-projectile helm-dired-recent-dirs
+	helm-ag helm-flycheck
+	helm-perldoc helm-pydoc helm-rails helm-rb
+	helm-git helm-git-grep helm-git-files
+	helm-css-scss helm-dash
+	ac-helm
+	projectile
+	undo-tree
     evil
-    ;; grep-edit
-    ;; smartchr
+	evil-numbers evil-nerd-commenter evil-leader
     ;; yasnippet-config
     ;; evil-surround
     ;; mode-compile
+	flycheck
+	expand-region
+	ido-ubiquitous
+	paredit
+	smartparens
+	ace-jump-mode
+	rainbow-delimiters
+	diminish
+	exec-path-from-shell
+	ack-and-a-half
+	dired+
+	hlinum
+	undohist
+	point-undo
+	sequential-command
+	zlc
+	;; -- lang
 	color-theme
 	highlight-parentheses
-	;; historyf
-	perl-completion
-	;; tmt-mode
-	ruby-mode rinari rhtml-mode rsense
-;;; python-mode
-	;; html5
+	bash-completion
+	web-mode mmm-mode
+	plenv perl-completion
+	jedi
+	ruby-mode rinari rhtml-mode rsense inf-ruby
+	ruby-block ruby-end
+	rbenv
+	;; -- html5
 	haml-mode js2-mode
-	coffee-mode sass-mode zencoding-mode
-	;; haskell-mode
-	clojure-mode
-	;; rst-mode
+	emmet-mode
+	tern tern-auto-complete
+	coffee-mode sass-mode
+	clojure-mode cider
+	haskell-mode
+	go-mode go-autocomplete go-eldoc
 	textile-mode markdown-mode
 	yaml-mode
 	apache-mode
 	applescript-mode
 	;; run-test
 	google-translate
+	;; -- git
+	magit
+	gitconfig-mode
+	git-commit-mode
+	git-rebase-mode
+	gitignore-mode
+	git-gutter-fringe
+	gh
+	gist
+	;; --loader
 	init-loader
     ) "A list of packages to install")
 
 (defvar my/el-get-packages
   '(
+    auto-complete
+	auto-complete-css
+	auto-complete-emacs-lisp
+    yasnippet-config
     grep-edit
     smartchr
 	color-theme-molokai
 	evil-surround
+	evil-rails
+	evil-plugins
 	mode-compile
 	historyf
-	;; perl-completion
 	tmt-mode
-	;; ruby-mode rinari rhtml-mode rsense
+	rcodetools
 	python-mode
-	;; ; html5
-	;; haml-mode js2-mode
-	;; coffee-mode sass-mode zencoding-mode
-	;; ;; haskell-mode
-	;; clojure-mode
+	php-mode-improved
+	php-completion
+	php-eldoc
 	rst-mode
-	;; textile-mode markdown-mode
-	;; yaml-mode
-	;; apache-mode
-	;; applescript-mode
 	run-test
-	;; google-translate
-	;; init-loader
     ) "A list of packages to install by el-get")
 
 ;; install packages by package.el
@@ -180,6 +219,27 @@
 			   :description "Compile files according to major-mode."
 			   :type github
 			   :pkgname "emacsmirror/mode-compile")
+        (:name evil-plugins
+               :type github
+               :pkgname "tarao/evil-plugins")
+        (:name set-perl5lib
+               :type http
+               :url "https://gist.github.com/syohex/1333926/raw/cabc5569d82971dc9fedf3198c4ae1dd858381c3/set-perl5lib.el")
+        (:name set-perl5lib-glob-from-git-root
+               :type http
+               :url "https://gist.github.com/hitode909/617915/raw/a1cd2f87282830c34ca98afddda0c1376f00c2cf/set-perl5lib-glob-from-git-root.el")
+        (:name direx-project
+               :type http
+               :url "https://raw.github.com/m2ym/direx-el/master/direx-project.el")
+        (:name key-combo
+               :type github
+               :pkgname "uk-ar/key-combo")
+        (:name helm-perldoc
+               :type github
+               :pkgname "syohex/emacs-helm-perldoc")
+        (:name auto-highlight-symbol
+               :type github
+               :pkgname "emacsmirror/auto-highlight-symbol")
 		))
 (el-get 'sync my/el-get-packages)
 
