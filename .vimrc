@@ -753,6 +753,15 @@ NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
 \ ],
 \ 'mappings': [['n', '<Plug>Coerce']]
 \ }}
+NeoBundle 'tpope/vim-dispatch', {'autoload': {
+\ 'commands': [
+\ {'name': 'FocusDispatch', 'complete': 'custom,dispatch#command_complete'},
+\ {'name': 'Dispatch', 'complete': 'custom,dispatch#command_complete'},
+\ {'name': 'Start', 'complete': 'custom,dispatch#command_complete'},
+\ {'name': 'Make', 'complete': 'file'},
+\ {'name': 'Copen'},
+\ ],
+\ }}
 NeoBundle 'rhysd/endwize.vim', {'autoload': {'insert':1}}
 NeoBundleLazy 't9md/vim-quickhl', {'autoload': {
 \ 'commands': [
@@ -4397,6 +4406,12 @@ if s:bundle.tap('unite.vim')
     \   ['InlineEdit' , 'InlineEdit']         ,
     \   ['UndotreeToggle' , 'UndotreeToggle']         ,
     \   ['color' , 'Unite webcolorname']         ,
+    \   ['SimpleHTTP' , 'Start python -m SimpleHTTPServer']         ,
+    \   ['Grunt server' , 'Start grunt server']         ,
+    \   ['Grunt build' , 'Start grunt build']         ,
+    \   ['Grunt test' , 'Start grunt test']         ,
+    \   ['Grunt serve' , 'Start grunt serve']         ,
+    \   ['Grunt default' , 'Start grunt']         ,
     \])
     " vimhelp {{{5
     let g:unite_source_menu_menus["vimhelp"] = s:unite_menu_create(
@@ -4431,26 +4446,26 @@ if s:bundle.tap('unite.vim')
     " os {{{5
     if s:is_win
       let g:unite_source_menu_menus["os"] = s:unite_menu_create(
-            \ 'Windows', [
-            \   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
-            \ ])
+      \ 'Windows', [
+      \   ["irb", "VimShellInteractive irb --simple-prompt"] ,
+      \ ])
     elseif s:is_mac
       let g:unite_source_menu_menus["os"] = s:unite_menu_create(
-            \ 'Mac', [
-            \   ["Library"              , "VimFiler ~/Library"]                                                  ,
-            \   ["Desktop"              , "VimFiler ~/Desktop"]                                                  ,
-            \   ["Downloads"            , "VimFiler ~/Downloads"]                                                ,
-            \   ["Sites"                , "VimFiler ~/Sites"]                                                    ,
-            \   ["Documents"            , "VimFiler ~/Documents"]                                                ,
-            \   ["Log"                  , "VimFiler ~/Library/Logs/"]                                            ,
-            \   ["SystemLog"            , "VimFiler /var/log/"]                                                  ,
-            \   ["Keyremap4macbook xml" , "tabnew ~/Library/Application\\ Support/Keyremap4macbook/private.xml"] ,
-            \ ])
+      \ 'Mac', [
+      \   ["Library"              , "VimFiler ~/Library"]                                                  ,
+      \   ["Desktop"              , "VimFiler ~/Desktop"]                                                  ,
+      \   ["Downloads"            , "VimFiler ~/Downloads"]                                                ,
+      \   ["Sites"                , "VimFiler ~/Sites"]                                                    ,
+      \   ["Documents"            , "VimFiler ~/Documents"]                                                ,
+      \   ["Log"                  , "VimFiler ~/Library/Logs/"]                                            ,
+      \   ["SystemLog"            , "VimFiler /var/log/"]                                                  ,
+      \   ["Keyremap4macbook xml" , "tabnew ~/Library/Application\\ Support/Keyremap4macbook/private.xml"] ,
+      \ ])
     else
       let g:unite_source_menu_menus["os"] = s:unite_menu_create(
-            \ 'Unix', [
-            \   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
-            \ ])
+      \ 'Unix', [
+      \   ["irb"                , "VimShellInteractive irb --simple-prompt"] ,
+      \ ])
     endif
 
     " perl {{{5
@@ -4458,11 +4473,15 @@ if s:bundle.tap('unite.vim')
     \ 'Perl Menu', [
     \   ["local module"  , "Unite perl/local"]  ,
     \   ["global module" , "Unite perl/global"] ,
+    \   ["carton install", "Start carton install"] ,
     \ ])
     " php {{{5
     let g:unite_source_menu_menus["ft_php"] = s:unite_menu_create(
     \ 'PHP Menu', [
     \   ["Man php"  , s:gui_manual("php")]  ,
+    \   ["Composer install"  , 'Start composer install']  ,
+    \   ["Composer update"  , 'Start composer update']  ,
+    \   ["Server", "Start php -S localhost:8111"] ,
     \ ])
     let g:unite_source_menu_menus["ft_php_cake"] = s:unite_menu_create(
     \ 'CakePHP Menu', [
@@ -4479,6 +4498,7 @@ if s:bundle.tap('unite.vim')
     \   ["CakePHP config", "Unite cake_config"],
     \   ["CakePHP core", "Unite cake_core"],
     \   ["CakePHP fixture", "Unite cake_fixture"],
+    \   ["CakePHP Server", "Start php -S localhost:8111 -t app/webroot"] ,
     \ ])
     " ruby {{{5
     let g:unite_source_menu_menus["ft_ruby"] = s:unite_menu_create(
@@ -4499,6 +4519,9 @@ if s:bundle.tap('unite.vim')
     \   ['chef lwrp'        , 'ChefFindLWRP']            ,
     \   ['chef source'      , 'ChefFindSource']          ,
     \   ['chef related'     , 'ChefFindRelated']         ,
+    \   ['Bundle install'   , 'Start bundle install']   ,
+    \   ['Bundle update'    , 'Start bundle update']    ,
+    \   ['Rackup' , 'Start rackup -E development']         ,
     \ ])
     " vmap...
     " \   ['Extract constant', 'RExtractConstant'],
@@ -4521,6 +4544,8 @@ if s:bundle.tap('unite.vim')
     \   ["Man jqueryui"   , s:gui_manual("jqueryui")]   ,
     \   ["Man underscore" , s:gui_manual("underscore")] ,
     \   ["Man javascript" , s:gui_manual("javascript")] ,
+    \   ['Npm install'    , 'Start npm install']   ,
+    \   ['Npm update'     , 'Start npm update']   ,
     \ ])
     " gitv {{{5
     let g:unite_source_menu_menus["ft_gitv"] = s:unite_menu_create(

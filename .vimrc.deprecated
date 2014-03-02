@@ -50,15 +50,6 @@ endfunction
 " \ 'mappings' : [['icsl', '<Plug>(stickykey-']]
 " \ }}
 " "" NeoBundle 'tomtom/quickfixsigns_vim'
-" NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {
-" \ 'commands': [
-" \ {'name': 'FocusDispatch', 'complete': 'custom,dispatch#command_complete'},
-" \ {'name': 'Dispatch', 'complete': 'custom,dispatch#command_complete'},
-" \ {'name': 'Start', 'complete': 'custom,dispatch#command_complete'},
-" \ {'name': 'Make', 'complete': 'file'},
-" \ {'name': 'Copen'},
-" \ ],
-" \ }}
 " NeoBundleLazy 't9md/vim-textmanip'
 " NeoBundle 'vim-scripts/ShowMarks7'
   " NeoBundleLazy 'editorconfig/editorconfig-vim'
