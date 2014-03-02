@@ -4341,6 +4341,12 @@ if s:bundle.tap('unite.vim')
     function s:gui_manual(name) " {{{5
       return "Zeal ".a:name.":"
     endfunction " }}}
+    function s:dispatch(command) "{{{5
+      if has('gui_running')
+        return "Start ".a:command
+      endif
+      return "Dispatch " . a:command
+    endfunction "}}}
 
     " http://d.hatena.ne.jp/osyo-manga/20130225/1361794133
     function! s:unite_menu_create(desc, ...) "{{{5
@@ -4406,12 +4412,12 @@ if s:bundle.tap('unite.vim')
     \   ['InlineEdit' , 'InlineEdit']         ,
     \   ['UndotreeToggle' , 'UndotreeToggle']         ,
     \   ['color' , 'Unite webcolorname']         ,
-    \   ['SimpleHTTP' , 'Start python -m SimpleHTTPServer']         ,
-    \   ['Grunt server' , 'Start grunt server']         ,
-    \   ['Grunt build' , 'Start grunt build']         ,
-    \   ['Grunt test' , 'Start grunt test']         ,
-    \   ['Grunt serve' , 'Start grunt serve']         ,
-    \   ['Grunt default' , 'Start grunt']         ,
+    \   ['SimpleHTTP' , s:dispatch('python -m SimpleHTTPServer')]         ,
+    \   ['Grunt server' , s:dispatch('grunt server')]         ,
+    \   ['Grunt build' , s:dispatch('grunt build')]         ,
+    \   ['Grunt test' , s:dispatch('grunt test')]         ,
+    \   ['Grunt serve' , s:dispatch('grunt serve')]         ,
+    \   ['Grunt default' , s:dispatch('grunt')]         ,
     \])
     " vimhelp {{{5
     let g:unite_source_menu_menus["vimhelp"] = s:unite_menu_create(
@@ -4473,15 +4479,15 @@ if s:bundle.tap('unite.vim')
     \ 'Perl Menu', [
     \   ["local module"  , "Unite perl/local"]  ,
     \   ["global module" , "Unite perl/global"] ,
-    \   ["carton install", "Start carton install"] ,
+    \   ["carton install", s:dispatch("carton install")] ,
     \ ])
     " php {{{5
     let g:unite_source_menu_menus["ft_php"] = s:unite_menu_create(
     \ 'PHP Menu', [
     \   ["Man php"  , s:gui_manual("php")]  ,
-    \   ["Composer install"  , 'Start composer install']  ,
-    \   ["Composer update"  , 'Start composer update']  ,
-    \   ["Server", "Start php -S localhost:8111"] ,
+    \   ["Composer install"  , s:dispatch('composer install')]  ,
+    \   ["Composer update"  , s:dispatch('composer update')]  ,
+    \   ["Server", s:dispatch("php -S localhost:8111")] ,
     \ ])
     let g:unite_source_menu_menus["ft_php_cake"] = s:unite_menu_create(
     \ 'CakePHP Menu', [
@@ -4498,7 +4504,7 @@ if s:bundle.tap('unite.vim')
     \   ["CakePHP config", "Unite cake_config"],
     \   ["CakePHP core", "Unite cake_core"],
     \   ["CakePHP fixture", "Unite cake_fixture"],
-    \   ["CakePHP Server", "Start php -S localhost:8111 -t app/webroot"] ,
+    \   ["CakePHP Server", s:dispatch("php -S localhost:8111 -t app/webroot")] ,
     \ ])
     " ruby {{{5
     let g:unite_source_menu_menus["ft_ruby"] = s:unite_menu_create(
@@ -4519,9 +4525,9 @@ if s:bundle.tap('unite.vim')
     \   ['chef lwrp'        , 'ChefFindLWRP']            ,
     \   ['chef source'      , 'ChefFindSource']          ,
     \   ['chef related'     , 'ChefFindRelated']         ,
-    \   ['Bundle install'   , 'Start bundle install']   ,
-    \   ['Bundle update'    , 'Start bundle update']    ,
-    \   ['Rackup' , 'Start rackup -E development']         ,
+    \   ['Bundle install'   , s:dispatch('bundle install')]   ,
+    \   ['Bundle update'    , s:dispatch('bundle update')]    ,
+    \   ['Rackup' , s:dispatch('rackup -E development')]         ,
     \ ])
     " vmap...
     " \   ['Extract constant', 'RExtractConstant'],
@@ -4544,8 +4550,8 @@ if s:bundle.tap('unite.vim')
     \   ["Man jqueryui"   , s:gui_manual("jqueryui")]   ,
     \   ["Man underscore" , s:gui_manual("underscore")] ,
     \   ["Man javascript" , s:gui_manual("javascript")] ,
-    \   ['Npm install'    , 'Start npm install']   ,
-    \   ['Npm update'     , 'Start npm update']   ,
+    \   ['Npm install'    , s:dispatch('npm install')]   ,
+    \   ['Npm update'     , s:dispatch('npm update')]   ,
     \ ])
     " gitv {{{5
     let g:unite_source_menu_menus["ft_gitv"] = s:unite_menu_create(
