@@ -42,7 +42,7 @@ function! my#tsv#to_htmltable() range "{{{2
   endfor
   call add(texts, '</table>')
 
-  call my#util#output_to_buffer('__TSV__', texts)
+  call my#output_to_buffer('__TSV__', texts)
 endfunction
 
 function! my#tsv#to_sqlwhere() range "{{{2
@@ -72,7 +72,7 @@ function! my#tsv#to_sqlwhere() range "{{{2
     endfor
     call add(texts, join(where, ' AND '))
   endfor
-  call my#util#output_to_buffer('__TSV__', texts)
+  call my#output_to_buffer('__TSV__', texts)
 endfunction
 
 function! my#tsv#to_sqlin() range "{{{2
@@ -100,7 +100,7 @@ function! my#tsv#to_sqlin() range "{{{2
     let name = remove(row, 0)
     call add(texts, name . " IN ('" . join(row, "', '") ."')")
   endfor
-  call my#util#output_to_buffer('__TSV__', texts)
+  call my#output_to_buffer('__TSV__', texts)
 endfunction
 
 function! my#tsv#invert() range "{{{2
@@ -127,7 +127,7 @@ function! my#tsv#invert() range "{{{2
   for row in rows
     call add(texts, join(row, "\t"))
   endfor
-  call my#util#output_to_buffer('__TSV__', texts)
+  call my#output_to_buffer('__TSV__', texts)
 endfunction
 
 function! my#tsv#to_sqlinsert() range "{{{2
@@ -153,7 +153,7 @@ function! my#tsv#to_sqlinsert() range "{{{2
     let datas = map(copy(head), 'get(items, v:key, "NULL")')
     call add(texts, 'INSERT INTO X ('.join(head, ', ').') VALUES ('.join(datas, ', ').');')
   endfor
-  call my#util#output_to_buffer('__TSV__', texts)
+  call my#output_to_buffer('__TSV__', texts)
 endfunction
 
 function! my#tsv#to_sqlupdate() range "{{{2
@@ -206,7 +206,7 @@ function! my#tsv#to_sqlupdate() range "{{{2
           \ .(empty(wheres) ? "" : ' WHERE '.join(wheres, ' AND ')).";"
           \ )
   endfor
-  call my#util#output_to_buffer('__TSV__', texts)
+  call my#output_to_buffer('__TSV__', texts)
 endfunction
 
 function! my#tsv#to_csv() range "{{{2
@@ -221,7 +221,7 @@ function! my#tsv#to_csv() range "{{{2
 
   let texts = csv.grid(lines).render()
 
-  call my#util#output_to_buffer('__TSV__', texts)
+  call my#output_to_buffer('__TSV__', texts)
 endfunction
 " }}}
 
@@ -239,7 +239,7 @@ function! my#tsv#to_json() range "{{{2
     let texts = string(lines)
   endif
 
-  call my#util#output_to_buffer('__TSV__', texts)
+  call my#output_to_buffer('__TSV__', texts)
 endfunction
 
 function! my#tsv#to_flat_json() range "{{{2
@@ -262,7 +262,7 @@ function! my#tsv#to_flat_json() range "{{{2
     let texts = string(src)
   endif
 
-  call my#util#output_to_buffer('__TSV__', texts)
+  call my#output_to_buffer('__TSV__', texts)
 endfunction
 
 function! s:zip(...)

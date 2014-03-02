@@ -47,9 +47,10 @@
 (push '("*sdic*") popwin:special-display-config) ;; sdic
 (push '("*Completions*") popwin:special-display-config) ;; Completions
 
-;;; linum
-(require 'linum)
-(global-linum-mode)
+;;; hlinum
+(require 'hlinum)
+(custom-set-variables
+ '(global-linum-mode t))
 
 ;;; yasnippet
 (require 'yasnippet)
@@ -145,10 +146,6 @@
 ;;   ;;(define-key anything-map (kbd "C-M-n") 'anything-next-source)
 ;;   ;;(define-key anything-map (kbd "C-M-p") 'anything-previous-source)
 ;;   (setq browse-url-browser-function original-browse-url-browser-function))
-
-;;; evil
-(evil-mode t)
-(global-surround-mode t)
 
 ;;; eshell
 (eval-after-load "eshell"

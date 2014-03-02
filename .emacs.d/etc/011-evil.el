@@ -25,8 +25,8 @@
 (define-key evil-normal-state-map "fr" 'helm-resume)
 (define-key evil-normal-state-map " vp" 'eshell)
 
-(define-key evil-normal-state-map "gcc" 'evilnc-comment-or-uncomment-to-the-line)
+(define-key evil-normal-state-map "gcc" 'evilnc-comment-or-uncomment-lines)
 ;; visual mode
-(define-key evil-visual-state-map "gcc" 'evilnc-comment-or-uncomment-to-the-line)
+(define-key evil-visual-state-map "gcc" 'evilnc-comment-or-uncomment-lines)
 ;; (define-key evil-visual-state-map "gcc" 'comment-or-uncomment-region)
 

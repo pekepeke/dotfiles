@@ -727,6 +727,9 @@ NeoBundle 'kana/vim-niceblock', { 'autoload' : {
 \ }}
 NeoBundle 'tyru/vim-altercmd'
 NeoBundle 'kana/vim-smartinput', {'autoload': {'insert':1}}
+NeoBundleLazy 'tyru/capture.vim', {'autoload': {
+\ 'commands': [{'name':'Capture', 'complete':'command'}],
+\ }}
 NeoBundle 'chikatoike/concealedyank.vim', { 'autoload' : {
 \ 'mappings' : [
 \ ['nx', '<Plug>(operator-concealedyank)']]
@@ -822,7 +825,7 @@ NeoBundleLazy 't9md/vim-smalls', {'autoload': {
 " \ }}
 NeoBundle 'kshenoy/vim-signature'
 
-if has('python')
+if has('python') || has('python3')
   NeoBundle 'editorconfig/editorconfig-vim'
 endif
 NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {
@@ -1179,7 +1182,7 @@ NeoBundleLazy 'vim-scripts/cssbaseline.vim', {'autoload': {
 " javascript {{{4
 NeoBundle 'guileen/simple-javascript-indenter'
 NeoBundle 'pangloss/vim-javascript'
-if has('python')
+if has('python') || has('python3')
   NeoBundle 'marijnh/tern_for_vim', {
   \   'build' : {
   \    'cygwin': 'npm install',
@@ -1250,7 +1253,7 @@ NeoBundleLazy 'hachibeeDI/unite-pythonimport', {'autoload':{
 \ 'unite_sources' : ['pythonimport'],
 \ }}
 
-if has('python')
+if has('python') || has('python3')
   NeoBundleLazy 'davidhalter/jedi-vim', {
   \   'autoload' : { 'filetypes' : ['python', 'python3'], },
   \ }
@@ -1683,6 +1686,9 @@ NeoBundleLazy 'tyru/operator-html-escape.vim', {
 \ 'mappings' : [
 \ ['nx', '<Plug>(operator-html-']]
 \ }}
+NeoBundleLazy 'syngan/vim-operator-furround', {'autoload':{
+\ 'mappings': ['<Plug>(operator-furround-']
+\ }}
 NeoBundleLazy 'rhysd/vim-operator-surround', {'autoload': {
 \ 'mappings': [['', '<Plug>(operator-surround-']]
 \ }}
@@ -1985,55 +1991,6 @@ command! -nargs=0 -bang MyQ
 command! -nargs=0 -bang MyWQ write<bang> | MyQ<bang>
 
 " util class "{{{3
-let s:bufutil = {}
-function! s:bufutil.new(...) "{{{
-  let obj = copy(self)
-  if a:0 > 0
-    return extend(obj, a:1)
-  endif
-  return obj
-endfunction "}}}
-
-function! s:bufutil.buffer_init() "{{{
-  setlocal buftype=nofile
-  setlocal bufhidden=hide
-  setlocal noswapfile
-  setlocal buflisted
-  resize 8
-endfunction "}}}
-
-function! s:bufutil.set_text(bufname, text) "{{{
-  let bufname = a:bufname
-  let bufnum = bufnr(bufname)
-  if bufnum == -1
-    execute 'new' bufname
-    call self.buffer_init()
-  else
-    let winnum = bufwinnr(bufnum)
-    if winnum != -1
-      if bufwinnr('%') != winnum
-        execute winnum . "wincmd w"
-      endif
-    else
-      silent execute 'split +buffer' bufname
-    endif
-  endif
-
-  normal! "Gzz"
-  call append(line('$'), a:text)
-endfunction "}}}
-
-function! s:bufutil.command(count, l1, l2, ...) "{{{
-  let args = copy(a:000)
-  if a:count != 0
-    let text = join(getline(a:l1, a:l2), "\n")
-
-    call remove(args, len(args) - 1)
-    let args += [text]
-  endif
-  call self.execute(args)
-endfunction"}}}
-
 function! s:system(cmd) "{{{3
   if s:bundle.is_installed('vimproc.vim')
     call vimproc#system_bg(a:cmd)
@@ -4341,12 +4298,27 @@ if s:bundle.tap('unite.vim')
     function s:gui_manual(name) " {{{5
       return "Zeal ".a:name.":"
     endfunction " }}}
+
     function s:dispatch(command) "{{{5
       if has('gui_running')
-        return "Start ".a:command
+        return "StartNofocus ".a:command
+        " return "Start ".a:command
       endif
       return "Dispatch " . a:command
     endfunction "}}}
+    function s:start_nofocus(bang, command)
+      execute "Start".(a:bang?"!":"") a:command
+      if has('gui_running')
+        if s:is_mac
+          call system("osascript -e 'tell application \"MacVim\" to activate'")
+        elseif executable('wmctrl')
+          call system('sleep 0.5 && wmctrl -a gvim')
+        endif
+      endif
+    endfunction
+    command! -bang -nargs=* -complete=custom,dispatch#command_complete
+    \ StartNofocus call s:start_nofocus(<bang>0, <q-args>)
+
 
     " http://d.hatena.ne.jp/osyo-manga/20130225/1361794133
     function! s:unite_menu_create(desc, ...) "{{{5
@@ -5295,6 +5267,7 @@ if s:bundle.tap('vim-operator-user')
   endfunction
   call s:bundle.untap()
 
+  map H <Plug>(operator-furround-append)
   map _ <Plug>(operator-replace)
   map ;e <Plug>(operator-excelize)
   map ;h <Plug>(operator-html-escape)
@@ -5576,13 +5549,8 @@ if s:bundle.is_installed('vim-ref')
   let g:ref_source_webdict_sites.default = 'alc'
 
   " webdict command {{{4
-  let s:ref_gtrans = s:bufutil.new()
-  function! s:ref_gtrans.execute(args)
-    let [source, text] = a:args
-    execute "Ref" "webdict" source text
-  endfunction
-  command! -nargs=? -range=0 GTransEnJa call s:ref_gtrans.command(<count>, <line1>, <line2>, 'en_ja',<q-args>)
-  command! -nargs=? -range=0 GTransJaEn call s:ref_gtrans.command(<count>, <line1>, <line2>, 'ja_en',<q-args>)
+  command! -nargs=? -range=0 GTransEnJa call my#buf_util#ref_grans(<count>, <line1>, <line2>, 'en_ja',<q-args>)
+  command! -nargs=? -range=0 GTransJaEn call my#buf_util#ref_grans(<count>, <line1>, <line2>, 'ja_en',<q-args>)
 
   " langs {{{4
   let g:ref_source_webdict_sites.default = 'alc'
@@ -5595,10 +5563,6 @@ if s:bundle.is_installed('vim-ref')
   let g:ref_jsdom_path=$VIM_CACHE.'/docs/jscore/www.aptana.com/reference/html/api'
   "let g:ref_jquery_use_cache = 1
   let g:ref_nodejsdoc_dir=$VIM_CACHE.'/docs/nodejs/doc'
-
-  " if isdirectory($HOME."/.nodebrew")
-  "   let g:ref_nodejsdoc_dir = my#dir#find("~/.nodebrew/src/node-v*").last() . "/doc"
-  " endif
 
   if executable('rurema')
     let g:ref_refe_cmd     = "rurema"
@@ -7342,23 +7306,11 @@ nnoremap <silent> [!unite]ng :<C-u>call <SID>unite_grep(g:my_snippets_dir, '-no-
 nnoremap <silent> [!unite]nm :<C-u>execute 'Unite memolist_rec:'.expand(g:my_snippets_dir)<CR>
 nnoremap <silent> [!unite]nv :<C-u>execute 'VimFiler' g:my_snippets_dir<CR>
 
-" filetype command {{{2
-command! EditFt execute expand(':e ~/.vim/after/ftplugin/'.&filetype.'.vim')
-
 " buffer commands {{{2
 command! ToUnixBuffer set fileformat=unix fileencoding=utf8
 command! ToWindowsBuffer set fileformat=dos fileencoding=cp932
 command! ToMacBuffer set fileformat=mac fileencoding=utf8
 command! ConvChilder %s/〜/～/g
-command! ToSass call my#util#newfile_with_text(expand('%:p:r').".sass",
-      \ system(printf('sass-convert -F css -T sass "%s"', expand('%:p')))
-      \ )
-command! ToScss call my#util#newfile_with_text(expand('%:p:r').".scss",
-      \ system(printf('sass-convert -F css -T scss "%s"', expand('%:p')))
-      \ )
-command! ToCoffee call my#util#newfile_with_text(expand('%:p:r').".coffee",
-      \ system(printf('js2coffee < "%s"', expand('%:p')))
-      \ )
 
 " シェル起動系 {{{2
 if s:is_mac "{{{3
@@ -7367,7 +7319,7 @@ if s:is_mac "{{{3
   command! This silent execute '!open' shellescape(expand('%:p'))
   command! In silent execute '!osascript' '-e' "'tell application \"Terminal\" to do script \"cd ".expand('%:p:h')."; clear;\"'"
   command! -nargs=1 -complete=file That silent execute '!open' shellescape(expand(<f-args>), 1)
-  command! SublimeEdit silent execute '!open' '-a' 'Sublime\ Text\ 2' shellescape(expand('%:p'))
+  command! Subl silent execute '!open' '-a' 'Sublime\ Text\ 2' shellescape(expand('%:p'))
   command! CotEdit silent execute '!open' '-a' 'CotEditor' shellescape(expand('%:p'))
   command! Mate silent execute '!open' '-a' 'TextMate' shellescape(expand('%:p'))
 elseif s:is_win "{{{3
@@ -7392,29 +7344,23 @@ endif
 "}}}
 LCAlias Here This That
 
-" tail {{{2
-if executable('tail')
-  command! -nargs=1 -complete=file Tail VimShellExecute tail -f <args>
-  LCAlias Tail
-endif
-
 " unique {{{2
 command! -range -nargs=0 UniqueSort <line1>,<line2>sort u
 
 " diff {{{2
-function! s:diff_execute(s)
+function! s:exe_if_diff(s)
   if &diff
     execute a:s
   endif
 endfunction
-command! -nargs=0 DiffQuit call <SID>diff_execute('diffoff')
-command! -nargs=0 DQ call <SID>diff_execute('diffoff')
+command! -nargs=0 DiffQuit call <SID>exe_if_diff('diffoff')
+command! -nargs=0 DQ call <SID>exe_if_diff('diffoff')
 
 " rename {{{2
-command! -nargs=? -complete=file Rename call my#ui#rename(<q-args>)
+command! -nargs=? -complete=file Rename call my#command#rename(<q-args>)
 Alias ren Rename
 
-command! -nargs=1 -complete=file Relcp call my#ui#relative_copy(<f-args>)
+command! -nargs=1 -complete=file Relcp call my#command#relative_copy(<f-args>)
 LCAlias Relcp
 
 " win maximize toggle {{{3
@@ -7435,34 +7381,7 @@ LCAlias Utf8 Euc Sjis Jis
 " }}}
 " utility {{{2
 " 選択範囲をブラウザで起動 {{{3
-command! -range=0 OpenBrowserRange call s:openbrowser_range(<line1>, <line2>)
-
-function! s:openbrowser_range(f1, f2) "{{{
-  if a:f1 > 0 && a:f2 > 0
-    let lines = getline(a:firstline, a:lastline)
-    let fpath = tempname() . '.html'
-    call writefile(lines, fpath)
-    execute OpenBrowser fpath
-    " TODO : find the best way...
-    silent execute "sleep 2"
-    if filewritable(fpath)
-      call delete(fpath)
-    endif
-    redraw!
-  elseif !&modified && &buftype != 'nofile'
-    let fpath = expand('%:p')
-    execute 'OpenBrowser' fpath
-    return
-  endif
-endfunction "}}}
-
-" browser {{{3
-command! Ie call my#ui#launch_browser('ie')
-command! Firefox call my#ui#launch_browser('firefox')
-command! Opera call my#ui#launch_browser('opera')
-command! Chrome call my#ui#launch_browser('chrome')
-command! Safari call my#ui#launch_browser('safari')
-LCAlias Ie Firefox Opera Chrome Safari
+command! -range=0 OpenBrowserRange call my#command#openbrowser_range(<line1>, <line2>)
 
 " TSV {{{3
 command! -range Tsvtohtmltable     <line1>,<line2>call my#tsv#to_htmltable()
@@ -7480,8 +7399,8 @@ command! -nargs=0 -range TMY <line1>,<line2>call my#mysql#to_tsv()
 command! -nargs=0 -range MySQLToTsv <line1>,<line2>call my#mysql#to_tsv()
 
 " text {{{3
-command! -nargs=0 -range=0 Plain call s:text_to_plain(<count>, <line1>, <line2>)
-function! s:text_to_plain(count, l1, l2)
+command! -nargs=0 -range=0 Plain call s:normalize_ascii(<count>, <line1>, <line2>)
+function! s:normalize_ascii(count, l1, l2)
   if a:count <= 0
     return
   endif
@@ -7496,69 +7415,10 @@ command! -nargs=? -range PadNumber <line1>,<line2>call my#padding#number(<f-args
 command! -nargs=? -range PadString <line1>,<line2>call my#padding#string(<f-args>)
 command! -nargs=? -range PadSprintf <line1>,<line2>call my#padding#sprintf(<f-args>)
 
-" buffer grep {{{3
-command! -nargs=? BGY call my#bufgrep#yank(<q-args>)
-command! -nargs=? BG call my#bufgrep#enew(<q-args>)
-
-" capture {{{3
-command!
-      \ -nargs=+ -complete=command
-      \ Capture
-      \ call my#ui#cmd_capture(<q-args>)
-
 " help utils {{{3
-let s:help_util = {}
-
-function! s:help_util.tagfiles()
-  let tagfiles = split(globpath(&runtimepath, 'doc/tags'), "\n")
-  let tagfiles += split(globpath(&runtimepath, 'doc/tags-*'), "\n")
-  return tagfiles
-endfunction
-
-function! s:help_util.docdirs()
-  return split(globpath(&runtimepath, 'doc'), "\n")
-endfunction
-
-function! s:help_util.refresh()
-  call self.clear()
-  call self.tags()
-endfunction
-
-function! s:help_util.clear_bundles()
-  let tagfiles = self.tagfiles()
-  for f in tagfiles
-    if stridx(f, $HOME) != -1
-      call delete(f)
-      " echo f
-    endif
-  endfor
-endfunction
-
-function! s:help_util.clear()
-  let tagfiles = self.tagfiles()
-  for f in tagfiles
-    call delete(f)
-  endfor
-endfunction
-
-function! s:help_util.tags()
-  let dirs = self.docdirs()
-  for d in dirs
-    silent execute 'helptags' d
-  endfor
-endfunction
-
-function! s:help_util.show_tags()
-  echo join(self.tagfiles(), "\n")
-endfunction
-
-function! s:help_util.show_dirs()
-  echo join(self.docdirs(), "\n")
-endfunction
-
-command! -nargs=0 Helptags call s:help_util.refresh()
-command! -nargs=0 HelptagsShow call s:help_util.show_tags()
-command! -nargs=0 HelpDirShow call s:help_util.show_dirs()
+command! -nargs=0 Helptags call my#help_util#get().refresh()
+command! -nargs=0 HelptagsShow call my#help_util#get().show_tags()
+command! -nargs=0 HelpDirShow call my#help_util#get().show_dirs()
 
 " Browser Control
 if s:is_mac
@@ -7575,97 +7435,12 @@ else
 endif
 
 " gtrans {{{2
-let s:gtrans = s:bufutil.new({
-  \ 'endpoint': 'http://translate.google.co.jp/translate_a/t',
-  \ 'header': {
-  \ 'User-Agent': 'w3m/0.5.3',
-  \ },
-  \ 'query' : {
-  \ 'client': 't', 'sc': '2', 'ie': 'UTF-8', 'oe': 'UTF-8',
-  \ 'oc': '1', 'otf': '1', 'ssel': '0', 'tsel': '0',
-  \ 'sl': 'en', 'tl': 'ja', 'hl': 'ja',
-  \ },
-  \ })
-
-function s:gtrans.execute(args) "{{{
-  let [sltl, text] = a:args
-  if strlen(sltl) > 3
-    let sl = sltl[0:1]
-    let tl = sltl[2:3]
-  else
-    let sl = "en"
-    let tl = "ja"
-  endif
-
-  let query = extend(copy(self.query), {
-    \ 'q': text, 'sl': sl, 'tl': tl, })
-
-  let res = webapi#http#get(self.endpoint, query, self.header)
-  if res.status != 200
-    return
-  endif
-  let s = substitute(res.content, ',\+', ',', 'g')
-  let json = webapi#json#decode(s)
-  if exists('json[0][0][1]')
-    let lines = split(printf("Original: %s\nTranslated: %s",
-      \ json[0][0][1], json[0][0][0]), "\n")
-    call self.set_text("[Google Translate]", lines)
-  endif
-endfunction "}}}
-command! -nargs=? -range=0 Gte call s:gtrans.command(<count>, <line1>, <line2>, "enja", <q-args>)
-command! -nargs=? -range=0 Gtj call s:gtrans.command(<count>, <line1>, <line2>, "jaen", <q-args>)
+command! -nargs=? -range=0 Gte call my#buf_util#gtrans(<count>, <line1>, <line2>, "enja", <q-args>)
+command! -nargs=? -range=0 Gtj call my#buf_util#gtrans(<count>, <line1>, <line2>, "jaen", <q-args>)
 
 " ginger {{{2
-let s:ginger = s:bufutil.new({
-  \ 'endpoint' : 'http://services.gingersoftware.com/Ginger/correct/json/GingerTheText',
-  \ 'apikey' : '6ae0c3a0-afdc-4532-a810-82ded0054236',
-  \ })
+command! -nargs=? -range=0 Ginger call my#buf_util#ginger(<count>, <line1>, <line2>, <q-args>)
 
-function! s:ginger.execute(args) "{{{3
-  let [text] = a:args
-  let [mistake, correct] = self.get(text)
-
-  let texts = split(printf("Original: %s\nCorrect: %s", text, correct), "\n")
-  call self.set_text("[Ginger]", texts)
-endfunction
-
-function! s:ginger.get(text)  "{{{3
-  let res = webapi#json#decode(webapi#http#get(self.endpoint, {
-    \ 'lang': 'US',
-    \ 'clientVersion': '2.0',
-    \ 'apiKey': self.apikey,
-    \ 'text': a:text}).content)
-  let i = 0
-  let mistake = ''
-  let correct = ''
-  " echon "Mistake: "
-  for rs in res['LightGingerTheTextResult']
-    let [from, to] = [rs['From'], rs['To']]
-    if i < from
-      " echon a:text[i : from-1]
-      let mistake .= a:text[i : from-1]
-      let correct .= a:text[i : from-1]
-    endif
-    " echohl WarningMsg
-    " echon a:text[from : to]
-    let mistake .= a:text[from : to]
-    " echohl None
-    if exists("rs['Suggestions'][0]")
-      let correct .= rs['Suggestions'][0]['Text']
-    endif
-    let i = to + 1
-  endfor
-  if i < len(a:text)
-    " echon a:text[i :]
-    let mistake .= a:text[i :]
-    let correct .= a:text[i :]
-  endif
-  " echo "Correct: ".correct
-  " return correct
-  return [mistake, correct]
-endfunction
-" command define {{{3
-command! -nargs=? -range=0 Ginger call s:ginger.command(<count>, <line1>, <line2>, <q-args>)
 " dash & zeal {{{2
 function! s:docset_keywords_gather(root, is_dash) "{{{
   let pattern = '*.docset/Contents/Info.plist'
@@ -7691,12 +7466,12 @@ function! s:docset_keywords_gather(root, is_dash) "{{{
   return map(keywords, 'tolower(v:val)')
 endfunction "}}}
 
-function! s:dash(...)
+function! s:dash(...) "{{{
   let word = len(a:000) == 0 ?
   \ input('Dash search: ', expand('<cword>'),
   \ 'customlist,'.s:SID().'dash_complete') : a:1
   call system(printf("open dash://'%s'", word))
-endfunction
+endfunction "}}}
 let s:dash_keywords = []
 function! s:dash_complete(A, L, P) "{{{
   if empty(s:dash_keywords)
@@ -7789,7 +7564,7 @@ function! s:autoexec(bang, ...)
   if a:bang
     autocmd! vimrc-autoexec * <buffer>
   endif
-  " TODO : should use quickrun eco system
+  " TODO : quickrun eco system
   let command = s:autoexec_format_command(a:000)
   if empty(command)
     autocmd vimrc-autoexec
@@ -7807,83 +7582,7 @@ command! -nargs=* -bang Autoexec call s:autoexec(<bang>0, <f-args>)
 command! -nargs=* -bang AutoexecStatus autocmd vimrc-autoexec
 
 " ctags {{{2
-let s:ctagsutil = {}  "{{{3
-function s:ctagsutil.parse(...) "{{{4
-  let lines = split(system('ctags --list-kinds'), "\n")
-  let langmap = {}
-  let lang = ""
-  let charmap = {}
-  let definitions = []
-  for line in lines
-    let matches = matchlist(line, '^\(\w\+\)$')
-    if empty(matches)
-      if empty(lang)
-        continue
-      endif
-      " call add(definitions, substitute(line, '^\s\+\([^ \t]\)\s\+([^ \t][^\[\]]*).*$', '\1:\2', ''))
-      let matches = matchlist(line, '^\s*\([^ \t]\)\s*\([^ \t][^\[\]]\+\).*$')
-      " echo matches
-      if !empty(matches)
-        let ch = matches[1]
-        if !exists('charmap[ch]')
-          let charmap[ch] = 1
-          let desc = substitute(matches[2], '^\s*\|\s*$', '', 'g')
-          " escape
-          let desc = substitute(desc, "'", "''", 'g')
-          call add(definitions, printf("%s:%s", ch, desc))
-        endif
-      endif
-    else
-      if !empty(lang)
-        let langmap[lang] = definitions
-      endif
-      let lang = matches[1]
-      let definitions = []
-      let charmap = {}
-    endif
-  endfor
-  if !empty(lang) && !exists('langmap[lang]')
-    let langmap[lang] = definitions
-  endif
-  let self.langmap = langmap
-endfunction
-
-function! s:ctagsutil.show() "{{{4
-  call self.parse()
-  for lang in keys(self.langmap)
-    call self.taglist_source(lang)
-    call self.tagbar_source(lang)
-  endfor
-endfunction
-
-function! s:ctagsutil.taglist_source(...) "{{{4
-  let langs = empty(a:000) ? keys(self.langmap) : a:000
-  let m = []
-  for lang in langs
-    if !exists('self.langmap[lang]')
-      echoerr "not found:".lang
-      continue
-    endif
-    call add(m, printf("let g:tlist_%s_settings='%s;%s'", tolower(lang), lang, join(self.langmap[lang], ";")))
-  endfor
-  echo join(m, "\n")
-endfunction
-
-function! s:ctagsutil.tagbar_source(...) "{{{4
-  let langs = empty(a:000) ? keys(self.langmap) : a:000
-  let m = []
-  for lang in langs
-    if !exists('self.langmap[lang]')
-      echoerr "not found:".lang
-      continue
-    endif
-    call add(m, printf("let g:tagbar_type_%s = {'ctagstype': '%s', 'kinds':\n\\   %s\n\\ }",
-          \ tolower(lang), lang, string(self.langmap[lang])))
-  endfor
-  echo join(m, "\n")
-endfunction
-" TagsConfigExample {{{3
-command! -nargs=0 CTagsConfigSample call s:ctagsutil.show()
+command! -nargs=0 CTagsConfigSample call my#ctags#show()
 
 " for vim {{{3
 command! -nargs=0 ThisSyntaxName echo synIDattr(synID(line("."), col("."), 1), "name")

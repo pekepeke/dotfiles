@@ -67,9 +67,9 @@ function! s:maximizer.toggleDirection(mode) "{{{2
 endfunction
 
 function! s:maximizer.toggle() "{{{2
-  if my#util#is_win()
+  if my#is_win()
     simalt ~r | simalt ~x
-  elseif my#util#is_mac()
+  elseif my#is_mac()
     silent execute 'set' (&fullscreen?'no':'').'fullscreen'
   else
     if self.is_maximize

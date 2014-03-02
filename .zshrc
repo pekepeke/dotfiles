@@ -162,22 +162,6 @@ bindkey -a '^A' beginning-of-line
 bindkey -a '^E' end-of-line
 
 
-## cheat-sheet # {{{3
-cheat-sheet () { zle -M "`cat ~/.zsh/cheat/zsh-cheat.conf`" }
-zle -N cheat-sheet
-bindkey -v "^]^h" cheat-sheet
-
-git-cheat () { zle -M "`cat ~/.zsh/cheat/git-cheat.conf`" }
-zle -N git-cheat
-bindkey -v "^]^g" git-cheat
-
-ruby-cheat () { zle -M "`cat ~/.zsh/cheat/ruby-cheat.conf`" }
-zle -N ruby-cheat
-bindkey -v "^]^r" ruby-cheat
-
-svn-cheat () { zle -M "`cat ~/.zsh/cheat/svn-cheat.conf`" }
-zle -N svn-cheat
-bindkey -v "^]^s" svn-cheat
 
 ## for insert mode {{{3
 bindkey -v '^[OH' beginning-of-line

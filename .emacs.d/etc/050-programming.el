@@ -63,7 +63,7 @@
 (add-to-list 'auto-mode-alist '("\\.html?$"     . web-mode))
 
 ;;; インデント数
-(defun web-mode-hook ()
+(defun web-mode-hook-init ()
   "Hooks for Web mode."
   (setq web-mode-html-offset   4)
   (setq web-mode-css-offset    4)
@@ -71,14 +71,14 @@
   (setq web-mode-php-offset    4)
   (setq web-mode-java-offset   4)
   (setq web-mode-asp-offset    4))
-(add-hook 'web-mode-hook 'web-mode-hook)
+(add-hook 'web-mode-hook 'web-mode-hook-init)
 ;;; nxml-mode
 (setq auto-mode-alist
 	  (cons '("\\.\\(xml\\|xsl\\|rng\\)\\'" . nxml-mode)
 			auto-mode-alist))
 
-(eval-after-load "nxml-mode"
-  '(progn
+(add-hook 'nxml-mode-hook
+  '(lambda ()
 	 (require 'whattf-dt)
 	 (setq auto-fill-mode -1)
 	 (setq nxml-slash-auto-complete-flag t)      ; スラッシュの入力で終了タグを自動補完
@@ -113,8 +113,7 @@
 (defun emmet-mode-init ()
   (emmet-mode)
   (setq emmet-indentation 4)
-  (define-key emmet-mode-keymap (kbd "C-l" 'emmet-expand-line))
-  )
+  (define-key emmet-mode-keymap (kbd "C-l" 'emmet-expand-line)))
 (add-hook 'sgml-mode-hook 'emmet-mode-init)
 (add-hook 'html-mode-hook 'emmet-mode-init)
 (add-hook 'css-mode-hook 'emmet-mode-init)
@@ -127,8 +126,8 @@
 (defalias 'perl-mode 'cperl-mode)
 (add-to-list 'auto-mode-alist '("\\.t$" . cperl-mode))
 ;;(setq auto-mode-alist (cons '("\\t$" . cperl-mode) auto-mode-alist))
-(eval-after-load "cperl-mode"
-  '(progn
+(add-hook 'cperl-mode-hook
+  '(lambda ()
 	 (require 'perl-completion)
 	 (perl-completion-mode t)
 	 (auto-complete-mode t)
@@ -147,23 +146,34 @@
 ;; js2-mode
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-(eval-after-load "js2-mode"
-  '(progn
-	 (require 'js)
-	 (setq js-indent-level 4
-		   js-expr-indent-offset 4
+(add-hook 'js2-mode-hook
+  '(lambda ()
+	 (require 'tern)
+	 (require 'tern-auto-complete)
+	 (setq js2-indent-level 4
+		   js2-expr-indent-offset 4
 		   indent-tabs-mode nil)
-	 (set (make-local-variable 'indent-line-function) 'js-indent-line)
-	 (defun indent-and-back-to-indentation ()
-	   (interactive)
-	   (indent-for-tab-command)
-	   (let ((point-of-indentation
-			  (save-excursion
-				(back-to-indentation)
-				(point))))
-		 (skip-chars-forward "\s " point-of-indentation)))
-	 (define-key js2-mode-map (kbd "C-i") 'indent-and-back-to-indentation)
-	 (define-key js2-mode-map (kbd "C-m") nil)
+
+	 (setq-default js2-allow-rhino-new-expr-initializer nil)
+	 (setq-default js2-auto-indent-p nil)
+	 (setq-default js2-enter-indents-newline nil)
+	 (setq-default js2-global-externs '("module" "require" "buster" "sinon" "assert" "refute" "setTimeout" "clearTimeout" "setInterval" "clearInterval" "location" "__dirname" "console" "JSON"))
+	 (setq-default js2-idle-timer-delay 0.1)
+	 (setq-default js2-indent-on-enter-key nil)
+	 (setq-default js2-mirror-mode nil)
+	 (setq-default js2-strict-inconsistent-return-warning nil)
+	 (setq-default js2-auto-indent-p t)
+	 (setq-default js2-include-rhino-externs nil)
+	 (setq-default js2-include-gears-externs nil)
+	 (setq-default js2-concat-multiline-strings 'eol)
+	 (setq-default js2-rebind-eol-bol-keys nil)
+
+	 ;; Let flycheck handle parse errors
+	 (setq-default js2-show-parse-errors nil)
+	 (setq-default js2-strict-missing-semi-warning nil)
+	 (setq-default js2-strict-trailing-comma-warning t) ;; jshint does not warn about this now for some reason
+
+	 ;; (require 'js2-refactor)
 	 ))
 
 ;; markdown
@@ -173,6 +183,8 @@
 
 (setq rsense-home (getenv "RSENSE_HOME"))
 (autoload 'ruby-mode "ruby-mode" "Ruby mode" t)
+(autoload 'inf-ruby-keys "inf-ruby"
+  "Set local key defs for inf-ruby in ruby-mode")
 (autoload 'rhtml-mode "rhtml-mode" "rhtml mode" t)
 (setq auto-mode-alist (cons
 					   '("\\.\\(rb\\)$" . ruby-mode) auto-mode-alist))
@@ -180,12 +192,22 @@
 					   '("Rakefile$" . ruby-mode) auto-mode-alist))
 (setq auto-mode-alist (cons
 					   '("\\.erb$" . rhtml-mode) auto-mode-alist))
-(eval-after-load "ruby-mode"
-  '(progn
+(add-hook 'ruby-mode-hook
+  '(lambda ()
 	 (require 'ido)
 	 (ido-mode t)
 	 (require 'rinari)
 	 (require 'rsense)
+
+	 (require 'ruby-block)
+	 (ruby-block-mode t)
+	 ;; ミニバッファに表示し, かつ, オーバレイする.
+	 (setq ruby-block-highlight-toggle t)
+
+	 (setq tab-width 2)
+	 (setq ruby-indent-level tab-width)
+	 (setq ruby-deep-indent-paren-style nil)
+	 (define-key ruby-mode-map [return] 'ruby-reindent-then-newline-and-indent)
 	 (setq ruby-deep-indent-paren-style nil)
 	 (make-local-variable 'ac-omni-completion-sources)
 	 (make-local-variable 'ac-ignore-case)
@@ -195,8 +217,9 @@
 	 ;(add-to-list 'ac-sources 'ac-source-rsense-method)
 	 ;(add-to-list 'ac-sources 'ac-source-rsense-constant)
 	 ))
-(eval-after-load "rhtml-mode"
-  '(progn
+
+(add-hook 'rhtml-mode-hook
+  '(lambda ()
 	 (rinari-launch)
 	 (require 'rsense)
 	 ;(make-local-variable 'ac-sources)
@@ -240,8 +263,8 @@
 (autoload 'php-mode "php-mode" "PHP mode" t)
 (setq auto-mode-alist
       (cons '("\\.\\(php\\|php5\\|inc\\)$" . php-mode) auto-mode-alist))
-(eval-after-load "php-mode"
-  '(progn
+(add-hook 'php-mode-hook
+  '(lambda ()
 	 (setq php-intelligent-tab nil)
 	 (when (require 'php-completion)
 	   (php-completion-mode t))
@@ -267,6 +290,18 @@
 	 ; (make-variable-buffer-local 'ac-sources)
 	 ; (add-to-list 'ac-sources 'ac-source-php-completion)
 	 ))
+
+(autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
+(setq auto-mode-alist
+      (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+
+(add-hook 'csharp-mode-hook
+  '(lambda ()
+	 (turn-on-auto-revert-mode)
+	 (setq indent-tabs-mode nil)
+	 (yas/minor-mode-on)
+	 (require 'rfringe))
+	 )
 
 ;;; markdown
 (autoload 'markdown-mode "markdown mode" nil t)
