@@ -1,8 +1,8 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 encoding = "UTF-8"
 
-fontName = "Monaco"
-fontSize = 12
+fontName = "Ricty"
+fontSize = 14
 
 showInvisibles = true
 
