@@ -229,9 +229,9 @@ function! s:autochdir() "{{{3
   elseif g:my_lcd_autochdir
     if !exists('b:my_lcd_current_or_prj_dir')
       let b:my_lcd_current_or_prj_dir = s:find_proj_dir()
-    endif
-    if b:my_lcd_current_or_prj_dir != '' && isdirectory(b:my_lcd_current_or_prj_dir)
-      execute 'lcd' fnameescape(b:my_lcd_current_or_prj_dir)
+      if b:my_lcd_current_or_prj_dir != '' && isdirectory(b:my_lcd_current_or_prj_dir)
+        execute 'lcd' fnameescape(b:my_lcd_current_or_prj_dir)
+      endif
     endif
   endif
 endfunction
@@ -1269,6 +1269,7 @@ endif
 NeoBundle 'vim-perl/vim-perl'
 NeoBundle 'moznion/vim-cpanfile'
 NeoBundle 'c9s/perlomni.vim'
+NeoBundle 'motemen/xslate-vim'
 NeoBundleLazy 'y-uuki/unite-perl-module.vim', { 'autoload' : {
 \ 'unite_sources' : ['perl/global', 'perl/local'],
 \ }}
@@ -1695,10 +1696,6 @@ NeoBundleLazy 'rhysd/vim-operator-surround', {'autoload': {
 NeoBundleLazy 'sgur/vim-operator-openbrowser', {'autoload': {
 \ 'mappings' : [
 \ ['nx', '<Plug>(operator-openbrowser)']]
-\ }}
-NeoBundleLazy 'yomi322/vim-operator-suddendeath', {'autoload': {
-\ 'mappings' : [
-\ ['nx', '<Plug>(operator-suddendeath)']]
 \ }}
 NeoBundleLazy 'pekepeke/vim-operator-shuffle', {
 \ 'depends' : 'vim-operator-user', 'autoload' : {
@@ -2729,6 +2726,17 @@ let plugin_verifyenc_disable = 1
 let g:vimrc_enabled_plugins = {
       \ 'smartchr': s:bundle.is_installed('vim-smartchr'),
       \ }
+
+if s:bundle.is_installed('phpcomplete-extended')
+  let g:phpcomplete_index_composer_command = "composer"
+  " let g:phpcomplete_extended_use_default_mapping = 0
+  " MyAutoCmd FileType php call s:phpcomplete_init()
+  " function! s:phpcomplete_init()
+  "   <Plug>(phpcomplete-extended-goto)
+  "   <Plug>(phpcomplete-extended-doc)
+  "   <Plug>(phpcomplete-extended-add-use)
+  " endfunction
+endif
 " vim-startify {{{2
 if s:bundle.is_installed('vim-startify')
   let g:startify_custom_header =
@@ -5281,7 +5289,6 @@ if s:bundle.tap('vim-operator-user')
 
   map ;q <Plug>(operator-quickhl-manual-this-motion)
   map ;u <Plug>(operator-openbrowser)
-  map ;S <Plug>(operator-suddendeath)
 
   map <Leader>tm <Plug>(operator-tabular-tsv2md))
   map <Leader>Tm <Plug>(operator-tabular-md2tsv)

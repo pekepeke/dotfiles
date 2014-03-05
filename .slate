@@ -22,6 +22,9 @@ bind right:${cas} chain push right ${halfx} | corner top-right ${quad} | corner 
 bind left:${cas} chain push left ${halfx} | corner top-left ${quad} | corner bottom-left ${quad}
 bind down:${cas} chain push bottom ${halfy} | push up ${halfy}
 
+bind i:${cas} focus 'iTerm'
+bind m:${cas} focus 'MacVim'
+
 # window maximize, toggle undo(not available...)
 # bind x:${cas} chain corner top-left resize:screenSizeX;screenSizeY | undo
 bind x:${cas} corner top-left resize:screenSizeX;screenSizeY
