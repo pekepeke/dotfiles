@@ -6,7 +6,7 @@
 
 function zaw-src-cheat() {
   local root="$HOME/.zsh/cheat/"
-  candidates+=($(find "$root" -type f | sed "s@$root@@g"))
+  candidates+=($(find "$root" -type f | sed "s@$root/@@g"))
   actions=( "zaw-callback-cheat")
   act_descriptions=( "preview cheat")
 }

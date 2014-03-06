@@ -26,6 +26,7 @@ alias bcd='cd $(brew --prefix)/'
 alias mvi="$TMUX_PREFIX_COMMAND mvim --remote-tab-silent"
 alias cote="$TMUX_PREFIX_COMMAND open -a CotEditor"
 alias twe="$TMUX_PREFIX_COMMAND open -a TextWrangler"
+alias atom="$TMUX_PREFIX_COMMAND open -a Atom"
 if [ -n "$TMUX" ]; then
   alias mvim="$TMUX_PREFIX_COMMAND mvim"
 fi

@@ -3362,6 +3362,7 @@ if s:bundle.tap('gitv')
   function! s:bundle.tapped.hooks.on_source(bundle)
     MyAutoCmd FileType gitv call s:vimrc_gitv_init()
     MyAutoCmd FileType git setlocal foldlevel=99
+    " MyAutoCmd FileReadCmd,BufReadCmd fugitive://** setlocal foldlevel=99
     function! s:vimrc_gitv_init()
       setl iskeyword+=/,-,.
 
@@ -3928,12 +3929,12 @@ endif
 
 " junkfile.vim http://vim-users.jp/2010/11/hack181/ {{{2
 if s:bundle.tap('junkfile.vim')
-  nnoremap [!prefix]ss :<C-u>JunkfileOpen<CR>
+  nnoremap [!prefix]sj :<C-u>JunkfileOpen<CR>
   call s:bundle.untap()
 endif
 command! -nargs=0 EnewNofile enew | setl buftype=nofile
 
-nmap [!prefix]sc :<C-u>EnewNofile<CR>
+nmap [!prefix]ss :<C-u>EnewNofile<CR>
 
 " alignta {{{2
 if s:bundle.tap('vim-alignta')

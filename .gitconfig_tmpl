@@ -16,6 +16,13 @@
 [push]
 	default = matching
 [alias]
+  co = checkout
+  ci = commit
+  ca = commit --amend
+  st = status
+  ss = status -sb
+  sl = shortlog -sn
+  br = branch
 	fixup = commit --amend -C HEAD
 	edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
 	add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"

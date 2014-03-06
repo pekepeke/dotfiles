@@ -1,7 +1,5 @@
-git status -sb                         # 色足してくれてメッセージも要らないのも省いてくれる
 git config --global help.autocorrect 1 # git comitとかタイポしたときもcommitしてくれる
 git config --global rerere.enabled 1   # 大規模merge時の作業を覚えてくれるらしい
-git shortlog -sn                       # 誰がいくらコミットしたかを一覧表示
 
 # 一括書き換え
 git filter-branch --commit-filter '
