@@ -27,6 +27,7 @@
   '(
     ;; write some package
     popwin
+	direx
 	ac-emmet
 	ac-etags ac-inf-ruby ac-ispell ac-js2 ac-math
 	color-moccur

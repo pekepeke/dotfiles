@@ -38,8 +38,12 @@ function! s:source.get_complete_position(context) "{{{
   let [complete_pos, complete_str] =
         \ neocomplete#match_word(a:context.input, pattern)
 
+  let s = a:context.input[0:complete_pos]
+  let q_cnt = strlen(s) - strlen(substitute(s, "['\"]", '', "g"))
+  " call s:log("s = ".q_cnt)
   " call s:log("str = ".complete_str)
-  if (complete_str =~ '//' ||
+  if q_cnt % 2
+  elseif (complete_str =~ '//' ||
         \ (neocomplete#is_auto_complete() &&
         \    (complete_str !~ '/' || len(complete_str) <
         \          g:neocomplete#auto_completion_start_length ||
@@ -57,6 +61,7 @@ function! s:source.get_complete_position(context) "{{{
   if complete_str =~ '/'
     let complete_pos += strridx(complete_str, '/') + 1
   endif
+  " call s:log("complete_pos = ".complete_pos)
 
   return complete_pos
 endfunction"}}}
@@ -70,19 +75,20 @@ function! s:source.gather_candidates(context) "{{{
   if !exists("b:neco_webfile")
     let b:neco_webfile = s:detect_project()
   endif
-  " call s:log("gather : str = ".complete_str)
-  " call s:log("gather : input = ".a:context.input)
+  call s:log("gather : str = ".complete_str)
+  call s:log("gather : input = ".a:context.input)
   let targets = s:guess_directories(b:neco_webfile.app, a:context.input)
   let curdir = substitute(expand('%:p:h'), '\\', '/', 'g')
   if curdir != getcwd()
     \ && len(filter(targets, 'v:val == curdir')) <= 0
     let targets += [curdir]
   endif
+  " call s:log("gather : targets = ".join(targets, ", "))
   let files = s:get_glob_files(complete_str, targets)
   return files
 endfunction"}}}
 
-function! s:get_glob_files(complete_str, paths)
+function! s:get_glob_files(complete_str, paths) "{{{
   let path = join(map(a:paths,
   \ 'substitute(v:val, "\\.\\%(,\\|$\\)\\|,,", "", "g")'), ",")
 
@@ -93,10 +99,10 @@ function! s:get_glob_files(complete_str, paths)
   let glob = (complete_str !~ '\*$')?
         \ complete_str . '*' : complete_str
 
-  " call s:log("path:%s, str:%s, glob:%s", path, complete_str, glob)
+  call s:log("path:%s, str:%s, glob:%s", path, complete_str, glob)
 
   try
-    let globs = globpath(path, glob)
+    let globs = globpath(path, glob, 1)
   catch
     return []
   endtry
@@ -112,25 +118,25 @@ function! s:get_glob_files(complete_str, paths)
   \    'kind' : (isdirectory(v:val) ? 'dir' : 'file'),
   \ }")
 
-  let candidates = []
-  for dict in files
-    let abbr = dict.word
-    if dict.action__is_directory && dict.word !~ '/$'
-      let abbr .= '/'
-      if g:neocomplete#enable_auto_delimiter
-        let dict.word .= '/'
-      endif
-    endif
-    let dict.abbr = abbr
-
-    " Escape word.
-    let dict.word = escape(dict.word, ' ;*?[]"={}''')
-
-    call add(candidates, dict)
-  endfor
+  let candidates = map(files, 's:make_candidates(v:val)')
 
   return candidates
-endfunction
+endfunction " }}}"
+
+function! s:make_candidates(dict) "{{{
+  let abbr = a:dict.word
+  if a:dict.action__is_directory && a:dict.word !~ '/$'
+    let abbr .= '/'
+    if g:neocomplete#enable_auto_delimiter
+      let a:dict.word .= '/'
+    endif
+  endif
+  let a:dict.abbr = abbr
+
+  " Escape word.
+  let a:dict.word = escape(a:dict.word, ' ;*?[]"={}''')
+  return a:dict
+endfunction "}}}
 
 function! s:guess_directories(app, line) "{{{
   let dirs = s:directory_candidates(a:line)

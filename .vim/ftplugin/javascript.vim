@@ -2,10 +2,11 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-setl dictionary=~/.vim/dict/javascript.dict
-setl dictionary+=~/.vim/dict/qunit.dict
-setl dictionary+=~/.vim/dict/wsh.dict
-setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
+setlocal dictionary=~/.vim/dict/javascript.dict
+setlocal dictionary+=~/.vim/dict/qunit.dict
+setlocal dictionary+=~/.vim/dict/wsh.dict
+setlocal tabstop=2 shiftwidth=2 textwidth=0 expandtab
+setlocal iskeyword-=-
 " setl syntax=jQuery
 let b:javascript_lib_use_jquery     = 1
 let b:javascript_lib_use_underscore = 1

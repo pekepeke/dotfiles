@@ -198,6 +198,8 @@ function! s:find_proj_dir() "{{{3
       \ 'tiapp.xml', 'NAnt.build',
       \ 'Makefile', 'Rakefile',
       \ 'Gemfile', 'cpanfile',
+      \ 'package.json', 'composer.json',
+      \ 'bower.json',
       \ 'configure', 'tags', 'gtags',
       \ ]
       let f = findfile(f, cdir . ';')
@@ -208,7 +210,7 @@ function! s:find_proj_dir() "{{{3
     endfor
   endif
   if pjdir == ''
-    for d in ['src', 'lib', 'vendor', 'app']
+    for d in ['src', 'lib', 'node_modules', 'vendor', 'app']
       let d = finddir(d, cdir . ';')
       if d != ''
         let pjdir = fnamemodify(d, ':p:h:h')

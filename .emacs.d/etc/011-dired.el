@@ -12,6 +12,14 @@
 ;;Xキーでの拡張機能の追加
 (load "dired-x")
 (setq dired-guess-shell-gnutar "tar")
+
+;; direx
+(require 'direx)
+(require 'direx-project)
+(push '(direx:direx-mode :position left :width 25 :dedicated t)
+      popwin:special-display-config)
+(global-set-key (kbd "C-x C-j") 'direx:jump-to-directory-other-window)
+
 ;; 以下，各ファイル別の設定
 (setq dired-guess-shell-alist-user
       '(("\\.tar\\.gz\\'"  "tar ztvf")

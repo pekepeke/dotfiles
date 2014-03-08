@@ -28,5 +28,11 @@
 (define-key evil-normal-state-map "gcc" 'evilnc-comment-or-uncomment-lines)
 ;; visual mode
 (define-key evil-visual-state-map "gcc" 'evilnc-comment-or-uncomment-lines)
-;; (define-key evil-visual-state-map "gcc" 'comment-or-uncomment-region)
 
+;; direx
+(define-key evil-normal-state-map "C-x C-j" 'direx:jump-to-directory-other-window)
+;; (define-key evil-visual-state-map "gcc" 'comment-or-uncomment-region)
+(evil-declare-key 'normal direx:direx-mode-map (kbd "RET") 'direx:maybe-find-item)
+(evil-declare-key 'normal direx:direx-mode-map (kbd "l") 'direx:maybe-find-item)
+(evil-declare-key 'normal direx:direx-mode-map (kbd "h") 'direx:maybe-find-item)
+(evil-declare-key 'normal direx:direx-mode-map (kbd "C-l") 'direx:refresh-whole-tree)

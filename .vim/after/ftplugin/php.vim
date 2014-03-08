@@ -4,16 +4,16 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " http://hail2u.net/blog/software/only-one-line-life-changing-vimrc-setting.html
-setl includeexpr=substitute(v:fname,'^\\/','','')
-setl path+=;/
+setlocal includeexpr=substitute(v:fname,'^\\/','','')
+setlocal path+=;/
 
-setl commentstring=//\ %s
-" setl formatoptions-=r,o
-setl formatoptions-=r,o
-" setl iskeyword-=$,\-,:
-setl iskeyword-=- iskeyword-=$ iskeyword-=:
+setlocal commentstring=//\ %s
+" setlocal formatoptions-=r,o
+setlocal formatoptions-=r,o
+" setlocal iskeyword-=$,\-,:
+setlocal iskeyword-=- iskeyword-=$ iskeyword-=:
 
-" setl noexpandtab
+" setlocal noexpandtab
 
 nnoremap <buffer> <silent> [!comment-doc] :call PhpDocSingle()<CR>
 vnoremap <buffer> <silent> [!comment-doc] :call PhpDocRange()<CR>
