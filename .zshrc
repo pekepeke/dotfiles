@@ -161,8 +161,6 @@ bindkey -a 'H' run-help
 bindkey -a '^A' beginning-of-line
 bindkey -a '^E' end-of-line
 
-
-
 ## for insert mode {{{3
 bindkey -v '^[OH' beginning-of-line
 bindkey -v '^[OF' end-of-line
@@ -170,7 +168,6 @@ bindkey -v "\e[1~" begginning-of-line   # Home
 bindkey -v "\e[4~" end-of-line          # End
 bindkey -v "^[[3~" delete-char          # Del
 bindkey -v "\e[Z" reverse-menu-complete # S-Tab
-(( $+functions[search-clipmenu] )) && bindkey -v '^Xp' search-clipmenu
 
 ## emacs like {{{3
 bindkey -v '^D' delete-char
@@ -184,6 +181,16 @@ bindkey -v '^K' kill-line
 bindkey -v '^S' history-incremental-search-forward
 bindkey -v '^Y' yank
 bindkey -v '^R' history-incremental-pattern-search-backward
+
+copy-buffer() {
+  local copy_cmd="xsel -b"
+  type pbcopy >/dev/null && copy_cmd="pbcopy"
+  type xclip >/dev/null && copy_cmd="xclip -i -selection clipboard"
+  print -rn $BUFFER | eval $copy_cmd
+  zle -M "copy : ${BUFFER}"
+}
+zle -N copy-buffer
+bindkey -v "^Xy" copy-buffer
 
 # surround.vimみたいにクォートで囲む <<< # {{{3
 # http://d.hatena.ne.jp/mollifier/20091220/p1
@@ -334,6 +341,18 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
 fi
 
 shrc_section_title "plugins" #{{{1
+shrc_section_title "percol" #{{{2
+if type percol >/dev/null 2>&1; then
+  for f ( ~/.zsh/zfunc/percol/*.zsh ) source "${f}"
+
+  zle -N percol_search_clipmenu
+  bindkey -v '^Xp' percol_search_clipmenu
+  zle -N percol_select_history
+  bindkey '^R' percol_select_history
+  alias pd='percol_search_document'
+  alias pl='percol_search_locate'
+fi
+
 shrc_section_title "textobj" #{{{2
 # source_all ~/.zsh/plugins/opp.zsh/opp.zsh
 # source_all ~/.zsh/plugins/opp.zsh/opp/*

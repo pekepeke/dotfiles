@@ -4,16 +4,34 @@
 # zaw source for cheat sheet view
 #
 
+[ x"$ZSH_ZAW_CHEAT" = x ] && ZSH_ZAW_CHEAT="$HOME/.zsh/cheat/"
 function zaw-src-cheat() {
-  local root="$HOME/.zsh/cheat/"
-  candidates+=($(find "$root" -type f | sed "s@$root/@@g"))
-  actions=( "zaw-callback-cheat")
-  act_descriptions=( "preview cheat")
+  candidates+=($(find "$ZSH_ZAW_CHEAT" -type f | sed "s|${ZSH_ZAW_CHEAT}/*||g"))
+  actions=( "zaw-callback-cheat" "zaw-callback-yank" "zaw-callback-open" "zaw-callback-cat")
+  act_descriptions=( "preview cheat" "yank cheat" "open" "cat")
 }
 
 function zaw-callback-cheat() {
-  local root="$HOME/.zsh/cheat/"
-  zle -M "`cat $root/$1`"
+  zle -M "`cat $ZSH_ZAW_CHEAT/$1`"
+}
+
+function zaw-callback-yank() {
+  local copy_cmd="xsel -b"
+  type pbcopy >/dev/null && copy_cmd="pbcopy"
+  type xclip >/dev/null && copy_cmd="xclip -i -selection clipboard"
+
+  cat $ZSH_ZAW_CHEAT/$1 | eval $copy_cmd
+  zle -M "`print "copy : $ZSH_ZAW_CHEAT$1"`"
+}
+
+zaw-callback-open() {
+  BUFFER="xdg-open $ZSH_ZAW_CHEAT/$1"
+  zle accept-line
+}
+
+zaw-callback-cat() {
+  BUFFER="cat $ZSH_ZAW_CHEAT/$1"
+  zle accept-line
 }
 
 zaw-register-src -n cheat zaw-src-cheat
