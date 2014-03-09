@@ -231,11 +231,12 @@ pulist() { # {{{3
 shrc_section_title "zsh" #{{{2
 if [ -n "$ZSH_NAME" ]; then
   alias -g L="|& $PAGER"
-  alias -g G='| grep -i'
-  alias -g H='| head'
-  alias -g T='| tail'
-  alias -g V='| vim -'
-  # alias -g V='| view -'
+  alias -g G="| grep -i"
+  alias -g H="| head"
+  alias -g T="| tail"
+  alias -g V="| $EDITOR -"
+  alias -g P="| percol"
+  # alias -g V="| view -"
 fi
 
 shrc_section_title "some commands" #{{{1

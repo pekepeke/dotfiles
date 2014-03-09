@@ -14,14 +14,12 @@ snippet code
 	\`\`\`
 	${0}
 
-snippet codet
+snippet code
 
-	----
-		${1}
-
-	----
-
+	```${1}
 	${2}
+	```
+
 snippet datax
     data-x="${1:1000}"
 snippet datay
@@ -52,6 +50,21 @@ snippet memotitle
 snippet a
 abbr link [label](url)
 	[${1}](${2:http://})${0}
+
+snippet ap
+abbr link [@1](@1)
+options word
+	[${2:$1}](${1:`getreg("*")`})
+
+snippet linkp
+abbr link [@1](@1)
+options word
+	[${2:$1}](${1:`getreg("*")`})
+
+snippet linkghp
+abbr link [@1](thhps://github.com/@1)
+options word
+	[${2:`getreg("*") =~? "^https\\?:" ? "" : getreg("*")`}](${1:https://github.com/`getreg("*") =~? "https\\?:" ? "" : getreg("*")`})
 
 snippet img
 abbr img [label](url)
