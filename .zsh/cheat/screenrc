@@ -1,0 +1,47 @@
+# cat <<EOM > screen-256color.terminfo
+# screen-256color|GNU Screen with 256 colors,
+#       use=xterm-256color,
+# EOM
+# tic screen-256color.terminfo
+defencoding utf8
+escape ^z^z
+termcap kterm hs@
+terminfo kterm hs@
+altscreen on
+vbell off
+defscrollback 10000
+
+# keybinds {{{1
+bind w windowlist -b
+bind s split
+bind q remove
+bind o only
+bind l next
+bind h previous
+bind j focus down
+bind k focus up
+bind J focus bottom
+bind K focus top
+
+# [escape]+x ...
+bind -c REGION 2 split
+bind -c REGION 1 only
+bind -c REGION 0 remove
+bind -c REGION o focus
+bind -c REGION ^ resize
+bind -c REGION j resize +5
+bind -c REGION k resize -5
+bind x command -c REGION
+
+# [escape]+e ...(@status show->[escape]+i)
+bind -c ENCODING u encoding utf8
+bind -c ENCODING e encoding euc
+bind -c ENCODING s encoding sjis
+bind e command -c ENCODING
+
+# copy-mode maps
+markkeys $=^e:' '=v:^m=y
+# }}}
+
+hardstatus alwayslastline "[%02c]%{= wk} %-w%{=bu dr}%n %t%{-}%+w %= %{=b wb}%y/%m/%d %{=b wb}%c"
+startup_message off

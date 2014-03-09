@@ -1,0 +1,8 @@
+Port 23
+LoginGraceTime 1m
+PermitRootLogin no
+MaxAuthTries 1
+StrictModes yes
+ChallengeResponseAuthentication no
+LogLevel INFO
+UseDNS no

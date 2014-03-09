@@ -1,0 +1,88 @@
+# basic {{{1
+# cd
+setopt auto_cd
+setopt auto_pushd
+setopt pushd_ignore_dups
+setopt pushd_silent
+
+# completion
+setopt auto_menu
+unsetopt list_beep
+setopt menu_complete
+setopt always_last_prompt
+setopt auto_name_dirs
+unsetopt cdable_vars
+setopt auto_param_keys
+
+# globing
+setopt extended_glob
+setopt list_types
+setopt magic_equal_subst
+
+
+# i/o
+setopt correct
+setopt print_eight_bit
+setopt sun_keyboard_hack
+#setopt interactive_comments
+
+# prompting
+setopt prompt_subst
+
+# zle
+unsetopt beep
+
+# complete {{{1
+autoload -U compinit
+compinit -u
+
+zstyle ':completion:*:default' menu select=1
+#zstyle ':completion:*' list-colors di=34 fi=0
+#zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+
+autoload -U zmv
+
+autoload -U colors
+colors
+
+setopt no_flow_control
+setopt no_beep
+setopt ignore_eof
+setopt auto_list
+setopt extended_glob
+setopt auto_cd
+setopt auto_pushd
+setopt no_tify
+
+# keybind {{{1
+bindkey -v
+# for command mode
+bindkey -a 'O' push-line
+bindkey -a 'H' run-help
+bindkey -a '^A' vi-beginning-of-line
+bindkey -a '^E' vi-end-of-line
+## for insert mode
+bindkey -v '^[OH' vi-beginning-of-line
+bindkey -v '^[OF' vi-end-of-line
+## emacs like
+bindkey -v '^A' beginning-of-line
+bindkey -v '^E' end-of-line
+bindkey -v '^B' backward-char
+bindkey -v '^F' forward-char
+bindkey -v '^K' kill-line
+bindkey -v '^S' history-incremental-search-forward
+bindkey -v '^Y' yank
+
+# bindkey -e
+# bindkey ";5C" forward-word
+# bindkey ";5D" backward-word
+
+export WORDCHARS='*?[]~=&;!#$%^(){}<>'
+
+# history {{{1
+autoload history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end history-search-end
+bindkey "^P" history-beginning-search-backward-end
+bindkey "^N" history-beginning-search-forward-end
+

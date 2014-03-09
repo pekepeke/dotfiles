@@ -1,0 +1,64 @@
+set ts=2 sw=2 tw=1000
+set expandtab
+set number
+set termencoding=utf-8
+set encoding=japan
+set fileencodings=utf-8,iso-2022-jp,cp932,euc-jp
+set fenc=utf-8
+set enc=utf-8
+set ignorecase smartcase wrapscan
+set incsearch
+set scrolloff=3
+set autoindent
+set smarttab
+set showmatch matchtime=3
+set backspace=indent,eol,start
+
+set wildmenu
+set wildmode=list:longest,full
+set wildchar=<tab>
+set completeopt=menuone,preview
+set complete=.,w,b,u,t,i,k
+
+cnoremap <C-x> <C-r>=expand('%:p:h')<CR>/
+nnoremap gn :<C-u>bnext<CR>
+nnoremap gp :<C-u>bprevious<CR>
+nnoremap q <Nop>
+nnoremap q: q:
+nnoremap q/ q/
+nnoremap q? q?
+nnoremap Q q
+
+if has('syntax')
+    syntax enable
+endif
+filetype plugin indent on
+
+silent! pathogen#infect()
+
+" mkdir -p ~/.vim/autoload ~/.vim/bundle; curl -so ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim; mkdir -p ~/.vim/bundle ; cd ~/.vim/bundle;
+" git clone https://github.com/Shougo/vimfiler.git
+" git clone https://github.com/Shougo/unite.vim.git
+" curl -L https://github.com/Shougo/vimfiler/tarball/master | tar zxv
+" curl -L https://github.com/Shougo/unite.vim/tarball/master | tar zxv
+
+if v:version > 702
+  finish
+endif
+let g:vimfiler_as_default_explorer=1
+let g:vimfiler_safe_mode_by_default=0
+let g:vimfiler_edit_command = 'new'
+
+nnoremap [unite] <Nop>
+nmap     f       [unite]
+nnoremap [unite]f f
+let g:unite_enable_start_insert=0
+let g:unite_source_file_mru_limit=200
+let g:unite_source_file_mru_time_format = ''
+let g:unite_winheight = 20
+let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
+
+nmap <silent> [unite]j       :<C-u>Unite buffer_tab<CR>
+nmap <silent> [unite]l       :<C-u>Unite file<CR>
+nmap <silent> [unite]m       :<C-u>Unite file_mru directory_mru<CR>
+nmap <silent> [unite]k       :<C-u>Unite tab<CR>
