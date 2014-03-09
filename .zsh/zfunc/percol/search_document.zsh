@@ -9,7 +9,7 @@ function percol_search_document() {
     fi
     SELECTED_FILE=$(echo $DOCUMENT_DIR | \
         xargs find | \
-        grep -E "\.(txt|md|pdf|key|numbers|pages|doc|xls|ppt)$" | \
+        grep -E "\.(txt|md|pdf|key|numbers|pages|docx?|xlsx?|pptx?)$" | \
         percol --match-method migemo)
     if [ $? -eq 0 ]; then
         echo $SELECTED_FILE | sed 's/ /\\ /g'
