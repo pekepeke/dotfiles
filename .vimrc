@@ -2639,6 +2639,20 @@ if s:is_mac
   vnoremap <MiddleMouse> <Nop>
 endif
 
+" abbrev {{{1
+iabbrev funciton function
+iabbrev funcition function
+iabbrev retrun return
+iabbrev cosnt const
+iabbrev scirpt script
+iabbrev hlep help
+iabbrev parcent percent
+iabbrev persent percent
+iabbrev parsent percent
+iabbrev tilda tilde
+iabbrev appropreate appropriate
+iabbrev acknowledgement acknowledgment
+
 " languages plugin {{{1
 " perl {{{2
 let g:perl_compiler_force_warnings = 0
@@ -3281,7 +3295,7 @@ if s:bundle.tap('vimconsole.vim')
   let g:vimconsole#auto_redraw = 1
   let g:vimconsole#maximum_caching_objects_count = 1000
 
-  nnoremap [!space]v :<C-u>VimConsoleToggle<CR>
+  nnoremap [!space]vc :<C-u>VimConsoleToggle<CR>
 
   function! s:bundle.tapped.hooks.on_source(bundle)
     MyAutoCmd FileType vimconsole call s:vimrc_vimconsole_init()
@@ -3757,6 +3771,7 @@ if s:bundle.tap('vim-smartinput')
         if get(hash, item._char, 1)
           let char = substitute(item._char, '[|]', '\\\1', 'g')
           execute printf("%smap \<buffer> %s %s", item.mode, char, char)
+          " execute printf("%sunmap \<buffer> %s", item.mode, char)
           let hash[item._char] = 0
         endif
       endfor
@@ -5949,6 +5964,19 @@ if s:bundle.tap('vim-quickrun')
   \ },
   \ })
 
+  " TODO : not work
+  call extend(g:quickrun_config, {
+  \ 'w3m' : {
+  \   'type' : 'w3m/open',
+  \ },
+  \ 'w3m/open': {
+  \   'command': (s:is_win ? 'start ""' : (s:is_mac ? "open" : "xdg-open")),
+  \   'exec': [
+  \     '%c %o "%{b:last_url}"',
+  \   ],
+  \ }
+  \ })
+
   nnoremap <Leader><Leader>r :<C-u>QuickRun command/cat<CR>
 
   " for testcase {{{3
@@ -6822,7 +6850,7 @@ if exists("+omnifunc") " {{{4
   MyAutoCmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
   if s:bundle.is_installed('jedi-vim')
     MyAutoCmd FileType python let b:did_ftplugin = 1
-          \ | setlocal omnifunc=jedi#complete
+          \ | setlocal omnifunc=jedi#completions
   else
     MyAutoCmd FileType python        setl omnifunc=pythoncomplete#Complete
   endif
