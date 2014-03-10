@@ -25,7 +25,8 @@ percol.view.__class__.PROMPT = property(lambda self: dynamic_prompt())
 ## migemo
 # Mac と Ubuntu で辞書のパスを変える
 if sys.platform == "darwin":
-    FinderMultiQueryMigemo.dictionary_path = "/usr/local/Cellar/cmigemo/20110227/share/migemo/utf-8/migemo-dict"
+    # FinderMultiQueryMigemo.dictionary_path = "/usr/local/Cellar/cmigemo/20110227/share/migemo/utf-8/migemo-dict"
+    FinderMultiQueryMigemo.dictionary_path = "/usr/local/Cellar/share/migemo/utf-8/migemo-dict"
 else:
     FinderMultiQueryMigemo.dictionary_path = "/usr/share/cmigemo/utf-8/migemo-dict"
     if not os.path.exists(FinderMultiQueryMigemo.dictionary_path):
