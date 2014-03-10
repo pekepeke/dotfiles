@@ -623,22 +623,22 @@ NeoBundle 'itchyny/lightline.vim'
 " \ {'name': 'SvssCompile', 'complete':'file'},
 " \ ],
 " \ }}
-NeoBundleLazy 'cocopon/colorswatch.vim', {'autoload': {
-\ 'commands': ['ColorSwatchGenerate'],
-\ }}
+" NeoBundleLazy 'cocopon/colorswatch.vim', {'autoload': {
+" \ 'commands': ['ColorSwatchGenerate'],
+" \ }}
 NeoBundle 'tpope/vim-vividchalk'
 NeoBundle 'tomasr/molokai'
 NeoBundleLazy 'mopp/mopkai.vim', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'cocopon/iceberg.vim', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'itchyny/landscape.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundleLazy 'cocopon/iceberg.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundleLazy 'itchyny/landscape.vim', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundleLazy 'mrkn/mrkn256.vim', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'depuracao/vim-darkdevel', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'goatslacker/mango.vim', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'jpo/vim-railscasts-theme', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundleLazy 'depuracao/vim-darkdevel', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundleLazy 'goatslacker/mango.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundleLazy 'jpo/vim-railscasts-theme', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundle 'fmoralesc/vim-vitamins'
-NeoBundleLazy 'jnurmine/Zenburn', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'gregsexton/Atom', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'vim-scripts/rdark', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundleLazy 'jnurmine/Zenburn', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundleLazy 'gregsexton/Atom', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundleLazy 'vim-scripts/rdark', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundleLazy 'vim-scripts/Lucius', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundleLazy 'altercation/vim-colors-solarized', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundleLazy 'nanotech/jellybeans.vim', {'autoload': {'unite_sources':['colorscheme']}}
@@ -649,10 +649,10 @@ NeoBundleLazy 'veloce/vim-aldmeris', {'autoload': {'unite_sources':['colorscheme
 NeoBundleLazy 'Pychimp/vim-luna', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundleLazy 'croaker/mustang-vim', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundleLazy 'jaromero/vim-monokai-refined', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'git://gist.github.com/187578.git', {
-\ 'autoload': {'unite_sources':['colorscheme'],},
-\ 'directory': 'h2u_black',
-\ }
+" NeoBundleLazy 'git://gist.github.com/187578.git', {
+" \ 'autoload': {'unite_sources':['colorscheme'],},
+" \ 'directory': 'h2u_black',
+" \ }
 
 " common {{{3
 NeoBundle 'osyo-manga/vim-reanimate', {'autoload': {
@@ -752,12 +752,12 @@ NeoBundle 'anyakichi/vim-surround', {'autoload':{
 \ ['x', 's', 'S', 'gs', 'gS'],
 \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
 \ }}
-NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
-\ 'commands': [
-\ {'name': 'Abolish'}, {'name': 'Subvert'},
-\ ],
-\ 'mappings': [['n', '<Plug>Coerce']]
-\ }}
+" NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
+" \ 'commands': [
+" \ {'name': 'Abolish'}, {'name': 'Subvert'},
+" \ ],
+" \ 'mappings': [['n', '<Plug>Coerce']]
+" \ }}
 NeoBundle 'tpope/vim-dispatch', {'autoload': {
 \ 'commands': [
 \ {'name': 'FocusDispatch', 'complete': 'custom,dispatch#command_complete'},
@@ -819,7 +819,7 @@ NeoBundle 'rhysd/clever-f.vim', {'autoload': {
 \ 'mappings': [
 \ '<Plug>(clever-f-',
 \ ]}}
-NeoBundleLazy 't9md/vim-smalls', {'autoload': {
+NeoBundle 't9md/vim-smalls', {'autoload': {
 \ 'mappings': [['nxo', '<Plug>(smalls']]
 \ }}
 " NeoBundleLazy 'terryma/vim-expand-region', {'autoload':{
@@ -833,14 +833,14 @@ endif
 NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {
 \ 'commands': ['MemoNew', 'MemoGrep', 'MemoList']
 \ }}
-NeoBundleLazy 'deris/vim-rengbang', {'autoload':{
-\ 'commands': ['RengBang'],
-\ 'mappings': [['nvx', '<Plug>(operator-rengbang-']],
-\ }}
+" NeoBundleLazy 'deris/vim-rengbang', {'autoload':{
+" \ 'commands': ['RengBang'],
+" \ 'mappings': [['nvx', '<Plug>(operator-rengbang-']],
+" \ }}
 NeoBundle 'pekepeke/vim-trimr'
-NeoBundleLazy 'othree/eregex.vim', { 'autoload': {
-\ 'commands': ['E2v', 'M', 'S', 'G', 'V'],
-\ }}
+" NeoBundleLazy 'othree/eregex.vim', { 'autoload': {
+" \ 'commands': ['E2v', 'M', 'S', 'G', 'V'],
+" \ }}
 NeoBundle 'mbbill/undotree'
 " NeoBundle 'sjl/gundo.vim'
 NeoBundle 'kana/vim-smartword', { 'autoload' : {
@@ -881,25 +881,25 @@ elseif s:is_mac
   \ 'unite_sources':['apps']
   \ }}
 endif
-NeoBundleLazy 'koron/chalice', {'autoload': {
-\ 'commands': ['JumplistClear', 'JumpListAdd', 'JumplistPrev',
-\   'JumplistNext', 'JumplistDump',
-\   'ChaliceQuit', 'ChaliceQuitAll', 'ChaliceGoBoardList',
-\   'ChaliceGoThread', 'ChaliceGoArticle', 'Article',
-\   'ChaliceOpenBoard', 'ChaliceOpenThread', 'ChaliceHandleJump',
-\   'ChaliceHandleJumpExt', 'ChaliceReloadBoardList',
-\   'ChaliceReloadThreadList', 'ChaliceReloadThread',
-\   'ChaliceReloadThreadInc', 'ChaliceReformat', 'ChaliceDoWrite',
-\   'ChaliceWrite', 'ChaliceHandleURL', 'ChaliceBookmarkToggle',
-\   'ChaliceBookmarkAdd', 'ChaliceJumplist', 'ChaliceJumplistNext',
-\   'ChaliceJumplistPrev', 'ChaliceDeleteThreadDat', 'ChaliceAboneThreadDat',
-\   'ChaliceToggleNetlineStatus', 'ChalicePreview', 'ChalicePreviewClose',
-\   'ChalicePreviewToggle', 'ChaliceCruise', 'ChaliceShowNum',
-\   'ChaliceCheckThread', 'Chalice2HTML', 'ChaliceAdjWinsize',
-\   'ChaliceDatdirOn', 'Chalice',
-\   'ALexecute', 'ALsystem',
-\ ],
-\ }}
+" NeoBundleLazy 'koron/chalice', {'autoload': {
+" \ 'commands': ['JumplistClear', 'JumpListAdd', 'JumplistPrev',
+" \   'JumplistNext', 'JumplistDump',
+" \   'ChaliceQuit', 'ChaliceQuitAll', 'ChaliceGoBoardList',
+" \   'ChaliceGoThread', 'ChaliceGoArticle', 'Article',
+" \   'ChaliceOpenBoard', 'ChaliceOpenThread', 'ChaliceHandleJump',
+" \   'ChaliceHandleJumpExt', 'ChaliceReloadBoardList',
+" \   'ChaliceReloadThreadList', 'ChaliceReloadThread',
+" \   'ChaliceReloadThreadInc', 'ChaliceReformat', 'ChaliceDoWrite',
+" \   'ChaliceWrite', 'ChaliceHandleURL', 'ChaliceBookmarkToggle',
+" \   'ChaliceBookmarkAdd', 'ChaliceJumplist', 'ChaliceJumplistNext',
+" \   'ChaliceJumplistPrev', 'ChaliceDeleteThreadDat', 'ChaliceAboneThreadDat',
+" \   'ChaliceToggleNetlineStatus', 'ChalicePreview', 'ChalicePreviewClose',
+" \   'ChalicePreviewToggle', 'ChaliceCruise', 'ChaliceShowNum',
+" \   'ChaliceCheckThread', 'Chalice2HTML', 'ChaliceAdjWinsize',
+" \   'ChaliceDatdirOn', 'Chalice',
+" \   'ALexecute', 'ALsystem',
+" \ ],
+" \ }}
 
 " lang {{{3
 " basic {{{4
@@ -972,7 +972,7 @@ NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
 \   {'name': 'DirDiff', 'complete': 'dir'},
 \ ],
 \ }}
-NeoBundle 'thinca/vim-ft-diff_fold'
+" NeoBundle 'thinca/vim-ft-diff_fold'
 NeoBundleLazy 'AndrewRadev/linediff.vim', {'autoload': {
 \ 'commands': ['Linediff', 'LinediffReset'],
 \ }}
@@ -1170,12 +1170,12 @@ NeoBundle 'cakebaker/scss-syntax.vim'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'wavded/vim-stylus'
 NeoBundle 'slim-template/vim-slim'
-NeoBundleLazy 'csscomb/csscomb-for-vim', {'autoload': {
-\ 'commands': ['CSSComb'],
-\ }}
-NeoBundleLazy 'vim-scripts/cssbaseline.vim', {'autoload': {
-\ 'commands': ['Baseline', 'Baseline1'],
-\ }}
+" NeoBundleLazy 'csscomb/csscomb-for-vim', {'autoload': {
+" \ 'commands': ['CSSComb'],
+" \ }}
+" NeoBundleLazy 'vim-scripts/cssbaseline.vim', {'autoload': {
+" \ 'commands': ['Baseline', 'Baseline1'],
+" \ }}
 " NeoBundleLazy 'bae22/prefixer', {'autoload': {
 " \ 'commands': ['Prefixer', 'Prefixer1', 'Prefixer1a',
 " \   'Prefixer2', 'Prefixer2a'],
@@ -1210,11 +1210,11 @@ NeoBundle 'elzr/vim-json'
 
 NeoBundle 'pekepeke/titanium-vim'
 NeoBundle 'pekepeke/ref-jsextra-vim'
-NeoBundleLazy 'cocopon/googkit.vim', {'autoload':{
-\ 'commands': [
-\ {'name':'GoogkitInit'},
-\ {'name': 'Googkit', 'complete':'googkit#complete_last'}],
-\ }}
+" NeoBundleLazy 'cocopon/googkit.vim', {'autoload':{
+" \ 'commands': [
+" \ {'name':'GoogkitInit'},
+" \ {'name': 'Googkit', 'complete':'googkit#complete_last'}],
+" \ }}
 NeoBundleLazy 'chikatoike/sourcemap.vim', {'autoload':{
 \ 'commands': [
 \   {'name' : 'SourceMapAddMap', 'complete':'file'},
@@ -1303,11 +1303,11 @@ NeoBundleLazy 'nosami/Omnisharp', {
 \   'mac': 'xbuild server/OmniSharp.sln',
 \   'unix': 'xbuild server/OmniSharp.sln',
 \ }}
-if s:is_win
-  NeoBundleLazy 'yuratomo/ildasm.vim', {'autoload':{
-  \ 'filetypes': ['cs'],
-  \ }}
-endif
+" if s:is_win
+"   NeoBundleLazy 'yuratomo/ildasm.vim', {'autoload':{
+"   \ 'filetypes': ['cs'],
+"   \ }}
+" endif
 
 " OSX {{{4
 " NeoBundle 'nanki/vim-objj'
@@ -1718,12 +1718,12 @@ NeoBundleLazy 'pekepeke/vim-operator-normalize-utf8mac', {
 
 " textobj {{{3
 NeoBundle 'kana/vim-textobj-user'
-NeoBundleLazy 'kana/vim-textobj-datetime', {'autoload': {
-\ 'mappings': [['vo',
-\ 'ada', 'adf', 'add', 'adt', 'adz',
-\ 'ida', 'idf', 'idd', 'idt', 'idz',
-\ ]],
-\ }}
+" NeoBundleLazy 'kana/vim-textobj-datetime', {'autoload': {
+" \ 'mappings': [['vo',
+" \ 'ada', 'adf', 'add', 'adt', 'adz',
+" \ 'ida', 'idf', 'idd', 'idt', 'idz',
+" \ ]],
+" \ }}
 NeoBundleLazy 'kana/vim-textobj-diff', {'autoload': {
 \ 'mappings': [
 \ ['n', '<Leader>dj', '<Leader>dJ', '<Leader>dk', '<Leader>dK',
