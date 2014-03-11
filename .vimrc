@@ -1815,9 +1815,9 @@ NeoBundleLazy 'osyo-manga/vim-textobj-context', {'autoload':{
 \ 'mappings' : [['nvo',
 \ '<Plug>(textobj-context-i)',
 \ ]]}}
-NeoBundleLazy 'akiyan/vim-textobj-xml-attribute', {'autoload':{
+NeoBundle 'akiyan/vim-textobj-xml-attribute', {'autoload':{
 \ 'mappings' : [['nvo',
-\ '<Plug>(textobj-xmlattribute-',
+\ '<Plug>(textobj-xmlattribute-', 'axa', 'ixa'
 \ ]]}}
 NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
 \ 'mappings' : [
@@ -2643,6 +2643,8 @@ endif
 iabbrev funciton function
 iabbrev funcition function
 iabbrev retrun return
+iabbrev sented sent
+iabbrev setted set
 iabbrev cosnt const
 iabbrev scirpt script
 iabbrev hlep help
@@ -5371,8 +5373,8 @@ if s:bundle.is_installed('vim-textobj-user')
   TTmap # ifdef
   Tmap ixx <Plug>(textobj-context-i)
 
-  Tmap axa <Plug>(textobj-xmlattribute-xmlattribute)
-  Tmap ixa <Plug>(textobj-xmlattribute-xmlattributenospace)
+  " Tmap axa <Plug>(textobj-xmlattribute-xmlattribute)
+  " Tmap ixa <Plug>(textobj-xmlattribute-xmlattributenospace)
   " TTmap m  motionmotion
 
   TTmap P php-phptag
