@@ -1098,7 +1098,7 @@ NeoBundleLazy 't9md/vim-chef', {'autoload':{
 \ }}
 
 NeoBundle 'rodjek/vim-puppet'
-NeoBundleLazy 'joker1007/vim-ruby-heredoc-syntax', {'autoload':{
+NeoBundle 'joker1007/vim-ruby-heredoc-syntax', {'autoload':{
 \ 'filetypes': ['ruby'],
 \ }}
 
@@ -1393,7 +1393,7 @@ endif
 " NeoBundle 'plasticboy/vim-markdown' " plasticboy mode -> mkd
 NeoBundle 'tpope/vim-markdown'
 NeoBundle 'nelstrom/vim-markdown-folding'
-NeoBundleLazy 'joker1007/vim-markdown-quote-syntax'
+NeoBundle 'joker1007/vim-markdown-quote-syntax'
 NeoBundle 'kannokanno/previm'
 NeoBundle 'timcharper/textile.vim'
 NeoBundleLazy 'chrisbra/csv.vim', {'autoload':{
