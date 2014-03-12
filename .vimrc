@@ -900,6 +900,10 @@ endif
 " \   'ALexecute', 'ALsystem',
 " \ ],
 " \ }}
+NeoBundle 'koron/codic-vim'
+NeoBundleLazy 'rhysd/unite-codic.vim', {'autoload': {
+\ 'unite_sources': 'codic',
+\ }}
 
 " lang {{{3
 " basic {{{4
