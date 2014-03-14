@@ -66,6 +66,8 @@ doc/tags-ja
 *.un~
 Session.vim
 .netrwhist
+.phpcomplete_extended
+.ropeproject
 
 # emacs
 *~
