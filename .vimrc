@@ -580,8 +580,6 @@ if has('vim_starting')
 
   function! s:bundle.lazy_plugins() "{{{
     return [
-    \ "vim-markdown-quote-syntax",
-    \ "vim-ruby-heredoc-syntax",
     \ "unite.vim",
     \ "vimfiler.vim",
     \ "vimshell.vim",
@@ -1475,9 +1473,12 @@ NeoBundleLazy 'vim-scripts/SQLUtilities', {'autoload':{
 NeoBundle 'honza/dockerfile.vim'
 NeoBundleLazy 'xolox/vim-lua-ftplugin', {'autoload':{
 \ 'filetypes': ['lua'],
-\ }}
+\ },
+\ 'depends': ['xolox/vim-misc'],
+\ }
+NeoBundle 'vim-scripts/httplog'
 NeoBundle 'vim-scripts/syslog-syntax-file'
-NeoBundle 'brandonbloom/vim-proto'
+NeoBundle 'uarun/vim-protobuf'
 NeoBundle 'sophacles/vim-processing'
 NeoBundleLazy 'pekepeke/ref-processing-vim', {'autoload':{
 \ 'filetypes': ['processing'],
