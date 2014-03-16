@@ -981,6 +981,15 @@ NeoBundleLazy 'AndrewRadev/linediff.vim', {'autoload': {
 NeoBundle 'vim-scripts/ConflictDetection', {
 \ 'depends': 'vim-scripts/ingo-library',
 \ }
+if has('python')
+  NeoBundleLazy 'joonty/vdebug.git', {'autoload': {
+  \ 'commands': [
+  \ "VdebugStart", "Breakpoint",
+  \ "BreakpointRemove", "BreakpointWindow",
+  \ "VdebugEval", "VdebugOpt",
+  \ ],
+  \ }}
+endif
 " NeoBundleLazy 'yuratomo/dbg.vim', {'autoload':{
 " \ 'commands': [
 " \ {'name':'Dbg', 'complete':'file'},
@@ -1184,6 +1193,14 @@ NeoBundle 'slim-template/vim-slim'
 " \ }}
 
 " javascript {{{4
+NeoBundle 'bigfish/vim-js-context-coloring', {
+  \ 'build' : {
+  \     'mac': 'npm install --update',
+  \     'unix': 'npm install --update',
+  \     'windows': 'npm install --update',
+  \     'cygwin': 'npm install --update',
+  \    },
+  \ }
 NeoBundle 'guileen/simple-javascript-indenter'
 NeoBundle 'pangloss/vim-javascript'
 if has('python') || has('python3')

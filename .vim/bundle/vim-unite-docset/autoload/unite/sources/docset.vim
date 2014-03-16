@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " variables {{{1
-" let g:unite_docset_debug = 1
+" let g:unite_docset_debug = 0
 let g:unite_docset_debug = get(g:, 'unite_docset_debug', 0)
 
 function! s:find_executable(...) "{{{2
@@ -40,10 +40,10 @@ let s:unite_docset_sources = {}
 
 " menu source {{{1
 let s:menu = {
-      \ 'name' : 'docset',
-      \ 'default_kind' : 'source',
-      \ }
-      " \ 'default_kind' : 'command',
+\ 'name' : 'docset',
+\ 'default_kind' : 'source',
+\ }
+" \ 'default_kind' : 'command',
 
 function! s:menu.on_init(args, context) "{{{2
 endfunction
@@ -55,14 +55,14 @@ endfunction
 
 " source {{{1
 let s:source = {
-      \ 'name' : 'docset',
-      \ 'default_kind' : 'docset',
-      \ }
+\ 'name' : 'docset',
+\ 'default_kind' : 'docset',
+\ }
 
 " interfaces {{{1
 function! s:source.on_init(args, context) "{{{2
   let s:buffer = {
-        \ }
+  \ }
 endfunction
 
 function! s:source.gather_candidates(args, context) "{{{2
@@ -91,26 +91,29 @@ endfunction
 " some utils {{{1
 function! s:create_menu_candidate(source, name) "{{{2
   return {
-        \ 'kind' : 'source',
-        \ 'word' : a:name,
-        \ 'source' : a:source.name,
-        \ 'action__source_name' : a:source.name . '/' . a:name,
-        \ 'action__source_args' : [],
-        \ }
-        " \ 'kind' : 'command',
-        " \ 'action__command' : printf('Unite %s/%s', a:source.name, a:name),
-        " \ 'action_type' : ':',
+  \ 'kind' : 'source',
+  \ 'word' : a:name,
+  \ 'source' : a:source.name,
+  \ 'action__source_name' : a:source.name . '/' . a:name,
+  \ 'action__source_args' : [],
+  \ }
+  " \ 'kind' : 'command',
+  " \ 'action__command' : printf('Unite %s/%s', a:source.name, a:name),
+  " \ 'action_type' : ':',
 endfunction
 
 function! s:create_candidate(source, key, path) "{{{2
+  " \ 'word' : a:key,
+  let basename = fnamemodify(a:source.__docset_path, ':t:r')
   return {
-        \ 'kind' : 'docset',
-        \ 'word' : a:key,
-        \ 'source' : a:source.name,
-        \ 'action__name' : a:key,
-        \ 'action__docset_path' : a:source.__docset_path,
-        \ 'action__path' : a:path,
-        \ }
+  \ 'kind' : 'docset',
+  \ 'source' : a:source.name,
+  \ 'word' : a:key,
+  \ 'abbr' : basename . " - " . a:key,
+  \ 'action__name' : a:key,
+  \ 'action__docset_path' : a:source.__docset_path,
+  \ 'action__path' : a:path,
+  \ }
 endfunction
 
 let s:cache = {} "{{{2
@@ -168,19 +171,35 @@ endfunction
 function! s:fetch_index(docset_path) "{{{2
   let docset = fnamemodify(expand(a:docset_path), ':p')
   if !empty(g:unite_docset_docsetutil_command) &&
-    \ filereadable(docset . "/Contents/Resources/docset.toc")
+    \ filereadable(docset . "/Contents/Resources/docSet.toc")
     let bin = fnamemodify(expand(g:unite_docset_docsetutil_command), ':p')
     let command = printf('"%s" search "%s" %s', bin, docset, g:unite_docset_search_option)
+  elseif filereadable(docset . "/Contents/Resources/docSet.toc")
+    \ && filereadable(docset . "/Contents/Resources/Tokens.xml")
+    " return s:parse_token_xml(docset . "/Contents/Resources/Tokens.xml")
+    let bin = g:unite_docset_sqlite3_command
+    let name = fnamemodify(docset, ':p:h:t:r')
+    let name = fnamemodify(docset, ':p:h:t:r')
+    let sql = "SELECT '" . name . "/Tag/' || ztt.ZTYPENAME || '/' || "
+      \ . "zt.ZTOKENNAME || '   ' || zf.ZPATH "
+      \ . " FROM ZTOKEN zt ,ZFILEPATH zf , ZTOKENTYPE ztt"
+      \ . " WHERE zf.Z_PK = zt.Z_PK AND zt.ZTOKENTYPE = ztt.Z_PK"
+    let command = printf('%s -noheader -cmd "%s" "%s" < %s',
+      \ bin,
+      \ sql,
+      \ docset . '/Contents/Resources/docSet.dsidx',
+      \ "/dev/null"
+      \ )
   else
     let bin = g:unite_docset_sqlite3_command
     let name = fnamemodify(docset, ':p:h:t:r')
     let sql = printf("select '%s/Tag/'||type||'/'||name||'   '||path from searchIndex;", name)
     let command = printf('%s -noheader -cmd "%s" "%s" < %s',
-          \ bin,
-          \ sql,
-          \ docset . '/Contents/Resources/docSet.dsidx',
-          \ "/dev/null"
-          \ )
+      \ bin,
+      \ sql,
+      \ docset . '/Contents/Resources/docSet.dsidx',
+      \ "/dev/null"
+      \ )
     " echoerr command
   endif
 
@@ -202,6 +221,10 @@ function! s:parse_index(result) "{{{2
   endfor
   return docset_indexes
 endfunction
+
+" function! s:parse_token_xml(path) "{{{2
+
+" endfunction " }}}
 
 function! s:docsetname_by_path(path) "{{{2
   let name = fnamemodify(a:path, ':t:r')
@@ -253,8 +276,8 @@ endfunction
 
 function! unite#sources#docset#define() "{{{1
   return !empty(g:unite_docset_docsetutil_command) ||
-        \ executable(g:unite_docset_sqlite3_command)
-        \ ? [s:menu] + s:create_sources() : []
+  \ executable(g:unite_docset_sqlite3_command)
+  \ ? [s:menu] + s:create_sources() : []
 endfunction
 
 let &cpo = s:save_cpo

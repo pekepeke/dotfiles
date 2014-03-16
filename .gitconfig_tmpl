@@ -1,20 +1,20 @@
-# vim:fdm=marker sw=2 ts=2 ft=gitconfig noexpandtab:
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [user]
-	name = fuga
-	email = f@u.ga
+  name = fuga
+  email = f@u.ga
 [color]
-	ui = auto
-	diff = auto
-	status = auto
-	branch = auto
-	interactive = auto
-	grep = auto
+  ui = auto
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
+  grep = auto
 [core]
-	excludesfile = /home/fuga/.gitignore-global
-	quotepath = false
-	precomposeunicode = true
+  excludesfile = /home/fuga/.gitignore-global
+  quotepath = false
+  precomposeunicode = true
 [push]
-	default = matching
+  default = matching
 [alias]
   co = checkout
   ci = commit
@@ -23,81 +23,84 @@
   ss = status -sb
   sl = shortlog -sn
   br = branch
-	fixup = commit --amend -C HEAD
-	edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
-	add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
-	log-graph = log --graph --date=short --pretty=format:'%Cgreen%h %cd %Cblue%cn %Creset%s'
-	log-all = log --graph --all --color --pretty='%x09%h %cn%x09%s %Cred%d%Creset'
-	dm = diff master
-	dw = diff --color-words
-	dc = diff --cached
-	ds = diff --staged
-	d1 = diff HEAD~
-	d2 = diff HEAD~~
-	d3 = diff HEAD~~~
-	d4 = diff HEAD~~~~
-	d5 = diff HEAD~~~~~
-	d10 = diff HEAD~~~~~~~~~~
-	ignore = !"f() { local s=$1; shift; \
-		while [ $# -gt 0 ]; do s="$s,$1"; shift; done;\
-		curl "http://gitignore.io/api/$s"; }; f"
+  fixup = commit --amend -C HEAD
+  edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
+  add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
+  log-graph = log --graph --date=short --pretty=format:'%Cgreen%h %cd %Cblue%cn %Creset%s'
+  log-all = log --graph --all --color --pretty='%x09%h %cn%x09%s %Cred%d%Creset'
+  dm = diff master
+  dw = diff --color-words
+  dc = diff --cached
+  ds = diff --staged
+  d1 = diff HEAD~
+  d2 = diff HEAD~~
+  d3 = diff HEAD~~~
+  d4 = diff HEAD~~~~
+  d5 = diff HEAD~~~~~
+  d10 = diff HEAD~~~~~~~~~~
+  ignore = !"f() { local s=$1; shift; \
+    while [ $# -gt 0 ]; do s="$s,$1"; shift; done;\
+    curl "http://gitignore.io/api/$s"; }; f"
 
 [tig "bind"]
-	generic = g move-first-line
-	generic = G move-last-line
+  generic = g move-first-line
+  generic = G move-last-line
 
 [diff "applescript"]
-	textconv = osadecompile
+  textconv = osadecompile
 [diff "rtf"]
-	textconv = textutil -convert txt -stdout
+  textconv = textutil -convert txt -stdout
 [difftool "kdiff3"]
-	path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
-	trustExitCode = false
+  path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
+  trustExitCode = false
 [difftool "p4diff"]
-	path = p4diff
+  path = p4diff
 [difftool "vimdiff"]
-	cmd = vim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
-	trustExitCode = false
+  cmd = vim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
+  trustExitCode = false
 [difftool "gvimdiff"]
-	cmd = gvim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
-	trustExitCode = false
+  cmd = gvim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
+  trustExitCode = false
 [difftool "mvimdiff"]
-	cmd = mvim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
-	trustExitCode = false
+  cmd = mvim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
+  trustExitCode = false
 ; [difftool "WinMerge"]
 ;   path = C:/Apps/WinMerge/WinMergeU.exe
 ;   cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" -e -ub -dl \"Base\" -dr \"Mine\" \"$LOCAL\" \"$REMOTE\"
 ; [difftool "p4merge"]
 ;   cmd = "p4merge.exe $LOCAL $REMOTE"
 [merge]
-	; tool = vimdiff
-	tool = vimfugitive
-	; ff = false
+  ; tool = vimdiff
+  tool = vimfugitive
+  ; ff = false
+[merge "mergepbx"]
+  name = XCode project files merger
+  driver = mergepbx %O %A %B
 [mergetool "p4merge"]
-	path = p4merge
-	keepTemporaries = false
-	trustExitCode = false
+  path = p4merge
+  keepTemporaries = false
+  trustExitCode = false
 [mergetool "kdiff3"]
-	path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
-	trustExitCode = false
+  path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
+  trustExitCode = false
 [mergetool "vimfugitive"]
-	; cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
-	cmd = vim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
-	trustExitCode = false
+  ; cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
+  cmd = vim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
+  trustExitCode = false
 [mergetool "gvimdiff"]
-	cmd = gvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
-	trustExitCode = false
+  cmd = gvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
+  trustExitCode = false
 [mergetool "gvimfugitive"]
-	; cmd = gvim -f -c "Gdiff" "$MERGED"
-	cmd = gvim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
-	trustExitCode = false
+  ; cmd = gvim -f -c "Gdiff" "$MERGED"
+  cmd = gvim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
+  trustExitCode = false
 [mergetool "mvimdiff"]
-	cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
-	trustExitCode = false
+  cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
+  trustExitCode = false
 [mergetool "mvimfugitive"]
-	; cmd = mvim -f -c "Gdiff" "$MERGED"
-	cmd = mvim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
-	trustExitCode = false
+  ; cmd = mvim -f -c "Gdiff" "$MERGED"
+  cmd = mvim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
+  trustExitCode = false
 ; [mergetool "WinMerge"]
 ;   path = C:/Apps/WinMerge/WinMergeU.exe
 ;   cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" \"$MERGED\"
