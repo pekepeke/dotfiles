@@ -626,28 +626,30 @@ NeoBundle 'itchyny/lightline.vim'
 " \ }}
 NeoBundle 'tpope/vim-vividchalk'
 NeoBundle 'tomasr/molokai'
-NeoBundleLazy 'mopp/mopkai.vim', {'autoload': {'unite_sources':['colorscheme']}}
-" NeoBundleLazy 'cocopon/iceberg.vim', {'autoload': {'unite_sources':['colorscheme']}}
-" NeoBundleLazy 'itchyny/landscape.vim', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'mrkn/mrkn256.vim', {'autoload': {'unite_sources':['colorscheme']}}
-" NeoBundleLazy 'depuracao/vim-darkdevel', {'autoload': {'unite_sources':['colorscheme']}}
-" NeoBundleLazy 'goatslacker/mango.vim', {'autoload': {'unite_sources':['colorscheme']}}
-" NeoBundleLazy 'jpo/vim-railscasts-theme', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundle 'fmoralesc/vim-vitamins'
-" NeoBundleLazy 'jnurmine/Zenburn', {'autoload': {'unite_sources':['colorscheme']}}
-" NeoBundleLazy 'gregsexton/Atom', {'autoload': {'unite_sources':['colorscheme']}}
-" NeoBundleLazy 'vim-scripts/rdark', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'vim-scripts/Lucius', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'altercation/vim-colors-solarized', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'nanotech/jellybeans.vim', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'trapd00r/neverland-vim-theme', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'StanAngeloff/vim-zend55', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'w0ng/vim-hybrid', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'veloce/vim-aldmeris', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'Pychimp/vim-luna', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'croaker/mustang-vim', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundleLazy 'jaromero/vim-monokai-refined', {'autoload': {'unite_sources':['colorscheme']}}
-" NeoBundleLazy 'git://gist.github.com/187578.git', {
+NeoBundle 'mopp/mopkai.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'cocopon/iceberg.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'itchyny/landscape.vim', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'mrkn/mrkn256.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'depuracao/vim-darkdevel', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'goatslacker/mango.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'jpo/vim-railscasts-theme', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'fmoralesc/vim-vitamins', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'jnurmine/Zenburn', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'gregsexton/Atom', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'vim-scripts/rdark', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'morhetz/gruvbox', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'chriskempson/vim-tomorrow-theme', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'vim-scripts/Lucius', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'altercation/vim-colors-solarized', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'nanotech/jellybeans.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'trapd00r/neverland-vim-theme', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'StanAngeloff/vim-zend55', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'w0ng/vim-hybrid', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'veloce/vim-aldmeris', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'Pychimp/vim-luna', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'croaker/mustang-vim', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'jaromero/vim-monokai-refined', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'git://gist.github.com/187578.git', {
 " \ 'autoload': {'unite_sources':['colorscheme'],},
 " \ 'directory': 'h2u_black',
 " \ }
@@ -947,9 +949,9 @@ NeoBundle 'mattn/sonictemplate-vim', {'autoload': {
 \ ],
 \ 'unite_sources': ['sonictemplate'],
 \ }}
-NeoBundle 'ciaranm/detectindent', {'autoload': {
-\ 'commands' : ['DetectIndent'],
-\ }}
+" NeoBundle 'ciaranm/detectindent', {'autoload': {
+" \ 'commands' : ['DetectIndent'],
+" \ }}
 NeoBundle 'ujihisa/shadow.vim'
 " NeoBundle 'mhinz/vim-startify'
 NeoBundle 'mhinz/vim-hugefile'

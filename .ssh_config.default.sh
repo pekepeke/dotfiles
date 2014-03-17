@@ -31,6 +31,13 @@ Host github.com
   Compression yes
   # Ciphers arcfour256
 
+# Host localhost
+#    User docker
+#    StrictHostKeyChecking no  
+#    UserKnownHostsFile /dev/null 
+#    IdentityFile ~/.ssh/id_rsa_boot2docker_vm
+#    HostName 127.0.0.1
+
 #Host name
 #  HostName xxx.xxx.xxx.xxx
 #  Port 22
