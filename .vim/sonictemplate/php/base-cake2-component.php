@@ -1,32 +1,36 @@
 <?php
 
-class {{_name_}}Component extends Component {
+class {{_name_}} extends Component {
 
 	var $components = array();
 	var $settings = array();
 
 	//called before Controller::beforeFilter()
-	function initialize($controller, $settings = array()) {
-		// saving the controller reference for later use
-		// $this->controller =& $controller;
+	function initialize(Controller $controller, $settings = array()) {
+		parent::initialize($controller, $settings);
+		// $this->controller = $controller;
 		$this->settings = array_merge($this->settings, $settings);
 	}
 
 	//called after Controller::beforeFilter()
-	function startup($controller) {
+	function startup(Controller $controller) {
+		parent::startup($controller);
 	}
 
 	//called after Controller::beforeRender()
-	function beforeRender($controller) {
+	function beforeRender(Controller $controller) {
 		// $this->controller->set(array());
+		parent::beforeRender($controller);
 	}
 
 	//called after Controller::render()
-	function shutdown($controller) {
+	function shutdown(Controller $controller) {
+		parent::shutdown($controller);
 	}
 
 	//called before Controller::redirect()
-	function beforeRedirect($controller, $url, $status=null, $exit=true) {
+	function beforeRedirect(Controller $controller, $url, $status=null, $exit=true) {
+		parent::beforeRedirect($controller);
 	}
 }
 
