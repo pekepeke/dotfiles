@@ -38,6 +38,10 @@ Host github.com
 #    IdentityFile ~/.ssh/id_rsa_boot2docker_vm
 #    HostName 127.0.0.1
 
+# Host 192.168.1.*
+#    StrictHostKeyChecking no  
+#    UserKnownHostsFile /dev/null 
+
 #Host name
 #  HostName xxx.xxx.xxx.xxx
 #  Port 22

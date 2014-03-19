@@ -1,4 +1,6 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+# defaults write com.macromates.TextMate.preview disablePersistentClipboardHistory -bool YES
+
 encoding = "UTF-8"
 
 fontName = "Ricty"
@@ -40,9 +42,17 @@ fileType = text
 [ attr.file.unknown-encoding ]
 encoding = cp932
 
+[ *.{icns,ico,jpg,jpeg,m4v,nib,pdf,png,psd,pyc,rtf,tif,tiff,xib} ]
+binary           = true
+
+[ *.{docx,doc,xlsx,xls} ]
+binary           = true
+
 [ source ]
 softTabs = true
 tabSize = 2
+# disableIndentCorrections = true
+# indentOnPaste = "simple"
 
 [ source.python ]
 tabSize = 4

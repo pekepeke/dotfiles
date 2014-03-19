@@ -1,0 +1,33 @@
+#compdef myinstall
+
+typeset -A opt_args
+local context state line ret=1
+
+_arguments -C \
+  '1: :->cmds' \
+  '(1 *): :->args' && return 0
+
+
+case $state in
+  cmds)
+    local _cmds
+    _cmds=(
+      'env:install xxenv'
+      'lib:install by package manager'
+      'package:install package'
+      'help:show this message'
+    )
+    _describe -t commands 'vhost commands' _cmds && ret=0
+  ;;
+  args)
+    local -a _packages
+    case $line[1] in
+      lib|package)
+        _packages=($(_call_program commands myinstall $line[1] 2>/dev/null))
+        _describe -t _packages 'packages' _packages && ret=0
+      ;;
+    esac
+  ;;
+esac
+
+return ret
