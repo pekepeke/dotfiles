@@ -1,5 +1,8 @@
 git checkout --theirs AAA.xlsx        # merge 元のファイルを採用
 git checkout --ours BBB.docx          # 今いるブランチのファイルを採用
+
+git checkout --theirs doc/xxx.txt     # rebase 時にmerge 済のファイルを採用
+
 git add *.xlsx && git commit          # unmerged -> merged
 
 git reflog; git reset --hard HEAD@{1} # --hard やり直し

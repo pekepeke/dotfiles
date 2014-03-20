@@ -1,0 +1,41 @@
+#compdef boot2docker
+
+typeset -A opt_args
+local context state line ret=1
+
+_arguments -C \
+  '1: :->cmds' \
+  '(1 *): :->args' && return 0
+
+
+case $state in
+  cmds)
+    local _cmds
+    _cmds=(
+      'init:initialize'
+      'start:start vm'
+      'up:start vm'
+      'save:save vm'
+      'pause:pause vm'
+      'stop:stop vm'
+      'restart:restart vm'
+      'status:show vm status'
+      'info:show vm info'
+      'delete:delete vm'
+      'ssh:ssh into vm(user\:docker, pass\:tcuser)'
+      'download:update newer release of boot2docker'
+    )
+    _describe -t commands 'vhost commands' _cmds && ret=0
+  ;;
+  # args)
+  #   local -a _sites
+  #   _complist=($(_call_program commands xxx list 2>/dev/null))
+  #   case $line[1] in
+  #     open|edit)
+  #       _describe -t _complist 'completions' _complist && ret=0
+  #     ;;
+  #   esac
+  # ;;
+esac
+
+return ret
