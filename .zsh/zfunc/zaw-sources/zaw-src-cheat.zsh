@@ -7,15 +7,15 @@
 [ x"$ZSH_ZAW_CHEAT" = x ] && ZSH_ZAW_CHEAT="$HOME/.zsh/cheat/"
 function zaw-src-cheat() {
   candidates+=($(find "$ZSH_ZAW_CHEAT" -type f | sed "s|${ZSH_ZAW_CHEAT}/*||g"))
-  actions=( "zaw-callback-cheat" "zaw-callback-yank" "zaw-callback-open" "zaw-callback-cat")
+  actions=( "zaw-callback-cheat-cheat" "zaw-callback-cheat-yank" "zaw-callback-cheat-open" "zaw-callback-cheat-cat")
   act_descriptions=( "preview cheat" "yank cheat" "open" "cat")
 }
 
-function zaw-callback-cheat() {
+function zaw-callback-cheat-cheat() {
   zle -M "`cat $ZSH_ZAW_CHEAT/$1`"
 }
 
-function zaw-callback-yank() {
+function zaw-callback-cheat-yank() {
   local copy_cmd="xsel -b"
   type pbcopy >/dev/null && copy_cmd="pbcopy"
   type xclip >/dev/null && copy_cmd="xclip -i -selection clipboard"
@@ -24,12 +24,12 @@ function zaw-callback-yank() {
   zle -M "`print "copy : $ZSH_ZAW_CHEAT$1"`"
 }
 
-zaw-callback-open() {
+zaw-callback-cheat-open() {
   BUFFER="xdg-open $ZSH_ZAW_CHEAT/$1"
   zle accept-line
 }
 
-zaw-callback-cat() {
+zaw-callback-cheat-cat() {
   BUFFER="cat $ZSH_ZAW_CHEAT/$1"
   zle accept-line
 }

@@ -28,6 +28,9 @@ zaw-rc () {
   bindkey -v '^Vj' zaw-z
   bindkey -v '^Vh' zaw-cheat
 
+  bindkey -v '^Ve' zaw-stat
+
+  bindkey -v '^Vf' zaw-git-files
   bindkey -v '^Vgs' zaw-git-showbranch
   bindkey -v '^Vgf' zaw-git-files
   bindkey -v '^Vgb' zaw-git-branches
