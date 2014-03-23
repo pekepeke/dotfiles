@@ -1,6 +1,6 @@
 function! s:detect_tpl()
   for def in [
-  \ {'pattern' : '\({{\|{%\)', 'ft' : 'twig'},
+  \ {'pattern' : '\({{\|{%\)', 'ft' : 'jinja'},
   \ {'pattern' : '{/\?[^}]\+}', 'ft' : 'smarty'},
   \ ]
 

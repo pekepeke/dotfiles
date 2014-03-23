@@ -3,6 +3,15 @@ let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^d
 let s:is_win = has('win16') || has('win32') || has('win64')
 
 " hatena.vim & changelog, etc "{{{1
+" hateblo.vim {{{2
+let g:hateblo_vim = {
+\ 'user':         'user_name',
+\ 'api_key':      'api_key',
+\ 'api_endpoint': 'http://.../atom',
+\ 'WYSIWYG_mode': 0,
+\ 'always_yes':   0,
+\ 'edit_command': 'split',
+\ }
 " hatena {{{2
 let g:hatena_user                     = ''
 let g:hatena_group_name               = ''
