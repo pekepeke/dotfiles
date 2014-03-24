@@ -45,7 +45,7 @@ encoding = cp932
 [ *.{icns,ico,jpg,jpeg,m4v,nib,pdf,png,psd,pyc,rtf,tif,tiff,xib} ]
 binary           = true
 
-[ *.{docx,doc,xlsx,xls} ]
+[ *.{docx,doc,xlsx,xls,ppt,pptx} ]
 binary           = true
 
 [ source ]
@@ -53,6 +53,10 @@ softTabs = true
 tabSize = 2
 # disableIndentCorrections = true
 # indentOnPaste = "simple"
+
+[ source.perl ]
+tabSize = 4
+softTabs = true
 
 [ source.python ]
 tabSize = 4
