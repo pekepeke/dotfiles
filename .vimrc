@@ -1107,7 +1107,7 @@ NeoBundle 'tpope/vim-cucumber'
 NeoBundle 'yaymukund/vim-rabl'
 NeoBundle 'vim-scripts/eruby.vim'
 
-NeoBundle 'markcornick/vim-vagrant'
+NeoBundle 'vim-vagrant'
 NeoBundleLazy 't9md/vim-chef', {'autoload':{
 \ 'filetypes': ['ruby'],
 \ }}
@@ -1491,11 +1491,10 @@ NeoBundleLazy 'violetyk/cake.vim', {'autoload':{
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim'
 NeoBundleLazy 'vim-scripts/dbext.vim', {'autoload':{
-\ 'filetypes': ['sql'],
 \ }}
 NeoBundleLazy 'vim-scripts/SQLUtilities', {'autoload':{
-\ 'filetypes': ['sql'],
 \ }}
+" \ 'filetypes': ['sql'],
 " NeoBundleLazyOn FileType sql 'vim-scripts/SQLComplete.vim'
 
 " etc {{{4
@@ -2948,7 +2947,7 @@ if s:bundle.tap('lightline.vim')
   \ 'S': 'S-LINE', "\<C-s>": 'S-BLOCK', '?': ' ',
   \ },
   \ 'active': {
-  \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'xenv_version', ] ],
+  \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'cwdirname', 'xenv_version', ] ],
   \   'right': [
   \     [ 'qfcount', ],
   \     [ 'linestat' ], [ 'filetype' ],
@@ -2967,6 +2966,7 @@ if s:bundle.tap('lightline.vim')
   \ 'component_function': {
   \   'fugitive' : 'g:ll_helper.fugitive',
   \   'filename' : 'g:ll_helper.filename',
+  \   'cwdirname' : 'g:ll_helper.cwdirname',
   \   'absfilename' : 'g:ll_helper.get_absfilename',
   \   'iminsert' : 'g:ll_helper.iminsert',
   \   'qfcount' : 'g:ll_helper.qfcount',
@@ -3151,6 +3151,11 @@ if s:bundle.tap('lightline.vim')
     return ""
     " return join(map(copy(self.lang_items), 'self[v:val]()'), '')
     " return g:ll_helper.virtualenv().g:ll_helper.rbenv()
+  endfunction
+
+  function! g:ll_helper.cwdirname() "{{{3
+    let dir = fnamemodify(getcwd(), ":p:h")
+    return (strlen(dir) > 13 ? "..." . dir[-10:] : dir)
   endfunction
 
   let g:ll_helper.xenvs = {
@@ -4999,7 +5004,7 @@ if s:bundle.is_installed('vim-fugitive')
   nnoremap <silent> [!space]gD :<C-u>Gdiff<CR>
   nnoremap <silent> [!space]gs :<C-u>Gstatus<CR>
   nnoremap [!space]gl :<C-u>silent Glog <Bar> Unite -no-quit quickfix<CR>
-  nnoremap [!space]gL :<C-u>silent Glog -- <Bar> Unite -no-quit quickfix<CR>
+  nnoremap [!space]gL :<C-u>silent Glog --<Bar> Unite -no-quit quickfix<CR>
   nnoremap [!space]gg :<C-u>call <SID>git_qfix('Ggrep -i "%s"')<CR>
   nnoremap [!space]ggr :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
   nnoremap [!space]ggm :<C-u>call <SID>git_qfix('Glog --grep="%s"')<CR>
@@ -7413,6 +7418,7 @@ if s:is_mac "{{{3
   command! CotEdit silent execute '!open' '-a' 'CotEditor' shellescape(expand('%:p'))
   command! Mate silent execute '!open' '-a' 'TextMate' shellescape(expand('%:p'))
   command! Iterm silent execute "!osascript -e 'tell application \"iTerm\" to activate' &"
+  nnoremap <D-i> :<C-u>Iterm<CR>
 elseif s:is_win "{{{3
   " Utility command for Windows
   command! Here silent execute '!explorer' substitute(expand('%:p:h'), '/', '\', 'g')

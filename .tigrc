@@ -18,6 +18,7 @@ bind diff ; view-next
 bind diff l scroll-right
 bind diff h scroll-left
 
+bind main Y !@git pbcopy %(commit)
 
 
 # __END__ {{{1

@@ -41,11 +41,7 @@
   ignore = !"f() { local s=$1; shift; \
     while [ $# -gt 0 ]; do s="$s,$1"; shift; done;\
     curl "http://gitignore.io/api/$s"; }; f"
-
-[tig "bind"]
-  generic = g move-first-line
-  generic = G move-last-line
-
+  pbcopy = !printf "$1" | pbcopy-wrapper
 [diff "applescript"]
   textconv = osadecompile
 [diff "rtf"]
