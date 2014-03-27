@@ -49,22 +49,28 @@ Host github.com
 #  IdentityFile ~/.ssh/id_rsa.hoge
 #  ForwardX11Trusted no
 
+# for database server proxy
+# Host dbproxyhost
+#   HostName        apphost
+#   User            user1
+#   LocalForward 13306 dbhost:3306
+
 # for proxy
-#Host host1
-#  HostName host1
-#  User user1
+# Host host1
+#   HostName host1
+#   User user1
 
-#Host *.host
-#  ProxyCommand ssh user@host1 -W %h:%p
+# Host *.host
+#   ProxyCommand ssh user@host1 -W %h:%p
 
-#Host *.host
-#  ProxyCommand ssh host1 nc -w 10 %h %p
-#  ProxyCommand ssh host1 /path/to/connect %h %p
-## wget http://www.meadowy.org/~gotoh/ssh/connect.c
+# Host *.host
+#   ProxyCommand ssh host1 nc -w 10 %h %p
+#   ProxyCommand ssh host1 /path/to/connect %h %p
+# # wget http://www.meadowy.org/~gotoh/ssh/connect.c
 
-#Host host2.host
-#  HostName host2
-#  User user2
+# Host host2.host
+#   HostName host2
+#   User user2
 
 
 # Host gh-private

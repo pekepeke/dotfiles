@@ -2271,7 +2271,7 @@ function! s:set_grep(...) "{{{3
       " set grepprg=jvgrep\ -n
 
       let g:unite_source_grep_command = "jvgrep"
-      let g:unite_source_grep_default_opts = '-in --exclude "\.(git|svn|hg|bzr)"'
+      let g:unite_source_grep_default_opts = '-in --exclude "\.git|\.svn|\.hg|\.bzr|tags|tmp)"'
       let g:unite_source_grep_recursive_opt = ''
       return 1
     elseif type == "pt" && executable(type)
@@ -2280,17 +2280,17 @@ function! s:set_grep(...) "{{{3
       let g:ackprg="pt -S --nocolor --nogroup --column --nopager"
 
       let g:unite_source_grep_command = 'pt'
-      let g:unite_source_grep_default_opts = '--nogroup --nocolor'
+      let g:unite_source_grep_default_opts = '-i --nogroup --nocolor'
       let g:unite_source_grep_recursive_opt = ''
       return 1
     elseif type == "ag" && executable(type)
       set grepprg=ag\ -S\ --nocolor\ --nogroup\ --nopager
       set grepformat=%f:%l:%m
-      let g:ackprg="ag -S --nocolor --nogroup --column --nopager"
+      let g:ackprg="ag -i -S --nocolor --nogroup --column --nopager"
 
       let g:unite_source_grep_command = 'ag'
       let opts = [
-        \ '-S --noheading --nocolor --nogroup --nopager',
+        \ '--ignore-case -S --noheading --nocolor --nogroup --nopager',
         \ '--ignore', '".hg"',
         \ '--ignore', '".git"',
         \ '--ignore', '".bzr"',
@@ -2342,9 +2342,9 @@ let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Rel
 let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
 let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
 if s:is_win
-  call s:set_grep("pt", "jvgrep", "ag", "ack-grep")
+  call s:set_grep("jvgrep", "ag", "ack-grep")
 else
-  call s:set_grep("pt", "ag", "jvgrep", "ack-grep")
+  call s:set_grep("ag", "jvgrep", "ack-grep")
 endif
 
 let Grep_Default_Options = '-i'

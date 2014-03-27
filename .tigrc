@@ -3,6 +3,13 @@ set show-date = local
 set show-refs = yes
 set show-rev-graph = yes
 set line-graphics = yes
+set show-id = yes
+set vertical-split = no
+set split-view-height = 80%
+set tab-size = 2
+set diff-context = 6
+set ignore-case = yes
+set wrap-lines = yes
 
 # binds {{{1
 bind generic g move-first-line
