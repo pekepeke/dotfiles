@@ -477,7 +477,7 @@ if has('vim_starting')
   let g:neobundle#log_filename = $VIM_CACHE . '/neobundle.log'
 
   " http://blog.supermomonga.com/articles/vim/neobundle-sugoibenri.html {{{3
-  let s:bundle = {'uninstalled':{}}
+  let s:bundle = {'uninstalled':{}, 'vimrc_installed':[]}
   function! s:bundle.tap(bundle) " {{{
     let self.tapped = neobundle#get(a:bundle)
     return self.is_installed(a:bundle)
@@ -3391,16 +3391,13 @@ if s:bundle.tap('cake.vim')
   let g:cakephp_enable_fix_mode = 1
   let g:cakephp_enable_auto_mode = 1
 
-  if !s:bundle.is_sourced('cake.vim')
-    function! s:bundle.tapped.on_post_source(bundle)
-      if &filetype == "php"
-        " doautocmd VimEnter
-        call cake#init_app('')
-        call s:init_cakephp()
-        MyAutoCmd User PluginCakephpInitializeAfter call s:init_cakephp()
-      endif
-    endfunction
-  endif
+  function! s:bundle.tapped.hooks.on_post_source(bundle)
+    MyAutoCmd User PluginCakephpInitializeAfter call s:init_cakephp()
+    call cake#init_app('')
+    if &filetype =~? "php"
+      call s:init_cakephp()
+    endif
+  endfunction
 
   function! s:detect_cakephpapp() "{{{
     if exists('g:cake.paths.app')
@@ -3410,27 +3407,37 @@ if s:bundle.tap('cake.vim')
   endfunction " }}}
 
   function! s:init_cakephp() "{{{
-    if !empty(g:cake) && s:detect_cakephpapp()
+    if s:detect_cakephpapp()
       nmap <buffer> gf <Plug>CakeJump
       nmap <buffer> <C-w>f <Plug>CakeSplitJump
       nmap <buffer> <C-w>gf <Plug>CakeTabJump
 
-      nnoremap <buffer> <Leader>cc :Ccontroller
-      nnoremap <buffer> <Leader>cm :Cmodel
-      nnoremap <buffer> <Leader>cv :Cview
-      nnoremap <buffer> <Leader>cw :Ccontrollerview
-      nnoremap <buffer> <Leader>cs :Cshell
-      nnoremap <buffer> <Leader>ct :Ctask
-      nnoremap <buffer> <Leader>ccf :Cconfig
-      nnoremap <buffer> <Leader>ccp :Ccomponent
-      nnoremap <buffer> <Leader>cl :Clog
+      nnoremap <buffer> <Leader>cc :<C-u>Unite cake_controller<CR>
+      nnoremap <buffer> <Leader>cm :<C-u>Unite cake_model<CR>
+      nnoremap <buffer> <Leader>cv :<C-u>Unite cake_view<CR>
+      nnoremap <buffer> <Leader>cw :<C-u>Unite cake_controllerview<CR>
+      nnoremap <buffer> <Leader>cs :<C-u>Unite cake_shell<CR>
+      nnoremap <buffer> <Leader>ct :<C-u>Unite cake_task<CR>
+      nnoremap <buffer> <Leader>cf :<C-u>Unite cake_config<CR>
+      nnoremap <buffer> <Leader>cp :<C-u>Unite cake_component<CR>
+      nnoremap <buffer> <Leader>cl :<C-u>Unite cake_log<CR>
 
-      nnoremap <buffer> <C-w><Leader>ccs :Ccontrollersp
-      nnoremap <buffer> <C-w><Leader>cms :Cmodelsp
-      nnoremap <buffer> <C-w><Leader>cvs :Cviewsp
-      nnoremap <buffer> <C-w><Leader>cvws :Ccontrollerviewsp
-      nnoremap <buffer> <C-w><Leader>ccfs :Cconfigsp
-      nnoremap <buffer> <C-w><Leader>ccps :Ccomponentsp
+      " nnoremap <buffer> <Leader>cc :Ccontroller
+      " nnoremap <buffer> <Leader>cm :Cmodel
+      " nnoremap <buffer> <Leader>cv :Cview
+      " nnoremap <buffer> <Leader>cw :Ccontrollerview
+      " nnoremap <buffer> <Leader>cs :Cshell
+      " nnoremap <buffer> <Leader>ct :Ctask
+      " nnoremap <buffer> <Leader>cf :Cconfig
+      " nnoremap <buffer> <Leader>cp :Ccomponent
+      " nnoremap <buffer> <Leader>cl :Clog
+
+      nnoremap <buffer> <C-w><Leader>cc :Ccontrollersp
+      nnoremap <buffer> <C-w><Leader>cm :Cmodelsp
+      nnoremap <buffer> <C-w><Leader>cv :Cviewsp
+      nnoremap <buffer> <C-w><Leader>cw :Ccontrollerviewsp
+      nnoremap <buffer> <C-w><Leader>cf :Cconfigsp
+      nnoremap <buffer> <C-w><Leader>cp :Ccomponentsp
     endif
   endfunction " }}}
 
@@ -3517,8 +3524,12 @@ if s:bundle.tap('vim-reanimate')
 endif
 
 " colorv {{{2
-let g:colorv_cache_fav = $VIM_CACHE . "/vim_colorv_fav"
-let g:colorv_cache_file = $VIM_CACHE . "/vim_colorv_cache"
+if s:bundle.is_installed('colorv.vim')
+  let g:colorv_cache_fav = $VIM_CACHE . "/vim_colorv_fav"
+  let g:colorv_cache_file = $VIM_CACHE . "/vim_colorv_cache"
+  let g:colorv_no_global_map = 1
+  " g:colorv_global_leader
+endif
 
 " trans.vim {{{2
 let g:trans_default_lang = "en-ja"
@@ -3697,6 +3708,13 @@ if s:bundle.tap('vim-smartinput')
   " MyAutoCmd VimEnter * call <SID>smartinput_init()
 
   function! s:bundle.tapped.hooks.on_source(bundle)
+
+    function! s:smartinput_init() "{{{
+      " if hasmapto('<CR>', 'c')
+      "   cunmap <CR>
+      " endif
+    endfunction " }}}
+
     function! s:sminput_define_rules(is_load_default_rules) "{{{
       if a:is_load_default_rules
         call smartinput#define_default_rules()
@@ -3846,16 +3864,26 @@ if s:bundle.tap('vim-smartinput')
       endfor
     endfunction "}}}
 
-    function! s:smartinput_init()
-      if hasmapto('<CR>', 'c')
-        cunmap <CR>
-      endif
-    endfunction
-
     call s:sminput_define_rules(0)
     call s:smartinput_init()
   endfunction
   call s:bundle.untap()
+endif
+
+" memolist {{{2
+if s:bundle.is_installed('memolist.vim')
+  let g:memolist_memo_suffix = "md"
+  let g:memolist_path = $HOME . '/memo'
+  " let g:memolist_vimfiler = 1
+
+  if s:bundle.is_installed('unite.vim')
+    nmap <silent> [!prefix]ml :<C-u>Unite memolist<CR>
+    nmap <silent> [!prefix]mg :<C-u>call <SID>unite_grep(g:memolist_path)<CR>
+  else
+    nmap <silent> [!prefix]ml :MemoList<CR>
+    nmap <silent> [!prefix]mg :MemoGrep<CR>
+  endif
+  nmap <silent> [!prefix]mc :MemoNew<CR>
 endif
 
 " golden-ratio {{{2
@@ -4390,18 +4418,18 @@ if s:bundle.tap('unite.vim')
     if !exists("g:unite_source_menu_menus")
        let g:unite_source_menu_menus = {}
     endif
-    function s:gui_manual(name) " {{{5
+    function! s:gui_manual(name) " {{{5
       return "Zeal ".a:name.":"
     endfunction " }}}
 
-    function s:dispatch(command) "{{{5
+    function! s:dispatch(command) "{{{5
       if has('gui_running')
         return "StartNofocus ".a:command
         " return "Start ".a:command
       endif
       return "Dispatch " . a:command
     endfunction "}}}
-    function s:start_nofocus(bang, command)
+    function! s:start_nofocus(bang, command)
       execute "Start".(a:bang?"!":"") a:command
       if has('gui_running')
         if s:is_mac
@@ -7373,22 +7401,6 @@ endif
 
 " vinarise {{{2
 " let g:vinarise_enable_auto_detect = 1
-
-" memolist {{{2
-if s:bundle.is_installed('memolist.vim')
-  let g:memolist_memo_suffix = "md"
-  let g:memolist_path = $HOME . '/memo'
-  " let g:memolist_vimfiler = 1
-
-  if s:bundle.is_installed('unite.vim')
-    nmap <silent> [!prefix]ml :<C-u>Unite memolist<CR>
-    nmap <silent> [!prefix]mg :<C-u>call <SID>unite_grep(g:memolist_path)<CR>
-  else
-    nmap <silent> [!prefix]ml :MemoList<CR>
-    nmap <silent> [!prefix]mg :MemoGrep<CR>
-  endif
-  nmap <silent> [!prefix]mc :MemoNew<CR>
-endif
 
 " etc functions & commands {{{1
 " tiny snippets {{{2
