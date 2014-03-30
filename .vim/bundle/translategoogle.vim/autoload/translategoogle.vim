@@ -56,6 +56,12 @@ function! translategoogle#complete_command(arglead, cmdline, cursorpos)
     return s:parser.complete(a:arglead, a:cmdline, a:cursorpos)
 endfunction
 
+function! translategoogle#exchange()
+  let sl = translategoogle_default_sl
+  let translategoogle_default_sl = translategoogle_default_tl
+  let translategoogle_default_ll = sl
+endfunction
+
 function! translategoogle#command(args)
     try
         let args = s:parser.parse(a:args)

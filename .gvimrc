@@ -139,7 +139,8 @@ else " unix setting {{{2
 
   command! -nargs=0 InconsolataBig set guifont=Inconsolata\ 18
   command! -nargs=0 RictyBig set guifont=Ricty\ 20
-  if filereadable($HOME . '/.local/share/fonts/Ricty-Regular.ttf')
+  if filereadable($HOME . '/.fonts/Ricty-Regular.ttf')
+    \ || filereadable($HOME . '/.local/share/fonts/Ricty-Regular.ttf')
     Ricty
   endif
 endif

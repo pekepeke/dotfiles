@@ -31,6 +31,7 @@ let g:translategoogle_mapping_close =
             \ get(g:, 'translategoogle_mapping_close', 'q')
 
 command! TranslateGoogle call translategoogle#open()
+command! TranslateGoogleExchange call translategoogle#exchange()
 command! -nargs=* -complete=customlist,translategoogle#complete_command
             \ TranslateGoogleCmd echo translategoogle#command(<q-args>)
 

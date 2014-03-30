@@ -655,16 +655,16 @@ NeoBundle 'jaromero/vim-monokai-refined', {'autoload': {'unite_sources':['colors
 " \ }
 
 " common {{{3
-NeoBundle 'osyo-manga/vim-reanimate', {'autoload': {
-\ 'commands': [
-\ 'ReanimateSave', 'ReanimateSaveCursorHold', 'ReanimateSaveInput',
-\ 'ReanimateLoadInput', 'ReanimateLoadLatest',
-\ 'ReanimateEditVimrcUnload',
-\ {'name': 'ReanimateLoad', 'complete': 'customlist,s:save_point_completelist'},
-\ {'name': 'ReanimateSwitch', 'complete': 'customlist,s:save_point_completelist'},
-\ {'name': 'ReanimateEditVimrcLocal', 'complete': 'customlist,s:save_point_completelist'},
-\ ]
-\ }}
+" NeoBundle 'osyo-manga/vim-reanimate', {'autoload': {
+" \ 'commands': [
+" \ 'ReanimateSave', 'ReanimateSaveCursorHold', 'ReanimateSaveInput',
+" \ 'ReanimateLoadInput', 'ReanimateLoadLatest',
+" \ 'ReanimateEditVimrcUnload',
+" \ {'name': 'ReanimateLoad', 'complete': 'customlist,s:save_point_completelist'},
+" \ {'name': 'ReanimateSwitch', 'complete': 'customlist,s:save_point_completelist'},
+" \ {'name': 'ReanimateEditVimrcLocal', 'complete': 'customlist,s:save_point_completelist'},
+" \ ]
+" \ }}
 NeoBundleLazy 'osyo-manga/vim-jplus', {'autoload':{
 \ 'mappings' : [['nv',
 \   '<Plug>(jplus-getchar)', '<Plug>(jplus-getchar-with-space)',
@@ -910,6 +910,10 @@ NeoBundleLazy 'rhysd/unite-codic.vim', {'autoload': {
 " basic {{{4
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'mattn/quickrunex-vim'
+NeoBundleLazy 'mattn/emoji-vim', {'autoload': {
+\ 'commands': ['Emoji'],
+\ 'mappings': [['in', '<plug>(emoji-selector']],
+\ }}
 NeoBundle 'osyo-manga/shabadou.vim'
 NeoBundle 'osyo-manga/vim-watchdogs'
 NeoBundle 'osyo-manga/vim-anzu', {'autoload': {
@@ -1201,23 +1205,21 @@ NeoBundle 'slim-template/vim-slim'
 " javascript {{{4
 NeoBundle 'bigfish/vim-js-context-coloring', {
   \ 'build' : {
-  \     'mac': 'npm install --update',
-  \     'unix': 'npm install --update',
-  \     'windows': 'npm install --update',
-  \     'cygwin': 'npm install --update',
-  \    },
-  \ }
+  \   'mac': 'npm install --update',
+  \   'unix': 'npm install --update',
+  \   'windows': 'npm install --update',
+  \   'cygwin': 'npm install --update',
+  \ }}
 NeoBundle 'guileen/simple-javascript-indenter'
 NeoBundle 'pangloss/vim-javascript'
 if has('python') || has('python3')
   NeoBundle 'marijnh/tern_for_vim', {
-  \   'build' : {
-  \    'cygwin': 'npm install',
-  \    'windows': 'npm install',
-  \    'mac': 'npm install',
-  \    'unix': 'npm install',
-  \   },
-  \ }
+  \ 'build' : {
+  \   'cygwin': 'npm install',
+  \   'windows': 'npm install',
+  \   'mac': 'npm install',
+  \   'unix': 'npm install',
+  \ }}
 endif
 NeoBundle 'moll/vim-node'
 " NeoBundleLazy 'afshinm/npm.vim', {'autoload': {
@@ -1226,15 +1228,15 @@ NeoBundle 'moll/vim-node'
 NeoBundle 'othree/javascript-libraries-syntax.vim'
 
 " NeoBundle 'teramako/jscomplete-vim'
-NeoBundle 'aereal/jscomplete-vim'
-NeoBundle 'igetgames/vim-backbone-jscomplete'
-NeoBundle 'myhere/vim-nodejs-complete'
+" NeoBundle 'aereal/jscomplete-vim'
+" NeoBundle 'igetgames/vim-backbone-jscomplete'
+" NeoBundle 'myhere/vim-nodejs-complete'
 
 NeoBundle 'claco/jasmine.vim'
 NeoBundle 'elzr/vim-json'
 
-NeoBundle 'pekepeke/titanium-vim'
-NeoBundle 'pekepeke/ref-jsextra-vim'
+" NeoBundle 'pekepeke/titanium-vim'
+" NeoBundle 'pekepeke/ref-jsextra-vim'
 " NeoBundleLazy 'cocopon/googkit.vim', {'autoload':{
 " \ 'commands': [
 " \ {'name':'GoogkitInit'},
@@ -2388,14 +2390,14 @@ nnoremap <silent> [!t]k :<C-u>pop<CR>
 
 " [[, ]] {{{2
 let g:square_brackets = {
-      \ 'markdown' : ['^#', 'markdownHeadingDelimiter'],
-      \ 'textile' : ['^*', 'txtListBullet\d'],
-      \ 'html' : '<html\|<head\|<body\|<h\d',
-      \ 'rst' : '^-\+\|^=\+',
-      \ 'coffee' : '->\s*$\|^\s*class\s',
-      \ 'git-log.git-diff' : '^@@\|^diff ',
-      \ 'git' : '^@@\|^diff ',
-      \ }
+  \ 'markdown' : ['^#', 'markdownHeadingDelimiter'],
+  \ 'textile' : ['^*', 'txtListBullet\d'],
+  \ 'html' : '<html\|<head\|<body\|<h\d',
+  \ 'rst' : '^-\+\|^=\+',
+  \ 'coffee' : '->\s*$\|^\s*class\s',
+  \ 'git-log.git-diff' : '^@@\|^diff ',
+  \ 'git' : '^@@\|^diff ',
+  \ }
 function! s:nmap_square_brackets() "{{{3
   if exists('g:square_brackets[&filetype]')
     if type(g:square_brackets[&filetype]) == s:type_a
@@ -2440,33 +2442,34 @@ MyAutoCmd FileType * call s:nmap_square_brackets()
 " nmaps {{{3
 MyAutoCmd FileType help,ref,git-status,git-log nnoremap <buffer><nowait> q <C-w>c
 
-function! s:execute_motionless(expr)
+function! s:execute_motionless(expr) "{{{4
   let wv = winsaveview()
   execute a:expr
   call winrestview(wv)
-endfunction
+endfunction " }}}
 
-function! s:set_transparency(op)
-  silent! execute 'set transparency'.(a:op =~# '^[-+=]' ? a:op : '=' . a:op)
-  echo &transparency
-endfunction
-
-if s:is_mac && has('gui_running')
-  function! s:map_gui()
-    nnoremap <D-Up>   :<C-u>call <SID>set_transparency('+=5')<CR>
-    nnoremap <D-Down> :<C-u>call <SID>set_transparency('-=5')<CR>
-    nnoremap <D-Right> :<C-u>call <SID>set_transparency(90)<CR>
-    execute 'nnoremap <D-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
-  endfunction
-  MyAutoCmd GUIEnter * call s:map_gui()
-elseif s:is_win && has('gui_running')
-  function! s:map_gui()
-    nnoremap <A-Up>   :<C-u>call <SID>set_transparency('+=5')<CR>
-    nnoremap <A-Down> :<C-u>call <SID>set_transparency('-=5')<CR>
-    nnoremap <A-Right> :<C-u>call <SID>set_transparency(230)<CR>
-    execute 'nnoremap <A-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
-  endfunction
-  MyAutoCmd GUIEnter * call s:map_gui()
+if has('gui_running')
+  function! s:set_transparency(op) "{{{4
+    silent! execute 'set transparency'.(a:op =~# '^[-+=]' ? a:op : '=' . a:op)
+    echo &transparency
+  endfunction " }}}
+  if s:is_mac
+    function! s:map_gui()
+      nnoremap <D-Up>   :<C-u>call <SID>set_transparency('+=5')<CR>
+      nnoremap <D-Down> :<C-u>call <SID>set_transparency('-=5')<CR>
+      nnoremap <D-Right> :<C-u>call <SID>set_transparency(90)<CR>
+      execute 'nnoremap <D-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
+    endfunction
+    MyAutoCmd GUIEnter * call s:map_gui()
+  elseif s:is_win
+    function! s:map_gui()
+      nnoremap <A-Up>   :<C-u>call <SID>set_transparency('+=5')<CR>
+      nnoremap <A-Down> :<C-u>call <SID>set_transparency('-=5')<CR>
+      nnoremap <A-Right> :<C-u>call <SID>set_transparency(230)<CR>
+      execute 'nnoremap <A-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
+    endfunction
+    MyAutoCmd GUIEnter * call s:map_gui()
+  endif
 endif
 " win move
 nnoremap [!space]. :source ~/.vimrc<CR>
@@ -2889,6 +2892,15 @@ if s:bundle.tap('context_filetype')
     \ ],
 endif
 " }}}
+" vim-precious {{{2
+if s:bundle.tap('vim-precious')
+  let g:precious_enable_switchers = {
+  \ "help" : {
+  \   "setfiletype" : 0
+  \ },
+  \}
+endif
+
 " vim-anzu {{{2
 if s:bundle.tap('vim-anzu')
   let g:anzu_status_format = "%p(%i/%l)"
