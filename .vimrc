@@ -3166,7 +3166,7 @@ if s:bundle.tap('lightline.vim')
   endfunction
 
   function! g:ll_helper.cwdirname() "{{{3
-    let dir = fnamemodify(getcwd(), ":p:h")
+    let dir = substitute(fnamemodify(getcwd(), ":p:h"), $HOME, '~', '')
     return (strlen(dir) > 13 ? "..." . dir[-10:] : dir)
   endfunction
 
@@ -4306,6 +4306,8 @@ if s:bundle.tap('unite.vim')
   "let g:unite_split_rule = 'botright'
   let g:unite_source_file_rec_max_cache_files = 5000
 
+  let g:unite_source_alias_aliases = get(g:, 'unite_source_alias_aliases', {})
+
   let g:neomru#do_validate = 0
   let g:neomru#file_mru_limit = 200
   let g:neomru#file_mru_ignore_pattern = 'COMMIT_EDITMSG'
@@ -4496,6 +4498,7 @@ if s:bundle.tap('unite.vim')
     \   ["VimFiler ~/.vim"        , "VimFiler ".$HOME."/.vim"] ,
     \   ["VimFiler snippets"      , "VimFiler ".$HOME."/.vim/snippets/"] ,
     \   ["VimFiler sonictemplate" , "VimFiler ".$HOME."/.vim/sonictemplate/"] ,
+    \   ["Edit sonictemplate"     , "TemplateEdit"],
     \   ["scriptnames"            , "Unite scriptnames"] ,
     \   ["neobundle vimfiles"     , "Unite neobundle/vimfiles"] ,
     \   ["all vimfiles"           , "Unite neobundle/rtpvimfiles"] ,
@@ -4930,6 +4933,14 @@ if s:bundle.tap('unite.vim')
   endif
 
   command! Todo silent! exe 'Unite' printf('grep:%s::%s', getcwd(), s:regexp_todo) '-buffer-name=todo' '-no-quit'
+  function! s:unite_sonictemplate_edit(bang) "{{{
+    let dir = g:sonictemplate_vim_template_dir . "/" . &filetype
+    if !empty(a:bang) || !isdirectory(g:sonictemplate_vim_template_dir . "/" . &filetype)
+      let dir = g:sonictemplate_vim_template_dir
+    endif
+    execute printf("Unite file:%s file/new:%s", dir, dir)
+  endfunction "}}}
+  command! -bang TemplateEdit call s:unite_sonictemplate_edit("<bang>")
 
   function! s:unite_open_ftplugin()
     let dirs = ['after', 'ftplugin', 'snippets', 'template', 'sonictemplate']
