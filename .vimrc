@@ -475,6 +475,7 @@ if has('vim_starting')
   " call pathogen#infect()
   set runtimepath+=~/.vim/neobundle.vim
   let g:neobundle#log_filename = $VIM_CACHE . '/neobundle.log'
+  " let g:neobundle#default_options._ = { 'verbose' : 1, 'focus' : 1 }
 
   " http://blog.supermomonga.com/articles/vim/neobundle-sugoibenri.html {{{3
   let s:bundle = {'uninstalled':{}, 'vimrc_installed':[]}
@@ -558,46 +559,6 @@ if has('vim_starting')
       echo "Finish validate"
     endif
   endfunction " }}}
-
-  " http://d.hatena.ne.jp/osyo-manga/20140212/1392216949
-  let s:bundle.updatetime = -1
-  function! s:bundle.lazy_source() "{{{
-    if !self.active_auto_source
-      return
-    endif
-    let sources = map(filter(self.lazy_plugins(),
-      \ "self.is_not_sourced(v:val)"), "v:val")
-    if empty(sources)
-      augroup neobundle-auto-source
-        autocmd!
-      augroup END
-      return
-    endif
-    echom "source:" . sources[0]
-    call neobundle#source(sources[0])
-    echom "sourced:" . sources[0]
-  endfunction " }}}
-
-  function! s:bundle.lazy_plugins() "{{{
-    return [
-    \ "unite.vim",
-    \ "vimfiler.vim",
-    \ "vimshell.vim",
-    \ "vim-quickrun",
-    \ ] + map(filter(neobundle#config#get_neobundles(), "v:val.lazy"), "v:val.name")
-  endfunction " }}}
-
-  function! s:bundle.is_not_sourced(source) "{{{
-    return self.is_installed(a:source) && !self.is_sourced(a:source)
-  endfunction " }}}
-
-  let s:bundle.active_auto_source = 0
-  augroup neobundle-auto-source
-    autocmd!
-    autocmd CursorHold * call s:bundle.lazy_source()
-    autocmd FocusLost * let s:bundle.active_auto_source = 1
-    autocmd FocusGained * let s:bundle.active_auto_source = 0
-  augroup END
 
   command! -nargs=+ NeoBundleLazyOn call s:bundle.install_lazy_on(<f-args>)
   command! NeoBundleSummary call s:bundle.summary_report()
