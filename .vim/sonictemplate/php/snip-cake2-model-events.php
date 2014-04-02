@@ -7,6 +7,11 @@
 	}
 
 	public function beforeSave($options = array()) {
+		if (!$this->id && empty($this->data[$this->alias][$this->primaryKey])) {
+			// insert
+		} else {
+			// edit
+		}
 		return true;
 	}
 
