@@ -7,6 +7,7 @@ Pry.config.pager = false
 # Pry.config.correct_indent = false
 # Pry.config.command_prefix = "%"
 
+Pry.commands.alias_command 'man', 'show-doc'
 Pry.config.prompt = [
   proc {|target_self, nest_level, pry|
     nested = (nest_level.zero?) ? '' : ":#{nest_level}"

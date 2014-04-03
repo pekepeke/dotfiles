@@ -41,6 +41,7 @@ esac
 
 shrc_section_title "environments" #{{{1
 export EDITOR="vim -u ~/.vimrc.min"
+export RLWRAP_HOME=~/.cache/rlwrap
 # stty
 if type stty >/dev/null 2>&1; then
   stty stop undef

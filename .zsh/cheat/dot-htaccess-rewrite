@@ -1,0 +1,35 @@
+RewriteEngine on
+RewriteRule ^(images|css|js) - [L]
+RewriteRule ^(img|css|js) - [L]
+RewriteRule ^(images|javascripts|stylesheets) - [L]
+RewriteRule \.(png|jpg|gif|ico|css|js|map)$ - [L]
+
+# Log
+RewriteLog "/tmp/rewrite.log"
+RewriteLogLevel 9
+
+# domain
+RewriteCond %{HTTP_HOST} ^(domain\.com)(:80)? [NC]
+RewriteRule ^(.*)$ http://www.domain.com/$1 [R=301,L]
+
+# maintenance
+ErrorDocument 503 /maintenance.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{DOCUMENT_ROOT}/maintenance.html -f
+  # RewriteCond %{TIME} >201105272000.*
+  RewriteCond %{REQUEST_URI} !=/maintenance.html
+  RewriteCond %{REQUEST_FILENAME} !(/maintenance.html|\.(gif|jpe?g|png|js|css))$
+  RewriteCond %{REMOTE_ADDR} !=192.168.0.4
+  RewriteCond %{REMOTE_ADDR} !=192.168.0.5
+  RewriteRule ^.*$ - [R=503,L]
+</IfModule>
+
+# feature phone
+RewriteCond %{REQUEST_URI} !^/mobile
+RewriteCond %{HTTP_USER_AGENT} DoCoMo [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} (J-PHONE|Vodafone|Softbank|MOT-) [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} (KDDI|UP\.Browser) [NC,OR]
+RewriteCond %{HTTP_USER_AGENT} (PDXGW|DDIPOKET|WILLCOM) [NC,OR]
+RewriteRule ^(.*)$ /mobile/$1 [R,L]

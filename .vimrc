@@ -1441,7 +1441,8 @@ NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
 " NeoBundle 'shawncplus/phpcomplete.vim'
-NeoBundle 'm2mdas/phpcomplete-extended'
+" NeoBundle 'm2mdas/phpcomplete-extended'
+NeoBundle 'pekepeke/phpcomplete-extended'
 NeoBundle 'beberlei/vim-php-refactor'
 " NeoBundle 'vim-scripts/php_localvarcheck.vim'
 " NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
@@ -2745,6 +2746,8 @@ let g:vimrc_enabled_plugins = {
 
 if s:bundle.is_installed('phpcomplete-extended')
   let g:phpcomplete_index_composer_command = "composer"
+  " disable confirm dialog
+  let g:phpcomplete_no_auto_project_detection = 1
   " let g:phpcomplete_extended_use_default_mapping = 0
   " MyAutoCmd FileType php call s:phpcomplete_init()
   " function! s:phpcomplete_init()
@@ -2753,6 +2756,7 @@ if s:bundle.is_installed('phpcomplete-extended')
   "   <Plug>(phpcomplete-extended-add-use)
   " endfunction
 endif
+
 " vim-startify {{{2
 if s:bundle.is_installed('vim-startify')
   let g:startify_custom_header =
@@ -4457,9 +4461,10 @@ if s:bundle.tap('unite.vim')
     \   ["reload .vimrc"          , "source " . $MYVIMRC] ,
     \   ["edit .gvimrc"           , $MYGVIMRC] ,
     \   ["VimFiler ~/.vim"        , "VimFiler ".$HOME."/.vim"] ,
-    \   ["VimFiler snippets"      , "VimFiler ".$HOME."/.vim/snippets/"] ,
-    \   ["VimFiler sonictemplate" , "VimFiler ".$HOME."/.vim/sonictemplate/"] ,
+    \   ["Edit ~/.vim"     , "DotvimEdit"],
+    \   ["Edit snippet"     , "SnipEdit"],
     \   ["Edit sonictemplate"     , "TemplateEdit"],
+    \   ["Edit .zsh"     , "ZshEdit"],
     \   ["scriptnames"            , "Unite scriptnames"] ,
     \   ["neobundle vimfiles"     , "Unite neobundle/vimfiles"] ,
     \   ["all vimfiles"           , "Unite neobundle/rtpvimfiles"] ,
@@ -4894,19 +4899,32 @@ if s:bundle.tap('unite.vim')
   endif
 
   command! Todo silent! exe 'Unite' printf('grep:%s::%s', getcwd(), s:regexp_todo) '-buffer-name=todo' '-no-quit'
-  function! s:unite_sonictemplate_edit(bang) "{{{
-    let dir = g:sonictemplate_vim_template_dir . "/" . &filetype
-    if !empty(a:bang) || !isdirectory(g:sonictemplate_vim_template_dir . "/" . &filetype)
-      let dir = g:sonictemplate_vim_template_dir
-    endif
-    execute printf("Unite file:%s file/new:%s", dir, dir)
-  endfunction "}}}
-  command! -bang TemplateEdit call s:unite_sonictemplate_edit("<bang>")
 
-  function! s:unite_open_ftplugin()
-    let dirs = ['after', 'ftplugin', 'snippets', 'template', 'sonictemplate']
-    execute 'Unite' '-input='.&filetype join(map(dirs, '"file_rec:~/.vim/".v:val'), " ")
+  function! s:unite_file_with_filetype(bang, ...) "{{{
+    let cmd = "Unite " . join(
+      \ map(copy(a:000), 's:unite_file_with_filetype_command(a:bang, v:val)'), " ")
+    execute cmd
+  endfunction "}}}
+
+  function! s:unite_file_with_filetype_command(bang, dir)
+    let dir = substitute(a:dir . "/", '/\+$', '/', "") . &filetype
+    if !empty(a:bang) || !isdirectory(dir)
+      let dir = a:dir
+    endif
+    return printf("file:%s file/new:%s", dir, dir)
   endfunction
+
+  command! -bang TemplateEdit
+    \ call s:unite_file_with_filetype("<bang>", g:sonictemplate_vim_template_dir)
+  command! -bang FtpluginEdit
+    \ call s:unite_file_with_filetype("<bang>",
+    \   expand('~/.vim/ftplugin'), expand('~/.vim/after/ftplugin'))
+  command! -bang SnipEdit
+    \ call s:unite_file_with_filetype("<bang>", expand('~/.vim/snippets'))
+  command! -bang DotvimEdit
+    \ call s:unite_file_with_filetype("<bang>", expand('~/.vim'))
+  command! -bang ZshEdit
+    \ call s:unite_file_with_filetype("<bang>", expand('~/.zsh'))
 
   " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
   function! s:tags_update()
