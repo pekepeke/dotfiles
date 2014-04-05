@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# This file is public domain and comes with NO WARRANTY of any kind
+# sql+ sqlplus with rlwrap
+
+[ _"$DEBUG" = _ON ] && set -x
+
+R_HOME=${RLWRAP_HOME:=/usr/local/share/rlwrap/completions}
+
+if [ $# = 0 ] ; then 
+   if [ _"${ORACLE_SID:0:1}" = _+ ] ; then
+      set -- / as sysasm
+   else
+      set -- / as sysdba
+      fi
+   fi
+
+# prepare list of stop words
+FILE_LIST="-f $R_HOME/sqlplus.all 
+	   -f $R_HOME/sqlplus
+	   -f $R_HOME/sqlplus.functions
+	   -f $R_HOME/sqlplus.tables
+	   -f $R_HOME/sqlplus.user 
+	   -f $R_HOME/sqlplus.utl_packages
+	   -f $R_HOME/sqlplus.dba
+	   -f $R_HOME/sqlplus.dbms_packages
+	   -f $R_HOME/sqlplus.init
+	   -f $R_HOME/sqlplus._init
+	   -f $R_HOME/sqlplus.gvdollar
+	   -f $R_HOME/sqlplus.vdollar"
+
+exec rlwrap -i -b '()=!<>&+-*|:;,' $FILE_LIST $ORACLE_HOME/bin/sqlplus $*

@@ -1,0 +1,2 @@
+#!/bin/bash
+rlwrap -i -b '()=!<>&+-*|:;,' /oracle/product/11.2/bin/asmcmd -p $*

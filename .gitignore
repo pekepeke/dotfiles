@@ -69,3 +69,5 @@ doc/tags-ja
 # pip
 /.pip/pip.log
 
+# rlwrap
+/.rlwrap/.*
