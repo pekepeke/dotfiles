@@ -2220,10 +2220,6 @@ for i in range(10)
 endfor
 unlet i
 
-" replace & grep {{{2
-nnoremap [!space]r :<C-u>%S/
-vnoremap [!space]r :S/
-
 " grep
 let s:regexp_todo = 'TODO\|FIXME\|REVIEW\|MARK\|NOTE\|!!!\|\\?\\?\\?\|XXX'
 function! s:set_grep(...) "{{{3
@@ -2236,15 +2232,6 @@ function! s:set_grep(...) "{{{3
 
       let g:unite_source_grep_command = "jvgrep"
       let g:unite_source_grep_default_opts = '-in --exclude "\.git|\.svn|\.hg|\.bzr|tags|tmp)"'
-      let g:unite_source_grep_recursive_opt = ''
-      return 1
-    elseif type == "pt" && executable(type)
-      set grepprg=pt\ --nocolor\ --nogroup
-      set grepformat=%f:%l:%m
-      let g:ackprg="pt -S --nocolor --nogroup --column --nopager"
-
-      let g:unite_source_grep_command = 'pt'
-      let g:unite_source_grep_default_opts = '-i --nogroup --nocolor'
       let g:unite_source_grep_recursive_opt = ''
       return 1
     elseif type == "ag" && executable(type)
