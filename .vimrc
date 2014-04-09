@@ -1385,9 +1385,9 @@ NeoBundle 'nelstrom/vim-markdown-folding'
 NeoBundle 'joker1007/vim-markdown-quote-syntax'
 NeoBundle 'kannokanno/previm'
 NeoBundle 'timcharper/textile.vim'
-NeoBundleLazy 'chrisbra/csv.vim', {'autoload':{
-\ 'filetypes': ['csv'],
-\ }}
+" NeoBundleLazy 'chrisbra/csv.vim', {'autoload':{
+" \ 'filetypes': ['csv'],
+" \ }}
 " NeoBundleLazyOn FileType yaml 'henrik/vim-yaml-flattener', {'autoload':{
 "       \ 'commands': ['YAMLToggleFlatness']
 "       \ }}
