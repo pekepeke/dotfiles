@@ -9,4 +9,4 @@ git checkout HEAD^ path/to/file                      # ファイルを戻す
 git remote add upstream git://github.com/xxx/xxx.git # upstream 登録
 git fetch upstream                                   # fetch
 git merge upstream/master                            # merge
-
+git fetch --prune                                    # remote で削除されたリポジトリを local 側も削除

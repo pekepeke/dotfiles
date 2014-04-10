@@ -42,6 +42,12 @@
     while [ $# -gt 0 ]; do s="$s,$1"; shift; done;\
     curl "http://gitignore.io/api/$s"; }; f"
   pbcopy = !printf "$1" | pbcopy-wrapper
+[pull]
+	rebase = true
+[merge]
+  ; tool = vimdiff
+  tool = vimfugitive
+  ff = false
 [diff "applescript"]
   textconv = osadecompile
 [diff "rtf"]
@@ -65,10 +71,6 @@
 ;   cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" -e -ub -dl \"Base\" -dr \"Mine\" \"$LOCAL\" \"$REMOTE\"
 ; [difftool "p4merge"]
 ;   cmd = "p4merge.exe $LOCAL $REMOTE"
-[merge]
-  ; tool = vimdiff
-  tool = vimfugitive
-  ; ff = false
 [merge "mergepbx"]
   name = XCode project files merger
   driver = mergepbx %O %A %B
