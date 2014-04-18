@@ -25,3 +25,6 @@
 [submodule ".zsh/plugins/zsh-syntax-highlighting"]
 	path = .zsh/plugins/zsh-syntax-highlighting
 	url = git://github.com/zsh-users/zsh-syntax-highlighting.git
+[submodule ".zsh/plugins/zsh-perl-completions"]
+	path = .zsh/plugins/zsh-perl-completions
+	url = https://github.com/syohex/zsh-perl-completions.git

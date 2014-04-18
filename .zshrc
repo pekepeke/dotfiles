@@ -581,6 +581,7 @@ zsh-complete-init() {
   shrc_section_title "complete-init start"
 
   [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
+  [ -e ~/.zsh/plugins/zsh-perl-completions ] && fpath=(~/.zsh/plugins/zsh-perl-completions $fpath)
   [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
   source_all ~/.zsh/commands/*
   (( $+functions[___main] )) || ___main() {} # for git
