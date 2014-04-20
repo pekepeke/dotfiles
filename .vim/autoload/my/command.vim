@@ -59,5 +59,72 @@ function! my#command#openbrowser_range(f1, f2) "{{{2
   endif
 endfunction "}}}
 
+function! my#config#system(cmd) "{{{2
+  let bundle = VimrcScope().bundle
+  if bundle.is_installed('vimproc.vim')
+    call vimproc#system_bg(a:cmd)
+  else
+    execute "!" a:cmd
+  endif
+endfunction
+
+function! my#config#system_with_lcd(cmd, ...) "{{{2
+  let dir = empty(a:000) ? "" : a:1
+
+  if empty(dir)
+    let dir = input("cd : ", getcwd(), "dir")
+  endif
+  if empty(dir)
+    return
+  endif
+  let cwd = getcwd()
+
+  execute 'lcd' dir
+  call my#config#system(cmd)
+  execute 'lcd' cwd
+endfunction
+
+function! my#config#exec_ctags(path) "{{{2
+  let path = a:path
+  let options = ' --exclude=".git"'
+  if &filetype != 'javascript'
+    let options .= ' --exclude="*.js"'
+  elseif &filetype != 'coffee'
+    let options .= ' --exclude="*.coffee"'
+  endif
+  let ctags_cmd = "ctags -R"
+  if empty(path)
+    " let path = input("input base dir : ", expand('%:p:h'))
+    let path = input("cd : ", getcwd(), "dir")
+  endif
+  if empty(path)
+    return
+  endif
+  let cwd = getcwd()
+  if !empty(a:path) && isdirectory(a:path)
+    execute 'lcd' a:path
+  endif
+
+  let bundle = VimrcScope().bundle
+  if bundle.is_installed('vimproc.vim')
+    call vimproc#system_bg(ctags_cmd)
+  else
+    execute "!" ctags_cmd
+    if bundle.is_installed('neocomplcache.vim')
+      NeoComplCacheCachingTags
+    elseif bundle.is_installed('neocomplete.vim')
+      NeoCompleteTagMakeCache
+    endif
+  endif
+  if !empty(a:path) && isdirectory(a:path)
+    execute 'lcd' cwd
+  endif
+endfunction
+
+function! my#config#toggle_option(opt) "{{{2
+  exe "setl inv".a:opt
+  let sts = eval('&'.a:opt)
+  echo printf("set %s : %s", a:opt, sts ? "ON" : "OFF")
+endfunction
 let &cpo = s:save_cpo
 " __END__ {{{1

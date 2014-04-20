@@ -475,11 +475,19 @@ if s:has_plugin('vim-commentary')
 endif
 
 if s:has_plugin('vim-fugitive')
-  map <leader>1 :diffget //2 <Bar> duffupdate<CR>
-  map <leader>2 :diffget //3 <Bar> duffupdate<CR>
-  map <leader>3 :echo '<Leader>1 = merges from target branch(left buffer), '
-        \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
-        \ <Bar> diffupdate<CR>
+  if s:is_mac
+    map <leader>1 :diffget //2 <Bar> duffupdate<CR>
+    map <leader>2 :diffget //3 <Bar> duffupdate<CR>
+    map <leader>3 :diffupdate <Bar>
+      \ echo '<Leader>1 = merges from target branch(left buffer), '."\n"
+      \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
+  else
+    map <leader>1 :diffget LOCAL <Bar> duffupdate<CR>
+    map <leader>2 :diffget REMOTE <Bar> duffupdate<CR>
+    map <leader>3 :diffupdate <Bar>
+      \ echo '<Leader>1 = merges from target branch(left buffer), '."\n"
+      \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
+  endif
 
   nnoremap <silent> [!space]gd :<C-u>Gdiff --cached<CR>
   nnoremap <silent> [!space]gD :<C-u>Gdiff<CR>
