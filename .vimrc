@@ -1976,8 +1976,8 @@ augroup END
 " some commands & altercmd {{{1
 " some commands {{{2
 command! -narg=0 SynReload syntax off <Bar> syntax enable
-command! -nargs=? -complete=dir Ctags call my#config#exec_ctags(<q-args>)
-command! -nargs=? -complete=dir Gtags call my#config#system_with_lcd("gtags", <q-args>)
+command! -nargs=? -complete=dir Ctags call my#command#exec_ctags(<q-args>)
+command! -nargs=? -complete=dir Gtags call my#command#system_with_lcd("gtags", <q-args>)
 command! -nargs=0 -bang MyQ
       \ if tabpagenr('$') == 1 && winnr('$') == 1 | enew
       \ | else | quit<bang> | endif
@@ -2327,7 +2327,7 @@ nnoremap / :<C-u>nohlsearch<CR>/
 nnoremap ? :<C-u>nohlsearch<CR>?
 
 nnoremap [!space]/ :<C-u>nohlsearch<CR>
-nnoremap [!space]w :<C-u>call <SID>toggle_option("wrap")<CR>
+nnoremap [!space]w :<C-u>call my#command#toggle_option("wrap")<CR>
 
 nnoremap <C-w><Space> <C-w>p
 nnoremap *  *N
@@ -2723,6 +2723,9 @@ endif
 if s:bundle.tap('vim-precious')
   let g:precious_enable_switchers = {
   \ "help" : {
+  \   "setfiletype" : 0
+  \ },
+  \ "javascript" : {
   \   "setfiletype" : 0
   \ },
   \}

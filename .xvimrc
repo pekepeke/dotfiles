@@ -1,18 +1,51 @@
 " https://github.com/JugglerShu/XVim/blob/master/Documents/Developers/MenuActionList.txt
+" https://github.com/JugglerShu/XVim/blob/master/Documents/Users/FeatureList.md
 set ignorecase
 set incsearch
-nmap H :xhelp<cr>
-" nmap U eb3~e
-" imap <C-p> <Esc>:xccmd complete<cr>i
-" nmap <C-p> :xccmd complete<cr>i
-" nmap M :xccmd balance<cr>kVj%
-" imap <S-cr> <Esc>A];<Esc>
-" nmap <S-cr> A];<Esc>
+set smartcase
+set noerrorbells
+set wrapscan
+set nowrap
+set hlsearch
+set clipboard=unnamed
+nnoremap n nNzz
+nnoremap N Nnzz
+nnoremap * *Nzz
+nnoremap # #nzz
+nnoremap H :xhelp<cr>
+" nnoremap U eb3~e
+" inoremap <C-p> <Esc>:xccmd complete<cr>i
+" nnoremap <C-p> :xccmd complete<cr>i
+" nnoremap M :xccmd balance<cr>kVj%
+" inoremap <S-cr> <Esc>A];<Esc>
+" nnoremap <S-cr> A];<Esc>
 
-imap <C-A> <Home>
-imap <C-E> <End>
-imap <C-F> <Right>
-imap <C-B> <Left>
-imap <C-D> <Del>
+nnoremap ff ff
+nnoremap fm :xccmd openQuickly<CR>
+nnoremap fo :xccmd showDocumentItemsMenu<CR>
+nnoremap <Space>j :xccmd jumpToNextCounterpart<CR>
+nnoremap <Space>k :xccmd jumpToNextCounterpart<CR>
 
-vmap <C-[> <Esc>
+nnoremap <Space>s :xccmd changeToStandardEditor<CR>
+nnoremap <Space>g :xccmd changeToGeniusEditor<CR>
+nnoremap <Space>v :xccmd changeToVersionEditor<CR>
+
+" comment
+nnoremap gcc :xccmd commentAndUncommentCurrentLines<CR>
+vnoremap gcc :xccmd commentAndUncommentCurrentLines<CR>
+
+" tab
+nnoremap tc :xccmd newTab<CR>
+nnoremap tk :tabclose<CR>
+nnoremap th :tabprevious<CR>
+nnoremap tl :tabnext<CR>
+
+imap <C-a> <Home>
+imap <C-e> <End>
+inoremap <C-n> <Down>
+inoremap <C-p> <Up>
+inoremap <C-f> <Right>
+inoremap <C-b> <Left>
+inoremap <C-d> <Del>
+
+vnoremap <C-[> <Esc>

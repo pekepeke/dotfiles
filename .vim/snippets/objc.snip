@@ -215,3 +215,15 @@ snippet catch
 	@catch ($1* ${2:e}) {
 		$3
 	}
+
+snippet interface
+	@interface ${1:`Filename('', 'someClass')`} ()
+	${0}
+	@end
+
+snippet we
+    @weakify(self)
+
+snippet st
+    @strongify(self)
+

@@ -59,7 +59,7 @@ function! my#command#openbrowser_range(f1, f2) "{{{2
   endif
 endfunction "}}}
 
-function! my#config#system(cmd) "{{{2
+function! my#command#system(cmd) "{{{2
   let bundle = VimrcScope().bundle
   if bundle.is_installed('vimproc.vim')
     call vimproc#system_bg(a:cmd)
@@ -68,7 +68,7 @@ function! my#config#system(cmd) "{{{2
   endif
 endfunction
 
-function! my#config#system_with_lcd(cmd, ...) "{{{2
+function! my#command#system_with_lcd(cmd, ...) "{{{2
   let dir = empty(a:000) ? "" : a:1
 
   if empty(dir)
@@ -80,11 +80,11 @@ function! my#config#system_with_lcd(cmd, ...) "{{{2
   let cwd = getcwd()
 
   execute 'lcd' dir
-  call my#config#system(cmd)
+  call my#command#system(cmd)
   execute 'lcd' cwd
 endfunction
 
-function! my#config#exec_ctags(path) "{{{2
+function! my#command#exec_ctags(path) "{{{2
   let path = a:path
   let options = ' --exclude=".git"'
   if &filetype != 'javascript'
@@ -121,7 +121,7 @@ function! my#config#exec_ctags(path) "{{{2
   endif
 endfunction
 
-function! my#config#toggle_option(opt) "{{{2
+function! my#command#toggle_option(opt) "{{{2
   exe "setl inv".a:opt
   let sts = eval('&'.a:opt)
   echo printf("set %s : %s", a:opt, sts ? "ON" : "OFF")
