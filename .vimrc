@@ -1158,13 +1158,13 @@ NeoBundle 'slim-template/vim-slim'
 " \ }}
 
 " javascript {{{4
-NeoBundle 'bigfish/vim-js-context-coloring', {
-  \ 'build' : {
-  \   'mac': 'npm install --update',
-  \   'unix': 'npm install --update',
-  \   'windows': 'npm install --update',
-  \   'cygwin': 'npm install --update',
-  \ }}
+" NeoBundle 'bigfish/vim-js-context-coloring', {
+"   \ 'build' : {
+"   \   'mac': 'npm install --update',
+"   \   'unix': 'npm install --update',
+"   \   'windows': 'npm install --update',
+"   \   'cygwin': 'npm install --update',
+"   \ }}
 NeoBundle 'guileen/simple-javascript-indenter'
 NeoBundle 'pangloss/vim-javascript'
 if has('python') || has('python3')
@@ -1550,7 +1550,6 @@ NeoBundleLazy 'osyo-manga/unite-quickfix', { 'autoload' : {
 NeoBundleLazy "osyo-manga/unite-quickrun_config", { 'autoload' : {
 \ 'unite_sources' : ['quickrun_config'],
 \ }}
-" TODO : pr
 NeoBundleLazy 'eiiches/unite-tselect', { 'autoload' : {
 \ 'unite_sources' : ['tselect'],
 \ }}
@@ -4902,6 +4901,7 @@ if s:bundle.is_installed('vim-fugitive')
   nnoremap [!space]gl :<C-u>silent Glog <Bar> Unite -no-quit quickfix<CR>
   nnoremap [!space]gL :<C-u>silent Glog --<Bar> Unite -no-quit quickfix<CR>
   nnoremap [!space]gg :<C-u>call <SID>git_qfix('Ggrep -i "%s"')<CR>
+  nnoremap [!space]ggg :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
   nnoremap [!space]ggr :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
   nnoremap [!space]ggm :<C-u>call <SID>git_qfix('Glog --grep="%s"')<CR>
   nnoremap [!space]ggl :<C-u>call <SID>git_qfix('Glog -S="%s"')<CR>

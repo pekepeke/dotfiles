@@ -12,7 +12,7 @@ nnoremap n nNzz
 nnoremap N Nnzz
 nnoremap * *Nzz
 nnoremap # #nzz
-nnoremap H :xhelp<cr>
+nnoremap K :xhelp<cr>
 " nnoremap U eb3~e
 " inoremap <C-p> <Esc>:xccmd complete<cr>i
 " nnoremap <C-p> :xccmd complete<cr>i
@@ -40,12 +40,12 @@ nnoremap tk :tabclose<CR>
 nnoremap th :tabprevious<CR>
 nnoremap tl :tabnext<CR>
 
-imap <C-a> <Home>
-imap <C-e> <End>
+inoremap <C-a> <C-o>^
+inoremap <C-e> <C-o>A
 inoremap <C-n> <Down>
 inoremap <C-p> <Up>
 inoremap <C-f> <Right>
 inoremap <C-b> <Left>
-inoremap <C-d> <Del>
+inoremap <C-d> <C-o>x
 
 vnoremap <C-[> <Esc>
