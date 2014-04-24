@@ -1,0 +1,7 @@
+-w
+-fblocks
+-fobjc-arc
+-D __IPHONE_OS_VERSION_MIN_REQUIRED=40300
+-include ./**/*-Prefix.pch
+-F {{_expr_:split(glob('/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/*.sdk'), "\n")[-1]}}/System/Library/Frameworks
+-I {{_expr_:split(glob('/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/*.sdk'), "\n")[-1]}}/usr/include

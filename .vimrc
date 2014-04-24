@@ -4007,6 +4007,10 @@ let g:yankring_default_menu_mode = 0
 let g:yankring_min_element_length = 2
 let g:yankring_window_height = 14
 
+" cocoa.vim {{{2}}}
+let g:objc#man#dash_keyword = 'ios:'
+let g:objc#man#dash_command_format = '/Applications/zeal.app/Contents/MacOS/zeal --query "%s" &'
+
 " rails.vim {{{2
 if s:bundle.tap('vim-rails')
   let g:rails_some_option = 1
@@ -6355,10 +6359,16 @@ if s:bundle.tap('clang_complete')
   let g:neocomplete#force_overwrite_completefunc = 1
   " clang_complete の自動呼び出し OFF
   let g:clang_complete_auto = 0
-  let g:cland_auto_select = 0
+  let g:clang_auto_select = 0
+  let g:clang_use_library=1
+  " let g:clang_exec=''
   if s:is_win
   elseif s:is_mac
-    let g:clang_complete_getopts_ios_sdk_directory = '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator5.1.sdk'
+    function! s:get_latest_sdk()
+      let paths = split(glob('/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/*.sdk'), "\n")
+      return empty(paths) ? '' : paths[-1]
+    endfunction
+    let g:clang_complete_getopts_ios_sdk_directory = s:get_latest_sdk()
     MyAutoCmd FileType objc let g:clang_auto_user_options = 'path, .clang_complete, ios'
   else
     if filereadable("/usr/lib/llvm-3.2/lib/libclang.so")

@@ -46,6 +46,6 @@ inoremap <C-n> <Down>
 inoremap <C-p> <Up>
 inoremap <C-f> <Right>
 inoremap <C-b> <Left>
-inoremap <C-d> <C-o>x
+inoremap <C-d> <Right><BS>
 
 vnoremap <C-[> <Esc>
