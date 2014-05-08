@@ -101,7 +101,7 @@ function s:gtrans.execute(args) "{{{
   endif
 endfunction "}}}
 
-function! my#buf_util#grans(...) "{{{2
+function! my#buf_util#gtrans(...) "{{{2
   call call(s:gtrans.command, a:000, s:gtrans)
 endfunction
 

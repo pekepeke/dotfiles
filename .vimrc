@@ -657,7 +657,7 @@ NeoBundle 'Shougo/vimshell.vim', {
 \ 'mappings' : ['<Plug>(vimshell']
 \ }}
 NeoBundle "osyo-manga/unite-filters-collection"
-NeoBundle 'osyo-manga/vim-precious'
+" NeoBundle 'osyo-manga/vim-precious'
 NeoBundle 'pekepeke/vim-gitcomplete', 'develop'
 NeoBundleLazy 'Shougo/vinarise', { 'autoload': {
 \ 'commands' : [
@@ -4326,6 +4326,7 @@ if s:bundle.tap('unite.vim')
     \   ["Edit snippet"     , "SnipEdit"],
     \   ["Edit sonictemplate"     , "TemplateEdit"],
     \   ["Edit .zsh"     , "ZshEdit"],
+    \   ["Edit homebrew"     , "BrewEdit"],
     \   ["scriptnames"            , "Unite scriptnames"] ,
     \   ["neobundle vimfiles"     , "Unite neobundle/vimfiles"] ,
     \   ["all vimfiles"           , "Unite neobundle/rtpvimfiles"] ,
@@ -4786,6 +4787,8 @@ if s:bundle.tap('unite.vim')
     \ call s:unite_file_with_filetype("<bang>", expand('~/.vim'))
   command! -bang ZshEdit
     \ call s:unite_file_with_filetype("<bang>", expand('~/.zsh'))
+  command! -bang BrewEdit
+    \ call s:unite_file_with_filetype("<bang>", exists('$HOMEBREW_PREFIX') ? expand('$HOMEBREW_PREFIX') : '/usr/local/Library/')
 
   " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
   function! s:tags_update()
@@ -6361,6 +6364,7 @@ if s:bundle.tap('clang_complete')
   let g:clang_complete_auto = 0
   let g:clang_auto_select = 0
   let g:clang_use_library=1
+  " let g:clang_snippets=1
   " let g:clang_exec=''
   if s:is_win
   elseif s:is_mac
