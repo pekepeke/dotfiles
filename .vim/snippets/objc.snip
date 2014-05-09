@@ -247,3 +247,13 @@ snippet dispatch_async
             ${2:// メインスレッドで処理をしたい内容、UIを変更など。}
         });
     });
+snippet dispatch_after_main
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            ${0:// code}
+        });
+
+snippet dispatch_after_bg
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.3f * NSEC_PER_SEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            ${0:// code}
+        });
+

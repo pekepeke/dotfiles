@@ -3785,8 +3785,10 @@ if s:bundle.tap('indentLine')
   let g:indentLine_char = '¦'
   let g:indentLine_color_term = 236
   let g:indentLine_color_gui = '#333'
+  let g:indentLine_faster = 1
   let g:indentLine_fileTypeExclude = [
   \ 'help', 'nerdtree', 'calendar', 'thumbnail', 'tweetvim',
+  \ 'unite', 'vimfiler', 'vimshell',
   \ ]
 endif
 
@@ -6372,8 +6374,9 @@ if s:bundle.tap('clang_complete')
       let paths = split(glob('/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/*.sdk'), "\n")
       return empty(paths) ? '' : paths[-1]
     endfunction
+    let g:clang_library_path = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'
     let g:clang_complete_getopts_ios_sdk_directory = s:get_latest_sdk()
-    MyAutoCmd FileType objc let g:clang_auto_user_options = 'path, .clang_complete, ios'
+    " MyAutoCmd FileType objc let g:clang_auto_user_options = 'path, .clang_complete, ios'
   else
     if filereadable("/usr/lib/llvm-3.2/lib/libclang.so")
       let g:clang_library_path = "/usr/lib/llvm-3.2/lib/"
