@@ -3231,6 +3231,7 @@ if s:bundle.tap('cake.vim')
   let g:cakephp_no_default_keymappings = 1
   let g:cakephp_enable_fix_mode = 1
   let g:cakephp_enable_auto_mode = 1
+  let g:cakephp_view_exts = ['.ctp', '.twig']
 
   function! s:bundle.tapped.hooks.on_post_source(bundle)
     MyAutoCmd User PluginCakephpInitializeAfter call s:init_cakephp()

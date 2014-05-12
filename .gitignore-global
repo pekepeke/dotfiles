@@ -82,3 +82,11 @@ tramp
 # Org-mode
 .org-id-locations
 *_archive
+
+# sublime
+*.sublime-project
+*.sublime-workspace
+
+# zed
+.zedstate
+
