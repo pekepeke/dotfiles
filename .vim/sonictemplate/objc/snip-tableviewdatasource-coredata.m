@@ -9,7 +9,7 @@
 {
     self = [super init];
     if (self) {
-		_tableView = tableView;
+		self.tableView = tableView;
         [self initialize];
     }
     return self;
@@ -22,6 +22,7 @@
 
 - (void)dealloc
 {
+	_fetchedResultsController = nil;
 }
 
 #pragma mark - Table view data source
@@ -74,7 +75,7 @@
 // - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 //     if (editingStyle == UITableViewCellEditingStyleDelete) {
 //         // The correct way to save (http://samwize.com/2014/03/29/how-to-save-using-magicalrecord/)
-//         Poo *poo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+//         Poo *poo = [_fetchedResultsController objectAtIndexPath:indexPath];
 //         [MagicalRecord saveWithBlock:^(NSManagedObjectContext *localContext) {
 //             Poo *localPoo = [poo inContext:localContext];
 //             [localPoo deleteEntity];
@@ -88,7 +89,7 @@
 #pragma mark - NSFetchedResultsControllerDelegate methods
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView beginUpdates];
+    [_tableView beginUpdates];
 }
 
 - (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id )sectionInfo
@@ -96,12 +97,12 @@
 
     switch(type) {
         case NSFetchedResultsChangeInsert:
-            [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+            [_tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex]
                           withRowAnimation:UITableViewRowAnimationFade];
             break;
 
         case NSFetchedResultsChangeDelete:
-            [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
+            [_tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex]
                           withRowAnimation:UITableViewRowAnimationFade];
             break;
     }
@@ -111,7 +112,7 @@
        atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath {
 
-    UITableView *tableView = self.tableView;
+    UITableView *tableView = _tableView;
 
     switch(type) {
 
@@ -140,13 +141,13 @@
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    [self.tableView endUpdates];
+    [_tableView endUpdates];
 }
 
 #pragma mark - public methods
 - (BOOL)performFetch:(NSError *)error
 {
-    [NSFetchedResultsController deleteCacheWithName:self.cacheKey];
+    [NSFetchedResultsController deleteCacheWithName:_cacheKey];
 
     [self.fetchedResultsController performFetch:&error];
     if (error) {
@@ -165,27 +166,29 @@
     }
     return YES;
 }
-#pragma mark - protected methods
+
+#pragma mark - private methods
 - (NSFetchedResultsController *)fetchedResultsController {
     if (_fetchedResultsController != nil) {
         return _fetchedResultsController;
     }
 
 	// TODO
+	// _cacheKey = @"PooCache";
     // NSFetchRequest *fetchRequest = [Poo requestAllSortedBy:@"pooedOn" ascending:NO];
     // [fetchRequest setFetchLimit:100];         // Let's say limit fetch to 100
     // [fetchRequest setFetchBatchSize:20];      // After 20 are faulted
 
     // NSFetchedResultsController *theFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[NSManagedObjectContext defaultContext] sectionNameKeyPath:nil cacheName:@"PooCache"];
-    // self.fetchedResultsController = theFetchedResultsController;
-    // self.fetchedResultsController.delegate = self;
+    // _fetchedResultsController = theFetchedResultsController;
+    // _fetchedResultsController.delegate = self;
     // return _fetchedResultsController;
     // return [Poo fetchAllSortedBy:@"pooedOn" ascending:NO withPredicate:nil groupBy:nil delegate:self];
 }
 
 - (void)configureCell:(UITableViewCell*)cell atIndexPath:(NSIndexPath*)indexPath {
 	// TODO
-  // Poo *poo = [self.fetchedResultsController objectAtIndexPath:indexPath];
+  // Poo *poo = [_fetchedResultsController objectAtIndexPath:indexPath];
   // Update cell with poo details
   // cell.textLabel.text = poo.title;
 }
