@@ -73,6 +73,6 @@
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-#pragma mark - protected methods
+#pragma mark - private methods
 @end
 
