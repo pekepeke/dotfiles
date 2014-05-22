@@ -1269,6 +1269,9 @@ NeoBundleLazy 'soh335/unite-perl-module', {'autoload' : {
 NeoBundleLazy 'vim-scripts/DoxygenToolkit.vim', {'autoload':{
 \ 'filetypes': ['c', 'cpp'],
 \ }}
+" NeoBundleLazy 'osyo-manga/vim-snowdrop', {'autoload':{
+" \ 'filetypes': ['c', 'cpp', 'objc', 'objcpp'],
+" \ }}
 NeoBundleLazy 'Rip-Rip/clang_complete', {'autoload':{
 \ 'filetypes': ['c', 'cpp', 'objc', 'objcpp'],
 \ }}
@@ -6358,6 +6361,42 @@ endif
 
 " echodoc {{{2
 let g:echodoc_enable_at_startup=0
+
+" snowdrop {{{2
+if s:bundle.tap('vim-snowdrop')
+  let g:snowdrop#include_paths = get(g:, 'snowdrop#include_paths', {})
+  let g:snowdrop#command_options = get(g:, 'snowdrop#command_options', {})
+  if s:is_win
+    " let g:snowdrop#libclang_directory = "C:/llvm/bin"
+  elseif s:is_mac
+    function! s:get_latest_sdk()
+      let paths = split(glob('/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/*.sdk'), "\n")
+      return empty(paths) ? '' : paths[-1]
+    endfunction
+    let g:snowdrop#libclang_directory = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/'
+    let g:snowdrop#libclang_file = 'libclang.dylib'
+    " let g:clang_complete_getopts_ios_sdk_directory = s:get_latest_sdk()
+    " MyAutoCmd FileType objc let g:clang_auto_user_options = 'path, .clang_complete, ios'
+  else
+    let g:snowdrop#libclang_file = 'libclang.so'
+    if filereadable("/usr/lib/llvm-3.2/lib/libclang.so")
+      let g:clang_library_path = "/usr/lib/llvm-3.2/lib/"
+    elseif filereadable("/usr/lib/llvm-3.3/lib/libclang.so")
+      let g:clang_library_path = "/usr/lib/llvm-3.3/lib/"
+    elseif filereadable("/usr/lib/llvm-3.4/lib/libclang.so")
+      let g:clang_library_path = "/usr/lib/llvm-3.4/lib/"
+    endif
+  endif
+
+  " set include directory path.
+  let g:snowdrop#include_paths.cpp = [
+  \  "C:/cpp/boost",
+  \  "C:/cpp/sprout",
+  \ ]
+
+  " set clang command options.
+  let g:snowdrop#command_options.cpp = "-std=c++1y"
+endif
 
 " clang_complete {{{2
 if s:bundle.tap('clang_complete')
