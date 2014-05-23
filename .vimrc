@@ -1439,9 +1439,9 @@ NeoBundle 'Gasol/vim-php'
 NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
-" NeoBundle 'shawncplus/phpcomplete.vim'
+NeoBundle 'shawncplus/phpcomplete.vim'
 " NeoBundle 'm2mdas/phpcomplete-extended'
-NeoBundle 'pekepeke/phpcomplete-extended'
+" NeoBundle 'pekepeke/phpcomplete-extended'
 NeoBundle 'beberlei/vim-php-refactor'
 " NeoBundle 'vim-scripts/php_localvarcheck.vim'
 " NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
@@ -2621,6 +2621,13 @@ if s:bundle.is_installed('phpcomplete-extended')
   " endfunction
 endif
 
+if s:bundle.is_installed('phpcomplete.vim')
+  let g:phpcomplete_add_class_extensions =
+  \ ['mongo', 'imagemagick', 'libxml', 'memcache', 'memcached', 'pdo']
+  let g:phpcomplete_add_function_extensions =
+  \ ['mongo', 'json', 'gd', 'sqlite', 'memcache', 'http']
+endif
+
 " vim-startify {{{2
 if s:bundle.is_installed('vim-startify')
   let g:startify_custom_header =
@@ -3559,13 +3566,13 @@ if s:bundle.tap('vim-smartinput')
       if a:is_load_default_rules
         call smartinput#define_default_rules()
       endif
+      call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
       call smartinput#define_rule({
             \   'at':       '(\%#)',
             \   'char':     '<Space>',
             \   'input':    '<Space><Space><Left>',
             \   })
 
-      call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
       call smartinput#define_rule({
             \   'at':       '( \%# )',
             \   'char':     '<BS>',
