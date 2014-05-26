@@ -1381,7 +1381,7 @@ endif
 " NeoBundle 'plasticboy/vim-markdown' " plasticboy mode -> mkd
 NeoBundle 'tpope/vim-markdown'
 NeoBundle 'nelstrom/vim-markdown-folding'
-NeoBundle 'joker1007/vim-markdown-quote-syntax'
+" NeoBundle 'joker1007/vim-markdown-quote-syntax'
 NeoBundle 'kannokanno/previm'
 NeoBundle 'timcharper/textile.vim'
 " NeoBundleLazy 'chrisbra/csv.vim', {'autoload':{
@@ -2578,6 +2578,20 @@ if s:bundle.is_installed('simple-javascript-indenter')
   let g:SimpleJsIndenter_CaseIndentLevel = -1
 endif
 
+" markdown {{{2
+let g:markdown_fenced_languages = [
+\  'coffee',
+\  'css',
+\  'erb=eruby',
+\  'javascript',
+\  'js=javascript',
+\  'json=javascript',
+\  'objc',
+\  'ruby',
+\  'sass',
+\  'xml',
+\]
+
 " disables plugin {{{1
 if !s:is_mac
   let did_install_default_menus = 1
@@ -3374,6 +3388,8 @@ endif
 if s:bundle.is_installed('colorv.vim')
   let g:colorv_cache_fav = $VIM_CACHE . "/vim_colorv_fav"
   let g:colorv_cache_file = $VIM_CACHE . "/vim_colorv_cache"
+  let g:colorv_preview_ftype = 'css,html,scss,sass'
+  " let g:colorv_python_cmd = ''
   let g:colorv_no_global_map = 1
   " g:colorv_global_leader
 endif
