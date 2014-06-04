@@ -16,15 +16,22 @@ case $state in
       'init:initialize'
       'new:create vhost config file'
       'list:print site list'
+      'docroot:Show docroot filepath'
       'which:Show conf file path or etc dir'
       'open:Open docroot dir or config dir'
       'edit:Edit conf file path or etc file'
       'hosts:Show hosts file'
       'update:Update host suffix'
       'public:Create public config file'
+      'public_port:Create public config file'
       'private:Clear public config file'
       'templates:Show default template contents'
+      'log_shift:Shift log files'
+      'newsyslog:Show newsyslog config'
       'doctor:Show messages for troubleshooting'
+      'apache_conf:Show apache config'
+      'apache_phpconf:Show apache config for php'
+      'vacuum:Show illegal domains'
     )
     _describe -t commands 'vhost commands' _cmds && ret=0
   ;;
