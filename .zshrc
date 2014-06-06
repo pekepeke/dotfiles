@@ -537,6 +537,7 @@ fi
 # typeset -ga precmd_functions
 add-zsh-hook precmd precmd_rprompt
 # add-zsh-hook precmd precmd_multiterm
+
 add-zsh-hook preexec preexec_multiterm
 add-zsh-hook chpwd chpwd_multiterm
 
