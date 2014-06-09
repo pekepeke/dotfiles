@@ -698,3 +698,5 @@ bindkey -v '^I' zsh-complete-init
 shrc_section_title "finish"
 # vim: ft=zsh fdm=marker sw=2 ts=2 et:
 # __END__ #{{{1
+
+. ~/.spm_completion
