@@ -1,9 +1,9 @@
 # options {{{1
-set show-date = local
-set show-refs = yes
-set show-rev-graph = yes
+# set show-date = local
+# set show-refs = yes
+# set show-rev-graph = yes
 set line-graphics = yes
-set show-id = yes
+# set show-id = yes
 set vertical-split = no
 set split-view-height = 80%
 set tab-size = 2
@@ -11,14 +11,25 @@ set diff-context = 6
 set ignore-case = yes
 set wrap-lines = yes
 
+# Enable both ID and line numbers in the blame view
+set blame-view = date:default author:full file-name:auto id:yes,color \
+                 line-number:yes,interval=5 text
+# Change grep view to be similar to `git grep` format
+set grep-view = file-name:yes line-number:yes,interval=1 text
+# Show file sizes as units
+set tree-view = line-number:no,interval=5 mode author:full \
+                file-size:units date:default id:no file-name
+# Show line numbers for every 10th line in the pager view
+set pager-view = line-number:yes,interval=10 text
+
 # binds {{{1
 bind generic g move-first-line
 bind generic G move-last-line
-bind generic ^f move-page-down
-bind generic ^b move-page-up
-bind generic ^w view-next
+bind generic <Ctrl-f> move-page-down
+bind generic <Ctrl-b> move-page-up
+bind generic <Ctrl-w> view-next
 
-bind diff ^w view-next
+bind diff <Ctrl-w> view-next
 
 # http://hiroki.jp/2012/05/30/4182/
 bind diff ; view-next
