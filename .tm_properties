@@ -54,6 +54,10 @@ tabSize = 2
 # disableIndentCorrections = true
 # indentOnPaste = "simple"
 
+[ source.text ]
+softWrap = true
+softTabs = false
+
 [ source.perl ]
 tabSize = 4
 softTabs = true
