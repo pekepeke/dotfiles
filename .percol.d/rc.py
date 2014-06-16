@@ -6,7 +6,7 @@ from percol.finder import FinderMultiQueryMigemo, FinderMultiQueryRegex
 ## prompt
 # Case Insensitive / Match Method に応じてプロンプトに表示
 def dynamic_prompt():
-    prompt = ur""
+    prompt = ur"<green>"
     if percol.model.finder.__class__ == FinderMultiQueryMigemo:
         prompt += "[Migemo]"
     elif percol.model.finder.__class__ == FinderMultiQueryRegex:
@@ -17,7 +17,7 @@ def dynamic_prompt():
         prompt += "[a]"
     else:
         prompt += "[A]"
-    prompt += "> %q"
+    prompt += "> </green>%q"
     return prompt
 
 percol.view.__class__.PROMPT = property(lambda self: dynamic_prompt())
