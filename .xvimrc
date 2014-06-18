@@ -8,6 +8,8 @@ set wrapscan
 set nowrap
 set hlsearch
 set clipboard=unnamed
+set timeoutlen=500
+
 nnoremap n nNzz
 nnoremap N Nnzz
 nnoremap * *Nzz
@@ -20,8 +22,12 @@ nnoremap K :xhelp<cr>
 " inoremap <S-cr> <Esc>A];<Esc>
 " nnoremap <S-cr> A];<Esc>
 
+nnoremap [[ /^(-|@property)<CR>:nohlsearch<CR>
+nnoremap ]] /^(-|@property)<CR>:nohlsearch<CR>
+
 nnoremap ff ff
-nnoremap fm :xccmd openQuickly<CR>
+nnoremap fa :xccmd openQuickly<CR>
+nnoremap fm :xccmd showPreviousFilesHistoryMenu<CR>
 nnoremap fo :xccmd showDocumentItemsMenu<CR>
 nnoremap <Space>j :xccmd jumpToNextCounterpart<CR>
 nnoremap <Space>k :xccmd jumpToNextCounterpart<CR>
@@ -30,10 +36,16 @@ nnoremap <Space>s :xccmd changeToStandardEditor<CR>
 nnoremap <Space>g :xccmd changeToGeniusEditor<CR>
 nnoremap <Space>v :xccmd changeToVersionEditor<CR>
 
+nnoremap _iw viwPyiw
+nnoremap _aw vawPyaw
+
+nnoremap \r :run<CR>
+
 " comment
 nnoremap gcc :xccmd commentAndUncommentCurrentLines<CR>
 vnoremap gcc :xccmd commentAndUncommentCurrentLines<CR>
 
+nnoremap tt :xccmd jumpToDefinition<CR>
 " tab
 nnoremap tc :xccmd newTab<CR>
 nnoremap tk :tabclose<CR>

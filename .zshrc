@@ -270,10 +270,14 @@ if [ ! -d ~/.cache ]; then
   mkdir ~/.cache
 fi
 
-export HISTSIZE=100000
+export HISTSIZE=10000
 export SAVEHIST=$HISTSIZE
 
 setopt extended_history   # 実行時刻と実行時間も保存
+setopt hist_no_store      # history は追加しない
+# setopt hist_reduce_branks # スペースを詰める
+setopt hist_save_no_dups  # 古いものと同じものは無視
+setopt hist_ignore_all_dups # 古いものと同じものは削除
 setopt hist_ignore_dups   # 同じコマンドラインは保存しない
 setopt share_history      # プロセス間でヒストリを共有
 setopt hist_ignore_space  # スペース始まりは追加しない
