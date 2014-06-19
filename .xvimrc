@@ -9,6 +9,7 @@ set nowrap
 set hlsearch
 set clipboard=unnamed
 set timeoutlen=500
+highlight Search guibg=#ddd
 
 nnoremap n nNzz
 nnoremap N Nnzz
@@ -36,9 +37,11 @@ nnoremap <Space>s :xccmd changeToStandardEditor<CR>
 nnoremap <Space>g :xccmd changeToGeniusEditor<CR>
 nnoremap <Space>v :xccmd changeToVersionEditor<CR>
 
+" operator-replace like
 nnoremap _iw viwPyiw
 nnoremap _aw vawPyaw
 
+" quickrun like
 nnoremap \r :run<CR>
 
 " comment
