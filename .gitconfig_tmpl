@@ -48,10 +48,25 @@
   ; tool = vimdiff
   tool = vimfugitive
   ff = false
+
 [diff "applescript"]
+  binary = true
   textconv = osadecompile
 [diff "rtf"]
   textconv = textutil -convert txt -stdout
+[diff "xlsx"]
+  binary = true
+  textconv = $HOME/bin/git-xlsx-textconv.pl
+[diff "exif"]
+  binary = true
+  textconv = exiftool
+[diff "word"]
+  binary = true
+  textconv = catdoc
+[diff "odt"]
+  binary = true
+  textconv = $HOME/bin/odt-to-txt
+
 [difftool "kdiff3"]
   path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
   trustExitCode = false
