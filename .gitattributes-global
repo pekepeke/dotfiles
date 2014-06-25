@@ -1,0 +1,7 @@
+*.pbxproj merge=mergepbx
+*.xlsx   diff=xlsx
+*.png    diff=exif
+*.jpg    diff=exif
+*.gif    diff=exif
+*.odt    diff=odt
+

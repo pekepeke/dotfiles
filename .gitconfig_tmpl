@@ -10,7 +10,8 @@
   interactive = auto
   grep = auto
 [core]
-  excludesfile = /home/fuga/.gitignore-global
+  excludesfile = $HOME/.gitignore-global
+  attributesfile = $HOME/.gitattributes-global
   quotepath = false
   precomposeunicode = true
 [push]
