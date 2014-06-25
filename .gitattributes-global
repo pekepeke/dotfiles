@@ -4,4 +4,6 @@
 *.jpg    diff=exif
 *.gif    diff=exif
 *.odt    diff=odt
+*.scpt   diff=applescript
+*.rtf    diff=rtf
 

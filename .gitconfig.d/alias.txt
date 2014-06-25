@@ -1,0 +1,31 @@
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+[alias]
+  ls = ls-files
+  co = checkout
+  ci = commit
+  ca = commit --amend
+  st = status
+  ss = status -sb
+  sl = shortlog -sn
+  br = branch
+  fixup = commit --amend -C HEAD
+  edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
+  add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
+  log-graph = log --graph --date=short --pretty=format:'%Cgreen%h %cd %Cblue%cn %Creset%s'
+  log-all = log --graph --all --color --pretty='%x09%h %cn%x09%s %Cred%d%Creset'
+  d = diff
+  dm = diff master
+  dw = diff --color-words
+  dc = diff --cached
+  ds = diff --staged
+  d1 = diff HEAD~
+  d2 = diff HEAD~~
+  d3 = diff HEAD~~~
+  d4 = diff HEAD~~~~
+  d5 = diff HEAD~~~~~
+  d10 = diff HEAD~~~~~~~~~~
+  ignore = !"f() { local s=$1; shift; \
+    while [ $# -gt 0 ]; do s="$s,$1"; shift; done;\
+    curl "http://gitignore.io/api/$s"; }; f"
+  pbcopy = !printf "$1" | pbcopy-wrapper
+

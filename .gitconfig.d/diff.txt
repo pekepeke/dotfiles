@@ -1,0 +1,20 @@
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+[diff "applescript"]
+  binary = true
+  textconv = osadecompile
+[diff "rtf"]
+  textconv = textutil -convert txt -stdout
+[diff "xlsx"]
+  binary = true
+  textconv = $HOME/bin/git-xlsx-textconv.pl
+[diff "exif"]
+  binary = true
+  textconv = exiftool
+[diff "word"]
+  binary = true
+  textconv = catdoc
+[diff "odt"]
+  binary = true
+  textconv = $HOME/bin/odt-to-txt
+
+

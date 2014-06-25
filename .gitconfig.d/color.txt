@@ -1,0 +1,9 @@
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+[color]
+  ui = auto
+  diff = auto
+  status = auto
+  branch = auto
+  interactive = auto
+  grep = auto
+
