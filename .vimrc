@@ -871,6 +871,7 @@ NeoBundleLazy 'mattn/emoji-vim', {'autoload': {
 \ }}
 NeoBundle 'osyo-manga/shabadou.vim'
 NeoBundle 'osyo-manga/vim-watchdogs'
+NeoBundle 'osyo-manga/vim-spice'
 NeoBundle 'osyo-manga/vim-anzu', {'autoload': {
 \ 'mappings': [['n', '<Plug>(anzu-']],
 \ }}
@@ -1547,6 +1548,9 @@ NeoBundleLazy 'sgur/unite-git_grep', { 'autoload' : {
 " NeoBundleLazy 'Kocha/vim-unite-tig', { 'autoload' : {
 " \ 'unite_sources' : ['tig'],
 " \ }}
+NeoBundleLazy 'osyo-manga/unite-candidate_sorter', {'autoload': {
+      \ 'mappings': [['n', '<Plug>(unite-candidate_sort)']]
+      \ }}
 NeoBundleLazy 'osyo-manga/unite-quickfix', { 'autoload' : {
 \ 'unite_sources' : ['quickfix', 'location_list'],
 \ }}
@@ -2664,6 +2668,15 @@ if s:bundle.is_installed('vim-startify')
   \ '~/Dropbox/',
   \ ]
 endif
+
+" vim-spice
+if s:bundle.is_installed('vim-spice')
+  let g:spice_highlight_group = "Search"
+  let g:spice#enable_filetypes = {
+  \   "_"   : 1,
+  \ }
+endif
+
 " tern_for_vim {{{2
 let g:tern_show_argument_hints=1
 
@@ -2761,11 +2774,17 @@ if s:bundle.tap('vim-anzu')
   let g:anzu_topbottom_word = "search hit TOP, continuing at BOTTOM"
   " nmap n <Plug>(anzu-n)zx
   " nmap n <Plug>(anzu-n)zo:<C-u>silent AnzuUpdateSearchStatus\|redraw!<CR>
-  nmap n <Plug>(anzu-n)zO
+  function! ExecIfFoldClosed(key)
+    if foldclosed('.') != -1
+      execute "normal!" a:key
+    endif
+  endfunction
+  nnoremap <Plug>(vimrc-eifc-zO) :call ExecIfFoldClosed("zO")<CR>
+  nmap <silent> n <Plug>(anzu-n)<Plug>(vimrc-eifc-zO)
   " nmap n <Plug>(anzu-jump-n)zx<Plug>(anzu-echo-search-status)
-  nmap N <Plug>(anzu-N)zO
-  nmap * <Plug>(anzu-star)NzO
-  nmap # <Plug>(anzu-sharp)nzO
+  nmap <silent> N <Plug>(anzu-N)<Plug>(vimrc-eifc-zO)
+  nmap <silent> * <Plug>(anzu-star)N<Plug>(vimrc-eifc-zO)
+  nmap <silent> # <Plug>(anzu-sharp)n<Plug>(vimrc-eifc-zO)
   function! s:bundle.tapped.hooks.on_source(bundle)
     " 一定時間キー入力がないとき、ウインドウを移動したとき、タブを移動したときに
     " 検索ヒット数の表示を消去する
@@ -4878,6 +4897,9 @@ if s:bundle.tap('unite.vim')
     nmap <buffer> t <Plug>(unite_choose_action)
     nmap <buffer> l <Plug>(unite_do_default_action)
     nmap <buffer> P <Plug>(unite_toggle_auto_preview)
+    if s:bundle.is_installed('unite-candidate_sorter')
+      nmap <silent><buffer> S <Plug>(unite-candidate_sort)
+    endif
     if s:bundle.is_installed('vim-smartinput') && exists(':SmartinputBufferMapClear')
       SmartinputBufferMapClear i
     endif

@@ -11,8 +11,8 @@ set clipboard=unnamed
 set timeoutlen=500
 highlight Search guibg=#ddd
 
-nnoremap n nNzz
-nnoremap N Nnzz
+nnoremap n nzz
+nnoremap N Nzz
 nnoremap * *Nzz
 nnoremap # #nzz
 nnoremap K :xhelp<cr>
@@ -23,8 +23,8 @@ nnoremap K :xhelp<cr>
 " inoremap <S-cr> <Esc>A];<Esc>
 " nnoremap <S-cr> A];<Esc>
 
-nnoremap [[ /^(-|@property)<CR>:nohlsearch<CR>
-nnoremap ]] /^(-|@property)<CR>:nohlsearch<CR>
+nnoremap [[ /^(-|\+|@property)<CR>:nohlsearch<CR>
+nnoremap ]] /^(-|\+|@property)<CR>:nohlsearch<CR>
 
 nnoremap ff ff
 nnoremap fa :xccmd openQuickly<CR>
@@ -33,13 +33,13 @@ nnoremap fo :xccmd showDocumentItemsMenu<CR>
 nnoremap <Space>j :xccmd jumpToNextCounterpart<CR>
 nnoremap <Space>k :xccmd jumpToNextCounterpart<CR>
 
-nnoremap <Space>s :xccmd changeToStandardEditor<CR>
+" nnoremap <Space>s :xccmd changeToStandardEditor<CR>
 nnoremap <Space>g :xccmd changeToGeniusEditor<CR>
 nnoremap <Space>v :xccmd changeToVersionEditor<CR>
 
 " operator-replace like
-nnoremap _iw viwPyiw
-nnoremap _aw vawPyaw
+nnoremap _iw viwPyiwhl
+nnoremap _aw vawPyawhl
 
 " quickrun like
 nnoremap \r :run<CR>
