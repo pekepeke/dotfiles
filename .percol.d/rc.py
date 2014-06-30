@@ -1,4 +1,4 @@
-import sys, commands, os
+import sys, commands, os, re
 from percol.command import SelectorCommand
 from percol.key import SPECIAL_KEYS
 from percol.finder import FinderMultiQueryMigemo, FinderMultiQueryRegex
@@ -41,6 +41,16 @@ if sys.platform == "darwin":
 
     def paste_as_yank(self):
         self.model.insert_string(commands.getoutput("pbpaste"))
+
+    SelectorCommand.kill_end_of_line = copy_end_of_line_as_kill
+    SelectorCommand.yank = paste_as_yank
+elif re.search('^linux', sys.platform):
+    def copy_end_of_line_as_kill(self):
+        commands.getoutput("echo " + self.model.query[self.model.caret:] + " | xclip -i -selection clipboard")
+        self.model.query  = self.model.query[:self.model.caret]
+
+    def paste_as_yank(self):
+        self.model.insert_string(commands.getoutput("xclip -selection clipboard"))
 
     SelectorCommand.kill_end_of_line = copy_end_of_line_as_kill
     SelectorCommand.yank = paste_as_yank
