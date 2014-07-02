@@ -1129,6 +1129,7 @@ NeoBundleLazy 'https://gist.github.com/6576341', {
 \ 'script_type' : 'plugin',
 \ 'autoload': {'mappings': [['n', '<Plug>(endtagcomment)']]}
 \ }
+"  templates
 NeoBundle 'tpope/vim-haml'
 NeoBundle 'digitaltoad/vim-jade'
 NeoBundle 'mustache/vim-mustache-handlebars'
@@ -1140,10 +1141,10 @@ NeoBundle 'Rykka/colorv.vim', {'autoload':{
 \ 'filetypes': ['html','javascript','css','sass','scss','less','slim','stylus'],
 \ }}
 
-NeoBundle 'ChrisYip/Better-CSS-Syntax-for-Vim'
+" NeoBundle 'ChrisYip/Better-CSS-Syntax-for-Vim' " conflict with vim-haml
 " NeoBundle 'lilydjwg/colorizer'
 NeoBundle 'hail2u/vim-css3-syntax'
-NeoBundle 'cakebaker/scss-syntax.vim'
+" NeoBundle 'cakebaker/scss-syntax.vim'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'wavded/vim-stylus'
 NeoBundle 'slim-template/vim-slim'
@@ -1157,6 +1158,7 @@ NeoBundle 'slim-template/vim-slim'
 " \ 'commands': ['Prefixer', 'Prefixer1', 'Prefixer1a',
 " \   'Prefixer2', 'Prefixer2a'],
 " \ }}
+
 
 " javascript {{{4
 " NeoBundle 'bigfish/vim-js-context-coloring', {

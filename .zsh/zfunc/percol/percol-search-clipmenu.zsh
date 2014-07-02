@@ -1,4 +1,4 @@
-function percol_search_clipmenu() {
+function percol-search-clipmenu() {
   local clipmenu_path='$HOME/Library/Application Support/ClipMenu'
   plutil -convert xml1 "$clipmenu_path/clips.data" -o - |\
     awk '/<string>/,/<\/string>/' |\
@@ -17,7 +17,7 @@ function percol_search_clipmenu() {
     nl -b t -n ln |percol |sed -e "s/\ /\\\ /g" |\
 
     # ナンバリングの削除
-    sed -e 's/\\ / /g' |cut -c 8- |ruby -pe 'chomp' |pbcopy
+    sed -e 's/\\ / /g' |cut -c 8- |ruby -pe 'chomp' | pbcopy-wrapper
   zle reset-prompt
 }
 

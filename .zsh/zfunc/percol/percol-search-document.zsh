@@ -1,4 +1,4 @@
-function percol_search_document() {
+function percol-search-document() {
     if [ $# -ge 1 ]; then
         DOCUMENT_DIR=$*
     else
