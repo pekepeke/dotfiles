@@ -233,7 +233,7 @@ function! s:autochdir() "{{{3
 endfunction
 
 " diff {{{2
-set diffopt& diffopt-=filler diffopt+=iwhite
+set diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
 
 " 表示周り {{{2
 set lazyredraw ttyfast
@@ -2513,6 +2513,7 @@ iabbrev funciton function
 iabbrev funcition function
 iabbrev retrun return
 iabbrev sented sent
+iabbrev sended sent
 iabbrev setted set
 iabbrev cosnt const
 iabbrev scirpt script
@@ -2522,7 +2523,7 @@ iabbrev persent percent
 iabbrev parsent percent
 iabbrev tilda tilde
 iabbrev appropreate appropriate
-iabbrev acknowledgement acknowledgment
+iabbrev acknowledgment acknowledgement
 
 " languages plugin {{{1
 " perl {{{2

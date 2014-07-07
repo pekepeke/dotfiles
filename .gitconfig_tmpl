@@ -4,6 +4,7 @@
   path = ~/.gitconfig.d/alias.txt
   path = ~/.gitconfig.d/color.txt
   path = ~/.gitconfig.d/diff.txt
+  path = ~/.gitconfig.d/ghq.txt
 [user]
   name = fuga
   email = f@u.ga

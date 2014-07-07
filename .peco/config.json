@@ -21,6 +21,7 @@
     "C-v": "peco.SelectNextPage",
 
     "C-l": "peco.ToggleSelectionAndSelectNext",
+    "C-s": "peco.ToggleSelectMode",
 
     "C-m": "peco.Finish",
     "C-j": "peco.Finish",
