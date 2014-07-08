@@ -705,4 +705,4 @@ shrc_section_title "finish"
 # vim: ft=zsh fdm=marker sw=2 ts=2 et:
 # __END__ #{{{1
 
-. ~/.spm_completion
+[ -e ~/.spm_completion ] && . ~/.spm_completion
