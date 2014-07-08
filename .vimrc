@@ -2834,7 +2834,7 @@ if s:bundle.tap('lightline.vim')
   \ 'S': 'S-LINE', "\<C-s>": 'S-BLOCK', '?': ' ',
   \ },
   \ 'active': {
-  \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'cwdirname', 'xenv_version', ] ],
+  \   'left': [ [ 'mode', 'paste' ], [ 'diff_mode', 'fugitive', 'filename', 'cwdirname', 'xenv_version', ] ],
   \   'right': [
   \     [ 'qfcount', ],
   \     [ 'linestat' ], [ 'filetype' ],
@@ -2842,7 +2842,7 @@ if s:bundle.tap('lightline.vim')
   \   ],
   \ },
   \ 'inactive': {
-  \   'left': [ [ 'absfilename' ] ],
+  \   'left': [ [ 'diff_mode', 'absfilename' ] ],
   \   'right': [
   \     [ 'winnr' ], [ 'filetype' ],
   \   ],
@@ -2851,6 +2851,7 @@ if s:bundle.tap('lightline.vim')
   \   'linestat': '%3p%% %l:%-2v',
   \ },
   \ 'component_function': {
+  \   'diff_mode' : 'g:ll_helper.diff_mode',
   \   'fugitive' : 'g:ll_helper.fugitive',
   \   'filename' : 'g:ll_helper.filename',
   \   'cwdirname' : 'g:ll_helper.cwdirname',
@@ -2865,7 +2866,7 @@ if s:bundle.tap('lightline.vim')
   \   'bufwinnr': 'g:ll_helper.bufwinnr',
   \ },
   \ }
-  " http://cocopon.me/blog/?p=3522
+  " colorscheme - http://cocopon.me/blog/?p=3522 " {{{3
   function! s:build_ll_colorscheme()
     let mono0 = '#1d1f21'
     let mono1 = '#282a2e'
@@ -2934,7 +2935,7 @@ if s:bundle.tap('lightline.vim')
     endfor
 
     let g:lightline#colorscheme#vimrc#palette = lightline#colorscheme#fill(p)
-  endfunction
+  endfunction "}}}
   call s:build_ll_colorscheme()
   let g:ll_helper = {}
 
@@ -2945,6 +2946,13 @@ if s:bundle.tap('lightline.vim')
       endif
     endfor
     return ""
+  endfunction
+
+  function! g:ll_helper.diff_mode() "{{{3
+    if !&diff
+      return ""
+    endif
+    return printf("D[%s]", filereadable(expand('%:p')) ? "F" : "-")
   endfunction
 
   function! g:ll_helper.anzu_or_charcode() "{{{3

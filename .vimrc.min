@@ -1,5 +1,7 @@
 scriptencoding utf-8
-set nocompatible
+if &compatible
+  set nocompatible
+endif
 
 " environment {{{1
 let $VIM_CACHE = $HOME . '/.cache/vim'
@@ -63,7 +65,7 @@ set viminfo&
 set viminfo+=! viminfo+=n$VIM_CACHE/pager-viminfo.txt
 
 " diff {{{2
-set diffopt& diffopt-=filler diffopt+=iwhite
+set diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
 
 " display {{{2
 set lazyredraw ttyfast
@@ -462,7 +464,7 @@ if s:has_plugin('vim-operator-replace') "{{{2
   map _ <Plug>(operator-replace)
 endif
 
-if s:has_plugin('sudo.vim') || s:has_plugin('SudoEdit.vim')"{{{2
+if s:has_plugin('sudo.vim') || s:has_plugin('SudoEdit.vim') "{{{2
   command! SW w sudo:%
   command! SR read sudo:%
 endif

@@ -40,7 +40,7 @@ case $OSTYPE in
 esac
 
 shrc_section_title "environments" #{{{1
-export EDITOR="vim -u ~/.vimrc.min"
+export EDITOR="vim -N -u ~/.vimrc.min"
 export RLWRAP_HOME=~/.rlwrap
 # stty
 if type stty >/dev/null 2>&1; then
@@ -147,7 +147,7 @@ alias vimsafe='vim -u NONE -i NONE'
 alias vimnone='vim -u NONE'
 alias vimmin="$EDITOR"
 alias vi="$EDITOR"
-alias view='view -u ~/.vimrc.min'
+alias view='view -N -u ~/.vimrc.min'
 alias ctags-rb='ctags --langmap=RUBY:.rb --exclude="*.js"  --exclude=".git*"'
 gvi () {
   if is_mac ;then
@@ -236,7 +236,8 @@ if [ -n "$ZSH_NAME" ]; then
   alias -g H="| head"
   alias -g T="| tail"
   alias -g V="| $EDITOR -"
-  alias -g P="| percol"
+  alias -g P="| peco"
+  alias -g J="| jq"
   # alias -g V="| view -"
 fi
 
@@ -308,9 +309,9 @@ if [ -z "$SSH_CLIENT" -a x$__ssh_path = x ]; then
     [ ! -e $SSH_LOG_DIR/org ] && mkdir -p $SSH_LOG_DIR/org
 
     if [ $(find $SSH_LOG_DIR -mtime +1 2>/dev/null | wc -l) -eq 1 ]; then
+      touch $SSH_LOG_DIR/.last_touch
       ssh_logs_archive
     fi
-    touch $SSH_LOG_DIR/.last_touch
 
     #_prefix=$(echo $* | perl -ne '$_=~s/\W+/_/g; print $_;')
     #_prefix=$(echo $* | perl -ne '$_=~s/(\d+\.\d+\.\d+\.\d+|[a-z\.-]+)/; print $1;')
@@ -336,7 +337,11 @@ if [ -z "$SSH_CLIENT" -a x$__ssh_path = x ]; then
   # fi
   ssh_logs_archive() { # {{{2
     local SSH_LOG_DIR=$HOME/.ssh-logs
-    for f in $(find $SSH_LOG_DIR -depth 1 -type f -mtime +30); do
+    for f in $(find $SSH_LOG_DIR -depth 1 -type f -mtime +7); do
+      if [ "$f" =~ '^\.' ]; then
+        continue
+      fi
+      # echo $f
       local target=$SSH_LOG_DIR/$(stat -f %Sm -t %Y%m $f)
       [ ! -e $target ] && mkdir $target
       mv $f $target/
