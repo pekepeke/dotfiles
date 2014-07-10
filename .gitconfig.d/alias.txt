@@ -24,8 +24,12 @@
   d4 = diff HEAD~~~~
   d5 = diff HEAD~~~~~
   d10 = diff HEAD~~~~~~~~~~
-  ignore = !"f() { local s=$1; shift; \
+  ignore = "!f() { local s=$1; shift; \
     while [ $# -gt 0 ]; do s="$s,$1"; shift; done;\
     curl "http://gitignore.io/api/$s"; }; f"
   pbcopy = !printf "$1" | pbcopy-wrapper
-
+  export = "!f() {\n\
+    for file in `git diff --name-only $1 $1^`; do \n\
+    git archive --prefix=$2/ $1 $file | tar -xf - ; \n\
+    done ; \n\
+    }; f"

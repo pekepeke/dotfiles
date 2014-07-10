@@ -23,3 +23,5 @@ git merge upstream/master
 git fetch --prune
 # リポジトリURLを確認
 git remote -v
+# 特定コミット/branch のファイル内容を出力
+git show <treeish>:<file>
