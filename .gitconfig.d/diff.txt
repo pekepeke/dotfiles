@@ -9,7 +9,7 @@
   textconv = $HOME/bin/git-xlsx-textconv.pl
 [diff "exif"]
   binary = true
-  textconv = exiftool
+  textconv = exiftool -ImageSize -FileSize -DeviceModel -ColorType
 [diff "word"]
   binary = true
   textconv = catdoc
