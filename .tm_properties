@@ -12,8 +12,8 @@ softWrap = true
 tabSize = 4
 softTabs = false
 
-dotFiles = ".tm_properties,.htaccess,.editorconfig"
-dotFiles = "$dotFiles,.hgignore,.gitignore,.gitmodules"
+dotFiles = ".tm_properties,.ht*,.editorconfig"
+dotFiles = "$dotFiles,.hg*,.git*"
 dotFiles = "$dotFiles,.*rc,.*profile,.bin"
 include = "{$include,$dotFiles}"
 
