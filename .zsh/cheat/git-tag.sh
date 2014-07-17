@@ -8,3 +8,5 @@ git tag [tag-name] [commit-hash]
 git tag -d [tag-name]
 # タグを検索して表示
 git tag -l "A*"
+# remote push
+git push origin v0.9

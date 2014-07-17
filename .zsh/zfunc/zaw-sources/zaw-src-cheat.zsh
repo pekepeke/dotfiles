@@ -4,11 +4,11 @@
 # zaw source for cheat sheet view
 #
 
-[ x"$ZSH_ZAW_CHEAT" = x ] && ZSH_ZAW_CHEAT="$HOME/.zsh/cheat/"
+[ x"$ZSH_ZAW_CHEAT" = x ] && ZSH_ZAW_CHEAT="$HOME/.zsh/cheat"
 function zaw-src-cheat() {
   candidates+=($(find "$ZSH_ZAW_CHEAT" -type f | sed "s|${ZSH_ZAW_CHEAT}/*||g"))
-  actions=( "zaw-callback-cheat-peco-input" "zaw-callback-cheat-peco-yank" "zaw-callback-cheat-cheat" "zaw-callback-cheat-yank" "zaw-callback-cheat-open" "zaw-callback-cheat-cat")
-  act_descriptions=( "input with peco" "yank with peco" "preview cheat" "yank cheat" "open" "cat")
+  actions=( "zaw-callback-cheat-peco-input" "zaw-callback-cheat-peco-yank" "zaw-callback-cheat-cheat" "zaw-callback-cheat-yank" "zaw-callback-cheat-open" "zaw-callback-cheat-edit" "zaw-callback-cheat-cat" )
+  act_descriptions=( "input with peco" "yank with peco" "preview cheat" "yank cheat" "open" "edit" "cat")
 }
 
 function zaw-callback-cheat-cheat() {
@@ -40,7 +40,13 @@ function zaw-callback-cheat-peco-input() {
 }
 
 zaw-callback-cheat-open() {
-  BUFFER="xdg-open $ZSH_ZAW_CHEAT/$1"
+  type open >/dev/null && BUFFER="open $ZSH_ZAW_CHEAT/$1"
+  type xdg-open >/dev/null && BUFFER="xdg-open $ZSH_ZAW_CHEAT/$1"
+  zle accept-line
+}
+
+zaw-callback-cheat-edit() {
+  BUFFER="$EDITOR $ZSH_ZAW_CHEAT/$1"
   zle accept-line
 }
 
