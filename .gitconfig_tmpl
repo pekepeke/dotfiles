@@ -5,6 +5,9 @@
   path = ~/.gitconfig.d/color.txt
   path = ~/.gitconfig.d/diff.txt
   path = ~/.gitconfig.d/ghq.txt
+  path = ~/.gitconfig.d/difftool.vim.txt
+  ; path = ~/.gitconfig.d/difftool.osx.txt
+  ; path = ~/.gitconfig.d/difftool.windows.txt
 [user]
   name = fuga
   email = f@u.ga
@@ -14,66 +17,14 @@
   default = upstream
 [pull]
 	rebase = true
+[diff]
+  tool = gvimdiff
+  prompt = false
+  ; tool = kdiff/meld
 [merge]
-  ; tool = vimdiff
-  tool = vimfugitive
-  ff = false
+  tool = gvimfugitive
+  prompt = false
+  ; tool = mvimfugitive
+  ; tool = kdiff/meld
+  ; ff = false
 
-[difftool "kdiff3"]
-  path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
-  trustExitCode = false
-[difftool "p4diff"]
-  path = p4diff
-[difftool "vimdiff"]
-  cmd = vim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
-  trustExitCode = false
-[difftool "gvimdiff"]
-  cmd = gvim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
-  trustExitCode = false
-[difftool "mvimdiff"]
-  cmd = mvim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
-  trustExitCode = false
-; [difftool "WinMerge"]
-;   path = C:/Apps/WinMerge/WinMergeU.exe
-;   cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" -e -ub -dl \"Base\" -dr \"Mine\" \"$LOCAL\" \"$REMOTE\"
-; [difftool "p4merge"]
-;   cmd = "p4merge.exe $LOCAL $REMOTE"
-[merge "mergepbx"]
-  name = XCode project files merger
-  driver = mergepbx %O %A %B
-[mergetool "p4merge"]
-  path = p4merge
-  keepTemporaries = false
-  trustExitCode = false
-[mergetool "kdiff3"]
-  path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
-  trustExitCode = false
-[mergetool "vimfugitive"]
-  ; cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
-  cmd = vim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
-  trustExitCode = false
-[mergetool "gvimdiff"]
-  cmd = gvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
-  trustExitCode = false
-[mergetool "gvimfugitive"]
-  ; cmd = gvim -f -c "Gdiff" "$MERGED"
-  cmd = gvim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
-  trustExitCode = false
-[mergetool "mvimdiff"]
-  cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
-  trustExitCode = false
-[mergetool "mvimfugitive"]
-  ; cmd = mvim -f -c "Gdiff" "$MERGED"
-  cmd = mvim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
-  trustExitCode = false
-; [mergetool "WinMerge"]
-;   path = C:/Apps/WinMerge/WinMergeU.exe
-;   cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" \"$MERGED\"
-; [mergetool "p4merge"]
-;   cmd = "p4merge.exe $BASE $LOCAL $REMOTE $MERGED"
-;   trustExitCode = true
-;   keepBackup = false
-[include]
-  path = ~/.gitconfig.d/alias.txt
-  path = ~/.gitconfig.d/color.txt
-  path = ~/.gitconfig.d/diff.txt

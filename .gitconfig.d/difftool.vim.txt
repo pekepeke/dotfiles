@@ -1,0 +1,31 @@
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+[difftool "vimdiff"]
+  path = vim
+  cmd = vim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
+  trustExitCode = false
+[difftool "gvimdiff"]
+  path = gvim
+  cmd = gvim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
+  trustExitCode = false
+[difftool "mvimdiff"]
+  cmd = mvim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"
+  trustExitCode = false
+
+[mergetool "vimfugitive"]
+  ; cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
+  cmd = vim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
+  trustExitCode = false
+[mergetool "gvimdiff"]
+  cmd = gvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
+  trustExitCode = false
+[mergetool "gvimfugitive"]
+  ; cmd = gvim -f -c "Gdiff" "$MERGED"
+  cmd = gvim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
+  trustExitCode = false
+[mergetool "mvimdiff"]
+  cmd = mvim -f -d "$LOCAL" "$MERGED" "$REMOTE"
+  trustExitCode = false
+[mergetool "mvimfugitive"]
+  ; cmd = mvim -f -c "Gdiff" "$MERGED"
+  cmd = mvim -f -u "$HOME/.vimrc.min" -c "Gdiff" "$MERGED"
+  trustExitCode = false

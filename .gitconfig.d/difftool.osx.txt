@@ -1,0 +1,32 @@
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+[difftool "kdiff3"]
+  path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
+  trustExitCode = false
+[difftool "p4diff"]
+  path = p4diff
+[difftool "bbdiff"] # for BBEdit
+  cmd = /usr/local/bin/bbdiff --wait --resume "$LOCAL" "$REMOTE"
+[difftool "twdiff"] # for TextWrangler
+  cmd = /usr/bin/twdiff --wait --resume "$LOCAL" "$REMOTE"
+[difftool "filemerge"] # for FileMerge
+  cmd = /usr/bin/opendiff "$LOCAL" "$REMOTE"
+
+[mergetool "diffmerge"]
+  ; path = diffmerge
+  cmd = /Applications/DiffMerge.app/Contents/MacOS/DiffMerge "$LOCAL" "$REMOTE"
+  ; cmd = diffmerge \$LOCAL \$REMOTE
+
+[merge "mergepbx"]
+  name = XCode project files merger
+  driver = mergepbx %O %A %B
+[mergetool "p4merge"]
+  path = p4merge
+  keepTemporaries = false
+  trustExitCode = false
+[mergetool "kdiff3"]
+  path = /Applications/kdiff3.app/Contents/MacOS/kdiff3
+  trustExitCode = false
+[mergetool "diffmerge"]
+  ; cmd = diffmerge --merge --result=$MERGED $LOCAL $BASE $REMOTE
+  cmd = /Applications/DiffMerge.app/Contents/MacOS/DiffMerge --merge --result=$MERGED $LOCAL $BASE $REMOTE
+  trustExitCode = true
