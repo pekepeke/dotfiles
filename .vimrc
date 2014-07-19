@@ -871,7 +871,7 @@ NeoBundleLazy 'mattn/emoji-vim', {'autoload': {
 \ }}
 NeoBundle 'osyo-manga/shabadou.vim'
 NeoBundle 'osyo-manga/vim-watchdogs'
-NeoBundle 'osyo-manga/vim-spice'
+" NeoBundle 'osyo-manga/vim-spice'
 NeoBundle 'osyo-manga/vim-anzu', {'autoload': {
 \ 'mappings': [['n', '<Plug>(anzu-']],
 \ }}
@@ -930,6 +930,9 @@ NeoBundle 'tpope/vim-fugitive', {'autoload':{
 NeoBundleLazy 'gregsexton/gitv', {'autoload': {
 \ 'commands' : ['Gitv'],
 \ }}
+if has('gui_running')
+  NeoBundle 'rhysd/git-messenger.vim'
+endif
 NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
 \ 'commands' : [
 \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
@@ -1694,7 +1697,7 @@ NeoBundleLazy 'syngan/vim-operator-furround', {'autoload':{
 \ 'mappings': ['<Plug>(operator-furround-']
 \ }}
 NeoBundleLazy 'rhysd/vim-operator-surround', {'autoload': {
-\ 'mappings': [['', '<Plug>(operator-surround-']]
+\ 'mappings': [['nx', '<Plug>(operator-surround-']]
 \ }}
 NeoBundleLazy 'sgur/vim-operator-openbrowser', {'autoload': {
 \ 'mappings' : [
@@ -2030,17 +2033,17 @@ vnoremap g<Space> <Space>
 nmap <Space> [!space]
 vmap <Space> [!space]
 
-noremap [!prefix] <Nop>
-nmap , [!prefix]
-vmap , [!prefix]
-xmap , [!prefix]
+" noremap [!prefix] <Nop>
+" nmap [!prefix] ,
+" vmap [!prefix] ,
+" xmap [!prefix] ,
 
 noremap [!edit] <Nop>
 nmap <C-e> [!edit]
 vmap <C-e> [!edit]
 
 noremap [!comment-doc] <Nop>
-map     [!prefix]c     [!comment-doc]
+map     ,c     [!comment-doc]
 
 noremap [!t] <Nop>
 nmap t [!t]
@@ -2336,6 +2339,7 @@ nnoremap ? :<C-u>nohlsearch<CR>?
 
 nnoremap [!space]/ :<C-u>nohlsearch<CR>
 nnoremap [!space]w :<C-u>call my#command#toggle_option("wrap")<CR>
+nnoremap [!space]n :<C-u>call my#command#toggle_option("relativenumber")<CR>
 
 nnoremap <C-w><Space> <C-w>p
 nnoremap *  *N
@@ -2343,7 +2347,7 @@ nnoremap #  #n
 nnoremap <C-w>*  <C-w>s*N
 nnoremap <C-w>#  <C-w>s#n
 
-nnoremap [!prefix]ds :call <SID>replace_at_caret_data_scheme()<CR>
+nnoremap ,ds :call <SID>replace_at_caret_data_scheme()<CR>
 function! s:replace_at_caret_data_scheme() " {{{4
   let cfile = expand('<cfile>')
   let cpath = expand(cfile)
@@ -2647,6 +2651,45 @@ if s:bundle.is_installed('phpcomplete.vim')
   \ ['mongo', 'imagemagick', 'libxml', 'memcache', 'memcached', 'pdo']
   let g:phpcomplete_add_function_extensions =
   \ ['mongo', 'json', 'gd', 'sqlite', 'memcache', 'http']
+endif
+
+
+" codic-vim {{{2
+if s:bundle.tap('codic-vim')
+  " http://sgur.tumblr.com/post/91906146884/codic-vim
+  inoremap <silent> <C-x><C-t> <C-R>=<SID>codic_complete()<CR>
+  function! s:codic_complete()
+    let line = getline('.')
+    let start = match(line, '\k\+$')
+    let cand = s:codic_candidates(line[start :])
+    call complete(start +1, cand)
+    return ''
+  endfunction
+
+  function! s:codic_candidates(arglead)
+    let cand = codic#search(a:arglead, 30)
+    " error
+    if type(cand) == type(0)
+      return []
+    endif
+    " english -> english terms
+    if a:arglead =~# '^\w\+$'
+      return map(cand, '{"word": v:val["label"], "menu": join(map(copy(v:val["values"]), "v:val.word"), ",")}')
+    endif
+    " japanese -> english terms
+    return s:reverse_candidates(cand)
+  endfunction
+
+  function! s:reverse_candidates(cand)
+    let _ = []
+    for c in a:cand
+      for v in c.values
+        call add(_, {"word": v.word, "menu": !empty(v.desc) ? v.desc : c.label })
+      endfor
+    endfor
+    return _
+  endfunction
+  call s:bundle.untap()
 endif
 
 " vim-startify {{{2
@@ -3551,9 +3594,9 @@ endif
 
 " smalls {{{2
 if s:bundle.tap('vim-smalls')
-  nmap [!prefix]f <Plug>(smalls)
-  omap [!prefix]f <Plug>(smalls)
-  xmap [!prefix]f <Plug>(smalls)
+  nmap ,f <Plug>(smalls)
+  omap ,f <Plug>(smalls)
+  xmap ,f <Plug>(smalls)
   let g:smalls_auto_excursion_min_input_length = 2
 
   function s:bundle.tapped.hooks.on_source(bundle)
@@ -3583,8 +3626,8 @@ if s:bundle.is_installed('splitjoin.vim')
   let g:splitjoin_normalize_whitespace = 1
   let g:splitjoin_align = 1
 
-  " nmap [!prefix]j :<C-u>SplitjoinSplit<CR>
-  " nmap [!prefix]k :<C-u>SplitjoinJoin<CR>
+  " nmap ,j :<C-u>SplitjoinSplit<CR>
+  " nmap ,k :<C-u>SplitjoinJoin<CR>
 endif
 
 " rainbow_parentheses {{{2
@@ -3770,13 +3813,13 @@ if s:bundle.is_installed('memolist.vim')
   " let g:memolist_vimfiler = 1
 
   if s:bundle.is_installed('unite.vim')
-    nmap <silent> [!prefix]ml :<C-u>Unite memolist<CR>
-    nmap <silent> [!prefix]mg :<C-u>call <SID>unite_grep(g:memolist_path)<CR>
+    nmap <silent> ,ml :<C-u>Unite memolist<CR>
+    nmap <silent> ,mg :<C-u>call <SID>unite_grep(g:memolist_path)<CR>
   else
-    nmap <silent> [!prefix]ml :MemoList<CR>
-    nmap <silent> [!prefix]mg :MemoGrep<CR>
+    nmap <silent> ,ml :MemoList<CR>
+    nmap <silent> ,mg :MemoGrep<CR>
   endif
-  nmap <silent> [!prefix]mc :MemoNew<CR>
+  nmap <silent> ,mc :MemoNew<CR>
 endif
 
 " golden-ratio {{{2
@@ -3803,12 +3846,12 @@ endif
 
 " camelcasemotion {{{2
 if s:bundle.tap('CamelCaseMotion')
-  nmap <silent> [!prefix]w <Plug>CamelCaseMotion_w
-  nmap <silent> [!prefix]e <Plug>CamelCaseMotion_e
-  nmap <silent> [!prefix]b <Plug>CamelCaseMotion_b
-  vmap <silent> [!prefix]w <Plug>CamelCaseMotion_w
-  vmap <silent> [!prefix]e <Plug>CamelCaseMotion_e
-  vmap <silent> [!prefix]b <Plug>CamelCaseMotion_b
+  nmap <silent> ,w <Plug>CamelCaseMotion_w
+  nmap <silent> ,e <Plug>CamelCaseMotion_e
+  nmap <silent> ,b <Plug>CamelCaseMotion_b
+  vmap <silent> ,w <Plug>CamelCaseMotion_w
+  vmap <silent> ,e <Plug>CamelCaseMotion_e
+  vmap <silent> ,b <Plug>CamelCaseMotion_b
 
   omap <silent> i,w <Plug>CamelCaseMotion_iw
   xmap <silent> i,w <Plug>CamelCaseMotion_iw
@@ -3938,24 +3981,24 @@ endif
 
 " junkfile.vim http://vim-users.jp/2010/11/hack181/ {{{2
 if s:bundle.tap('junkfile.vim')
-  nnoremap [!prefix]sj :<C-u>JunkfileOpen<CR>
+  nnoremap ,sj :<C-u>JunkfileOpen<CR>
   call s:bundle.untap()
 endif
 command! -nargs=0 EnewNofile enew | setl buftype=nofile
 
-nmap [!prefix]ss :<C-u>EnewNofile<CR>
+nmap ,ss :<C-u>EnewNofile<CR>
 
 " alignta {{{2
 if s:bundle.tap('vim-alignta')
   let g:alignta_confirm_for_retab = 0
   " let g:Align_xstrlen=3
-  " vmap [!prefix]a :Align
+  " vmap ,a :Align
 
-  vnoremap [!prefix]a :Alignta
-  vnoremap [!prefix],a :Alignta<< [:=><\-)}\]]\+
-  vnoremap [!prefix],r :Alignta<< [=><\-)}\]]\+
-  vnoremap [!prefix],t :Alignta \|<CR>
-  vnoremap [!prefix],c :Alignta<< \(//\|#\|\/\*\)/1<CR>
+  vnoremap ,a :Alignta
+  vnoremap ,,a :Alignta<< [:=><\-)}\]]\+
+  vnoremap ,,r :Alignta<< [=><\-)}\]]\+
+  vnoremap ,,t :Alignta \|<CR>
+  vnoremap ,,c :Alignta<< \(//\|#\|\/\*\)/1<CR>
 endif
 
 " submode {{{2
@@ -4165,7 +4208,7 @@ let g:sqlutil_default_menu_mode=0
 let g:user_zen_leader_key='<C-y>'
 
 " endtagcomment https://gist.github.com/411828 {{{2
-nmap [!prefix]/ <Plug>(endtagcomment)
+nmap ,/ <Plug>(endtagcomment)
 
 " smartchr "{{{2
 if s:bundle.is_installed('vim-smartchr')
@@ -4705,16 +4748,19 @@ if s:bundle.tap('unite.vim')
   UniteNMap!  gi        git_grep -buffer-name=git_grep
   UniteNMap!  gl        line -start-insert
   UniteNMap!  gd        signify
-  UniteNMap!  tt        gtags/context -buffer-name=tag
-  UniteNMap!  tr        gtags/ref -buffer-name=tag
-  UniteNMap!  td        gtags/def -buffer-name=tag
-  UniteNMap!  tg        gtags/grep -buffer-name=tag
-  UniteNMap!  ti        gtags/completion -buffer-name=tag
+  if s:bundle.is_installed('unite-gtags')
+    " UniteNMap!  tt        gtags/context -buffer-name=tag
+    " UniteNMap!  tr        gtags/ref -buffer-name=tag
+    " UniteNMap!  td        gtags/def -buffer-name=tag
+    " UniteNMap!  tg        gtags/grep -buffer-name=tag
+    " UniteNMap!  ti        gtags/completion -buffer-name=tag
+  endif
   UniteNMap!  q         quickfix -buffer-name=qfix
   UniteNMap   p         history/yank
   " UniteNMap   @         quickrun_config
   " UniteNMap   :         history/command command
   " UniteNMap   /         history/search
+  UniteNMap   /         anzu
   UniteNMap   bb        bookmark -default-action=open
   if s:is_win
     UniteNMap ,         everything -start-insert
@@ -5055,8 +5101,8 @@ if s:bundle.is_installed('taglist.vim') "{{{4
   if s:is_mac && executable('/Applications/MacVim.app/Contents/MacOS/ctags')
     let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
   endif
-  nnoremap <silent> [!prefix]tt :<C-u>TlistToggle<CR>
-  nnoremap <silent> [!prefix]to :<C-u>TlistOpen<CR>1<C-w>h
+  nnoremap <silent> ,tt :<C-u>TlistToggle<CR>
+  nnoremap <silent> ,to :<C-u>TlistOpen<CR>1<C-w>h
 else "{{{4
   let g:tagbar_type_objc = {
         \ 'ctagstype' : 'objc',
@@ -5135,13 +5181,13 @@ else "{{{4
     " let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
     let g:tagbar_ctags_bin='/Applications/MacVim.app/Contents/MacOS/ctags'
   endif
-  nnoremap <silent> [!prefix]tt :<C-u>TagbarToggle<CR>
-  nnoremap <silent> [!prefix]to :<C-u>TagbarOpen<CR>1<C-w>h
+  nnoremap <silent> ,tt :<C-u>TagbarToggle<CR>
+  nnoremap <silent> ,to :<C-u>TagbarOpen<CR>1<C-w>h
 endif "}}}
 
 " SrcExpl {{{2
 if s:bundle.is_installed('SrcExpl')
-  nnoremap <silent> [!prefix]t<Space> :<C-u>SrcExplToggle<CR>
+  nnoremap <silent> ,t<Space> :<C-u>SrcExplToggle<CR>
   let g:SrcExpl_refreshTime = 1000
 endif
 
@@ -5353,9 +5399,11 @@ if s:bundle.tap('vim-operator-user')
     map <silent>sa <Plug>(operator-surround-append)
     map <silent>sd <Plug>(operator-surround-delete)
     map <silent>sr <Plug>(operator-surround-replace)
-    map <silent>sba <Plug>(operator-surround-append)<Plug>(textobj-multiblock-a)
-    map <silent>sbd <Plug>(operator-surround-delete)<Plug>(textobj-multiblock-a)
-    map <silent>sbr <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
+    nmap <silent>saa <Plug>(operator-surround-append)<Plug>(textobj-multiblock-a)
+    nmap <silent>sdd <Plug>(perator-surround-delete)<Plug>(textobj-multiblock-a)
+    nmap <silent>srr <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
+    nmap <silent>sdb <Plug>(operator-surround-delete)<Plug>(textobj-between-a)
+    nmap <silent>srb <Plug>(operator-surround-replace)<Plug>(textobj-between-a)
   endif
 endif
 
@@ -7095,9 +7143,9 @@ command! -nargs=1 -complete=file Relcp call my#command#relative_copy(<f-args>)
 LCAlias Relcp
 
 " win maximize toggle {{{3
-nnoremap [!prefix]mm :call my#winmaximizer#get().toggle()<CR>
-nnoremap [!prefix]mj :call my#winmaximizer#get().toggleDirection("v")<CR>
-nnoremap [!prefix]mh :call my#winmaximizer#get().toggleDirection("h")<CR>
+nnoremap ,mm :call my#winmaximizer#get().toggle()<CR>
+nnoremap ,mj :call my#winmaximizer#get().toggleDirection("v")<CR>
+nnoremap ,mh :call my#winmaximizer#get().toggleDirection("h")<CR>
 
 " fopen & encoding {{{2
 command! -nargs=? -bang -complete=file Utf8 edit<bang> ++enc=utf-8 <args>

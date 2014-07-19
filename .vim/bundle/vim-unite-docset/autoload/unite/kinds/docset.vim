@@ -10,17 +10,18 @@ endif
 let g:unite_docset_open_command = get(g:, 'unite_docset_open_command', ':!open "file://%s"')
 let g:unite_docset_w3m_command = get(g:, 'unite_docset_w3m_open_command', 'W3m local %s')
 let g:unite_docset_w3m_split_command = get(g:, 'unite_docset_w3m_open_command', 'W3mSplit local %s')
+
+let s:has_w3m = exists(':W3m')
 if s:has_w3m
-  let g:unite_docset_default_action = get(g:, 'unite_docset_default_w3m', 'w3m_split')
+  let g:unite_docset_default_action = get(g:, 'unite_docset_default_action', 'w3m_split')
 else
-  let g:unite_docset_default_action = get(g:, 'unite_docset_default_w3m', 'browser')
+  let g:unite_docset_default_action = get(g:, 'unite_docset_default_action', 'browser')
 endif
 
 " static variables {{{1
-let s:has_w3m = exists(':W3m')
 let s:kind = {
   \ 'name' : 'docset',
-  \ 'default_action' : s:has_w3m ? g:unite_docset_default_w3m : 'browser',
+  \ 'default_action' : s:has_w3m ? g:unite_docset_default_action : 'browser',
   \ 'parents' : ['file'],
   \ 'action_table' : {},
   \ 'alias_table' : {},

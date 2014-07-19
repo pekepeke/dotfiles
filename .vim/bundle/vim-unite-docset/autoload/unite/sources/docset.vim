@@ -66,7 +66,8 @@ function! s:source.on_init(args, context) "{{{2
 endfunction
 
 function! s:source.gather_candidates(args, context) "{{{2
-  let index_source = s:cache.get(self.__docset_name)
+  let index_source = s:cache.delete_if_newer_or_get(self.__docset_path,
+    \ self.__docset_name)
   if empty(index_source)
     let index_source = s:fetch_index(self.__docset_path)
     call s:cache.set(self.__docset_name, index_source)
@@ -136,6 +137,14 @@ endfunction
 
 function! s:cache.set(name, list) "{{{3
   call self.lib().writefile(self.dir(), a:name, copy(a:list))
+endfunction
+
+function! s:cache.delete_if_newer_or_get(docset_path, name) "{{{3
+  let docset = fnamemodify(expand(a:docset_path), ':p')
+  if getftime(docset) > getftime(self.dir() . a:name)
+    call self.delete(a:name)
+  endif
+  return self.get(a:name)
 endfunction
 
 function! s:cache.get(name) "{{{3
