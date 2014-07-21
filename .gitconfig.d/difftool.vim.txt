@@ -1,4 +1,6 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+[difftool "vimdiffdir"]
+	cmd = vim -f -u "$HOME/.vimrc.min" '+next' '+execute \"DirDiff\" argv(0) argv(1)' $LOCAL $REMOTE
 [difftool "vimdiff"]
   path = vim
   cmd = vim -f -u "$HOME/.vimrc.min" -d "$LOCAL" "$REMOTE"

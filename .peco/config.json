@@ -1,4 +1,12 @@
 {
+  "Action": {
+    "my.SelectAll": [
+      "peco.ToggleRangeMode",
+      "peco.SelectPrevious",
+      "peco.ToggleRangeMode",
+      "peco.SelectNext"
+    ]
+  },
   "Keymap": {
     "M-f": "peco.ForwardWord",
     "M-b": "peco.BackwardWord",
@@ -21,7 +29,8 @@
     "C-v": "peco.SelectNextPage",
 
     "C-l": "peco.ToggleSelectionAndSelectNext",
-    "C-s": "peco.ToggleSelectMode",
+    "C-s": "my.SelectAll",
+    "C-/": "peco.ToggleRangeMode",
 
     "C-m": "peco.Finish",
     "C-j": "peco.Finish",

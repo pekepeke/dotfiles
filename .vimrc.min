@@ -350,6 +350,13 @@ if v:version > 702
           \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
           \ }}
     NeoBundle 'tpope/vim-fugitive'
+    NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
+    \ 'commands' : [
+    \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
+    \   'DirDiffUpdate', 'DirDiffQuit',
+    \   {'name': 'DirDiff', 'complete': 'dir'},
+    \ ],
+    \ }}
     NeoBundle 'vim-scripts/sudo.vim'
     " NeoBundle 'chrisbra/SudoEdit.vim'
     NeoBundle 'tpope/vim-commentary', {'autoload': {

@@ -189,6 +189,12 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   # lua {{{2
   xenv-init luaenv
 
+  # direnv
+  if [ -e ~/.direnv ]; then
+    PATH=~/.direnv/bin:$PATH
+    eval "$(direnv hook $SHELL)"
+  fi
+
   # haskell {{{2
   PATH=${HOME}/.cabal/bin:$PATH
 

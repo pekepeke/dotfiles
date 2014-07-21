@@ -16,15 +16,16 @@
 [push]
   default = upstream
 [pull]
-	rebase = true
+  rebase = true
 [diff]
   tool = gvimdiff
-  prompt = false
   ; tool = kdiff/meld
+[difftool]
+  prompt = false
 [merge]
   tool = gvimfugitive
-  prompt = false
   ; tool = mvimfugitive
   ; tool = kdiff/meld
   ; ff = false
-
+[mergetool]
+  ; prompt = false

@@ -930,9 +930,9 @@ NeoBundle 'tpope/vim-fugitive', {'autoload':{
 NeoBundleLazy 'gregsexton/gitv', {'autoload': {
 \ 'commands' : ['Gitv'],
 \ }}
-if has('gui_running')
-  NeoBundle 'rhysd/git-messenger.vim'
-endif
+NeoBundle 'rhysd/git-messenger.vim', {
+\ 'gui': 1,
+\ }
 NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
 \ 'commands' : [
 \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
