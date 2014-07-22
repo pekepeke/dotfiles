@@ -19,13 +19,14 @@
   rebase = true
 [diff]
   tool = gvimdiff
-  ; tool = kdiff/meld
+  ; tool = kdiff3/meld/diffmerge
 [difftool]
   prompt = false
 [merge]
   tool = gvimfugitive
   ; tool = mvimfugitive
-  ; tool = kdiff/meld
+  ; tool = kdiff3/meld/diffmerge
   ; ff = false
 [mergetool]
   ; prompt = false
+
