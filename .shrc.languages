@@ -16,7 +16,7 @@ xenv-init() {
     if [ -n "$PS1" -o -n "$PROMPT" ]; then
       # eval "$(${VMNAME} init -)"
       PATH=$HOME/.${VMNAME}/shims:$PATH
-      soft_source ~/.${VMNAME}/completions/${VMNAME}.zsh
+      soft_source ~/.${VMNAME}/completions/${VMNAME}.$SHELL_NAME
     else
       PATH=$HOME/.${VMNAME}/shims:$PATH
     fi
@@ -69,26 +69,10 @@ PATH=$HOME/bin:$HOME/.cache/bin:$PATH
 shrc_section_title "languages" # {{{1
 if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   shrc_section_title "for perl" # {{{2
-  if ! xenv-init plenv; then
-  #   PATH=$HOME/.plenv/bin:$PATH
-  #   if [ -n $SHELL_INTERACTIVE ]; then
-  #     eval $(plenv init -)
-  #   else
-  #     PATH=$HOME/.plenv/shims:$PATH
-  #   fi
-  # else
-    export PERLBREW_ROOT=$HOME/.perlbrew
-    if [ -s $PERLBREW_ROOT/etc/bashrc ] ;then
-      PATH=$PERLBREW_ROOT/bin:$PATH
-      source $PERLBREW_ROOT/etc/bashrc
-    fi
-  fi
+  xenv-init plenv
 
   shrc_section_title "for Python" # {{{2
-  if ! xenv-init pyenv; then
-    export PYTHONBREW_ROOT=$HOME/.pythonbrew
-    [ -e $PYTHONBREW_ROOT/etc/bashrc ] && source $PYTHONBREW_ROOT/etc/bashrc
-  fi
+  xenv-init pyenv
   # export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
   # export PYTHONPATH=~/.lib/python:$PYTHONPATH
   export PYTHONSTARTUP=~/.pyrc
@@ -97,14 +81,8 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   shrc_section_title "for node.js" # {{{2
   # if [ -e ~/.nenv ];then
   #   xenv-init nenv
-  if ! xenv-init nodenv; then
-    if [ -e ~/.nodebrew ]; then
-      PATH=$HOME/.nodebrew/current/bin:$PATH
-      export NODE_PATH=$HOME/.nodebrew/current/lib/node:$HOME/.nodebrew/current/lib/node_modules
-      # eval "$(npm completion 2>/dev/null)"
-      # alias nodebrew='CFLAGS="-D__DARWIN_64_BIT_INO_T" CXXFLAGS="-D__DARWIN_64_BIT_INO_T" nodebrew'
-    fi
-  fi
+  xenv-init nodenv
+
   PATH=node_modules/.bin:$PATH
   if [ -e /usr/local/googkit ]; then
     export GOOGKIT_HOME=/usr/local/googkit
@@ -145,32 +123,6 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
     export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --enable-exif --with-gd --enable-calendar --enable-gd-native-ttf --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --enable-mbregex --enable-wddx --enable-zend-multibyte --with-ldap-sasl --with-ldap --with-pgsql --with-pear --with-apxs2=$(which apxs) --disable-fpm"
   fi
 
-  # if [ -e $HOME/.phpenv ]; then
-  #   if [[ $PATH =~ \.rbenv/bin ]]; then
-  #     PATH=$(echo $PATH | sed 's@.rbenv/bin@.rbenv/bin:'$HOME'/.phpenv/bin@')
-  #   else
-  #     PATH=$HOME/.phpenv/bin:$PATH
-  #   fi
-  #   # if [ ~/.phpenv/bin/phpenv -nt ~/.phpenv.$SHELL_NAME -o ! -e ~/.phpenv.$SHELL_NAME ]; then
-  #   #   phpenv init - > ~/.phpenv.$SHELL_NAME
-  #   #   if_compile ~/.phpenv.$SHELL_NAME
-  #   # fi
-  #   # source ~/.phpenv.$SHELL_NAME
-  #   if [ -n $SHELL_INTERACTIVE ]; then
-  #     eval "$(phpenv init -)"
-  #   else
-  #     PATH=$HOME/.phpenv/shims:$PATH
-  #   fi
-  #   # soft_source ~/.phpenv/completions/rbenv.$SHELL_NAME
-
-  #   # PATH=$PATH:$HOME/.php-build/bin
-  #   # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd "
-  #   # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-sysvmsg --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --with-xpm-dir=/usr/X11R6 --with-png-dir=/usr --with-snmp=/usr"
-  #   # --with-enchant=/usr --enable-gd-native-ttf --with-freetype-dir=/usr --with-t1lib=/usr --with-gmp=/usr --with-imap=/usr --with-imap-ssl --enable-intl --with-onig=/usr
-  #   # --enable-fpm --without-mm
-  #   export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql"
-  # fi
-
   # scala {{{2
   if [ -e ~/.svm ]; then
     export SCALA_HOME=~/.svm/current/rt
@@ -192,7 +144,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   # direnv
   if [ -e ~/.direnv ]; then
     PATH=~/.direnv/bin:$PATH
-    eval "$(direnv hook $SHELL)"
+    eval "$(direnv hook $SHELL_NAME)"
   fi
 
   # haskell {{{2

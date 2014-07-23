@@ -191,9 +191,15 @@ if s:bundle.is_installed('vim-smartinput')
         \ . "\<Plug>(smartinput_BS)"
   imap <expr> <BS>   neocomplete#smart_close_popup()
         \ . "\<Plug>(smartinput_C-h)"
+  " imap <expr> <C-h>  neocomplete#cancel_popup()
+  "       \ . "\<Plug>(smartinput_BS)"
+  " imap <expr> <BS>   neocomplete#cancel_popup()
+  "       \ . "\<Plug>(smartinput_C-h)"
 else
-  inoremap <expr><C-h>  neocomplete#smart_close_popup()."\<C-h>"
-  inoremap <expr><BS>   neocomplete#smart_close_popup()."\<C-h>"
+  " inoremap <expr><C-h>  neocomplete#smart_close_popup()."\<C-h>"
+  " inoremap <expr><BS>   neocomplete#smart_close_popup()."\<C-h>"
+  inoremap <expr><C-h>  neocomplete#cancel_popup()."\<C-h>"
+  inoremap <expr><BS>   neocomplete#cancel_popup()."\<C-h>"
 endif
 
 " inoremap <expr> <C-y>  neocomplete#close_popup()
