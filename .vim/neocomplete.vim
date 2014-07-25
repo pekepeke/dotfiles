@@ -187,19 +187,19 @@ imap <silent><expr> <CR> (pumvisible()?neocomplete#close_popup():"")
 
 " <C-h>, <BS>: close popup and delete backword char.
 if s:bundle.is_installed('vim-smartinput')
-  imap <expr> <C-h>  neocomplete#smart_close_popup()
-        \ . "\<Plug>(smartinput_BS)"
-  imap <expr> <BS>   neocomplete#smart_close_popup()
-        \ . "\<Plug>(smartinput_C-h)"
-  " imap <expr> <C-h>  neocomplete#cancel_popup()
+  imap <expr> <C-h>  pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
+    \ neocomplete#smart_close_popup()."\<Plug>(smartinput_BS)"
+  imap <expr> <BS>   pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
+        \ neocomplete#smart_close_popup()."\<Plug>(smartinput_C-h)"
+  " imap <expr> <C-h>  neocomplete#smart_close_popup()
   "       \ . "\<Plug>(smartinput_BS)"
-  " imap <expr> <BS>   neocomplete#cancel_popup()
+  " imap <expr> <BS>   neocomplete#smart_close_popup()
   "       \ . "\<Plug>(smartinput_C-h)"
 else
-  " inoremap <expr><C-h>  neocomplete#smart_close_popup()."\<C-h>"
-  " inoremap <expr><BS>   neocomplete#smart_close_popup()."\<C-h>"
-  inoremap <expr><C-h>  neocomplete#cancel_popup()."\<C-h>"
-  inoremap <expr><BS>   neocomplete#cancel_popup()."\<C-h>"
+  inoremap <expr><C-h>  neocomplete#smart_close_popup()."\<C-h>"
+  inoremap <expr><BS>   neocomplete#smart_close_popup()."\<C-h>"
+  " inoremap <expr><C-h>  neocomplete#cancel_popup()."\<C-h>"
+  " inoremap <expr><BS>   neocomplete#cancel_popup()."\<C-h>"
 endif
 
 " inoremap <expr> <C-y>  neocomplete#close_popup()
@@ -212,4 +212,6 @@ imap <C-s> <Plug>(neocomplete_start_unite_complete)
 nnoremap [!space]ne :NeocompleteEnable<CR>
 nnoremap [!space]nd :NeocompleteDisable<CR>
 
+" inoremap <buffer><expr><C-h>  neocomplete#smart_close_popup()."\<C-h>"
+" inoremap <buffer><expr><BS>   neocomplete#smart_close_popup()."\<C-h>"
 
