@@ -749,7 +749,7 @@ NeoBundleLazy 'h1mesuke/vim-alignta', {'autoload': {
 \ ],
 \ 'unite_sources': ['alignta']
 \ }}
-
+NeoBundle 'nishigori/increment-activator'
 NeoBundle 'AndrewRadev/switch.vim', {'autoload': {
 \ 'commands': ['Switch']
 \ }}
@@ -766,11 +766,11 @@ NeoBundleLazy 'AndrewRadev/inline_edit.vim', {'autoload': {
 \ {'name': 'InlineEdit'},
 \ ],
 \ }}
-NeoBundle 'zef/vim-cycle', {'autoload': {
-\ 'commands': ['CycleNext', 'CyclePrevious'],
-\ 'mappings': ['<Plug>CycleNext', '<Plug>CyclePrevious'],
-\ 'functions': ['AddCycleGroup']
-\ }}
+" NeoBundle 'zef/vim-cycle', {'autoload': {
+" \ 'commands': ['CycleNext', 'CyclePrevious'],
+" \ 'mappings': ['<Plug>CycleNext', '<Plug>CyclePrevious'],
+" \ 'functions': ['AddCycleGroup']
+" \ }}
 NeoBundle 'rhysd/clever-f.vim', {'autoload': {
 \ 'mappings': [
 \ '<Plug>(clever-f-',
@@ -3250,7 +3250,18 @@ endif
 if s:bundle.tap('vim-speeddating')
   let g:speeddating_no_mappings = 1
 
-  if !s:bundle.is_installed('vim-cycle')
+  if s:bundle.is_installed('increment-activator')
+    function! s:speeddating_or_inca(incr) "{{{3
+      let line = getline('.')
+      execute 'normal' abs(a:incr)."\<Plug>SpeedDating".(a:incr < 0 ? 'Down' : 'Up')
+      if line == getline('.')
+        execute 'normal' "\<Plug>(increment-activator-".(a:incr < 0 ? 'decrement' : 'increment').")"
+      endif
+    endfunction " }}}
+    nmap <silent> <C-a> :<C-u>call <SID>speeddating_or_inca(v:count1)<CR>
+    nmap <silent> <C-x> :<C-u>call <SID>speeddating_or_cycle(-v:count1)<CR>
+
+  elseif !s:bundle.is_installed('vim-cycle')
     nmap <C-A> <Plug>SpeedDatingUp
     nmap <C-X> <Plug>SpeedDatingDown
   else
@@ -3490,6 +3501,38 @@ if s:bundle.is_installed('cascading.vim')
   nmap <silent> !" <Plug>(cascading)
 endif
 
+" increment-activator {{{2
+if s:bundle.is_installed('increment-activator')
+  let g:increment_activator_no_default_key_mappings = 1
+  let g:increment_activator_filetype_candidates = {
+    \ '_': [
+    \   ['get', 'post', 'put', 'delete'],
+    \ ],
+    \ 'vim': [
+    \   ['echo', 'echomsg'],
+    \   ['if', 'elseif', 'endif'],
+    \   ['for', 'endfor'],
+    \   ['function', 'endfunction'],
+    \   ['try', 'catch', 'finally'],
+    \ ],
+    \ 'markdown': [
+    \   ['[ ]', '[x]'],
+    \   ['#', '##', '###', '####', '#####', ],
+    \   ["-", "\t -", "\t\t -", "\t\t\t -", ],
+    \ ],
+    \ 'ruby': [
+    \   ["describe", "context", "specific", "example"],
+    \   ['public', 'protected', 'private'],
+    \   ['before', 'after'],
+    \   ['be_true', 'be_false'],
+    \   ['get', 'post', 'put', 'delete'],
+    \   ['==', 'eql', 'equal'],
+    \   [ '.should_not', '.should' ],
+    \   ['.to_not', '.to'],
+    \ ],
+    \ }
+endif
+
 " switch.vim {{{2
 if s:bundle.is_installed('switch.vim')
   " let g:switch_custom_definitions = [ {
@@ -3498,21 +3541,21 @@ if s:bundle.is_installed('switch.vim')
   " let b:switch_custom_definitions = [
 
   let s:switch_definitions = {
-        \ '_': [
-        \   ['get', 'post', 'put', 'delete'],
-        \ ],
-        \ 'vim': [
-        \   ['echo', 'echomsg'],
-        \   ['if', 'elseif', 'endif'],
-        \   ['for', 'endfor'],
-        \   ['function', 'endfunction'],
-        \   ['try', 'catch', 'finally'],
-        \ ],
-        \ 'markdown': [
-        \   ['[ ]', '[x]'],
-        \   ['#', '##', '###', '####', '#####', ],
-        \ ],
-        \ }
+    \ '_': [
+    \   ['get', 'post', 'put', 'delete'],
+    \ ],
+    \ 'vim': [
+    \   ['echo', 'echomsg'],
+    \   ['if', 'elseif', 'endif'],
+    \   ['for', 'endfor'],
+    \   ['function', 'endfunction'],
+    \   ['try', 'catch', 'finally'],
+    \ ],
+    \ 'markdown': [
+    \   ['[ ]', '[x]'],
+    \   ['#', '##', '###', '####', '#####', ],
+    \ ],
+    \ }
   function! s:switch_definitions_deploy()
     if empty(s:switch_definitions) || empty(&filetype)
       return
