@@ -3507,6 +3507,16 @@ if s:bundle.is_installed('increment-activator')
   let g:increment_activator_filetype_candidates = {
     \ '_': [
     \   ['get', 'post', 'put', 'delete'],
+    \   ['pick', 'squash', 'edit', 'reword', 'fixup', 'exec'],
+    \   ['previous', 'current', 'next'],
+    \   ['=', ':='],
+    \   ['true', 'false'],
+    \   ['月','火','水','木','金','土','日'],
+    \ ],
+    \ 'php': [
+    \   ['private', 'protected', 'public'],
+    \   ['extends', 'implements'],
+    \   ['assert', 'depends', 'dataProvider', 'expectedException', 'group', 'test'],
     \ ],
     \ 'vim': [
     \   ['echo', 'echomsg'],
@@ -3514,6 +3524,20 @@ if s:bundle.is_installed('increment-activator')
     \   ['for', 'endfor'],
     \   ['function', 'endfunction'],
     \   ['try', 'catch', 'finally'],
+    \   ['nnoremap', 'xnoremap', 'inoremap', 'vnoremap', 'cnoremap', 'onoremap'],
+    \   ['nmap', 'xmap', 'imap', 'vmap', 'cmap', 'omap'],
+    \   ['NeoBundle', 'NeoBundleLazy'],
+    \   ['Home', 'End', 'Left', 'Right', 'Delete'],
+    \   ['has', 'has_key', 'exists'],
+    \ ],
+    \ 'go': [
+    \   ['true', 'false', 'iota', 'nil'],
+    \   ['print', 'println'],
+    \   ['byte', 'complex64', 'complex128'],
+    \   ['int', 'int8', 'int16', 'int32', 'int64'],
+    \   ['uint', 'uint8', 'uint16', 'uint32', 'uint64'],
+    \   ['float32', 'float64'],
+    \   ['interface', 'struct'],
     \ ],
     \ 'markdown': [
     \   ['[ ]', '[x]'],
