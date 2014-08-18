@@ -3251,15 +3251,15 @@ if s:bundle.tap('vim-speeddating')
   let g:speeddating_no_mappings = 1
 
   if s:bundle.is_installed('increment-activator')
-    function! s:speeddating_or_inca(incr) "{{{3
+    function! s:speeddating_or_incact(incr) "{{{3
       let line = getline('.')
       execute 'normal' abs(a:incr)."\<Plug>SpeedDating".(a:incr < 0 ? 'Down' : 'Up')
       if line == getline('.')
         execute 'normal' "\<Plug>(increment-activator-".(a:incr < 0 ? 'decrement' : 'increment').")"
       endif
     endfunction " }}}
-    nmap <silent> <C-a> :<C-u>call <SID>speeddating_or_inca(v:count1)<CR>
-    nmap <silent> <C-x> :<C-u>call <SID>speeddating_or_cycle(-v:count1)<CR>
+    nmap <silent> <C-a> :<C-u>call <SID>speeddating_or_incact(v:count1)<CR>
+    nmap <silent> <C-x> :<C-u>call <SID>speeddating_or_incact(-v:count1)<CR>
 
   elseif !s:bundle.is_installed('vim-cycle')
     nmap <C-A> <Plug>SpeedDatingUp
@@ -3539,11 +3539,6 @@ if s:bundle.is_installed('increment-activator')
     \   ['float32', 'float64'],
     \   ['interface', 'struct'],
     \ ],
-    \ 'markdown': [
-    \   ['[ ]', '[x]'],
-    \   ['#', '##', '###', '####', '#####', ],
-    \   ["-", "\t -", "\t\t -", "\t\t\t -", ],
-    \ ],
     \ 'ruby': [
     \   ["describe", "context", "specific", "example"],
     \   ['public', 'protected', 'private'],
@@ -3578,6 +3573,8 @@ if s:bundle.is_installed('switch.vim')
     \ 'markdown': [
     \   ['[ ]', '[x]'],
     \   ['#', '##', '###', '####', '#####', ],
+    \   ["-", "\t-", "\t\t-", "\t\t\t-", ],
+    \   ["+", "\t+", "\t\t+", "\t\t\t+", ],
     \ ],
     \ }
   function! s:switch_definitions_deploy()
