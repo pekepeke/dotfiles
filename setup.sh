@@ -2,6 +2,7 @@
 
 GIT_URL="git://github.com/pekepeke/dotfiles.git"
 LOCAL_DIR="$HOME/.github-dotfiles"
+OS_DIFFER_FILES=".xinitrc"
 BACKUP_FILES=".bash_profile .bashrc .screenrc .vimrc"
 SKIP_FILES=". .. .git setup.sh"
 COPY_FILES=""
@@ -24,6 +25,17 @@ matchin() {
   shift
   for K in $*; do
     if [ "x$SRC" = "x$K" ]; then
+      return 0
+    fi
+  done
+  return 1
+}
+
+forematchin() {
+  local SRC=$1
+  shift
+  for K in $*; do
+    if [ $(echo "$SRC" | grep -e "^$K.*" | wc -l) -eq 1 ]; then
       return 0
     fi
   done
@@ -71,6 +83,31 @@ exec_install() {
     if matchin "$F" $SKIP_FILES ; then
       # echo -e "${GRAY}skip object $F${DEFAULT}"
       skipfiles="$skipfiles\n${GRAY}skip object $F${DEFAULT}"
+    elif forematchin "$F" $OS_DIFFER_FILES ; then
+      local base=${F%.*}
+      local prefix=""
+      case "$OSTYPE" in
+        solaris*)
+          prefix=solaris
+          ;;
+        darwin*)
+          prefix=osx
+          ;;
+        linux*)
+          prefix=linux
+          ;;
+        bsd*)
+          prefix=bsd
+          ;;
+        *)        echo "unknown: $OSTYPE - $" 1>&2 ;;
+      esac
+
+      echo $F $base $prefix
+      if [ x"$prefix" != x -a x"$F" = x"${base}.${prefix}" ]; then
+        execfiles="$execfiles\n${YELLOW}ln -s $CDIR/$F $HOME/${base}${DEFAULT}"
+        ln -s "$CDIR/$F" "$HOME/${base}"
+      fi
+      # ln -s $CDIR/$F $HOME
     elif [ -e "$HOME/$F" ]; then
       # echo -e "${GRAY}skip $F${DEFAULT}"
       skipfiles="$skipfiles\n${GRAY}skip $F${DEFAULT}"

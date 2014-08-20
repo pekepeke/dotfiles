@@ -50,6 +50,16 @@ snippet OS
 		*)
 			;;
 	esac
+
+snippet caseostype
+	case "$OSTYPE" in
+		solaris*) echo "SOLARIS" ;;
+		darwin*)  echo "OSX" ;;
+		linux*)   echo "LINUX" ;;
+		bsd*)     echo "BSD" ;;
+		*)        echo "unknown: $OSTYPE" ;;
+	esac
+
 snippet script_dir
 	script_dir="$(cd "$(dirname "${BASH_SOURCE:-\$0}")"; pwd)"
 snippet script_dir2
