@@ -930,6 +930,9 @@ NeoBundle 'tpope/vim-fugitive', {'autoload':{
 NeoBundleLazy 'gregsexton/gitv', {'autoload': {
 \ 'commands' : ['Gitv'],
 \ }}
+NeoBundle 'cohama/agit.vim', {'autoload': {
+\ 'commands': ['Agit', 'AgitGit'],
+\ }}
 NeoBundle 'rhysd/git-messenger.vim', {
 \ 'gui': 1,
 \ }
@@ -3421,6 +3424,16 @@ if s:bundle.tap('gitv')
   call s:bundle.untap()
 endif
 
+" agit.vim {{{2
+if s:bundle.tap('agit.vim')
+  let g:agit_enable_auto_show_commit = 0
+  let g:agit_enable_auto_refresh = 0
+  MyAutoCmd FileType agit call s:vimrc_agit_init()
+  function! s:vimrc_agit_init()
+  endfunction
+  call s:bundle.untap()
+endif
+
 " w3m {{{2
 if s:bundle.tap('w3m.vim')
   Alias w3m W3mSplit
@@ -4511,8 +4524,6 @@ if s:bundle.tap('unite.vim')
     " edit {{{5
     let g:unite_source_menu_menus["edit"] = s:unite_menu_create(
     \ 'Edit', [
-    \   ['Gitv browse' , 'Gitv']         ,
-    \   ['Gitv file browse' , 'Gitv!']         ,
     \   ['SplitjoinJoin' , 'SplitjoinJoin']         ,
     \   ['SplitjoinSplit' , 'SplitjoinSplit']         ,
     \   ['InlineEdit' , 'InlineEdit']         ,
@@ -4660,15 +4671,17 @@ if s:bundle.tap('unite.vim')
     \   ['Npm update'     , s:dispatch('npm update')]   ,
     \ ])
     " gitv {{{5
-    let g:unite_source_menu_menus["ft_gitv"] = s:unite_menu_create(
-    \ 'Gitv', [
-    \ ['gbrowse', "execute 'Gbrowse' eval('GitvGetCurrentHash()')"],
-    \ ['checkout', "execute 'Git checkout' eval('GitvGetCurrentHash())"],
-    \ ['rebase', "execute 'Git rebase' eval('GitvGetCurrentHash())"],
-    \ ['revert', "execute 'Git revert' eval('GitvGetCurrentHash())"],
-    \ ['cherry-pick', "execute 'Git cherry-pick' eval('GitvGetCurrentHash())"],
-    \ ['reset --hard', "execute 'Git reset --hard' eval('GitvGetCurrentHash())"],
-    \ ])
+    if s:bundle.is_installed('gitv')
+      let g:unite_source_menu_menus["ft_gitv"] = s:unite_menu_create(
+      \ 'Gitv', [
+      \ ['gbrowse', "execute 'Gbrowse' eval('GitvGetCurrentHash()')"],
+      \ ['checkout', "execute 'Git checkout' eval('GitvGetCurrentHash())"],
+      \ ['rebase', "execute 'Git rebase' eval('GitvGetCurrentHash())"],
+      \ ['revert', "execute 'Git revert' eval('GitvGetCurrentHash())"],
+      \ ['cherry-pick', "execute 'Git cherry-pick' eval('GitvGetCurrentHash())"],
+      \ ['reset --hard', "execute 'Git reset --hard' eval('GitvGetCurrentHash())"],
+      \ ])
+    endif
 
     " let g:unite_source_menu_menus["ft_"] = s:unite_menu_create(
     " \ '', [
@@ -5094,8 +5107,13 @@ if s:bundle.is_installed('vim-fugitive')
   nnoremap <silent> [!space]gB :<C-u>Gbrowse<CR>
   nnoremap <silent> [!space]gp :<C-u>Git push
   nnoremap <silent> [!space]ge :<C-u>Gedit<Space>
-  nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
-  nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
+  if s:bundle.is_installed('agit.vim')
+    nnoremap <silent> [!space]gv :<C-u>Agit<CR>
+    " nnoremap <silent> [!space]gV :<C-u>Agit!<CR>
+  elseif s:bundle.is_installed('gitv')
+    nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
+    nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
+  endif
   command! Gdiffoff diffoff | q | Gedit
 endif
 function! s:vimrc_git_init()
