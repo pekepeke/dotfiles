@@ -810,6 +810,7 @@ NeoBundleLazy 'thinca/vim-prettyprint', { 'autoload': {
 \   { 'name' : 'PP', 'complete': 'expression'},
 \   { 'name' : 'PrettyPrint', 'complete': 'expression'},
 \ ]}}
+NeoBundle 'thinca/vim-ambicmd'
 
 if has('conceal') && !s:is_mac
   NeoBundle 'Yggdroot/indentLine'
@@ -1633,7 +1634,7 @@ else
   NeoBundle 'ujihisa/neco-look'
 endif
 
-" web {{{3
+" www {{{3
 NeoBundleLazy 'tyru/open-browser.vim', {'autoload':{
 \ 'functions': ['OpenBrowser', ],
 \ 'function_prefix':'openbrowser',
@@ -1654,7 +1655,6 @@ NeoBundle 'mattn/webapi-vim'
 NeoBundleLazy 'mattn/excitetranslate-vim', {'autoload': {
 \ 'commands': ['ExciteTranslate'],
 \ }}
-NeoBundle 'thinca/vim-ambicmd'
 NeoBundleLazy 'mattn/gist-vim', {'autoload': {
 \ 'commands': ['Gist'],
 \ }}
@@ -2533,6 +2533,11 @@ iabbrev appropreate appropriate
 iabbrev acknowledgment acknowledgement
 
 " languages plugin {{{1
+" html {{{2
+let g:html_indent_script1="inc"
+let g:html_indent_style1="inc"
+let g:html_indent_inctags="html,body,head"
+
 " perl {{{2
 let g:perl_compiler_force_warnings = 0
 let g:perl_extended_vars           = 1
@@ -3485,7 +3490,8 @@ endif
 if s:bundle.is_installed('colorv.vim')
   let g:colorv_cache_fav = $VIM_CACHE . "/vim_colorv_fav"
   let g:colorv_cache_file = $VIM_CACHE . "/vim_colorv_cache"
-  let g:colorv_preview_ftype = 'css,html,scss,sass'
+  " let g:colorv_preview_ftype = 'css,html,scss,sass'
+  let g:colorv_preview_ftype = 'css,scss,sass'
   " let g:colorv_python_cmd = ''
   let g:colorv_no_global_map = 1
   " g:colorv_global_leader
@@ -4186,7 +4192,7 @@ let g:yankring_default_menu_mode = 0
 let g:yankring_min_element_length = 2
 let g:yankring_window_height = 14
 
-" cocoa.vim {{{2}}}
+" cocoa.vim {{{2
 let g:objc#man#dash_keyword = 'ios:'
 let g:objc#man#dash_command_format = '/Applications/zeal.app/Contents/MacOS/zeal --query "%s" &'
 
