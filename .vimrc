@@ -66,7 +66,7 @@ endif
 
 " reset settings & restore runtimepath {{{2
 " let s:configured_runtimepath = &runtimepath
-set all& guioptions+=T guioptions-=m guioptions-=M
+set guioptions+=T guioptions-=m guioptions-=M
 
 set runtimepath^=$HOME/.vim
 set runtimepath+=$HOME/.vim/after
@@ -271,7 +271,7 @@ if s:is_mac
 else
   set novisualbell
 endif
-set noerrorbells
+set t_vb= noerrorbells
 
 set noequalalways
 set langmenu=none
@@ -562,7 +562,7 @@ endif
 " load neobundle {{{2
 " set nocompatible
 " filetype off
-call neobundle#rc(expand("~/.vim/neobundle"))
+call neobundle#begin(expand("~/.vim/neobundle"))
 NeoBundleLocal ~/.vim/bundle
 
 " vundles {{{2
@@ -1842,7 +1842,9 @@ NeoBundleLazy 'anyakichi/vim-textobj-ifdef', {'autoload':{
 NeoBundle 'akiyan/vim-textobj-php', {'autoload':{
 \ 'mappings' : [['nvo', '<Plug>(textobj-php-', ]]}}
 
-" afterexec for runtimepath {{{1
+" configure for runtimepath {{{1
+call neobundle#end()
+
 filetype plugin indent on
 if has('syntax')
   syntax enable
