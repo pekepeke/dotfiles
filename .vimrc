@@ -140,7 +140,7 @@ set fileformat=unix
 set fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp
 set fileencodings+=cp932
 set fileformats=unix,dos,mac
-set synmaxcol=1500
+set synmaxcol=1000
 
 
 set display=lastline
@@ -271,7 +271,9 @@ if s:is_mac
 else
   set novisualbell
 endif
-set t_vb= noerrorbells
+set t_vb=noerrorbells
+" http://superuser.com/questions/195794/gnu-screen-shift-tab-issue
+set t_kB=[Z
 
 set noequalalways
 set langmenu=none
@@ -1649,7 +1651,11 @@ NeoBundleLazy 'tyru/open-browser.vim', {'autoload':{
 \ }}
 NeoBundleLazy 'tyru/open-browser-github.vim', {'autoload': {
 \ 'commands': ['OpenGithubFile', 'OpenGithubIssue',
-\   'OpenGithubPullReq']
+\   'OpenGithubPullReq'],
+\ }}
+NeoBundleLazy 'junegunn/vim-github-dashboard', {'autoload': {
+\ 'commands': [
+\   'GHD', 'GHA', 'GHDashboard', 'GHActivity', ],
 \ }}
 NeoBundle 'mattn/webapi-vim'
 NeoBundleLazy 'mattn/excitetranslate-vim', {'autoload': {
