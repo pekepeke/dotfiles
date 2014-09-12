@@ -17,6 +17,7 @@ alias date='gdate'
 alias seq='gseq'
 
 alias brew='PATH=$(noenvpath) brew'
+alias cask='PATH=$(noenvpath) brew cask'
 alias b='PATH=$(noenvpath) brew'
 alias bs='PATH=$(noenvpath) brew -S'
 alias bi='PATH=$(noenvpath) brew info'
