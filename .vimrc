@@ -295,6 +295,9 @@ augroup END
 
 " タブ文字の設定 {{{2
 set autoindent smartindent nocindent " インデント設定
+if has('linebreak')
+  set breakindent
+endif
 set list
 if s:is_mac
   set showbreak=↓
@@ -6186,7 +6189,7 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   nnoremap [!space]ne :NeocompleteEnable<CR>
   nnoremap [!space]nd :NeocompleteDisable<CR>
 
-if s:bundle.is_installed('neocomplcache.vim') "{{{3
+elseif s:bundle.is_installed('neocomplcache.vim') "{{{3
   source ~/.vim/neocomplcache.vim
 endif
 
