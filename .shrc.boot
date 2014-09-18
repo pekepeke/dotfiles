@@ -237,6 +237,7 @@ if [ -n "$ZSH_NAME" ]; then
   alias -g T="| tail"
   alias -g V="| $EDITOR -"
   alias -g P="| peco"
+  alias -g PC="| peco | xargs echo -n | pbcopy-wrapper"
   alias -g J="| jq"
   # alias -g V="| view -"
 fi

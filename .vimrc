@@ -295,7 +295,7 @@ augroup END
 
 " タブ文字の設定 {{{2
 set autoindent smartindent nocindent " インデント設定
-if has('linebreak')
+if has('linebreak') && (v:version > 704 || v:version == 704 && has('patch338'))
   set breakindent
 endif
 set list

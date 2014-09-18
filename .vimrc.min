@@ -105,6 +105,9 @@ set foldmethod=marker
 
 " tab character {{{2
 set autoindent smartindent cindent
+if has('linebreak') && (v:version > 704 || v:version == 704 && has('patch338'))
+  set breakindent
+endif
 set list
 set listchars=tab:^\ ,trail:~,nbsp:%,extends:>,precedes:<
 set smarttab             " インテリジェンスなタブ入力
@@ -209,6 +212,7 @@ inoremap <C-f> <Right>
 inoremap <C-b> <Left>
 inoremap <C-d> <Delete>
 inoremap <C-a> <Home>
+inoremap <expr><C-e> pumvisible() ? "\<C-e>" : "\<End>"
 
 inoremap <C-]>a <Home>
 inoremap <C-]>e <End>

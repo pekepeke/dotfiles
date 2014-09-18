@@ -29,7 +29,7 @@
     "C-v": "peco.SelectNextPage",
 
     "C-l": "peco.ToggleSelectionAndSelectNext",
-    "C-s": "my.SelectAll",
+    "C-s": "peco.SelectAll",
     "C-/": "peco.ToggleRangeMode",
 
     "C-m": "peco.Finish",
