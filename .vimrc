@@ -300,7 +300,8 @@ if has('linebreak') && (v:version > 704 || v:version == 704 && has('patch338'))
 endif
 set list
 if s:is_mac
-  set showbreak=↓
+  " set showbreak=↓
+  let &showbreak='+ '
 else
   " set showbreak=↓
   let &showbreak='+++ '
@@ -885,7 +886,7 @@ NeoBundle 'kien/rainbow_parentheses.vim'
 NeoBundle 'vim-scripts/matchit.zip', {'autoload': {
 \ 'mappings' : [['nx', '%']],
 \ }}
-NeoBundle 'vim-scripts/matchparenpp'
+" NeoBundle 'vim-scripts/matchparenpp'
 NeoBundle 'gregsexton/MatchTag'
 NeoBundle 'tpope/vim-unimpaired'
 NeoBundleLazy 'vim-scripts/ShowMultiBase', {'autoload':{
@@ -6730,10 +6731,8 @@ command! -nargs=0 DQ call <SID>exe_if_diff('diffoff')
 
 " rename {{{2
 command! -nargs=? -complete=file Rename call my#command#rename(<q-args>)
-Alias ren Rename
-
 command! -nargs=1 -complete=file Relcp call my#command#relative_copy(<f-args>)
-LCAlias Relcp
+Alias ren Rename
 
 " win maximize toggle {{{3
 nnoremap ,mm :call my#winmaximizer#get().toggle()<CR>
@@ -6748,7 +6747,6 @@ command! -nargs=? -bang -complete=file Jis  edit<bang> ++enc=iso-2022-jp <args>
 command! -nargs=? -bang -complete=file Dos  edit<bang> ++ff=dos <args>
 command! -nargs=? -bang -complete=file Mac  edit<bang> ++ff=mac <args>
 command! -nargs=? -bang -complete=file Unix edit<bang> ++ff=unix <args>
-LCAlias Utf8 Euc Sjis Jis
 
 " }}}
 " utility {{{2
@@ -6893,8 +6891,8 @@ endfunction
 command! -nargs=0 ZealRemoveCache call s:docset_cache_remove()
 command! -nargs=0 DashRemoveCace call s:docset_cache_remove()
 
-nnoremap <Plug>(zeal) :Zeal<Space>
-nnoremap <Plug>(zeal-keyword) :Zeal<Space><C-r>=expand('<cword>')<CR><CR>
+nnoremap <Plug>(zeal) :<C-u>Zeal<Space>
+nnoremap <Plug>(zeal-keyword) :<C-u>Zeal<Space><C-r>=expand('<cword>')<CR><CR>
 
 nmap [!space]ss <Plug>(zeal)
 nmap [!space]sw <Plug>(zeal-keyword)
@@ -6951,13 +6949,25 @@ command! -nargs=* -bang AutoexecStatus autocmd vimrc-autoexec
 " ctags {{{2
 command! -nargs=0 CTagsConfigSample call my#ctags#show()
 
-" for vim {{{3
+" verbose {{{2
+function! s:set_verbose(off)
+  if (a:off)
+    set verbose=0
+    set verbosefile=
+  else
+    set verbose=99
+    set verbosefile=~/vim-verbosefile.log
+  endif
+endfunction
+command! -nargs=0 Verbose call s:set_verbose("<bang>")
+
+" for vim {{{2
 command! -nargs=0 ThisSyntaxName echo synIDattr(synID(line("."), col("."), 1), "name")
 command! -nargs=0 ThisSyntax echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
   \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
   \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"
 
-" coding style {{{2}}}
+" coding style {{{2
 " http://vim-users.jp/2010/05/hack149/
 let s:coding_styles = {}
 let s:coding_styles['Standard']      = 'expandtab   tabstop=4 shiftwidth=4 softtabstop&'
@@ -6978,6 +6988,7 @@ endfunction " }}}
 function! s:coding_style_complete(...) "{{{
     return keys(s:coding_styles)
 endfunction "}}}
+
 " util {{{2
 function! s:to_scratch() "{{{3
   if empty(expand('%:p'))
