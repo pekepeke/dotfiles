@@ -271,7 +271,7 @@ if s:is_mac
 else
   set novisualbell
 endif
-set t_vb=noerrorbells
+set noerrorbells t_vb=
 " http://superuser.com/questions/195794/gnu-screen-shift-tab-issue
 set t_kB=[Z
 
@@ -1021,27 +1021,34 @@ NeoBundleLazy 'vim-jp/vital.vim', {'autoload': {
 NeoBundle 'mattn/learn-vimscript'
 
 " completion {{{4
+" NeoBundleLazy 'm2ym/rsense', {
+" \ 'rtp' : 'etc',
+" \ 'build' : {
+" \    'mac': 'ruby etc/config.rb > ~/.rsense',
+" \    'unix': 'ruby etc/config.rb > ~/.rsense',
+" \ } }
+if !s:bundle.is_installed('rsense')
+  NeoBundle "osyo-manga/vim-monster"
+endif
 if has('lua') && (v:version > 703 ||
       \ (v:version == 703 && has('patch885')))
   NeoBundle 'Shougo/neocomplete.vim', {'autoload':{
   \ 'insert':1,
   \ 'unite_sources': ['neocomplete'],
   \ }}
-  NeoBundle 'supermomonga/neocomplete-rsense.vim'
+  if s:bundle.is_installed('rsense')
+    NeoBundle 'supermomonga/neocomplete-rsense.vim'
+  endif
 else
   NeoBundle 'Shougo/neocomplcache.vim', {'autoload':{
   \ 'insert':1,
   \ }}
-  NeoBundle 'Shougo/neocomplcache-rsense.vim'
-  NeoBundle 'basyura/csharp_complete'
-  NeoBundle 'osyo-manga/neocomplcache-jsx'
+  if s:bundle.is_installed('rsense')
+    NeoBundle 'Shougo/neocomplcache-rsense.vim'
+  endif
+  " NeoBundle 'basyura/csharp_complete'
+  " NeoBundle 'osyo-manga/neocomplcache-jsx'
 endif
-NeoBundleLazy 'm2ym/rsense', {
-\ 'rtp' : 'etc',
-\ 'build' : {
-\    'mac': 'ruby etc/config.rb > ~/.rsense',
-\    'unix': 'ruby etc/config.rb > ~/.rsense',
-\ } }
 NeoBundle 'Shougo/neosnippet.vim', {
 \ 'lazy' : 1,
 \ 'autoload' : {
