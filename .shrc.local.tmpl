@@ -1,0 +1,39 @@
+# vim:fdm=marker sw=2 ts=2 ft=sh expandtab:
+
+## github
+# ghrize() {
+#   git config --local user.name 'xxx'
+#   git config --local user.email 'xxx@xxx.xx'
+#   git config --local --list
+# }
+
+## telnet
+# alias telnet-xxx-prod='telnet -8 -l xxx -K host port'
+
+## EC2
+# export EC2_HOME="/usr/local/Cellar/ec2-api-tools/1.6.13.0/libexec"
+# export EC2_HOME="$(find /usr/local/Cellar/ec2-api-tools/*/libexec -type d -depth 0 | sort -nr | head -1)"
+# export EC2_URL=http://ec2.ap-northeast-1.amazonaws.com
+# export AWS_DEFAULT_PROFILE=default
+# aws_xxx() {
+#   export AWS_DEFAULT_PROFILE=xxx
+# }
+
+## gem install ec2list
+# ec2ssh() {
+#   local PROFILE=$1
+#   if [ x"$PROFILE" = x ]; then
+#     PROFILE=default
+#   fi
+#   local selected_host=$(ec2list --profile=$PROFILE | peco | cut -f 3)
+#   if [ -n "${selected_host}" ]; then
+#     if [ -n "$ZSH_NAME" ]; then
+#       BUFFER="ssh ${selected_host}"
+#       zle accept-line
+#     else
+#       ssh $selected_host
+#     fi
+#   fi
+# }
+# alias sshec2xxx="ec2ssh profile -l user -i ~/.ssh/keys/id_rsa.pem -o StrictHostKeyChecking=no"
+

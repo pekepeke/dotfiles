@@ -1,5 +1,6 @@
 # settings {{{1
 export LESS="-IMR"
+export JAVA_HOME="$(/usr/libexec/java_home)"
 
 # aliases {{{1
 # browser {{{2
