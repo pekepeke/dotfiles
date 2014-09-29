@@ -333,6 +333,7 @@ set modelines=10
 
 " 検索周り {{{2
 set ignorecase smartcase       " 賢い検索
+set infercase
 set incsearch                  " インクメンタル
 set wrapscan                   " 検索で最初にもどる
 set hlsearch                   " 検索で色
@@ -4388,7 +4389,7 @@ if s:bundle.tap('unite.vim')
         \ '.sass_cache',
         \ ], '\|'))
     " files {{{4
-    call unite#custom#profile('files', 'smartcase', 1)
+    call unite#custom#profile('files', 'context.smartcase', 1)
 
     call unite#custom#substitute('files', '\$\w\+', '\=eval(submatch(0))', 200)
 
