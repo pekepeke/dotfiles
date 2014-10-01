@@ -332,11 +332,9 @@ set modeline
 set modelines=10
 
 " 検索周り {{{2
-set ignorecase smartcase       " 賢い検索
+set ignorecase smartcase wrapscan
 set infercase
-set incsearch                  " インクメンタル
-set wrapscan                   " 検索で最初にもどる
-set hlsearch                   " 検索で色
+set incsearch hlsearch
 set virtualedit+=block         " 矩形の virtualedit 許可
 
 " バックアップ {{{2
@@ -1022,15 +1020,15 @@ NeoBundleLazy 'vim-jp/vital.vim', {'autoload': {
 NeoBundle 'mattn/learn-vimscript'
 
 " completion {{{4
-" NeoBundleLazy 'm2ym/rsense', {
-" \ 'rtp' : 'etc',
-" \ 'build' : {
-" \    'mac': 'ruby etc/config.rb > ~/.rsense',
-" \    'unix': 'ruby etc/config.rb > ~/.rsense',
-" \ } }
-if !s:bundle.is_installed('rsense')
-  NeoBundle "osyo-manga/vim-monster"
-endif
+NeoBundleLazy 'm2ym/rsense', {
+\ 'rtp' : 'etc',
+\ 'build' : {
+\    'mac': 'ruby etc/config.rb > ~/.rsense',
+\    'unix': 'ruby etc/config.rb > ~/.rsense',
+\ } }
+" if !s:bundle.is_installed('rsense')
+"   NeoBundle "osyo-manga/vim-monster"
+" endif
 if has('lua') && (v:version > 703 ||
       \ (v:version == 703 && has('patch885')))
   NeoBundle 'Shougo/neocomplete.vim', {'autoload':{
@@ -1205,7 +1203,6 @@ NeoBundle 'moll/vim-node'
 " \ 'commands': ['Npm']
 " \ }}
 NeoBundle 'othree/javascript-libraries-syntax.vim'
-
 " NeoBundle 'teramako/jscomplete-vim'
 " NeoBundle 'aereal/jscomplete-vim'
 " NeoBundle 'igetgames/vim-backbone-jscomplete'
@@ -1351,9 +1348,21 @@ NeoBundleLazy 'hachibeeDI/vim-vbnet', {'autoload':{
 NeoBundleLazy 'mikelue/vim-maven-plugin', {'autoload':{
 \ 'filetypes': ['java'],
 \ }}
-NeoBundleLazy 'KamunagiChiduru/unite-javaimport', {'autoload': {
+NeoBundleLazy 'kamichidu/unite-javaimport', {'autoload': {
 \ 'unite_sources': ['javaimport']
 \ }}
+NeoBundle 'kamichidu/vim-javaclasspath', {
+\   'depends': ['kamichidu/vim-javalang'],
+\}
+NeoBundleLazy 'kamichidu/javacomplete', {
+\   'build' : {
+\      'windows' : 'javac autoload/Reflection.java',
+\      'cygwin'  : 'javac autoload/Reflection.java',
+\      'mac'     : 'javac autoload/Reflection.java',
+\      'unix'    : 'javac autoload/Reflection.java',
+\   },
+\   'autoload' : { 'filetypes' : 'java' },
+\ }
 " NeoBundle 'vim-scripts/javacomplete', {
 " NeoBundleLazy 'nwertzberger/javacomplete', {
 " \   'build' : {
@@ -6235,7 +6244,9 @@ if exists("+omnifunc") " {{{4
   elseif s:bundle.is_installed('vim-nodejs-complete')
     MyAutoCmd FileType javascript,coffee    setl omnifunc=nodejscomplete#CompleteJS
   endif
-  MyAutoCmd FileType java          setl omnifunc=javacomplete#Complete completefunc=javacomplete#CompleteParamsInfo
+  if s:bundle.is_installed('javacomplete')
+    MyAutoCmd FileType java          setl omnifunc=javacomplete#Complete completefunc=javacomplete#CompleteParamsInfo
+  endif
   MyAutoCmd FileType xml           setl omnifunc=xmlcomplete#CompleteTags
   MyAutoCmd FileType css           setl omnifunc=csscomplete#CompleteCSS
   MyAutoCmd FileType c             setl omnifunc=ccomplete#Complete

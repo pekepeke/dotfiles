@@ -93,7 +93,7 @@ set title
 set hidden
 set sidescroll=5
 set visualbell
-set noerrorbells
+set noerrorbells t_vb=
 
 set guioptions& guioptions+=T guioptions-=m guioptions-=M
 let did_install_syntax_menu = 1
@@ -131,6 +131,7 @@ set modelines=10
 
 " search {{{2
 set ignorecase smartcase wrapscan
+set infercase
 set incsearch hlsearch
 set virtualedit+=block
 
