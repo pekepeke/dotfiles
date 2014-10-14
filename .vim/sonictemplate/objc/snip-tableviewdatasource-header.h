@@ -1,11 +1,6 @@
-
-#ifndef __{{_name_}}_H__
-#define __{{_name_}}_H__
-
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface {{_name_}} : NSObject <UITableViewDelegate, UITableViewDataSource>
 
 @end
-
-#endif
