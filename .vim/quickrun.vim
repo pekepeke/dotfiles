@@ -508,9 +508,23 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \ 'watchdogs_checker/csslint' : {
         \   'command' : 'csslint',
         \    'exec'    : '%c %o --format=compact %s:p',
-        \    'quickfix/errorformat' : '%-G,%-G%f: lint free!,%f: line %l\, col %c\, %trror - %m,%f: line %l\, col %c\, %tarning - %m,%f: line %l\, col %c\, %m,',
+        \    'quickfix/errorformat' : '%-G,%-G%f: lint free!'.
+        \       ',%f: line %l\, col %c\, %trror - %m,%f: '.
+        \       'line %l\, col %c\, %tarning - %m,%f: line %l\, col %c\, %m,',
         \ },
         \ })
+  if executable('scss-lint')
+    call extend(g:quickrun_config, {
+          \ 'scss/watchdogs_checker' : {
+          \   'type' : 'watchdogs_checker/scsslint',
+          \ },
+          \ 'watchdogs_checker/scsslint' : {
+          \   'command' : 'scss-lint',
+          \    'exec'    : '%c %o --format=compact %s:p',
+          \    'quickfix/errorformat' : '%A%f:\ line\ %l\\,\ col\ %c\\,\ %m'
+          \ },
+          \ })
+  endif
   if !executable('pyflakes')
     call extend(g:quickrun_config, {
         \  'python/watchdogs_checker' : {
