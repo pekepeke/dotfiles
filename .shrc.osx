@@ -1,6 +1,6 @@
 # settings {{{1
 export LESS="-IMR"
-export JAVA_HOME="$(/usr/libexec/java_home)"
+export JAVA_HOME="$(/usr/libexec/java_home 2>/dev/null)"
 
 # aliases {{{1
 # browser {{{2
@@ -14,8 +14,8 @@ alias chrome='open -a "Google Chrome"'
 # find ~/Library/Application\ Support/Cyberduck/Queue.plist -mtime 1 -exec rm -f {} \; > /dev/null 2>&1
 
 # alias ls='gls --color=always'
-alias date='gdate'
-alias seq='gseq'
+is_exec gdate && alias date='gdate'
+is_exec gseq && alias seq='gseq'
 
 alias brew='PATH=$(noenvpath) brew'
 alias cask='PATH=$(noenvpath) brew cask'

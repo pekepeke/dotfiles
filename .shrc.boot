@@ -102,7 +102,12 @@ if is_exec gls; then
   alias ls="gls $LS_OPTIONS"
   alias ll="gls -l $LS_OPTIONS"
   alias la="gls -A $LS_OPTIONS"
-  alias l="bls -CF $LS_OPTIONS"
+  alias l="gls -CF $LS_OPTIONS"
+elif is_mac ; then
+  alias ls="ls -GF"
+  alias ll="ls -GFl"
+  alias la="ls -GFA"
+  alias l="ls -GCF"
 else
   alias ls="ls $LS_OPTIONS"
   alias ll="ls -l $LS_OPTIONS"
