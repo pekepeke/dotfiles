@@ -674,7 +674,7 @@ NeoBundleLazy 'Shougo/vinarise', { 'autoload': {
 \  'complete' : 'customlist,vinarise#complete'}],
 \ 'unite_sources' : 'vinarise/analysis'
 \ },
-\ 'depends' : 'rbtnn/hexript.vim'}
+\ }
 NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
 \ 'commands' : ['JunkfileOpen'],
 \ 'unite_sources' : ['junkfile', 'junkfile/new'],
@@ -1393,7 +1393,7 @@ NeoBundleLazy 'derekwyatt/vim-scala', {'autoload':{
 \ }}
 
 " go {{{4
-NeoBundleLazy 'uggedal/go-vim', {'autoload':{
+NeoBundleLazy 'fatih/vim-go', {'autoload':{
 \ 'filetypes': ['go'],
 \ }}
 if executable('gocode')
