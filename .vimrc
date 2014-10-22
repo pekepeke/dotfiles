@@ -1129,12 +1129,16 @@ if has("signs") && has("clientserver") && v:version > 700
 else
   NeoBundleLazy 'astashov/vim-ruby-debugger'
 endif
-if executable('alpaca_complete')
-  NeoBundleLazy 'alpaca-tc/alpaca_complete', {
-  \ 'depends' : 'tpope/vim-rails',
-  \ 'autoload' : { 'filetypes' : 'ruby'},
-  \  }
-endif
+NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
+\ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails', 'Shougo/vimproc', 'Shougo/unite.vim'],
+\ 'autoload': {
+\   'insert' : 1,
+\   'unite_sources' : 'rails_support/locales',
+\   'commands' : [
+\     'RSCreateRoutesCache', 'RSCleanCache',
+\     'RSShowLocale', 'RSCreateLocaleCache',
+\   ]
+\ }}
 
 " html {{{4
 NeoBundle 'othree/html5.vim'

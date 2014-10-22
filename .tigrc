@@ -8,6 +8,8 @@ set vertical-split = no
 set split-view-height = 80%
 set tab-size = 2
 set diff-context = 6
+set diff-options = -m --first-parent
+set ignore-space = all
 set ignore-case = yes
 set wrap-lines = yes
 
