@@ -348,17 +348,25 @@ fi
 
 shrc_section_title "plugins" #{{{1
 shrc_section_title "percol" #{{{2
-if type percol >/dev/null 2>&1 || type peco >/dev/null 2>&1; then
-  for f ( ~/.zsh/zfunc/percol/*.zsh ) source "${f}"
+if type type peco >/dev/null 2>&1; then
+  for f ( ~/.zsh/zfunc/peco/*.zsh ) source "${f}"
+  bindkey -v '^Xp' peco-search-clipmenu
+  bindkey -v '^Xs' peco-select-snippets
+  bindkey '^R' peco-select-history
+  bindkey '^O' peco-select-zle
+  bindkey '^Vo' peco-select-zle
+# if type percol >/dev/null 2>&1 ; then
+#   for f ( ~/.zsh/zfunc/percol/*.zsh ) source "${f}"
 
-  zle -N percol-select-history
-  zle -N peco-snippets
-  zle -N percol-search-clipmenu
-  bindkey -v '^Xp' percol-search-clipmenu
-  bindkey -v '^Xs' peco-snippets
-  bindkey '^R' percol-select-history
-  alias pd='percol-search-document'
-  alias pl='percol-search-locate'
+#   zle -N percol-select-history
+#   zle -N peco-snippets
+#   zle -N percol-search-clipmenu
+#   bindkey -v '^Xp' percol-search-clipmenu
+#   bindkey -v '^Xs' peco-snippets
+#   bindkey '^R' percol-select-history
+#   bindkey '^O' peco-select-zle
+#   alias pd='percol-search-document'
+#   alias pl='percol-search-locate'
 fi
 
 shrc_section_title "textobj" #{{{2

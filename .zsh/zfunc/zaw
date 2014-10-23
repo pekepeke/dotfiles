@@ -32,10 +32,6 @@ zaw-rc () {
 
   bindkey -v '^Vf' zaw-git-files
   bindkey -v '^Vd' zaw-gitdir
-  bindkey -v '^Vgs' zaw-git-showbranch
-  bindkey -v '^Vgf' zaw-git-files
-  bindkey -v '^Vgb' zaw-git-branches
-  bindkey -v '^Vgd' zaw-gitdir
   # bindkey -v '^Xs' zaw-screens
   bindkey -v '^VT' zaw-tmux
   bindkey -v '^Vw' zaw-tmux-window

@@ -360,10 +360,14 @@ endif
 set wildmenu                                 " 補完候補を表示する
 set wildmode=list:longest,list:full          " zsh like complete
 set wildchar=<tab>
-set wildignore+=*.o,*.obj,.git,*.rbc,.class,.svn
-set wildignore+=*DS_Store*,*.png,*.jpg,*.gif
-set wildignore+=*.so,*.swp,*.pdf,*.dmg
-set wildignore+=*.luac,*.jar,*.pyc,*.stats
+set wildignore+=*.o,*.obj,*.rbc,*.dll,*.exe
+set wildignore+=*.out,*.aux
+set wildignore+=,.git,.svn
+set wildignore+=.DS_Store
+set wildignore+=*.spl
+set wildignore+=*.png,*.jpg,*.gif
+set wildignore+=*.so,*.sw?
+set wildignore+=*.luac,*.jar,*.pyc,.class
 set completeopt=menuone
 set complete=.,w,b,u,t,i,k
 
