@@ -16,7 +16,7 @@ peco-info-homebrew() {
 zle -N peco-info-homebrew
 
 peco-install-homebrew-cask() {
-  _peco_homebrew cask info
+  _peco_homebrew cask install
 }
 zle -N peco-install-homebrew-cask
 
