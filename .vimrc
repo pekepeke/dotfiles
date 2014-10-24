@@ -362,7 +362,7 @@ set wildmode=list:longest,list:full          " zsh like complete
 set wildchar=<tab>
 set wildignore+=*.o,*.obj,*.rbc,*.dll,*.exe
 set wildignore+=*.out,*.aux
-set wildignore+=,.git,.svn
+set wildignore+=.git,.svn
 set wildignore+=.DS_Store
 set wildignore+=*.spl
 set wildignore+=*.png,*.jpg,*.gif
@@ -792,7 +792,7 @@ NeoBundle 't9md/vim-smalls', {'autoload': {
 " \ }}
 NeoBundle 'kshenoy/vim-signature'
 
-if has('python') || has('python3')
+if has('python') && executable('editorconfig')
   NeoBundle 'editorconfig/editorconfig-vim'
 endif
 NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {

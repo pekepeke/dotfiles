@@ -5,12 +5,12 @@ peco-select-raketask-all() {
     bundle_exec="bundle exec"
   fi
   local tasks="${bundle_exec} rake ${rake_option}"
-  local task="$(eval $tasks | peco )"
-  local task_split
-  task_split=(${(s/ /)task})
+  local task="$(eval $tasks | peco | awk '{print $1}')"
 
-  LBUFFER="${bundle_exec} $task_split[1,2]"
-  CURSOR=$#LBUFFER
+  if [ -n "$task" ]; then
+    LBUFFER="${bundle_exec} $(echo $task | tr "[:cntrl:]" " ")"
+    CURSOR=$#LBUFFER
+  fi
 }
 peco-select-raketask() {
   local bundle_exec=""
@@ -19,12 +19,12 @@ peco-select-raketask() {
     bundle_exec="bundle exec"
   fi
   local tasks="${bundle_exec} rake ${rake_option}"
-  local task="$(eval $tasks | peco )"
-  local task_split
-  task_split=(${(s/ /)task})
+  local task="$(eval $tasks | peco | awk '{print $1}')"
 
-  LBUFFER="${bundle_exec} $task_split[1,2]"
-  CURSOR=$#LBUFFER
+  if [ -n "$task" ]; then
+    LBUFFER="${bundle_exec} $(echo $task | tr "[:cntrl:]" " ")"
+    CURSOR=$#LBUFFER
+  fi
 }
 
 zle -N peco-select-raketask
