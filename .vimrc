@@ -388,6 +388,11 @@ set t_Co=256
 set background=dark
 
 function! s:highlights_add() "{{{2
+  " highlight DiffAdd cterm=bold ctermfg=22 ctermbg=121 guibg=121
+  " highlight DiffDelete cterm=bold ctermfg=52 ctermbg=242
+  " highlight DiffText cterm=bold ctermfg=227 ctermbg=30
+  " highlight DiffChange cterm=bold ctermfg=124 ctermbg=30
+
   " for unite.vim
   " highlight StatusLine gui=none guifg=black guibg=lightgreen cterm=none ctermfg=black ctermbg=lightgreen
 
@@ -1124,6 +1129,9 @@ NeoBundleLazy 'basyura/unite-rails', { 'autoload' : {
 \ }}
 NeoBundleLazy 'moro/unite-stepdefs', { 'autoload' : {
 \ 'unite_sources': ['stepdefs'],
+\ }}
+NeoBundleLazy 'osyo-manga/unite-highlight', {'autoload':{
+\ 'unite_sources': ['highlight'],
 \ }}
 
 if has("signs") && has("clientserver") && v:version > 700
@@ -5783,8 +5791,8 @@ if s:bundle.is_installed('vim-ref')
   let g:ref_source_webdict_sites.default = 'alc'
 
   " webdict command {{{4
-  command! -nargs=? -range=0 GTransEnJa call my#buf_util#ref_grans(<count>, <line1>, <line2>, 'en_ja',<q-args>)
-  command! -nargs=? -range=0 GTransJaEn call my#buf_util#ref_grans(<count>, <line1>, <line2>, 'ja_en',<q-args>)
+  command! -nargs=? -range=0 GTransEnJa call my#buffer#ref_grans(<count>, <line1>, <line2>, 'en_ja',<q-args>)
+  command! -nargs=? -range=0 GTransJaEn call my#buffer#ref_grans(<count>, <line1>, <line2>, 'ja_en',<q-args>)
 
   " langs {{{4
   let g:ref_source_webdict_sites.default = 'alc'
@@ -6436,8 +6444,6 @@ if s:bundle.tap('vimshell.vim')
   nmap [!space]vi :<C-u>VimShellInteractive<Space>
   nmap [!space]vt :<C-u>VimShellTerminal<Space>
 
-  command! IRB VimShellInteractive irb
-  LCAlias IRB
   call s:bundle.untap()
 endif
 
@@ -6777,6 +6783,15 @@ command! -nargs=? -bang -complete=file Unix edit<bang> ++ff=unix <args>
 
 " }}}
 " utility {{{2
+" vimrc-local {{{3
+function! s:vimrc_local()
+  let fpath = s:find_proj_dir() . "/vimrc_local.vim"
+  let file = input("vimrc_local.vim :", fpath)
+  if !empty(file)
+    execute "edit" "+split" file
+  endif
+endfunction
+command! VimrcLocal call s:vimrc_local()
 " 選択範囲をブラウザで起動 {{{3
 command! -range=0 OpenBrowserRange call my#command#openbrowser_range(<line1>, <line2>)
 
@@ -6796,16 +6811,7 @@ command! -nargs=0 -range TMY <line1>,<line2>call my#mysql#to_tsv()
 command! -nargs=0 -range MySQLToTsv <line1>,<line2>call my#mysql#to_tsv()
 
 " text {{{3
-command! -nargs=0 -range=0 Plain call s:normalize_ascii(<count>, <line1>, <line2>)
-function! s:normalize_ascii(count, l1, l2)
-  if a:count <= 0
-    return
-  endif
-  silent! execute a:l1.','a:l2.'s/[｀]/`/g'
-  silent! execute a:l1.','a:l2."s/[‘’]/'/g"
-  silent! execute a:l1.','a:l2.'s/[“”]/"/g'
-  silent! execute a:l1.','a:l2.'s/　/  /g'
-endfunction
+command! -nargs=0 -range=0 Plain call my#buffer#normalize_ascii_selected(<count>, <line1>, <line2>)
 
 " padding {{{3
 command! -nargs=? -range PadNumber <line1>,<line2>call my#padding#number(<f-args>)
@@ -6827,99 +6833,22 @@ else
 endif
 
 " gtrans {{{2
-command! -nargs=? -range=0 Gte call my#buf_util#gtrans(<count>, <line1>, <line2>, "enja", <q-args>)
-command! -nargs=? -range=0 Gtj call my#buf_util#gtrans(<count>, <line1>, <line2>, "jaen", <q-args>)
+command! -nargs=? -range=0 Gte call my#buffer#gtrans(<count>, <line1>, <line2>, "enja", <q-args>)
+command! -nargs=? -range=0 Gtj call my#buffer#gtrans(<count>, <line1>, <line2>, "jaen", <q-args>)
 
 " ginger {{{2
-command! -nargs=? -range=0 Ginger call my#buf_util#ginger(<count>, <line1>, <line2>, <q-args>)
+command! -nargs=? -range=0 Ginger call my#buffer#ginger(<count>, <line1>, <line2>, <q-args>)
 
 " dash & zeal {{{2
-function! s:docset_keywords_gather(root, is_dash) "{{{
-  let pattern = '*.docset/Contents/Info.plist'
-  if a:is_dash
-    let pattern = '*/' . pattern
-  endif
-  let plists = split(globpath(a:root,
-        \ pattern), "\n")
-  let keywords = []
-  for plist in plists
-    let buf = readfile(plist)
-    let is_identifier = 0
-    for line in buf
-      if is_identifier
-        call add(keywords, substitute(line, '\(\s\+\|</\?string>\)', '', 'g'))
-        break
-      endif
-      if line =~? "CFBundleIdentifier"
-        let is_identifier = 1
-      endif
-    endfor
-  endfor
-  return map(keywords, 'tolower(v:val)')
-endfunction "}}}
-
-function! s:dash(...) "{{{
-  let word = len(a:000) == 0 ?
-  \ input('Dash search: ', expand('<cword>'),
-  \ 'customlist,'.s:SID().'dash_complete') : a:1
-  call system(printf("open dash://'%s'", word))
-endfunction "}}}
-let s:dash_keywords = []
-function! s:dash_complete(A, L, P) "{{{
-  if empty(s:dash_keywords)
-    let s:dash_keywords =
-    \ s:docset_keywords_gather(expand('~/Library/Application\ Support/Dash/DocSets/'), 1)
-  endif
-  if stridx(a:A, ":") != -1
-    return []
-  endif
-  let matches = filter(copy(s:dash_keywords),'v:val =~? "^".a:A')
-  return map(matches, 'v:val.":"')
-endfunction "}}}
-
-command! -nargs=? -complete=customlist,s:dash_complete Dash call s:dash(<f-args>)
+command! -nargs=? -complete=customlist,my#docset#dash_complete Dash call my#docset#dash(<f-args>)
 nnoremap <Plug>(dash) :Dash<Space>
 nnoremap <Plug>(dash-keyword) :Dash<Space><C-r>=expand('<cword>')<CR><CR>
+command! -nargs=0 ZealRemoveCache call my#docset#docset_cache_remove()
 
-function! s:zeal(...)
-  let word = len(a:000) == 0 ?
-  \ input('Zeal search: ',
-  \ expand('<cword>'), 'customlist,'.s:SID().'zeal_complete') : a:1
-  if s:is_mac
-    call system(printf("/Applications/zeal.app/Contents/MacOS/zeal --query %s &", shellescape(word)))
-  else
-    call system(printf("zeal --query %s &", shellescape(word)))
-  endif
-endfunction
-let s:zeal_keywords = []
-
-function! s:zeal_complete(A, L, P) "{{{
-  if empty(s:zeal_keywords)
-    if s:is_mac
-      let s:zeal_keywords =
-        \ s:docset_keywords_gather(expand('~/Library/Application Support/zeal/docsets'), 0)
-    else
-      let s:zeal_keywords =
-        \ s:docset_keywords_gather(expand('~/.local/share/zeal/docsets'), 0)
-  endif
-  endif
-  if stridx(a:A, ":") != -1
-    return []
-  endif
-  let matches = filter(copy(s:zeal_keywords),'v:val =~? "^".a:A')
-  return map(matches, 'v:val.":"')
-endfunction "}}}
-
-command! -nargs=? -complete=customlist,s:zeal_complete Zeal call s:zeal(<f-args>)
-function! s:docset_cache_remove()
-  let s:dash_keywords = []
-  let s:zeal_keywords = []
-endfunction
-command! -nargs=0 ZealRemoveCache call s:docset_cache_remove()
-command! -nargs=0 DashRemoveCace call s:docset_cache_remove()
-
+command! -nargs=? -complete=customlist,my#docset#zeal_complete Zeal call my#docset#zeal(<f-args>)
 nnoremap <Plug>(zeal) :<C-u>Zeal<Space>
 nnoremap <Plug>(zeal-keyword) :<C-u>Zeal<Space><C-r>=expand('<cword>')<CR><CR>
+command! -nargs=0 DashRemoveCace call my#docset#docset_cache_remove()
 
 nmap [!space]ss <Plug>(zeal)
 nmap [!space]sw <Plug>(zeal-keyword)
@@ -6986,7 +6915,7 @@ function! s:set_verbose(off)
     set verbosefile=~/vim-verbosefile.log
   endif
 endfunction
-command! -nargs=0 Verbose call s:set_verbose("<bang>")
+command! -nargs=0 -bang Verbose call s:set_verbose("<bang>")
 
 " for vim {{{2
 command! -nargs=0 ThisSyntaxName echo synIDattr(synID(line("."), col("."), 1), "name")
@@ -7017,52 +6946,13 @@ function! s:coding_style_complete(...) "{{{
 endfunction "}}}
 
 " util {{{2
-function! s:to_scratch() "{{{3
-  if empty(expand('%:p'))
-    setlocal buftype=nofile
-    setlocal bufhidden=hide
-    setlocal noswapfile
-    setlocal buflisted
-  endif
-endfunction " }}}
-command! -nargs=0 ToScratch call s:to_scratch()
+command! -nargs=0 ToScratch call my#buffer#set_scratch()
 
 " errorformat tester {{{2
 let g:efm_tester_fmt = '%f:%l:%c:%m'
 let g:efm_tester_after_execute = 'cwindow'
-function! s:efm_tester(msg) "{{{3
-  let org_efm = &g:errorformat
-  try
-    let &g:errorformat = g:efm_tester_fmt
-    cgetexpr a:msg
-    if !empty(g:efm_tester_after_execute)
-      execute g:efm_tester_after_execute
-    endif
-  finally
-    let &g:errorformat = org_efm
-  endtry
-endfunction " }}}
-
-function! s:efm_tester_exec(count, l1, l2, text) "{{{3
-  if a:count == 0 && empty(a:text)
-    let msg = join(getline(1, '$'), "\n")
-  else
-    let msg = a:count == 0 ? a:text : join(getline(a:l1, a:l2), "\n")
-  endif
-  call s:efm_tester(msg)
-endfunction " }}}
-
-function! s:efm_tester_set(count, l1, l2, text) "{{{
-  let s = a:count == 0 ? a:text : join(getline(a:l1, a:l2), "\n")
-  if empty(fmt)
-    echo "set g:efm_tester_fmt=" . string(fmt)
-    let g:efm_tester_fmt = fmt
-  else
-    echo "g:efm_tester_fmt=" . string(g:efm_tester_fmt)
-  endif
-endfunction "}}}
-command! -nargs=? -range=0 EfmTest call s:efm_tester_exec(<count>, <line1>, <line2>, <q-args>)
-command! -nargs=? -range=0 EfmSetFormat call s:efm_tester_set(<count>, <line1>, <line2>, <q-args>)
+command! -nargs=? -range=0 EfmTest call my#efm_tester#eval_text(<count>, <line1>, <line2>, <q-args>)
+command! -nargs=? -range=0 EfmSetFormat call my#efm_tester#set_format(<count>, <line1>, <line2>, <q-args>)
 
 " after initializes {{{1
 if !has('vim_starting')

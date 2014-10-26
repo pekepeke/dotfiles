@@ -1,6 +1,26 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+" utils {{{1
+function! my#buffer#set_scratch() "{{{2
+  if empty(expand('%:p'))
+    setlocal buftype=nofile
+    setlocal bufhidden=hide
+    setlocal noswapfile
+    setlocal buflisted
+  endif
+endfunction
+
+function! my#buffer#normalize_ascii_selected() "{{{2
+  if a:count <= 0
+    return
+  endif
+  silent! execute a:l1.','a:l2.'s/[｀]/`/g'
+  silent! execute a:l1.','a:l2."s/[‘’]/'/g"
+  silent! execute a:l1.','a:l2.'s/[“”]/"/g'
+  silent! execute a:l1.','a:l2.'s/　/  /g'
+endfunction
+
 " bufutil {{{1
 let s:bufutil = {}
 function! s:bufutil.new(...) "{{{
@@ -58,7 +78,7 @@ function! s:ref_gtrans.execute(args) "{{{2
   execute "Ref" "webdict" source text
 endfunction
 
-function! my#buf_util#ref_gtrans(...) "{{{2
+function! my#buffer#ref_gtrans(...) "{{{2
   call call(s:ref_gtrans.command, a:000, s:ref_gtrans)
 endfunction
 
@@ -101,7 +121,7 @@ function s:gtrans.execute(args) "{{{
   endif
 endfunction "}}}
 
-function! my#buf_util#gtrans(...) "{{{2
+function! my#buffer#gtrans(...) "{{{2
   call call(s:gtrans.command, a:000, s:gtrans)
 endfunction
 
@@ -155,7 +175,7 @@ function! s:ginger.get(text)  "{{{2
   return [mistake, correct]
 endfunction
 
-function! my#buf_util#ginger(...) "{{{2
+function! my#buffer#ginger(...) "{{{2
   call call(s:ginger.command, a:000, s:ginger)
 endfunction
 
