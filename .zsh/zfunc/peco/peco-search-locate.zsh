@@ -1,10 +1,24 @@
-function percol-search-locate() {
-    if [ $# -ge 1 ]; then
-        SELECTED_FILE=$(locate $* | percol --match-method migemo)
-        if [ $? -eq 0 ]; then
-            echo $SELECTED_FILE | sed 's/ /\\ /g'
-        fi
-    else
-        locate $*
-    fi
+function peco-search-locate() {
+  local cmd
+  case $OSTYPE in
+    darwin*)
+      cmd=mdfind ;;
+    # cygwin*)
+    #   ;;
+    # bsd*)
+    #   ;;
+    # linux*)
+    #   ;;
+    # solaris*)
+    #   ;;
+    *)
+      cmd=locate ;;
+  esac
+
+  locate selected=$(eval $cmd "$LBUFFER" $* | peco)
+  if [ -n "$selected" ]; then
+      BUFFER="$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
+  fi
 }
+
+zle -N peco-search-locate

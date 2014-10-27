@@ -1,7 +1,7 @@
 peco-git-changed-files() {
-  local selected="$(git status -s | peco --query="$LBUFFER" | awk '{ print $2}')"
+  local selected="$(git status -s | peco --query="$LBUFFER" | sed -e 's/^ *[^ ]\+ *//')"
   if [ -n "$selected" ]; then
-    LBUFFER="$(echo $selected | tr "[:cntrl:]" " ")"
+    BUFFER="$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
     CURSOR=0
   fi
 }

@@ -1,0 +1,3 @@
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+[core]
+	precomposeunicode = true

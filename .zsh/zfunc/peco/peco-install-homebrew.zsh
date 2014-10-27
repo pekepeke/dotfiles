@@ -1,8 +1,8 @@
 _peco_homebrew() {
   local selected=$(brew $1 search | peco --query="$LBUFFER")
   if [ -n "$selected" ]; then
-    LBUFFER="brew $1 $2 $selected"
-    CURSOR=$#LBUFFER
+    BUFFER="brew $1 $2 $selected"
+    CURSOR=$#BUFFER
   fi
 }
 peco-install-homebrew() {

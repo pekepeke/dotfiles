@@ -7,6 +7,12 @@
       "peco.SelectNext"
     ]
   },
+  "CustomMatcher": {
+    "Migemo": [
+      "migemogrep",
+      "$QUERY"
+    ]
+  },
   "Keymap": {
     "M-f": "peco.ForwardWord",
     "M-b": "peco.BackwardWord",

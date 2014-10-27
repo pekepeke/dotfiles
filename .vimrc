@@ -942,6 +942,14 @@ NeoBundle 'tpope/vim-fugitive', {'autoload':{
 \ 'commands': [ "Git", "Gstatus", "Gcommit", "Gedit",
 \   "Gwrite", "Ggrep", "Glog", "Gdiff"],
 \ }}
+NeoBundle 'rhysd/committia.vim'
+NeoBundle 'idanarye/vim-merginal', {'autoload':{
+\ 'commands': [ "Merginal", "MerginalToggle", "MerginalClose",],
+\ }}
+NeoBundle 'AndrewRadev/gapply.vim', {'autoload':{
+\ 'commands': [ "Gapply",],
+\ }}
+
 NeoBundleLazy 'gregsexton/gitv', {'autoload': {
 \ 'commands' : ['Gitv'],
 \ }}

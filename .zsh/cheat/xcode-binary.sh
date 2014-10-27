@@ -7,7 +7,7 @@ lipo -create libAbesi_dev.a libAbesi_sim.a -output libAbesi.a
 # .a を分解
 lipo -thin armv7 AWSiOSSDK -output AWSiOSSDK_armv7
 # .a の中の .o を検索
-ar -t AWSiOSSDK_armv7|grep SBJson
+ar -t AWSiOSSDK_armv7 | grep SBJson
 # 特定の .o を削除
 ar -dv AWSiOSSDK_armv7 SBJsonParser.o SBJsonWriter.o
 

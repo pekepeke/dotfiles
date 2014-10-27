@@ -355,6 +355,13 @@ if v:version > 702
           \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
           \ }}
     NeoBundle 'tpope/vim-fugitive'
+    NeoBundle 'rhysd/committia.vim'
+    NeoBundle 'idanarye/vim-merginal', {'autoload':{
+          \ 'commands': [ "Merginal", "MerginalToggle", "MerginalClose",],
+          \ }}
+    NeoBundle 'AndrewRadev/gapply.vim', {'autoload':{
+          \ 'commands': [ "Gapply",],
+          \ }}
     NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
     \ 'commands' : [
     \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',

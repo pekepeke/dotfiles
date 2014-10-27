@@ -102,3 +102,8 @@ snippet echocolorfn
 	echoyellow() {
 		echo -e "\e[00;33m$*\e[00m"
 	}
+snippet pipe_normalize_filepath
+	| sed -e 's/ /\\ /g' | tr "[:cntrl:]" " "
+snippet pipe_converthome
+	| perl -pe 's/(\Q$ENV{HOME}\E(.*$))/~$2/'
+
