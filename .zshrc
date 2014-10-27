@@ -393,8 +393,8 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
 
   # add-zsh-hook preexec zaw-init
   # zaw-init
-  zle -N zaw-init
   zaw-init
+  # zle -N zaw-init
   # bindkey -v '^V' zaw-init
 fi
 shrc_section_title "autojump" #{{{2
