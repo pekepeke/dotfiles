@@ -1,0 +1,6 @@
+[
+  "-project",  "{{_expr_:expand("%:p:h:t")}}",
+  "-scheme", "{{_expr_:expand("%:p:h:t")}}",
+  "-configuration", "Debug",
+  "-sdk", "iphonesimulator"
+]

@@ -57,9 +57,9 @@ function! translategoogle#complete_command(arglead, cmdline, cursorpos)
 endfunction
 
 function! translategoogle#exchange()
-  let sl = translategoogle_default_sl
-  let translategoogle_default_sl = translategoogle_default_tl
-  let translategoogle_default_ll = sl
+  let sl = g:translategoogle_default_sl
+  let g:translategoogle_default_sl = g:translategoogle_default_tl
+  let g:translategoogle_default_ll = sl
 endfunction
 
 function! translategoogle#command(args)
@@ -194,6 +194,7 @@ function! s:open_buffers(...)
     call s:define_cmd_map(idx)
     autocmd! TranlateGoogle * <buffer>
     execute 'autocmd TranlateGoogle InsertLeave,TextChanged <buffer> call s:update_buffers(' . idx . ')'
+    silent doautocmd User PluginTranslateGoogleInitializeAfter
 
     call s:translategoogle.buffers[idx].after.open(s:bufname_after,
                 \ {'opener': g:translategoogle_default_opener_after})
@@ -204,6 +205,7 @@ function! s:open_buffers(...)
                     \ {'opener': g:translategoogle_default_opener_retrans})
         call s:define_cmd_map(idx)
     endif
+    silent doautocmd User PluginTranslateGoogleInitializeAfter
 
     call s:translategoogle.buffers[idx].before.move()
 endfunction

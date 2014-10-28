@@ -20,15 +20,34 @@ if s:bundle.is_installed('vimproc.vim')
   \ })
 endif
 
+" objc {{{2
 call extend(g:quickrun_config, {
 \ 'objc' : {
-\   'type' : executable('gcc') ? 'objc/gcc': '',
+\   'type' : executable('xctool') ? 'objc/xctool' : 'objc/gcc',
 \ },
 \ 'objc/gcc' : {
 \   'command' : 'gcc',
 \   'exec' : ['%c %o %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
 \   'tempfile': '{tempname()}.m'
 \ },
+\ 'objc/xctool' : {
+\    'command': 'xctool',
+\    'cmdopt': 'test',
+\    'outputter': 'xctool',
+\    'exec': ['%c %o %a'],
+\ },
+\ 'swift' : {
+\   'type' : 'swift/xcrun',
+\ },
+\ 'swift/xcrun' : {
+\    'command': 'xcrun swift',
+\    'cmdopt': '-i',
+\    'outputter': 'xctool',
+\    'exec': ['%c %s %o %a'],
+\ },
+\ })
+" gcc {{{2
+call extend(g:quickrun_config, {
 \ 'cpp': {
 \   'type' : 'cpp/clang++',
 \ },
@@ -43,6 +62,7 @@ call extend(g:quickrun_config, {
 \   'hook/quickrunex/enable' : 1,
 \ },
 \ })
+" go {{{2
 call extend(g:quickrun_config, {
 \ 'go' : {
 \   'type' : executable('8g') ? 'go/8g': '',
@@ -52,6 +72,7 @@ call extend(g:quickrun_config, {
 \   'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
 \ },
 \ })
+" csharp {{{2
 call extend(g:quickrun_config, {
 \ 'cs' : {
 \   'type' : executable('csc') ? 'csharp/csc':
@@ -70,6 +91,7 @@ call extend(g:quickrun_config, {
 \   'tempfile' : '{tempname()}.cs',
 \ },
 \ })
+" html {{{2
 call extend(g:quickrun_config, {
 \ 'html' : {
 \   "type" : "html/haml"
@@ -86,6 +108,7 @@ call extend(g:quickrun_config, {
 \   "type" : "html/haml"
 \ },
 \})
+" javascript {{{2
 call extend(g:quickrun_config, {
 \ 'json': {
 \   'type': 'json/jq',
@@ -106,6 +129,7 @@ call extend(g:quickrun_config, {
 \   'exec' : '%c %o --run %s',
 \ },
 \ })
+" css {{{2
 call extend(g:quickrun_config, {
 \ 'slim' : {
 \   'type' : 'slim/slimrb',
@@ -115,6 +139,7 @@ call extend(g:quickrun_config, {
 \   'exec' : ['%c %o -p %s'],
 \ },
 \ })
+" rspec {{{2
 " http://qiita.com/joker1007/items/9dc7f2a92cfb245ad502
 call extend(g:quickrun_config, {
 \ 'ruby.rspec' : {
@@ -161,6 +186,7 @@ call extend(g:quickrun_config, {
 \ },
 \ })
 
+" tests {{{2
 call extend(g:quickrun_config, {
 \ 'python.nosetests' : {
 \   'type' : 'python/nosetests',
@@ -182,6 +208,50 @@ call extend(g:quickrun_config, {
 \   'command' : 'prove',
 \ },
 \ })
+
+" database {{{2
+function! s:build_options(vars) "{{{3
+  let opts = []
+  for [field, optname] in items(a:vars)
+    let value = get(b:, field, get(g:, field, ''))
+    if !empty(value)
+      call add(opts, sprintf("%s %s", optname, value))
+    endif
+  endfor
+
+  return join(opts, " ")
+endfunction "}}}
+
+function! MySQLCommandOptions() "{{{3
+  if exists('b:MYSQL_cmd_options')
+    return b:MYSQL_cmd_options
+  endif
+  return s:build_options({
+        \ 'mysql_host': '-h',
+        \ 'mysql_username': '-h',
+        \ 'mysql_password': '-p',
+        \ 'mysql_port': '-P',
+        \ 'mysql_db': '',
+        \ })
+endfunction "}}}
+
+function! PgSQLCommandOptions() "{{{3
+  if exists('b:PGSQL_cmd_options')
+    return b:PGSQL_cmd_options
+  endif
+  return s:build_options({
+    \ 'pgsql_host': '-h',
+    \ 'pgsql_username': '-h',
+    \ 'pgsql_port': '-p',
+    \ 'pgsql_db': '-d',
+    \ })
+endfunction "}}}
+
+function OracleCommandOptions() "{{{3
+
+endfunction
+
+" configs{{{3
 call extend(g:quickrun_config, {
 \ 'mysql' : {
 \   'type' : 'sql/mysql',
@@ -190,15 +260,17 @@ call extend(g:quickrun_config, {
 \   'type' : 'sql/postgresql',
 \ },
 \ 'sql/mysql' : {
-\   'runner' : 'system',
 \   'command' : 'mysql',
+\   'cmdopt': '%{MySQLCommandOptions()}',
 \   'exec' : ['%c %o < %s'],
 \ },
 \ 'sql/postgresql': {
 \   'command' : 'psql',
-\   'exec': ['%c %o'],
+\   'cmdopt': '%{PgSQLCommandOptions()}',
+\   'exec': ['%c %o -f %s'],
 \ }
 \ })
+" texts {{{3
 call extend(g:quickrun_config, {
 \ 'rst': {
 \   'type': 'rst/rst2html',
@@ -263,6 +335,7 @@ call extend(g:quickrun_config, {
 \ },
 \ })
 
+" script langs {{{3
 call extend(g:quickrun_config, {
 \ 'processing' : {
 \   'type' : executable('processing-java') ? 'processing/processing-java' :
@@ -322,7 +395,7 @@ call extend(g:quickrun_config, {
 
 nnoremap <Leader><Leader>r :<C-u>QuickRun command/cat<CR>
 
-" for testcase {{{3
+" for testcase {{{2
 MyAutoCmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
 MyAutoCmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
 function! s:gen_phpunit_skel()
@@ -340,7 +413,7 @@ function! s:gen_phpunit_skel()
   exe "!" printf("phpunit-skelgen %s %s %s", join(opts, " "), type, name)
   silent exe 'lcd' old_cwd
 endfunction
-command! PhpUnitSkelGen call <SID>gen_phpunit_skel()
+command! PhpUnitSkelGen call s:gen_phpunit_skel()
 MyAutoCmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
 MyAutoCmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
 
@@ -361,12 +434,13 @@ if s:bundle.is_installed('vim-ref')
   endfunction
 endif
 
-
+" init {{{2
 function! s:vimrc_quickrun_init() "{{{4
   nmap <buffer> q :quit<CR>
 endfunction "}}}
 MyAutoCmd FileType quickrun call s:vimrc_quickrun_init()
 
+" watchdogs {{{1
 if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
 
   NeoBundleSource shabadou.vim vim-watchdogs
@@ -639,7 +713,7 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
   call extend(g:quickrun_config, {
         \ 'watchdogs_checker/sqlplus' : {
         \   'command' : 'sqlplus',
-        \   'cmdopt'  : '-S %{OracleConnection()}',
+        \   'cmdopt'  : '-S %{OracleCommandOptions()}',
         \   'exec'    : '%c %o \@%s:p',
         \   'quickfix/errorformat' : '%Eerror\ at\ line\ %l:,%Z%m',
         \ },

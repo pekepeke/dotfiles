@@ -886,6 +886,7 @@ NeoBundleLazy 'mattn/emoji-vim', {'autoload': {
 \ }}
 NeoBundle 'osyo-manga/shabadou.vim'
 NeoBundle 'osyo-manga/vim-watchdogs'
+NeoBundle 'tokorom/vim-quickrun-xctool'
 " NeoBundle 'osyo-manga/vim-spice'
 NeoBundle 'osyo-manga/vim-anzu', {'autoload': {
 \ 'mappings': [['n', '<Plug>(anzu-']],
@@ -2018,7 +2019,7 @@ function! s:vimrc_cmdwin_init() "{{{3
   inoremap <buffer><expr> kk col('.') == 1 ? '<Esc>k' : 'kk'
   inoremap <buffer><expr> <BS> col('.') == 1 ? '<Esc>:quit<CR>' : '<BS>'
 
-  if s:bundle.is_installed('vim-ambicmd')
+  if g:vimrc_enabled_plugins.ambicmd
     " imap <expr><buffer> <Space> ambicmd#expand("\<Space>")
     " imap <expr><buffer> <CR> ambicmd#expand("\<CR>")
     imap <expr><buffer> <Space> <SID>ambicmd_expand("\<Space>", 'i', getcmdline())
@@ -2692,8 +2693,25 @@ let plugin_verifyenc_disable = 1
 " flags {{{2
 let g:vimrc_enabled_plugins = {
       \ 'smartchr': s:bundle.is_installed('vim-smartchr'),
+      \ 'smartinput': s:bundle.is_installed('vim-smartinput'),
+      \ 'increment_activator': s:bundle.is_installed('increment-activator'),
+      \ 'cycle': s:bundle.is_installed('vim-cycle'),
+      \ 'speeddating': s:bundle.is_installed('vim-speeddating'),
+      \ 'unite': s:bundle.is_installed('unite.vim'),
+      \ 'expand_region': s:bundle.is_installed('vim-expand-region'),
+      \ 'gitv': s:bundle.is_installed('gitv'),
+      \ 'memolist': s:bundle.is_installed('memolist.vim'),
+      \ 'vimproc': s:bundle.is_installed('vimproc.vim'),
+      \ 'neocomplete': s:bundle.is_installed('neocomplete.vim'),
+      \ 'neocomplcache': s:bundle.is_installed('neocomplcache.vim'),
+      \ 'unite_candidate_sorter': s:bundle.is_installed('unite-candidate_sorter'),
+      \ 'fugitive': s:bundle.is_installed('vim-fugitive'),
+      \ 'agit': s:bundle.is_installed('agit.vim'),
+      \ 'concealedyank': s:bundle.is_installed('concealedyank.vim'),
+      \ 'ambicmd': s:bundle.is_installed('vim-ambicmd'),
       \ }
 
+" phpcomplete-extended {{{2
 if s:bundle.is_installed('phpcomplete-extended')
   let g:phpcomplete_index_composer_command = "composer"
   " disable confirm dialog
@@ -2707,6 +2725,7 @@ if s:bundle.is_installed('phpcomplete-extended')
   " endfunction
 endif
 
+" phpcomplete {{{2
 if s:bundle.is_installed('phpcomplete.vim')
   let g:phpcomplete_add_class_extensions =
   \ ['mongo', 'imagemagick', 'libxml', 'memcache', 'memcached', 'pdo']
@@ -2714,6 +2733,12 @@ if s:bundle.is_installed('phpcomplete.vim')
   \ ['mongo', 'json', 'gd', 'sqlite', 'memcache', 'http']
 endif
 
+" translategoole.vim {{{2
+function! s:vimrc_translategoole()
+  nnoremap <buffer><nowait> q :<C-u>TranslateGoogleClose<CR>
+  nnoremap <buffer><nowait> T :<C-u>TranslateGoogleExchange<CR>
+endfunction
+MyAutoCmd User PluginTranslateGoogleInitializeAfter call s:vimrc_translategoole()
 
 " codic-vim {{{2
 if s:bundle.tap('codic-vim')
@@ -3311,7 +3336,7 @@ endif
 if s:bundle.tap('vim-speeddating')
   let g:speeddating_no_mappings = 1
 
-  if s:bundle.is_installed('increment-activator')
+  if g:vimrc_enabled_plugins.increment_activator
     function! s:speeddating_or_incact(incr) "{{{3
       let line = getline('.')
       execute 'normal' abs(a:incr)."\<Plug>SpeedDating".(a:incr < 0 ? 'Down' : 'Up')
@@ -3322,7 +3347,7 @@ if s:bundle.tap('vim-speeddating')
     nmap <silent> <C-a> :<C-u>call <SID>speeddating_or_incact(v:count1)<CR>
     nmap <silent> <C-x> :<C-u>call <SID>speeddating_or_incact(-v:count1)<CR>
 
-  elseif !s:bundle.is_installed('vim-cycle')
+  elseif !g:vimrc_enabled_plugins.cycle
     nmap <C-A> <Plug>SpeedDatingUp
     nmap <C-X> <Plug>SpeedDatingDown
   else
@@ -3348,7 +3373,7 @@ endif
 if s:bundle.tap('vim-cycle')
   let g:cycle_no_mappings=1
 
-  if !s:bundle.is_installed('vim-speeddating')
+  if !g:vimrc_enabled_plugins.speeddating
     nmap <C-A> <Plug>CycleNext
     nmap <C-X> <Plug>CyclePrevious
   endif
@@ -3470,7 +3495,7 @@ if s:bundle.tap('gitv')
       setl iskeyword+=/,-,.
 
       nnoremap <buffer> gx :<C-u>Gbrowse <C-r>=GitvGetCurrentHash()<CR><CR>
-      if s:bundle.is_installed('unite.vim')
+      if g:vimrc_enabled_plugins.unite
         nnoremap <buffer><nowait> [!space] :<C-u>Unite menu:ft_gitv<CR>
       endif
     endfunction
@@ -3699,7 +3724,7 @@ endif
 
 " vim-localrc {{{2
 if s:bundle.is_installed('vim-localrc')
-  let g:localrc_filename = '.local.vimrc'
+  let g:localrc_filename = 'vimrc_local.vim'
   if has('vim_starting')
     " http://vim-users.jp/2009/12/hack112/ => vimrc-local
     call localrc#load('vimrc_local.vim', getcwd(), 3)
@@ -3717,7 +3742,7 @@ let g:trimr_targets = ['markdown', 'mkd', 'textile']
 " clever-f {{{2
 if s:bundle.is_installed('clever-f.vim')
   let g:clever_f_not_overwrites_standard_mappings=1
-  if s:bundle.is_installed('unite.vim')
+  if g:vimrc_enabled_plugins.unite
     nmap [!unite]f <Plug>(clever-f-f)
     vmap f <Plug>(clever-f-f)
   else
@@ -3948,7 +3973,7 @@ if s:bundle.is_installed('memolist.vim')
   let g:memolist_path = $HOME . '/memo'
   " let g:memolist_vimfiler = 1
 
-  if s:bundle.is_installed('unite.vim')
+  if g:vimrc_enabled_plugins.unite
     nmap <silent> ,ml :<C-u>Unite memolist<CR>
     nmap <silent> ,mg :<C-u>call <SID>unite_grep(g:memolist_path)<CR>
   else
@@ -4155,7 +4180,7 @@ if s:bundle.is_installed('vim-submode')
   endif
 
   " expand-region {{{3
-  if s:bundle.is_installed('vim-expand-region')
+  if g:vimrc_enabled_plugins.expand_region
     " don't work...
     call submode#enter_with('ex_region', 'nv', 'r',  '<Leader>e', '<Plug>(expand_region_expand)')
     call submode#leave_with('ex_region', 'nv', '',  '<Esc>')
@@ -4509,17 +4534,39 @@ if s:bundle.tap('unite.vim')
     endfunction "}}}
     function! s:start_nofocus(bang, command)
       execute "Start".(a:bang?"!":"") a:command
-      if has('gui_running')
-        if s:is_mac
-          call system("osascript -e 'tell application \"MacVim\" to activate'")
-        elseif executable('wmctrl')
-          call system('sleep 0.5 && wmctrl -a gvim')
-        endif
+      let cmd_fmt = ""
+      let app = ""
+      if s:is_mac
+        let cmd_fmt = "osascript -e 'tell application \"%s\" to activate'"
+        let app = has('gui_running') ? "MacVim" : "iTerm"
+      elseif executable('wmctrl')
+        let cmd_fmt = 'sleep 0.5 && wmctrl -a %s'
+        let app = has('gui_running') ? "gvim" : "gnome-console"
+      endif
+      if !empty(app)
+        call system(printf(cmd_fmt, app))
       endif
     endfunction
     command! -bang -nargs=* -complete=custom,dispatch#command_complete
     \ StartNofocus call s:start_nofocus(<bang>0, <q-args>)
 
+    function! s:unite_buffer_rename(...)
+      let unite = unite#variables#current_unite()
+      if !exists('unite["buffer_name"]')
+        echohl Error
+        echomsg "not found: buffer name"
+        echohl Normal
+        return
+      endif
+      let bufname = a:0 > 0 && !empty(a:1)
+      \ ? a:1 : input("new buffer name:", unite["buffer_name"])
+      if !empty(bufname)
+        let unite["buffer_name"] = bufname
+      endif
+    endfunction
+
+    command! -nargs=*
+    \ UniteBufferRename call s:unite_buffer_rename(<q-args>)
 
     " http://d.hatena.ne.jp/osyo-manga/20130225/1361794133
     function! s:unite_menu_create(desc, ...) "{{{5
@@ -4730,7 +4777,7 @@ if s:bundle.tap('unite.vim')
     \   ['Npm update'     , s:dispatch('npm update')]   ,
     \ ])
     " gitv {{{5
-    if s:bundle.is_installed('gitv')
+    if g:vimrc_enabled_plugins.gitv
       let g:unite_source_menu_menus["ft_gitv"] = s:unite_menu_create(
       \ 'Gitv', [
       \ ['gbrowse', "execute 'Gbrowse' eval('GitvGetCurrentHash()')"],
@@ -4761,7 +4808,7 @@ if s:bundle.tap('unite.vim')
     endfunction "5}}}
 
     " memolist - http://d.hatena.ne.jp/osyo-manga/20130919 {{{4
-    if s:bundle.is_installed('memolist.vim')
+    if g:vimrc_enabled_plugins.memolist
       let g:unite_source_alias_aliases = {
       \  "memolist" : {
       \     "source" : "file",
@@ -4884,13 +4931,6 @@ if s:bundle.tap('unite.vim')
   UniteNMap!  gi        git_grep -buffer-name=git_grep
   UniteNMap!  gl        line -start-insert
   UniteNMap!  gd        signify
-  if s:bundle.is_installed('unite-gtags')
-    " UniteNMap!  tt        gtags/context -buffer-name=tag
-    " UniteNMap!  tr        gtags/ref -buffer-name=tag
-    " UniteNMap!  td        gtags/def -buffer-name=tag
-    " UniteNMap!  tg        gtags/grep -buffer-name=tag
-    " UniteNMap!  ti        gtags/completion -buffer-name=tag
-  endif
   UniteNMap!  q         quickfix -buffer-name=qfix
   UniteNMap   p         history/yank
   " UniteNMap   @         quickrun_config
@@ -4923,7 +4963,7 @@ if s:bundle.tap('unite.vim')
 
   " Alias colorscheme Unite colorscheme -auto-preview
 
-  " if s:bundle.is_installed('vimproc.vim')
+  " if g:vimrc_enabled_plugins.vimproc
   "   UniteNMap a file_rec/async -start-insert
   " else
   UniteNMap a file_rec -start-insert
@@ -4993,10 +5033,10 @@ if s:bundle.tap('unite.vim')
   nnoremap <silent> [!unite]rt :<C-u>UniteResume todo<CR>
   nnoremap <silent> [!unite]rq :<C-u>UniteResume qfix<CR>
 
-  if s:bundle.is_installed('neocomplete.vim')
+  if g:vimrc_enabled_plugins.neocomplete
     inoremap <C-x><C-j> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
     inoremap <C-x><C-i> <C-o>:Unite neocomplete -buffer-name=completition -start-insert<CR>
-  elseif s:bundle.is_installed('neocomplcache.vim')
+  elseif g:vimrc_enabled_plugins.neocomplcache
     inoremap <C-x><C-j> <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
     inoremap <C-x><C-i> <C-o>:Unite neocomplcache -buffer-name=completition -start-insert<CR>
   endif
@@ -5035,11 +5075,11 @@ if s:bundle.tap('unite.vim')
   function! s:tags_update()
       " include している tag ファイルが毎回同じとは限らないので毎回初期化
       setlocal tags=
-      if s:bundle.is_installed('neocomplete.vim')
+      if g:vimrc_enabled_plugins.neocomplete
         for filename in neocomplete#sources#include#get_include_files(bufnr('%'))
             execute "setlocal tags+=".neocomplete#cache#encode_name('tags_output', filename)
         endfor
-      elseif s:bundle.is_installed('neocomplcache.vim')
+      elseif g:vimrc_enabled_plugins.neocomplcache
         for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
             execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
         endfor
@@ -5090,10 +5130,10 @@ if s:bundle.tap('unite.vim')
     nmap <buffer> t <Plug>(unite_choose_action)
     nmap <buffer> l <Plug>(unite_do_default_action)
     nmap <buffer> P <Plug>(unite_toggle_auto_preview)
-    if s:bundle.is_installed('unite-candidate_sorter')
+    if g:vimrc_enabled_plugins.unite_candidate_sorter
       nmap <silent><buffer> S <Plug>(unite-candidate_sort)
     endif
-    if s:bundle.is_installed('vim-smartinput') && exists(':SmartinputBufferMapClear')
+    if g:vimrc_enabled_plugins.smartinput && exists(':SmartinputBufferMapClear')
       SmartinputBufferMapClear i
     endif
   endfunction
@@ -5166,10 +5206,10 @@ if s:bundle.is_installed('vim-fugitive')
   nnoremap <silent> [!space]gB :<C-u>Gbrowse<CR>
   nnoremap <silent> [!space]gp :<C-u>Git push
   nnoremap <silent> [!space]ge :<C-u>Gedit<Space>
-  if s:bundle.is_installed('agit.vim')
+  if g:vimrc_enabled_plugins.agit
     nnoremap <silent> [!space]gv :<C-u>Agit<CR>
     " nnoremap <silent> [!space]gV :<C-u>Agit!<CR>
-  elseif s:bundle.is_installed('gitv')
+  elseif g:vimrc_enabled_plugins.gitv
     nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
     nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
   endif
@@ -5516,7 +5556,7 @@ if s:bundle.tap('vim-operator-user')
   endfunction
   call s:bundle.untap()
 
-  map H <Plug>(operator-furround-append)
+  map H <Plug>(operator-furround-append-reg)
   map _ <Plug>(operator-replace)
   map ;e <Plug>(operator-excelize)
   map ;h <Plug>(operator-html-escape)
@@ -5685,7 +5725,7 @@ if s:bundle.is_installed('vim-ref')
   let g:ref_alc_use_cache = 1
   let g:ref_alc_start_linenumber = 43
 
-  if s:bundle.is_installed('vimproc.vim')
+  if g:vimrc_enabled_plugins.vimproc
     let g:ref_use_vimproc = 1
   endif
 
@@ -5799,8 +5839,8 @@ if s:bundle.is_installed('vim-ref')
   let g:ref_source_webdict_sites.default = 'alc'
 
   " webdict command {{{4
-  command! -nargs=? -range=0 GTransEnJa call my#buffer#ref_grans(<count>, <line1>, <line2>, 'en_ja',<q-args>)
-  command! -nargs=? -range=0 GTransJaEn call my#buffer#ref_grans(<count>, <line1>, <line2>, 'ja_en',<q-args>)
+  command! -nargs=? -range=0 GTransEnJa call my#buffer#ref_gtrans(<count>, <line1>, <line2>, 'en_ja',<q-args>)
+  command! -nargs=? -range=0 GTransJaEn call my#buffer#ref_gtrans(<count>, <line1>, <line2>, 'ja_en',<q-args>)
 
   " langs {{{4
   let g:ref_source_webdict_sites.default = 'alc'
@@ -6213,7 +6253,7 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   \ ."\<Plug>(smartinput_CR)\<C-r>=endwize#crend()\<CR>"
 
   " <C-h>, <BS>: close popup and delete backword char.
-  if s:bundle.is_installed('vim-smartinput')
+  if g:vimrc_enabled_plugins.smartinput
     imap <expr> <C-h>  pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
     \ neocomplete#smart_close_popup()."\<Plug>(smartinput_BS)"
     imap <expr> <BS>   pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
@@ -6332,7 +6372,7 @@ if s:bundle.tap('vimshell.vim')
   function! s:bundle.tapped.hooks.on_source(bundle) "{{{3
     " prompt
     let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
-    if s:bundle.is_installed('vim-fugitive')
+    if g:vimrc_enabled_plugins.fugitive
       let g:vimshell_right_prompt = 'fugitive#statusline()'
     endif
 
@@ -6431,7 +6471,7 @@ if s:bundle.tap('vimshell.vim')
     call vimshell#hook#add('preexec'   , 'my_preexec', s:vimshell_hooks.preexec)
 
     "autocmd FileType vimshell
-    if s:bundle.is_installed('concealedyank.vim')
+    if g:vimrc_enabled_plugins.concealedyank
       nmap y <Plug>(operator-concealedyank)
       xmap y <Plug>(operator-concealedyank)
     endif
@@ -6439,9 +6479,9 @@ if s:bundle.tap('vimshell.vim')
     nmap <buffer><nowait> q <Plug>(vimshell_exit)
     nmap <buffer> I G<Plug>(vimshell_append_enter)
     imap <silent> <buffer> <C-a> <C-o>:call cursor(line('.'), strlen(g:vimshell_prompt)+1)<CR>
-    if s:bundle.is_installed('neocomplcache.vim')
+    if g:vimrc_enabled_plugins.neocomplcache
       inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
-    elseif s:bundle.is_installed('neocomplete.vim')
+    elseif g:vimrc_enabled_plugins.neocomplete
       inoremap <expr><buffer> <C-j> pumvisible() ? neocomplete#close_popup() : ""
     endif
   endfunction "}}}
@@ -6792,14 +6832,14 @@ command! -nargs=? -bang -complete=file Unix edit<bang> ++ff=unix <args>
 " }}}
 " utility {{{2
 " vimrc-local {{{3
-function! s:vimrc_local()
-  let fpath = s:find_proj_dir() . "/vimrc_local.vim"
-  let file = input("vimrc_local.vim :", fpath)
+function! s:edit_vimrc_local()
+  let fpath = s:find_proj_dir() . "/" .g:localrc_filename
+  let file = input( g:localrc_filename . " :", fpath)
   if !empty(file)
     execute "edit" "+split" file
   endif
 endfunction
-command! VimrcLocal call s:vimrc_local()
+command! VimrcLocalEdit call s:edit_vimrc_local()
 " 選択範囲をブラウザで起動 {{{3
 command! -range=0 OpenBrowserRange call my#command#openbrowser_range(<line1>, <line2>)
 
@@ -6899,7 +6939,7 @@ function! s:autoexec(bang, ...)
     autocmd vimrc-autoexec
     return
   endif
-  if s:bundle.is_installed('vimproc.vim')
+  if g:vimrc_enabled_plugins.vimproc
     execute 'autocmd vimrc-autoexec BufWritePost <buffer> call vimproc#system_bg('.string(command).')'
   else
     autocmd vimrc-autoexec BufWritePost <buffer> execute '!' command

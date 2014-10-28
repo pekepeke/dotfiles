@@ -68,6 +68,8 @@ Session.vim
 .netrwhist
 .phpcomplete_extended
 .ropeproject
+.fragment_proj.txt
+vimrc_local.vim
 
 # emacs
 *~

@@ -11,6 +11,8 @@
   st = status
   ss = status -sb
   sl = shortlog -sn
+  reba = rebase --abort
+  rebc = rebase --continue
   br = branch
   fixup = commit --amend -C HEAD
   edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"

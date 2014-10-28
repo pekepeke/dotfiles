@@ -13,14 +13,16 @@ tabSize = 4
 softTabs = false
 
 dotFiles = ".tm_properties,.ht*,.editorconfig"
-dotFiles = "$dotFiles,.hg*,.git*"
+dotFiles = "$dotFiles,.hg*,.git*,.*"
 dotFiles = "$dotFiles,.*rc,.*profile,.bin"
 include = "{$include,$dotFiles}"
 
+exclude = "{.DS_Store,*.tmproj,*.sublime-project}"
 excludeInFolderSearch = "{$excludeInFolderSearch,log,node_modules,vendor,tmp,META-INF,.svn}"
+# excludeFilesInBrowser = "{$exclude,*.tmproj}"
 excludeFilesInBrowser = "{$exclude,*.tmproj}"
 excludeDirectories = "{.svn}"
-exclude = "{$exclude,*.tmproj,*.sublime-project}"
+# exclude = "{$exclude,*.tmproj,*.sublime-project}"
 
 [ .git/COMMIT_EDITMSG ]
 spellChecking = true
