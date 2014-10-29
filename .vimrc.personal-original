@@ -1,3 +1,4 @@
+" vim:fdm=marker sw=2 ts=2 ft=vim expandtab:
 " env {{{1
 let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')

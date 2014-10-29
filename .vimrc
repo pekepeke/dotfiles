@@ -715,13 +715,15 @@ NeoBundle 'cohama/vim-hier', {'autoload':{
 \ 'commands': ['HierUpdate', 'HierClear', 'HierStart', 'HierStop',],
 \}}
 NeoBundle 'tpope/vim-repeat'
-" NeoBundle 'tpope/vim-surround'
-" NeoBundle 't9md/vim-surround_custom_mapping'
-NeoBundle 'anyakichi/vim-surround', {'autoload':{
-\ 'mappings': [['n', 'ds', 'cs', 'ys', 'yS', 'yss', 'ygs', 'ygS', 'ygss', 'ygsgs'],
-\ ['x', 's', 'S', 'gs', 'gS'],
-\ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
-\ }}
+NeoBundle 'tpope/vim-surround'
+NeoBundle 't9md/vim-surround_custom_mapping'
+" NeoBundle 'anyakichi/vim-surround', {'autoload':{
+" \ 'mappings': [['n', 'ds', 'cs', 'ys', 'yS', 'yss', 'ygs', 'ygS', 'ygss', 'ygsgs'],
+" \ ['x', 's', 'S', 'gs', 'gS'],
+" \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
+" \ }}
+" NeoBundle 'pekepeke/vim-anyakichi-surround_custom_mapping'
+
 " NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
 " \ 'commands': [
 " \ {'name': 'Abolish'}, {'name': 'Subvert'},
@@ -4921,10 +4923,11 @@ if s:bundle.tap('unite.vim')
   UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR> -profile-name=files
   UniteNMap   m         file_mru -default-action=open -profile-name=files
   UniteNMap   y         sonictemplate
-  UniteNMap   c         webcolorname
-  UniteNMap   i         jump
-  UniteNMap   o         outline
-  UniteNMap!  gg        grep:<C-r>=getcwd()<CR> -buffer-name=grep -auto-preview
+  UniteNMap   ic         webcolorname
+  UniteNMap   ii         jump
+  UniteNMap   io         outline
+  UniteNMap!  gg        grep:. -buffer-name=grep
+  UniteNMap!  gs        grep:.:-C\\ 4 -buffer-name=grep
   UniteNMap!  gr        grep -buffer-name=grep
   " UniteNMap!  gt        grep:<C-r>=getcwd()<CR>:TODO\|FIXME\|XXX\|NOTE\|!!!\|\?\?\? -buffer-name=todo -auto-preview
   " UniteNMap   gl        grep_launcher

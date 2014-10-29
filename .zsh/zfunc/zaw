@@ -30,15 +30,15 @@ zaw-rc () {
 
   bindkey -v '^Ve' zaw-stat
 
-  bindkey -v '^Vf' zaw-git-files
+  bindkey -v '^Vs' zaw-git-files
   bindkey -v '^Vd' zaw-gitdir
   # bindkey -v '^Xs' zaw-screens
-  bindkey -v '^VT' zaw-tmux
-  bindkey -v '^Vw' zaw-tmux-window
-  bindkey -v '^Vl' zaw-tmux-pane
-  bindkey -v '^V=' zaw-tmux-layout
+  bindkey -v '^Vtt' zaw-tmux
+  bindkey -v '^Vtw' zaw-tmux-window
+  bindkey -v '^Vtl' zaw-tmux-pane
+  bindkey -v '^Vt=' zaw-tmux-layout
+  bindkey -v '^Vt-' zaw-tmux-layout
   bindkey -v '^Vk' zaw-keybind
-  bindkey -v '^Vs' zaw-ssh
   bindkey -v '^Vp' zaw-keepass
 
   bindkey -v '^Vg' zaw-preview-file

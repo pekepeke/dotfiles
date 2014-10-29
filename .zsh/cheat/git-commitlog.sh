@@ -1,3 +1,5 @@
+# fixes author
+git commit --amend --author="$(git config user.name) <$(git config user.email)>"
 ## REDMINE
 refs #9999 @2h30m
 fixes #9999
