@@ -456,6 +456,8 @@ if s:bundle.tap('vim-watchdogs') && s:bundle.is_installed('vimproc.vim')
         \   'hook/close_quickfix/enable_success' : 1,
         \   'hook/hier_update/enable' : 1,
         \   'hook/quickfix_status_enable/enable' : 1,
+        \   "hook/quickfixsigns_update/enable_exit" : 1,
+        \   "hook/quickfixsigns_update/priority_exit" : 3,
         \   'hook/back_window/enable' : 1,
         \   'outputter/quickfix/open_cmd' : '',
         \ },

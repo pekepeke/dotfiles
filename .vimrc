@@ -797,8 +797,9 @@ NeoBundle 't9md/vim-smalls', {'autoload': {
 " NeoBundleLazy 'terryma/vim-expand-region', {'autoload':{
 " \ 'mappings': ['<Plug>(expand_region_',]
 " \ }}
-NeoBundle 'kshenoy/vim-signature'
-
+NeoBundle 'tomtom/quickfixsigns_vim', {
+\ 'depends': ['tomtom/tlib_vim'],
+\ }
 if has('python') && executable('editorconfig')
   NeoBundle 'editorconfig/editorconfig-vim'
 endif
@@ -934,12 +935,12 @@ NeoBundle 'mattn/sonictemplate-vim', {'autoload': {
 NeoBundle 'ujihisa/shadow.vim'
 " NeoBundle 'mhinz/vim-startify'
 NeoBundle 'mhinz/vim-hugefile'
-if !s:is_win
-  NeoBundle 'mhinz/vim-signify'
-  " NeoBundle 'airblade/vim-gitgutter'
-else
-  NeoBundle 'sgur/vim-gitgutter'
-endif
+" if !s:is_win
+"   NeoBundle 'mhinz/vim-signify'
+"   " NeoBundle 'airblade/vim-gitgutter'
+" else
+"   NeoBundle 'sgur/vim-gitgutter'
+" endif
 NeoBundle 'tpope/vim-git'
 NeoBundle 'tpope/vim-fugitive', {'autoload':{
 \ 'commands': [ "Git", "Gstatus", "Gcommit", "Gedit",
@@ -1082,10 +1083,10 @@ NeoBundle 'hrsh7th/vim-neco-calc'
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
 NeoBundle 'semmons99/vim-ruby-matchit'
-NeoBundleLazy 'tpope/vim-rails', {'autoload':{
+NeoBundle 'tpope/vim-rails', {'autoload':{
 \ 'filetypes': ['ruby','haml','eruby'],
 \ }}
-NeoBundleLazy 'tpope/vim-bundler', {'autoload':{
+NeoBundle 'tpope/vim-bundler', {'autoload':{
 \ 'filetypes': ['ruby'],
 \ }}
 NeoBundle 'hallison/vim-ruby-sinatra'
@@ -1098,7 +1099,7 @@ NeoBundleLazy 'alpaca-tc/neorspec.vim', {
 \ 'autoload' : {
 \   'commands' : ['RSpec', 'RSpecAll', 'RSpecCurrent', 'RSpecNearest', 'RSpecRetry']
 \ }}
-NeoBundleLazy 'ecomba/vim-ruby-refactoring', {'autoload':{
+NeoBundle 'ecomba/vim-ruby-refactoring', {'autoload':{
 \ 'filetypes': ['ruby'],
 \ }}
 
@@ -1147,7 +1148,7 @@ NeoBundleLazy 'osyo-manga/unite-highlight', {'autoload':{
 
 if has("signs") && has("clientserver") && v:version > 700
   NeoBundleLazy 'astashov/vim-ruby-debugger', {'autoload':{
-  \ 'filetypes': ['ruby'],
+  \ 'commands': ['Rdebugger']
   \ }}
 else
   NeoBundleLazy 'astashov/vim-ruby-debugger'
@@ -1155,7 +1156,6 @@ endif
 NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
 \ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails', 'Shougo/vimproc', 'Shougo/unite.vim'],
 \ 'autoload': {
-\   'insert' : 1,
 \   'unite_sources' : 'rails_support/locales',
 \   'commands' : [
 \     'RSCreateRoutesCache', 'RSCleanCache',
@@ -1441,7 +1441,6 @@ endif
 " NeoBundle 'plasticboy/vim-markdown' " plasticboy mode -> mkd
 NeoBundle 'tpope/vim-markdown'
 NeoBundle 'nelstrom/vim-markdown-folding'
-" NeoBundle 'joker1007/vim-markdown-quote-syntax'
 NeoBundle 'kannokanno/previm'
 NeoBundle 'timcharper/textile.vim'
 " NeoBundleLazy 'chrisbra/csv.vim', {'autoload':{
@@ -2738,7 +2737,7 @@ endif
 " translategoole.vim {{{2
 function! s:vimrc_translategoole()
   nnoremap <buffer><nowait> q :<C-u>TranslateGoogleClose<CR>
-  nnoremap <buffer><nowait> T :<C-u>TranslateGoogleExchange<CR>
+  nnoremap <buffer><nowait> T :<C-u>TranslateGoogleToggle<CR>
 endfunction
 MyAutoCmd User PluginTranslateGoogleInitializeAfter call s:vimrc_translategoole()
 
@@ -2814,39 +2813,15 @@ endif
 " tern_for_vim {{{2
 let g:tern_show_argument_hints=1
 
-" vim-markdown-quote-syntax {{{2
-let s:mdquote_defaults = keys(extend(
-      \ get(g:, 'markdown_quote_syntax_defaults', {})
-      \ , get(g:, 'markdown_quote_syntax_filetypes', {})
-      \ ))
-function! s:vimrc_mdquote_syntax_init(pos, is_initialize)
-  if s:bundle.is_sourced('vim-markdown-quote-syntax')
-    silent autocmd! vimrc-mdquote-syntax
-    return
-  endif
-  let pos = a:pos < 1 ? 1 : a:pos
-  let s = join(getline(pos, pos + 5), "\n")
-  let types = empty(s:mdquote_defaults) ?
-  \ ['sh', 'html', 'cpp', 'ocaml', 'erlang', 'python',
-  \ 'vim', 'c', 'haskell', 'java', 'javascript', 'perl', 'diff', 'ruby', 'sql']
-  \ : s:mdquote_defaults
-  let ft = '\('.join(types, '\|').'\)'
-  if match(s, '^```'.ft) != -1
-    silent NeoBundleSource vim-markdown-quote-syntax
-    silent autocmd! vimrc-mdquote-syntax
-    doautocmd Syntax
-    return
-  endif
-  if a:is_initialize
-    autocmd vimrc-mdquote-syntax CursorHold
-    \ <buffer> call s:vimrc_mdquote_syntax_init(line(".") - 2, 0)
-  endif
-endfunction
-
-augroup vimrc-mdquote-syntax
-  autocmd!
-  autocmd FileType markdown,mkd call s:vimrc_mdquote_syntax_init(1, 1)
-augroup END
+"  vim-ruby-heredoc-syntax
+if s:bundle.tap('vim-ruby-heredoc-syntax')
+  let g:ruby_heredoc_syntax_filetypes = {
+    \  "sql" : {
+    \    "start" : "SQL",
+    \ },
+    \ }
+  call s:bundle.untap()
+endif
 
 " vim-signify {{{}}}
 if s:bundle.tap('vim-signify')

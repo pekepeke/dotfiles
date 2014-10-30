@@ -59,7 +59,7 @@ endfunction
 function! translategoogle#exchange()
   let sl = g:translategoogle_default_sl
   let g:translategoogle_default_sl = g:translategoogle_default_tl
-  let g:translategoogle_default_ll = sl
+  let g:translategoogle_default_tl = sl
 endfunction
 
 function! translategoogle#command(args)
@@ -104,6 +104,7 @@ function! s:define_cmd_map(idx)
     execute 'command! -buffer TranslateGoogleDisableRetranslate call s:disable_retranslate(' . a:idx . ')'
     execute 'command! -buffer TranslateGoogleEnableAutoUpdate let s:translategoogle.auto_update[' . a:idx . '] = 1'
     execute 'command! -buffer TranslateGoogleDisableAutoUpdate let s:translategoogle.auto_update[' . a:idx . '] = 0'
+    execute 'command! -buffer TranslateGoogleStatus call s:show_status(' . a:idx . ')'
 
     if g:translategoogle_mapping_close != ''
         execute 'nnoremap <buffer> ' . g:translategoogle_mapping_close . ' :TranslateGoogleClose<CR>'
@@ -150,6 +151,10 @@ function! s:disable_retranslate(idx)
     else
         call s:Message.warn('already disabled')
     endif
+endfunction
+
+function! s:show_status(idx)
+  echo s:translategoogle.params[a:idx]
 endfunction
 
 function! s:create_buffers()
@@ -273,7 +278,14 @@ function! s:get_translated_text(text, ...)
     endif
 
     let s = substitute(response.content, ',\+', ',', 'g')
-    let json = s:JSON.decode(s)
+    try
+      let json = s:JSON.decode(s)
+    finally
+      echohl Error
+      echomsg v:exception . ":" . response.content
+      echohl Normal
+    endtry
+
     let text = []
     if exists('json[0][0][0]')
       let text = split(json[0][0][0], "\n")
