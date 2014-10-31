@@ -1,4 +1,5 @@
 peco-git-ls-files() {
+  local pos=$CURSOR
   local cmd="files"
   if git rev-parse >/dev/null 2>&1; then
     cmd="git ls-files"
@@ -7,8 +8,9 @@ peco-git-ls-files() {
   fi
   local selected="$(eval $cmd | peco --query="$LBUFFER")"
   if [ -n "$selected" ]; then
-    BUFFER="$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
-    CURSOR=0
+    BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
+    CURSOR=$#BUFFER
+    zle -R -c
   fi
 }
 zle -N peco-git-ls-files

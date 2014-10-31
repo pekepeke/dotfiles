@@ -1,4 +1,5 @@
 function peco-search-locate() {
+  local pos=$CURSOR
   local cmd
   case $OSTYPE in
     darwin*)
@@ -17,7 +18,9 @@ function peco-search-locate() {
 
   locate selected=$(eval $cmd "$LBUFFER" $* | peco)
   if [ -n "$selected" ]; then
-      BUFFER="$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
+    BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
+    CURSOR=$#BUFFER
+    zle -R -c
   fi
 }
 

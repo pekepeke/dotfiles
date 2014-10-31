@@ -3,7 +3,7 @@
 
 encoding = "UTF-8"
 
-fontName = "Ricty"
+fontName = "Ricty-Regular"
 fontSize = 14
 
 showInvisibles = true

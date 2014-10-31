@@ -24,7 +24,7 @@ function! s:get_candidates(filename) "{{{2
   let name = ""
 
   for line in lines
-    let m = matchlist(line, '!---*\s*\(.*\)$')
+    let m = matchlist(line, '^@@*\s*\(.*\)$')
     if empty(m)
       " call vimconsole#log("empty:".line)
       call add(buf, line)

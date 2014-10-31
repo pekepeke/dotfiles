@@ -3,4 +3,7 @@ snippet #!
 	#!/bin/zsh
 
 snippet buffer_surround
+  local pos=$CURSOR
 	BUFFER="${BUFFER[1,$pos]}${selected}${BUFFER[$pos,-1]}"
+	CURSOR=$#BUFFER
+	zle -R -c

@@ -41,6 +41,15 @@ snippet func
 	function! ${1:name}(${2}) " {{{2
 		${3}
 	endfunction
+snippet dirname
+    fnamemodify('<sfile>', '%:p:h')
+snippet basename
+    fnamemodify('<sfile>', '%:p:t')
+snippet extension
+    fnamemodify('<sfile>', '%:p:t:e')
+snippet filename
+    expand('%:p:t:r')
+    fnamemodify('<sfile>', '%:p:t:r')
 
 snippet qrun_mysql
     let b:quickrun_config = {'cmdopt': '-uroot -h127.0.0.1 -p`get(g:, 'mysql_password', 'root')` -D ${1:db}'}

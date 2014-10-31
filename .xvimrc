@@ -36,6 +36,11 @@ nnoremap <Space>k :xccmd jumpToNextCounterpart<CR>
 " nnoremap <Space>s :xccmd changeToStandardEditor<CR>
 nnoremap <Space>g :xccmd changeToGeniusEditor<CR>
 nnoremap <Space>v :xccmd changeToVersionEditor<CR>
+nnoremap <Space>rr :xccmd refactorRename<CR>
+nnoremap <Space>re :xccmd refactorExtract<CR>
+
+nnoremap <Space>[ :pissue<CR>
+nnoremap <Space>] :nissue<CR>
 
 " operator-replace like
 nnoremap _iw viwPyiwhl

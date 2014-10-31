@@ -5,7 +5,6 @@ shrc_section_title "init" #{{{1
 
 if_compile ~/.shrc.*[^zwc]
 if_compile ~/.zshenv
-# if_compile ~/.zshrc
 [ -e ~/.zshrc.zwc ] && rm -f ~/.zshrc.zwc
 
 shrc_section_title "env vars" #{{{1
@@ -120,7 +119,6 @@ ls_abbrev() {
 
 shrc_section_title "keybinds" #{{{1
 shrc_section_title "keybind from terminfo" #{{{2
-
 # typeset -A key
 #
 # key[Home]=${terminfo[khome]}
@@ -184,15 +182,15 @@ bindkey -v '^S' history-incremental-search-forward
 bindkey -v '^Y' yank
 bindkey -v '^R' history-incremental-pattern-search-backward
 
-copy-buffer() {
+_copy-buffer() {
   local copy_cmd="xsel -b"
   type pbcopy >/dev/null && copy_cmd="pbcopy"
   type xclip >/dev/null && copy_cmd="xclip -i -selection clipboard"
   print -rn $BUFFER | eval $copy_cmd
   zle -M "copy : ${BUFFER}"
 }
-zle -N copy-buffer
-bindkey -v "^Xy" copy-buffer
+zle -N _copy-buffer
+bindkey -v "^Xy" _copy-buffer
 
 # surround.vimみたいにクォートで囲む <<< # {{{3
 # http://d.hatena.ne.jp/mollifier/20091220/p1
@@ -225,18 +223,13 @@ select-word-style default
 zstyle ':zle:*' word-chars " _-./;@"
 zstyle ':zle:*' word-style unspecified
 
-# bindkey -e
-# bindkey ";5C" forward-word
-# bindkey ";5D" backward-word
-
 # enter key {{{3
-function do_enter() {
+function _do-enter() {
   if [ -n "$BUFFER" ]; then
     zle accept-line
     return 0
   fi
   echo
-  # ls
   ls_abbrev
 
   # if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = 'true' ]; then
@@ -254,8 +247,8 @@ function do_enter() {
   zle reset-prompt
   return 0
 }
-zle -N do_enter
-bindkey '^m' do_enter
+zle -N _do-enter
+bindkey '^m' _do-enter
 
 shrc_section_title "history setting" #{{{1
 autoload history-search-end
@@ -349,24 +342,15 @@ fi
 shrc_section_title "plugins" #{{{1
 shrc_section_title "percol" #{{{2
 if type type peco >/dev/null 2>&1; then
-  for f ( ~/.zsh/zfunc/peco/*.zsh ) source "${f}"
+  source_all ~/.zsh/zfunc/peco/*.zsh
   bindkey -v '^Xp' peco-search-clipmenu
   bindkey -v '^Xs' peco-select-snippets
   bindkey '^R' peco-select-history
+  bindkey '^Vgg' peco-select-zle-git
+  bindkey '^Vgf' peco-git-changed-files
+  bindkey '^Vgm' peco-git-ls-files
   bindkey '^O' peco-select-zle
   bindkey '^Vo' peco-select-zle
-# if type percol >/dev/null 2>&1 ; then
-#   for f ( ~/.zsh/zfunc/percol/*.zsh ) source "${f}"
-
-#   zle -N percol-select-history
-#   zle -N peco-snippets
-#   zle -N percol-search-clipmenu
-#   bindkey -v '^Xp' percol-search-clipmenu
-#   bindkey -v '^Xs' peco-snippets
-#   bindkey '^R' percol-select-history
-#   bindkey '^O' peco-select-zle
-#   alias pd='percol-search-document'
-#   alias pl='percol-search-locate'
 fi
 
 shrc_section_title "textobj" #{{{2
@@ -382,36 +366,36 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
   # source ~/.zsh/plugins/zaw/zaw.zsh
   # source_all ~/.zsh/functions/zaw/*
   # zstyle ':filter-select' case-insensitive yes
-  zaw-init() {
+  _zaw-init() {
     zaw
-    # add-zsh-hook -d preexec zaw-init
     bindkey -r '^V'
-    (( $+functions[z-init] )) && zle z-init
+    (( $+functions[_z-init] )) && zle _z-init
 
-    unfunction "zaw-init"
+    unfunction "_zaw-init"
+
+    bindkey -v '^V;' zaw
+    bindkey -v '^Vj' zaw-z
+    bindkey -v '^Vh' zaw-cheat
+
+    bindkey -v '^Vtt' zaw-tmux
+    bindkey -v '^Vtw' zaw-tmux-window
+    bindkey -v '^Vtl' zaw-tmux-pane
+    bindkey -v '^Vt=' zaw-tmux-layout
+    bindkey -v '^Vt-' zaw-tmux-layout
+    bindkey -v '^Vk' zaw-keybind
+
+    (( $+functions[zaw-src-tmuxinator] )) && bindkey -v '^Vm' zaw-tmuxinator
+    (( $+functions[zaw-src-finder] )) && bindkey -v '^Vf' zaw-finder
   }
 
-  # add-zsh-hook preexec zaw-init
-  # zaw-init
-  zaw-init
-  # zle -N zaw-init
-  # bindkey -v '^V' zaw-init
+  _zaw-init
+  # zle -N _zaw-init
+  # bindkey -v '^V' _zaw-init
 fi
 shrc_section_title "autojump" #{{{2
 if [ -e ~/.zsh/plugins/z/z.sh ]; then
   _Z_CMD=j
   . ~/.zsh/plugins/z/z.sh
-  # autoload -Uz z ; zle -N z
-  # z-init() {
-  #   z
-  #   # add-zsh-hook -d preexec z-init
-  #   bindkey -v 'j' self-insert
-  #   zle self-insert
-  #   unfunction "z-init"
-  # }
-
-  # zle -N z-init
-  # bindkey -v 'j' z-init
 fi
 
 shrc_section_title "zsh-syntax-highlighting" #{{{2
@@ -419,16 +403,6 @@ if [ -e ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; th
   source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
-shrc_section_title "auto-fu.zsh" #{{{2
-# if [ -e ~/.zsh/plugins/auto-fu.zsh ]; then
-#   source ~/.zsh/plugins/auto-fu.zsh/auto-fu.zsh
-#   zle-line-init() { auto-fu-init }
-#   zle -N zle-line-init
-#   zstyle ':completion:*' completer _oldlist _complete
-#   zstyle ':auto-fu:var' postdisplay $''
-#   zstyle ':auto-fu:highlight' completion fg=black,bold
-#   zstyle ':auto-fu:highlight' completion/one fg=gray,normal,underline
-# fi
 
 shrc_section_title "prompt" #{{{1
 setopt prompt_subst      # PROMPT内で変数展開・コマンド置換・算術演算を実行
@@ -555,12 +529,11 @@ add-zsh-hook precmd precmd_rprompt
 add-zsh-hook preexec preexec_multiterm
 add-zsh-hook chpwd chpwd_multiterm
 
-# local __user='%{$fg[yellow]%}%n@%{$fg[yellow]%}%m%{$reset_color%}'
 local __user='%{$bg[black]%}%{$fg[white]%} %n@%m %{$reset_color%}$ '
 
 local vi_n="%{$bg[magenta]%}%{$fg_bold[white]%} N %{$reset_color%}"
 local vi_i="%{$bg[blue]%}%{$fg_bold[white]%} I %{$reset_color%}"
-function zle-line-init zle-keymap-select {
+function _zle-line-init _zle-keymap-select {
   case $KEYMAP in
     vicmd)
       PROMPT="${vi_n}${__user}"
@@ -571,18 +544,11 @@ function zle-line-init zle-keymap-select {
   esac
   zle reset-prompt
 }
-zle -N zle-line-init
-zle -N zle-keymap-select
+zle -N _zle-line-init
+zle -N _zle-keymap-select
 
-# export PROMPT="[%n@%m %3d]%(#.#.$) "
 PROMPT="${vi_i}${__user}"
 RPROMPT=""
-# case "$TERM" in
-#   cygwin|xterm|xterm*|kterm|mterm|rxvt*)
-#     ;;
-#   screen*)
-#     ;;
-# esac
 if [ -n "$SSH_CONNECTION" ] && [ $TERM =~ "screen" ] && [ -z "$TMUX" ]; then
   t_prefix="$HOST"
 fi
@@ -592,7 +558,7 @@ zcomp-reload() {
   rm -f $_comp_dumpfile && compinit && exec $SHELL
 }
 
-zsh-complete-init() {
+_zsh-complete-init() {
   shrc_section_title "complete-init start"
 
   [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
@@ -697,20 +663,17 @@ zsh-complete-init() {
 
   # 2}}}
 
-  unfunction "zsh-complete-init"
-  # add-zsh-hook -d precmd zsh-complete-init
+  unfunction "_zsh-complete-init"
   zle expand-or-complete
   bindkey -v '^I' expand-or-complete
 
   shrc_section_title "complete-init finish"
 }
-# add-zsh-hook precmd zsh-complete-init
-zle -N zsh-complete-init
-bindkey -v '^I' zsh-complete-init
-#_zsh-complete-init
+zle -N _zsh-complete-init
+bindkey -v '^I' _zsh-complete-init
+
+[ -e ~/.spm_completion ] && . ~/.spm_completion
 
 shrc_section_title "finish"
 # vim: ft=zsh fdm=marker sw=2 ts=2 et:
 # __END__ #{{{1
-
-[ -e ~/.spm_completion ] && . ~/.spm_completion

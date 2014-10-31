@@ -1,10 +1,10 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 zaw () {
-  zaw-rc
+  _zaw-rc
   [[ "${WIDGET-}" != "" ]] || return
   # zle zaw -K emacs -- "$@"
 }
-zaw-rc () {
+_zaw-rc () {
   unfunction "$0"
 
   source ~/.zsh/plugins/zaw/zaw.zsh
@@ -19,33 +19,6 @@ zaw-rc () {
   bindkey -M filterselect '^R' beginning-of-history
   bindkey -M filterselect '^T' end-of-history
 
-  # bindkey -v '^X^A' zaw-ack
-  # bindkey -v '^Xj' zaw-open-file
-
-  bindkey -v '^V;' zaw
-  bindkey -v '^Vr' zaw-history
-
-  bindkey -v '^Vj' zaw-z
-  bindkey -v '^Vh' zaw-cheat
-
-  bindkey -v '^Ve' zaw-stat
-
-  bindkey -v '^Vs' zaw-git-files
-  bindkey -v '^Vd' zaw-gitdir
-  # bindkey -v '^Xs' zaw-screens
-  bindkey -v '^Vtt' zaw-tmux
-  bindkey -v '^Vtw' zaw-tmux-window
-  bindkey -v '^Vtl' zaw-tmux-pane
-  bindkey -v '^Vt=' zaw-tmux-layout
-  bindkey -v '^Vt-' zaw-tmux-layout
-  bindkey -v '^Vk' zaw-keybind
-  bindkey -v '^Vp' zaw-keepass
-
-  bindkey -v '^Vg' zaw-preview-file
-  bindkey -v '^Va' zaw-applications
-
-  (( $+functions[zaw-src-tmuxinator] )) && bindkey -v '^Vm' zaw-tmuxinator
-  (( $+functions[zaw-src-finder] )) && bindkey -v '^Vf' zaw-finder
 }
 zaw "$@"
 

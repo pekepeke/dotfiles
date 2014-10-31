@@ -1,5 +1,5 @@
-if exists('g:loaded_vimrc_local_{{_expr_:expand('%:p:h:t')}}')
+if exists('g:loaded_vimrc_local_{{_expr_:substitute(expand('%:p:h:t'), '-', '_', 'g')}}')
 	finish
 endif
-let g:loaded_vimrc_local_{{_expr_:expand('%:p:h:t')}} = 1
+let g:loaded_vimrc_local_{{_expr_:substitute(expand('%:p:h:t'), '-', '_', 'g')}} = 1
 

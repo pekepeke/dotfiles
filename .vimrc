@@ -2399,6 +2399,9 @@ nnoremap [!space]/ :<C-u>nohlsearch<CR>
 nnoremap [!space]w :<C-u>call my#command#toggle_option("wrap")<CR>
 nnoremap [!space]n :<C-u>call my#command#toggle_option("relativenumber")<CR>
 
+nnoremap [!space][ :<C-u>cprevious<CR>
+nnoremap [!space]] :<C-u>cnext<CR>
+
 nnoremap <C-w><Space> <C-w>p
 nnoremap *  *N
 nnoremap #  #n
@@ -2825,8 +2828,8 @@ endif
 
 " vim-signify {{{}}}
 if s:bundle.tap('vim-signify')
-  nmap [!space]] <plug>(signify-next-hunk)
-  nmap [!space][ <plug>(signify-prev-hunk)
+  nmap [!space]@ <plug>(signify-next-hunk)
+  nmap [!space]: <plug>(signify-prev-hunk)
   call s:bundle.untap()
 endif
 
@@ -6812,7 +6815,9 @@ command! -nargs=? -bang -complete=file Unix edit<bang> ++ff=unix <args>
 " vimrc-local {{{3
 function! s:edit_vimrc_local()
   let fpath = s:find_proj_dir() . "/" .g:localrc_filename
-  let file = input( g:localrc_filename . " :", fpath)
+  if !filereadable(fpath)
+    let file = input( g:localrc_filename . " :", fpath)
+  endif
   if !empty(file)
     execute "edit" "+split" file
   endif
