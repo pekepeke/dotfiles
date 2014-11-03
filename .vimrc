@@ -234,6 +234,15 @@ endfunction
 
 " diff {{{2
 set diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
+set diffexpr=GitDiffNormal()
+function GitDiffNormal()
+  let opt = "--histogram"
+  if &diffopt =~ "iwhite"
+    let opt = opt . "-b "
+  endif
+  silent execute "!git-diff-normal-format " . opt . v:fname_in . " " . v:fname_new . " > " . v:fname_out
+  redraw!
+endfunction
 
 " 表示周り {{{2
 set lazyredraw ttyfast
@@ -970,6 +979,7 @@ NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
 \   {'name': 'DirDiff', 'complete': 'dir'},
 \ ],
 \ }}
+NeoBundle 'vim-scripts/diffchar.vim'
 " NeoBundle 'thinca/vim-ft-diff_fold'
 NeoBundleLazy 'AndrewRadev/linediff.vim', {'autoload': {
 \ 'commands': ['Linediff', 'LinediffReset'],

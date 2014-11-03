@@ -1,6 +1,5 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [diff]
-  algorithm = histogram
 [diff "applescript"]
   binary = true
   textconv = osadecompile
