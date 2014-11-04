@@ -1,10 +1,5 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 zaw () {
-  _zaw-rc
-  [[ "${WIDGET-}" != "" ]] || return
-  # zle zaw -K emacs -- "$@"
-}
-_zaw-rc () {
   unfunction "$0"
 
   source ~/.zsh/plugins/zaw/zaw.zsh
@@ -19,6 +14,8 @@ _zaw-rc () {
   bindkey -M filterselect '^R' beginning-of-history
   bindkey -M filterselect '^T' end-of-history
 
+  [[ "${WIDGET-}" != "" ]] || return
+  # zle zaw -K emacs -- "$@"
 }
 zaw "$@"
 

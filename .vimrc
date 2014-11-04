@@ -2754,6 +2754,11 @@ function! s:vimrc_translategoole()
 endfunction
 MyAutoCmd User PluginTranslateGoogleInitializeAfter call s:vimrc_translategoole()
 
+" quickfixsigns_vim {{{2
+if s:bundle.tap('quickfixsigns_vim')
+  let g:quickfixsigns_blacklist_buffer = '\(^\|[\/]\)\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\|.*/\)$'   "{{{2
+endif
+
 " codic-vim {{{2
 if s:bundle.tap('codic-vim')
   " http://sgur.tumblr.com/post/91906146884/codic-vim

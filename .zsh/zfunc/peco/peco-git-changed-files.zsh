@@ -4,7 +4,7 @@ peco-git-changed-files() {
   if [ -n "$selected" ]; then
     BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
     CURSOR=$#BUFFER
-    zle -R -c
   fi
+  zle -R -c
 }
 zle -N peco-git-changed-files

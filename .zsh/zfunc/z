@@ -1,8 +1,5 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 z() {
-  z-rc
-}
-z-rc() {
   unfunction "$0"
   source ~/.zsh/plugins/z/z.sh
   precmd() {

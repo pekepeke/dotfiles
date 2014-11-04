@@ -8,8 +8,8 @@ peco-select-logfiles() {
       BUFFER="tail -f ${selected}"
     fi
     CURSOR=$#BUFFER
-    zle -R -c
     # zle accept-line
   fi
+  zle -R -c
 }
 zle -N peco-select-logfiles

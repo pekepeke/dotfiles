@@ -4,5 +4,6 @@ peco-attach-gdb-pid() {
   if [ -n "$pid" ]; then
     gdb -p $pid
   fi
+  zle -R -c
 }
 zle -N peco-attach-gdb-pid

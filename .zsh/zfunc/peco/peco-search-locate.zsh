@@ -20,8 +20,8 @@ function peco-search-locate() {
   if [ -n "$selected" ]; then
     BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
     CURSOR=$#BUFFER
-    zle -R -c
   fi
+  zle -R -c
 }
 
 zle -N peco-search-locate

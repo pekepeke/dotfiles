@@ -4,6 +4,7 @@ peco-git-rebase-i() {
     if [ -n "$commit_hash" ]; then
       LBUFFER="git rebase -i ${commit_hash}"
     fi
+    zle -R -c
   fi
 }
 zle -N peco-git-rebase-i

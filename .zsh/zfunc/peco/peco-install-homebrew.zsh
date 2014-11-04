@@ -4,6 +4,7 @@ _peco_homebrew() {
     BUFFER="brew $1 $2 $selected"
     CURSOR=$#BUFFER
   fi
+  zle -R -c
 }
 peco-install-homebrew() {
   _peco_homebrew "" install

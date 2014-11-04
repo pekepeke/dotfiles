@@ -347,7 +347,11 @@ if type type peco >/dev/null 2>&1; then
   bindkey -v '^Xs' peco-select-snippets
   bindkey '^R' peco-select-history
   bindkey '^Vgg' peco-select-zle-git
+  bindkey '^Vgj' peco-git-ls-files
   bindkey '^Vgf' peco-git-changed-files
+  bindkey '^Vgb' peco-git-recent-branches
+  bindkey '^VgB' peco-git-recent-all-branches
+  bindkey '^Vgl' peco-git-log
   bindkey '^Vgm' peco-git-ls-files
   bindkey '^O' peco-select-zle
   bindkey '^Vo' peco-select-zle
@@ -369,7 +373,6 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
   _zaw-init() {
     zaw
     bindkey -r '^V'
-    (( $+functions[_z-init] )) && zle _z-init
 
     unfunction "_zaw-init"
 
