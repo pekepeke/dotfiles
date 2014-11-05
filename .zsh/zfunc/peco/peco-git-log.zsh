@@ -4,7 +4,8 @@ peco-git-log() {
     if [ -n "$git_hash" ]; then
       BUFFER="${BUFFER[1,$pos]}$(echo ${git_hash} | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
       CURSOR=$#BUFFER
-      zle -R -c
+      zle -R
+      # zle -R -c
     fi
   fi
 }

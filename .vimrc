@@ -235,12 +235,14 @@ endfunction
 " diff {{{2
 set diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
 set diffexpr=GitDiffNormal()
-function GitDiffNormal()
-  let opt = "--histogram"
+function! GitDiffNormal()
+  let args=["git-diff-normal", '--diff-algorithm=histogram']
   if &diffopt =~ "iwhite"
-    let opt = opt . "-b "
+    call add(args, '--ignore-all-space')
   endif
-  silent execute "!git-diff-normal-format " . opt . v:fname_in . " " . v:fname_new . " > " . v:fname_out
+  let args += [v:fname_in, v:fname_new, '>', v:fname_out]
+  let cmd='!' . join(args, ' ')
+  silent execute cmd
   redraw!
 endfunction
 
@@ -3719,7 +3721,7 @@ endif
 
 " vim-localrc {{{2
 if s:bundle.is_installed('vim-localrc')
-  let g:localrc_filename = 'vimrc_local.vim'
+  let g:localrc_filename = '.vimrc_local.vim'
   if has('vim_starting')
     " http://vim-users.jp/2009/12/hack112/ => vimrc-local
     call localrc#load('vimrc_local.vim', getcwd(), 3)

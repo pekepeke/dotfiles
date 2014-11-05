@@ -8,7 +8,8 @@ function peco-select-history() {
     BUFFER="${selected}"
     CURSOR=$#BUFFER         # move cursor
   fi
-  zle -R -c               # refresh
+  zle -R
+  # zle -R -c
 }
 
 zle -N peco-select-history

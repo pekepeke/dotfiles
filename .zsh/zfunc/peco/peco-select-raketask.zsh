@@ -11,7 +11,8 @@ peco-select-raketask-all() {
     LBUFFER="${bundle_exec} $(echo $task | tr "[:cntrl:]" " ")"
     CURSOR=$#LBUFFER
   fi
-  zle -R -c
+  zle -R
+  # zle -R -c
 }
 peco-select-raketask() {
   local bundle_exec=""
@@ -26,7 +27,8 @@ peco-select-raketask() {
     LBUFFER="${bundle_exec} $(echo $task | tr "[:cntrl:]" " ")"
     CURSOR=$#LBUFFER
   fi
-  zle -R -c
+  zle -R
+  # zle -R -c
 }
 
 zle -N peco-select-raketask

@@ -4,6 +4,7 @@ peco-select-ssh-host() {
     LBUFFER="ssh $host"
     CURSOR=$#LBUFFER
   fi
-  zle -R -c
+  zle -R
+  # zle -R -c
 }
 zle -N peco-select-ssh-host

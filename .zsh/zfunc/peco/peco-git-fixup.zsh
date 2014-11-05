@@ -4,7 +4,8 @@ peco-git-fixup() {
     if [ -n "$commit_hash" ]; then
       LBUFFER="git commit --fixup ${commit_hash}"
     fi
-    zle -R -c
+    zle -R
+    # zle -R -c
   fi
 }
 zle -N peco-git-fixup

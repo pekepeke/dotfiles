@@ -5,7 +5,8 @@ peco-open-bundle-gem() {
       LBUFFER="cd $selected"
       CURSOR=$#LBUFFER
     fi
-    zle -R -c
+    zle -R
+    # zle -R -c
   fi
 }
 zle -N peco-open-bundle-gem

@@ -69,7 +69,8 @@ Session.vim
 .phpcomplete_extended
 .ropeproject
 .fragment_proj.txt
-vimrc_local.vim
+.*.snip
+.vimrc_local.vim
 
 # emacs
 *~

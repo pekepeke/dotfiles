@@ -10,6 +10,7 @@ peco-select-logfiles() {
     CURSOR=$#BUFFER
     # zle accept-line
   fi
-  zle -R -c
+  zle -R
+  # zle -R -c
 }
 zle -N peco-select-logfiles

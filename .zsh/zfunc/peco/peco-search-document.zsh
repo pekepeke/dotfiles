@@ -13,6 +13,7 @@ function peco-search-document() {
     BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
     CURSOR=$#BUFFER
   fi
-  zle -R -c
+  zle -R
+  # zle -R -c
 }
 zle -N peco-search-document

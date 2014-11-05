@@ -5,6 +5,7 @@ function peco-git-recent-branches () {
   if [ -n "$selected_branch" ]; then
     LBUFFER="git checkout ${selected_branch}"
   fi
-  zle -R -c
+  zle -R
+  # zle -R -c
 }
 zle -N peco-git-recent-branches

@@ -4,5 +4,7 @@ peco-select-ghq() {
     BUFFER="cd $(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
     zle accept-line
   fi
+  zle -R
+  # zle -R -c
 }
 zle -N peco-select-ghq
