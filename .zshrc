@@ -346,9 +346,9 @@ if type type peco >/dev/null 2>&1; then
   bindkey -v '^Xp' peco-search-clipmenu
   bindkey -v '^Xs' peco-select-snippets
   bindkey '^R' peco-select-history
-  bindkey '^Vgg' peco-select-zle-git
+  bindkey '^Vgh' peco-select-zle-git
   bindkey '^Vgj' peco-git-ls-files
-  bindkey '^Vgf' peco-git-changed-files
+  bindkey '^Vgg' peco-git-changed-files
   bindkey '^Vgb' peco-git-recent-branches
   bindkey '^VgB' peco-git-recent-all-branches
   bindkey '^Vgl' peco-git-log
