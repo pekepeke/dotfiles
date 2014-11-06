@@ -1,0 +1,11 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-select-ps-kill() {
+  local pid=$(ps aux | peco --query "$LBUFFER" | awk '{ print $2 }')
+  if [ x"${pid}" != x ];then
+    BUFFER="kill $pid"
+    zle accept-line
+  fi
+  zle -R
+  # zle -R -c
+# }
+# zle -N peco-select-ps-kill

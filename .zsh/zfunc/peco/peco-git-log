@@ -1,4 +1,5 @@
-peco-git-log() {
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-git-log() {
   local git_hash=$(git log --oneline | peco --query "$LBUFFER"|cut -d' ' -f1)
   if git rev-parse >/dev/null 2>&1; then
     if [ -n "$git_hash" ]; then
@@ -8,5 +9,5 @@ peco-git-log() {
       # zle -R -c
     fi
   fi
-}
-zle -N peco-git-log
+# }
+# zle -N peco-git-log

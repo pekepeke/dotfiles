@@ -1,4 +1,5 @@
-peco-attach-gdb-pid() {
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-attach-gdb-pid() {
   local pid=$(ps aux | peco --query="$LBUFFER" | awk '{print $2}' | head -n1)
 
   if [ -n "$pid" ]; then
@@ -6,5 +7,5 @@ peco-attach-gdb-pid() {
   fi
   zle -R
   # zle -R -c
-}
-zle -N peco-attach-gdb-pid
+# }
+# zle -N peco-attach-gdb-pid

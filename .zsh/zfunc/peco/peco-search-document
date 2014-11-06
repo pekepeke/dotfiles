@@ -1,4 +1,5 @@
-function peco-search-document() {
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# function peco-search-document() {
   local pos=$CURSOR
   local DOCUMENT_DIR
   DOCUMENT_DIR=($HOME/Dropbox)
@@ -15,5 +16,5 @@ function peco-search-document() {
   fi
   zle -R
   # zle -R -c
-}
-zle -N peco-search-document
+# }
+# zle -N peco-search-document

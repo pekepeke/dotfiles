@@ -1,4 +1,5 @@
-peco-select-logfiles() {
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-select-logfiles() {
   local pos=$CURSOR
   local selected=$(find -L ~/.mylog/logs -type f | peco --query="$LBUFFER")
   if [ -n "$selected" ]; then
@@ -12,5 +13,5 @@ peco-select-logfiles() {
   fi
   zle -R
   # zle -R -c
-}
-zle -N peco-select-logfiles
+# }
+# zle -N peco-select-logfiles

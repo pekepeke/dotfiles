@@ -1,4 +1,5 @@
-function peco-search-locate() {
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# function peco-search-locate() {
   local pos=$CURSOR
   local cmd
   case $OSTYPE in
@@ -23,6 +24,5 @@ function peco-search-locate() {
   fi
   zle -R
   # zle -R -c
-}
-
-zle -N peco-search-locate
+# }
+# zle -N peco-search-locate

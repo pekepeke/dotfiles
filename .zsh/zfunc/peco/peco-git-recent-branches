@@ -1,4 +1,5 @@
-function peco-git-recent-branches () {
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# function peco-git-recent-branches () {
   local selected_branch=$(git for-each-ref --format='%(refname)' --sort=-committerdate refs/heads | \
     perl -pne 's{^refs/heads/}{}' | \
     peco --query "$LBUFFER")
@@ -7,5 +8,5 @@ function peco-git-recent-branches () {
   fi
   zle -R
   # zle -R -c
-}
-zle -N peco-git-recent-branches
+# }
+# zle -N peco-git-recent-branches

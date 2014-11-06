@@ -1,4 +1,5 @@
-peco-open-bundle-gem() {
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-open-bundle-gem() {
   if bundle help >/dev/null 2>&1; then
     local selected=$(bundle show --paths | peco --query="$LBUFFER")
     if [ -n "${selected}" ]; then
@@ -8,5 +9,5 @@ peco-open-bundle-gem() {
     zle -R
     # zle -R -c
   fi
-}
-zle -N peco-open-bundle-gem
+# }
+# zle -N peco-open-bundle-gem

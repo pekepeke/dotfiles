@@ -1,4 +1,5 @@
-function peco-select-history() {
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# function peco-select-history() {
   local tac_cmd
   which gtac &> /dev/null && tac_cmd=gtac || tac_cmd=tac
   local selected="$($tac_cmd $HISTFILE | sed 's/^: [0-9]*:[0-9]*;//' \
@@ -10,6 +11,5 @@ function peco-select-history() {
   fi
   zle -R
   # zle -R -c
-}
-
-zle -N peco-select-history
+# }
+# zle -N peco-select-history

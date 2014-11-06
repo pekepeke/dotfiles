@@ -1,4 +1,5 @@
-peco-select-ls-la() {
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-select-ls-la() {
   local pos=$CURSOR
   local selected="$('ls' -la | peco --query="$LBUFFER" | awk '{print $NF}')"
   if [ -n "$selected" ] ;then
@@ -7,5 +8,5 @@ peco-select-ls-la() {
   fi
   zle -R
   # zle -R -c
-}
-zle -N peco-select-ls-la
+# }
+# zle -N peco-select-ls-la

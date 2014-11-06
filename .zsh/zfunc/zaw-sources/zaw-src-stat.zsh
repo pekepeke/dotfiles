@@ -4,7 +4,7 @@
 # zaw source for stat sheet view
 #
 
-[ x"$ZSH_ZAW_STAT" = x ] && ZSH_ZAW_STAT="$HOME/.zsh/stat/"
+[ x"$ZSH_ZAW_STAT" = x ] && ZSH_ZAW_STAT="$HOME/.zsh/opt/stat/"
 function zaw-src-stat() {
   candidates+=($(find "$ZSH_ZAW_STAT" -type f | sed "s|${ZSH_ZAW_STAT}/*||g"))
   actions=( "zaw-callback-stat-stat" "zaw-callback-stat-yank" "zaw-callback-stat-open" "zaw-callback-stat-exec")

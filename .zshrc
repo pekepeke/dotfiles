@@ -340,9 +340,36 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
 fi
 
 shrc_section_title "plugins" #{{{1
+source ~/.zsh/zfunc/autoload.zsh
+
+autoload-generate() {
+  echo -n "" > ~/.zsh/zfunc/autoload.zsh
+  for d in commands; do
+    echo "fpath+=~/.zsh/zfunc/$d" >> ~/.zsh/zfunc/autoload.zsh
+    for f in ~/.zsh/zfunc/$d/*; do
+      [ -d "$f" ] && continue
+      basename=${f##*/}
+      if [ "$basename" != "*.zsh" ]; then
+        echo "autoload -Uz ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
+      fi
+    done
+  done
+  for d in peco; do
+    echo "fpath+=~/.zsh/zfunc/$d" >> ~/.zsh/zfunc/autoload.zsh
+    for f in ~/.zsh/zfunc/$d/*; do
+      [ -d "$f" ] && continue
+      basename=${f##*/}
+      if [ "$basename" != "*.zsh" ]; then
+        echo "autoload -Uz ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
+        echo "zle -N ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
+      fi
+    done
+  done
+}
+
 shrc_section_title "percol" #{{{2
 if type type peco >/dev/null 2>&1; then
-  source_all ~/.zsh/zfunc/peco/*.zsh
+  # source_all ~/.zsh/zfunc/peco/*.zsh
   bindkey -v '^Xp' peco-search-clipmenu
   bindkey -v '^Xs' peco-select-snippets
   bindkey '^R' peco-select-history
@@ -367,9 +394,6 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
   fpath+=~/.zsh/plugins/zaw
   fpath+=~/.zsh/zfunc
 
-  # source ~/.zsh/plugins/zaw/zaw.zsh
-  # source_all ~/.zsh/functions/zaw/*
-  # zstyle ':filter-select' case-insensitive yes
   _zaw-init() {
     zaw
     bindkey -r '^V'
@@ -567,7 +591,7 @@ _zsh-complete-init() {
   [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
   [ -e ~/.zsh/plugins/zsh-perl-completions ] && fpath=(~/.zsh/plugins/zsh-perl-completions $fpath)
   [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
-  source_all ~/.zsh/commands/*
+  # source_all ~/.zsh/zfunc/commands/*
   (( $+functions[___main] )) || ___main() {} # for git
 
   if [ ! -e ~/.zsh.d ]; then

@@ -4,7 +4,7 @@
 # zaw source for cheat sheet view
 #
 
-[ x"$ZSH_ZAW_CHEAT" = x ] && ZSH_ZAW_CHEAT="$HOME/.zsh/cheat"
+[ x"$ZSH_ZAW_CHEAT" = x ] && ZSH_ZAW_CHEAT="$HOME/.zsh/opt/cheat"
 function zaw-src-cheat() {
   candidates+=($(find "$ZSH_ZAW_CHEAT" -type f | sed "s|${ZSH_ZAW_CHEAT}/*||g"))
   actions=( "zaw-callback-cheat-peco-input" "zaw-callback-cheat-peco-yank" "zaw-callback-cheat-cheat" "zaw-callback-cheat-yank" "zaw-callback-cheat-open" "zaw-callback-cheat-edit" "zaw-callback-cheat-cat" )
