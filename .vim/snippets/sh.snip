@@ -106,4 +106,9 @@ snippet pipe_normalize_filepath
 	| sed -e 's/ /\\ /g' | tr "[:cntrl:]" " "
 snippet pipe_converthome
 	| perl -pe 's/(\Q$ENV{HOME}\E(.*$))/~$2/'
-
+snippet basename
+	basename=${path##*/}
+snippet filename
+	filename=${basename%.*}
+snippet extension
+	extension=${basename##*.}
