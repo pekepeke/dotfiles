@@ -34,8 +34,10 @@ function! my#docset#dash(...) "{{{2
 endfunction
 
 " variables {{{1
+let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim')
 let s:dash_keywords = []
 let s:zeal_keywords = []
+
 " public {{{1
 function! my#docset#dash_complete(A, L, P) "{{{2
   if empty(s:dash_keywords)
@@ -77,7 +79,7 @@ function! my#docset#zeal_complete(A, L, P) "{{{2
   return map(matches, 'v:val.":"')
 endfunction
 
-function! my#docset#docset_cache_remove() {{{2
+function! my#docset#docset_cache_remove() "{{{2
   let s:dash_keywords = []
   let s:zeal_keywords = []
 endfunction

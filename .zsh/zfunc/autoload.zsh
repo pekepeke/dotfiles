@@ -38,6 +38,8 @@ autoload -Uz peco-search-locate
 zle -N peco-search-locate
 autoload -Uz peco-select-ghq
 zle -N peco-select-ghq
+autoload -Uz peco-select-gui-window
+zle -N peco-select-gui-window
 autoload -Uz peco-select-history
 zle -N peco-select-history
 autoload -Uz peco-select-logfiles

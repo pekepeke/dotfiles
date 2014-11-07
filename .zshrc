@@ -342,7 +342,7 @@ fi
 shrc_section_title "plugins" #{{{1
 source ~/.zsh/zfunc/autoload.zsh
 
-autoload-generate() {
+generate-autoload() {
   echo -n "" > ~/.zsh/zfunc/autoload.zsh
   for d in commands; do
     echo "fpath+=~/.zsh/zfunc/$d" >> ~/.zsh/zfunc/autoload.zsh
@@ -367,12 +367,45 @@ autoload-generate() {
   done
 }
 
-shrc_section_title "percol" #{{{2
+zload() {
+    if [[ "${#}" -le 0 ]]; then
+        echo "Usage: $0 PATH..."
+        echo 'Load specified files as an autoloading function'
+        return 1
+    fi
+
+    local file function_path function_name
+    for file in "$@"; do
+        if [[ -z "$file" ]]; then
+            continue
+        fi
+
+        function_path="${file:h}"
+        function_name="${file:t}"
+
+        if (( $+functions[$function_name] )) ; then
+            # "function_name" is defined
+            unfunction "$function_name"
+        fi
+        FPATH="$function_path" autoload -Uz +X "$function_name"
+
+        if [[ "$function_name" == _* ]]; then
+            # "function_name" is a completion script
+
+            # fpath requires absolute path
+            # convert relative path to absolute path with :a modifier
+            fpath=("${function_path:a}" $fpath) compinit
+        fi
+    done
+}
+
+shrc_section_title "peco" #{{{2
 if type type peco >/dev/null 2>&1; then
   # source_all ~/.zsh/zfunc/peco/*.zsh
   bindkey -v '^Xp' peco-search-clipmenu
   bindkey -v '^Xs' peco-select-snippets
   bindkey '^R' peco-select-history
+  bindkey '^Vw' peco-select-gui-window
   bindkey '^Vgh' peco-select-zle-git
   bindkey '^Vgj' peco-git-ls-files
   bindkey '^Vgg' peco-git-changed-files

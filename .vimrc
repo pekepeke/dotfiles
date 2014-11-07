@@ -2112,6 +2112,11 @@ noremap [!edit] <Nop>
 nmap <C-e> [!edit]
 vmap <C-e> [!edit]
 
+noremap [!app] <Nop>
+map [!unite]c [!app]
+noremap [!cw-app] <Nop>
+map <C-w>[!unite]c [!cw-app]
+
 noremap [!comment-doc] <Nop>
 map     ,c     [!comment-doc]
 
@@ -2384,11 +2389,16 @@ if has('gui_running')
     echo &transparency
   endfunction " }}}
   if s:is_mac
+    function! s:activate_window(proc)
+      silent call system(printf("osascript -e 'tell application \"%s\" to activate'&", a:proc))
+    endfunction
     function! s:map_gui()
       nnoremap <D-Up>   :<C-u>call <SID>set_transparency('+=5')<CR>
       nnoremap <D-Down> :<C-u>call <SID>set_transparency('-=5')<CR>
       nnoremap <D-Right> :<C-u>call <SID>set_transparency(90)<CR>
       execute 'nnoremap <D-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
+      nnoremap <silent><D-i> :<C-u>call <SID>activate_window("iTerm")<CR>
+      nnoremap <silent><D-u> :<C-u>call <SID>activate_window("Firefox")<CR>
     endfunction
     MyAutoCmd GUIEnter * call s:map_gui()
   elseif s:is_win
@@ -3445,15 +3455,15 @@ if s:bundle.tap('cake.vim')
       nmap <buffer> <C-w>f <Plug>CakeSplitJump
       nmap <buffer> <C-w>gf <Plug>CakeTabJump
 
-      nnoremap <buffer> <Leader>cc :<C-u>Unite cake_controller<CR>
-      nnoremap <buffer> <Leader>cm :<C-u>Unite cake_model<CR>
-      nnoremap <buffer> <Leader>cv :<C-u>Unite cake_view<CR>
-      nnoremap <buffer> <Leader>cw :<C-u>Unite cake_controllerview<CR>
-      nnoremap <buffer> <Leader>cs :<C-u>Unite cake_shell<CR>
-      nnoremap <buffer> <Leader>ct :<C-u>Unite cake_task<CR>
-      nnoremap <buffer> <Leader>cf :<C-u>Unite cake_config<CR>
-      nnoremap <buffer> <Leader>cp :<C-u>Unite cake_component<CR>
-      nnoremap <buffer> <Leader>cl :<C-u>Unite cake_log<CR>
+      nnoremap <buffer> [!app]c :<C-u>Unite cake_controller<CR>
+      nnoremap <buffer> [!app]m :<C-u>Unite cake_model<CR>
+      nnoremap <buffer> [!app]v :<C-u>Unite cake_view<CR>
+      nnoremap <buffer> [!app]w :<C-u>Unite cake_controllerview<CR>
+      nnoremap <buffer> [!app]s :<C-u>Unite cake_shell<CR>
+      nnoremap <buffer> [!app]t :<C-u>Unite cake_task<CR>
+      nnoremap <buffer> [!app]f :<C-u>Unite cake_config<CR>
+      nnoremap <buffer> [!app]p :<C-u>Unite cake_component<CR>
+      nnoremap <buffer> [!app]l :<C-u>Unite cake_log<CR>
 
       " nnoremap <buffer> <Leader>cc :Ccontroller
       " nnoremap <buffer> <Leader>cm :Cmodel
@@ -3465,12 +3475,12 @@ if s:bundle.tap('cake.vim')
       " nnoremap <buffer> <Leader>cp :Ccomponent
       " nnoremap <buffer> <Leader>cl :Clog
 
-      nnoremap <buffer> <C-w><Leader>cc :Ccontrollersp
-      nnoremap <buffer> <C-w><Leader>cm :Cmodelsp
-      nnoremap <buffer> <C-w><Leader>cv :Cviewsp
-      nnoremap <buffer> <C-w><Leader>cw :Ccontrollerviewsp
-      nnoremap <buffer> <C-w><Leader>cf :Cconfigsp
-      nnoremap <buffer> <C-w><Leader>cp :Ccomponentsp
+      nnoremap <buffer> [!cw-app]cc :Ccontrollersp
+      nnoremap <buffer> [!cw-app]cm :Cmodelsp
+      nnoremap <buffer> [!cw-app]cv :Cviewsp
+      nnoremap <buffer> [!cw-app]cw :Ccontrollerviewsp
+      nnoremap <buffer> [!cw-app]cf :Cconfigsp
+      nnoremap <buffer> [!cw-app]cp :Ccomponentsp
     endif
   endfunction " }}}
 
@@ -4282,24 +4292,25 @@ if s:bundle.tap('vim-rails')
   let g:rails_default_file='config/database.yml'
 
   function! s:vimrc_rails_init()
-    nnoremap <buffer><leader>vv :Rview<CR>
-    nnoremap <buffer><leader>cc :Rcontroller<CR>
-    nnoremap <buffer><leader>mm :Rmodel<Space>
-    nnoremap <buffer><leader>pp :Rpreview<CR>
+    nnoremap <buffer>[!space]vv :Rview<CR>
+    nnoremap <buffer>[!space]cc :Rcontroller<CR>
+    nnoremap <buffer>[!space]mm :Rmodel<Space>
+    nnoremap <buffer>[!space]pp :Rpreview<CR>
 
-    nnoremap <buffer> [!t]r :R<CR>
-    nnoremap <buffer> [!t]a :A<CR>
+    nnoremap <buffer> [!space]r :R<CR>
+    nnoremap <buffer> [!space]a :A<CR>
 
     Rnavcommand api app/controllers/api -glob=**/* -suffix=_controller.rb
     " Rnavcommand tmpl app/controllers/tmpl -glob=**/* -suffix=_controller.rb
     Rnavcommand config config   -glob=*.*  -suffix= -default=routes.rb
-    " nnoremap <buffer><C-H><C-H><C-H>  :<C-U>Unite rails/view<CR>
-    " nnoremap <buffer><C-H><C-H>       :<C-U>Unite rails/model<CR>
-    " nnoremap <buffer><C-H>            :<C-U>Unite rails/controller<CR>
-    " nnoremap <buffer><C-H>c           :<C-U>Unite rails/config<CR>
-    " nnoremap <buffer><C-H>s           :<C-U>Unite rails/spec<CR>
-    " nnoremap <buffer><C-H>m           :<C-U>Unite rails/db -input=migrate<CR>
-    " nnoremap <buffer><C-H>l           :<C-U>Unite rails/lib<CR>
+    nnoremap <buffer>[!app]v  :<C-U>Unite rails/view<CR>
+    nnoremap <buffer>[!app]m  :<C-U>Unite rails/model<CR>
+    nnoremap <buffer>[!app]c  :<C-U>Unite rails/controller<CR>
+    nnoremap <buffer>[!app]C  :<C-U>Unite rails/config<CR>
+    nnoremap <buffer>[!app]s  :<C-U>Unite rails/spec<CR>
+    nnoremap <buffer>[!app]m  :<C-U>Unite rails/db -input=migrate<CR>
+    nnoremap <buffer>[!app]l  :<C-U>Unite rails/lib<CR>
+
     " nnoremap <buffer><expr><C-H>g     ':e '.b:rails_root.'/Gemfile<CR>'
     " nnoremap <buffer><expr><C-H>r     ':e '.b:rails_root.'/config/routes.rb<CR>'
     " nnoremap <buffer><expr><C-H>se    ':e '.b:rails_root.'/db/seeds.rb<CR>'

@@ -9,9 +9,9 @@ get_gem_home() {
 }
 
 
-cdgem() {
+#cdgem() {
   cd `echo $(get_gem_home)/**/gems/$1* | awk -F' ' '{print $1}'`
-}
+#}
 
 gemwhich() {
   echo $(get_gem_home)/**/gems/$1* | awk -F' ' '{print $1}'

@@ -102,7 +102,12 @@ function _cddel() {
   sed -i".t" -e "/^$1:/d" "$CDD_PWD_FILE"
 }
 
-function cdd() {
+compctl -K _cdd cdd
+functions _cdd() {
+  reply=(`grep -v "^$WINDOW:" "$CDD_PWD_FILE"`)
+}
+
+#function cdd() {
   if [ "$1" = "add" ]; then
     shift
     _cdadd $@
@@ -123,9 +128,5 @@ function cdd() {
   else
     sed -e '/^$/d' "$CDD_PWD_FILE"
   fi
-}
+#}
 
-compctl -K _cdd cdd
-functions _cdd() {
-  reply=(`grep -v "^$WINDOW:" "$CDD_PWD_FILE"`)
-}
