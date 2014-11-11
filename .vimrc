@@ -651,6 +651,7 @@ NeoBundleLazy 'osyo-manga/vim-jplus', {'autoload':{
 \   '<Plug>(jplus-input)', '<Plug>(jplus-input-with-space)',
 \ ]]}}
 NeoBundle 'Shougo/context_filetype.vim'
+NeoBundle 'Shougo/tabpagebuffer.vim'
 NeoBundle 'Shougo/vimfiler.vim', {
 \ 'depends': 'Shougo/unite.vim', 'autoload' : {
 \ 'commands' : [
@@ -1182,6 +1183,17 @@ NeoBundle 'amirh/HTML-AutoCloseTag'
 NeoBundleLazy 'mattn/emmet-vim', {'autoload':{
 \ 'filetypes': ['html','xhtml','eruby','php','css','scss'],
 \ }}
+if executable('go')
+  NeoBundleLazy 'mattn/livestyle-vim', {'autoload':{
+  \ 'commands': ['LiveStyle'],
+  \ },
+  \ 'build' : {
+  \ 'windows': 'go build -o livestyled/livestyled livestyled/livestyled.go',
+  \ 'cygwin' : 'go build -o livestyled/livestyled livestyled/livestyled.go',
+  \ 'mac'    : 'go build -o livestyled/livestyled livestyled/livestyled.go',
+  \ 'unix'   : 'go build -o livestyled/livestyled livestyled/livestyled.go',
+  \ }}
+endif
 NeoBundleLazy 'https://gist.github.com/6576341', {
 \ 'directory' : 'endtagcomment',
 \ 'script_type' : 'plugin',
@@ -4385,8 +4397,8 @@ if s:bundle.is_installed('vim-smartchr')
 endif
 
 " unite.vim {{{2
-LCAlias Unite
 if s:bundle.tap('unite.vim')
+  LCAlias Unite
   nnoremap [!unite] <Nop>
   nmap     f       [!unite]
   " define at clever-f
