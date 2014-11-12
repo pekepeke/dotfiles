@@ -1,0 +1,20 @@
+{
+  "type": "package",
+  "package": {
+    "name": "proj",
+    "version": "0.0.1",
+    "dist": {
+      "type": "zip",
+      "url": "https://github.com/name/proj/archive/master.zip"
+    },
+    "source": {
+      "url": "https://github.com/name/proj.git",
+      "type": "git",
+      "reference": "master"
+    },
+    "autoload": {
+      "classmap": ["hoge.php"]
+    }
+  }
+}
+

@@ -3470,12 +3470,13 @@ if s:bundle.tap('cake.vim')
       nnoremap <buffer> [!app]c :<C-u>Unite cake_controller<CR>
       nnoremap <buffer> [!app]m :<C-u>Unite cake_model<CR>
       nnoremap <buffer> [!app]v :<C-u>Unite cake_view<CR>
-      nnoremap <buffer> [!app]w :<C-u>Unite cake_controllerview<CR>
+      nnoremap <buffer> [!app]h :<C-u>Unite cake_helper<CR>
       nnoremap <buffer> [!app]s :<C-u>Unite cake_shell<CR>
       nnoremap <buffer> [!app]t :<C-u>Unite cake_task<CR>
       nnoremap <buffer> [!app]f :<C-u>Unite cake_config<CR>
       nnoremap <buffer> [!app]p :<C-u>Unite cake_component<CR>
-      nnoremap <buffer> [!app]l :<C-u>Unite cake_log<CR>
+      nnoremap <buffer> [!app]l :<C-u>Unite cake_lib<CR>
+      nnoremap <buffer> [!app]b :<C-u>Unite cake_behavior<CR>
 
       " nnoremap <buffer> <Leader>cc :Ccontroller
       " nnoremap <buffer> <Leader>cm :Cmodel

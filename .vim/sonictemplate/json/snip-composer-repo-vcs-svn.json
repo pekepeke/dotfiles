@@ -1,0 +1,7 @@
+{
+  "type": "vcs",
+  "url": "http://svn.example.org/projectA/",
+  "trunk-path": "Trunk",
+  "branches-path": "Branches",
+  "tags-path": "Tags"
+}
