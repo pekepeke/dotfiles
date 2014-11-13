@@ -71,3 +71,4 @@ doc/tags-ja
 
 # rlwrap
 /.rlwrap/.*
+/.rlwrap/*_history

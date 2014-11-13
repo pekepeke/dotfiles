@@ -34,8 +34,9 @@ case $OSTYPE in
     ;;
   darwin*)
     soft_source $HOME/.shrc.osx
-    HOMEBREW_PREFIX=/usr/local/
-
+    if [ -z "$HOMEBREW_PREFIX" ]; then
+      HOMEBREW_PREFIX=/usr/local/
+    fi
     if [ "$LOGIN_FROM" != "Finder" ] ; then
       remove_path /usr/local/bin /usr/bin /bin /usr/local/sbin /usr/sbin /sbin
       PATH=$PATH:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
@@ -50,6 +51,11 @@ case $OSTYPE in
     ;;
   linux*)
     PATH=$HOME/bin/linux:$PATH
+    if [ -e "$HOME/.linuxbrew" ]; then
+      PATH="$HOME/.linuxbrew/bin:$PATH"
+      MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
+      export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
+    fi
     soft_source $HOME/.shrc.linux
     ;;
   solaris*)

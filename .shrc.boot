@@ -127,6 +127,9 @@ alias telnet='telnet -K'
 alias ack='ack-grep'
 alias less='less -R'
 
+if type rlwrap > /dev/null 2>&1; then
+  alias cap='rlwrap cap'
+fi
 shrc_section_title "vim" #{{{2
 if type lv > /dev/null 2>&1; then
   export PAGER=lv
@@ -218,22 +221,6 @@ shrc_section_title "win like" #{{{2
 alias rd=rmdir
 #alias pulist='ps aux | grep '
 
-pulist() { # {{{3
-  local ARG i
-  for i in $*; do
-    if [ -z "$ARG" ]; then
-      ARG=$i
-    else
-      ARG=$ARG"|"$i
-    fi
-  done
-  if [ -z "$ARG" ]; then
-    ps aux
-  else
-    ps aux | grep -E "PID|$ARG"
-  fi
-}
-
 shrc_section_title "zsh" #{{{2
 if [ -n "$ZSH_NAME" ]; then
   alias -g L="|& $PAGER"
@@ -248,41 +235,6 @@ if [ -n "$ZSH_NAME" ]; then
 fi
 
 shrc_section_title "some commands" #{{{1
-alc() { #{{{2
-  if [ $ != 0 ]; then
-    w3m +38 "http://eow.alc.co.jp/$*/UTF-8/?ref=sa"
-  else
-    w3m "http://www.alc.co.jp/"
-  fi
-}
-
-gte() { #{{{2
-  google_translate "$*" "en-ja"
-}
-
-gtj() { #{{{2
-  google_translate "$*" "ja-en"
-}
-
-google_translate() { #{{{2
-  local str opt cond
-
-  if [ $# != 0 ]; then
-    str=`echo $1 | sed -e 's/  */+/g'` # 1文字以上の半角空白を+に変換
-    cond=$2
-    if [ $cond = "ja-en" ]; then # ja -> en 翻訳
-      opt='?hl=ja&sl=ja&tl=en&ie=UTF-8&oe=UTF-8'
-    else # en -> ja 翻訳
-      opt='?hl=ja&sl=en&tl=ja&ie=UTF-8&oe=UTF-8'
-    fi
-  else
-    opt='?hl=ja&sl=en&tl=ja&ie=UTF-8&oe=UTF-8'
-  fi
-
-  opt="${opt}&text=${str}"
-  w3m +13 "http://translate.google.com/${opt}"
-}
-
 cdtask() { #{{{2
   local name="$1"
   local target
@@ -316,7 +268,7 @@ if [ -z "$SSH_CLIENT" -a x$__ssh_path = x ]; then
 
     if [ $(find $SSH_LOG_DIR -mtime +1 2>/dev/null | wc -l) -eq 1 ]; then
       touch $SSH_LOG_DIR/.last_touch
-      ssh_logs_archive
+      ssh_logs_archive &
     fi
 
     #_prefix=$(echo $* | perl -ne '$_=~s/\W+/_/g; print $_;')

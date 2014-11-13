@@ -30,6 +30,10 @@ autoload -Uz peco-install-homebrew-cask
 zle -N peco-install-homebrew-cask
 autoload -Uz peco-open-bundle-gem
 zle -N peco-open-bundle-gem
+autoload -Uz peco-open-homebrew
+zle -N peco-open-homebrew
+autoload -Uz peco-open-homebrew-cask
+zle -N peco-open-homebrew-cask
 autoload -Uz peco-search-clipmenu
 zle -N peco-search-clipmenu
 autoload -Uz peco-search-document
