@@ -28,3 +28,6 @@
 [submodule ".zsh/plugins/zsh-perl-completions"]
 	path = .zsh/plugins/zsh-perl-completions
 	url = https://github.com/syohex/zsh-perl-completions.git
+[submodule ".zsh/plugins/zsh-bd"]
+	path = .zsh/plugins/zsh-bd
+	url = https://github.com/Tarrasch/zsh-bd.git
