@@ -340,33 +340,7 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
 fi
 
 shrc_section_title "plugins" #{{{1
-source ~/.zsh/zfunc/autoload.zsh
-
-generate-autoload() {
-  echo -n "" > ~/.zsh/zfunc/autoload.zsh
-  for d in commands; do
-    echo "fpath+=~/.zsh/zfunc/$d" >> ~/.zsh/zfunc/autoload.zsh
-    for f in ~/.zsh/zfunc/$d/*; do
-      [ -d "$f" ] && continue
-      basename=${f##*/}
-      if [ "$basename" != "*.zsh" ]; then
-        echo "autoload -Uz ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
-      fi
-    done
-  done
-  for d in peco; do
-    echo "fpath+=~/.zsh/zfunc/$d" >> ~/.zsh/zfunc/autoload.zsh
-    for f in ~/.zsh/zfunc/$d/*; do
-      [ -d "$f" ] && continue
-      basename=${f##*/}
-      if [ "$basename" != "*.zsh" ]; then
-        echo "autoload -Uz ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
-        echo "zle -N ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
-      fi
-    done
-  done
-}
-
+shrc_section_title "zload" #{{{2
 zload() {
     if [[ "${#}" -le 0 ]]; then
         echo "Usage: $0 PATH..."
@@ -397,6 +371,37 @@ zload() {
             fpath=("${function_path:a}" $fpath) compinit
         fi
     done
+}
+
+shrc_section_title "bdd" #{{{2
+source ~/.zsh/plugins/zsh-bd/bd.zsh
+
+shrc_section_title "autoload" #{{{2
+source ~/.zsh/zfunc/autoload.zsh
+
+generate-autoload() {
+  echo -n "" > ~/.zsh/zfunc/autoload.zsh
+  for d in commands; do
+    echo "fpath+=~/.zsh/zfunc/$d" >> ~/.zsh/zfunc/autoload.zsh
+    for f in ~/.zsh/zfunc/$d/*; do
+      [ -d "$f" ] && continue
+      basename=${f##*/}
+      if [ "$basename" != "*.zsh" ]; then
+        echo "autoload -Uz ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
+      fi
+    done
+  done
+  for d in peco; do
+    echo "fpath+=~/.zsh/zfunc/$d" >> ~/.zsh/zfunc/autoload.zsh
+    for f in ~/.zsh/zfunc/$d/*; do
+      [ -d "$f" ] && continue
+      basename=${f##*/}
+      if [ "$basename" != "*.zsh" ]; then
+        echo "autoload -Uz ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
+        echo "zle -N ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
+      fi
+    done
+  done
 }
 
 shrc_section_title "peco" #{{{2
