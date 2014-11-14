@@ -1,0 +1,11 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-select-homebrew-plist() {
+  local pos=$CURSOR
+  local selected="$(ls $(brew --prefix)/opt/*/*.plist | peco)"
+  if [ -n "$selected" ]; then
+    BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
+    CURSOR=$#BUFFER
+  fi
+  zle -R
+# }
+# zle -N peco-select-homebrew-plist
