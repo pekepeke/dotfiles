@@ -6,3 +6,8 @@ mysqldumpslow -s al /var/log/mysql/mysql-slowquery.log
 mysqldumpslow -s ar /var/log/mysql/mysql-slowquery.log
 # select update
 UPDATE table1 t1 ,table2 t2 SET t1.val1 = t2.val1 ,t1.val2 = t2.val2 ,t1.val3 = t2.val3 WHERE t1.id = t2.id;
+
+GRANT ALL ON db.* TO user@'%' IDENTIFIED BY 'pass';
+FLUSH PRIVILEGES;
+
+SHOW GRANTS FOR ユーザ名@localhost \G
