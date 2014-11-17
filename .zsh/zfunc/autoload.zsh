@@ -40,6 +40,8 @@ autoload -Uz peco-search-document
 zle -N peco-search-document
 autoload -Uz peco-search-locate
 zle -N peco-search-locate
+autoload -Uz peco-select-command
+zle -N peco-select-command
 autoload -Uz peco-select-ghq
 zle -N peco-select-ghq
 autoload -Uz peco-select-gui-window
@@ -72,6 +74,10 @@ autoload -Uz peco-select-snippets
 zle -N peco-select-snippets
 autoload -Uz peco-select-ssh-host
 zle -N peco-select-ssh-host
+autoload -Uz peco-select-vhost-docroot
+zle -N peco-select-vhost-docroot
+autoload -Uz peco-select-vhost-fqdn
+zle -N peco-select-vhost-fqdn
 autoload -Uz peco-select-zle
 zle -N peco-select-zle
 autoload -Uz peco-select-zle-git

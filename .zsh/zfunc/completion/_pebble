@@ -1,0 +1,95 @@
+#compdef pebble
+
+# last updated for PebbleSDK 2.7
+
+typeset -A opt_args
+
+local -a _1st_arguments
+_1st_arguments=(
+	'new-project:Create a new Pebble project'
+	'convert-project:Convert an existing Pebble project to the current SDK.'
+	'build:Build your Pebble project'
+	'clean:Clean your Pebble project'
+	'analyze-size:Analyze the size of your Pebble app'
+	'install:Install your Pebble project to your watch'
+	'ping:Ping your Pebble project to your watch'
+	'list:List the apps installed on your watch'
+	'rm:Remove an app from your watch'
+	'current:Get the uuid and name of the current app'
+	'uuids:List the uuids and names of installed apps'
+	'logs:Continuously displays logs from the watch'
+	'repl:Launch an interactive python shell with a `pebble` object to execute methods on.'
+	'screenshot:take a screenshot of the pebble'
+	'coredump:get most recent core dump from the pebble'
+)
+
+_arguments \
+	'(-h --help)--help[show help]' \
+	'(--debug)--debug[enable debugging]' \
+	'(--version)--version[show version]' \
+	'*:: :->subcmds' && return 0
+
+if (( CURRENT == 1 )); then
+	_describe -t commands "pebble subcommand" _1st_arguments
+	return
+fi
+
+case "$words[1]" in
+	new-project)
+		_arguments \
+			'(-h --help)'{-h,--help}'[show this help message and exit]' \
+			'--simple[Use a minimal c file]' \
+			'--javascript[Generate javascript related files]' \
+			'--worker[Generate background worker related files]'
+	;;
+	convert-project|build|clean)
+		_arguments \
+			'(-h --help)'{-h,--help}'[show this help message and exit]' \
+			'--sdk[Path to Pebble SDK (ie: ~/pebble-dev/PebbleSDK-2.X/)]' \
+			'--debug[Enable debugging output]'
+	;;
+	analyze-size)
+		_arguments \
+			'(-h --help)'{-h,--help}'[show this help message and exit]' \
+			'--sdk[Path to Pebble SDK (ie: ~/pebble-dev/PebbleSDK-2.X/)]' \
+			'--debug[Enable debugging output]' \
+			'--summary[Display a single line per section]' \
+			'--verbose[Display a per-symbol breakdown]'
+	;;
+	install)
+		_arguments \
+			'(-h --help)'{-h,--help}'[show this help message and exit]' \
+			'--sdk[Path to Pebble SDK (ie: ~/pebble-dev/PebbleSDK-2.X/)]' \
+			'--debug[Enable debugging output]' \
+			'--phone[When using Developer Connection, the IP address or hostname of your phone.]' \
+			'--pebble_id[When using a direct BT connection, the watchs Bluetooth ID (e.g. DF38 or 01:23:45:67:DF:38).]' \
+			'--pair[When using a direct BT connection, attempt to pair the watch automatically]' \
+			'--verbose[Prints received system logs in addition to APP_LOG]' \
+			'--logs[Display logs after installing the bundle]' \
+			'--direct[Install directly on watch.]'
+		_files
+	;;
+	ping|list|rm|current|uuids|logs|repl|screenshot)
+		_arguments \
+			'(-h --help)'{-h,--help}'[show this help message and exit]' \
+			'--sdk[Path to Pebble SDK (ie: ~/pebble-dev/PebbleSDK-2.X/)]' \
+			'--debug[Enable debugging output]' \
+			'--phone[When using Developer Connection, the IP address or hostname of your phone.]' \
+			'--pebble_id[When using a direct BT connection, the watchs Bluetooth ID (e.g. DF38 or 01:23:45:67:DF:38).]' \
+			'--pair[When using a direct BT connection, attempt to pair the watch automatically]' \
+			'--verbose[Prints received system logs in addition to APP_LOG]'
+	;;
+	coredump)
+		_arguments \
+			'(-h --help)'{-h,--help}'[show this help message and exit]' \
+			'--sdk[Path to Pebble SDK (ie: ~/pebble-dev/PebbleSDK-2.X/)]' \
+			'--debug[Enable debugging output]' \
+			'--phone[When using Developer Connection, the IP address or hostname of your phone.]' \
+			'--pebble_id[When using a direct BT connection, the watchs Bluetooth ID (e.g. DF38 or 01:23:45:67:DF:38).]' \
+			'--pair[When using a direct BT connection, attempt to pair the watch automatically]' \
+			'--verbose[Prints received system logs in addition to APP_LOG]' \
+			'--generate[Generate a core dump image on the watch.]'
+	;;
+	*)
+	;;
+esac

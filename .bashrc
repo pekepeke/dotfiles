@@ -148,5 +148,6 @@ done
 
 source_all $HOME/.bash/commands/*
 source_all $HOME/.bash/compfunc/*
+complete -C aws_completer aws
 
 # vim:fdm=marker sw=2 ts=2 ft=sh expandtab:

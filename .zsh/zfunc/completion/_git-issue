@@ -1,0 +1,165 @@
+#compdef git-issue
+# ------------------------------------------------------------------------------
+# Description
+# -----------
+#
+#  Completion script for git-issue (https://github.com/yuroyoro/git-issue).
+#
+#  Source: https://github.com/glidenote/git-issue-zsh-completion
+#
+# ------------------------------------------------------------------------------
+# Authors
+# -------
+#
+# * Akira Maeda (glidenote@gmail.com)
+#
+# ------------------------------------------------------------------------------
+# -*- mode: zsh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
+# vim: ft=zsh sw=2 ts=2 et
+# ------------------------------------------------------------------------------
+
+_git-issue ()
+{
+  local curcontext="$curcontext" state line
+  typeset -A opt_args
+
+  _arguments -C \
+    ':command:->command' \
+    '*::options:->options'
+
+  case `git log 2>&1` in
+    "fatal: Not a git repository"*|"fatal: bad default revision"*)
+      return
+      ;;
+  esac
+
+  local issuetype=`git config issue.type`
+  case $issuetype in
+    redmine)
+      ;;
+    *)
+      issuetype="github"
+      ;;
+  esac
+
+  case $state in
+    (command)
+
+      local -a subcommands
+      if [ $issuetype = redmine ]; then
+        subcommands=(
+        'show:show given issue summary. if given no id,  geuss id from current branch name.'
+        's:show given issue summary. if given no id,  geuss id from current branch name.'
+        'list:listing issues.'
+        'l:listing issues.'
+        'mine:display issues that assigned to you.'
+        'm:display issues that assigned to you.'
+        'commit:commit with filling issue subject to messsage.if given no id, geuss id from current branch name.'
+        'c:commit with filling issue subject to messsage.if given no id, geuss id from current branch name.'
+        'add:create issue.'
+        'a:create issue.'
+        'update:update issue properties. if given no id, geuss id from current branch name.'
+        'u:update issue properties. if given no id, geuss id from current branch name.'
+        "branch:checout to branch using specified issue id. if branch dose'nt exisits, create it. (ex ticket/id/<issue_id>)"
+        "b:checout to branch using specified issue id. if branch dose'nt exisits, create it. (ex ticket/id/<issue_id>)"
+        'publish:push branch to remote repository and set upstream'
+        'pub:push branch to remote repository and set upstream'
+        'rebase:rebase branch onto specific newbase'
+        'rb:rebase branch onto specific newbase'
+        'help:show usage.'
+        'h:show usage.'
+        'local:listing local branches tickets'
+        'loc:listing local branches tickets'
+        'project:listing ticket belongs to sspecified project'
+        'pj:listing ticket belongs to sspecified project'
+        )
+      else
+        subcommands=(
+        'show:show given issue summary. if given no id,  geuss id from current branch name.'
+        's:show given issue summary. if given no id,  geuss id from current branch name.'
+        'list:listing issues.'
+        'l:listing issues.'
+        'mine:display issues that assigned to you.'
+        'm:display issues that assigned to you.'
+        'commit:commit with filling issue subject to messsage.if given no id, geuss id from current branch name.'
+        'c:commit with filling issue subject to messsage.if given no id, geuss id from current branch name.'
+        'add:create issue.'
+        'a:create issue.'
+        'update:update issue properties. if given no id, geuss id from current branch name.'
+        'u:update issue properties. if given no id, geuss id from current branch name.'
+        "branch:checout to branch using specified issue id. if branch dose'nt exisits, create it. (ex ticket/id/<issue_id>)"
+        "b:checout to branch using specified issue id. if branch dose'nt exisits, create it. (ex ticket/id/<issue_id>)"
+        'publish:push branch to remote repository and set upstream'
+        'pub:push branch to remote repository and set upstream'
+        'rebase:rebase branch onto specific newbase'
+        'rb:rebase branch onto specific newbase'
+        'help:show usage.'
+        'h:show usage.'
+        'mention:create a comment to given issue'
+        'men:create a comment to given issue'
+        )
+      fi
+      _describe -t commands 'git issue' subcommands
+      ;;
+
+  esac
+
+  if [ $issuetype = redmine ]; then
+    _arguments -w -C -s \
+      '-h[Show help message]' \
+      '(-a --all)'{-a,--all}'[update all paths in the index file]' \
+      '(-f --force)'{-f,--force}'[force create branch]' \
+      '(-v --verbose)'{-v,--verbose}'[show issue details]' \
+      '(-n --max-count)'{-n,--max-count=}'[maximum number of issues]:VALUE:' \
+      '(--oneline)--oneline[display short info]' \
+      '--raw-id[output ticket number only]' \
+      '--remote=[on publish, remote repository to push branch]:VALUE:' \
+      '--onto=[on rebase, start new branch with HEAD equal to "newbase"]:VALUE:' \
+      '--debug[debug print]' \
+      '(-j --supperss_journals)'{-j,--supperss_journals}'[do not show issue journals]' \
+      '(-r --supperss_relations)'{-r,--supperss_relations}'[do not show issue relations tickets]' \
+      '(-c --supperss_changesets)'{-c,--supperss_changesets}'[do not show issue changesets]' \
+      '(-q --query=)'{-q,--query=}'[filter query of listing tickets]:VALUE:' \
+      '--project_id=[use the given value to create subject(project_id)]:VALUE:' \
+      '--description=[use the given value to create subject(description)]:VALUE:' \
+      '--subject=[use the given value to create/update subject]:VALUE:' \
+      '--ratio=[use the given value to create/update done-ratio(%)]:VALUE:' \
+      '--status=[use the given value to create/update issue status id]:VALUE:' \
+      '--priority=[use the given value to create/update issue priority id]:VALUE:' \
+      '--tracker=[use the given value to create/update tracker id]:VALUE:' \
+      '--assigned_to_id=[use the given value to create/update assigned_to id]:VALUE:' \
+      '--category=[use the given value to create/update category id]:VALUE:' \
+      '--fixed_version=[use the given value to create/update fixed_version id]:VALUE:' \
+      "--custom_fields=[value should be specifies '<custom_fields_id1>:<value2>,<custom_fields_id2>:<value2>, ...']:VALUE:" \
+      '--notes=[add notes to issue]:VALUE:' \
+      '*: :__git_branch_names'
+  else
+    _arguments -w -C -s \
+      '-h[Show help message]' \
+      '(-a --all)'{-a,--all}'[update all paths in the index file]' \
+      '(-f --force)'{-f,--force}'[force create branch]' \
+      '(-v --verbose)'{-v,--verbose}'[show issue details]' \
+      '(-n --max-count)'{-n,--max-count=}'[maximum number of issues]:VALUE:' \
+      '(--oneline)--oneline[display short info]' \
+      '--raw-id[output ticket number only]' \
+      '--remote=[on publish, remote repository to push branch]:VALUE:' \
+      '--onto=[on rebase, start new branch with HEAD equal to "newbase"]:VALUE:' \
+      '--debug[debug print]' \
+      '(-s --supperss_commentsc)'{-s,--supperss_commentsc}'[show issue journals]' \
+      '--title=[Title of issue.Use the given value to create/update issue.]:VALUE:' \
+      '--body=[Body content of issue.Use the given value to create/update issue.]:VALUE:' \
+      "--state=[Use the given value to create/update issue. or query of listing issues.Where 'state' is either 'open' or 'closed']:VALUE:" \
+      '--milestone=[Use the given value to create/update issue. or query of listing issues, (Integer Milestone number)]:VALUE:' \
+      '--assignee=[Use the given value to create/update issue. or query of listing issues, (String User login)]:VALUE:' \
+      '--mentioned=[Query of listing issues, (String User login)]:VALUE:' \
+      '--labels=[Use the given value to create/update issue. or query of listing issues, (String list of comma separated Label names)]:VALUE:' \
+      '--sort=[Query of listing issues, (created,  updated,  comments,  default: created)]:VALUE:' \
+      '--direction=[Query of listing issues, (asc or desc,  default: desc.)]:VALUE:' \
+      '--since=[Query of listing issue, (Optional string of a timestamp in ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ)]:VALUE:' \
+      "--password=[For Authorizaion of create/update issue.  Github API v3 doesn't supports API token base authorization for now. then, use Basic Authorizaion instead token.]:VALUE:" \
+      "--sslnoverify[don't verify SSL]" \
+      '*: :__git_branch_names'
+  fi
+}
+
+_git-issue "$@"

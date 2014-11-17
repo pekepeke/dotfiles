@@ -639,6 +639,7 @@ _zsh-complete-init() {
   fpath=(~/.zsh.d/Completion $fpath)
 
   zmodload -i zsh/complist
+
   autoload -Uz compinit
   compinit -u
 
@@ -732,12 +733,20 @@ _zsh-complete-init() {
   zle expand-or-complete
   bindkey -v '^I' expand-or-complete
 
+  [ -e ~/.spm_completion ] && . ~/.spm_completion
+  if is_exec aws_zsh_completer.sh; then
+    if [ -e "$HOMEBREW_PREFIX/Cellar/awscli" ]; then
+      source $('ls' /usr/local/Cellar/awscli/*/libexec/bin/aws_zsh_completer.sh | sort | head -1)
+    else
+      source $(which aws_zsh_completer.sh)
+    fi
+  fi
+
   shrc_section_title "complete-init finish"
 }
 zle -N _zsh-complete-init
 bindkey -v '^I' _zsh-complete-init
 
-[ -e ~/.spm_completion ] && . ~/.spm_completion
 
 shrc_section_title "finish"
 # vim: ft=zsh fdm=marker sw=2 ts=2 et:

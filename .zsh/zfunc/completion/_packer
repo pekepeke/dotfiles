@@ -1,0 +1,67 @@
+#compdef packer
+
+__json_template() {
+  declare -a template
+  template=($(ls | grep '.json'))
+  _describe 'images' template
+}
+
+local -a _packer_cmds
+_packer_cmds=(
+  'build:Build commands.'
+  'fix:Repair templates from old versions of packer.'
+  'inspect:View template in human readable form.'
+  'validate:Check that a template is valid.'
+)
+
+__build() {
+  _arguments \
+    '-debug[Enable Debug mode.]' \
+    '-force[Force a build delete existing artifacts.]' \
+    '-machine-readable[Enable machine-readable output.]' \
+    '-except=[Do not build specifed builds.]' \
+    '-only=[Build only specified builds.]' \
+    '-parallel=[Disable parallelization (default: true).]' \
+    '-var[Set variable in template.]' \
+    '-var-file=[Set JSON file containing user variables.]'
+  __json_template
+}
+
+__fix() {
+  __json_template
+}
+
+__inspect() {
+  _arguments \
+    '-machine-readable[Enable machine-readable output.]'
+  __json_template
+}
+
+__validate() {
+  _arguments \
+    '-syntax-only[Check syntax only.]' \
+    '-except=[Do not validate specifed builds.]' \
+    '-only=[Validate only specified builds.]' \
+    '-var[Set variable in template.]' \
+    '-var-file=[Set JSON file containing user variables.]'
+  __json_template
+}
+
+_arguments '*:: :->command'
+
+if (( CURRENT == 1 )); then
+  _describe -t commands "packer command" _packer_cmds
+  return
+fi
+
+local -a _command_args
+case "$words[1]" in
+  build)
+    __build ;;
+  fix)
+    __fix ;;
+  inspect)
+    __inspect ;;
+  validate)
+    __validate ;;
+esac

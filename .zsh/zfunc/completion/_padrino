@@ -11,24 +11,40 @@ _arguments -C \
 case "$state" in
   (cmds)
      local commands; commands=(
-      'g:Padrinos generators'
-      'rake:Run Padrinos rake tasks'
+      "console:Boots up the Padrino application irb console (alternatively use 'c')"
+      "generate:Executes the Padrino generator with given options (alternatively use 'gen' or 'g')"
+      "help:Describe available commands or one specific command (alternatively use 'h')"
+      "rake:Execute rake tasks"
+      "runner:Run a piece of code in the Padrino application environment (alternatively use 'run' or 'r')"
+      "start:Starts the Padrino application (alternatively use 's')"
+      "stop:Stops the Padrino application (alternatively use 'st')"
+      "version: Show current Padrino version."
      )
 
       _describe -t commands 'command' commands && ret=0
   ;;
   (generator_lists)
     case $line[1] in
-      (g)
-        local generators; generators=(
-          'controller:creates a new controller'
-          'mailer:creates a new mailer'
-          'migration:creates a new migration'
-          'model:creates a new model'
-          'project:create a new Padrino app'
-          'plugin:add plugin to your app'
+      (generate)
+        local generate; generates=(
+          "app:generates a new Padrino application"
+          "controller:generates a new Padrino controller"
+          "component:add components into a Padrino project"
+          "helper:generates a new Padrino helper"
+          "mailer:generates a new Padrino mailer"
+          "migration:generates a new migration file"
+          "model:generates a new model and migration files"
+          "project:generates a new Padrino project"
+          "plugin:sets up a plugin within a Padrino application"
+          "task:generates a new task file"
         )
-        _describe -t generators 'generator' generators && ret=0
+        _describe -t generates 'generate' generates && ret=0
+      ;;
+      (start)
+        local start; starts=(
+         "-p:specify the port for the running Padrino instance"
+        )
+        _describe -t starts 'start' starts && ret=0
       ;;
       (rake)
         local rake; rakes=(
@@ -82,19 +98,55 @@ case "$state" in
   ;;
   (args)
     case $line[2] in
+      (app)
+        local apps; apps=(
+          '-f:Generate app files if app already exists'
+          '--force:Generate app files if app already exists'
+        )
+        _describe -t apps 'app' apps && ret=0
+      ;;
       (controller)
-        _arguments \
-          '-d:remove all generated files' \
-          '-n:specify the application' \
-          '-r:specify the root'
-          ret=0
+        local controllers; controllers=(
+          '-d:remove all generated files'
+          '--destroy:remove all generated files'
+          '-n:The name space of your Padrino project'
+          '--namespace:The name space of your Padrino project'
+          '-l:The layout for the controller'
+          '--layout:The layout for the controller'
+          '-p:The parent of the controller'
+          '--parent:The parent of the controller'
+          '-r:The root destination'
+          '--root:The root destination'
+          '--no-helper:Not generate helper'
+        )
+        _describe -t controllers 'controller' controllers && ret=0
+      ;;
+      (component)
+        local components; components=(
+          '-n: The application name'
+          '--app==APP: The application name'
+          '-r: The root destination => Default: .'
+          '--root=ROOT: The root destination => Default: .'
+          '-a: SQL adapter for ORM (sqlite, mysql, mysql2, mysql-gem, postgres) => Default: sqlite'
+          '--adapter=ADAPTER: SQL adapter for ORM (sqlite, mysql, mysql2, mysql-gem, postgres) => Default: sqlite'
+          '-d: The database engine component (mongomatic, sequel, minirecord, dynamoid, activerecord, ohm, mongomapper, couchrest, ripple, mongoid, datamapper, none)'
+          '--orm=ORM: The database engine component (mongomatic, sequel, minirecord, dynamoid, activerecord, ohm, mongomapper, couchrest, ripple, mongoid, datamapper, none)'
+          '-t: The testing framework component (minitest, cucumber, shoulda, steak, riot, bacon, rspec, none)'
+          '--test=TEST: The testing framework component (minitest, cucumber, shoulda, steak, riot, bacon, rspec, none)'
+          '-m: The mocking library component (mocha, rr, none)'
+          '--mock=MOCK: The mocking library component (mocha, rr, none)'
+          '-s: The javascript library component (jquery, extcore, dojo, rightjs, mootools, prototype, none)'
+          '--script=SCRIPT: The javascript library component (jquery, extcore, dojo, rightjs, mootools, prototype, none)'
+          '-e: The template engine component (liquid, haml, slim, erb, none)'
+          '--renderer=RENDERER: The template engine component (liquid, haml, slim, erb, none)'
+          '-c: The stylesheet engine component (compass, less, scss, sass, none)'
+          '--stylesheet=STYLESHEET: The stylesheet engine component (compass, less, scss, sass, none)'
+        )
+        _describe -t components 'component' components && ret=0
       ;;
       (mailer)
         local mailers; mailers=(
           '-a:creates a mailer for the specified subapp'
-          '-d:removes all generated files'
-          '-n:specify the application'
-          '-r:specify the root destination path'
         )
         _describe -t mailers 'mailer' mailers && ret=0
       ;;
@@ -110,22 +162,24 @@ case "$state" in
           '-d:removes all generated files'
           '-r:specify the root destination path'
           '-s:skip migration generation'
+          '-f:Generate app files if app already exists'
+          '--force:Generate app files if app already exists'
         )
         _describe -t models 'model' models && ret=0
       ;;
       (project)
         local projects; projects=(
-          "-a:specify db adapter (options: 'mysql', 'sqlite' , 'postgres')"
+          "-a:specify db adapter (options: 'mysql', 'mysql2', 'mysql-gem', sqlite' , 'postgres')"
           "-b:execute bundler dependencies installation"
-          "-c:define stylesheet (options: 'compass', 'less', 'sass', 'scss')"
-          "-d:define orm (options: 'mongoid', 'activerecord', 'datamapper', 'couchrest', 'mongomatic', 'ohm', 'ripple', 'sequel')"
+          "-c:define stylesheet (options: 'compass', 'less', 'sass', 'scss', 'none')"
+          "-d:define orm (options: 'activerecord', 'couchrest', 'mongoid', 'datamapper', 'minirecord', 'mongomatic', 'mongomapper', 'ohm', 'ripple', 'sequel', 'none')"
+          "-e:define renderer (options: 'erb', 'haml','liquid', 'slim', 'none')"
           "-i:generate tiny project skeleton without any components"
-          "-e:define renderer (options: 'erb', 'haml', 'slim', 'liquid')"
-          "-m:define mock (options: 'mocha', 'rr')"
+          "-m:define mock (options: 'mocha', 'rr', 'none')"
           "-n:specify app name different from the project name"
           "-r:the root destination path for the project"
-          "-s:define script (options: 'prototype' 'rightjs' 'jquery' 'mootools' 'extcore' 'dojo')"
-          "-t:define test (options: 'bacon', 'shoulda', 'cucumber', 'testspec', 'riot', 'rspec', 'minitest')"
+          "-s:define script (options: 'dojo', 'extcore', 'jquery', 'mootools', 'prototype', 'rightjs', 'none')"
+          "-t:define test (options: 'bacon', 'cucumber', 'shoulda', 'riot', 'rspec', 'steak', 'minitest', 'none')"
         )
         _describe -t projects 'project' projects && ret=0
       ;;
