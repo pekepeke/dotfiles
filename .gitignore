@@ -66,6 +66,10 @@ doc/tags-ja
 /.xmonad/xmonad.hi
 /.xmonad/xmonad.o
 
+# zsh
+/.zsh/zfunc/*.local
+/.zsh/zfunc/*.local.zsh
+
 # pip
 /.pip/pip.log
 

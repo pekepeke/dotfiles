@@ -3,10 +3,12 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-
 setl formatoptions-=r formatoptions-=o
 setl iskeyword+=@,$,?,!
 setl iskeyword-=.,:
+setl expandtab
+let b:match_words .= '\<\(module\|class\|def\|until\|while\|begin\|do\|if\|unless\|case\)\>:'
+      \ . '\<\(elsif\|when\|rescue\)\>:\<\(else\|ensure\)\>:\<end\>'
 " setl dictionary=~/.vim/dict/ruby.dict
 " setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
 

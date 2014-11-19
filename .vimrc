@@ -1095,7 +1095,6 @@ NeoBundle 'hrsh7th/vim-neco-calc'
 
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
-NeoBundle 'semmons99/vim-ruby-matchit'
 NeoBundle 'tpope/vim-rails', {'autoload':{
 \ 'filetypes': ['ruby','haml','eruby'],
 \ }}
@@ -2629,6 +2628,7 @@ iabbrev acknowledgment acknowledgement
 let g:html_indent_script1="inc"
 let g:html_indent_style1="inc"
 let g:html_indent_inctags="html,body,head"
+" let g:html_indent_autotags = "th,td,tr,tfoot,thead"
 
 " perl {{{2
 let g:perl_compiler_force_warnings = 0

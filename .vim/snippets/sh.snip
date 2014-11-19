@@ -112,3 +112,10 @@ snippet filename
 	filename=${basename%.*}
 snippet extension
 	extension=${basename##*.}
+snippet logger
+	exec 1> >(logger -s -t "$(basename \$0)") 2>&1
+snippet logger_info
+	exec 1> >(logger -s -t "$(basename \$0)" -p local0.info) 2>&1
+snippet logger_boot
+	exec > >(tee /var/log/`expand('%:p:t:r')`.log|logger -t `expand('%:p:t:r')` -s 2>/dev/console) 2>&1
+

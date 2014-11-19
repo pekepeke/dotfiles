@@ -1,7 +1,7 @@
-fpath+=~/.zsh/zfunc/commands
+fpath+=/Users/konnok/.zsh/zfunc/commands
 autoload -Uz cdd
 autoload -Uz cdgem
-fpath+=~/.zsh/zfunc/peco
+fpath+=/Users/konnok/.zsh/zfunc/peco
 autoload -Uz peco-attach-gdb-pid
 zle -N peco-attach-gdb-pid
 autoload -Uz peco-git-changed-files

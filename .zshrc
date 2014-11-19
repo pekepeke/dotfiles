@@ -47,6 +47,44 @@ autoload -Uz url-quote-magic
 colors
 zle -N self-insert url-quote-magic # URL を自動エスケープ
 
+# autoload utils {{{2
+source ~/.zsh/zfunc/autoload.zsh
+soft_source ~/.zsh/zfunc/autoload.local.zsh
+
+generate-autoload() {
+  local suffix
+  for suffix in "" ".local" ; do
+    autoload_f=~/.zsh/zfunc/autoload${suffix}.zsh
+    echo -n "" > $autoload_f
+    for dirname in commands; do
+      dirpath=~/.zsh/zfunc/$dirname${suffix}
+
+      echo "fpath+=$dirpath" >> $autoload_f
+      for f in $dirpath/*; do
+        [ -d "$f" ] && continue
+        basename=${f##*/}
+        [ "$basename" = "*" ] && continue
+        if [ "$basename" != "*.zsh" ]; then
+          echo "autoload -Uz ${basename%.*}" >> $autoload_f
+        fi
+      done
+    done
+    for dirname in peco; do
+      dirpath=~/.zsh/zfunc/$dirname${suffix}
+      echo "fpath+=$dirpath" >> $autoload_f
+      for f in $dirpath/*; do
+        [ -d "$f" ] && continue
+        basename=${f##*/}
+        [ "$basename" = "*" ] && continue
+        if [ "$basename" != "*.zsh" ]; then
+          echo "autoload -Uz ${basename%.*}" >> $autoload_f
+          echo "zle -N ${basename%.*}" >> $autoload_f
+        fi
+      done
+    done
+  done
+}
+
 shrc_section_title "setopt" #{{{1
 setopt auto_cd                  # ディレクトリ直入力で cd
 setopt auto_pushd               # cd で pushd
@@ -375,34 +413,6 @@ zload() {
 
 shrc_section_title "bdd" #{{{2
 source ~/.zsh/plugins/zsh-bd/bd.zsh
-
-shrc_section_title "autoload" #{{{2
-source ~/.zsh/zfunc/autoload.zsh
-
-generate-autoload() {
-  echo -n "" > ~/.zsh/zfunc/autoload.zsh
-  for d in commands; do
-    echo "fpath+=~/.zsh/zfunc/$d" >> ~/.zsh/zfunc/autoload.zsh
-    for f in ~/.zsh/zfunc/$d/*; do
-      [ -d "$f" ] && continue
-      basename=${f##*/}
-      if [ "$basename" != "*.zsh" ]; then
-        echo "autoload -Uz ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
-      fi
-    done
-  done
-  for d in peco; do
-    echo "fpath+=~/.zsh/zfunc/$d" >> ~/.zsh/zfunc/autoload.zsh
-    for f in ~/.zsh/zfunc/$d/*; do
-      [ -d "$f" ] && continue
-      basename=${f##*/}
-      if [ "$basename" != "*.zsh" ]; then
-        echo "autoload -Uz ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
-        echo "zle -N ${basename%.*}" >> ~/.zsh/zfunc/autoload.zsh
-      fi
-    done
-  done
-}
 
 shrc_section_title "peco" #{{{2
 if type type peco >/dev/null 2>&1; then

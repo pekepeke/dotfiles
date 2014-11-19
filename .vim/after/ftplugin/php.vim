@@ -12,6 +12,7 @@ setlocal commentstring=//\ %s
 setlocal formatoptions-=r,o
 " setlocal iskeyword-=$,\-,:
 setlocal iskeyword-=- iskeyword-=$ iskeyword-=:
+let b:match_words .= "\<if\>:\<endif\>,\<foreach\>:\<endforeach\>,\<begin\>:\<end\>"
 
 " setlocal noexpandtab
 
