@@ -3666,6 +3666,12 @@ if s:bundle.is_installed('increment-activator')
     \   [ '.should_not', '.should' ],
     \   ['.to_not', '.to'],
     \ ],
+    \ 'markdown': [
+    \   ['[ ]', '[x]'],
+    \   ['#', '##', '###', '####', '#####', ],
+    \   ["-", "\t-", "\t\t-", "\t\t\t-", ],
+    \   ["+", "\t+", "\t\t+", "\t\t\t+", ],
+    \ ],
     \ }
 endif
 
