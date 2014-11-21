@@ -1,0 +1,24 @@
+curl http://169.254.169.254/latest/
+curl http://169.254.169.254/latest/meta-data/ami-id
+curl http://169.254.169.254/latest/meta-data/ami-launch-index
+curl http://169.254.169.254/latest/meta-data/ami-manifest-path
+curl http://169.254.169.254/latest/meta-data/block-device-mapping/ami
+curl http://169.254.169.254/latest/meta-data/hostname
+curl http://169.254.169.254/latest/meta-data/instance-action
+curl http://169.254.169.254/latest/meta-data/instance-id
+curl http://169.254.169.254/latest/meta-data/instance-type
+curl http://169.254.169.254/latest/meta-data/kernel-id
+curl http://169.254.169.254/latest/meta-data/local-hostname
+curl http://169.254.169.254/latest/meta-data/local-ipv4
+curl http://169.254.169.254/latest/meta-data/mac
+curl http://169.254.169.254/latest/meta-data/metrics/vhostmd
+curl http://169.254.169.254/latest/meta-data/network/interfaces/macs/
+curl http://169.254.169.254/latest/meta-data/placement/availability-zone
+curl http://169.254.169.254/latest/meta-data/profile
+curl http://169.254.169.254/latest/meta-data/public-hostname
+curl http://169.254.169.254/latest/meta-data/public-ipv4
+curl http://169.254.169.254/latest/meta-data/public-keys/
+curl http://169.254.169.254/latest/meta-data/reservation-id
+curl http://169.254.169.254/latest/meta-data/security-groups
+curl http://169.254.169.254/latest/meta-data/services/domain
+
