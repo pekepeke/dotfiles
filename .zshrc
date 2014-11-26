@@ -417,19 +417,19 @@ source ~/.zsh/plugins/zsh-bd/bd.zsh
 shrc_section_title "peco" #{{{2
 if type type peco >/dev/null 2>&1; then
   # source_all ~/.zsh/zfunc/peco/*.zsh
-  bindkey -v '^Xp' peco-search-clipmenu
-  bindkey -v '^Xs' peco-select-snippets
-  bindkey '^R' peco-select-history
-  bindkey '^Vw' peco-select-gui-window
-  bindkey '^Vgh' peco-select-zle-git
-  bindkey '^Vgj' peco-git-ls-files
-  bindkey '^Vgg' peco-git-changed-files
-  bindkey '^Vgb' peco-git-recent-branches
-  bindkey '^VgB' peco-git-recent-all-branches
-  bindkey '^Vgl' peco-git-log
-  bindkey '^Vgm' peco-git-ls-files
-  bindkey '^O' peco-select-zle
-  bindkey '^Vo' peco-select-zle
+  bindkey -v '^Xp' peco-clipmenu-copy
+  bindkey -v '^Xs' peco-snippets-copy
+  bindkey '^R' peco-history-replace-buffer
+  bindkey '^Vw' peco-gui-window-select
+  bindkey '^Vgh' peco-zle-git-launch
+  bindkey '^Vgj' peco-git-ls-files-insert-at-pos
+  bindkey '^Vgg' peco-git-changed-files-insert-at-pos
+  bindkey '^Vgb' peco-git-recent-branches-replace-buffer
+  bindkey '^VgB' peco-git-recent-all-branches-replace-buffer
+  bindkey '^Vgl' peco-git-log-hash-insert-at-pos
+  bindkey '^Vgm' peco-git-ls-files-insert-at-pos
+  bindkey '^O' peco-zle-launch
+  bindkey '^Vo' peco-zle-launch
 fi
 
 shrc_section_title "textobj" #{{{2

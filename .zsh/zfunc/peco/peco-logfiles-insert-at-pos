@@ -1,0 +1,17 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-logfiles-insert-at-pos() {
+  local pos=$CURSOR
+  local selected=$(find -L ~/.mylog/logs -type f | peco --query="$LBUFFER" | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')
+  if [ -n "$selected" ]; then
+    if [ -n "$BUFFER" ]; then
+    	BUFFER="${BUFFER[1,$pos]}${selected}${BUFFER[$pos,-1]}"
+    else
+      BUFFER="tail -f ${selected}"
+    fi
+    CURSOR=$#BUFFER
+    # zle accept-line
+  fi
+  zle -R
+  # zle -R -c
+# }
+# zle -N peco-logfiles-insert-at-pos

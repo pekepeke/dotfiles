@@ -39,7 +39,7 @@ case $state in
     local -a _sites
     _sites=($(_call_program commands vhost list 2>/dev/null))
     case $line[1] in
-      which|open|edit|public)
+      which|open|edit|public|docroot|list)
         _describe -t _sites 'sites' _sites && ret=0
       ;;
     esac

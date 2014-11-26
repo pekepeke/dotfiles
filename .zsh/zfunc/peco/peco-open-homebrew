@@ -1,6 +1,0 @@
-# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
-# peco-open-homebrew() {
-  (($+functions[_peco_homebrew])) || . ~/.zsh/zfunc/peco/lib/homebrew.zsh
-  _peco_homebrew_open ""
-# }
-# zle -N peco-open-homebrew

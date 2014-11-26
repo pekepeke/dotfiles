@@ -1,0 +1,14 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-git-rebase-i-replace-buffer() {
+  if git rev-parse >/dev/null 2>&1; then
+    local commit_hash=$(git log --oneline | peco | cut -d " " -f 1)
+    if [ -n "$commit_hash" ]; then
+      BUFFER="git rebase -i ${commit_hash}"
+      CURSOR=$#BUFFER
+    fi
+    zle -R
+    # zle -R -c
+  fi
+# }
+# zle -N peco-git-rebase-i-replace-buffer
+

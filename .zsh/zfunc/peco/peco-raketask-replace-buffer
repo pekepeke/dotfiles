@@ -1,0 +1,18 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-raketask-replace-buffer() {
+  local bundle_exec=""
+  local rake_option="-T"
+  if [ -e Gemfile ]; then
+    bundle_exec="bundle exec"
+  fi
+  local tasks="${bundle_exec} rake ${rake_option}"
+  local task="$(eval $tasks | peco | awk '{print $1}')"
+
+  if [ -n "$task" ]; then
+    BUFFER="${bundle_exec} $(echo $task | tr "[:cntrl:]" " ")"
+    CURSOR=$#BUFFER
+  fi
+  zle -R
+  # zle -R -c
+# }
+# zle -N peco-raketask-replace-buffer

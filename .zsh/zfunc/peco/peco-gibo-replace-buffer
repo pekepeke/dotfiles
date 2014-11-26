@@ -1,0 +1,11 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-gibo-replace-buffer() {
+  local selected=$(gibo -l | peco --query="$LBUFFER")
+  if [ -n "$selected" ]; then
+    BUFFER="gibo $(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ') > .gitignore"
+  fi
+  zle -R
+  # zle -R -c
+# }
+# zle -N peco-gibo-replace-buffer
+

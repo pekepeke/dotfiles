@@ -1,0 +1,11 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-ssh-host-replace-buffer() {
+  local host=$(cat ~/.ssh/config | awk '$1 == "Host" { print $2 }' | peco --query="$LBUFFER")
+  if [ -n "${host}" ];then
+    BUFFER="ssh $host"
+    CURSOR=$#BUFFER
+  fi
+  zle -R
+  # zle -R -c
+#}
+#zle -N peco-ssh-host-replace-buffer

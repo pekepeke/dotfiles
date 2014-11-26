@@ -1,0 +1,16 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-vhost-docroot-insert-at-pos() {
+  local pos=$CURSOR
+  # --query="$LBUFFER"
+  local selected="$(vhost list --docroot | peco | awk '{ print $2 }' | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
+  if [ -n "$selected" ]; then
+    BUFFER="${BUFFER[1,$pos]}${selected}${BUFFER[$pos,-1]}"
+    CURSOR=$#BUFFER
+    # zle accept-line
+  fi
+  zle -R
+  # zle -R -c
+# }
+# zle -N peco-vhost-docroot-insert-at-pos
+
+

@@ -1,0 +1,9 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# function peco-zle-git-launch() {
+  local widgets=$(zle -l | grep -ve '^_\|(_' | grep git | grep -v git-launch | peco | awk '{print $1}')
+  if [ -n "$widgets" ]; then
+    zle $widgets
+  fi
+# }
+# zle -N peco-zle-git-launch
+
