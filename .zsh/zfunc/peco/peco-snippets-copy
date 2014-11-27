@@ -1,6 +1,6 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # function peco-snippets-copy() {
-    local selected=$(grep -v "^#" ~/.snippets | peco --query "$LBUFFER")
+    local selected="$(grep -v "^#" ~/.snippets | peco --query "$LBUFFER")"
     if [ -n "${selected}" ]; then
       echo "${selected}" | pbcopy-wrapper
     fi

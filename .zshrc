@@ -417,8 +417,8 @@ source ~/.zsh/plugins/zsh-bd/bd.zsh
 shrc_section_title "peco" #{{{2
 if type type peco >/dev/null 2>&1; then
   # source_all ~/.zsh/zfunc/peco/*.zsh
-  bindkey -v '^Xp' peco-clipmenu-copy
-  bindkey -v '^Xs' peco-snippets-copy
+  bindkey -v '^Vp' peco-clipmenu-copy
+  bindkey -v '^Vs' peco-snippets-copy
   bindkey '^R' peco-history-replace-buffer
   bindkey '^Vw' peco-gui-window-select
   bindkey '^Vgh' peco-zle-git-launch
