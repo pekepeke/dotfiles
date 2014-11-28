@@ -57,10 +57,11 @@ generate-autoload() {
     autoload_f=~/.zsh/zfunc/autoload${suffix}.zsh
     echo -n "" > $autoload_f
     for dirname in commands; do
-      dirpath=~/.zsh/zfunc/$dirname${suffix}
+      realdirpath=~/.zsh/zfunc/$dirname${suffix}
+      dirpath="\$HOME/.zsh/zfunc/$dirname${suffix}"
 
       echo "fpath+=$dirpath" >> $autoload_f
-      for f in $dirpath/*; do
+      for f in $realdirpath/*; do
         [ -d "$f" ] && continue
         basename=${f##*/}
         [ "$basename" = "*" ] && continue
@@ -70,9 +71,10 @@ generate-autoload() {
       done
     done
     for dirname in peco; do
-      dirpath=~/.zsh/zfunc/$dirname${suffix}
+      realdirpath=~/.zsh/zfunc/$dirname${suffix}
+      dirpath="\$HOME/.zsh/zfunc/$dirname${suffix}"
       echo "fpath+=$dirpath" >> $autoload_f
-      for f in $dirpath/*; do
+      for f in $realdirpath/*; do
         [ -d "$f" ] && continue
         basename=${f##*/}
         [ "$basename" = "*" ] && continue

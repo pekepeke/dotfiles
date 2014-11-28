@@ -1,7 +1,7 @@
-fpath+=/Users/konnok/.zsh/zfunc/commands
+fpath+=$HOME/.zsh/zfunc/commands
 autoload -Uz cdd
 autoload -Uz cdgem
-fpath+=/Users/konnok/.zsh/zfunc/peco
+fpath+=$HOME/.zsh/zfunc/peco
 autoload -Uz peco-aws-auto-scaling-groups-insert-at-pos
 zle -N peco-aws-auto-scaling-groups-insert-at-pos
 autoload -Uz peco-aws-ec2-image-id-copy
