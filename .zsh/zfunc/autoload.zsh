@@ -2,6 +2,16 @@ fpath+=/Users/konnok/.zsh/zfunc/commands
 autoload -Uz cdd
 autoload -Uz cdgem
 fpath+=/Users/konnok/.zsh/zfunc/peco
+autoload -Uz peco-aws-auto-scaling-groups-insert-at-pos
+zle -N peco-aws-auto-scaling-groups-insert-at-pos
+autoload -Uz peco-aws-ec2-image-id-copy
+zle -N peco-aws-ec2-image-id-copy
+autoload -Uz peco-aws-ec2-image-id-insert-at-pos
+zle -N peco-aws-ec2-image-id-insert-at-pos
+autoload -Uz peco-aws-ec2-instances-print
+zle -N peco-aws-ec2-instances-print
+autoload -Uz peco-aws-launch-configurations-print-user-data
+zle -N peco-aws-launch-configurations-print-user-data
 autoload -Uz peco-bundle-open-gem
 zle -N peco-bundle-open-gem
 autoload -Uz peco-clipmenu-copy
@@ -24,6 +34,8 @@ autoload -Uz peco-git-issue-show-redmine-print
 zle -N peco-git-issue-show-redmine-print
 autoload -Uz peco-git-log-hash-insert-at-pos
 zle -N peco-git-log-hash-insert-at-pos
+autoload -Uz peco-git-log-name-status-execute-tig
+zle -N peco-git-log-name-status-execute-tig
 autoload -Uz peco-git-ls-files-insert-at-pos
 zle -N peco-git-ls-files-insert-at-pos
 autoload -Uz peco-git-rebase-i-replace-buffer

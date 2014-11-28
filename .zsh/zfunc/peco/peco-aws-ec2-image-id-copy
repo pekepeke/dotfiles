@@ -1,0 +1,8 @@
+# peco-aws-ec2-image-id-copy() {
+  . ~/.zsh/zfunc/peco/lib/cache.zsh
+  local selected="$(aws ec2 describe-images --owner self | jq -r '.Images[] | "\(.Name)\t\(.ImageId)"' | peco --query="$LBUFFER")"
+  peco-zle-copy "$(echo $selected | awk '{print $2}')"
+  peco-zle-print "$(echo $selected)"
+  zle -R
+# }
+# zle -N peco-aws-ec2-image-id-copy

@@ -1,0 +1,9 @@
+# peco-aws-ec2-instances-print() {
+  . ~/.zsh/zfunc/peco/lib/cache.zsh
+  local selected="$(aws ec2 describe-instances | \
+    jq -r '.Reservations[].Instances[] | select(.State.Name=="running") | {InstanceId, PublicIpAddress, PrivateIpAddress, InstanceName: (.Tags[] | select(.Key=="Name").Value), LaunchTime, AutoScaleGroup: (.Tags | map(select(.Key=="aws:autoscaling:groupName").Value))|join("")} | "\(.InstanceName) \(.PrivateIpAddress) \(.PublicIpAddress) \(.LaunchTime) \(.AutoScaleGroup)"' |\
+    peco --query="$LBUFFER")"
+  peco-zle-print "$(echo $selected)"
+  zle -R
+# }
+# zle -N peco-aws-ec2-instances-print

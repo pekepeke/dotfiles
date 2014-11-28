@@ -1,0 +1,10 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-git-log-name-status-execute-tig() {
+  local selected=$(git log --pretty=format:"[%ad] %h %an : %s" --all --name-status | peco --query="$LBUFFER" | awk '{print $NF}')
+  if [ -n "$selected" ]; then
+    BUFFER="tig $(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
+    zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-git-log-name-status-execute-tig

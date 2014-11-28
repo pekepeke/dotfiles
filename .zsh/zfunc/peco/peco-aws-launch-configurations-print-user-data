@@ -1,0 +1,15 @@
+# peco-aws-launch-configurations-print-user-data() {
+  . ~/.zsh/zfunc/peco/lib/cache.zsh
+
+  set-cache aws autoscaling describe-launch-configurations
+  local selected="$(print-cache | \
+    jq -r '.LaunchConfigurations[] | "\(.LaunchConfigurationName)\t\(.ImageId)\t\(.CreatedTime)"' | \
+    awk '{print $1}' |peco --query="$LBUFFER")"
+
+  for name in $(echo $selected); do
+    peco-zle-print "$(print "######## $name UserData")"
+    peco-zle-print "$(print-cache | jq '.LaunchConfigurations[]|select(.LaunchConfigurationName=="'$name'")| "\(.UserData)"' | \
+      base64 -d)"
+  done
+# }
+# zle -N peco-aws-launch-configurations-print-user-data
