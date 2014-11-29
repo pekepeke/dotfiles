@@ -1,0 +1,8 @@
+# peco-bd-change-directory() {
+  local selected="$(perl -e '@s=split("/", `pwd`);chomp(@s);for $i(1..$#s){print join("/",@s[0..$i])."\n";}' | peco --query="$LBUFFER")"
+  if [ -n "$selected" ]; then
+    BUFFER="cd ${selected}"
+    zle accept-line
+  fi
+# }
+# zle -N peco-bd-change-directory

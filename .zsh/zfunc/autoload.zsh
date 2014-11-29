@@ -12,10 +12,14 @@ autoload -Uz peco-aws-ec2-instances-print
 zle -N peco-aws-ec2-instances-print
 autoload -Uz peco-aws-launch-configurations-print-user-data
 zle -N peco-aws-launch-configurations-print-user-data
+autoload -Uz peco-bd-change-directory
+zle -N peco-bd-change-directory
 autoload -Uz peco-bundle-open-gem
 zle -N peco-bundle-open-gem
 autoload -Uz peco-clipmenu-copy
 zle -N peco-clipmenu-copy
+autoload -Uz peco-codic-print
+zle -N peco-codic-print
 autoload -Uz peco-command-insert-at-pos
 zle -N peco-command-insert-at-pos
 autoload -Uz peco-document-insert-at-pos
@@ -26,6 +30,8 @@ autoload -Uz peco-ghq-cd
 zle -N peco-ghq-cd
 autoload -Uz peco-gibo-replace-buffer
 zle -N peco-gibo-replace-buffer
+autoload -Uz peco-git-branch-delete-already-merged
+zle -N peco-git-branch-delete-already-merged
 autoload -Uz peco-git-changed-files-insert-at-pos
 zle -N peco-git-changed-files-insert-at-pos
 autoload -Uz peco-git-fixup-replace-buffer
@@ -68,6 +74,10 @@ autoload -Uz peco-logfiles-insert-at-pos
 zle -N peco-logfiles-insert-at-pos
 autoload -Uz peco-ls-la-insert-at-pos
 zle -N peco-ls-la-insert-at-pos
+autoload -Uz peco-multi-ssh
+zle -N peco-multi-ssh
+autoload -Uz peco-pip-file-edit
+zle -N peco-pip-file-edit
 autoload -Uz peco-plist-all-insert-at-pos
 zle -N peco-plist-all-insert-at-pos
 autoload -Uz peco-plist-system-insert-at-pos
@@ -88,6 +98,10 @@ autoload -Uz peco-snippets-copy
 zle -N peco-snippets-copy
 autoload -Uz peco-ssh-host-replace-buffer
 zle -N peco-ssh-host-replace-buffer
+autoload -Uz peco-tmux-buffer-history-replace-buffer
+zle -N peco-tmux-buffer-history-replace-buffer
+autoload -Uz peco-tmuxinator
+zle -N peco-tmuxinator
 autoload -Uz peco-vhost-docroot-insert-at-pos
 zle -N peco-vhost-docroot-insert-at-pos
 autoload -Uz peco-vhost-fqdn-insert-at-pos
@@ -96,3 +110,7 @@ autoload -Uz peco-zle-git-launch
 zle -N peco-zle-git-launch
 autoload -Uz peco-zle-launch
 zle -N peco-zle-launch
+autoload -Uz peco-zsh-functions
+zle -N peco-zsh-functions
+autoload -Uz peco-zsh-keybinds
+zle -N peco-zsh-keybinds

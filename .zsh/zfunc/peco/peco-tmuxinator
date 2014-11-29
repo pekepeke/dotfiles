@@ -1,0 +1,8 @@
+# peco-tmuxinator() {
+  local selected=$(ls ~/.tmuxinator | sed -e s/.yml// -e /tmuxinator.zsh/d | peco)
+  if [ -n "$selected" ]; then
+    mux $selected
+  fi
+  zle clear-screen
+# }
+# zle -N peco-tmuxinator

@@ -1,0 +1,8 @@
+# peco-tmux-buffer-history-replace-buffer() {
+  local selected="$(tmux list-buffer | peco | cut -f1 -d: | xargs tmux paste-buffer -b)"
+  if [ -n "$selected" ]; then
+    BUFFER="$selected"
+  fi
+  zle clear-screen
+# }
+# zle -N peco-tmux-buffer-history-replace-buffer

@@ -1,0 +1,8 @@
+# peco-zsh-keybinds() {
+  local selected="$(bindkey | peco --query="$LBUFFER" | cut -d " " -f 2)"
+  if [ -n "$selected" ]; then
+    zle ${selected}
+  fi
+  zle -R
+# }
+# zle -N peco-zsh-keybinds

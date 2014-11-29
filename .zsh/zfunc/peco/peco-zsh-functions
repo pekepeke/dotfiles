@@ -1,0 +1,9 @@
+# peco-zsh-functions() {
+  let selected="$(print -l ${(ok)functions} | sed -e /^_/d | peco --query="$LBUFFER")"
+  if [ -n "$selected" ]; then
+    BUFFER="$selected"
+    zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-zsh-functions

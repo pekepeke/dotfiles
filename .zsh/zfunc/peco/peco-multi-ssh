@@ -1,0 +1,8 @@
+# peco-multi-ssh() {
+  local hosts="$(grep -iE '^host[[:space:]]+[^*]' ~/.ssh/config | awk '{print $2}' | peco)"
+  if [ -n "$hosts" ]; then
+    multi_ssh ${=hosts}
+  fi
+  zle clear-screen
+# }
+# zle -N peco-multi-ssh

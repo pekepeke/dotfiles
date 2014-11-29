@@ -1,0 +1,10 @@
+# peco-codic-print() {
+
+  local codic_dir=~/.vim/neobundle/codic-vim
+  local selected=$(cat $codic_dir/dict/naming-entry.csv | peco --query "$LBUFFER" | awk -F , '{print $1}')
+  if [ -n "$selected" ]; then
+    cat $codic_dir/dict/naming-translation.csv | grep "$selected" | awk -F , '{print "parts: " $3; print "mean: " $4; print "note: " $5 "\n";}'
+  fi
+  zle -R
+# }
+# zle -N peco-codic-print

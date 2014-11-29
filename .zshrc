@@ -85,6 +85,7 @@ generate-autoload() {
       done
     done
   done
+  source ~/.zshrc
 }
 
 shrc_section_title "setopt" #{{{1
