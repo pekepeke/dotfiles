@@ -1,0 +1,9 @@
+# peco-tmux-pane-select() {
+  local selected="$(tmux list-panes | peco --query="$LBUFFER" | cut -d':' -f1)"
+  if [ -n "$selected" ]; then
+    BUFFER="tmux select-pane -t ${selected}"
+    zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-tmux-pane-select

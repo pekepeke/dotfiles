@@ -1,0 +1,9 @@
+# peco-tmux-kill-session() {
+  local selected="$(tmux ls | peco --query="$LBUFFER" | cut -d':' -f1)"
+  if [ -n "$selected" ]; then
+    BUFFER="tmux kill-session -t ${selected}"
+    zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-tmux-kill-session

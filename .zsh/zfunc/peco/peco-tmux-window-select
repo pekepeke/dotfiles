@@ -1,0 +1,10 @@
+# peco-tmux-window-select() {
+  local selected="$( tmux list-windows -F '#{window_index}: #{window_name}#{window_flags} (#{window_panes} panes) #{pane_current_path} #{?window_active, (active),}' | \
+    peco --query="$LBUFFER")"
+  if [ -n "$selected" ]; then
+    BUFFER="tmux select-window -t ${selected}"
+    zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-tmux-window-select

@@ -22,6 +22,8 @@ autoload -Uz peco-codic-print
 zle -N peco-codic-print
 autoload -Uz peco-command-insert-at-pos
 zle -N peco-command-insert-at-pos
+autoload -Uz peco-csshx
+zle -N peco-csshx
 autoload -Uz peco-document-insert-at-pos
 zle -N peco-document-insert-at-pos
 autoload -Uz peco-gdb-attach-pid
@@ -98,8 +100,18 @@ autoload -Uz peco-snippets-copy
 zle -N peco-snippets-copy
 autoload -Uz peco-ssh-host-replace-buffer
 zle -N peco-ssh-host-replace-buffer
+autoload -Uz peco-tmux-attach-session
+zle -N peco-tmux-attach-session
 autoload -Uz peco-tmux-buffer-history-replace-buffer
 zle -N peco-tmux-buffer-history-replace-buffer
+autoload -Uz peco-tmux-kill-session
+zle -N peco-tmux-kill-session
+autoload -Uz peco-tmux-layout-exec
+zle -N peco-tmux-layout-exec
+autoload -Uz peco-tmux-pane-select
+zle -N peco-tmux-pane-select
+autoload -Uz peco-tmux-window-select
+zle -N peco-tmux-window-select
 autoload -Uz peco-tmuxinator
 zle -N peco-tmuxinator
 autoload -Uz peco-vhost-docroot-insert-at-pos

@@ -1,0 +1,33 @@
+# peco-tmux-layout-exec() {
+  local winno=$(tmux display -p '#I')
+  if [ -z "$winno" ]; then
+    return 1
+  fi
+
+  local selected="$(cat <<EOM | peco --query="$LBUFFER"
+tiled
+even-vertical
+main-vertical
+main-vertical-with-change-pane
+even-horizontal
+main-horizontal
+main-horizontal-with-change-pane
+EOM
+  )"
+  if [ -n "$selected" ]; then
+    case "$selected" in
+      main-vertical-with-change-pane)
+        BUFFER="tmux select-layout -t $winno main-vertical ; tmux swap-pane -s : -t 0 ; tmux select-pane -t 0 ; tmux resize-pane -R 9"
+        ;;
+      main-horizontal-with-change-pane)
+        BUFFER="tmux select-layout -t $winno main-horizontal; tmux swap-pane -s : -t 0 ; tmux select-pane -t 0 ; tmux resize-pane -D 18"
+        ;;
+      *)
+        BUFFER="tmux select-layout -t $winno $1"
+      ;;
+    esac
+    zle accept-line
+  fi
+  zsh -R
+# }
+# zle -N peco-tmux-layout-exec

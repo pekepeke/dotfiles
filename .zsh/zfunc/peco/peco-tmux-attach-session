@@ -1,0 +1,10 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-tmux-attach-session() {
+  local selected="$(tmux ls | peco --query="$LBUFFER" | cut -d':' -f1)"
+  if [ -n "$selected" ]; then
+    BUFFER="tmux attach -t ${selected}"
+    zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-tmux-attach-session
