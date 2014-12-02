@@ -7045,6 +7045,8 @@ if !has('vim_starting')
   if s:bundle.is_sourced('lightline')
     call lightline#update()
   endif
+else
+  call neobundle#call_hook('on_source')
 endif
 " __END__ {{{1
 " vim: set ft=vim fdm=marker sw=2 ts=2 et:

@@ -1,7 +1,9 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # peco-tmuxinator() {
   local selected=$(ls ~/.tmuxinator | sed -e s/.yml// -e /tmuxinator.zsh/d | peco)
   if [ -n "$selected" ]; then
-    mux $selected
+    BUFFER="mux $selected"
+	zle accept-line
   fi
   zle clear-screen
 # }

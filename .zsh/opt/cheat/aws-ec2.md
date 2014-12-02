@@ -14,3 +14,29 @@ sudo resize2fs /dev/sda1
 df -h
 ```
 
+## swap ファイル作成
+
+```
+# sudo vim /etc/rc.local
+SWAPFILENAME=/swap.img
+MEMSIZE=`cat /proc/meminfo | grep MemTotal | awk '{print $2}'`
+
+if [ $MEMSIZE -lt 2097152 ]; then
+  SIZE=$((MEMSIZE * 2))k
+elif [ $MEMSIZE -lt 8388608 ]; then
+  SIZE=${MEMSIZE}k
+elif [ $MEMSIZE -lt 67108864 ]; then
+  SIZE=$((MEMSIZE / 2))k
+else
+  SIZE=4194304k
+fi
+
+# dd if=/dev/zero of=$SWAPFILENAME bs=1M count=50
+fallocate -l $SIZE $SWAPFILENAME && mkswap $SWAPFILENAME && swapon $SWAPFILENAME
+```
+
+- fstab
+
+```
+/swap.img  swap   swap    defaults   0 0
+```
