@@ -313,7 +313,7 @@ if v:version > 702
     if has('vim_starting')
       set runtimepath+=~/.vim/neobundle.vim
     endif
-    call neobundle#rc(expand("~/.vim/neobundle"))
+    call neobundle#begin(expand("~/.vim/neobundle"))
 
     " minimum plugin
     NeoBundle 'Shougo/unite.vim', {
@@ -377,6 +377,7 @@ if v:version > 702
           \   ['n', '<Plug>Commentary'],
           \ ],
           \ }}
+    call neobundle#end()
   elseif s:standalone " plugin load {{{2
     if has('vim_starting')
       filetype off

@@ -40,3 +40,5 @@
     git archive --prefix=$2/ $1 $file | tar -xf - ; \n\
     done ; \n\
     }; f"
+  pr-setup = config --add remote.origin.fetch +refs/pull/*/head:refs/remotes/origin/pr/*
+
