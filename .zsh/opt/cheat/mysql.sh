@@ -11,3 +11,7 @@ GRANT ALL ON db.* TO user@'%' IDENTIFIED BY 'pass';
 FLUSH PRIVILEGES;
 
 SHOW GRANTS FOR ユーザ名@localhost \G
+
+# update character set
+ALTER DATABASE databasename CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ALTER TABLE tablename CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;

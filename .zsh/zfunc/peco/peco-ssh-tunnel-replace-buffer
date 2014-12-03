@@ -1,0 +1,11 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-ssh-tunnel-replace-buffer() {
+  local selected="$(ls | peco --query="$LBUFFER")"
+  local host=$(cat ~/.ssh/config | awk '$1 == "Host" { print $2 }' | peco --query="$LBUFFER")
+  if [ -n "${host}" ];then
+    BUFFER="ssh -N -L 13306:localhost:3306 $host"
+    CURSOR=$#BUFFER
+  fi
+  zle -R
+# }
+# zle -N peco-ssh-tunnel-replace-buffer

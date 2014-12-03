@@ -46,10 +46,12 @@ autoload -Uz peco-git-log-name-status-execute-tig
 zle -N peco-git-log-name-status-execute-tig
 autoload -Uz peco-git-ls-files-insert-at-pos
 zle -N peco-git-ls-files-insert-at-pos
+autoload -Uz peco-git-rebase-i-branch-replace-buffer
+zle -N peco-git-rebase-i-branch-replace-buffer
 autoload -Uz peco-git-rebase-i-replace-buffer
 zle -N peco-git-rebase-i-replace-buffer
-autoload -Uz peco-git-recent-all-branches-replace-buffer
-zle -N peco-git-recent-all-branches-replace-buffer
+autoload -Uz peco-git-recent-branches-all-replace-buffer
+zle -N peco-git-recent-branches-all-replace-buffer
 autoload -Uz peco-git-recent-branches-replace-buffer
 zle -N peco-git-recent-branches-replace-buffer
 autoload -Uz peco-gui-window-select
@@ -100,6 +102,8 @@ autoload -Uz peco-snippets-copy
 zle -N peco-snippets-copy
 autoload -Uz peco-ssh-host-replace-buffer
 zle -N peco-ssh-host-replace-buffer
+autoload -Uz peco-ssh-tunnel-replace-buffer
+zle -N peco-ssh-tunnel-replace-buffer
 autoload -Uz peco-tmux-attach-session
 zle -N peco-tmux-attach-session
 autoload -Uz peco-tmux-buffer-history-replace-buffer

@@ -1,5 +1,5 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
-# function peco-git-recent-all-branches-replace-buffer() {
+# function peco-git-recent-branches-all-replace-buffer() {
   local selected_branch=$(git for-each-ref --format='%(refname)' --sort=-committerdate refs/heads refs/remotes | \
   perl -pne 's{^refs/(heads|remotes)/}{}' | \
   peco --query "$LBUFFER")
@@ -14,4 +14,4 @@
   zle -R
   # zle -R -c
 # }
-# zle -N peco-git-recent-all-branches-replace-buffer
+# zle -N peco-git-recent-branches-all-replace-buffer

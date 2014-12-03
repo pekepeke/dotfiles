@@ -1,0 +1,19 @@
+#compdef peco
+
+_arguments -n : \
+  '(--query)--query=[Specifies the default query to be used upon startup]' \
+  '(--rcfile)--rcfile=[Configuration file]:config_file:_files' \
+  '(--null)--null=[Use null character as separator]' \
+  '(--no-ignore-case)--no-ignore-case=[Starts in case insensitive mode]' \
+  '(-b,--buffer-size)'{-b,--buffer-size}='[Number of lines to keep in search buffer]' \
+  '(--version)--version=[Display the version of peco]' \
+  '(--help)--help=[Display a help message]' \
+  '*: :()'
+
+# Local Variables:
+# mode: Shell-Script
+# sh-indentation: 2
+# indent-tabs-mode: nil
+# sh-basic-offset: 2
+# End:
+# vim: ft=zsh sw=2 ts=2 et
