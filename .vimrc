@@ -966,11 +966,11 @@ NeoBundle 'AndrewRadev/gapply.vim', {'autoload':{
 \ 'commands': [ "Gapply",],
 \ }}
 
-NeoBundleLazy 'gregsexton/gitv', {'autoload': {
-\ 'commands' : ['Gitv'],
-\ }}
+" NeoBundleLazy 'gregsexton/gitv', {'autoload': {
+" \ 'commands' : ['Gitv'],
+" \ }}
 NeoBundle 'cohama/agit.vim', {'autoload': {
-\ 'commands': ['Agit', 'AgitGit'],
+\ 'commands': ['Agit', 'AgitGit', 'AgitFile'],
 \ }}
 NeoBundle 'rhysd/git-messenger.vim', {
 \ 'gui': 1,
@@ -3533,6 +3533,9 @@ if s:bundle.tap('agit.vim')
   let g:agit_enable_auto_refresh = 0
   MyAutoCmd FileType agit call s:vimrc_agit_init()
   function! s:vimrc_agit_init()
+    if g:vimrc_enabled_plugins.unite
+      nnoremap <buffer><nowait> [!space] :<C-u>Unite menu:ft_agit<CR>
+    endif
   endfunction
   call s:bundle.untap()
 endif
@@ -4544,6 +4547,28 @@ if s:bundle.tap('unite.vim')
     call unite#custom_action('file', 'narrow_or_insert', s:unite_action_narrow_or_insert)
     unlet! s:unite_action_narrow_or_insert
 
+    " custom action agit {{{5
+    if g:vimrc_enabled_plugins.agit
+      let s:agit_action = {}
+      function! s:agit_action.func(dir)
+        if isdirectory(a:dir.word)
+          let dir = fnamemodify(a:dir.word, ':p')
+        else
+          let dir = fnamemodify(a:dir.word, ':p:h')
+        endif
+        execute 'Agit --dir=' . dir
+      endfunction
+      call unite#custom#action('file,cdable', 'agit', s:agit_action)
+      unlet! s:agit_action
+
+      let s:agit_file = { 'description' : 'open the file''s history in agit.vim' }
+      function! s:agit_file.func(candidate)
+        execute 'AgitFile' '--file='.a:candidate.action__path
+      endfunction
+      call unite#custom#action('file', 'agit-file', s:agit_file)
+      unlet! s:agit_file
+    endif
+
     " unite-menu {{{4
     if !exists("g:unite_source_menu_menus")
        let g:unite_source_menu_menus = {}
@@ -4803,6 +4828,20 @@ if s:bundle.tap('unite.vim')
     \   ['Npm install'    , s:dispatch('npm install')]   ,
     \   ['Npm update'     , s:dispatch('npm update')]   ,
     \ ])
+    " agit {{{5
+    if g:vimrc_enabled_plugins.agit
+      " \ ['gbrowse', "execute 'Gbrowse' eval('agit#extract_hash(getline(\".\"))')"],
+      let g:unite_source_menu_menus["ft_agit"] = s:unite_menu_create(
+      \ 'Gitv', [
+      \ ['checkout', "normal \:<Plug>(agit-git-checkout)"],
+      \ ['rebase', "normal \<Plug>(agit-git-rebase)"],
+      \ ['rebase-i', "normal \<Plug>(agit-git-rebase-i)"],
+      \ ['revert', "normal \<Plug>(agit-git-revert)"],
+      \ ['cherry-pick', "normal \<Plug>(agit-git-cherry-pick)"],
+      \ ['reset --soft', "normal \<Plug>(agit-git-reset-soft)"],
+      \ ['reset --hard', "normal \<Plug>(agit-git-reset-hard)"],
+      \ ])
+    endif
     " gitv {{{5
     if g:vimrc_enabled_plugins.gitv
       let g:unite_source_menu_menus["ft_gitv"] = s:unite_menu_create(
@@ -5236,7 +5275,7 @@ if s:bundle.is_installed('vim-fugitive')
   nnoremap <silent> [!space]ge :<C-u>Gedit<Space>
   if g:vimrc_enabled_plugins.agit
     nnoremap <silent> [!space]gv :<C-u>Agit<CR>
-    " nnoremap <silent> [!space]gV :<C-u>Agit!<CR>
+    nnoremap <silent> [!space]gV :<C-u>AgitFile<CR>
   elseif g:vimrc_enabled_plugins.gitv
     nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
     nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
