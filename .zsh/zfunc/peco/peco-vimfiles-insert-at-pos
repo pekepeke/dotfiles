@@ -1,0 +1,12 @@
+# peco-vimfiles-insert-at-pos() {
+  (($+functions[_find-files-with-peco])) || . ~/.zsh/zfunc/peco/lib/find.zsh
+  local pos=$CURSOR
+  local selected="$(_find-files-with-peco ~/.vim | awk '{ print $2 }' | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
+  if [ -n "$selected" ]; then
+    BUFFER="${BUFFER[1,$pos]}${selected}${BUFFER[$pos,-1]}"
+    CURSOR=$#BUFFER
+    # zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-vimfiles-insert-at-pos

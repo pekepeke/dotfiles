@@ -122,6 +122,8 @@ autoload -Uz peco-vhost-docroot-insert-at-pos
 zle -N peco-vhost-docroot-insert-at-pos
 autoload -Uz peco-vhost-fqdn-insert-at-pos
 zle -N peco-vhost-fqdn-insert-at-pos
+autoload -Uz peco-vimfiles-insert-at-pos
+zle -N peco-vimfiles-insert-at-pos
 autoload -Uz peco-zle-git-launch
 zle -N peco-zle-git-launch
 autoload -Uz peco-zle-launch
@@ -130,3 +132,5 @@ autoload -Uz peco-zsh-functions
 zle -N peco-zsh-functions
 autoload -Uz peco-zsh-keybinds
 zle -N peco-zsh-keybinds
+autoload -Uz peco-zshfiles-insert-at-pos
+zle -N peco-zshfiles-insert-at-pos
