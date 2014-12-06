@@ -39,6 +39,256 @@ endfunction
 " MyAutoCmd BufReadPost,BufEnter * call s:filetype_check()
 
 " deprecated {{{1
+" plugin 141206 {{{1
+" NeoBundleLazy 'cocopon/svss.vim', {'autoload': {
+" \ 'commands': [
+" \ 'SvssSource', 'SvssScan', 'SvssDevInspect',
+" \ {'name': 'SvssCompile', 'complete':'file'},
+" \ ],
+" \ }}
+" NeoBundleLazy 'cocopon/colorswatch.vim', {'autoload': {
+" \ 'commands': ['ColorSwatchGenerate'],
+" \ }}
+
+" NeoBundle 'cocopon/iceberg.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'itchyny/landscape.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'depuracao/vim-darkdevel', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'goatslacker/mango.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'jpo/vim-railscasts-theme', {'autoload': {'unite_sources':['colorscheme']}}
+
+" NeoBundle 'jnurmine/Zenburn', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'gregsexton/Atom', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'vim-scripts/rdark', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'chriskempson/vim-tomorrow-theme', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'altercation/vim-colors-solarized', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'nanotech/jellybeans.vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'trapd00r/neverland-vim-theme', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'StanAngeloff/vim-zend55', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'w0ng/vim-hybrid', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'veloce/vim-aldmeris', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'Pychimp/vim-luna', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'croaker/mustang-vim', {'autoload': {'unite_sources':['colorscheme']}}
+" NeoBundle 'git://gist.github.com/187578.git', {
+" \ 'autoload': {'unite_sources':['colorscheme'],},
+" \ 'directory': 'h2u_black',
+" \ }
+
+" NeoBundle 'osyo-manga/vim-reanimate', {'autoload': {
+" \ 'commands': [
+" \ 'ReanimateSave', 'ReanimateSaveCursorHold', 'ReanimateSaveInput',
+" \ 'ReanimateLoadInput', 'ReanimateLoadLatest',
+" \ 'ReanimateEditVimrcUnload',
+" \ {'name': 'ReanimateLoad', 'complete': 'customlist,s:save_point_completelist'},
+" \ {'name': 'ReanimateSwitch', 'complete': 'customlist,s:save_point_completelist'},
+" \ {'name': 'ReanimateEditVimrcLocal', 'complete': 'customlist,s:save_point_completelist'},
+" \ ]
+" \ }}
+
+" "" NeoBundle 'dannyob/quickfixstatus'
+" "" NeoBundle 'jceb/vim-hier'
+
+" NeoBundle 'anyakichi/vim-surround', {'autoload':{
+" \ 'mappings': [['n', 'ds', 'cs', 'ys', 'yS', 'yss', 'ygs', 'ygS', 'ygss', 'ygsgs'],
+" \ ['x', 's', 'S', 'gs', 'gS'],
+" \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
+" \ }}
+" NeoBundle 'pekepeke/vim-anyakichi-surround_custom_mapping'
+
+" NeoBundle 'zef/vim-cycle', {'autoload': {
+" \ 'commands': ['CycleNext', 'CyclePrevious'],
+" \ 'mappings': ['<Plug>CycleNext', '<Plug>CyclePrevious'],
+" \ 'functions': ['AddCycleGroup']
+" \ }}
+" NeoBundleLazy 'terryma/vim-expand-region', {'autoload':{
+" \ 'mappings': ['<Plug>(expand_region_',]
+" \ }}
+" NeoBundleLazy 'deris/vim-rengbang', {'autoload':{
+" \ 'commands': ['RengBang'],
+" \ 'mappings': [['nvx', '<Plug>(operator-rengbang-']],
+" \ }}
+" NeoBundleLazy 'mileszs/ack.vim', { 'autoload': {
+" \ 'commands': [
+" \   {'name': 'Ack', 'complete': 'file'}, {'name': 'AckAdd', 'complete': 'file'},
+" \   {'name': 'AckFromSearch', 'complete': 'file'}, {'name': 'LAck', 'complete': 'file'},
+" \   {'name': 'LAckAdd', 'complete': 'file'}, {'name': 'AckFile', 'complete': 'file'},
+" \   {'name': 'AckHelp', 'complete': 'file'}, {'name': 'LAckHelp', 'complete': 'file'},
+" \ ],
+" \ }}
+" NeoBundleLazy 'vim-scripts/MultipleSearch'
+if s:is_win
+  " NeoBundle 'istepura/vim-toolbar-icons-silk'
+endif
+
+" NeoBundleLazy 'koron/chalice', {'autoload': {
+" \ 'commands': ['JumplistClear', 'JumpListAdd', 'JumplistPrev',
+" \   'JumplistNext', 'JumplistDump',
+" \   'ChaliceQuit', 'ChaliceQuitAll', 'ChaliceGoBoardList',
+" \   'ChaliceGoThread', 'ChaliceGoArticle', 'Article',
+" \   'ChaliceOpenBoard', 'ChaliceOpenThread', 'ChaliceHandleJump',
+" \   'ChaliceHandleJumpExt', 'ChaliceReloadBoardList',
+" \   'ChaliceReloadThreadList', 'ChaliceReloadThread',
+" \   'ChaliceReloadThreadInc', 'ChaliceReformat', 'ChaliceDoWrite',
+" \   'ChaliceWrite', 'ChaliceHandleURL', 'ChaliceBookmarkToggle',
+" \   'ChaliceBookmarkAdd', 'ChaliceJumplist', 'ChaliceJumplistNext',
+" \   'ChaliceJumplistPrev', 'ChaliceDeleteThreadDat', 'ChaliceAboneThreadDat',
+" \   'ChaliceToggleNetlineStatus', 'ChalicePreview', 'ChalicePreviewClose',
+" \   'ChalicePreviewToggle', 'ChaliceCruise', 'ChaliceShowNum',
+" \   'ChaliceCheckThread', 'Chalice2HTML', 'ChaliceAdjWinsize',
+" \   'ChaliceDatdirOn', 'Chalice',
+" \   'ALexecute', 'ALsystem',
+" \ ],
+" \ }}
+
+" NeoBundle 'osyo-manga/vim-spice'
+" NeoBundle 'vim-scripts/matchparenpp'
+" NeoBundle 'vim-scripts/taglist.vim'
+
+" NeoBundle 'mhinz/vim-startify'
+" if !s:is_win
+"   NeoBundle 'mhinz/vim-signify'
+"   " NeoBundle 'airblade/vim-gitgutter'
+" else
+"   NeoBundle 'sgur/vim-gitgutter'
+" endif
+
+" NeoBundle 'thinca/vim-ft-diff_fold'
+
+" NeoBundleLazy 'yuratomo/dbg.vim', {'autoload':{
+" \ 'commands': [
+" \ {'name':'Dbg', 'complete':'file'},
+" \ {'name':'DbgShell', 'complete':'file'},
+" \ ],
+" \ }}
+" NeoBundleLazy 'mattboehm/vim-unstack', {'autoload': {
+" \ 'mappings': [['nv', '<Leader>s']],
+" \ }}
+
+  " NeoBundle 'basyura/csharp_complete'
+  " NeoBundle 'osyo-manga/neocomplcache-jsx'
+" NeoBundle 'vim-scripts/html_FileCompletion'
+" NeoBundle 'nono/vim-handlebars'
+" NeoBundle 'juvenn/mustache.vim'
+
+" NeoBundle 'ChrisYip/Better-CSS-Syntax-for-Vim' " conflict with vim-haml
+" NeoBundle 'lilydjwg/colorizer'
+" NeoBundle 'cakebaker/scss-syntax.vim'
+" NeoBundleLazy 'csscomb/csscomb-for-vim', {'autoload': {
+" \ 'commands': ['CSSComb'],
+" \ }}
+" NeoBundleLazy 'vim-scripts/cssbaseline.vim', {'autoload': {
+" \ 'commands': ['Baseline', 'Baseline1'],
+" \ }}
+" NeoBundleLazy 'bae22/prefixer', {'autoload': {
+" \ 'commands': ['Prefixer', 'Prefixer1', 'Prefixer1a',
+" \   'Prefixer2', 'Prefixer2a'],
+" \ }}
+" NeoBundle 'bigfish/vim-js-context-coloring', {
+"   \ 'build' : {
+"   \   'mac': 'npm install --update',
+"   \   'unix': 'npm install --update',
+"   \   'windows': 'npm install --update',
+"   \   'cygwin': 'npm install --update',
+"   \ }}
+" NeoBundleLazy 'afshinm/npm.vim', {'autoload': {
+" \ 'commands': ['Npm']
+" \ }}
+" NeoBundle 'teramako/jscomplete-vim'
+" NeoBundle 'aereal/jscomplete-vim'
+" NeoBundle 'igetgames/vim-backbone-jscomplete'
+" NeoBundle 'myhere/vim-nodejs-complete'
+" NeoBundle 'pekepeke/titanium-vim'
+" NeoBundle 'pekepeke/ref-jsextra-vim'
+" NeoBundleLazy 'cocopon/googkit.vim', {'autoload':{
+" \ 'commands': [
+" \ {'name':'GoogkitInit'},
+" \ {'name': 'Googkit', 'complete':'googkit#complete_last'}],
+" \ }}
+" NeoBundle 'jeyb/vim-jst'
+" NeoBundle 'MarcWeber/vim-haxe'
+
+" NeoBundle 'estin/htmljinja'
+" NeoBundle 'sontek/rope-vim'
+" if executable('ipython')
+"   NeoBundleLazy 'ivanov/vim-ipython'
+" endif
+
+" if s:is_win
+"   NeoBundleLazy 'yuratomo/ildasm.vim', {'autoload':{
+"   \ 'filetypes': ['cs'],
+"   \ }}
+" endif
+
+" NeoBundle 'nanki/vim-objj'
+
+" NeoBundleLazy 'rbtnn/vbnet_indent.vim', {'autoload':{
+" \ 'filetypes': ['vbnet'],
+" \ }}
+" NeoBundle 'vim-scripts/javacomplete', {
+" NeoBundleLazy 'nwertzberger/javacomplete', {
+" \   'build' : {
+" \      'windows' : 'javac -source 1.4 autoload/Reflection.java',
+" \      'cygwin'  : 'javac -source 1.4 autoload/Reflection.java',
+" \      'mac'     : 'javac -source 1.4 autoload/Reflection.java',
+" \      'unix'    : 'javac -source 1.4 autoload/Reflection.java',
+" \   },
+" \   'autoload' : { 'filetypes' : 'java' },
+" \ }
+" NeoBundle 'nobeans/unite-grails'
+" as {{{4
+" if has('ruby') && executable('sprout-as3')
+"   NeoBundleLazyOn FileType actionscript  'endel/flashdevelop.vim'
+"   NeoBundle 'tomtom/tlib_vim'
+"   NeoBundle 'airblade/vim-rooter'
+" endif
+" NeoBundleLazyOn FileType actionscript 'yuratomo/flex-api-complete'
+
+" NeoBundle 'plasticboy/vim-markdown' " plasticboy mode -> mkd
+" NeoBundleLazy 'chrisbra/csv.vim', {'autoload':{
+" \ 'filetypes': ['csv'],
+" \ }}
+" NeoBundleLazyOn FileType yaml 'henrik/vim-yaml-flattener', {'autoload':{
+"       \ 'commands': ['YAMLToggleFlatness']
+"       \ }}
+" NeoBundleLazy 'motemen/hatena-vim', {
+" \ 'autoload': {
+" \   'commands': ['HatenaEdit', 'HatenaUpdate', 'HatenaUpdateTrivial',
+" \     {'name' : 'HatenaEnumUsers', 'complete': 'customlist,HatenaEnumUsers'}
+" \ ]}}
+" NeoBundle 'toyamarinyon/hatenablog-vim', {'depends' : 'mattn/webapi-vim' }
+" NeoBundleLazy 'vim-scripts/DrawIt', {'depends' : 'vim-scripts/cecutil'}
+" NeoBundle 'ehamberg/haskellmode-vim'
+
+" NeoBundleLazyOn FileType php 'spf13/PIV'
+" NeoBundleLazyOn FileType php 'justinrainbow/php-doc.vim'
+" NeoBundleLazyOn FileType php 'pekepeke/php.vim-html-enhanced'
+" NeoBundle 'm2mdas/phpcomplete-extended'
+" NeoBundle 'pekepeke/phpcomplete-extended'
+" NeoBundle 'vim-scripts/php_localvarcheck.vim'
+" NeoBundleLazyOn FileType php 'mikehaertl/pdv-standalone'
+" NeoBundle 'tokutake/twig-indent'
+" NeoBundle 'beyondwords/vim-twig'
+" NeoBundleLazyOn FileType sql 'vim-scripts/SQLComplete.vim'
+" NeoBundle 'basyura/unite-yarm'
+" if executable('loga')
+"   NeoBundle 'tacahiroy/vim-logaling'
+" endif
+
+" NeoBundle 'h1mesuke/unite-outline'
+" NeoBundleLazy 'Kocha/vim-unite-tig', { 'autoload' : {
+" \ 'unite_sources' : ['tig'],
+" \ }}
+" NeoBundle 'ujihisa/unite-launch'
+  " NeoBundleLazy 'ringogirl/unite-w3m', {
+  " \   'depends' : 'yuratomo/w3m.vim',
+  " \   'unite_sources' : ['w3m', 'w3m/history'],
+  " \ }
+
+" NeoBundle 'mattn/vimplenote-vim'
+" NeoBundle 'pekepeke/vimplenote-vim'
+
+" does not support gf-user
+" NeoBundleLazyOn FileType python 'mkomitee/vim-gf-python'
+
 " plugin {{{1
 " NeoBundleLazy 'osyo-manga/vim-over', {'autoload':{
 " \ 'commands': ['OverCommandLine'],

@@ -12,7 +12,7 @@ let g:openbrowser_vundle_debug = get(g:, ':openbrowser_vundle_debug', 0)
 let g:openbrowser_vundle_no_default_keymappings = get(g:, 'openbrowser_vundle_no_default_keymappings', 0)
 let g:openbrowser_vundle_fallback = get(g:, 'openbrowser_vundle_fallback', 0)
 
-command -nargs=0 OpenBrowserVundle call openbrowser#vundle#open()
+command! -nargs=0 OpenBrowserVundle call openbrowser#vundle#open()
 nnoremap <Plug>(openbrowser-vundle) :<C-u>call openbrowser#vundle#open()<CR>
 vnoremap <Plug>(openbrowser-vundle) :<C-u>call openbrowser#vundle#open()<CR>
 
