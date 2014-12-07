@@ -1416,6 +1416,9 @@ NeoBundleLazy 'tsukkee/unite-tag', { 'autoload' : {
 " \ 'gtags/context' , 'gtags/ref' , 'gtags/def' , 'gtags/grep' , 'gtags/completion',
 " \ ],
 " \ }}
+NeoBundleLazy 'haya14busa/unite-ghq', {'autoload' : {
+\ 'unite_sources' : ['ghq'],
+\ }}
 NeoBundleLazy 'alpaca-tc/vim-unite-watson.vim', {
 \ 'commands' : 'Watson',
 \ 'depends' : 'Shougo/unite.vim',
@@ -4273,6 +4276,19 @@ if s:bundle.tap('unite.vim')
     call unite#custom_action('directory', 'open_unite_file', s:unite_action_open_unite_file)
     unlet! s:unite_action_action_open_unite_file
 
+    " repo_files{{{5
+    if s:bundle.is_installed('vim-unite-repo-files')
+      let s:unite_action = {'description': 'select project files'}
+      function! s:unite_action.func(candidate)
+        if a:candidate.kind ==# 'directory'
+          execute 'Unite repo_files:'.
+            \ get(a:candidate, 'action__path', a:candidate.action__directory)
+        endif
+      endfunction
+      call unite#custom_action('directory', 'repo_files', s:unite_action)
+      unlet! s:unite_action
+    endif
+
     let s:unite_action_finder = { 'description' : 'open with shell' }
     function! s:unite_action_finder.func(candidate)
       if a:candidate.kind ==# 'directory'
@@ -4430,6 +4446,8 @@ if s:bundle.tap('unite.vim')
     \   ["vim help"               , "Unite menu:vimhelp"] ,
     \   ["os menu"                , "Unite menu:os"] ,
     \   ["fold"                   , "Unite fold"] ,
+    \   ["codic"        , "Unite codic"] ,
+    \   ["ghq"        , "Unite ghq"] ,
     \   ["quickrun config"        , "Unite quickrun_config"] ,
     \ ])
     " edit files {{{5
