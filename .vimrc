@@ -1089,6 +1089,10 @@ NeoBundle 'slim-template/vim-slim'
 " javascript {{{4
 NeoBundle 'guileen/simple-javascript-indenter'
 NeoBundle 'pangloss/vim-javascript'
+" NeoBundle 'moll/vim-node'
+NeoBundle 'pekepeke/vim-node', 'gf-user', {'autoload': {
+  \ 'filetypes': ['javascript', 'coffee'],
+  \ }}
 if has('python') || has('python3')
   NeoBundle 'marijnh/tern_for_vim', {
   \ 'build' : {
@@ -1098,7 +1102,6 @@ if has('python') || has('python3')
   \   'unix': 'npm install',
   \ }}
 endif
-NeoBundle 'moll/vim-node'
 NeoBundle 'othree/javascript-libraries-syntax.vim'
 NeoBundle 'claco/jasmine.vim'
 NeoBundle 'elzr/vim-json'
@@ -2515,6 +2518,12 @@ let g:vimrc_enabled_plugins = {
   \ 'ambicmd': s:bundle.is_installed('vim-ambicmd'),
   \ }
 
+" vim-node {{{2
+if s:bundle.is_installed('vim-node')
+  let node#filetypes = ["javascript", "json", 'coffee']
+  let node#suffixesadd = [] " already registered at ftplugin
+endif
+
 " phpcomplete-extended {{{2
 if s:bundle.is_installed('phpcomplete-extended')
   let g:phpcomplete_index_composer_command = "composer"
@@ -3215,7 +3224,7 @@ if s:bundle.tap('cake.vim')
   function! s:bundle.tapped.hooks.on_post_source(bundle)
     MyAutoCmd User PluginCakephpInitializeAfter call s:init_cakephp()
     call cake#init_app('')
-    if &filetype =~? "php"
+    if &filetype =~? "php" || &filetype =~? 'twig'
       call s:init_cakephp()
     endif
   endfunction
@@ -5772,7 +5781,438 @@ endif
 
 " quickrun & watchdogs {{{2
 if s:bundle.is_installed('vim-quickrun')
-  source ~/.vim/quickrun.vim
+  " quickrun {{{3
+  nnoremap <expr><silent><C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+  "silent! nmap <unique> <Space> <Plug>(quickrun)
+  if !exists('g:quickrun_config')
+    let g:quickrun_config={}
+  endif
+
+  " objc {{{4
+  call extend(g:quickrun_config, {
+  \ 'objc' : {
+  \   'type' : executable('xctool') ? 'objc/xctool' : 'objc/gcc',
+  \ },
+  \ 'objc/gcc' : {
+  \   'command' : 'gcc',
+  \   'exec' : ['%c %o %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
+  \   'tempfile': '{tempname()}.m'
+  \ },
+  \ 'objc/xctool' : {
+  \    'command': 'xctool',
+  \    'cmdopt': 'test',
+  \    'outputter': 'xctool',
+  \    'exec': ['%c %o %a'],
+  \ },
+  \ 'swift' : {
+  \   'type' : 'swift/xcrun',
+  \ },
+  \ 'swift/xcrun' : {
+  \    'command': 'xcrun swift',
+  \    'cmdopt': '-i',
+  \    'outputter': 'xctool',
+  \    'exec': ['%c %s %o %a'],
+  \ },
+  \ })
+  " gcc {{{4
+  call extend(g:quickrun_config, {
+  \ 'cpp': {
+  \   'type' : 'cpp/clang++',
+  \ },
+  \ 'cpp/gcc': {
+  \   'command' : 'g++',
+  \   'cmdopt' : '-std=c++11 -Wall -Wextra',
+  \   'hook/quickrunex/enable' : 1,
+  \ },
+  \ 'cpp/clang++': {
+  \   'command' : 'clang++',
+  \   'cmdopt' : '-std=c++1y -Wall -Wextra',
+  \   'hook/quickrunex/enable' : 1,
+  \ },
+  \ })
+  " go {{{4
+  call extend(g:quickrun_config, {
+  \ 'go' : {
+  \   'type' : executable('8g') ? 'go/8g': '',
+  \ },
+  \ 'go/8g' : {
+  \   'command': '8g',
+  \   'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
+  \ },
+  \ })
+  " csharp {{{4
+  call extend(g:quickrun_config, {
+  \ 'cs' : {
+  \   'type' : executable('csc') ? 'csharp/csc':
+  \            executable('cs') ? 'csharp/cs': '',
+  \ },
+  \ 'csharp/csc' : {
+  \   'command' : 'csc',
+  \   'runmode' : 'simple',
+  \   'exec' : ['%c /nologo %s:gs?/?\\? > /dev/null', '"%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
+  \   'tempfile' : '{tempname()}.cs',
+  \ },
+  \ 'csharp/cs' : {
+  \   'command' : 'cs',
+  \   'runmode' : 'simple',
+  \   'exec' : ['%c %s > /dev/null', 'mono "%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
+  \   'tempfile' : '{tempname()}.cs',
+  \ },
+  \ })
+  " html {{{4
+  call extend(g:quickrun_config, {
+  \ 'html' : {
+  \   "type" : "html/haml"
+  \ },
+  \ 'html/haml' : {
+  \   "command" : "html2haml"
+  \ },
+  \ 'html/haml_repace' : {
+  \   "outputter" : "error",
+  \   "outputter/success" : "replace_region",
+  \   "outputter/error"   : "message",
+  \   "outputter/message/log"   : 1,
+  \   "runner" : "system",
+  \   "type" : "html/haml"
+  \ },
+  \})
+  " javascript {{{4
+  call extend(g:quickrun_config, {
+  \ 'json': {
+  \   'type': 'json/jq',
+  \ },
+  \ 'jsx' : {
+  \   'type' : 'jsx/jsx',
+  \ },
+  \ 'coffee/to_javascript' : {
+  \    'command': 'coffee',
+  \    'cmdopt': '-pb',
+  \    'outputter/buffer/filetype': 'javascript',
+  \ },
+  \ 'json/jq': {
+  \   'command': 'jq',
+  \ },
+  \ 'jsx/jsx' : {
+  \   'command': 'jsx',
+  \   'exec' : '%c %o --run %s',
+  \ },
+  \ })
+  " css {{{4
+  call extend(g:quickrun_config, {
+  \ 'slim' : {
+  \   'type' : 'slim/slimrb',
+  \ },
+  \ 'slim/slimrb' : {
+  \   'command' : 'slimrb',
+  \   'exec' : ['%c %o -p %s'],
+  \ },
+  \ })
+  " rspec {{{4
+  " http://qiita.com/joker1007/items/9dc7f2a92cfb245ad502
+  call extend(g:quickrun_config, {
+  \ 'ruby.rspec' : {
+  \   'type' : 'ruby/rspec',
+  \ },
+  \ 'ruby/rspec' : {
+  \   'command' : 'rspec',
+  \   'exec' : '%c %o -l {line(".")}',
+  \ },
+  \ 'ruby.rspec/rspec_bundle': {
+  \   'command': 'rspec',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'bundle exec %c %o --color --tty %s'
+  \ },
+  \ 'ruby.rspec/rspec_normal': {
+  \   'command': 'rspec',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': '%c %o --color --tty %s'
+  \ },
+  \ 'ruby.rspec/rspec_zeus': {
+  \   'command': 'rspec',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'zeus test %o --color --tty %s'
+  \ },
+  \ 'ruby.rspec/rspec_spring': {
+  \   'command': 'rspec',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'spring rspec %o --color --tty %s'
+  \ },
+  \ 'ruby/cucumber_bundle': {
+  \   'command': 'cucumber',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'bundle exec %c %o --color %s'
+  \ },
+  \ 'ruby/cucumber_zeus': {
+  \   'command': 'cucumber',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'zeus cucumber %o --color %s'
+  \ },
+  \ 'ruby/cucumber_spring': {
+  \   'command': 'cucumber',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'spring cucumber %o --color %s'
+  \ },
+  \ })
+
+  " tests {{{4
+  call extend(g:quickrun_config, {
+  \ 'python.nosetests' : {
+  \   'type' : 'python/nosetests',
+  \ },
+  \ 'perl.prove' : {
+  \   'type' : 'perl/prove',
+  \ },
+  \ 'php.phpunit' : {
+  \   'type' : 'php/phpunit',
+  \ },
+  \ 'python/nosetests' : {
+  \   'command' : 'nosetests',
+  \   'cmdopt': '-s -vv',
+  \ },
+  \ 'php/phpunit' : {
+  \   'command' : 'phpunit',
+  \ },
+  \ 'perl/prove' : {
+  \   'command' : 'prove',
+  \ },
+  \ })
+
+  " database {{{4
+  function! s:build_options(vars) "{{{5
+    let opts = []
+    for [field, optname] in items(a:vars)
+      let value = get(b:, field, get(g:, field, ''))
+      if !empty(value)
+        call add(opts, sprintf("%s %s", optname, value))
+      endif
+    endfor
+
+    return join(opts, " ")
+  endfunction "}}}
+  function! MySQLCommandOptions() "{{{5
+    if exists('b:MYSQL_cmd_options')
+      return b:MYSQL_cmd_options
+    endif
+    return s:build_options({
+          \ 'mysql_host': '-h',
+          \ 'mysql_username': '-h',
+          \ 'mysql_password': '-p',
+          \ 'mysql_port': '-P',
+          \ 'mysql_db': '',
+          \ })
+  endfunction "}}}
+  function! PgSQLCommandOptions() "{{{5
+    if exists('b:PGSQL_cmd_options')
+      return b:PGSQL_cmd_options
+    endif
+    return s:build_options({
+      \ 'pgsql_host': '-h',
+      \ 'pgsql_username': '-h',
+      \ 'pgsql_port': '-p',
+      \ 'pgsql_db': '-d',
+      \ })
+  endfunction "}}}
+  function OracleCommandOptions() "{{{5
+
+  endfunction
+
+  " configs{{{4
+  call extend(g:quickrun_config, {
+  \ 'mysql' : {
+  \   'type' : 'sql/mysql',
+  \ },
+  \ 'sql' : {
+  \   'type' : 'sql/postgresql',
+  \ },
+  \ 'sql/mysql' : {
+  \   'command' : 'mysql',
+  \   'cmdopt': '%{MySQLCommandOptions()}',
+  \   'exec' : ['%c %o < %s'],
+  \ },
+  \ 'sql/postgresql': {
+  \   'command' : 'psql',
+  \   'cmdopt': '%{PgSQLCommandOptions()}',
+  \   'exec': ['%c %o -f %s'],
+  \ }
+  \ })
+  " texts {{{4
+  call extend(g:quickrun_config, {
+  \ 'rst': {
+  \   'type': 'rst/rst2html',
+  \ },
+  \ 'rst/rst2html': {
+  \   'command': 'rst2html',
+  \ },
+  \ })
+
+  call extend(g:quickrun_config, {
+  \ 'markdown' : {
+  \   'type' :
+  \      s:is_mac && isdirectory('/Applications/Marked.app') ? 'markdown/Marked':
+  \      executable('markedwrapper')    ? 'markdown/markedwrapper':
+  \      executable('mdown')            ? 'markdown/mdown':
+  \      executable('pandoc')           ? 'markdown/pandoc':
+  \      executable('multimarkdown')    ? 'markdown/multimarkdown':
+  \      executable('MultiMarkdown.pl') ? 'markdown/MultiMarkdown.pl':
+  \      executable('rdiscount')        ? 'markdown/rdiscount':
+  \      executable('bluecloth')        ? 'markdown/bluecloth':
+  \      executable('markdown')         ? 'markdown/markdown':
+  \      executable('Markdown.pl')      ? 'markdown/Markdown.pl':
+  \      executable('redcarpet')        ? 'markdown/redcarpet':
+  \      executable('kramdown')         ? 'markdown/kramdown':
+  \      '',
+  \   'outputter' : 'browser',
+  \ },
+  \ })
+  call extend(g:quickrun_config, {
+  \ 'markdown/markedwrapper' : {
+  \   'command' : 'markedwrapper',
+  \   'exec' : '%c %o %s',
+  \ },
+  \ 'markdown/mdown' : {
+  \   'command' : 'mdown',
+  \   'exec' : '%c %o -i %s',
+  \ },
+  \ 'markdown/Marked' : {
+  \   'command' : 'open',
+  \   'outputter' : 'null',
+  \   'exec' : '%c -a Marked %o %s',
+  \ },
+  \ 'markdown/multimarkdown' : {
+  \   'command' : 'multimarkdown',
+  \ },
+  \ 'markdown/rdiscount' : {
+  \   'command' : 'rdiscount',
+  \ },
+  \ 'markdown/markdown' : {
+  \   'command' : 'markdown',
+  \ },
+  \ })
+  call extend(g:quickrun_config, {
+  \ 'markdown/md2backlog' : {
+  \   'command' : 'md2backlog',
+  \ },
+  \ 'markdown/vim-helpfile' : {
+  \   'command' : 'vim-helpfile',
+  \ },
+  \ 'markdown/markdown2pod' : {
+  \   'command' : 'markdown2pod',
+  \ },
+  \ })
+
+  " script langs {{{4
+  call extend(g:quickrun_config, {
+  \ 'processing' : {
+  \   'type' : executable('processing-java') ? 'processing/processing-java' :
+  \            executable('osascript') ? 'processing/osascript':
+  \            '',
+  \ },
+  \ 'applescript' : {
+  \   'type' : executable('osascript') ? 'applescript/osascript':
+  \            '',
+  \ },
+  \ 'diag' : {
+  \   'type' : 'diag/diag',
+  \ },
+  \ })
+  call extend(g:quickrun_config, {
+  \ 'processing/osascript' : {
+  \   'command': 'osascript',
+  \   'exec' : ['osascript %o ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
+  \ },
+  \ 'processing/processing-java' : {
+  \   'command': 'processing-java',
+  \   'exec' : '%c %o --sketch=$PWD/ --output=/Library/Processing --run --force',
+  \ },
+  \ 'applescript/osascript' : {
+  \   'command' : 'osascript',
+  \   'output' : '_',
+  \ },
+  \ 'diag/diag' : {
+  \   'exec': [
+  \      '%c -a %s -o %{expand("%:r")}.png',
+  \      printf("%s %{expand(%:r)}.png %s",
+  \        s:is_win ? 'explorer' : (s:is_mac ? 'open -g' : 'xdg-open'),
+  \        s:is_win ? "" : "&"),
+  \   ],
+  \   'outputter': 'message',
+  \ },
+  \ })
+  call extend(g:quickrun_config, {
+  \ 'command/cat' : {
+  \   'command' : 'cat',
+  \   'exec' : ['%c %o %s'],
+  \ },
+  \ })
+
+  " TODO : not work
+  call extend(g:quickrun_config, {
+  \ 'w3m' : {
+  \   'type' : 'w3m/open',
+  \ },
+  \ 'w3m/open': {
+  \   'command': (s:is_win ? 'start ""' : (s:is_mac ? "open" : "xdg-open")),
+  \   'exec': [
+  \     '%c %o "%{b:last_url}"',
+  \   ],
+  \ }
+  \ })
+
+  nnoremap <Leader><Leader>r :<C-u>QuickRun command/cat<CR>
+
+  " for testcase {{{4
+  MyAutoCmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
+  MyAutoCmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
+  function! s:gen_phpunit_skel()
+    let old_cwd = getcwd()
+    let cwd = expand('%:p:h')
+    let name = expand('%:t:r')
+    let m = matchlist(join(getline(1, 10), "\n"), "\s*namespace\s*\(\w+\)\s*;")
+    let type = match(name, '\(_test|Test\)$') == -1 ? "--test" : "--class"
+    let opts = []
+    if !empty(m)
+      call add(opts, '--')
+      call add(opts, m[1])
+    endif
+    silent exe 'lcd' cwd
+    exe "!" printf("phpunit-skelgen %s %s %s", join(opts, " "), type, name)
+    silent exe 'lcd' old_cwd
+  endfunction
+  command! PhpUnitSkelGen call s:gen_phpunit_skel()
+  MyAutoCmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
+  MyAutoCmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
+
+  if s:bundle.is_installed('vim-ref')
+    augroup vimrc-plugin-ref
+      autocmd!
+      autocmd FileType ruby.rspec,php.phpunit,python.nosetests,perl.prove call s:testcase_lazy_init()
+    augroup END
+
+    function! s:testcase_lazy_init()
+      call ref#register_detection('ruby.rspec', 'refe', 'append')
+      call ref#register_detection('php.phpunit', 'phpmanual', 'append')
+      call ref#register_detection('python.nosetests', 'pydoc', 'append')
+      call ref#register_detection('perl.prove', 'perldoc', 'append')
+      augroup vimrc-plugin-ref
+        autocmd!
+      augroup END
+    endfunction
+  endif
+
+
+  " quickrun init {{{3
+  function! s:vimrc_quickrun_init() "{{{4
+    nmap <buffer> q :quit<CR>
+  endfunction "}}}
+  MyAutoCmd FileType quickrun call s:vimrc_quickrun_init()
+
+  " watchdogs setup {{{3
+  call watchdogs#setup(g:quickrun_config)
+  let g:watchdogs_check_BufWritePost_enable = 1
+  " watchdogs helper command {{{4
+  command! -nargs=0 WatchdogsOff let g:watchdogs_check_BufWritePost_enable=0
+  command! -nargs=0 WatchdogsOn let g:watchdogs_check_BufWritePost_enable=1
+  command! -nargs=? WatchdogsConfig call my#watchdogs#show_config(<f-args>)
 endif
 
 
@@ -6743,21 +7183,25 @@ command! -nargs=? -range=0 Ginger call my#buffer#ginger(<count>, <line1>, <line2
 
 " dash & zeal {{{2
 command! -nargs=? -complete=customlist,my#docset#dash_complete Dash call my#docset#dash(<f-args>)
+command! -nargs=? DashFiletype call my#docset#dash_with_filetype(<f-args>)
 nnoremap <Plug>(dash) :Dash<Space>
-nnoremap <Plug>(dash-keyword) :Dash<Space><C-r>=expand('<cword>')<CR><CR>
+nnoremap <Plug>(dash-cword) :<C-u>Dash<Space><C-r>=expand('<cword>')<CR><CR>
+nnoremap <Plug>(dash-filetype-cword) :<C-u>DashFiletype<Space><C-r>=expand('<cword>')<CR><CR>
 command! -nargs=0 ZealRemoveCache call my#docset#docset_cache_remove()
 
 command! -nargs=? -complete=customlist,my#docset#zeal_complete Zeal call my#docset#zeal(<f-args>)
+command! -nargs=? ZealFiletype call my#docset#zeal_with_filetype(<f-args>)
 nnoremap <Plug>(zeal) :<C-u>Zeal<Space>
-nnoremap <Plug>(zeal-keyword) :<C-u>Zeal<Space><C-r>=expand('<cword>')<CR><CR>
+nnoremap <Plug>(zeal-cword) :<C-u>Zeal<Space><C-r>=expand('<cword>')<CR><CR>
+nnoremap <Plug>(zeal-filetype-cword) :ZealFiletype<Space><C-r>=expand('<cword>')<CR><CR>
 command! -nargs=0 DashRemoveCace call my#docset#docset_cache_remove()
 
 nmap [!space]ss <Plug>(zeal)
-nmap [!space]sw <Plug>(zeal-keyword)
+nmap [!space]sw <Plug>(zeal-filetype-cword)
 if s:is_mac
-  nmap <D-k> <Plug>(zeal-keyword)
+  nmap <D-k> <Plug>(zeal-filetype-cword)
 else
-  nmap <A-k> <Plug>(zeal-keyword)
+  nmap <A-k> <Plug>(zeal-filetype-cword)
 endif
 
 " onsave {{{2

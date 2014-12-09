@@ -40,3 +40,37 @@ fallocate -l $SIZE $SWAPFILENAME && mkswap $SWAPFILENAME && swapon $SWAPFILENAME
 ```
 /swap.img  swap   swap    defaults   0 0
 ```
+
+## Locale 変更
+
+```bash
+sudo vi /etc/sysconfig/i18n
+-----------
+#LANG="en_US.UTF-8"
+LANG="ja_JP.UTF-8"
+-----------
+```
+
+## JSTに変更
+
+```bash
+sudo cp /usr/share/zoneinfo/Japan /etc/localtime
+sudo vi /etc/sysconfig/clock
+----------
+ZONE="Asia/Tokyo"
+UTC=False
+----------
+sudo /etc/init.d/crond restart
+```
+
+### swap をインスタンスストレージ上に作成
+
+```bash
+sudo rpm -ivh http://repo.classmethod.info/yum/x86_64/cm-repo-release-0.1.0-1.noarch.rpm
+sudo yum install -y ec2-swap
+
+vim /etc/sysconfig/ec2-swap
+
+sudo reboot
+```
+

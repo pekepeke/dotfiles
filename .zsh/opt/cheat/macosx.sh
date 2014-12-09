@@ -19,4 +19,12 @@ $ sudo softwareupdate -l
 # 利用可能なアップデートを全てインストール
 $ sudo softwareupdate -i -a
 
+## icns を作成
+mkdir -p applet.iconset
+cd !$
+cp path/to/icon_512x512.png .
+mogrify -resize 512x512! icon_512x512.png
+cd ..
+iconutil -c icns applet.iconset
+open .
 

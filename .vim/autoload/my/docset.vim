@@ -1,6 +1,11 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+" variables {{{1
+let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim')
+let s:dash_keywords = []
+let s:zeal_keywords = []
+
 " utils {{{1
 function! s:docset_keywords_gather(root, is_dash) "{{{2
   let pattern = '*.docset/Contents/Info.plist'
@@ -26,17 +31,43 @@ function! s:docset_keywords_gather(root, is_dash) "{{{2
   return map(keywords, 'tolower(v:val)')
 endfunction
 
-function! my#docset#dash(...) "{{{2
+function! s:zeal_query(word) "{{{2
+  if s:is_mac
+    let not_found = 1
+    for bin in [$HOME . '/Applications/zeal.app/Contents/MacOS/zeal', '/Applications/zeal.app/Contents/MacOS/zeal']
+      if executable(bin)
+        call system(printf("/Applications/zeal.app/Contents/MacOS/zeal --query %s &", shellescape(a:word)))
+        let not_found = 0
+        break
+      endif
+    endfor
+    if not_found
+      echohl Error
+      echomsg "command not found: zeal"
+      echohl Normal
+    endif
+  else
+    call system(printf("zeal --query %s &", shellescape(a:word)))
+  endif
+endfunction
+
+function! s:zeal_word(...) "{{{2
+  let word = len(a:000) == 0 ?
+  \ input('Zeal search: ',
+  \ expand('<cword>'), 'customlist,'.s:SID().'zeal_complete') : a:1
+  return word
+endfunction
+
+function! s:dash_word(...) "{{{2
   let word = len(a:000) == 0 ?
   \ input('Dash search: ', expand('<cword>'),
   \ 'customlist,my#docset#dash_complete') : a:1
-  call system(printf("open dash://'%s'", word))
+  return word
 endfunction
 
-" variables {{{1
-let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim')
-let s:dash_keywords = []
-let s:zeal_keywords = []
+function! s:dash_query(word) "{{{2
+  call system(printf("open dash://'%s'", a:word))
+endfunction
 
 " public {{{1
 function! my#docset#dash_complete(A, L, P) "{{{2
@@ -51,15 +82,32 @@ function! my#docset#dash_complete(A, L, P) "{{{2
   return map(matches, 'v:val.":"')
 endfunction
 
-function! my#docset#zeal(...) "{{{2
-  let word = len(a:000) == 0 ?
-  \ input('Zeal search: ',
-  \ expand('<cword>'), 'customlist,'.s:SID().'zeal_complete') : a:1
-  if s:is_mac
-    call system(printf("/Applications/zeal.app/Contents/MacOS/zeal --query %s &", shellescape(word)))
-  else
-    call system(printf("zeal --query %s &", shellescape(word)))
+function! my#docset#dash(...) "{{{2
+  let word = call('<SID>dash_word', a:000)
+  call s:dash_word(word)
+endfunction
+
+function! my#docset#dash_with_filetype(...) "{{{2
+  let word = call('<SID>dash_word', a:000)
+  let keywords = my#docset#dash_complete(&filetype, 1, 1)
+  if len(filter(copy(keywords), 'v:val =~? &filetype . ":"')) > 0
+    let word = &filetype . ":" . word
   endif
+  call s:dash_word(word)
+endfunction
+
+function! my#docset#zeal(...) "{{{2
+  let word = call('<SID>zeal_word', a:000)
+  call s:zeal_query(word)
+endfunction
+
+function! my#docset#zeal_with_filetype(...) "{{{2
+  let word = call('<SID>zeal_word', a:000)
+  let keywords = my#docset#zeal_complete(&filetype, 1, 1)
+  if len(filter(copy(keywords), 'v:val =~? &filetype . ":"')) > 0
+    let word = &filetype . ":" . word
+  endif
+  call s:zeal_query(word)
 endfunction
 
 function! my#docset#zeal_complete(A, L, P) "{{{2

@@ -1,5 +1,5 @@
 # vim:ft=perl
 sub afterinit {
-    push @DB::typeahead "{{ v";
+    push @DB::typeahead, "{{ v";
 }
 
