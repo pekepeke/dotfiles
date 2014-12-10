@@ -7,6 +7,9 @@ setl formatoptions-=r formatoptions-=o
 setl iskeyword+=@,$,?,!
 setl iskeyword-=.,:
 setl expandtab
+if !exists('b:match_words')
+  let b:match_words = ''
+endif
 let b:match_words .= '\<\(module\|class\|def\|until\|while\|begin\|do\|if\|unless\|case\)\>:'
       \ . '\<\(elsif\|when\|rescue\)\>:\<\(else\|ensure\)\>:\<end\>'
 " setl dictionary=~/.vim/dict/ruby.dict

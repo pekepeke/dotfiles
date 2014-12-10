@@ -13,7 +13,10 @@ endif
 " setl dictionary=~/.vim/dict/html.dict
 " setl dictionary+=~/.vim/dict/css.dict
 " setl noexpandtab tabstop=2 shiftwidth=2 textwidth=0
-let b:match_words .= '<:>,' .
+if !exists('b:match_words')
+  let b:match_words = ''
+endif
+let b:match_words .= ',<:>,' .
 	\ '<\@<=[ou]l\>[^>]*\%(>\|$\):<\@<=li\>:<\@<=/[ou]l>,' .
 	\ '<\@<=dl\>[^>]*\%(>\|$\):<\@<=d[td]\>:<\@<=/dl>,' .
 	\ '<\@<=\([^/][^ \t>]*\)[^>]*\%(>\|$\):<\@<=/\1>'

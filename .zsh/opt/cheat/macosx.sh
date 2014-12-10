@@ -28,3 +28,15 @@ cd ..
 iconutil -c icns applet.iconset
 open .
 
+# Resize(retain aspect ratio)
+sips -Z 640 *.jpg
+# Resize(force resize)
+sips -Z 768 1024 *.jpg
+# convert file format
+sips -s format png test.jpg --out test.png
+for i in *.jpeg; do sips -s format png $i --out Converted/$i.png;done
+
+# show desktop
+/Applications/Mission\ Control.app/Contents/MacOS/Mission\ Control 1
+# app switch
+/Applications/Mission\ Control.app/Contents/MacOS/Mission\ Control 2
