@@ -5,6 +5,7 @@ set cpo&vim
 setl formatoptions-=r formatoptions-=o
 setl complete=.,w,b,t,k,kspell
 setl iskeyword-=:
+setlocal softtabstop=0 tabstop=4 shiftwidth=4
 " setl expandtab
 
 if exists('*PerlLocalLibPath')

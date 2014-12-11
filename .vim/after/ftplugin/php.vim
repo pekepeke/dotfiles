@@ -12,10 +12,6 @@ setlocal commentstring=//\ %s
 setlocal formatoptions-=r,o
 " setlocal iskeyword-=$,\-,:
 setlocal iskeyword-=- iskeyword-=$ iskeyword-=:
-if !exists('b:match_words')
-  let b:match_words = ''
-endif
-let b:match_words .= ",\<if\>:\<endif\>,\<foreach\>:\<endforeach\>,\<begin\>:\<end\>"
 
 " setlocal noexpandtab
 

@@ -5,15 +5,19 @@ set cpo&vim
 setl foldmethod=marker
 setl noexpandtab
 let b:match_skip = 's:comment\|string'
-let b:match_words = '<?\(php\)\?:?>,\<switch\>:\<endswitch\>,' .
-    \ '\<if\>:\<elseif\>:\<else\>:\<endif\>,' .
-    \ '\<while\>:\<endwhile\>,\<do\>:\<while\>,' .
-    \ '\<for\>:\<endfor\>,\<foreach\>:\<endforeach\>' .
-    \ '<\@<=[ou]l\>[^>]*\%(>\|$\):<\@<=li\>:<\@<=/[ou]l>,' .
-    \ '<\@<=dl\>[^>]*\%(>\|$\):<\@<=d[td]\>:<\@<=/dl>,' .
-    \ '<\@<=\([^/?][^ \t>]*\)[^>]*\%(>\|$\):<\@<=/\1>,' .
-    \ '<:>,(:),{:},[:]'
+if !exists('b:match_words')
+  let b:match_words = ''
+endif
 let b:match_words = &matchpairs . ',\<try\>:\<catch\>:\<finally\>'
+let b:match_words .= '<?\(php\)\?:?>,\<switch\>:\<endswitch\>,' .
+  \ '\<if\>:\<elseif\>:\<else\>:\<endif\>,' .
+  \ '\<while\>:\<endwhile\>,\<do\>:\<while\>,' .
+  \ '\<for\>:\<endfor\>,\<foreach\>:\<endforeach\>' .
+  \ '\<begin\>:\<end/>' .
+  \ '<\@<=[ou]l\>[^>]*\%(>\|$\):<\@<=li\>:<\@<=/[ou]l>,' .
+  \ '<\@<=dl\>[^>]*\%(>\|$\):<\@<=d[td]\>:<\@<=/dl>,' .
+  \ '<\@<=\([^/?][^ \t>]*\)[^>]*\%(>\|$\):<\@<=/\1>,' .
+  \ '<:>,(:),{:},[:]'
 
 
 let &cpo = s:save_cpo

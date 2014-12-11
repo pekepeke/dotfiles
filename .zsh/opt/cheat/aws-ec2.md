@@ -1,3 +1,9 @@
+## 自端末の Name を表示
+
+```
+aws ec2 describe-instances --instance-ids "$(curl -s http://169.254.169.254/latest/meta-data/instance-id)" --output=text | grep Name
+```
+
 ## EC2 ボリューム拡張
 - EC2インスタンスを停止する
 - EC2インスタンスのEBS Volume からスナップショットを作成

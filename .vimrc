@@ -4439,7 +4439,8 @@ if s:bundle.tap('unite.vim')
 
     let g:unite_source_menu_menus["shortcut"] = s:unite_menu_create(
     \ 'Shortcut', [
-    \   ["Edit files"     , "Unite menu:edit_files"],
+    \   ["edit files"     , "Unite menu:edit_files"],
+    \   ["project"     , "Unite menu:project"],
     \   ["edit .vimrc"            , $MYVIMRC] ,
     \   ["reload .vimrc"          , "source " . $MYVIMRC] ,
     \   ["scriptnames"            , "Unite scriptnames"] ,
@@ -4456,13 +4457,18 @@ if s:bundle.tap('unite.vim')
     \   ["os menu"                , "Unite menu:os"] ,
     \   ["fold"                   , "Unite fold"] ,
     \   ["codic"        , "Unite codic"] ,
-    \   ["ghq"        , "Unite ghq"] ,
     \   ["quickrun config"        , "Unite quickrun_config"] ,
     \ ])
+    let g:unite_source_menu_menus["project"] = s:unite_menu_create(
+      \ '', [
+      \   ["ghq"        , "Unite ghq"] ,
+      \   ["vhost fqdn"        , "Unite vhost/fqdn"] ,
+      \   ["vhost docroot"        , "Unite vhost/docroot"] ,
+      \ ])
     " edit files {{{5
     let g:unite_source_menu_menus["edit_files"] = s:unite_menu_create(
     \ 'Edit Files', [
-    \   ["edit .gvimrc"           , $MYGVIMRC],
+    \   ["edit .gvimrc"           , "edit ".$MYGVIMRC],
     \   ["VimFiler ~/.vim"        , "VimFiler ".$HOME."/.vim"],
     \   ["Edit ~/.vim"     , "UniteEditFile ~/.vim"],
     \   ["Edit ~/.vim/ftplugin"     , "UniteEditFile ~/.vim/ftplugin"],
