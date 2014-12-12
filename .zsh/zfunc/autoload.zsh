@@ -100,6 +100,8 @@ autoload -Uz peco-raketask-replace-buffer
 zle -N peco-raketask-replace-buffer
 autoload -Uz peco-snippets-copy
 zle -N peco-snippets-copy
+autoload -Uz peco-snippets-exec
+zle -N peco-snippets-exec
 autoload -Uz peco-ssh-host-replace-buffer
 zle -N peco-ssh-host-replace-buffer
 autoload -Uz peco-ssh-tunnel-replace-buffer

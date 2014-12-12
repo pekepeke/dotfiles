@@ -422,6 +422,7 @@ if type type peco >/dev/null 2>&1; then
   # source_all ~/.zsh/zfunc/peco/*.zsh
   bindkey -v '^Vp' peco-clipmenu-copy
   bindkey -v '^Vs' peco-snippets-copy
+  bindkey -v '^Vx' peco-snippets-exec
   bindkey '^R' peco-history-replace-buffer
   bindkey '^Vw' peco-gui-window-select
   bindkey '^Vgh' peco-zle-git-launch

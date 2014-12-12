@@ -1,0 +1,9 @@
+# peco-snippets-exec() {
+  local selected="$(cat ~/.snippets ~/.snippets.local 2>/dev/null | grep -v "^#" | peco --query "$LBUFFER")"
+  if [ -n "$selected" ]; then
+    BUFFER="${selected}"
+    zle accept-line
+  fi
+  zle clear-screen
+# }
+# zle -N peco-snippets-exec
