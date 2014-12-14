@@ -58,7 +58,7 @@ endfunction
 
 " reset settings & restore runtimepath {{{2
 " let s:configured_runtimepath = &runtimepath
-setglobal guioptions+=T guioptions-=m guioptions-=M
+set guioptions+=T guioptions-=m guioptions-=M
 
 set runtimepath^=$HOME/.vim
 set runtimepath+=$HOME/.vim/after
@@ -67,7 +67,7 @@ set runtimepath+=$HOME/.vim/after
 if s:is_win
   if !exists('$VCVARSALL')
     let s:save_ssl = &shellslash
-    setglobal noshellslash
+    set noshellslash
     if exists('$VS120COMNTOOLS')
       let $VCVARSALL = shellescape($VS120COMNTOOLS . '..\..\VC\vcvarsall.bat')
     elseif exists('$VS110COMNTOOLS')
@@ -93,20 +93,20 @@ if s:is_win
 
   function! s:nyacus_init()
     " Use NYAOS.
-    setglobal shell=nyacus.exe
-    setglobal shellcmdflag=-e
-    if executable('tee') | setglobal shellpipe=\|&\ tee | endif
-    setglobal shellredir=>%s\ 2>&1
-    setglobal shellxquote=\"
+    set shell=nyacus.exe
+    set shellcmdflag=-e
+    if executable('tee') | set shellpipe=\|&\ tee | endif
+    set shellredir=>%s\ 2>&1
+    set shellxquote=\"
   endfunction
   command! -nargs=0 NyacusEnable call s:nyacus_init()
 
   function! s:sh_init()
-    setglobal shell=bash.exe
-    setglobal shellcmdflag=--login\ -c
-    if executable('tee') | setglobal shellpipe=\|&\ tee | endif
-    setglobal shellredir=>%s\ 2>&1
-    setglobal shellxquote=\"
+    set shell=bash.exe
+    set shellcmdflag=--login\ -c
+    if executable('tee') | set shellpipe=\|&\ tee | endif
+    set shellredir=>%s\ 2>&1
+    set shellxquote=\"
   endfunction
   command! -nargs=0 ShEnable call s:sh_init()
 
@@ -120,43 +120,43 @@ endif
 " basic settings {{{1
 " 文字コード周り {{{2
 if s:is_win && (!has('win32unix'))
-  setglobal encoding=cp932
-  setglobal termencoding=cp932
+  set encoding=cp932
+  set termencoding=cp932
 else
-  setglobal encoding=utf-8
-  setglobal termencoding=utf-8
+  set encoding=utf-8
+  set termencoding=utf-8
 endif
 scriptencoding utf-8
-setglobal fileencoding=utf-8
-setglobal fileformat=unix
-setglobal fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp
-setglobal fileencodings+=cp932
-setglobal fileformats=unix,dos,mac
-setglobal synmaxcol=1000
+set fileencoding=utf-8
+set fileformat=unix
+set fileencodings=ucs-bom,utf-8,iso-2022-jp,euc-jp
+set fileencodings+=cp932
+set fileformats=unix,dos,mac
+set synmaxcol=1000
 
 
-setglobal display=lastline
-setglobal clipboard=unnamed
+set display=lastline
+set clipboard=unnamed
 if has('unnamedplus')
-  setglobal clipboard+=unnamedplus
+  set clipboard+=unnamedplus
 endif
 
-setglobal nospell
+set nospell
 if v:version > 704 || (v:version == 704 && has('patch088'))
-  setglobal spelllang=en_us,cjk
+  set spelllang=en_us,cjk
 else
-  setglobal spelllang=en_us
+  set spelllang=en_us
 endif
-setglobal spellfile=~/.vim/spell/spellfile.utf-8.add
-setglobal noautochdir
-setglobal shellslash
-setglobal directory=$VIM_CACHE,/var/tmp,/tmp
-setglobal viminfo& viminfo+=!
-setglobal viminfo+=n$VIM_CACHE/viminfo.txt
+set spellfile=~/.vim/spell/spellfile.utf-8.add
+set noautochdir
+set shellslash
+set directory=$VIM_CACHE,/var/tmp,/tmp
+set viminfo& viminfo+=!
+set viminfo+=n$VIM_CACHE/viminfo.txt
 call s:mkdir($VIM_CACHE)
 
 " IME の設定 {{{2
-if has('kaoriya') | setglobal iminsert=0 imsearch=0 | endif
+if has('kaoriya') | set iminsert=0 imsearch=0 | endif
 
 MyAutoCmd BufEnter,BufRead * call <SID>autochdir()
 if !exists('g:my_lcd_autochdir')
@@ -225,8 +225,8 @@ function! s:autochdir() "{{{3
 endfunction
 
 " diff {{{2
-setglobal diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
-setglobal diffexpr=GitDiffNormal()
+set diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
+set diffexpr=GitDiffNormal()
 function! GitDiffNormal()
   let args=["git-diff-normal", '--diff-algorithm=histogram']
   if &diffopt =~ "iwhite"
@@ -239,50 +239,50 @@ function! GitDiffNormal()
 endfunction
 
 " 表示周り {{{2
-setglobal lazyredraw ttyfast
-setglobal scrolloff=10000000         " 中央に表示
-setglobal sidescrolloff=999
-setglobal number                     " 行番号の表示
-setglobal ruler
+set lazyredraw ttyfast
+set scrolloff=10000000         " 中央に表示
+set sidescrolloff=999
+set number                     " 行番号の表示
+set ruler
 
-setglobal mouse=nch                  " use mouse normal/command/help
-" setglobal mouse=a
-" setglobal mouse=nv
-setglobal nomousefocus
-setglobal mousehide
-setglobal timeoutlen=1000
-setglobal ttimeoutlen=50
+set mouse=nch                  " use mouse normal/command/help
+" set mouse=a
+" set mouse=nv
+set nomousefocus
+set mousehide
+set timeoutlen=1000
+set ttimeoutlen=50
 
-setglobal showmatch                  " 対応する括弧の表示
-setglobal showcmd                    " 入力中のコマンドを表示
-setglobal showfulltag
-setglobal backspace=indent,eol,start " BSでなんでも削除
-setglobal nolinebreak
-setglobal textwidth=1000
-setglobal formatoptions& formatoptions+=mM
-setglobal whichwrap=b,s,h,l,<,>,[,]  " 行頭・行末間移動を可能に
-if exists('&colorcolumn') | setglobal colorcolumn=+1 | endif
-setglobal splitbelow                 " 横分割は下に
-setglobal splitright                 " 縦分割は右に
-setglobal switchbuf=useopen          " 再利用
-setglobal title
+set showmatch                  " 対応する括弧の表示
+set showcmd                    " 入力中のコマンドを表示
+set showfulltag
+set backspace=indent,eol,start " BSでなんでも削除
+set nolinebreak
+set textwidth=1000
+set formatoptions& formatoptions+=mM
+set whichwrap=b,s,h,l,<,>,[,]  " 行頭・行末間移動を可能に
+if exists('&colorcolumn') | set colorcolumn=+1 | endif
+set splitbelow                 " 横分割は下に
+set splitright                 " 縦分割は右に
+set switchbuf=useopen          " 再利用
+set title
 
-setglobal hidden                     " 編集中でも他のファイルを開けるように
-setglobal sidescroll=5
+set hidden                     " 編集中でも他のファイルを開けるように
+set sidescroll=5
 if s:is_mac
-  setglobal visualbell
+  set visualbell
 else
-  setglobal novisualbell
+  set novisualbell
 endif
-setglobal noerrorbells t_vb=
+set noerrorbells t_vb=
 " http://superuser.com/questions/195794/gnu-screen-shift-tab-issue
-setglobal t_kB=[Z
+set t_kB=[Z
 
-setglobal noequalalways
-setglobal langmenu=none
-setglobal helplang=ja,en
-setglobal keywordprg=":help"
-setglobal foldmethod=marker
+set noequalalways
+set langmenu=none
+set helplang=ja,en
+set keywordprg=":help"
+set foldmethod=marker
 " http://d.hatena.ne.jp/thinca/20110523/1306080318
 augroup vimrc-foldmethod-expr
   autocmd!
@@ -297,11 +297,11 @@ augroup vimrc-foldmethod-expr
 augroup END
 
 " タブ文字の設定 {{{2
-setglobal autoindent smartindent nocindent " インデント設定
+set autoindent smartindent nocindent " インデント設定
 if has('linebreak') && (v:version > 704 || v:version == 704 && has('patch338'))
-  setglobal breakindent
+  set breakindent
 endif
-setglobal list
+set list
 if s:is_mac
   " set showbreak=↓
   let &showbreak='+ '
@@ -309,76 +309,76 @@ else
   " set showbreak=↓
   let &showbreak='+++ '
 endif
-setglobal listchars=tab:^\ ,trail:~,nbsp:%,extends:>,precedes:<
-setglobal smarttab             " インテリジェンスなタブ入力
-setglobal noexpandtab
+set listchars=tab:^\ ,trail:~,nbsp:%,extends:>,precedes:<
+set smarttab             " インテリジェンスなタブ入力
+set noexpandtab
 "set softtabstop=4 tabstop=4 shiftwidth=4
-setglobal softtabstop=0 tabstop=4 shiftwidth=4
+set softtabstop=0 tabstop=4 shiftwidth=4
 
 if exists('&ambiwidth')
-  setglobal ambiwidth=double
+  set ambiwidth=double
 endif " }}}
 
 " For snippet_complete marker.
 if has('conceal')
-  setglobal conceallevel=2 concealcursor=i
+  set conceallevel=2 concealcursor=i
 endif
 
 "set wm=2
-setglobal nowrap     " 折り返しなし
-setglobal nrformats-=octal
-setglobal updatetime=200
+set nowrap     " 折り返しなし
+set nrformats-=octal
+set updatetime=200
 if has('winaltkeys')
-  setglobal winaltkeys=no
+  set winaltkeys=no
 endif
-setglobal modeline
-setglobal modelines=10
+set modeline
+set modelines=10
 
 " 検索周り {{{2
-setglobal ignorecase smartcase wrapscan
-setglobal infercase
-setglobal incsearch hlsearch
-setglobal virtualedit+=block         " 矩形の virtualedit 許可
+set ignorecase smartcase wrapscan
+set infercase
+set incsearch hlsearch
+set virtualedit+=block         " 矩形の virtualedit 許可
 
 " バックアップ {{{2
-setglobal nobackup               " バックアップとか自分で
-"setglobal backup
-setglobal noswapfile
-setglobal nowritebackup
-setglobal autoread                   " 更新があったファイルを自動で読み直し
-setglobal backupcopy=yes
-setglobal backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*.tmp,crontab.*
-setglobal backupdir=$VIM_CACHE/vim-backups
-setglobal viewdir=$VIM_CACHE/vim-views
+set nobackup               " バックアップとか自分で
+"set backup
+set noswapfile
+set nowritebackup
+set autoread                   " 更新があったファイルを自動で読み直し
+set backupcopy=yes
+set backupskip=/tmp/*,$TMPDIR/*,$TMP/*,$TEMP/*,*.tmp,crontab.*
+set backupdir=$VIM_CACHE/vim-backups
+set viewdir=$VIM_CACHE/vim-views
 call s:mkdir(&backupdir)
 call s:mkdir(&viewdir)
 if has('persistent_undo')
-  setglobal undodir=$VIM_CACHE/vim-undo
+  set undodir=$VIM_CACHE/vim-undo
   call s:mkdir(&undodir)
-  setglobal undofile
+  set undofile
 endif
 
 
 " 補完 {{{2
-setglobal wildmenu                                 " 補完候補を表示する
-setglobal wildmode=list:longest,list:full          " zsh like complete
-setglobal wildchar=<tab>
-setglobal wildignore+=*.o,*.obj,*.rbc,*.dll,*.exe
-setglobal wildignore+=*.out,*.aux
-setglobal wildignore+=.git,.svn
-setglobal wildignore+=.DS_Store
-setglobal wildignore+=*.spl
-setglobal wildignore+=*.png,*.jpg,*.gif
-setglobal wildignore+=*.so,*.sw?
-setglobal wildignore+=*.luac,*.jar,*.pyc,.class
-setglobal completeopt=menuone
-setglobal complete=.,w,b,u,t,i,k
+set wildmenu                                 " 補完候補を表示する
+set wildmode=list:longest,list:full          " zsh like complete
+set wildchar=<tab>
+set wildignore+=*.o,*.obj,*.rbc,*.dll,*.exe
+set wildignore+=*.out,*.aux
+set wildignore+=.git,.svn
+set wildignore+=.DS_Store
+set wildignore+=*.spl
+set wildignore+=*.png,*.jpg,*.gif
+set wildignore+=*.so,*.sw?
+set wildignore+=*.luac,*.jar,*.pyc,.class
+set completeopt=menuone
+set complete=.,w,b,u,t,i,k
 
 " for migemo {{{2
 if has('kaoriya') && has('migemo')
-  setglobal migemo
+  set migemo
   if filereadable('/usr/local/share/migemo/utf-8/migemo-dict')
-    setglobal migemodict=/usr/local/share/migemo/utf-8/migemo-dict
+    set migemodict=/usr/local/share/migemo/utf-8/migemo-dict
   endif
 endif
 
@@ -387,8 +387,8 @@ if !has('gui_running')
   let s:t_Co=&t_Co
   MyAutoCmd VimLeave * let &l:t_Co=s:t_Co
 endif
-setglobal t_Co=256
-setglobal background=dark
+set t_Co=256
+set background=dark
 
 function! s:highlights_add() "{{{2
   " highlight DiffAdd cterm=bold ctermfg=22 ctermbg=121 guibg=121
@@ -1040,7 +1040,8 @@ else
   NeoBundleLazy 'astashov/vim-ruby-debugger'
 endif
 NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
-\ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails', 'Shougo/vimproc', 'Shougo/unite.vim'],
+\ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails',
+\    'Shougo/vimproc.vim', 'Shougo/unite.vim'],
 \ 'autoload': {
 \   'unite_sources' : 'rails_support/locales',
 \   'commands' : [
@@ -1716,7 +1717,7 @@ endfunction
 " }}}
 
 " statusline {{{1
-setglobal laststatus=2  " ステータス表示用変数
+set laststatus=2  " ステータス表示用変数
 let s:status_generator = { 'cfi':s:bundle.is_installed('current-func-info.vim') }
 function! s:status_generator.get_line() "{{{3
   let s = ''
@@ -1741,7 +1742,7 @@ endfunction "}}}3
 function! MyStatusLine()
   return s:status_generator.get_line()
 endfunction
-setglobal statusline=%!MyStatusLine()
+set statusline=%!MyStatusLine()
 
 
 " for filetypes {{{1
@@ -1785,7 +1786,7 @@ MyAutoCmd BufReadPost *
 " http://vim-users.jp/2009/10/hack84/
 MyAutoCmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
 MyAutoCmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
-setglobal viewoptions=cursor
+set viewoptions=cursor
 
 " setfiletype {{{2
 " alias
@@ -1991,8 +1992,8 @@ function! s:set_grep(...) "{{{3
   let retval = 0
   for type in copy(a:000)
     if type == "jvgrep" && executable(type)
-      setglobal grepprg=jvgrep
-      setglobal grepformat=%f:%l:%m
+      set grepprg=jvgrep
+      set grepformat=%f:%l:%m
       " set grepprg=jvgrep\ -n
 
       let g:unite_source_grep_command = "jvgrep"
@@ -2000,8 +2001,8 @@ function! s:set_grep(...) "{{{3
       let g:unite_source_grep_recursive_opt = ''
       return 1
     elseif type == "ag" && executable(type)
-      setglobal grepprg=ag\ -S\ --nocolor\ --nogroup\ --nopager
-      setglobal grepformat=%f:%l:%m
+      set grepprg=ag\ -S\ --nocolor\ --nogroup\ --nopager
+      set grepformat=%f:%l:%m
       let g:ackprg="ag -i -S --nocolor --nogroup --column --nopager"
 
       let g:unite_source_grep_command = 'ag'
@@ -2017,16 +2018,16 @@ function! s:set_grep(...) "{{{3
       let g:unite_source_grep_recursive_opt = ''
       return 1
     elseif type == "ack" && executable(type)
-      setglobal grepprg=ack\ --smart-case\ -a\ --nocolor\ --nogroup\ --nopager
-      setglobal grepformat=%f:%l:%m
+      set grepprg=ack\ --smart-case\ -a\ --nocolor\ --nogroup\ --nopager
+      set grepformat=%f:%l:%m
       let g:ackprg="ack -H --smart-case --nocolor --nogroup --column --nopager"
       let g:unite_source_grep_command = 'ack'
       let g:unite_source_grep_default_opts = '--smartcase --no-heading --nocolor --nogroup --nopager'
       let g:unite_source_grep_recursive_opt = ''
       return 1
     elseif type == "ack-grep"  && executable(type)
-      setglobal grepprg=ack-grep\ -a\ --nocolor\ --nogroup\ --nopager
-      setglobal grepformat=%f:%l:%m
+      set grepprg=ack-grep\ -a\ --nocolor\ --nogroup\ --nopager
+      set grepformat=%f:%l:%m
 
       let g:ackprg="ack-grep -H --nocolor --nogroup --column --nopager"
       let g:unite_source_grep_command = 'ack-grep'
@@ -2040,7 +2041,7 @@ function! s:set_grep(...) "{{{3
     endif
   endfor
 
-  setglobal grepprg=grep\ -n\ $*\ /dev/null
+  set grepprg=grep\ -n\ $*\ /dev/null
   "set grepprg=grep\ -n\ $*\ /dev/null\ --exclude\ \"\*\.svn\*\"
 
   let g:unite_source_grep_command = 'grep'
@@ -2316,6 +2317,11 @@ else
   cnoremap <C-d> <Delete>
   Lazy cnoremap <C-x> <C-r>=substitute(expand('%:p:h'), ' ', '\\v:val', 'e')<CR>/
 endif
+
+cnoremap <Up> <C-p>
+cnoremap <Down> <C-n>
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
 
 cnoremap <C-]>a <Home>
 cnoremap <C-]>e <End>
@@ -3847,9 +3853,14 @@ if s:bundle.tap('vim-indent-guides')
 endif
 
 if s:bundle.tap('indentLine')
+  let g:indentLine_enabled=1
   let g:indentLine_char = '¦'
   let g:indentLine_color_term = 236
-  let g:indentLine_color_gui = '#333'
+  if s:is_win
+    let g:indentLine_color_gui = 'lightgray'
+  else
+    let g:indentLine_color_gui = '#333'
+  endif
   let g:indentLine_faster = 1
   let g:indentLine_fileTypeExclude = [
   \ 'help', 'nerdtree', 'calendar', 'thumbnail', 'tweetvim',
