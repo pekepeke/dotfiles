@@ -6049,7 +6049,7 @@ if s:bundle.is_installed('vim-quickrun')
       \ 'pgsql_db': '-d',
       \ })
   endfunction "}}}
-  function OracleCommandOptions() "{{{5
+  function! OracleCommandOptions() "{{{5
 
   endfunction
 
