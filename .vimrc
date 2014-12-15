@@ -655,7 +655,8 @@ NeoBundle 'kana/vim-niceblock', { 'autoload' : {
 \ 'mappings' : ['<Plug>(niceblock-',]
 \ }}
 NeoBundle 'tyru/vim-altercmd'
-NeoBundle 'kana/vim-smartinput', {'autoload': {'insert':1}}
+NeoBundle 'cohama/lexima.vim', {'autoload': {'insert':1}}
+" NeoBundle 'kana/vim-smartinput', {'autoload': {'insert':1}}
 NeoBundleLazy 'tyru/capture.vim', {'autoload': {
 \ 'commands': [{'name':'Capture', 'complete':'command'}],
 \ }}
@@ -2507,6 +2508,7 @@ let plugin_verifyenc_disable = 1
 let g:vimrc_enabled_plugins = {
   \ 'smartchr': s:bundle.is_installed('vim-smartchr'),
   \ 'smartinput': s:bundle.is_installed('vim-smartinput'),
+  \ 'lexima': s:bundle.is_installed('vim-lexima'),
   \ 'increment_activator': s:bundle.is_installed('increment-activator'),
   \ 'cycle': s:bundle.is_installed('vim-cycle'),
   \ 'speeddating': s:bundle.is_installed('vim-speeddating'),
@@ -3608,14 +3610,152 @@ if s:bundle.tap('rainbow_parentheses.vim')
   endfunction
   call s:bundle.untap()
 endif
+" lexima.vim {{{2
+if s:bundle.tap('lexima.vim')
+  function! s:bundle.tapped.hooks.on_source(bundle)
+
+    call lexima#add_rule({
+      \ 'at':       '(\%#)',
+      \ 'char':     '<Space>',
+      \ 'input':    '<Space>',
+      \ 'input_after': '<Space>',
+      \ 'mode': 'i',
+      \ })
+
+    call lexima#add_rule({
+      \ 'at': '( \%# )',
+      \ 'char': '<BS>',
+      \ 'input': '<BS>',
+      \ 'delete': 1,
+      \ 'mode': 'i',
+      \ })
+
+    call lexima#add_rule({
+      \ 'at':       '{\%#}',
+      \ 'char':     '<Space>',
+      \ 'input':    '<Space>',
+      \ 'input_after': '<Space>',
+      \ 'mode': 'i',
+      \ })
+
+    call lexima#add_rule({
+      \ 'at':       '{ \%# }',
+      \ 'char':     '<BS>',
+      \ 'input': '<BS>',
+      \ 'delete': 1,
+      \ 'mode': 'i',
+      \ })
+
+    call lexima#add_rule({
+      \ 'at':       '\[\%#\]',
+      \ 'char':     '<Space>',
+      \ 'input':    '<Space>',
+      \ 'input_after': '<Space>',
+      \ 'mode': 'i',
+      \ })
+
+    call lexima#add_rule({
+      \ 'at':       '\[ \%# \]',
+      \ 'char':     '<BS>',
+      \ 'input': '<BS>',
+      \ 'delete': 1,
+      \ 'mode': 'i',
+      \ })
+
+    " Ruby 文字列内変数埋め込み
+    call lexima#add_rule({
+      \ 'at': '\%#',
+      \ 'char': '#',
+      \ 'input':    '#{',
+      \ 'input_after': '}',
+      \ 'filetype': ['ruby'],
+      \ 'syntax': ['Constant', 'Special'],
+      \ 'mode': 'i',
+      \ })
+
+    " Ruby ブロック引数 ||
+    call lexima#add_rule({
+      \ 'at': '\({\|\<do\>\)\s*\%#',
+      \ 'char': '<Bar>',
+      \ 'input': '<Bar>',
+      \ 'input_after': '<Bar>',
+      \ 'filetype': ['ruby'],
+      \ 'mode': 'i',
+      \  })
+
+    " テンプレート内のスペース
+    call lexima#add_rule({
+      \ 'at':       '<\%#>',
+      \ 'char':     '<Space>',
+      \ 'input':    '<Space>',
+      \ 'input_after':    '<Space>',
+      \ 'filetype': ['cpp'],
+      \ 'mode': 'i',
+      \ })
+    call lexima#add_rule({
+      \ 'at':       '< \%# >',
+      \ 'char':     '<BS>',
+      \ 'input':    '<BS>',
+      \ 'filetype': ['cpp'],
+      \ 'delete': 1,
+      \ 'mode': 'i',
+      \ })
+    " struct
+    call lexima#add_rule({
+      \ 'at'       : '\%(\<struct\>\|\<class\>\|\<enum\>\)\s*\w\+.*\%#',
+      \ 'char'     : '{',
+      \ 'input'    : '{',
+      \ 'input_after'    : '};',
+      \ 'filetype' : ['cpp'],
+      \ 'mode': 'i',
+      \ })
+    " http://qiita.com/hatchinee/items/c5bc19a656925ce33882
+    " classとかの定義時に:までを入れる
+    call lexima#add_rule({
+      \ 'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#',
+      \ 'char'     : '(',
+      \ 'input'    : '(',
+      \ 'input_after': '):',
+      \ 'filetype' : ['python'],
+      \ 'mode': 'i',
+      \ })
+    " が、すでに:がある場合は重複させない. (smartinputでは、atの定義が長いほど適用の優先度が高くなる)
+    call lexima#add_rule({
+      \ 'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#.*:',
+      \ 'char'     : '(',
+      \ 'input'    : '(',
+      \ 'input_after': ')',
+      \ 'filetype' : ['python'],
+      \ 'mode': 'i',
+      \ })
+    " 末尾:の手前でも、エンターとか:で次の行にカーソルを移動させる
+    call lexima#add_rule({
+      \ 'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#:$',
+      \ 'char'     : ':',
+      \ 'input'    : '<CR>',
+      \ 'leave' : 1,
+      \ 'filetype' : ['python'],
+      \ 'mode': 'i',
+      \ })
+    call lexima#add_rule({
+      \ 'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#:$',
+      \ 'char'     : '<CR>',
+      \ 'input'    : '<CR>',
+      \ 'leave' : 1,
+      \ 'filetype' : ['python'],
+      \ 'mode': 'i',
+      \ })
+
+    call lexima#insmode#define_altanative_key('<Plug>(lexima-BS)', '<BS>')
+    call lexima#insmode#define_altanative_key('<Plug>(lexima-C-h)', '<C-h>')
+    call lexima#insmode#define_altanative_key('<Plug>(lexima-CR)', '<CR>')
+  endfunction
+  call s:bundle.untap()
+endif
 
 " vim-smartinput {{{2
 if s:bundle.tap('vim-smartinput')
-  " clear auto cmaps(for altercmd.vim)
-  " MyAutoCmd VimEnter * call <SID>smartinput_init()
-
   function! s:bundle.tapped.hooks.on_source(bundle)
-
     function! s:smartinput_init() "{{{
       " if hasmapto('<CR>', 'c')
       "   cunmap <CR>
@@ -3626,128 +3766,7 @@ if s:bundle.tap('vim-smartinput')
       if a:is_load_default_rules
         call smartinput#define_default_rules()
       endif
-      call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
-      call smartinput#define_rule({
-            \   'at':       '(\%#)',
-            \   'char':     '<Space>',
-            \   'input':    '<Space><Space><Left>',
-            \   })
-
-      call smartinput#define_rule({
-            \   'at':       '( \%# )',
-            \   'char':     '<BS>',
-            \   'input':    '<Del><BS>',
-            \   })
-
-      call smartinput#define_rule({
-            \   'at':       '{\%#}',
-            \   'char':     '<Space>',
-            \   'input':    '<Space><Space><Left>',
-            \   })
-
-      call smartinput#define_rule({
-            \   'at':       '{ \%# }',
-            \   'char':     '<BS>',
-            \   'input':    '<Del><BS>',
-            \   })
-
-      call smartinput#define_rule({
-            \   'at':       '\[\%#\]',
-            \   'char':     '<Space>',
-            \   'input':    '<Space><Space><Left>',
-            \   })
-
-      call smartinput#define_rule({
-            \   'at':       '\[ \%# \]',
-            \   'char':     '<BS>',
-            \   'input':    '<Del><BS>',
-            \   })
-
-      " 改行取り除き
-      " call smartinput#define_rule({
-      "       \   'at': '\s\+\%#',
-      "       \   'char': '<CR>',
-      "       \   'input': "<C-o>:call setline('.', substitute(getline('.'), '\\s\\+$', '', ''))<CR><CR>",
-      "       \   })
-
-      " Ruby 文字列内変数埋め込み
-      call smartinput#map_to_trigger('i', '#', '#', '#')
-      call smartinput#define_rule({
-            \   'at': '\%#',
-            \   'char': '#',
-            \   'input': '#{}<Left>',
-            \   'filetype': ['ruby'],
-            \   'syntax': ['Constant', 'Special'],
-            \   })
-
-      " Ruby ブロック引数 ||
-      call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
-      call smartinput#define_rule({
-            \   'at': '\({\|\<do\>\)\s*\%#',
-            \   'char': '<Bar>',
-            \   'input': '<Bar><Bar><Left>',
-            \   'filetype': ['ruby'],
-            \    })
-
-      " テンプレート内のスペース
-      call smartinput#map_to_trigger('i', '<', '<', '<')
-      call smartinput#define_rule({
-            \   'at':       '<\%#>',
-            \   'char':     '<Space>',
-            \   'input':    '<Space><Space><Left>',
-            \   'filetype': ['cpp'],
-            \   })
-      call smartinput#define_rule({
-            \   'at':       '< \%# >',
-            \   'char':     '<BS>',
-            \   'input':    '<Del><BS>',
-            \   'filetype': ['cpp'],
-            \   })
-      " struct
-      call smartinput#define_rule({
-            \   'at'       : '\%(\<struct\>\|\<class\>\|\<enum\>\)\s*\w\+.*\%#',
-            \   'char'     : '{',
-            \   'input'    : '{};<Left><Left>',
-            \   'filetype' : ['cpp'],
-            \   })
-      " http://qiita.com/todashuta@github/items/bdad8e28843bfb3cd8bf
-      call smartinput#map_to_trigger('i', '<Plug>(smartinput_BS)',
-            \   '<BS>',
-            \   '<BS>')
-      call smartinput#map_to_trigger('i', '<Plug>(smartinput_C-h)',
-            \   '<BS>',
-            \   '<C-h>')
-      call smartinput#map_to_trigger('i', '<Plug>(smartinput_CR)',
-            \   '<Enter>',
-            \   '<Enter>')
-      " http://qiita.com/hatchinee/items/c5bc19a656925ce33882
-      " classとかの定義時に:までを入れる
-      call smartinput#define_rule({
-            \   'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#',
-            \   'char'     : '(',
-            \   'input'    : '():<Left><Left>',
-            \   'filetype' : ['python'],
-            \   })
-      " が、すでに:がある場合は重複させない. (smartinputでは、atの定義が長いほど適用の優先度が高くなる)
-      call smartinput#define_rule({
-            \   'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#.*:',
-            \   'char'     : '(',
-            \   'input'    : '()<Left>',
-            \   'filetype' : ['python'],
-            \   })
-      " 末尾:の手前でも、エンターとか:で次の行にカーソルを移動させる
-      call smartinput#define_rule({
-            \   'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#:$',
-            \   'char'     : ':',
-            \   'input'    : '<Right><CR>',
-            \   'filetype' : ['python'],
-            \   })
-      call smartinput#define_rule({
-            \   'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#:$',
-            \   'char'     : '<CR>',
-            \   'input'    : '<Right><CR>',
-            \   'filetype' : ['python'],
-            \   })
+      source ~/.vim/smartinput.vim
     endfunction "}}}
 
     command! SmartinputOff call smartinput#clear_rules()
@@ -3764,7 +3783,8 @@ if s:bundle.tap('vim-smartinput')
       for item in copy(filter(rules, 'mode == "*" || mode == v:val.mode'))
         if get(hash, item._char, 1)
           let char = substitute(item._char, '[|]', '\\\1', 'g')
-          execute printf("%smap \<buffer> %s %s", item.mode, char, char)
+          execute printf("silent! %smap \<buffer> %s", item.mode, char)
+          " execute printf("%smap \<buffer> %s %s", item.mode, char, char)
           " execute printf("%sunmap \<buffer> %s", item.mode, char)
           let hash[item._char] = 0
         endif
@@ -6562,7 +6582,12 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   \ ."\<Plug>(smartinput_CR)\<C-r>=endwize#crend()\<CR>"
 
   " <C-h>, <BS>: close popup and delete backword char.
-  if g:vimrc_enabled_plugins.smartinput
+  if g:vimrc_enabled_plugins.lexima
+    imap <expr> <C-h>  pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
+    \ neocomplete#smart_close_popup()."\<Plug>(lexima-BS)"
+    imap <expr> <BS>   pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
+    \ neocomplete#smart_close_popup()."\<Plug>(lexima-C-h)"
+  elseif g:vimrc_enabled_plugins.smartinput
     imap <expr> <C-h>  pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
     \ neocomplete#smart_close_popup()."\<Plug>(smartinput_BS)"
     imap <expr> <BS>   pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
