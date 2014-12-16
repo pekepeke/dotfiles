@@ -752,6 +752,37 @@ else
 
 endif
 
+
+" ref-vim {{{1
+  if !exists('g:ref_jsextra_defines')
+    let g:ref_jsextra_defines = {}
+  endif
+  call extend(g:ref_jsextra_defines, {
+        \ 'EaselJS' : {
+        \   'type' : 'yui',
+        \   'command' : 'zip',
+        \   'relative' : '',
+        \   'url' : 'https://github.com/CreateJS/EaselJS/raw/master/docs/EaselJS_docs-0.5.0.zip',
+        \ },
+        \ 'TweenJS' : {
+        \   'type' : 'yui',
+        \   'command' : 'zip',
+        \   'relative' : '',
+        \   'url' : 'https://github.com/CreateJS/TweenJS/raw/master/docs/TweenJS_docs-0.3.0.zip',
+        \ },
+        \ 'PreloadJS' : {
+        \   'type' : 'yui',
+        \   'command' : 'zip',
+        \   'relative' : '',
+        \   'url' : 'https://github.com/CreateJS/PreloadJS/raw/master/docs/PreloadJS_docs-0.2.0.zip',
+        \ },
+        \ 'SoundJS' : {
+        \   'type' : 'yui',
+        \   'command' : 'zip',
+        \   'relative' : '',
+        \   'url' : 'https://github.com/CreateJS/SoundJS/raw/master/docs/SoundJS_docs-0.3.0.zip',
+        \ },
+        \ })
 " dotnet-complete {{{1
 " NeoBundle 'yuratomo/dotnet-complete'
 " csharp {{{2
