@@ -1,4 +1,3 @@
-scriptencoding utf-8
 if &compatible
   set nocompatible
 endif
@@ -12,7 +11,7 @@ let s:is_win = has('win16') || has('win32') || has('win64')
 
 function! s:mkdir(path)
   if !isdirectory(a:path)
-    call mkdir(a:path, "p")
+    call mkdir(a:path, 'p')
   endif
 endfunction
 
@@ -20,7 +19,7 @@ function! s:has_plugin(plugin)
   if exists(':NeoBundle')
     return neobundle#is_installed(a:plugin)
   endif
-  return strlen(globpath(&rtp, '*/'.a:plugin))
+  return strlen(globpath(&runtimepath, '*/'.a:plugin))
 endfunction
 
 augroup vimrc-myautocmd
@@ -37,6 +36,7 @@ else
   set encoding=utf-8
   set termencoding=utf-8
 endif
+scriptencoding utf-8
 " set fileencoding=utf-8
 set fileformat=unix
 set fileencodings=ucs-bom,utf-8,iso-2022-jp,cp932,euc-jp
@@ -61,11 +61,10 @@ set shellslash
 set directory=$VIM_CACHE,/var/tmp,/tmp
 call s:mkdir($VIM_CACHE)
 
-set viminfo&
 set viminfo+=! viminfo+=n$VIM_CACHE/pager-viminfo.txt
 
 " diff {{{2
-set diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
+set diffopt-=filler diffopt+=iwhite diffopt+=vertical
 
 " display {{{2
 set lazyredraw ttyfast
@@ -83,7 +82,7 @@ set showmatch showcmd showfulltag
 set backspace=indent,eol,start
 set nolinebreak
 set textwidth=1000
-set formatoptions& formatoptions+=mM
+set formatoptions+=mM
 set whichwrap=b,s,h,l,<,>,[,]
 
 set splitbelow splitright
@@ -95,7 +94,7 @@ set sidescroll=5
 set visualbell
 set noerrorbells t_vb=
 
-set guioptions& guioptions+=T guioptions-=m guioptions-=M
+set guioptions+=T guioptions-=m guioptions-=M
 let did_install_syntax_menu = 1
 set noequalalways
 set langmenu=none
@@ -192,7 +191,7 @@ nnoremap / :nohl<CR>/
 nnoremap ? :nohl<CR>?
 
 function! s:tselect_immediately()
-  execute 'normal!' (len(taglist(expand('<cword>'))) > 1 ? "g" : "")."\<C-]>"
+  execute 'normal!' (len(taglist(expand('<cword>'))) > 1 ? 'g' : '')."\<C-]>"
 endfunction
 
 nnoremap te t
@@ -267,27 +266,27 @@ vnoremap ik i)
 " commands {{{1
 if s:standalone
   function! SudoRead(url) "{{{2
-    if a:url=="<afile>"
+    if a:url ==# '<afile>'
       let file=expand(a:url)
     else
       let file=a:url
     endif
     let prot=matchstr(file,'^\(sudo\)\ze:')
-    if '' != prot
+    if '' !=# prot
       let file=strpart(file,strlen(prot)+1)
     endif
     0,$d
-    call setline(1,"foo")
-    exec '1read !sudo cat "'.file.'" '
+    call setline(1,'foo')
+    execute '1read !sudo cat "'.file.'" '
     1d
-    set nomod
+    setlocal nomodified
     filetype detect
   endfunction
 
   function! SudoWrite(url) abort "{{{2
-    let file = a:url == "<afile>" ? expand(a:url) : a:url
+    let file = a:url ==# '<afile>' ? expand(a:url) : a:url
     let prot=matchstr(file,'^\(sudo\)\ze:')
-    if '' != prot
+    if '' !=# prot
       let file=strpart(file,strlen(prot)+1)
     endif
     set nomodified
@@ -313,70 +312,70 @@ if v:version > 702
     if has('vim_starting')
       set runtimepath+=~/.vim/neobundle.vim
     endif
-    call neobundle#begin(expand("~/.vim/neobundle"))
+    call neobundle#begin(expand('~/.vim/neobundle'))
 
     " minimum plugin
     NeoBundle 'Shougo/unite.vim', {
-          \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
-          \ }
+      \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
+      \ }
     NeoBundleLazy 'Shougo/vimfiler.vim', {
-          \ 'depends': 'Shougo/unite.vim', 'autoload' : {
-          \ 'commands' : [
-          \ { 'name' : 'VimFiler', 'complete' : 'customlist,vimfiler#complete' },
-          \ { 'name' : 'VimFilerExplorer', 'complete' : 'customlist,vimfiler#complete' },
-          \ { 'name' : 'Edit', 'complete' : 'customlist,vimfiler#complete' },
-          \ { 'name' : 'Write', 'complete' : 'customlist,vimfiler#complete' },
-          \ 'Read', 'Source'],
-          \ 'mappings' : ['<Plug>(vimfiler'],
-          \ 'explorer' : 1,
-          \ }}
+      \ 'depends': 'Shougo/unite.vim', 'autoload' : {
+      \ 'commands' : [
+      \ { 'name' : 'VimFiler', 'complete' : 'customlist,vimfiler#complete' },
+      \ { 'name' : 'VimFilerExplorer', 'complete' : 'customlist,vimfiler#complete' },
+      \ { 'name' : 'Edit', 'complete' : 'customlist,vimfiler#complete' },
+      \ { 'name' : 'Write', 'complete' : 'customlist,vimfiler#complete' },
+      \ 'Read', 'Source'],
+      \ 'mappings' : ['<Plug>(vimfiler'],
+      \ 'explorer' : 1,
+      \ }}
     NeoBundle 'Shougo/vimproc.vim', { 'build' : {
-          \ 'cygwin' : 'make -f make_cygwin.mak',
-          \ 'mac'    : 'make -f make_mac.mak',
-          \ 'unix'   : 'make -f make_unix.mak',
-          \ }}
+      \ 'cygwin' : 'make -f make_cygwin.mak',
+      \ 'mac'    : 'make -f make_mac.mak',
+      \ 'unix'   : 'make -f make_unix.mak',
+      \ }}
     NeoBundleLazy 'Shougo/vimshell', {
-          \ 'depends': 'Shougo/vimproc.vim', 'autoload' : {
-          \ 'commands' : [{ 'name' : 'VimShell',
-          \ 'complete' : 'customlist,vimshell#complete'},
-          \   'VimShellExecute', 'VimShellInteractive',
-          \   'VimShellTerminal', 'VimShellPop'],
-          \ 'mappings' : ['<Plug>(vimshell']
-          \ }}
+      \ 'depends': 'Shougo/vimproc.vim', 'autoload' : {
+      \ 'commands' : [{ 'name' : 'VimShell',
+      \ 'complete' : 'customlist,vimshell#complete'},
+      \   'VimShellExecute', 'VimShellInteractive',
+      \   'VimShellTerminal', 'VimShellPop'],
+      \ 'mappings' : ['<Plug>(vimshell']
+      \ }}
     NeoBundle 'kana/vim-operator-user'
     NeoBundle 'kana/vim-operator-replace', {
-          \ 'depends' : 'vim-operator-user', 'autoload' : {
-          \ 'mappings' : [
-          \ ['nx', '_', '<Plug>(operator-replace)']]
-          \ }}
+      \ 'depends' : 'vim-operator-user', 'autoload' : {
+      \ 'mappings' : [
+      \ ['nx', '_', '<Plug>(operator-replace)']]
+      \ }}
     NeoBundle 'anyakichi/vim-surround', {'autoload':{
-          \ 'mappings': [['n', 'ds', 'cs', 'ys', 'yS', 'yss', 'ygs', 'ygS', 'ygss', 'ygsgs'],
-          \ ['x', 's', 'S', 'gs', 'gS'],
-          \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
-          \ }}
+      \ 'mappings': [['n', 'ds', 'cs', 'ys', 'yS', 'yss', 'ygs', 'ygS', 'ygss', 'ygsgs'],
+      \ ['x', 's', 'S', 'gs', 'gS'],
+      \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
+      \ }}
     NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'rhysd/committia.vim'
     NeoBundle 'idanarye/vim-merginal', {'autoload':{
-          \ 'commands': [ "Merginal", "MerginalToggle", "MerginalClose",],
-          \ }}
+      \ 'commands': [ "Merginal", "MerginalToggle", "MerginalClose",],
+      \ }}
     NeoBundle 'AndrewRadev/gapply.vim', {'autoload':{
-          \ 'commands': [ "Gapply",],
-          \ }}
+      \ 'commands': [ 'Gapply',],
+      \ }}
     NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
-    \ 'commands' : [
-    \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
-    \   'DirDiffUpdate', 'DirDiffQuit',
-    \   {'name': 'DirDiff', 'complete': 'dir'},
-    \ ],
-    \ }}
+      \ 'commands' : [
+      \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
+      \   'DirDiffUpdate', 'DirDiffQuit',
+      \   {'name': 'DirDiff', 'complete': 'dir'},
+      \ ],
+      \ }}
     NeoBundle 'vim-scripts/sudo.vim'
     " NeoBundle 'chrisbra/SudoEdit.vim'
     NeoBundle 'tpope/vim-commentary', {'autoload': {
-          \ 'mappings': [
-          \   ['xn', '<Plug>Commentary'],
-          \   ['n', '<Plug>Commentary'],
-          \ ],
-          \ }}
+      \ 'mappings': [
+      \   ['xn', '<Plug>Commentary'],
+      \   ['n', '<Plug>Commentary'],
+      \ ],
+      \ }}
     call neobundle#end()
   elseif s:standalone " plugin load {{{2
     if has('vim_starting')
@@ -400,14 +399,14 @@ if v:version > 702
       \ 'https://github.com/kana/vim-operator-replace',
       \ 'https://github.com/kana/vim-operator-user',
       \ ]
-      if input("install plugin? [y/n]:") != "y"
-        echo "Canceled."
+      if input('install plugin? [y/n]:') !=# 'y'
+        echo 'Canceled.'
         return
       endif
       call mkdir(exppand('~/.vim'))
-      call mkdir(expand("~/.vim/autoload"))
-      call mkdir(expand("~/.vim/bundle"))
-      call system("curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim")
+      call mkdir(expand('~/.vim/autoload'))
+      call mkdir(expand('~/.vim/bundle'))
+      call system('curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim')
       let cwd = getcwd()
       execute 'lcd' expand('~/.vim/bundle')
       for repo in repos
@@ -435,9 +434,9 @@ colorscheme vividchalk
 MyAutoCmd FileType txt,rst,markdown,gitcommit setlocal spell
 if !s:is_win
   MyAutoCmd BufWritePost *
-        \ if getline(1) =~ "^#!"
-        \ | exe "silent !chmod +x %"
-        \ | endif
+    \ if getline(1) =~# '^#!'
+    \ | exe 'silent !chmod +x %'
+    \ | endif
 endif
 function! s:auto_mkdir(dir, force) "{{{
   if !isdirectory(a:dir) && (a:force ||
@@ -473,7 +472,7 @@ if s:has_plugin('unite.vim')
 endif
 
 if s:has_plugin('vimshell') "{{{2
-  let g:vimshell_temporary_directory = $VIM_CACHE . "/vimshell"
+  let g:vimshell_temporary_directory = $VIM_CACHE . '/vimshell'
   let g:vimshell_enable_smart_case = 1
   let g:vimshell_enable_auto_slash = 1
 

@@ -1,10 +1,18 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [alias]
+  a = "!f() { local res=$(git status -s | peco | awk '{ print $2 }'); \
+  [ -n \"$res\" ] && git add ${res} ; \
+  }; f"
+  df = "!f() { local res=$(git log --date=short --pretty=format:'%h [%ad] : %s <%an>' | peco | awk '{ print $1 }' ); \
+    local file; \
+    [ -n \"$res\" ] && file=$(git diff --no-prefix $res | grep '^--- ' | peco | awk '{ print $2 }'); \
+    [ -n \"$file\" ] && git diff --no-prefix $res $file; \
+  }; f"
   ls = ls-files
   co = checkout
   cob = "!f() { \
     local b=`git branch -a | peco`;\
-    [ -n "${b}" ] && git checkout $b ;\
+    [ -n \"${b}\" ] && git checkout $b ;\
   }; f"
   ci = commit
   ca = commit --amend

@@ -1,0 +1,38 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-ghq-trash() {
+  local selected="$(ghq list -p | perl -pe 's/(\Q$ENV{HOME}\E(.*$))/~$2/' | peco --query="$LBUFFER")"
+  if [ -n "$selected" ]; then
+    local BIN=""
+    case $OSTYPE in
+      cygwin*)
+        BIN=trash-put
+        ;;
+      darwin*)
+        BIN=rmtrash
+        if ! which $BIN >/dev/null 2>&1; then
+          BIN=mv2trash
+        fi
+        ;;
+      bsd*)
+        BIN=trash-put
+        ;;
+      linux*)
+        BIN=trash-put
+        ;;
+      solaris*)
+        BIN=trash-put
+        ;;
+      *)
+        ;;
+    esac
+    if ! which $BIN >/dev/null 2>&1; then
+      BIN=
+    fi
+    BUFFER="$BIN $(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
+    if [ -n "$BIN" ]; then
+      zle accept-line
+    fi
+  fi
+  zle -R
+# }
+# zle -N peco-ghq-trash

@@ -30,6 +30,8 @@ autoload -Uz peco-gdb-attach-pid
 zle -N peco-gdb-attach-pid
 autoload -Uz peco-ghq-cd
 zle -N peco-ghq-cd
+autoload -Uz peco-ghq-trash
+zle -N peco-ghq-trash
 autoload -Uz peco-gibo-replace-buffer
 zle -N peco-gibo-replace-buffer
 autoload -Uz peco-git-branch-delete-already-merged
@@ -130,6 +132,8 @@ autoload -Uz peco-zle-git-launch
 zle -N peco-zle-git-launch
 autoload -Uz peco-zle-launch
 zle -N peco-zle-launch
+autoload -Uz peco-zload-zshfiles
+zle -N peco-zload-zshfiles
 autoload -Uz peco-zsh-functions
 zle -N peco-zsh-functions
 autoload -Uz peco-zsh-keybinds

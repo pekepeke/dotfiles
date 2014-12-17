@@ -383,11 +383,11 @@ if has('kaoriya') && has('migemo')
 endif
 
 " color settings "{{{1
-if !has('gui_running')
-  let s:t_Co=&t_Co
-  MyAutoCmd VimLeave * let &l:t_Co=s:t_Co
-endif
-set t_Co=256
+" if !has('gui_running')
+"   let s:t_Co=&t_Co
+"   MyAutoCmd VimLeave * let &l:t_Co=s:t_Co
+" endif
+" set t_Co=256
 set background=dark
 
 function! s:highlights_add() "{{{2
@@ -570,6 +570,18 @@ endif
 " filetype off
 call neobundle#begin(expand("~/.vim/neobundle"))
 NeoBundleLocal ~/.vim/bundle
+
+let s:mtime = getftime($MYVIMRC)
+let s:mtime_file = $VIM_CACHE . "/lastmod-vimrc"
+if filereadable(s:mtime_file)
+  if readfile(s:mtime_file)[0] < s:mtime
+    NeoBundleClearCache
+    call writefile([s:mtime], s:mtime_file)
+  endif
+else
+  call writefile([s:mtime], s:mtime_file)
+endif
+unlet! s:mtime s:mtime_file
 
 " vundles {{{2
 " vundle start
@@ -2685,8 +2697,8 @@ if s:bundle.tap('context_filetype')
     \   'filetype' : 'glsl',
     \   'start'    : ':\s*"',
     \   'end'      : '"'
-    \ }
-    \ ],
+    \ },
+    \ ]
 endif
 " }}}
 " vim-precious {{{2
@@ -3097,7 +3109,6 @@ if s:bundle.tap('lightline.vim')
       call lightline#init()
       call lightline#colorscheme()
       call lightline#update()
-      endif
     catch
     endtry
   endfunction
