@@ -571,21 +571,9 @@ endif
 call neobundle#begin(expand("~/.vim/neobundle"))
 NeoBundleLocal ~/.vim/bundle
 
-let s:mtime = getftime($MYVIMRC)
-let s:mtime_file = $VIM_CACHE . "/lastmod-vimrc"
-if filereadable(s:mtime_file)
-  if readfile(s:mtime_file)[0] < s:mtime
-    NeoBundleClearCache
-    call writefile([s:mtime], s:mtime_file)
-  endif
-else
-  call writefile([s:mtime], s:mtime_file)
-endif
-unlet! s:mtime s:mtime_file
-
 " vundles {{{2
 " vundle start
-if neobundle#has_cache()
+if neobundle#has_fresh_cache($MYVIMRC)
   NeoBundleLoadCache
 else
 " statusline {{{3
@@ -1701,7 +1689,7 @@ NeoBundle 'akiyan/vim-textobj-php', {'autoload':{
 endif
 " configure for runtimepath {{{1
 call neobundle#end()
-MyAutoCmd BufWritePost *vimrc,*gvimrc NeoBundleClearCache
+" MyAutoCmd BufWritePost *vimrc,*gvimrc NeoBundleClearCache
 
 filetype plugin indent on
 if has('syntax')

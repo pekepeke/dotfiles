@@ -1,4 +1,5 @@
 #compdef cap
+
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 
 typeset -A opt_args
@@ -18,6 +19,9 @@ while read l; do
 	opts+=($l)
 done
 
+environments=$(
+  ls config/deploy 2>/dev/null | sed -e 's/.rb$//'
+)
 tasks=$(
 	_call_program tasks $words -T 2>/dev/null |
 	grep '^cap ' | sed -e 's/^cap //;s/ .*//'
@@ -25,6 +29,7 @@ tasks=$(
 
 local arguments_args
 arguments_args=($opts)
+arguments_args+=(":environments:($environments)")
 arguments_args+=(":tasks:($tasks)")
 
 _arguments $arguments_args && return 0
