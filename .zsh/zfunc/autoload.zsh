@@ -74,6 +74,8 @@ autoload -Uz peco-homebrew-open
 zle -N peco-homebrew-open
 autoload -Uz peco-homebrew-plist-insert-at-pos
 zle -N peco-homebrew-plist-insert-at-pos
+autoload -Uz peco-lang-repl-launch
+zle -N peco-lang-repl-launch
 autoload -Uz peco-locate-insert-at-pos
 zle -N peco-locate-insert-at-pos
 autoload -Uz peco-logfiles-insert-at-pos

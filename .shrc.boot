@@ -204,6 +204,22 @@ perlmodules() {
   cat `perldoc -l perllocal` | perl -nle '/C<Module> L<([^\|]*?)\|.*?>/ and print "$1"'
 }
 
+shrc_section_title "mysql" #{{{2
+if [ -n "$ZSH_NAME" ]; then
+  alias EXPLAIN="noglob EXPLAIN"
+  alias SELECT="noglob SELECT"
+  alias SHOW="noglob SHOW"
+fi
+EXPLAIN() {
+  mysql -e "SET NAMES utf8; EXPLAIN $*"
+}
+SELECT() {
+  mysql -e "SET NAMES utf8; SELECT $*"
+}
+SHOW() {
+  mysql -e "SET NAMES utf8; SHOW $*"
+}
+
 shrc_section_title "etc" #{{{2
 alias rsync='rsync -avzu'
 alias adbchrome='adb forward tcp:92222 localabstract:chrome_devtools_remote'

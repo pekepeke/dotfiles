@@ -2469,7 +2469,6 @@ endif
 let g:markdown_fenced_languages = [
 \  'coffee',
 \  'css',
-\  'erb=eruby',
 \  'javascript',
 \  'js=javascript',
 \  'json=javascript',
@@ -2478,6 +2477,7 @@ let g:markdown_fenced_languages = [
 \  'sass',
 \  'xml',
 \]
+" \  'erb=eruby', " filetype=html をしている
 
 " disables plugin {{{1
 if !s:is_mac

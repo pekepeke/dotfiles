@@ -1,0 +1,20 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# function peco-lang-repl-launch() {
+  local selected="$(cat <<EOM | peco
+psysh
+pry
+reply
+node
+coffee -i --nodejs
+ghci
+python
+EOM
+  )"
+  if [ -n "$selected" ]; then
+    BUFFER="$selected"
+    zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-lang-repl-launch
+

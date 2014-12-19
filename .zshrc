@@ -503,7 +503,9 @@ if [[ $ZSH_VERSION == (<5->|4.<4->|4.3.<10->)* ]]; then
       # repos=`print -nD "$vcs_info_msg_0_"`
       repos=${vcs_info_msg_0_/${HOME}/\~}
 
-      branch="$vcs_info_msg_2_"
+      # branch="$vcs_info_msg_2_"
+      branch="$vcs_info_msg_3_:$vcs_info_msg_2_"
+      # [[ $vcs_info_msg_3_ =~ -svn ]] && branch="s:$branch"
 
       if [[ -n "$vcs_info_msg_4_" ]]; then # staged
         # branch="%F{green}$branch%f"
