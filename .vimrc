@@ -2532,6 +2532,13 @@ if s:bundle.is_installed('vim-node')
   let node#suffixesadd = [] " already registered at ftplugin
 endif
 
+" previm {{{2
+if s:bundle.is_installed('previm')
+  let g:previm_enable_realtime=1
+  let g:previm_disable_default_css = 1
+  let g:previm_custom_css_path = expand('~/.vim/lib/previm/github.css')
+endif
+
 " phpcomplete-extended {{{2
 if s:bundle.is_installed('phpcomplete-extended')
   let g:phpcomplete_index_composer_command = "composer"
@@ -7367,6 +7374,7 @@ if s:is_mac "{{{3
   command! CotEdit silent execute '!open' '-a' 'CotEditor' shellescape(expand('%:p'))
   command! Mate silent execute '!open' '-a' 'TextMate' shellescape(expand('%:p'))
   command! Iterm silent execute "!osascript -e 'tell application \"iTerm\" to activate' &"
+  command! -nargs=1 ActivateWindow silent execute "!osascript -e 'tell application \"<args>\" to activate' &"
   nnoremap <D-i> :<C-u>Iterm<CR>
 elseif s:is_win "{{{3
   " Utility command for Windows
@@ -7386,6 +7394,7 @@ else "{{{3
     command! In silent execute '!kterm -e "cd '.shellescape(expand('%:p:h')).'; exec $SHELL"' '&'
   endif
   command! -nargs=1 -complete=file That silent execute '!xdg-open' shellescape(expand(<f-args>), 1) '&'
+  command! -nargs=1 ActivateWindow silent execute "!togwin \"<args>\"' &"
 endif
 "}}}
 LCAlias Here This That
