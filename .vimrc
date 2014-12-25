@@ -742,6 +742,7 @@ NeoBundle 't9md/vim-smalls', {'autoload': {
 NeoBundle 'tomtom/quickfixsigns_vim', {
 \ 'depends': ['tomtom/tlib_vim'],
 \ }
+" NeoBundle 'mhinz/vim-signify'
 if has('python') && executable('editorconfig')
   NeoBundle 'editorconfig/editorconfig-vim'
 endif
@@ -2113,6 +2114,7 @@ let g:square_brackets = {
   \ 'coffee' : '->\s*$\|^\s*class\s',
   \ 'git-log.git-diff' : '^@@\|^diff ',
   \ 'git' : '^@@\|^diff ',
+  \ 'neosnippet' : '^snippet ',
   \ }
 function! s:nmap_square_brackets() "{{{3
   if exists('g:square_brackets[&filetype]')
@@ -2385,6 +2387,7 @@ endif
 " abbrev {{{1
 iabbrev funciton function
 iabbrev funcition function
+iabbrev edn end
 iabbrev retrun return
 iabbrev sented sent
 iabbrev sended sent
@@ -3755,6 +3758,7 @@ if s:bundle.tap('lexima.vim')
     call lexima#insmode#define_altanative_key('<Plug>(lexima-BS)', '<BS>')
     call lexima#insmode#define_altanative_key('<Plug>(lexima-C-h)', '<C-h>')
     call lexima#insmode#define_altanative_key('<Plug>(lexima-CR)', '<CR>')
+    call lexima#insmode#define_altanative_key('<Plug>(lexima-SPACE)', '<Space>')
   endfunction
   call s:bundle.untap()
 endif
@@ -4815,7 +4819,6 @@ if s:bundle.tap('unite.vim')
 
   nmap [!unite]u  :<C-u>Unite<Space>
 
-  " UniteNMap   s         source
   UniteNMap   <Space>   buffer
   UniteNMap   j         buffer_tab
   UniteNMap   k         tab
@@ -4827,9 +4830,10 @@ if s:bundle.tap('unite.vim')
   UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR> -profile-name=files
   UniteNMap   m         file_mru -default-action=open -profile-name=files
   UniteNMap   y         sonictemplate
-  UniteNMap   ic         webcolorname
-  UniteNMap   ii         jump
-  UniteNMap   io         outline
+  UniteNMap   ic        webcolorname
+  UniteNMap   ij        jump
+  UniteNMap   is        neosnippet
+  UniteNMap   io        outline
   UniteNMap!  gg        grep:. -buffer-name=grep
   UniteNMap!  gs        grep:.:-C\\ 4 -buffer-name=grep
   UniteNMap!  gr        grep -buffer-name=grep
@@ -6848,18 +6852,24 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
 
   " <C-h>, <BS>: close popup and delete backword char.
   if g:vimrc_enabled_plugins.lexima
+    " TODO : overrides plugin...
     imap <expr> <C-h>  pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
     \ neocomplete#smart_close_popup()."\<Plug>(lexima-BS)"
     imap <expr> <BS>   pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
     \ neocomplete#smart_close_popup()."\<Plug>(lexima-C-h)"
+    imap <expr> <Space>   pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
+    \ neocomplete#smart_close_popup()."\<Plug>(lexima-SPACE)\<Space>\<BS>"
   elseif g:vimrc_enabled_plugins.smartinput
     imap <expr> <C-h>  pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
     \ neocomplete#smart_close_popup()."\<Plug>(smartinput_BS)"
     imap <expr> <BS>   pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
     \ neocomplete#smart_close_popup()."\<Plug>(smartinput_C-h)"
+    imap <expr> <Space>   pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
+    \ neocomplete#smart_close_popup()."\<Plug>(smartinput_SPACE)"
   else
     inoremap <expr><C-h>  neocomplete#smart_close_popup()."\<C-h>"
     inoremap <expr><BS>   neocomplete#smart_close_popup()."\<C-h>"
+    inoremap <expr><Space>   neocomplete#smart_close_popup()."\<Space>"
   endif
 
   " inoremap <expr> <C-y>  neocomplete#close_popup()

@@ -31,9 +31,9 @@ endfunction
 function! local_neosnippet#source(basedir) "{{{2
   let b:local_neosnippet_current_snip = ''
   let filetypes = [&filetype]
-  let splitted = split('.', &filetype)
+  let splitted = split(&filetype, '\.')
   if len(splitted) > 1
-    filetypes += splitted
+    let filetypes += reverse(splitted)
   endif
   call map(reverse(filetypes), 's:snippet_source(a:basedir, v:val)')
   if empty(b:local_neosnippet_current_snip)

@@ -95,6 +95,9 @@ call smartinput#map_to_trigger('i', '<Plug>(smartinput_C-h)',
 call smartinput#map_to_trigger('i', '<Plug>(smartinput_CR)',
   \   '<Enter>',
   \   '<Enter>')
+call smartinput#map_to_trigger('i', '<Plug>(smartinput_SPACE)',
+  \   '<Enter>',
+  \   '<Enter>')
 " http://qiita.com/hatchinee/items/c5bc19a656925ce33882
 " classとかの定義時に:までを入れる
 call smartinput#define_rule({

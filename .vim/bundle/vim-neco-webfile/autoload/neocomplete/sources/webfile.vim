@@ -2,7 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 let g:neco_webfile_debug = 0
-let g:neco_webfile_ignore_filetypes = get(g:, 'neco_webfile_ignore_filetypes', 1)
+let g:neco_webfile_ignore_filetypes = get(g:, 'neco_webfile_ignore_filetypes', 0)
 let g:neco_webfile_filetypes = get(g:, 'neco_webfile_filetypes', [
 \ 'php', 'smarty', 'twig',
 \ 'haml', 'jade', 'eruby',
@@ -52,10 +52,6 @@ function! s:source.get_complete_position(context) "{{{
     " Not filename pattern.
     " call s:log("Not filename pattern")
     return -1
-  endif
-
-  if neocomplete#is_sources_complete() && complete_pos < 0
-    let complete_pos = len(a:context.input)
   endif
 
   if complete_str =~ '/'
