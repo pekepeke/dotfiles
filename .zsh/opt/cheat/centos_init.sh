@@ -1,12 +1,22 @@
+# instll epel
+yum install epel-release
+# install REMI
+# wget http://rpms.famillecollet.com/enterprise/remi-release-$(cat /etc/redhat-release | cut -d ' ' -f3 | cut -d '.' -f 1).rpm
+# rpm -Uvh remi-release-$(cat /etc/redhat-release | cut -d ' ' -f3 | cut -d '.' -f 1).rpm
+
 useradd www
 passwd hogehoge
 usermod -G wheel www
 
 # vim /etc/inittab
+----
 id:3:initdefault:
+----
 
 # vim /etc/sysconfig/selinux
+----
 SELINUX=disabled
+----
 
 # cd /etc/cron.daily
 mkdir disabled
@@ -16,12 +26,16 @@ mv /etc/cron.daily/makewhatis.cron disabled
 mv /etc/cron.daily/0anacron disabled
 
 # vi /etc/ntp.conf
+----
 server ntp1.jst.mfeed.ad.jp
 server ntp2.jst.mfeed.ad.jp
 server ntp3.jst.mfeed.ad.jp
+----
 
 # vi /etc/sysconfig/i18n
+----
 LANG="ja_JP.UTF-8"
+----
 
 chkconfig cpuspeed --level 12345 off
 chkconfig ip6tables off
@@ -30,7 +44,9 @@ chkconfig readahead_early off
 chkconfig sendmail off
 
 ## visudo
+----
 wheel  ALL=(ALL)       ALL
+----
 
 yum -y remove cups           # cups：プリントサーバー
 yum -y remove kudzu          # kudzu：ハードウェア構成変更検出
