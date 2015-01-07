@@ -1,6 +1,9 @@
 ## Finderのツールバーに追加
 ⌘キーを押下しながらDrag & Drop
 
+# exclude resource fork
+COPYFILE_DISABLE=1 tar cf folder.tar --exclude ".DS_Store" folder
+
 ## caffeinate でスリープを防ぐ
 caffeinate brew update &
 caffeinate open -a Safari
