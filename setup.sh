@@ -162,6 +162,12 @@ EOM
 main() {
   cd $(dirname $0)
 
+  if ! which git >/dev/null 2>&1; then
+    echo "command not found: git" 1>&2
+    git rev-parse >/dev/null 2>&1
+    exit 1
+  fi
+
   purge_files
 
   if [ $opt_uninstall = 1 ]; then
