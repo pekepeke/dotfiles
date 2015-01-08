@@ -46,8 +46,11 @@ cdf() {
 }
 # docker {{{2
 export DOCKER_HOST=tcp://192.168.59.103:2376
-export DOCKER_CERT_PATH=/Users/konnok/.boot2docker/certs/boot2docker-vm
+export DOCKER_CERT_PATH=~/.boot2docker/certs/boot2docker-vm
 export DOCKER_TLS_VERIFY=1
+
+# ec2 {{{2
+[ -e /usr/local/Cellar/ec2-api-tools/ ] && export EC2_HOME="$(find /usr/local/Cellar/ec2-api-tools/*/libexec -type d -depth 0 | sort -nr | head -1)"
 
 # __END__ {{{1
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:
