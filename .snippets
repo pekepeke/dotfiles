@@ -1,0 +1,54 @@
+# git log
+git log --format="%ai  %an  %h  %d %s" | peco | awk 'match($0,/[[:blank:]]{2}[a-z0-9]{7}[[:blank:]]{2}/) { print substr($0, RSTART, RLENGTH) }' | xargs echo -n | tee >(pbcopy)
+
+# apache
+sudo apachectl graceful
+tail -n 5000 /usr/local/apache2/logs/access_log | awk '{print $1}'  | sort | uniq -c | sort -gr | head -n 4
+tail -n 5000 /usr/local/apache2/logs/access_log | awk '{print $2}'  | sort | uniq -c | sort -gr | head -n 4
+tail -n 5000 /usr/local/apache2/logs/access_log | awk '{print $12}' | sort | uniq -c | sort -gr | head -n 4
+tail -n 5000 /usr/local/apache2/logs/access_log | awk '{print $13}' | sort | uniq -c | sort -gr | head -n 4
+
+# stress
+ # rpm -hiv http://packages.sw.be/stress/stress-1.0.2-1.el5.rf.x86_64.rpm
+stress --cpu 1 --io 4 --vm 4 --vm-bytes 256M --timeout 500s
+stress --verbose --cpu 1 --io 1 --vm 1 --hdd 1 --timeout 10
+
+# search
+netstat -ltapn | grep ESTABLISHED | more
+netstat -ltan | grep ":80 " | awk '{print $5}' | awk -F : '{print $4}' | sort | uniq -c | sort -nr | head
+lsof -i:80
+
+# dstat
+dstat -Tclmdrn
+dstat -Tclm
+dstat -Tclr
+dstat -Tclnd
+dstat -Tcldr
+dstat --top-cpu --top-cputime
+dstat --top-io --top-bio
+dstat --top-io-adv --top-bio-adv
+
+# openssl
+openssl x509 -noout -modulus -in *.crt | openssl md5
+openssl rsa  -noout -modulus -in *.key | openssl md5
+openssl req  -noout -modulus -in *.csr | openssl md5
+
+# find
+find ./ -daystart -ctime +2
+find ./ -daystart -ctime -2
+
+# date
+date +%Y%m%d
+
+git submodule foreach 'git pull origin master'
+git submodule foreach 'git checkout master; git pull'
+
+# recursive-touch
+find . -print0 | xargs -0 touch
+
+# ltsv
+tail -F access.ltsv | ltsv2json | jq 'select(.status >= "500") | {req: .req, referer: .referer, ua: .ua}'
+
+# gzip
+# ruby -e 'puts "-name " + %w[html css js ttf woff svg eot].map{ |ext| "\"*.#{ext}\"" }.join(" -o -name ")'
+find public/ -name "*.html" -o -name "*.css" -o -name "*.js" -o -name "*.ttf" -o -name "*.woff" -o -name "*.svg" -o -name "*.eot" | xargs -Ifile sh -c "gzip --best -c file > file.gz"
