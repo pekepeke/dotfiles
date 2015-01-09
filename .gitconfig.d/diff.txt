@@ -7,7 +7,8 @@
   textconv = textutil -convert txt -stdout
 [diff "xlsx"]
   binary = true
-  textconv = $HOME/bin/git-xlsx-textconv.pl
+  textconv = $GOPATH/bin/git-xlsx-textconv
+  ; textconv = $HOME/bin/git-xlsx-textconv.pl
 [diff "exif"]
   binary = true
   textconv = exiftool -ImageSize -FileSize -DeviceModel -ColorType
