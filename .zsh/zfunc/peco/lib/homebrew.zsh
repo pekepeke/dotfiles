@@ -25,7 +25,6 @@ _peco_homebrew_open() {
           xdg-open "$url" ;;
         *)
           xdg-open "$url" ;;
-          ;;
       esac
     fi
   fi
