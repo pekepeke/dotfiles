@@ -60,6 +60,8 @@ autoload -Uz peco-gui-window-select
 zle -N peco-gui-window-select
 autoload -Uz peco-history-replace-buffer
 zle -N peco-history-replace-buffer
+autoload -Uz peco-homebrew-cask-cd-appdir
+zle -N peco-homebrew-cask-cd-appdir
 autoload -Uz peco-homebrew-cask-info
 zle -N peco-homebrew-cask-info
 autoload -Uz peco-homebrew-cask-install

@@ -2,6 +2,6 @@
 [core]
   quotepath = false
   whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
-  excludesfile = ~/.gitignore-global
-  attributesfile = ~/.gitattributes-global
+  excludesfile = ~/.gitconfig.d/gitignore.txt
+  attributesfile = ~/.gitconfig.d/gitattributes.txt
 

@@ -1,3 +1,4 @@
+# vim:ft=conf
 # @see https://github.com/github/gitignore
 # Archives
 # *.7z
@@ -92,4 +93,5 @@ tramp
 
 # zed
 .zedstate
+
 

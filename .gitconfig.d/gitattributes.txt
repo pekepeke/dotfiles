@@ -1,3 +1,4 @@
+# vim:ft=conf
 *.pbxproj merge=mergepbx
 *.xlsx   diff=xlsx
 *.png    diff=exif
@@ -6,4 +7,5 @@
 *.odt    diff=odt
 *.scpt   diff=applescript
 *.rtf    diff=rtf
+
 
