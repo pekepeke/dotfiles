@@ -1063,10 +1063,10 @@ if executable('go')
   \ 'commands': ['LiveStyle'],
   \ },
   \ 'build' : {
-  \ 'windows': 'go build -o livestyled/livestyled livestyled/livestyled.go',
-  \ 'cygwin' : 'go build -o livestyled/livestyled livestyled/livestyled.go',
-  \ 'mac'    : 'go build -o livestyled/livestyled livestyled/livestyled.go',
-  \ 'unix'   : 'go build -o livestyled/livestyled livestyled/livestyled.go',
+  \ 'windows': 'go get golang.org/x/net/websocket && go build -o livestyled/livestyled livestyled/livestyled.go',
+  \ 'cygwin' : 'go get golang.org/x/net/websocket && go build -o livestyled/livestyled livestyled/livestyled.go',
+  \ 'mac'    : 'go get golang.org/x/net/websocket && go build -o livestyled/livestyled livestyled/livestyled.go',
+  \ 'unix'   : 'go get golang.org/x/net/websocket && go build -o livestyled/livestyled livestyled/livestyled.go',
   \ }}
 endif
 NeoBundleLazy 'https://gist.github.com/6576341', {
@@ -1188,17 +1188,19 @@ endif
 NeoBundle 'peterhoeg/vim-qml'
 
 " C# {{{4
-NeoBundleLazy 'OrangeT/vim-csharp', {'autoload':{
-\ 'filetypes': ['cs'],
-\ }}
+" NeoBundleLazy 'OrangeT/vim-csharp', {'autoload':{
+" \ 'filetypes': ['cs'],
+" \ }}
 
-NeoBundleLazy 'nosami/Omnisharp', {
-\ 'autoload': {'filetypes': ['cs']},
-\ 'build': {
-\   'windows': 'MSBuild.exe server/OmniSharp.sln /p:Platform="Any CPU"',
-\   'mac': 'xbuild server/OmniSharp.sln',
-\   'unix': 'xbuild server/OmniSharp.sln',
-\ }}
+if (s:is_win && executable('MSBuild.exe')) || (!s:is_win && executable('xbuild'))
+  NeoBundleLazy 'OmniSharp/omnisharp-vim', {
+  \ 'autoload': {'filetypes': ['cs']},
+  \ 'build': {
+  \   'windows': 'MSBuild.exe server/OmniSharp.sln /p:Platform="Any CPU"',
+  \   'mac': 'xbuild server/OmniSharp.sln',
+  \   'unix': 'xbuild server/OmniSharp.sln',
+  \ }}
+endif
 
 " OSX {{{4
 NeoBundle 'b4winckler/vim-objc'
