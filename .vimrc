@@ -4119,7 +4119,11 @@ let g:yankring_window_height = 14
 
 " cocoa.vim {{{2
 let g:objc#man#dash_keyword = 'ios:'
-let g:objc#man#dash_command_format = '/Applications/zeal.app/Contents/MacOS/zeal --query "%s" &'
+if s:is_mac
+  if executable($HOME . '/Applications/zeal.app/Contents/MacOS/zeal')
+    let g:objc#man#dash_command_format = $HOME . '/Applications/zeal.app/Contents/MacOS/zeal --query "%s" &'
+  endif
+endif
 
 " rails.vim {{{2
 if s:bundle.tap('vim-rails')
@@ -4975,37 +4979,6 @@ if s:bundle.tap('unite.vim')
   command! -bang BrewEdit
     \ call s:unite_file_with_filetype("<bang>", exists('$HOMEBREW_PREFIX') ? expand('$HOMEBREW_PREFIX') : '/usr/local/Library/')
 
-  " http://d.hatena.ne.jp/osyo-manga/20120205/1328368314 "{{{3
-  function! s:tags_update()
-      " include している tag ファイルが毎回同じとは限らないので毎回初期化
-      setlocal tags=
-      if g:vimrc_enabled_plugins.neocomplete
-        for filename in neocomplete#sources#include#get_include_files(bufnr('%'))
-            execute "setlocal tags+=".neocomplete#cache#encode_name('tags_output', filename)
-        endfor
-      elseif g:vimrc_enabled_plugins.neocomplcache
-        for filename in neocomplcache#sources#include_complete#get_include_files(bufnr('%'))
-            execute "setlocal tags+=".neocomplcache#cache#encode_name('tags_output', filename)
-        endfor
-      endif
-  endfunction
-
-  command!
-      \ -nargs=? PopupTags
-      \ call <SID>tags_update() | Unite tag:<args>
-
-  function! s:get_func_name(word)
-      let end = match(a:word, '<\|[\|(')
-      return end == -1 ? a:word : a:word[ : end-1 ]
-  endfunction
-
-  " カーソル下のワード(word)で絞り込み
-  nnoremap <silent> [!unite]] :<C-u>execute "PopupTags ".expand('<cword>')<CR>
-
-  " カーソル下のワード(WORD)で ( か < か [ までが現れるまでで絞り込み
-  nnoremap <silent> [!unite]<C-]> :<C-u>execute "PopupTags "
-      \.substitute(<SID>get_func_name(expand('<cWORD>')), '\:', '\\\:', "g")<CR>
-
   " cmd-t/r {{{3
   function! s:get_cmd_t_key(key)
     return printf("<%s-%s>", has('gui_macvim') ? "D" : "A", a:key)
@@ -5015,7 +4988,6 @@ if s:bundle.tap('unite.vim')
     let dir = unite#util#path2project_directory(expand('%'))
     execute 'Unite' opts 'file_rec:' . dir
   endfunction
-  " execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>call <SID>unite_project_files('-start-insert')<CR>"
   execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>Unite repo_files -start-insert<CR>"
   execute 'nnoremap' '<silent>' s:get_cmd_t_key("r") ':<C-u>Unite outline -start-insert<CR>'
 

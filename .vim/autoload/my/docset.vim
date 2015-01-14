@@ -36,7 +36,7 @@ function! s:zeal_query(word) "{{{2
     let not_found = 1
     for bin in [$HOME . '/Applications/zeal.app/Contents/MacOS/zeal', '/Applications/zeal.app/Contents/MacOS/zeal']
       if executable(bin)
-        call system(printf("/Applications/zeal.app/Contents/MacOS/zeal --query %s &", shellescape(a:word)))
+        call system(printf("%s --query %s &", bin, shellescape(a:word)))
         let not_found = 0
         break
       endif
@@ -54,7 +54,7 @@ endfunction
 function! s:zeal_word(...) "{{{2
   let word = len(a:000) == 0 ?
   \ input('Zeal search: ',
-  \ expand('<cword>'), 'customlist,'.s:SID().'zeal_complete') : a:1
+  \ expand('<cword>'), 'customlist,s:zeal_complete') : a:1
   return word
 endfunction
 
@@ -67,6 +67,22 @@ endfunction
 
 function! s:dash_query(word) "{{{2
   call system(printf("open dash://'%s'", a:word))
+endfunction
+
+function! s:keyword_with_filetype(func, word)
+  let filetypes = reverse(split(&filetype, '\.'))
+  for ft in filetypes
+    let keywords = call(a:func, [ft, 1, 1])
+    if len(keywords) <= 0
+      next
+    endif
+    if len(filter(copy(keywords), 'v:val =~? ft . ":"')) > 0
+      return ft . ":" . a:word
+      break
+    endif
+    return keywords[0] . ":" . a:word
+  endfor
+  return a:word
 endfunction
 
 " public {{{1
@@ -89,10 +105,7 @@ endfunction
 
 function! my#docset#dash_with_filetype(...) "{{{2
   let word = call('<SID>dash_word', a:000)
-  let keywords = my#docset#dash_complete(&filetype, 1, 1)
-  if len(filter(copy(keywords), 'v:val =~? &filetype . ":"')) > 0
-    let word = &filetype . ":" . word
-  endif
+  let word = s:keyword_with_filetype(function('my#docset#dash_complete'), word)
   call s:dash_word(word)
 endfunction
 
@@ -103,10 +116,7 @@ endfunction
 
 function! my#docset#zeal_with_filetype(...) "{{{2
   let word = call('<SID>zeal_word', a:000)
-  let keywords = my#docset#zeal_complete(&filetype, 1, 1)
-  if len(filter(copy(keywords), 'v:val =~? &filetype . ":"')) > 0
-    let word = &filetype . ":" . word
-  endif
+  let word = s:keyword_with_filetype(function('my#docset#zeal_complete'), word)
   call s:zeal_query(word)
 endfunction
 
