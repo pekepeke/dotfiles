@@ -1963,6 +1963,7 @@ nnoremap <silent> [!t]c :<C-u>tabnew<CR>
 nnoremap <silent> [!t]C :<C-u>tabnew %<CR>
 nnoremap <silent> [!t]* :<C-u>tabedit %<CR>*
 nnoremap <silent> [!t]# :<C-u>tabedit %<CR>#
+nnoremap <silent> [!t]q :<C-u>tabclose<CR>
 
 " redraw map
 nmap <silent> sr :redraw!<CR>

@@ -1,3 +1,4 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 _peco_homebrew() {
   local selected=$(brew $1 search | peco --query="$LBUFFER")
   if [ -n "$selected" ]; then

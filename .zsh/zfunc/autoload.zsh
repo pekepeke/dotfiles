@@ -68,6 +68,8 @@ autoload -Uz peco-homebrew-cask-install
 zle -N peco-homebrew-cask-install
 autoload -Uz peco-homebrew-cask-open
 zle -N peco-homebrew-cask-open
+autoload -Uz peco-homebrew-cask-open-appdir
+zle -N peco-homebrew-cask-open-appdir
 autoload -Uz peco-homebrew-info
 zle -N peco-homebrew-info
 autoload -Uz peco-homebrew-install
@@ -86,6 +88,10 @@ autoload -Uz peco-ls-la-insert-at-pos
 zle -N peco-ls-la-insert-at-pos
 autoload -Uz peco-multi-ssh
 zle -N peco-multi-ssh
+autoload -Uz peco-osx-set-ethernet-webproxy
+zle -N peco-osx-set-ethernet-webproxy
+autoload -Uz peco-osx-set-wifi-webproxy
+zle -N peco-osx-set-wifi-webproxy
 autoload -Uz peco-pip-file-edit
 zle -N peco-pip-file-edit
 autoload -Uz peco-plist-all-insert-at-pos

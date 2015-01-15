@@ -3,6 +3,7 @@
 
 # exclude resource fork
 COPYFILE_DISABLE=1 tar cf folder.tar --exclude ".DS_Store" folder
+COPYFILE_DISABLE=1 zip -r folder folder/ -x .DS_Store
 
 ## caffeinate でスリープを防ぐ
 caffeinate brew update &

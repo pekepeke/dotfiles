@@ -1,0 +1,20 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-osx-set-ethernet-webproxy() {
+  local selected="$(cat <<EOM | peco --query="$LBUFFER"
+sudo networksetup -setwebproxy Ethernet localhost 8080; sudo networksetup -setwebproxystate Ethernet on
+sudo networksetup -setwebproxy Ethernet localhost 8087; sudo networksetup -setwebproxystate Ethernet on
+sudo networksetup -setwebproxy Ethernet localhost 8123; sudo networksetup -setwebproxystate Ethernet on
+sudo networksetup -setwebproxy Ethernet localhost 8888; sudo networksetup -setwebproxystate Ethernet on
+sudo networksetup -setwebproxy Ethernet localhost 5432; sudo networksetup -setwebproxystate Ethernet on
+sudo networksetup -setwebproxystate Ethernet off
+networksetup -getwebproxy Ethernet
+EOM
+)"
+
+  if [ -n "$selected" ]; then
+    BUFFER="${selected}"
+    zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-osx-set-ethernet-webproxy

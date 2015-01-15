@@ -1,10 +1,11 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
-# peco-homebrew-cask-cd-appdir() {
+# peco-homebrew-cask-open-appdir() {
   local selected="$(find /opt/homebrew-cask/Caskroom -type d -depth 2 -not -name '.metadata' | peco --query="$LBUFFER")"
   if [ -n "$selected" ]; then
-    BUFFER="cd ${selected}"
+    BUFFER="open ${selected}"
     zle accept-line
   fi
   zle -R
 # }
-# zle -N peco-homebrew-cask-cd-appdir
+# zle -N peco-homebrew-cask-open-appdir
+
