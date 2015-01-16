@@ -4169,13 +4169,16 @@ endif
 
 " python {{{2
 let g:pymode_rope = 1
+let g:pymode_rope_lookup_project = 1
 let g:pymode_rope_goto_def_newwin = 'new'
-let g:pymode_rope_vim_completion = 1
+let g:pymode_rope_completion = 0
+let g:pymode_rope_complete_on_dot = 0
 let g:pymode_run = 0
 let g:pymode_doc = 0
 let g:pymode_lint = 0
 let g:pymode_virtualenv = 0
 let g:pymode_rope_global_prefix = '[!rope]'
+let g:vimrc_pymode_rope_project_dirprefixes = [expand("~/project")]
 
 " jedi-vim {{{2
 if s:bundle.is_installed('jedi-vim')

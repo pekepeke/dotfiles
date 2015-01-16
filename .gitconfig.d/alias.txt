@@ -42,9 +42,9 @@
   d5 = diff HEAD~~~~~
   d10 = diff HEAD~~~~~~~~~~
   dt = difftool --dir-diff
-  ignore = "!f() { local s=$1; shift; \
-    while [ $# -gt 0 ]; do s="$s,$1"; shift; done;\
-    curl -L "http://gitignore.io/api/$s"; }; f"
+  ; ignore = "!f() { local s=$1; shift; \
+  ;   while [ $# -gt 0 ]; do s="$s,$1"; shift; done;\
+  ;   curl -L "http://gitignore.io/api/$s"; }; f"
   pbcopy = !printf "$1" | pbcopy-wrapper
   export = "!f() {\n\
     for file in `git diff --name-only $1 $1^`; do \n\

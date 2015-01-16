@@ -732,6 +732,7 @@ _zsh-complete-init() {
     "$_ssh_known_ips[@]"
     )
   zstyle ':completion:*' hosts $hosts #3}}}
+  compdef ssh-log=ssh
 
   # completion bindkeys {{{3
   # vi like
