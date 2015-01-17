@@ -351,11 +351,11 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
         screen -X eval "select 1"
         return
         ;;
-      cd|ssh|rlwrap)
-        if (( $#cmd >= 2)); then
-          cmd[1]=$cmd[2]
-        fi
-        ;;
+      # cd|ssh|rlwrap)
+      #   if (( $#cmd >= 2)); then
+      #     cmd[1]=$cmd[2]
+      #   fi
+      #   ;;
       *)
         echo -n "k$cmd[1]:t\\"
         return
@@ -733,6 +733,7 @@ _zsh-complete-init() {
     )
   zstyle ':completion:*' hosts $hosts #3}}}
   compdef ssh-log=ssh
+  compdef multi_ssh=ssh
 
   # completion bindkeys {{{3
   # vi like

@@ -135,6 +135,7 @@ if type lv > /dev/null 2>&1; then
   export PAGER=lv
   export LV="-c -l"
 else
+  [ -z "$PAGER" ] && export PAGER="less"
   alias lv="$PAGER"
 fi
 # if [ -x ~/bin/vimpager ] ; then

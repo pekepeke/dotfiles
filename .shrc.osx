@@ -1,6 +1,6 @@
 # settings {{{1
 export LESS="-IMR"
-export LESSOPEN="| ~/bin/.opt/osx/lesspipe.sh"
+export LESSOPEN="| ~/.local-config/script/lesspipe.sh %s"
 export JAVA_HOME="$(/usr/libexec/java_home 2>/dev/null)"
 
 # aliases {{{1

@@ -3585,12 +3585,13 @@ if s:bundle.tap('vim-smalls')
   let g:smalls_auto_excursion_min_input_length = 2
 
   function s:bundle.tapped.hooks.on_source(bundle)
-    let cli_table_custom = {
+    let s:cli_table_custom = {
     \ "\<C-g>": 'do_cancel',
     \ "\<C-j>": 'do_jump',
     \ "\<CR>": 'do_set',
     \ }
     call smalls#keyboard#cli#extend_table(cli_table_custom)
+    unlet s:cli_table_custom
   endfunction
 endif
 
@@ -4437,23 +4438,8 @@ if s:bundle.tap('unite.vim')
     command! -bang -nargs=* -complete=custom,dispatch#command_complete
     \ StartNofocus call s:start_nofocus(<bang>0, <q-args>)
 
-    function! s:unite_buffer_rename(...) "{{{5
-      let unite = unite#variables#current_unite()
-      if !exists('unite["buffer_name"]')
-        echohl Error
-        echomsg "not found: buffer name"
-        echohl Normal
-        return
-      endif
-      let bufname = a:0 > 0 && !empty(a:1)
-      \ ? a:1 : input("new buffer name:", unite["buffer_name"])
-      if !empty(bufname)
-        let unite["buffer_name"] = bufname
-      endif
-    endfunction
-
     command! -nargs=*
-    \ UniteBufferRename call s:unite_buffer_rename(<q-args>)
+    \ UniteBufferRename call my#unite#buffer_rename(<q-args>)
 
     " http://d.hatena.ne.jp/osyo-manga/20130225/1361794133
     function! s:unite_menu_create(desc, ...) "{{{5
@@ -4808,7 +4794,7 @@ if s:bundle.tap('unite.vim')
     endif
     " 4}}}
 
-  endfunction "3}}}
+  endfunction " 3}}}
 
   " unite mappings {{{3
   function! s:unite_map(bang, prefix, key, ...) " {{{4
@@ -4891,61 +4877,10 @@ if s:bundle.tap('unite.vim')
   " endif
 
   " nnoremap <silent> [!unite]h  :<C-u>UniteWithCursorWord help:ja help<CR>
-  " nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_filetype()<CR>
-  nnoremap <silent> [!unite]hh :<C-u>call <SID>unite_ref_callable()<CR>
+  " nnoremap <silent> [!unite]hh :<C-u>call my#unite#ref_filetype()<CR>
+  nnoremap <silent> [!unite]hh :<C-u>call my#unite#ref_callable()<CR>
   nnoremap <silent> [!unite]he :<C-u>Unite help<CR>
   nnoremap <silent> [!unite]hk :<C-u>Unite mapping<CR>
-
-  function! s:unite_ref_callable(...) "{{{4
-    let kwd = ""
-    if a:0 > 0
-      let isk = &l:isk
-      setlocal isk& isk+=- isk+=. isk+=:
-      let kwd = expand('<cword>')
-      let &l:isk = isk
-    endif
-    let name = ref#detect()
-    let names = type(name) == s:type_s ? [name] : name
-    unlet name
-
-    let completable = keys(filter(ref#available_sources(), 'exists("v:val.complete")'))
-    let sources = filter(names, 'index(completable, v:val) != -1')
-    unlet names
-
-    if !empty(sources)
-      let source = join(map(sources, '"ref/".v:val'), ' ')
-      execute printf('Unite -default-action=below -input=%s %s', kwd, source)
-    else
-      echohl Error
-      echomsg "Not Found : ref source"
-      echohl Normal
-    endif
-    unlet kwd completable sources source
-  endfunction
-
-  function! s:unite_ref_filetype() " {{{4
-    let ft = &ft
-    let names = []
-
-    let isk = &l:isk
-    setlocal isk& isk+=- isk+=. isk+=:
-    let kwd = expand('<cword>')
-    let &l:isk = isk
-
-    let types = ref#detect()
-    if s:type_s == type(types)
-      unlet types
-      let types = ['man']
-    endif
-    let types = filter(types, 'type(ref#available_sources(v:val)) == s:type_h')
-    if !empty(types)
-      execute 'Unite' '-default-action=below' '-input='.kwd join(map(types, '"ref/".v:val'), ' ')
-    else
-      echohl Error
-      echomsg "Not Found : ref source"
-      echohl Normal
-    endif
-  endfunction "}}}
 
   nnoremap          [!unite]rr :<C-u>UniteResume<Space>
   nnoremap <silent> [!unite]re :<C-u>UniteResume<CR>
@@ -4964,40 +4899,21 @@ if s:bundle.tap('unite.vim')
 
   command! Todo silent! exe 'Unite' printf('grep:%s::%s', getcwd(), s:regexp_todo) '-buffer-name=todo' '-no-quit'
 
-  function! s:unite_file_with_filetype(bang, ...) "{{{
-    let cmd = "Unite " . join(
-      \ map(copy(a:000), 's:unite_file_with_filetype_command(a:bang, v:val)'), " ")
-    execute cmd
-  endfunction "}}}
-
-  function! s:unite_file_with_filetype_command(bang, dir)
-    let dir = substitute(a:dir . "/", '/\+$', '/', "") . &filetype
-    if !empty(a:bang) || !isdirectory(dir)
-      let dir = a:dir
-    endif
-    return printf("file:%s file/new:%s", dir, dir)
-  endfunction
-
   command! -bang -nargs=1 -complete=dir UniteEditFile
-    \ call s:unite_file_with_filetype("<bang>", <f-args>)
+    \ call my#unite#edit_file_by_filetype("<bang>", <f-args>)
   command! -bang BrewEdit
-    \ call s:unite_file_with_filetype("<bang>", exists('$HOMEBREW_PREFIX') ? expand('$HOMEBREW_PREFIX') : '/usr/local/Library/')
+    \ call my#unite#edit_file_by_filetype("<bang>", exists('$HOMEBREW_PREFIX') ? expand('$HOMEBREW_PREFIX') : '/usr/local/Library/')
 
   " cmd-t/r {{{3
   function! s:get_cmd_t_key(key)
     return printf("<%s-%s>", has('gui_macvim') ? "D" : "A", a:key)
   endfunction
-  function! s:unite_project_files(...)
-    let opts = (a:0 ? join(a:000, ' ') : '')
-    let dir = unite#util#path2project_directory(expand('%'))
-    execute 'Unite' opts 'file_rec:' . dir
-  endfunction
   execute 'nnoremap' '<silent>' s:get_cmd_t_key("t") ":<C-u>Unite repo_files -start-insert<CR>"
   execute 'nnoremap' '<silent>' s:get_cmd_t_key("r") ':<C-u>Unite outline -start-insert<CR>'
 
   MyAutoCmd FileType unite call s:vimrc_unite_init() "{{{3
-  function! s:vimrc_unite_init()
 
+  function! s:vimrc_unite_init()
     imap <buffer> jj <Plug>(unite_insert_leave)j
     imap <buffer> qq <Plug>(unite_exit)
     imap <buffer> ]] <C-o><Plug>(unite_rotate_next_source)
@@ -7431,8 +7347,6 @@ function! s:edit_vimrc_local()
   endif
 endfunction
 command! VimrcLocalEdit call s:edit_vimrc_local()
-" 選択範囲をブラウザで起動 {{{3
-command! -range=0 OpenBrowserRange call my#command#openbrowser_range(<line1>, <line2>)
 
 " TSV {{{3
 command! -range Tsvtohtmltable     <line1>,<line2>call my#tsv#to_htmltable()
