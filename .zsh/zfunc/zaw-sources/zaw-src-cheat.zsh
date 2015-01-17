@@ -7,12 +7,18 @@
 [ x"$ZSH_ZAW_CHEAT" = x ] && ZSH_ZAW_CHEAT="$HOME/.zsh/opt/cheat"
 function zaw-src-cheat() {
   candidates+=($(find "$ZSH_ZAW_CHEAT" -type f | sed "s|${ZSH_ZAW_CHEAT}/*||g"))
-  actions=( "zaw-callback-cheat-peco-input" "zaw-callback-cheat-peco-yank" "zaw-callback-cheat-cheat" "zaw-callback-cheat-yank" "zaw-callback-cheat-open" "zaw-callback-cheat-edit" "zaw-callback-cheat-cat" )
-  act_descriptions=( "input with peco" "yank with peco" "preview cheat" "yank cheat" "open" "edit" "cat")
+  actions=( "zaw-callback-cheat-pager" "zaw-callback-cheat-peco-yank" "zaw-callback-cheat-peco-input" "zaw-callback-cheat-cheat" "zaw-callback-cheat-yank" "zaw-callback-cheat-open" "zaw-callback-cheat-edit" "zaw-callback-cheat-cat" )
+  act_descriptions=( "view" "yank with peco" "input with peco" "preview cheat" "yank cheat" "open" "edit" "cat")
 }
 
 function zaw-callback-cheat-cheat() {
   zle -M "`cat $ZSH_ZAW_CHEAT/$1`"
+}
+
+function zaw-callback-cheat-pager(){
+  zle -M "`print "$PAGER : $ZSH_ZAW_CHEAT$1"`"
+  BUFFER="$PAGER $ZSH_ZAW_CHEAT/$1"
+  zle accept-line
 }
 
 function zaw-callback-cheat-yank() {
