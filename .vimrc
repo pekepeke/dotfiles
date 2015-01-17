@@ -3590,7 +3590,7 @@ if s:bundle.tap('vim-smalls')
     \ "\<C-j>": 'do_jump',
     \ "\<CR>": 'do_set',
     \ }
-    call smalls#keyboard#cli#extend_table(cli_table_custom)
+    call smalls#keyboard#cli#extend_table(s:cli_table_custom)
     unlet s:cli_table_custom
   endfunction
 endif

@@ -17,6 +17,20 @@ function! my#unite#buffer_rename(...) " {{{2
   endif
 endfunction
 
+function! my#unite#edit_file_by_filetype(bang, ...) " {{{2
+    let cmd = "Unite " . join(
+      \ map(copy(a:000), 'my#unite#edit_file_by_filetype(a:bang, v:val)'), " ")
+    execute cmd
+endfunction
+
+function! my#unite#edit_file_by_filetype(band, dir) "{{{2
+  let dir = substitute(a:dir . "/", '/\+$', '/', "") . &filetype
+  if !empty(a:bang) || !isdirectory(dir)
+    let dir = a:dir
+  endif
+  return printf("file:%s file/new:%s", dir, dir)
+endfunction
+
 function! my#unite#ref_callable(...) " {{{2
   let kwd = ""
   if a:0 > 0
