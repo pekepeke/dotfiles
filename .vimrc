@@ -2514,7 +2514,7 @@ let plugin_verifyenc_disable = 1
 let g:vimrc_enabled_plugins = {
   \ 'smartchr': s:bundle.is_installed('vim-smartchr'),
   \ 'smartinput': s:bundle.is_installed('vim-smartinput'),
-  \ 'lexima': s:bundle.is_installed('vim-lexima'),
+  \ 'lexima': s:bundle.is_installed('lexima.vim'),
   \ 'increment_activator': s:bundle.is_installed('increment-activator'),
   \ 'cycle': s:bundle.is_installed('vim-cycle'),
   \ 'speeddating': s:bundle.is_installed('vim-speeddating'),
@@ -3759,10 +3759,11 @@ if s:bundle.tap('lexima.vim')
       \ 'mode': 'i',
       \ })
 
-    call lexima#insmode#define_altanative_key('<Plug>(lexima-BS)', '<BS>')
-    call lexima#insmode#define_altanative_key('<Plug>(lexima-C-h)', '<C-h>')
-    call lexima#insmode#define_altanative_key('<Plug>(lexima-CR)', '<CR>')
-    call lexima#insmode#define_altanative_key('<Plug>(lexima-SPACE)', '<Space>')
+    " call lexima#insmode#define_altanative_key('<Plug>(lexima-BS)', '<BS>')
+    " call lexima#insmode#define_altanative_key('<Plug>(lexima-C-h)', '<C-h>')
+    " call lexima#insmode#define_altanative_key('<Plug>(lexima-CR)', '<CR>')
+    " call lexima#insmode#define_altanative_key('<Plug>(lexima-SPACE)', '<Space>')
+
   endfunction
   call s:bundle.untap()
 endif
@@ -6520,8 +6521,14 @@ if s:bundle.is_installed('neosnippet.vim')
   let s:pair_closes = [ "]", "}", ")", "'", '"', ">", "|" , ","]
   function! s:imap_tab()
     if neosnippet#expandable()
+      if g:vimrc_enabled_plugins.neocomplete
+        call neocomplete#smart_close_popup().
+      endif
       return "\<Plug>(neosnippet_expand)"
     elseif neosnippet#jumpable()
+      if g:vimrc_enabled_plugins.neocomplete
+        call neocomplete#smart_close_popup().
+      endif
       return "\<Plug>(neosnippet_jump)"
     " if s:can_snip()
     "   return "\<Plug>(neosnippet_jump_or_expand)"
@@ -6747,12 +6754,14 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   " <C-h>, <BS>: close popup and delete backword char.
   if g:vimrc_enabled_plugins.lexima
     " TODO : overrides plugin...
-    imap <expr> <C-h>  pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
-    \ neocomplete#smart_close_popup()."\<Plug>(lexima-BS)"
-    imap <expr> <BS>   pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
-    \ neocomplete#smart_close_popup()."\<Plug>(lexima-C-h)"
-    imap <expr> <Space>   pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
-    \ neocomplete#smart_close_popup()."\<Plug>(lexima-SPACE)\<Space>\<BS>"
+    function! s:lexima_add_hook()
+      " TODO : iabbrev
+      call lexima#insmode#map_hook('before', '<Space>',
+      \ '<C-r>=neocomplete#smart_close_popup()<CR>')
+      call lexima#insmode#map_hook('before', '<C-h>', '<C-r>=neocomplete#smart_close_popup()<CR>')
+      call lexima#insmode#map_hook('before', '<BS>', '<C-r>=neocomplete#smart_close_popup()<CR>')
+    endfunction
+    MyAutoCmd VimEnter * call s:lexima_add_hook()
   elseif g:vimrc_enabled_plugins.smartinput
     imap <expr> <C-h>  pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
     \ neocomplete#smart_close_popup()."\<Plug>(smartinput_BS)"
@@ -6763,7 +6772,7 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   else
     inoremap <expr><C-h>  neocomplete#smart_close_popup()."\<C-h>"
     inoremap <expr><BS>   neocomplete#smart_close_popup()."\<C-h>"
-    inoremap <expr><Space>   neocomplete#smart_close_popup()."\<Space>"
+    inoremap <expr><Space> neocomplete#smart_close_popup()."\<Space>"
   endif
 
   " inoremap <expr> <C-y>  neocomplete#close_popup()

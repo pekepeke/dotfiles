@@ -136,18 +136,21 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   fi
 
   # go {{{2
-  xenv-init goenv
+  xenv-init genv
+  # xenv-init goenv
   # export GOPATH=~/.gopath
   # if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/bin/go" ]; then
   #   export GOPATH=$(dirname $(dirname $HOMEBREW_PREFIX/bin/go/$(readlink /usr/local/bin/go)))
   export GOPATH=$HOME/.gopath
   PATH=$GOPATH/bin:$PATH
+  [ -e $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh ] \
+    && source $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh
   # fi
 
   # lua {{{2
   xenv-init luaenv
 
-  # direnv
+  # direnv {{{2
   if [ -e ~/.direnv ]; then
     PATH=~/.direnv/bin:$PATH
     eval "$(direnv hook $SHELL_NAME)"
