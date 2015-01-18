@@ -383,10 +383,13 @@ if has('kaoriya') && has('migemo')
 endif
 
 " color settings "{{{1
-" if !has('gui_running')
-"   let s:t_Co=&t_Co
-"   MyAutoCmd VimLeave * let &l:t_Co=s:t_Co
-" endif
+if !has('gui_running')
+  let s:t_Co=&t_Co
+  MyAutoCmd VimLeave * let &l:t_Co=s:t_Co
+endif
+if $COLORTERM == 'gnome-terminal'
+  set t_Co=256
+endif
 " set t_Co=256
 set background=dark
 
