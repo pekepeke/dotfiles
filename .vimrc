@@ -11,6 +11,7 @@
 "       ~~~~                     \__\/         \__\|         \__\/
 " init setup {{{1
 let $VIM_CACHE = $HOME . '/.cache/vim'
+let $VIM_REFDOC = $HOME . '/.local/share/vim/docs'
 
 " defun macros {{{2
 augroup vimrc-myautocmd
@@ -1715,6 +1716,8 @@ if s:is_win
     call s:path_push(dotnets[-1])
   endif
   unlet dotnets
+elseif s:is_mac && $PATH !~# "/usr/local/"
+  call s:path_push("/usr/local/bin", $HOME."/bin", $HOME."/bin/macosx")
 endif
 function! s:log(...)
   if s:bundle.is_installed('vimconsole.vim')
@@ -5650,15 +5653,15 @@ if s:bundle.is_installed('vim-ref')
 
   " langs {{{4
   let g:ref_source_webdict_sites.default = 'alc'
-  let g:ref_phpmanual_path=$VIM_CACHE.'/docs/phpman/'
-  let g:ref_javadoc_path = $VIM_CACHE.'/docs/jdk-6-doc/ja'
-  let g:ref_jquery_path = $VIM_CACHE.'/docs/jqapi-latest/docs'
-  let g:ref_html_path=$VIM_CACHE.'/docs/htmldoc/www.aptana.com/reference/html/api'
-  let g:ref_html5_path=$VIM_CACHE.'/docs/html5doc/dist'
-  let g:ref_jscore_path=$VIM_CACHE.'/docs/jscore/www.aptana.com/reference/html/api'
-  let g:ref_jsdom_path=$VIM_CACHE.'/docs/jscore/www.aptana.com/reference/html/api'
+  let g:ref_phpmanual_path=$VIM_REFDOC.'/phpman/'
+  let g:ref_javadoc_path = $VIM_REFDOC.'/jdk-6-doc/ja'
+  let g:ref_jquery_path = $VIM_REFDOC.'/jqapi-latest/docs'
+  let g:ref_html_path=$VIM_REFDOC.'/htmldoc/www.aptana.com/reference/html/api'
+  let g:ref_html5_path=$VIM_REFDOC.'/html5doc/dist'
+  let g:ref_jscore_path=$VIM_REFDOC.'/jscore/www.aptana.com/reference/html/api'
+  let g:ref_jsdom_path=$VIM_REFDOC.'/jscore/www.aptana.com/reference/html/api'
   "let g:ref_jquery_use_cache = 1
-  let g:ref_nodejsdoc_dir=$VIM_CACHE.'/docs/nodejs/doc'
+  let g:ref_nodejsdoc_dir=$VIM_REFDOC.'/nodejs/doc'
 
   if executable('rurema')
     let g:ref_refe_cmd     = "rurema"

@@ -1,0 +1,13 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-ghq-open() {
+  local selected="$(ghq list -p | perl -pe 's/(\Q$ENV{HOME}\E(.*$))/~$2/' | peco --query="$LBUFFER")"
+  if [ -n "$selected" ]; then
+	(($+functions[_os_gui_shell])) || . ~/.zsh/zfunc/peco/lib/util.zsh
+    BUFFER="$(_get_os_gui_shell) $(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
+    zle accept-line
+  fi
+  zle -R
+  # zle -R -c
+# }
+# zle -N peco-ghq-open
+
