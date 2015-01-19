@@ -31,6 +31,10 @@ Host github.com
   Compression yes
   # Ciphers arcfour256
 
+Host *-ec2-
+    StrictHostKeyChecking no  
+    UserKnownHostsFile /dev/null 
+
 # Host localhost
 #    User docker
 #    StrictHostKeyChecking no  
