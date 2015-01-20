@@ -6528,12 +6528,12 @@ if s:bundle.is_installed('neosnippet.vim')
   function! s:imap_tab()
     if neosnippet#expandable()
       if g:vimrc_enabled_plugins.neocomplete
-        call neocomplete#smart_close_popup().
+        call neocomplete#smart_close_popup()
       endif
       return "\<Plug>(neosnippet_expand)"
     elseif neosnippet#jumpable()
       if g:vimrc_enabled_plugins.neocomplete
-        call neocomplete#smart_close_popup().
+        call neocomplete#smart_close_popup()
       endif
       return "\<Plug>(neosnippet_jump)"
     " if s:can_snip()

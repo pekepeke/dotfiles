@@ -44,3 +44,18 @@ for i in *.jpeg; do sips -s format png $i --out Converted/$i.png;done
 /Applications/Mission\ Control.app/Contents/MacOS/Mission\ Control 1
 # app switch
 /Applications/Mission\ Control.app/Contents/MacOS/Mission\ Control 2
+
+
+## DiffMerge のフォント変更
+mate ~/Library/Preferences/SourceGear\ DiffMerge\ Preferences
+
+-----
+[File]
+Font=14::Ricty
+[File/Printer]
+Font=14::Ricty
+[Folder]
+[Folder/Printer]
+Font=14::Ricty
+-----
+

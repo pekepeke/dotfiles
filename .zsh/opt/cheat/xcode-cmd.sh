@@ -2,11 +2,18 @@
 xcode-select --install
 # command line tool の設定確認
 xcode-select --print-path
+
 # command line tool の切り替え
 sudo xcode-select -switch /Applications/Xcode5.1.1/Xcode.app
-# target, build configuration を参照
+
+# SDK の表示
+xcodebuild -showsdks
+# configuration, target の確認
+xcodebuild -list
 xcodebuild -list -project <your_project_name>.xcodeproj
+
 # build
+xcodebuild -configuration Release -sdk macosx10.10
 xcodebuild -scheme [cheme] build
 xcodebuild -target [target] -xcconfig [file.xcconfig]
 # run test
