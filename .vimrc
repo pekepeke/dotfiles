@@ -3484,6 +3484,7 @@ if s:bundle.is_installed('switch.vim')
   " let g:switch_custom_definitions = [ {
   "       \ } ]
   nnoremap <silent> !! :<C-u>Switch<CR>
+  let g:switch_mapping = ''
   " let b:switch_custom_definitions = [
 
   let s:switch_definitions = {
