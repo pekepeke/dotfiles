@@ -1,0 +1,5 @@
+#compdef ssh-log
+
+_arguments -A "-*" \
+  '1: :_hosts'
+

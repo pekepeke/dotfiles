@@ -1,0 +1,4 @@
+#compdef multi-ssh
+
+_arguments -A "-*" \
+  '1: :_hosts'

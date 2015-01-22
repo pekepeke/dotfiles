@@ -693,7 +693,7 @@ NeoBundle 'tpope/vim-dispatch', {'autoload': {
 \ {'name': 'Copen'},
 \ ],
 \ }}
-NeoBundle 'rhysd/endwize.vim', {'autoload': {'insert':1}}
+" NeoBundle 'rhysd/endwize.vim', {'autoload': {'insert':1}}
 NeoBundleLazy 't9md/vim-quickhl', {'autoload': {
 \ 'commands': [
 \ 'QuickhlManualEnable', 'QuickhlManualDisable', 'QuickhlManualList',
@@ -2536,6 +2536,7 @@ let g:vimrc_enabled_plugins = {
   \ 'agit': s:bundle.is_installed('agit.vim'),
   \ 'concealedyank': s:bundle.is_installed('concealedyank.vim'),
   \ 'ambicmd': s:bundle.is_installed('vim-ambicmd'),
+  \ 'endwize': s:bundle.is_installed('endwize.vim'),
   \ }
 
 " vim-node {{{2
@@ -3768,7 +3769,7 @@ if s:bundle.tap('lexima.vim')
 
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-BS)', '<BS>')
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-C-h)', '<C-h>')
-    " call lexima#insmode#define_altanative_key('<Plug>(lexima-CR)', '<CR>')
+    call lexima#insmode#define_altanative_key('<Plug>(lexima-CR)', '<CR>')
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-SPACE)', '<Space>')
 
   endfunction
@@ -6756,11 +6757,9 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   " }}}
 
   " <CR>: close popup and save indent.
-  imap <silent><expr> <CR> (pumvisible()?neocomplete#close_popup():"")
-  \ ."\<Plug>(smartinput_CR)\<C-r>=endwize#crend()\<CR>"
-
   " <C-h>, <BS>: close popup and delete backword char.
   if g:vimrc_enabled_plugins.lexima
+    imap <silent><expr> <CR> pumvisible()?neocomplete#close_popup():"\<Plug>(lexima-CR)"
     " TODO : overrides plugin...
     function! s:lexima_add_hook()
       " TODO : iabbrev
@@ -6771,6 +6770,14 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
     endfunction
     MyAutoCmd VimEnter * call s:lexima_add_hook()
   elseif g:vimrc_enabled_plugins.smartinput
+    if g:vimrc_enabled_plugins.endwize
+      imap <silent><expr> <CR> (pumvisible()?neocomplete#close_popup():"")
+        \ ."\<Plug>(smartinput_CR)\<C-r>=endwize#crend()\<CR>"
+    else
+      imap <silent><expr> <CR> (pumvisible()?neocomplete#close_popup():"")
+        \ ."\<Plug>(smartinput_CR)"
+    endif
+
     imap <expr> <C-h>  pumvisible()?neocomplete#smart_close_popup()."\<C-h>":
     \ neocomplete#smart_close_popup()."\<Plug>(smartinput_BS)"
     imap <expr> <BS>   pumvisible()?neocomplete#smart_close_popup()."\<C-h>":

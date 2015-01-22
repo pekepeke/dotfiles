@@ -635,29 +635,41 @@ if [ -n "$SSH_CONNECTION" ] && [ $TERM =~ "screen" ] && [ -z "$TMUX" ]; then
 fi
 
 shrc_section_title "complete" #{{{1
+
+[ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
+[ -e ~/.zsh/plugins/zsh-perl-completions ] && fpath=(~/.zsh/plugins/zsh-perl-completions $fpath)
+[ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
+# source_all ~/.zsh/zfunc/commands/*
+(( $+functions[___main] )) || ___main() {} # for git
+if [ -z "$BREW_PREFIX" ]; then
+  fpath=(/usr/local/share/zsh/site-functions(N-/) ${fpath})
+else
+  fpath=($BREW_PREFIX/share/zsh/site-functions(N-/) ${fpath})
+fi
+
+if [ ! -e ~/.zsh.d ]; then
+  mkdir -p ~/.zsh.d
+  cp ~/.zsh/zfunc/tools/rb_optparse.zsh ~/.zsh.d/rb_optparse.zsh
+fi
+fpath=(~/.zsh.d/Completion $fpath)
+
+zmodload -i zsh/complist
+
+# functions
 zcomp-reload() {
   rm -f $_comp_dumpfile && compinit && exec $SHELL
 }
 
+
 _zsh-complete-init() {
   shrc_section_title "complete-init start"
 
-  [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
-  [ -e ~/.zsh/plugins/zsh-perl-completions ] && fpath=(~/.zsh/plugins/zsh-perl-completions $fpath)
-  [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
-  # source_all ~/.zsh/zfunc/commands/*
-  (( $+functions[___main] )) || ___main() {} # for git
-
-  if [ ! -e ~/.zsh.d ]; then
-    mkdir -p ~/.zsh.d
-    cp ~/.zsh/zfunc/tools/rb_optparse.zsh ~/.zsh.d/rb_optparse.zsh
-  fi
-  fpath=(~/.zsh.d/Completion $fpath)
-
-  zmodload -i zsh/complist
-
   autoload -Uz compinit
   compinit -u
+
+  compdef mosh=ssh
+  # compdef ssh-log=ssh
+  # compdef multi_ssh=ssh
 
   autoload -U bashcompinit
   bashcompinit
@@ -732,8 +744,6 @@ _zsh-complete-init() {
     "$_ssh_known_ips[@]"
     )
   zstyle ':completion:*' hosts $hosts #3}}}
-  compdef ssh-log=ssh
-  compdef multi_ssh=ssh
 
   # completion bindkeys {{{3
   # vi like
@@ -750,6 +760,7 @@ _zsh-complete-init() {
   unfunction "_zsh-complete-init"
   zle expand-or-complete
   bindkey -v '^I' expand-or-complete
+
 
   [ -e ~/.spm_completion ] && . ~/.spm_completion
   if is_exec aws_zsh_completer.sh; then

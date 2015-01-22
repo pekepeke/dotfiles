@@ -5,8 +5,14 @@ case $OSTYPE in
   [ -e "$USERPROFILE/.pik/.pikrc" ] && source "$USERPROFILE/.pik/.pikrc"
   [ -e "$USERPROFILE/.pik/pik.sh" ] && source "$USERPROFILE/.pik/pik.sh"
   ;;
+  darwin*)
+    if [ -z "$BREW_PREFIX" ]; then
+      soft_source /usr/local/Library/Contributions/brew_bash_completion.sh
+    else
+      soft_source $BREW_PREFIX/Library/Contributions/brew_bash_completion.sh
+    fi
+    ;;
 esac
-
 [ -s $HOME/.shrc.languages ] && source $HOME/.shrc.languages
 
 # If not running interactively, don't do anything
@@ -115,7 +121,7 @@ fi
 
 ## completion {{{1
 if [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
+  . /etc/bash_completion
 fi
 
 ## for completion
