@@ -6563,7 +6563,8 @@ if s:bundle.is_installed('neosnippet.vim')
       \ && line[pos] =~# '[a-zA-Z]'
       \ && line[pos+1] =~# '[^<>"'']'
       \ && &filetype =~# 'x\?html\|s\?css\|php\|eruby'
-      return "\<Plug>(EmmetExpandAbbr)"
+      " return "\<Plug>(EmmetExpandAbbr)"
+      return "\<Plug>(emmet-expand-abbr)"
     endif
     return "\<TAB>"
   endfunction

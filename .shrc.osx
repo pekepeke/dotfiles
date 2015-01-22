@@ -2,8 +2,13 @@
 export LESS="-IMR"
 export LESSOPEN="| ~/.local-config/script/lesspipe.sh %s"
 export JAVA_HOME="$(/usr/libexec/java_home 2>/dev/null)"
-[ -e /usr/local/Cellar/ec2-api-tools/ -o ] && export EC2_HOME="$(find /usr/local/Cellar/ec2-api-tools/*/libexec -type d -depth 0 | sort -nr | head -1)"
-[ -e $BREW_PREFIX/Cellar/ec2-api-tools/ -o ] && export EC2_HOME="$(find $BREW_PREFIX/Cellar/ec2-api-tools/*/libexec -type d -depth 0 | sort -nr | head -1)"
+if [ -z "$BREW_PREFIX" ]; then
+  [ -e /usr/local/Cellar/ec2-api-tools/ ] && \
+    export EC2_HOME="$(find /usr/local/Cellar/ec2-api-tools/*/libexec -type d -depth 0 | sort -nr | head -1)"
+else
+  [ -e $BREW_PREFIX/Cellar/ec2-api-tools/ ] && \
+    export EC2_HOME="$(find $BREW_PREFIX/Cellar/ec2-api-tools/*/libexec -type d -depth 0 | sort -nr | head -1)"
+fi
 export DOCKER_HOST=tcp://192.168.59.103:2376
 export DOCKER_CERT_PATH=~/.boot2docker/certs/boot2docker-vm
 export DOCKER_TLS_VERIFY=1
