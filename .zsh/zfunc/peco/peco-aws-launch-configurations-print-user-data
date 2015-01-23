@@ -1,5 +1,6 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # peco-aws-launch-configurations-print-user-data() {
-  . ~/.zsh/zfunc/peco/lib/cache.zsh
+  (($+functions[_set-cache])) || . ~/.zsh/zfunc/peco/lib/cache.zsh
 
   set-cache aws autoscaling describe-launch-configurations
   local selected="$(print-cache | \

@@ -1,5 +1,6 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # peco-aws-ec2-instances-print() {
-  . ~/.zsh/zfunc/peco/lib/cache.zsh
+  (($+functions[_set-cache])) || . ~/.zsh/zfunc/peco/lib/cache.zsh
   local selected="$(aws ec2 describe-instances | \
     jq -r '.Reservations[].Instances[] | select(.State.Name=="running") | {InstanceId, PublicIpAddress, PrivateIpAddress, InstanceName: (.Tags[] | select(.Key=="Name").Value), LaunchTime, AutoScaleGroup: (.Tags | map(select(.Key=="aws:autoscaling:groupName").Value))|join("")} | "\(.InstanceName) \(.PrivateIpAddress) \(.PublicIpAddress) \(.LaunchTime) \(.AutoScaleGroup)"' |\
     peco --query="$LBUFFER")"

@@ -7,9 +7,11 @@ case $OSTYPE in
   ;;
   darwin*)
     if [ -z "$BREW_PREFIX" ]; then
-      soft_source /usr/local/Library/Contributions/brew_bash_completion.sh
+      [ -e /usr/local/Library/Contributions/brew_bash_completion.sh ] \
+       && source /usr/local/Library/Contributions/brew_bash_completion.sh
     else
-      soft_source $BREW_PREFIX/Library/Contributions/brew_bash_completion.sh
+      [ -e "$BREW_PREFIX/Library/Contributions/brew_bash_completion.sh" ] \
+        && source "$BREW_PREFIX/Library/Contributions/brew_bash_completion.sh"
     fi
     ;;
 esac

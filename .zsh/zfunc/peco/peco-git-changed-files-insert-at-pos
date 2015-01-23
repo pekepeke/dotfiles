@@ -2,7 +2,7 @@
 # peco-git-changed-files-insert-at-pos() {
   local pos=$CURSOR
   # local selected="$(git status -s | peco --query="$LBUFFER" | sed -e 's/^ *[^ ]\+ *//')"
-  local selected="$(git status -s | peco | sed -e 's/^ *[^ ]\+ *//')"
+  local selected="$(git status -s | peco | sed -e 's/^ *[^ ]* *//g')"
   if [ -n "$selected" ]; then
     BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
     CURSOR=$#BUFFER

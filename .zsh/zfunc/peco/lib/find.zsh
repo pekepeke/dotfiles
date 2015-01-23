@@ -1,3 +1,5 @@
+# (($+functions[_find-files-with-peco])) || . ~/.zsh/zfunc/peco/lib/find.zsh
+
 _get-find-option() {
   case "$1" in
     ag|ack|ack-grep)

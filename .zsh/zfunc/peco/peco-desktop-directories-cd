@@ -1,0 +1,10 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-desktop-directories-cd() {
+  local selected="$(find ~/Desktop -type d | peco --query="$LBUFFER")"
+  if [ -n "$selected" ]; then
+    BUFFER="cd ${selected}"
+    zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-desktop-directories-cd

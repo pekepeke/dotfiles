@@ -1,7 +1,8 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# (($+functions[_os_gui_shell])) || . ~/.zsh/zfunc/peco/lib/util.zsh
 
 _os_gui_shell() {
-  eval $(get_os_gui_shell "$@")
+  eval $(_get_os_gui_shell "$@")
 }
 
 _get_os_gui_shell() {

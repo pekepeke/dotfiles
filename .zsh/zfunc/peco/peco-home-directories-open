@@ -1,0 +1,12 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-home-directories-open() {
+local selected="$(find ~ -type d -maxdepth 1 | peco --query="$LBUFFER")"
+  if [ -n "$selected" ]; then
+    (($+functions[_os_gui_shell])) || . ~/.zsh/zfunc/peco/lib/util.zsh
+    _os_gui_shell "${selected}"
+    # BUFFER="_os_gui_shell ${selected}"
+    # zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-home-directories-open

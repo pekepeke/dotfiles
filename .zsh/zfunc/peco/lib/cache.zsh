@@ -1,24 +1,26 @@
-set-cache() {
+# (($+functions[_set-cache])) || . ~/.zsh/zfunc/peco/lib/cache.zsh
+
+_set-cache() {
   $@ > $(cache-filename)
 }
 
-cache-filename() {
+_cache-filename() {
   echo "/tmp/peco-$$.cache"
 }
 
-remove-cache() {
+_remove-cache() {
   rm -f "$(cache-filename)"
 }
 
-print-cache() {
+_print-cache() {
   cat "$(cache-filename)"
 }
 
-peco-zle-print() {
+_peco-zle-print() {
   zle -M "$(echo "$*" | tr "\t" "    ")"
 }
 
-peco-zle-copy() {
+_peco-zle-copy() {
   print -n $* | pbcopy-wrapper
   zle -M "copied : $(echo "$*" | tr "\t" "    ")"
 }

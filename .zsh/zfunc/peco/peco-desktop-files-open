@@ -1,0 +1,13 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-desktop-files-open() {
+  (($+functions[_find-files-with-peco])) || . ~/.zsh/zfunc/peco/lib/find.zsh
+  local selected="$(_find-files-with-peco ~/Desktop | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
+  if [ -n "$selected" ]; then
+    (($+functions[_os_gui_shell])) || . ~/.zsh/zfunc/peco/lib/util.zsh
+    _os_gui_shell "$selected"
+    # BUFFER="${selected}"
+    # zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-desktop-files-open

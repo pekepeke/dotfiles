@@ -23,7 +23,7 @@ bind left:${cas} chain push left ${halfx} | corner top-left ${quad} | corner bot
 bind down:${cas} chain push bottom ${halfy} | push up ${halfy}
 
 # bind t:${cas} focus 'iTerm'
-bind i:${cas} shell 'osascript -e \'tell application "iTerm" to activate\' &'
+bind t:${cas} shell 'osascript -e \'tell application "iTerm" to activate\' &'
 bind m:${cas} focus 'MacVim'
 
 # window maximize, toggle undo(not available...)
@@ -31,8 +31,6 @@ bind m:${cas} focus 'MacVim'
 bind x:${cas} corner top-left resize:screenSizeX;screenSizeY
 bind up:${cas} corner top-left resize:screenSizeX;screenSizeY
 bind z:${cas} undo
-
-bind l:cmd;alt shell '/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine'
 
 # run screen saver
 # bind l:${cas} shell '/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine'

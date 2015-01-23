@@ -24,6 +24,12 @@ autoload -Uz peco-command-insert-at-pos
 zle -N peco-command-insert-at-pos
 autoload -Uz peco-csshx
 zle -N peco-csshx
+autoload -Uz peco-desktop-directories-cd
+zle -N peco-desktop-directories-cd
+autoload -Uz peco-desktop-directories-open
+zle -N peco-desktop-directories-open
+autoload -Uz peco-desktop-files-open
+zle -N peco-desktop-files-open
 autoload -Uz peco-document-insert-at-pos
 zle -N peco-document-insert-at-pos
 autoload -Uz peco-gdb-attach-pid
@@ -62,6 +68,8 @@ autoload -Uz peco-gui-window-select
 zle -N peco-gui-window-select
 autoload -Uz peco-history-replace-buffer
 zle -N peco-history-replace-buffer
+autoload -Uz peco-home-directories-open
+zle -N peco-home-directories-open
 autoload -Uz peco-homebrew-cask-cd-appdir
 zle -N peco-homebrew-cask-cd-appdir
 autoload -Uz peco-homebrew-cask-info
