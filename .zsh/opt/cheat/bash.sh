@@ -9,6 +9,29 @@ exec > log.log
 exec 2>&1
 ```
 
+## 行を逆順に変換
+
+```
+cat file | rev | tac | rev | command
+```
+
+## ROOTかどうかをチェックする
+
+```
+if [ ${EUID:-${UID}} = 0 ]; then
+    echo 'I am root.'
+fi
+if [ `whoami` = 'root' ]; then
+    echo 'I am root.'
+fi
+if [ $UID = `id -u root` ]; then
+    echo 'I am root.'
+fi
+if [ $(id -u) = $(id -u root) ]; then
+    echo 'I am root.'
+fi
+```
+
 ## コマンド結果をファイル名引数に
 
 ```

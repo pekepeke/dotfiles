@@ -1,0 +1,9 @@
+# peco-ghq-gh-open() {
+  local selected="$(ghq list -p | perl -pe 's/(\Q$ENV{HOME}\E(.*$))/~$2/' | peco --query="$LBUFFER")"
+  if [ -n "$selected" ]; then
+    BUFFER="gh-open $(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
+    zle accept-line
+  fi
+  zle -R
+# }
+# zle -N peco-ghq-gh-open

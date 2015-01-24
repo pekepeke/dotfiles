@@ -36,6 +36,8 @@ autoload -Uz peco-gdb-attach-pid
 zle -N peco-gdb-attach-pid
 autoload -Uz peco-ghq-cd
 zle -N peco-ghq-cd
+autoload -Uz peco-ghq-gh-open
+zle -N peco-ghq-gh-open
 autoload -Uz peco-ghq-open
 zle -N peco-ghq-open
 autoload -Uz peco-ghq-trash

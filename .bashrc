@@ -44,14 +44,11 @@ set -o notify
 # history {{{2
 BLOCKSIZE=K
 #FIGNORE='~:.o:,v'
-HISTSIZE=512
-HISTFILESIZE=512
-HISTCONTROL=ignoredups
-
-export HISTCONTROL=ignoredups
-export HISTCONTROL=ignoreboth
-export HISTIGNORE="fg*:bg*:history*:cd*: *"
-export HISTTIMEFORMAT='%Y%m%d %T'
+HISTSIZE=10000
+HISTFILESIZE=10000
+HISTCONTROL=ignoreboth
+HISTIGNORE="fg*:bg*:history*:cd*: *"
+HISTTIMEFORMAT='%Y%m%d %T'
 
 export BLOCKSIZE FIGNORE \
   HISTSIZE HISTFILESIZE HISTCONTROL HISTIGNORE HISTTIMEFORMAT
@@ -69,40 +66,48 @@ soft_source $HOME/.screeninator/scripts/screeninator
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 ## prompt {{{1
+if [ -n "$DISPLAY" -a "$TERM" == "xterm" ]; then
+    export TERM=xterm-256color
+fi
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+  debian_chroot=$(cat /etc/debian_chroot)
 fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color) color_prompt=yes;;
+  xterm-color) color_prompt=yes;;
+  xterm-256color) color_prompt=yes;;
 esac
 
 #force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
     # We have color support; assume it's compliant with Ecma-48
     # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
     # a case would tend to support setf rather than setaf.)
     color_prompt=yes
-    else
+  else
     color_prompt=
-    fi
+  fi
+fi
+if [ -n "$SSH_CLIENT" ]; then
+  ssh_text=" ssh"
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w${ssh_text}\[\033[00m\]\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w${ssh_text}\$ '
 fi
 unset color_prompt force_color_prompt
+unset ssh_text
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
-    PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
+    # PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD/$HOME/~}\007"'
     ;;
 *)
     ;;
@@ -157,5 +162,52 @@ done
 source_all $HOME/.bash/commands/*
 source_all $HOME/.bash/compfunc/*
 complete -C aws_completer aws
+
+# cd {{{1
+# soft_source ~/.zsh/plugins/z/z.sh # too heavy..
+cd() {
+  builtin cd "$@"
+  local ret=$?
+  # ((ret)) || _z -add "$(pwd -P)"
+  ((ret)) || _cdd_chpwd
+  ((ret)) || _cd_hist_save_pwd
+  return $ret
+}
+
+# peco {{{1
+if type peco >/dev/null 2>&1; then
+  # _peco_z_history() {
+  #   local selected="$(_z -l 2>&1 | \
+  #     peco | \
+  #     perl -ne 's/[\r\n]+//g;s/^[0-9\.]* *//g;$d=m/ /?"\"":"";print "$d$_$d\n";' \
+  #   )"
+  #   if [ -n "$selected" ] ;then
+  #     selected="cd \"$selected\""
+  #     READLINE_LINE="$selected"
+  #     READLINE_POINT=${#selected}
+  #   fi
+  # }
+  _peco_dirs_history() {
+    local selected="$(_cd_hist_list_dirs 2>&1 | \
+      peco | \
+      perl -ne 's/[\r\n]+//g;s/^\s*[0-9\.]*\s*//g;$d=m/ /?"\"":"";print "$d$_$d\n";' \
+    )"
+    if [ -n "$selected" ] ;then
+      selected="cd \"$selected\""
+      READLINE_LINE="$selected"
+      READLINE_POINT=${#selected}
+    fi
+  }
+  _peco_command_history() {
+    local selected="$(HISTTIMEFORMAT= history | tac | sed -e 's/^\s*[0-9]\+\s\+//' | peco --query "$READLINE_LINE")"
+    if [ -n "$selected" ] ;then
+      READLINE_LINE="$selected"
+      READLINE_POINT=${#selected}
+    fi
+  }
+  # bind -x '"\C-xj":_peco_z_history'
+  bind -x '"\C-xj":_peco_dirs_history'
+  bind -x '"\C-r":_peco_command_history'
+fi
 
 # vim:fdm=marker sw=2 ts=2 ft=sh expandtab:
