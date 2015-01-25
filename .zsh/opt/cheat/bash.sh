@@ -32,6 +32,14 @@ if [ $(id -u) = $(id -u root) ]; then
 fi
 ```
 
+## 一行ずつ処理
+
+```bash
+cat file | while read line ; do
+  #
+done
+```
+
 ## コマンド結果をファイル名引数に
 
 ```
