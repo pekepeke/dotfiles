@@ -133,7 +133,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   fi
 
   # go {{{2
-  xenv-init genv
+  xenv-init golangenv
   # xenv-init goenv
   # export GOPATH=~/.gopath
   # if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/bin/go" ]; then
