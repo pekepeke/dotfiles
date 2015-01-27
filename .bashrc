@@ -66,9 +66,12 @@ soft_source $HOME/.screeninator/scripts/screeninator
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 ## prompt {{{1
-if [ -n "$DISPLAY" -a "$TERM" == "xterm" ]; then
+case $COLORTERM in
+  gnome-terminal)
     export TERM=xterm-256color
-fi
+    ;;
+esac
+
 # set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
   debian_chroot=$(cat /etc/debian_chroot)

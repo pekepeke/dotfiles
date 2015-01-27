@@ -145,6 +145,7 @@ fi
 # fi
 alias vimfiler="$EDITOR -c VimFiler"
 alias vimshell="$EDITOR -c VimShell"
+alias diary="$EDITOR ~/$(date +'%Y-%m-%d.md')"
 
 alias vimrcinspect='vim --startuptime "$HOME/vimrc-read.txt" +q && vim ~/vimrc-read.txt'
 alias gvimrcinspect='gvim --startuptime "$HOME/gvimrc-read.txt" && gvim --remote-silent ~/gvimrc-read.txt'

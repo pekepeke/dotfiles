@@ -103,7 +103,7 @@ set keywordprg=":help"
 set foldmethod=marker
 
 " tab character {{{2
-set autoindent smartindent cindent
+set autoindent nosmartindent cindent
 if has('linebreak') && (v:version > 704 || v:version == 704 && has('patch338'))
   set breakindent
 endif

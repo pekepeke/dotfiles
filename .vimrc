@@ -387,6 +387,8 @@ endif
 if !has('gui_running')
   let s:t_Co=&t_Co
   MyAutoCmd VimLeave * let &l:t_Co=s:t_Co
+else
+  set t_Co=256
 endif
 if $COLORTERM == 'gnome-terminal'
   set t_Co=256
