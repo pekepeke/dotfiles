@@ -135,12 +135,24 @@ set fileencodings+=cp932
 set fileformats=unix,dos,mac
 set synmaxcol=1000
 
-
 set display=lastline
-set clipboard=unnamed
-if has('unnamedplus')
-  set clipboard+=unnamedplus
-endif
+function! s:fake_unnamed_clipboard(event) "{{{3
+  if a:event ==# 'FocusGained'
+    if strlen(@+) > 1 && @" !=# @+
+      let @" = @+
+    endif
+  elseif a:event ==# 'FocusLost'
+    if strlen(@") > 1
+      let @+ = @"
+    endif
+  endif
+endfunction " }}}
+MyAutoCmd FocusGained * call s:fake_unnamed_clipboard('FocusGained')
+MyAutoCmd FocusLost * call s:fake_unnamed_clipboard('FocusLost')
+" set clipboard=unnamed
+" if has('unnamedplus')
+"   set clipboard+=unnamedplus
+" endif
 
 set nospell
 if v:version > 704 || (v:version == 704 && has('patch088'))
@@ -2471,6 +2483,13 @@ let g:pdv_cfg_CommentEnd = "// }}}"
 let g:ruby_operators = 1
 let g:ruby_no_expensive = 1
 
+" go {{{2
+if s:bundle.is_installed('vim-go')
+  let g:go_highlight_functions = 1
+  let g:go_highlight_methods = 1
+  let g:go_highlight_structs = 1
+endif
+
 " javascript {{{2
 if s:bundle.is_installed('simple-javascript-indenter')
   " shiftwidthを1に
@@ -2540,6 +2559,9 @@ let g:vimrc_enabled_plugins = {
   \ 'ambicmd': s:bundle.is_installed('vim-ambicmd'),
   \ 'endwize': s:bundle.is_installed('endwize.vim'),
   \ }
+
+" jqplay {{{2
+let g:jqplay_opt = ""
 
 " vim-node {{{2
 if s:bundle.is_installed('vim-node')
@@ -3636,7 +3658,6 @@ endif
 " lexima.vim {{{2
 if s:bundle.tap('lexima.vim')
   function! s:bundle.tapped.hooks.on_source(bundle)
-
     call lexima#add_rule({
       \ 'at':       '(\%#)',
       \ 'char':     '<Space>',
@@ -3771,8 +3792,16 @@ if s:bundle.tap('lexima.vim')
 
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-BS)', '<BS>')
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-C-h)', '<C-h>')
-    call lexima#insmode#define_altanative_key('<Plug>(lexima-CR)', '<CR>')
+    " call lexima#insmode#define_altanative_key('<Plug>(lexima-CR)', '<CR>')
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-SPACE)', '<Space>')
+
+    call lexima#insmode#map_hook('before', '<CR>',
+    \ "<C-r>=neocomplete#smart_close_popup()\<CR>")
+    " TODO : iabbrev
+    call lexima#insmode#map_hook('before', '<Space>',
+    \ "\<C-r>=neocomplete#smart_close_popup()\<CR>")
+    call lexima#insmode#map_hook('before', '<C-h>', "\<C-r>=neocomplete#smart_close_popup()\<CR>")
+    call lexima#insmode#map_hook('before', '<BS>', "\<C-r>=neocomplete#smart_close_popup()\<CR>")
 
   endfunction
   call s:bundle.untap()
@@ -6699,6 +6728,7 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   \ 'haxe': '\v([\]''"]|\w)(\.|\()\w*',
   \ 'r': '[[:alnum:].\\]\+',
   \ 'xquery': '\k\|:\|\-\|&',
+  \ 'go': '\h\w\.\w',
   \ })
 
   " scala
@@ -6761,16 +6791,8 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   " <CR>: close popup and save indent.
   " <C-h>, <BS>: close popup and delete backword char.
   if g:vimrc_enabled_plugins.lexima
-    imap <silent><expr> <CR> pumvisible()?neocomplete#close_popup():"\<Plug>(lexima-CR)"
-    " TODO : overrides plugin...
-    function! s:lexima_add_hook()
-      " TODO : iabbrev
-      call lexima#insmode#map_hook('before', '<Space>',
-      \ '<C-r>=neocomplete#smart_close_popup()<CR>')
-      call lexima#insmode#map_hook('before', '<C-h>', '<C-r>=neocomplete#smart_close_popup()<CR>')
-      call lexima#insmode#map_hook('before', '<BS>', '<C-r>=neocomplete#smart_close_popup()<CR>')
-    endfunction
-    MyAutoCmd VimEnter * call s:lexima_add_hook()
+    " default cr
+    imap <silent><expr> <CR> pumvisible()?neocomplete#close_popup():"\<CR>"
   elseif g:vimrc_enabled_plugins.smartinput
     if g:vimrc_enabled_plugins.endwize
       imap <silent><expr> <CR> (pumvisible()?neocomplete#close_popup():"")
