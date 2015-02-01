@@ -2607,7 +2607,7 @@ MyAutoCmd User PluginTranslateGoogleInitializeAfter call s:vimrc_translategoole(
 
 " quickfixsigns_vim {{{2
 if s:bundle.tap('quickfixsigns_vim')
-  let g:quickfixsigns_blacklist_buffer = '\(^\|[\/]\)\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\|.*/\)$'   "{{{2
+  let g:quickfixsigns_blacklist_buffer = '\(^\|[\/]\)\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\|.*/\)$'
 endif
 
 " codic-vim {{{2
@@ -4455,12 +4455,12 @@ if s:bundle.tap('unite.vim')
 
     function! s:dispatch(command) "{{{5
       if has('gui_running')
-        return "StartNofocus ".a:command
+        return "StartSilently ".a:command
         " return "Start ".a:command
       endif
       return "Dispatch " . a:command
     endfunction "}}}
-    function! s:start_nofocus(bang, command) "{{{5
+    function! s:start_silently(bang, command) "{{{5
       execute "Start".(a:bang?"!":"") a:command
       let cmd_fmt = ""
       let app = ""
@@ -4476,7 +4476,7 @@ if s:bundle.tap('unite.vim')
       endif
     endfunction
     command! -bang -nargs=* -complete=custom,dispatch#command_complete
-    \ StartNofocus call s:start_nofocus(<bang>0, <q-args>)
+    \ StartSilently call s:start_silently(<bang>0, <q-args>)
 
     command! -nargs=*
     \ UniteBufferRename call my#unite#buffer_rename(<q-args>)
