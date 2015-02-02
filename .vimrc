@@ -1338,9 +1338,31 @@ NeoBundleLazy 'violetyk/cake.vim', {'autoload':{
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim'
 NeoBundleLazy 'vim-scripts/dbext.vim', {'autoload':{
-\ }}
-NeoBundleLazy 'vim-scripts/SQLUtilities', {'autoload':{
-\ }}
+\ 'commands': [
+\ { 'name': 'DBExecSQL'},
+\ { 'name': 'DBExecSQLTopX'},
+\ { 'name': 'DBConnect'},
+\ { 'name': 'DBDisconnect'},
+\ { 'name': 'DBDisconnectAll'},
+\ { 'name': 'DBCommit'},
+\ { 'name': 'DBRollback'},
+\ { 'name': 'DBListConnections'},
+\ { 'name': 'DBExecRangeSQL'},
+\ { 'name': 'Call'},
+\ { 'name': 'Select', 'complete': 'customlist,dbext#DB_completeTables' },
+\ { 'name': 'Alter', 'complete': 'customlist,dbext#DB_completeTables' },
+\ { 'name': 'Update', 'complete': 'customlist,dbext#DB_completeTables' },
+\ { 'name': 'Insert', 'complete': 'customlist,dbext#DB_completeTables' },
+\ { 'name': 'Delete', 'complete': 'customlist,dbext#DB_completeTables' },
+\ { 'name': 'Drop', 'complete': 'customlist,dbext#DB_completeTables' },
+\ { 'name': 'Create' },
+\ { 'name': 'DBSetOption', 'complete': 'customlist,dbext#DB_completeSettings' },
+\ { 'name': 'DBGetOption', 'complete': 'customlist,dbext#DB_completeSettings' },
+\ { 'name': 'DBVarRangeAssign' },
+\ { 'name': 'DBListVar'},
+\ { 'name': 'DBSetVar', 'complete': 'customlist,dbext#DB_completeVariable'},
+\ ] }}
+" NeoBundleLazy 'vim-scripts/SQLUtilities', {'autoload':{}}
 " \ 'filetypes': ['sql'],
 
 " etc {{{4
@@ -5930,7 +5952,7 @@ if s:bundle.is_installed('vim-quickrun')
   \ })
 
   " database {{{4
-  function! s:build_options(vars) "{{{5
+  function! s:build_options(vars, ...) "{{{5
     let opts = []
     for [field, optname] in items(a:vars)
       let value = get(b:, field, get(g:, field, ''))
@@ -5941,16 +5963,39 @@ if s:bundle.is_installed('vim-quickrun')
 
     return join(opts, " ")
   endfunction "}}}
+
+  function! s:str_prepend(val, ch)
+    return empty(a:val) ? "" : a:ch . a:val
+  endfunction
+
+  function! s:build_sqlplus_options() "{{{5
+    let opts = []
+    let vars = [
+      \ 'dbext_user',
+      \ 'dbext_passwd',
+      \ 'dbext_host',
+      \ 'dbext_port',
+      \ 'dbext_dbname',
+      \ ]
+    let [user, pass, host, port, db] = map(vars, 'get(b:, field, get(g:, field, ""))')
+    return printf("%s%s@%s%s%s", user,
+      \ s:str_prepend(pass, "/"),
+      \ host,
+      \ s:str_prepend(port, ":"),
+      \ s:str_prepend(db, "/")
+      \ )
+  endfunction " }}}
+
   function! MySQLCommandOptions() "{{{5
     if exists('b:MYSQL_cmd_options')
       return b:MYSQL_cmd_options
     endif
     return s:build_options({
-          \ 'mysql_host': '-h',
-          \ 'mysql_username': '-h',
-          \ 'mysql_password': '-p',
-          \ 'mysql_port': '-P',
-          \ 'mysql_db': '',
+          \ 'dbext_host': '-h',
+          \ 'dbext_user': '-h',
+          \ 'dbext_passwd': '-p',
+          \ 'dbext_port': '-P',
+          \ 'dbext_dbname': '',
           \ })
   endfunction "}}}
   function! PgSQLCommandOptions() "{{{5
@@ -5958,14 +6003,18 @@ if s:bundle.is_installed('vim-quickrun')
       return b:PGSQL_cmd_options
     endif
     return s:build_options({
-      \ 'pgsql_host': '-h',
-      \ 'pgsql_username': '-h',
-      \ 'pgsql_port': '-p',
-      \ 'pgsql_db': '-d',
+      \ 'dbext_host': '-h',
+      \ 'dbext_user': '-h',
+      \ 'dbext_port': '-p',
+      \ 'dbext_dbname': '-d',
       \ })
   endfunction "}}}
   function! OracleCommandOptions() "{{{5
+    if exists('b:SQLPLUS_cmd_options')
+      return b:PGSQL_cmd_options
+    endif
 
+    return s:build_sqlplus_options()
   endfunction
 
   " configs{{{4
@@ -7388,10 +7437,10 @@ command! -nargs=? -bang -complete=file Unix edit<bang> ++ff=unix <args>
 function! s:edit_vimrc_local()
   let fpath = s:find_proj_dir() . "/" .g:localrc_filename
   if !filereadable(fpath)
-    let file = input( g:localrc_filename . " :", fpath)
+    let fpath = input( g:localrc_filename . " :", fpath)
   endif
-  if !empty(file)
-    execute "edit" "+split" file
+  if !empty(fpath)
+    execute "edit" "+split" fpath
   endif
 endfunction
 command! VimrcLocalEdit call s:edit_vimrc_local()
