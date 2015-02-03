@@ -4277,9 +4277,12 @@ let g:hatena_upload_on_write_bang = 1
 let g:hatena_no_default_keymappings = 1
 
 " dbext.vim {{{2
-let g:dbext_default_prompt_for_parameters=0
-let g:dbext_default_history_file=expand('$VIM_CACHE/dbext_sql_history.txt')
-let g:dbext_default_menu_mode=0
+if s:bundle.is_installed('dbext.vim')
+  let g:dbext_default_prompt_for_parameters=0
+  let g:dbext_default_history_file=expand('$VIM_CACHE/dbext_sql_history.txt')
+  let g:dbext_default_menu_mode=0
+  command! -nargs=+ -complete=customlist,dbext#DB_completeTables SELECT :call dbext#DB_execSql("select " . <q-args>)
+endif
 
 " SQLUtilities {{{2
 let g:sqlutil_default_menu_mode=0
@@ -5954,10 +5957,10 @@ if s:bundle.is_installed('vim-quickrun')
   " database {{{4
   function! s:build_options(vars, ...) "{{{5
     let opts = []
-    for [field, optname] in items(a:vars)
+    for [field, fmt] in items(a:vars)
       let value = get(b:, field, get(g:, field, ''))
       if !empty(value)
-        call add(opts, sprintf("%s %s", optname, value))
+        call add(opts, printf(fmt, value))
       endif
     endfor
 
@@ -5991,11 +5994,11 @@ if s:bundle.is_installed('vim-quickrun')
       return b:MYSQL_cmd_options
     endif
     return s:build_options({
-          \ 'dbext_host': '-h',
-          \ 'dbext_user': '-h',
-          \ 'dbext_passwd': '-p',
-          \ 'dbext_port': '-P',
-          \ 'dbext_dbname': '',
+          \ 'dbext_host': '-h %s',
+          \ 'dbext_user': '-u %s',
+          \ 'dbext_passwd': '-p%s',
+          \ 'dbext_port': '-P %s',
+          \ 'dbext_dbname': '%s',
           \ })
   endfunction "}}}
   function! PgSQLCommandOptions() "{{{5
@@ -6003,10 +6006,10 @@ if s:bundle.is_installed('vim-quickrun')
       return b:PGSQL_cmd_options
     endif
     return s:build_options({
-      \ 'dbext_host': '-h',
-      \ 'dbext_user': '-h',
-      \ 'dbext_port': '-p',
-      \ 'dbext_dbname': '-d',
+      \ 'dbext_host': '-h %s',
+      \ 'dbext_user': '-u %s',
+      \ 'dbext_port': '-p %s',
+      \ 'dbext_dbname': '-d %s',
       \ })
   endfunction "}}}
   function! OracleCommandOptions() "{{{5
@@ -6037,32 +6040,48 @@ if s:bundle.is_installed('vim-quickrun')
   \ }
   \ })
   " texts {{{4
-  call extend(g:quickrun_config, {
-  \ 'rst': {
-  \   'type': 'rst/rst2html',
-  \ },
-  \ 'rst/rst2html': {
-  \   'command': 'rst2html',
-  \ },
-  \ })
+  if s:bundle.is_installed('previm')
+    call extend(g:quickrun_config, {
+    \ 'markdown': { 'type': 'text/previm' },
+    \ 'rst': { 'type': 'text/previm' },
+    \ 'textile': { 'type': 'text/previm' },
+    \ })
+    call extend(g:quickrun_config, {
+    \ 'text/previm' : {
+    \   'runner' : 'vimscript',
+    \   'exec' : 'silent PrevimOpen %o',
+    \   'outputter' : 'null',
+    \ }})
+  else
+    call extend(g:quickrun_config, {
+    \ 'rst': {
+    \   'type': 'rst/rst2html',
+    \ }})
+
+    call extend(g:quickrun_config, {
+    \ 'markdown' : {
+    \   'type' :
+    \      s:is_mac && isdirectory('/Applications/Marked.app') ? 'markdown/Marked':
+    \      executable('markedwrapper')    ? 'markdown/markedwrapper':
+    \      executable('mdown')            ? 'markdown/mdown':
+    \      executable('pandoc')           ? 'markdown/pandoc':
+    \      executable('multimarkdown')    ? 'markdown/multimarkdown':
+    \      executable('MultiMarkdown.pl') ? 'markdown/MultiMarkdown.pl':
+    \      executable('rdiscount')        ? 'markdown/rdiscount':
+    \      executable('bluecloth')        ? 'markdown/bluecloth':
+    \      executable('markdown')         ? 'markdown/markdown':
+    \      executable('Markdown.pl')      ? 'markdown/Markdown.pl':
+    \      executable('redcarpet')        ? 'markdown/redcarpet':
+    \      executable('kramdown')         ? 'markdown/kramdown':
+    \      '',
+    \   'outputter' : 'browser',
+    \ },
+    \ })
+  endif
 
   call extend(g:quickrun_config, {
-  \ 'markdown' : {
-  \   'type' :
-  \      s:is_mac && isdirectory('/Applications/Marked.app') ? 'markdown/Marked':
-  \      executable('markedwrapper')    ? 'markdown/markedwrapper':
-  \      executable('mdown')            ? 'markdown/mdown':
-  \      executable('pandoc')           ? 'markdown/pandoc':
-  \      executable('multimarkdown')    ? 'markdown/multimarkdown':
-  \      executable('MultiMarkdown.pl') ? 'markdown/MultiMarkdown.pl':
-  \      executable('rdiscount')        ? 'markdown/rdiscount':
-  \      executable('bluecloth')        ? 'markdown/bluecloth':
-  \      executable('markdown')         ? 'markdown/markdown':
-  \      executable('Markdown.pl')      ? 'markdown/Markdown.pl':
-  \      executable('redcarpet')        ? 'markdown/redcarpet':
-  \      executable('kramdown')         ? 'markdown/kramdown':
-  \      '',
-  \   'outputter' : 'browser',
+  \ 'rst/rst2html': {
+  \   'command': 'rst2html',
   \ },
   \ })
   call extend(g:quickrun_config, {
