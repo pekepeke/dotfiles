@@ -7,3 +7,4 @@ let b:dbext_port = 3306
 let b:dbext_extra = ''
 
 let b:MYSQL_cmd_options = '-h localhost -uroot -proot test'
+" dbi:mysql:database=mydb:mysql_socket=/usr/local/var/run/mysql/mysql.sock

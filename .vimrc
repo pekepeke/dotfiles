@@ -2575,6 +2575,7 @@ let g:vimrc_enabled_plugins = {
   \ 'gitv': s:bundle.is_installed('gitv'),
   \ 'memolist': s:bundle.is_installed('memolist.vim'),
   \ 'vimproc': s:bundle.is_installed('vimproc.vim'),
+  \ 'neosnippet': s:bundle.is_installed('neosnippet.vim'),
   \ 'neocomplete': s:bundle.is_installed('neocomplete.vim'),
   \ 'neocomplcache': s:bundle.is_installed('neocomplcache.vim'),
   \ 'unite_candidate_sorter': s:bundle.is_installed('unite-candidate_sorter'),
@@ -6629,25 +6630,34 @@ if s:bundle.is_installed('neosnippet.vim')
     return neosnippet#expandable_or_jumpable() && &filetype != "snippet"
   endfunction
   let s:pair_closes = [ "]", "}", ")", "'", '"', ">", "|" , ","]
+
+  function! s:imap_tab_emmet()
+
+  endfunction
+
   function! s:imap_tab()
-    if neosnippet#expandable()
-      if g:vimrc_enabled_plugins.neocomplete
-        call neocomplete#smart_close_popup()
+    " len(matchstr(line[pos-1:pos+1], '[<>"'']')) <= 0
+    if g:vimrc_enabled_plugins.neosnippet
+      if neosnippet#expandable()
+        if g:vimrc_enabled_plugins.neocomplete
+          call neocomplete#smart_close_popup()
+        endif
+        return "\<Plug>(neosnippet_expand)"
+      elseif neosnippet#jumpable()
+        if g:vimrc_enabled_plugins.neocomplete
+          call neocomplete#smart_close_popup()
+        endif
+        return "\<Plug>(neosnippet_jump)"
+      " if s:can_snip()
+      "   return "\<Plug>(neosnippet_jump_or_expand)"
       endif
-      return "\<Plug>(neosnippet_expand)"
-    elseif neosnippet#jumpable()
-      if g:vimrc_enabled_plugins.neocomplete
-        call neocomplete#smart_close_popup()
-      endif
-      return "\<Plug>(neosnippet_jump)"
-    " if s:can_snip()
-    "   return "\<Plug>(neosnippet_jump_or_expand)"
     elseif pumvisible()
       return "\<C-n>"
     endif
 
     let line = getline(".")
     let pos = col(".") - 1
+
     let org_pos = pos
     if strlen(substitute(line[0:pos], '^\s*', '', '')) <= 0
       return "\<TAB>"
@@ -6662,13 +6672,17 @@ if s:bundle.is_installed('neosnippet.vim')
       endwhile
       return repeat("\<Right>", pos - org_pos + 1)
     endif
+
     if s:bundle.is_sourced('emmet-vim')
-      \ && line[pos] =~# '[a-zA-Z]'
-      \ && line[pos+1] =~# '[^<>"'']'
-      \ && &filetype =~# 'x\?html\|s\?css\|php\|eruby'
+      \ && len(matchstr(&filetype, 'x\?html\|s\?css\|php\|eruby')) > 0
+      \ && emmet#isExpandable()
+      if g:vimrc_enabled_plugins.neocomplete
+        call neocomplete#smart_close_popup()
+      endif
       " return "\<Plug>(EmmetExpandAbbr)"
       return "\<Plug>(emmet-expand-abbr)"
     endif
+
     return "\<TAB>"
   endfunction
 
