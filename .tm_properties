@@ -8,7 +8,7 @@ fontSize = 14
 
 showInvisibles = true
 
-softWrap = true
+softWrap = false
 tabSize = 4
 softTabs = false
 
@@ -23,6 +23,10 @@ excludeInFolderSearch = "{$excludeInFolderSearch,log,node_modules,vendor,tmp,MET
 excludeFilesInBrowser = "{$exclude,*.tmproj}"
 excludeDirectories = "{.svn}"
 # exclude = "{$exclude,*.tmproj,*.sublime-project}"
+
+# Variables
+TM_RUBY=$HOME/.rbenv/shims/ruby
+PATH=$HOME/.rbenv/bin:$PATH:/usr/local/bin
 
 [ .git/COMMIT_EDITMSG ]
 spellChecking = true
@@ -79,6 +83,7 @@ softTabs = true
 [ source.markdown ]
 tabSize = 2
 softTabs = false
+softWrap = true
 spellChecking = true
 spellingLanguage = 'en'
 
