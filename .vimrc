@@ -846,6 +846,7 @@ NeoBundle 'tpope/vim-commentary', {'autoload': {
 \   ['n', '<Plug>Commentary'],
 \ ],
 \ }}
+NeoBundle 'tpope/vim-projectionist'
 NeoBundle 'thinca/vim-template'
 NeoBundle 'mattn/sonictemplate-vim', {'autoload': {
 \ 'commands': [
@@ -1485,6 +1486,9 @@ NeoBundleLazy "osyo-manga/unite-fold", {'autoload':{
 NeoBundleLazy "monochromegane/unite-yaml", {'autoload':{
 \ 'unite_sources': ['yaml', 'yaml-list'],
 \ }}
+" NeoBundle 'RomainEndelin/fusion.vim', { 'autoload' : {
+" \ 'unite_sources' : ['projection-files', 'projection-categories'],
+" \ }}
 
 if executable('w3m')
   NeoBundleLazy 'yuratomo/w3m.vim', {'autoload':{
@@ -2602,6 +2606,27 @@ if s:bundle.is_installed('previm')
   let g:previm_custom_css_path = expand('~/.vim/lib/previm/github.css')
 endif
 
+" projectionist {{{2
+if s:bundle.is_installed('vim-projectionist')
+  function! s:edit_projectionist_json()
+    let fpath = ""
+    if exists('b:projectionist')
+      let fpath = get(keys(b:projectionist), 0, "") . "/" . ".projections.json"
+    endif
+    if empty(fpath)
+      let fpath = s:find_proj_dir() . "/" . ".projections.json"
+      if !filereadable(fpath)
+        let fpath = input( ".projections.json" . " :", fpath)
+      endif
+    endif
+
+    if !empty(fpath)
+      execute 'edit' '+split' fpath
+    endif
+  endfunction
+  command! ProjectionistJsonEdit call s:edit_projectionist_json()
+endif
+
 " phpcomplete-extended {{{2
 if s:bundle.is_installed('phpcomplete-extended')
   let g:phpcomplete_index_composer_command = "composer"
@@ -3611,6 +3636,16 @@ if s:bundle.is_installed('vim-localrc')
     " http://vim-users.jp/2009/12/hack112/ => vimrc-local
     call localrc#load('vimrc_local.vim', getcwd(), 3)
   endif
+  function! s:edit_vimrc_local()
+    let fpath = s:find_proj_dir() . "/" .g:localrc_filename
+    if !filereadable(fpath)
+      let fpath = input( g:localrc_filename . " :", fpath)
+    endif
+    if !empty(fpath)
+      execute "edit" "+split" fpath
+    endif
+  endfunction
+  command! VimrcLocalEdit call s:edit_vimrc_local()
 endif
 
 
@@ -7469,18 +7504,6 @@ command! -nargs=? -bang -complete=file Unix edit<bang> ++ff=unix <args>
 
 " }}}
 " utility {{{2
-" vimrc-local {{{3
-function! s:edit_vimrc_local()
-  let fpath = s:find_proj_dir() . "/" .g:localrc_filename
-  if !filereadable(fpath)
-    let fpath = input( g:localrc_filename . " :", fpath)
-  endif
-  if !empty(fpath)
-    execute "edit" "+split" fpath
-  endif
-endfunction
-command! VimrcLocalEdit call s:edit_vimrc_local()
-
 " TSV {{{3
 command! -range Tsvtohtmltable     <line1>,<line2>call my#tsv#to_htmltable()
 command! -range Tsvtosqlwhere      <line1>,<line2>call my#tsv#to_sqlwhere()

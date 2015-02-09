@@ -40,7 +40,12 @@ case $OSTYPE in
 esac
 
 shrc_section_title "environments" #{{{1
-export EDITOR="vim -N -u ~/.vimrc.min"
+EDITOR_VIM_MIN="vim -N -u ~/.vimrc.min"
+# COL_CMD="col -bx"
+# COL_CMD="sed -r 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g'"
+COL_CMD="perl -ne 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g;print'"
+
+export EDITOR="$EDITOR_VIM_MIN"
 export RLWRAP_HOME=~/.rlwrap
 # stty
 if type stty >/dev/null 2>&1; then
@@ -143,9 +148,9 @@ fi
 #   # alias less=$PAGER
 #   # alias zless=$PAGER
 # fi
-alias vimfiler="$EDITOR -c VimFiler"
-alias vimshell="$EDITOR -c VimShell"
-alias diary="$EDITOR ~/$(date +'%Y-%m-%d.md')"
+alias vimfiler="$EDITOR_VIM_MIN -c VimFiler"
+alias vimshell="$EDITOR_VIM_MIN -c VimShell"
+alias diary="$EDITOR_VIM_MIN ~/$(date +'%Y-%m-%d.md')"
 
 alias vimrcinspect='vim --startuptime "$HOME/vimrc-read.txt" +q && vim ~/vimrc-read.txt'
 alias gvimrcinspect='gvim --startuptime "$HOME/gvimrc-read.txt" && gvim --remote-silent ~/gvimrc-read.txt'
@@ -155,8 +160,8 @@ alias gvimrcprofile='gvim --cmd "profile start ~/gvimrc-profile.txt" --cmd "prof
 alias gvimrcprofileall='gvim --cmd "profile start ~/gvimrc-profileall.txt" --cmd "profile! file $HOME/.vimrc" && gvim --remote-silent ~/gvimrc-profileall.txt'
 alias vimsafe='vim -u NONE -i NONE'
 alias vimnone='vim -u NONE'
-alias vimmin="$EDITOR"
-alias vi="$EDITOR"
+alias vimmin="$EDITOR_VIM_MIN"
+alias vi="$EDITOR_VIM_MIN"
 alias view='view -N -u ~/.vimrc.min'
 alias ctags-rb='ctags --langmap=RUBY:.rb --exclude="*.js"  --exclude=".git*"'
 gvi () {
@@ -245,10 +250,13 @@ if [ -n "$ZSH_NAME" ]; then
   alias -g G="| grep -i"
   alias -g H="| head"
   alias -g T="| tail"
-  alias -g V="| $EDITOR -"
+  # alias -g V="| $EDITOR_VIM_MIN -"
+  alias -g V="| $COL_CMD | $EDITOR_VIM_MIN -"
   alias -g P="| peco"
   alias -g PC="| peco | xargs echo -n | pbcopy-wrapper"
   alias -g J="| jq"
+  # alias -g C="| col -bx | pbcopy-wrapper"
+  alias -g C="| $COL_CMD | pbcopy-wrapper"
   # alias -g V="| view -"
 fi
 

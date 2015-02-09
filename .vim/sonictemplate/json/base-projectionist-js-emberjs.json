@@ -1,0 +1,42 @@
+{
+  "app/assets/javascripts/router.js": {
+    "command": "jini"
+  },
+  "app/controllers/api/v1/*_controller.rb": {
+    "command": "apicontroller",
+    "alternate": "spec/controllers/api/v1/%s_controller_spec.rb",
+    "template": "class Api::V1::%SController < ApplicationController\n  respond_to :json\nend"
+  },
+  "app/assets/javascripts/models/*.js": {
+    "command": "jmodel",
+    "alternate": "spec/javascripts/models/%s_spec.js.coffee",
+    "template": "App.%S = DS.Model.extend({"
+  },
+  "app/assets/javascripts/views/*.js": {
+    "command": "jview",
+    "alternate": "spec/javascripts/views/%s_spec.js.coffee",
+    "template": "App.%SView = Ember.View.extend({"
+  },
+  "app/assets/javascripts/controllers/*.js": {
+    "command": "jcontroller",
+    "alternate": "spec/javascripts/controllers/%s_spec.js",
+    "template": "App.%SController = Ember.Controller.extend({"
+  },
+  "app/assets/javascripts/routes/*.js": {
+    "command": "jroute",
+    "alternate": "spec/javascripts/routes/%s_spec.js",
+    "template": "App.%SRoute = Ember.Route.extend({"
+  },
+  "app/assets/javascripts/mixins/*.js": {
+    "command": "jmixin",
+    "alternate": "spec/javascripts/mixins/%s_spec.js",
+    "template": "App.%S = Ember.Mixin.create({"
+  },
+  "app/assets/javascripts/templates/*.js.emblem": {
+    "command": "jtemplate"
+  },
+ "spec/javascripts/**/*_spec.js.coffee": {
+    "command": "jspec",
+    "alternate": "app/assets/javascripts/%s.coffee"
+  }
+}

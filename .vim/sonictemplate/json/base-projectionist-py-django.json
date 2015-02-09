@@ -1,0 +1,31 @@
+{
+  "*/urls.py": {
+    "type": "urls"
+  },
+  "urls.py": {
+    "type": "urls"
+  },
+  "*/app.py": {
+    "type": "app"
+  },
+  "*/tests.py": {
+    "type": "tests"
+  },
+  "*/views.py": {
+    "type": "views"
+  },
+  "*/models.py": {
+    "type": "models"
+  },
+  "*/managers.py": {
+    "type": "managers"
+  },
+  "*/admin.py": {
+    "type": "admin"
+  },
+  "templates/*.html": {
+    "type": "template"
+  },
+  "README.md": { "type": "doc" }
+}
+
