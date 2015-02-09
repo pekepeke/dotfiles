@@ -1,0 +1,9 @@
+{
+	"app/scripts/*.coffee": { "type": "scripts" },
+	"app/bower_components/*.js": { "type": "components" },
+	"app/styles/*.css": { "type": "styles" },
+	"app/styles/*.sass": { "type": "styles" },
+	"app/styles/*.scss": { "type": "styles" },
+	"app/views/*.html": { "type": "views" },
+	"app/index.html": { "type": "views" }
+}

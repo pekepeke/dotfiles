@@ -447,7 +447,8 @@ function! s:gui_colorscheme_init()
   call s:syntaxes_add()
   call s:highlights_add()
   if !s:is_win && !s:is_mac && executable('xdotool')
-    call system('xdotool search --onlyvisible --class gvim windowactivate; xdotool getactivewindow windowmove x 0; xdotool search --onlyvisible --class gnome-terminal windowactivate')
+    " call system('xdotool search --onlyvisible --class gvim windowactivate; xdotool getactivewindow windowmove x 0; xdotool search --onlyvisible --class gnome-terminal windowactivate')
+    call system('xdotool getactivewindow windowmove x 0;')
   endif
 endfunction
 
