@@ -1,6 +1,9 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
+let g:unite#sources#projectionist#files_start_insert
+  \ = get(g:, 'unite#sources#projectionist#files_start_insert', 0)
+
 " projectionist {{{1
 let s:source = {
   \ 'name': 'projectionist',
@@ -9,7 +12,11 @@ let s:source = {
   \ }
 
 function! s:source.gather_candidates(args, context) "{{{2
-  let types = keys(projectionist#navigation_commands())
+  if !s:is_available()
+    call unite#print_source_error("projectionist is not available")
+    return []
+  endif
+  let types = s:get_types()
   return map(types, 's:convert_type(v:val)')
 endfunction
 
@@ -21,8 +28,14 @@ let s:files_source = {
   \ }
 
 function! s:files_source.gather_candidates(args, context) "{{{2
+  if !s:is_available()
+    call unite#print_source_error("projectionist is not available")
+    return []
+  endif
   let type = get(a:context, 'custom_type', '')
   if empty(type)
+    let type = unite#util#input("input type:", "",
+      \ 'customlist,unite#sources#projectionist#type_complate')
   endif
   if empty(type)
     return []
@@ -34,6 +47,15 @@ function! s:files_source.gather_candidates(args, context) "{{{2
 endfunction
 
 " utilities {{{1
+function! s:is_available() "{{{2
+  return exists('b:projectionist')
+endfunction
+
+function! s:get_types() "{{{2
+  let types = keys(projectionist#navigation_commands())
+  return types
+endfunction
+
 function! s:convert_type(type) "{{{2
   return {
     \ 'word': a:type,
@@ -54,7 +76,11 @@ function! s:convert_file(file, dir) "{{{2
 endfunction
 
 function! s:files_command(type) "{{{2
-  return printf('Unite projectionist/files -custom-type=%s', a:type)
+  let cmd = printf('Unite projectionist/files -custom-type=%s', a:type)
+  if g:unite#sources#projectionist#files_start_insert
+    let cmd .= " -start-insert"
+  endif
+  return cmd
 endfunction
 
 function! s:find_files_by_type(type) "{{{2
@@ -75,6 +101,13 @@ function! s:find_files_by_type(type) "{{{2
   return results
 endfunction
 
+function! unite#sources#projectionist#type_complate(A, L, P) "{{{2
+  let types = s:get_types()
+  let matches = filter(copy(types),'v:val =~? "^".a:A')
+  return matches
+endfunction
+
+" define source "{{{1
 function! unite#sources#projectionist#define() "{{{2
   return [s:source, s:files_source]
 endfunction

@@ -1,7 +1,8 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # peco-ps-pid-insert-at-pos() {
   local pos=$CURSOR
-  local pid=$(ps aux | peco --query "$LBUFFER" | awk '{ print $2 }')
+  # local pid=$(ps aux | peco --query "$LBUFFER" | awk '{ print $2 }')
+  local pid=$(ps aux | peco | awk '{ print $2 }')
   if [ x"${pid}" != x ];then
     BUFFER="${BUFFER[1,$pos]}${pid}${BUFFER[$pos,-1]}"
   fi

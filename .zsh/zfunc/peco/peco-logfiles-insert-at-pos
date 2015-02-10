@@ -1,7 +1,8 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # peco-logfiles-insert-at-pos() {
   local pos=$CURSOR
-  local selected=$(mylog files | peco --query="$LBUFFER" | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')
+  # local selected=$(mylog files | peco --query="$LBUFFER" | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')
+  local selected=$(mylog files | peco | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')
   if [ -n "$selected" ]; then
     if [ -n "$BUFFER" ]; then
     	BUFFER="${BUFFER[1,$pos]}${selected}${BUFFER[$pos,-1]}"

@@ -1,7 +1,8 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # peco-aws-ec2-image-id-insert-at-pos() {
   local pos=$CURSOR
-  local selected="$(aws ec2 describe-images --owner self | jq -r '.Images[] | "\(.Name)\t\(.ImageId)"'  | peco --query="$LBUFFER" | awk '{print $2}')"
+  # local selected="$(aws ec2 describe-images --owner self | jq -r '.Images[] | "\(.Name)\t\(.ImageId)"'  | peco --query="$LBUFFER" | awk '{print $2}')"
+  local selected="$(aws ec2 describe-images --owner self | jq -r '.Images[] | "\(.Name)\t\(.ImageId)"'  | peco | awk '{print $2}')"
   if [ -n "$selected" ]; then
     BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
     CURSOR=$#BUFFER

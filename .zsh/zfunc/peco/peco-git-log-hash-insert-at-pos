@@ -1,7 +1,8 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # peco-git-log-hash-insert-at-pos() {
   if git rev-parse >/dev/null 2>&1; then
-    local git_hash="$(git log --oneline | peco --query "$LBUFFER"|cut -d' ' -f1)"
+    # local git_hash="$(git log --oneline | peco --query "$LBUFFER"|cut -d' ' -f1)"
+    local git_hash="$(git log --oneline | peco |cut -d' ' -f1)"
     if [ -n "$git_hash" ]; then
       local pos=$CURSOR
       BUFFER="${BUFFER[1,$pos]}$(echo ${git_hash} | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"

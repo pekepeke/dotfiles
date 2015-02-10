@@ -4363,6 +4363,8 @@ if s:bundle.tap('unite.vim')
   let g:neomru#file_mru_limit = 200
   let g:neomru#file_mru_ignore_pattern = 'COMMIT_EDITMSG'
 
+  let g:unite#sources#projectionist#files_start_insert = 1
+
   function! s:unite_set_rm_command(command)
     if executable(a:command)
       let g:unite_kind_file_delete_file_command = a:command." $srcs"
@@ -4935,6 +4937,7 @@ if s:bundle.tap('unite.vim')
   UniteNMap   ij        jump
   UniteNMap   is        neosnippet
   UniteNMap   io        outline
+  UniteNMap   o         projectionist -start-insert
   UniteNMap!  gg        grep:. -buffer-name=grep
   UniteNMap!  gs        grep:.:-C\\ 4 -buffer-name=grep
   UniteNMap!  gr        grep -buffer-name=grep

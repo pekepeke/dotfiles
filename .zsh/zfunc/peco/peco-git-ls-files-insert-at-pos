@@ -7,7 +7,8 @@
   elif ! which $cmd > /dev/null 2>&1; then
     cmd="find . -type f"
   fi
-  local selected="$(eval $cmd | peco --query="$LBUFFER")"
+  # local selected="$(eval $cmd | peco --query="$LBUFFER")"
+  local selected="$(eval $cmd | peco)"
   if [ -n "$selected" ]; then
     BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
     CURSOR=$#BUFFER
