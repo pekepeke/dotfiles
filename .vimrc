@@ -790,11 +790,10 @@ NeoBundleLazy 'thinca/vim-prettyprint', { 'autoload': {
 \ ]}}
 NeoBundle 'thinca/vim-ambicmd'
 
-if has('conceal') && !s:is_mac
-  NeoBundle 'Yggdroot/indentLine'
-else
-  NeoBundle 'nathanaelkane/vim-indent-guides'
-endif
+NeoBundle 'nathanaelkane/vim-indent-guides'
+" if has('conceal') && !s:is_mac
+"   NeoBundle 'Yggdroot/indentLine'
+" endif
 
 NeoBundle 'vim-scripts/sudo.vim'
 if s:is_win
@@ -3973,6 +3972,7 @@ endif
 " indent-guides {{{2
 if s:bundle.tap('vim-indent-guides')
   let g:indent_guides_enable_on_vim_startup = 1
+  let g:indent_guides_indent_levels = 10
   if has('gui_running')
     let g:indent_guides_auto_colors = 1
   else

@@ -61,7 +61,7 @@ function! s:convert_type(type) "{{{2
     \ 'word': a:type,
     \ 'kind': ['command'],
     \ 'action__command': s:files_command(a:type),
-    \ 'action_type': [': '],
+    \ 'action__type': ': ',
     \ }
 endfunction
 
@@ -111,6 +111,9 @@ endfunction
 function! unite#sources#projectionist#define() "{{{2
   return [s:source, s:files_source]
 endfunction
+
+" call unite#define_source(s:source)
+" call unite#define_source(s:files_source)
 
 let &cpo = s:save_cpo
 " __END__ {{{1

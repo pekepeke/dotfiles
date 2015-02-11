@@ -1,0 +1,16 @@
+{
+  ".vim/bundle/*.vim": {"type": "bundle"},
+  ".vim/ftplugin/*.vim": {"type": "ftplugin"},
+  ".vim/after/ftplugin/*.txt": {"type": "ftplugin"},
+  ".vim/ftdetect/*.vim": {"type": "ftdetect"},
+  ".vim/after/ftdetect/*.vim": {"type": "ftdetect"},
+  ".vim/autoload/*.vim": {"type": "autoload"},
+  ".zsh/opt/cheat/*.*": {"type": "cheat"},
+  ".zsh/opt/stat/*.*": {"type": "stat"},
+  ".zsh/zfunc/*.zsh": {"type": "zsh"},
+  ".zsh/zfunc/*.sh": {"type": "zsh"},
+  ".zsh/zfunc/peco/*": {"type": "peco"},
+  ".zsh/zfunc/peco.local/*": {"type": "peco"},
+  ".gitconfig.d/*.txt": {"type": "git"},
+  "README.md": {"type": "doc"}
+}
