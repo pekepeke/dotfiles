@@ -6670,10 +6670,6 @@ if s:bundle.is_installed('neosnippet.vim')
   endfunction
   let s:pair_closes = [ "]", "}", ")", "'", '"', ">", "|" , ","]
 
-  function! s:imap_tab_emmet()
-
-  endfunction
-
   function! s:imap_tab()
     " len(matchstr(line[pos-1:pos+1], '[<>"'']')) <= 0
     if g:vimrc_enabled_plugins.neosnippet
