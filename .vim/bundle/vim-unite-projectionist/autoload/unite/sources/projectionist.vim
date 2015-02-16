@@ -12,11 +12,33 @@ let s:source = {
   \ }
 
 function! s:source.gather_candidates(args, context) "{{{2
+  call s:clear_stored_variables()
+  let custom_path = get(a:context, 'custom_path', '')
+  if !empty(custom_path)
+    call s:save_variables()
+    call ProjectionistDetect(custom_path)
+  endif
+  let is_available = s:is_available()
+  if !is_available
+    call ProjectionistDetect(expand('%'))
+  endif
+
   if !s:is_available()
+    if !empty(custom_path)
+      call s:restore_variables()
+    elseif !is_available
+      call s:clear_stored_variables()
+    endif
     call unite#print_source_error("projectionist is not available", "projectionist")
     return []
   endif
   let types = s:get_types()
+
+  if !empty(custom_path)
+    call s:restore_variables()
+  elseif !is_available
+    call s:clear_stored_variables()
+  endif
   return map(types, 's:convert_type(v:val)')
 endfunction
 
@@ -34,11 +56,17 @@ function! s:files_source.gather_candidates(args, context) "{{{2
     call s:save_variables()
     call ProjectionistDetect(custom_path)
   endif
+  let is_available = s:is_available()
+  if !is_available
+    call ProjectionistDetect(expand('%'))
+  endif
 
   if !s:is_available()
     call unite#print_source_error("projectionist is not available", "projectionist")
     if !empty(custom_path)
       call s:restore_variables()
+    elseif !is_available
+      call s:clear_stored_variables()
     endif
     return []
   endif
@@ -53,6 +81,8 @@ function! s:files_source.gather_candidates(args, context) "{{{2
   if empty(types)
     if !empty(custom_path)
       call s:restore_variables()
+    elseif !is_available
+      call s:clear_stored_variables()
     endif
     return []
   endif
@@ -64,6 +94,8 @@ function! s:files_source.gather_candidates(args, context) "{{{2
 
   if !empty(custom_path)
     call s:restore_variables()
+  elseif !is_available
+    call s:clear_stored_variables()
   endif
   let dir_pattern = s:escape_pattern(dir)
   return map(files, 's:convert_file(v:val, dir, dir_pattern)')

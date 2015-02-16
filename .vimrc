@@ -120,13 +120,13 @@ endif
 
 " basic settings {{{1
 " 文字コード周り {{{2
-if s:is_win && (!has('win32unix'))
-  set encoding=cp932
-  set termencoding=cp932
-else
-  set encoding=utf-8
-  set termencoding=utf-8
-endif
+" if s:is_win && (!has('win32unix'))
+"   set encoding=cp932
+"   set termencoding=cp932
+" else
+set encoding=utf-8
+set termencoding=utf-8
+" endif
 scriptencoding utf-8
 set fileencoding=utf-8
 set fileformat=unix
@@ -147,8 +147,8 @@ function! s:fake_unnamed_clipboard(event) "{{{3
     endif
   endif
 endfunction " }}}
-MyAutoCmd FocusGained * call s:fake_unnamed_clipboard('FocusGained')
-MyAutoCmd FocusLost * call s:fake_unnamed_clipboard('FocusLost')
+MyAutoCmd FocusGained * silent call s:fake_unnamed_clipboard('FocusGained')
+MyAutoCmd FocusLost * silent call s:fake_unnamed_clipboard('FocusLost')
 " set clipboard=unnamed
 " if has('unnamedplus')
 "   set clipboard+=unnamedplus
