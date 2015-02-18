@@ -42,7 +42,7 @@ function! s:nop(...) "{{{3
 endfunction
 
 function! s:SID() "{{{3
-    return matchstr(expand('<sfile>'), '<SNR>\d\+_')
+  return matchstr(expand('<sfile>'), '<SNR>\d\+_')
 endfunction
 
 function! s:path_push(...) "{{{3
@@ -136,19 +136,19 @@ set fileformats=unix,dos,mac
 set synmaxcol=1000
 
 set display=lastline
-function! s:fake_unnamed_clipboard(event) "{{{3
-  if a:event ==# 'FocusGained'
-    if strlen(@+) > 1 && @" !=# @+
-      let @" = @+
-    endif
-  elseif a:event ==# 'FocusLost'
-    if strlen(@") > 1
-      let @+ = @"
-    endif
-  endif
-endfunction " }}}
-MyAutoCmd FocusGained * silent call s:fake_unnamed_clipboard('FocusGained')
-MyAutoCmd FocusLost * silent call s:fake_unnamed_clipboard('FocusLost')
+" function! s:fake_unnamed_clipboard(event) "{{{3
+"   if a:event ==# 'FocusGained'
+"     if strlen(@+) > 1 && @" !=# @+
+"       let @" = @+
+"     endif
+"   elseif a:event ==# 'FocusLost'
+"     if strlen(@") > 1
+"       let @+ = @"
+"     endif
+"   endif
+" endfunction " }}}
+" MyAutoCmd FocusGained * silent call s:fake_unnamed_clipboard('FocusGained')
+" MyAutoCmd FocusLost * silent call s:fake_unnamed_clipboard('FocusLost')
 " set clipboard=unnamed
 " if has('unnamedplus')
 "   set clipboard+=unnamedplus
@@ -414,11 +414,7 @@ function! s:highlights_add() "{{{2
   " highlight DiffText cterm=bold ctermfg=227 ctermbg=30
   " highlight DiffChange cterm=bold ctermfg=124 ctermbg=30
 
-  " for unite.vim
-  " highlight StatusLine gui=none guifg=black guibg=lightgreen cterm=none ctermfg=black ctermbg=lightgreen
-
   highlight MatchParen ctermbg=cyan ctermfg=darkred guibg=cyan guifg=darkred
-
   highlight NonText term=underline ctermfg=darkgray guifg=darkgray
   highlight SpecialKey term=underline ctermfg=darkgray guifg=darkgray
   " highlight link IdeographicSpace Error
@@ -491,9 +487,8 @@ augroup END
 
 
 if has('gui_running') "{{{2
-  colorscheme vividchalk
   autocmd vimrc-color-init GUIEnter *
-        \ call <SID>gui_colorscheme_init()
+        \ colorscheme vividchalk | call <SID>gui_colorscheme_init()
 elseif &t_Co == 256 || s:is_win
   colorscheme vividchalk
 else
@@ -1723,6 +1718,10 @@ NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
 \ 'mappings' : [
 \ ['nvo', '<Plug>(textobj-lastinserted-']]
 \ }}
+NeoBundleLazy 'gilligan/textobj-lastpaste', {'autoload':{
+\ 'mappings': [
+\ ['nvo', '<Plug>(textobj-lastpaste-', 'aip', 'iip']]
+\ }}
 NeoBundle 'mattn/vim-textobj-url', {'autoload':{
 \ 'mappings' : [
 \ ['nvo', '<Plug>(textobj-url-']]
@@ -1909,7 +1908,6 @@ if s:bundle.is_installed('vim-altercmd')
 
   command! -bar -nargs=+
         \ Alias CAlterCommand <args> | AlterCommand <cmdwin> <args>
-
   command! -nargs=+ LCAlias call s:alias_lc(<f-args>)
 else
   command! -bar -nargs=+ LCAlias call <SID>nop(<f-args>)
@@ -3677,7 +3675,7 @@ if s:bundle.tap('vim-smalls')
   xmap ,f <Plug>(smalls)
   let g:smalls_auto_excursion_min_input_length = 2
 
-  function s:bundle.tapped.hooks.on_source(bundle)
+  function! s:bundle.tapped.hooks.on_source(bundle)
     let s:cli_table_custom = {
     \ "\<C-g>": 'do_cancel',
     \ "\<C-j>": 'do_jump',
@@ -5348,103 +5346,134 @@ endfunction
 
 let g:surround_custom_mapping = {}
 let g:surround_custom_mapping._ = {
-      \ "\<CR>" : "\n\r\n",
-      \ 'g':  "_('\r')",
-      \ 'G':  "_(\"\r\")",
-      \ '!':  "<!-- \r -->",
-      \ }
+  \ "\<CR>" : "\n\r\n",
+  \ 'g':  "_('\r')",
+  \ 'G':  "_(\"\r\")",
+  \ '!':  "<!-- \r -->",
+  \ }
 let g:surround_custom_mapping.html = {
-      \ '1':  "<h1>\r</h1>",
-      \ '2':  "<h2>\r</h2>",
-      \ '3':  "<h3>\r</h3>",
-      \ '4':  "<h4>\r</h4>",
-      \ '5':  "<h5>\r</h5>",
-      \ '6':  "<h6>\r</h6>",
-      \ 'p':  "<p>\r</p>",
-      \ 'u':  "<ul>\r</ul>",
-      \ 'o':  "<ol>\r</ol>",
-      \ 'l':  "<li>\r</li>",
-      \ 'a':  "<a href=\"\">\r</a>",
-      \ 'A':  "<a href=\"\r\"></a>",
-      \ 'i':  "<img src=\"\r\" alt=\"\" />",
-      \ 'I':  "<img src=\"\" alt=\"\r\" />",
-      \ 'd':  "<div>\r</div>",
-      \ 'D':  "<div class=\"selection\">\r</div>",
-      \ '%':  "<?php \r ?>",
-      \ '#':  "<?php # \r ?>",
-      \ '/':  "<?php // \r ?>",
-      \ '=':  "<?php echo \r ?>",
-      \ }
+  \ '1':  "<h1>\r</h1>",
+  \ '2':  "<h2>\r</h2>",
+  \ '3':  "<h3>\r</h3>",
+  \ '4':  "<h4>\r</h4>",
+  \ '5':  "<h5>\r</h5>",
+  \ '6':  "<h6>\r</h6>",
+  \ 'p':  "<p>\r</p>",
+  \ 'u':  "<ul>\r</ul>",
+  \ 'o':  "<ol>\r</ol>",
+  \ 'l':  "<li>\r</li>",
+  \ 'a':  "<a href=\"\">\r</a>",
+  \ 'A':  "<a href=\"\r\"></a>",
+  \ 'i':  "<img src=\"\r\" alt=\"\" />",
+  \ 'I':  "<img src=\"\" alt=\"\r\" />",
+  \ 'd':  "<div>\r</div>",
+  \ 'D':  "<div class=\"selection\">\r</div>",
+  \ '%':  "<?php \r ?>",
+  \ '#':  "<?php # \r ?>",
+  \ '/':  "<?php // \r ?>",
+  \ '=':  "<?php echo \r ?>",
+  \ '8':  "(( \r ))",
+  \ '9':  "(( \r ))",
+  \ '(':  "(( \r ))",
+  \ ')':  "(( \r ))",
+  \ '{':  "{{ \r }}",
+  \ '}':  "{{ \r }}",
+  \ }
 let g:surround_custom_mapping.help = {
-      \ 'p':  "> \r <",
-      \ }
+  \ 'p':  "> \r <",
+  \ }
 let g:surround_custom_mapping.ruby = {
-      \ '-':  "<% \r %>",
-      \ '=':  "<%= \r %>",
-      \ '9':  "(\r)",
-      \ '5':  "%(\r)",
-      \ '%':  "%(\r)",
-      \ 'w':  "%w(\r)",
-      \ '#':  "#{\r}",
-      \ '3':  "#{\r}",
-      \ 'e':  "begin \r end",
-      \ 'E':  "<<EOS \r EOS",
-      \ 'i':  "if \1if\1 \r end",
-      \ 'u':  "unless \1unless\1 \r end",
-      \ 'c':  "class \1class\1 \r end",
-      \ 'm':  "module \1module\1 \r end",
-      \ 'd':  "def \1def\1\2args\r..*\r(&)\2 \r end",
-      \ 'p':  "\1method\1 do \2args\r..*\r|&| \2\r end",
-      \ 'P':  "\1method\1 {\2args\r..*\r|&|\2 \r }",
-      \ }
+  \ '-':  "<% \r %>",
+  \ '=':  "<%= \r %>",
+  \ '9':  "(\r)",
+  \ '5':  "%(\r)",
+  \ '%':  "%(\r)",
+  \ 'w':  "%w(\r)",
+  \ '#':  "#{\r}",
+  \ '3':  "#{\r}",
+  \ 'e':  "begin \r end",
+  \ 'E':  "<<EOS \r EOS",
+  \ 'i':  "if \1if\1 \r end",
+  \ 'u':  "unless \1unless\1 \r end",
+  \ 'c':  "class \1class\1 \r end",
+  \ 'm':  "module \1module\1 \r end",
+  \ 'd':  "def \1def\1\2args\r..*\r(&)\2 \r end",
+  \ 'p':  "\1method\1 do \2args\r..*\r|&| \2\r end",
+  \ 'P':  "\1method\1 {\2args\r..*\r|&|\2 \r }",
+  \ }
 let g:surround_custom_mapping.eruby = {
-      \ '-':  "<% \r %>",
-      \ '=':  "<%= \r %>",
-      \ '#':  "<%# \r %>",
-      \ 'h':  "<%= h \r %>",
-      \ 'e':  "<% \r %>\n<% end %>",
-      \ }
+  \ '-':  "<% \r %>",
+  \ '=':  "<%= \r %>",
+  \ '#':  "<%# \r %>",
+  \ 'h':  "<%= h \r %>",
+  \ 'e':  "<% \r %>\n<% end %>",
+  \ }
 let g:surround_custom_mapping.markdown = {
-      \ 'h': "`\r`",
-      \ 'c': "```\n\r\n```",
-      \ '!':  "<!-- \r -->",
-      \ }
+  \ 'h': "`\r`",
+  \ 'c': "```\n\r\n```",
+  \ '!':  "<!-- \r -->",
+  \ }
 let g:surround_custom_mapping.php = {
-      \ '-':  "<?php \r ?>",
-      \ '=':  "<?php echo \r ?>",
-      \ 'h':  "<?php echo h( \r ); ?>",
-      \ 'e':  "<?php echo \r ?>",
-      \ 'f':  "<?php foreach ($\r as $val): ?>\n<?php endforeach; ?>",
-      \ '%':  "<?php \r ?>",
-      \ '#':  "<?php # \r ?>",
-      \ '/':  "<?php // \r ?>",
-      \ }
+  \ '-':  "<?php \r ?>",
+  \ '=':  "<?php echo \r ?>",
+  \ 'h':  "<?php echo h( \r ); ?>",
+  \ 'e':  "<?php echo \r ?>",
+  \ 'f':  "<?php foreach ($\r as $val): ?>\n<?php endforeach; ?>",
+  \ '%':  "<?php \r ?>",
+  \ '#':  "<?php # \r ?>",
+  \ '/':  "<?php // \r ?>",
+  \ }
 let g:surround_custom_mapping.javascript = {
-      \ 'f':  "function(){ \r }"
-      \ }
+  \ 'f':  "function(){ \r }"
+  \ }
 let g:surround_custom_mapping.coffee = {
-      \ '-':  "<% \r %>",
-      \ '=':  "<%= \r %>",
-      \ '9':  "(\r)",
-      \ 'r':  "///\r///",
-      \ '#':  "#{\r}",
-      \ '3':  "#{\r}",
-      \ 'e':  "begin \r end",
-      \ 'E':  '""" \r """',
-      \ 'i':  "if \1if\1 \r",
-      \ 'u':  "unless \1unless\1 \r",
-      \ 'c':  "class \1class\1 \r",
-      \ }
+  \ '-':  "<% \r %>",
+  \ '=':  "<%= \r %>",
+  \ '9':  "(\r)",
+  \ 'r':  "///\r///",
+  \ '#':  "#{\r}",
+  \ '3':  "#{\r}",
+  \ 'e':  "begin \r end",
+  \ 'E':  '""" \r """',
+  \ 'i':  "if \1if\1 \r",
+  \ 'u':  "unless \1unless\1 \r",
+  \ 'c':  "class \1class\1 \r",
+  \ }
 let g:surround_custom_mapping.lua = {
-      \ 'f':  "function(){ \r }"
-      \ }
+  \ 'f':  "function(){ \r }"
+  \ }
 let g:surround_custom_mapping.python = {
-      \ 'p':  "print( \r)",
-      \ '[':  "[\r]",
-      \ }
-let g:surround_custom_mapping.vim= {
-      \'f':  "function! \r endfunction"
-      \ }
+  \ 'p':  "print( \r)",
+  \ '[':  "[\r]",
+  \ }
+let g:surround_custom_mapping.vim = {
+  \'f':  "function! \r endfunction"
+  \ }
+let g:surround_custom_mapping.twig = {
+  \ '8':  "(( \r ))",
+  \ '9':  "(( \r ))",
+  \ '(':  "(( \r ))",
+  \ ')':  "(( \r ))",
+  \ '{':  "{{ \r }}",
+  \ '}':  "{{ \r }}",
+  \ '%':  "{% \r %}",
+  \ '#':  "{# \r #}",
+  \ '/':  "{# \r #}",
+  \ }
+function! s:_copy_surround_mapping(from, to)
+  if exists('g:surround_custom_mapping[a:from]')
+    let g:surround_custom_mapping[a:to] = g:surround_custom_mapping[a:from]
+  endif
+endfunction
+function! s:copy_surround_mapping(copies)
+  call map(a:copies, 's:_copy_surround_mapping(v:val[0], v:val[1])')
+endfunction
+call s:copy_surround_mapping([
+  \ ['twig', 'html.twig'],
+  \ ['ruby', 'ruby.rspec'],
+  \ ['python', 'python.nosetests'],
+  \ ['perl', 'perl.prove'],
+  \ ])
 
 " operator {{{2
 if s:bundle.tap('vim-operator-user')
@@ -6031,7 +6060,6 @@ if s:bundle.is_installed('vim-quickrun')
       \ s:str_prepend(db, "/")
       \ )
   endfunction " }}}
-
   function! MySQLCommandOptions() "{{{5
     if exists('b:MYSQL_cmd_options')
       return b:MYSQL_cmd_options
@@ -6226,24 +6254,10 @@ if s:bundle.is_installed('vim-quickrun')
   " for testcase {{{4
   MyAutoCmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
   MyAutoCmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
-  function! s:gen_phpunit_skel()
-    let old_cwd = getcwd()
-    let cwd = expand('%:p:h')
-    let name = expand('%:t:r')
-    let m = matchlist(join(getline(1, 10), "\n"), "\s*namespace\s*\(\w+\)\s*;")
-    let type = match(name, '\(_test|Test\)$') == -1 ? "--test" : "--class"
-    let opts = []
-    if !empty(m)
-      call add(opts, '--')
-      call add(opts, m[1])
-    endif
-    silent exe 'lcd' cwd
-    exe "!" printf("phpunit-skelgen %s %s %s", join(opts, " "), type, name)
-    silent exe 'lcd' old_cwd
-  endfunction
-  command! PhpUnitSkelGen call s:gen_phpunit_skel()
   MyAutoCmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
   MyAutoCmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
+
+  command! PhpUnitSkelGen call my#php#generate_phpunit_skelgen()
 
   if s:bundle.is_installed('vim-ref')
     augroup vimrc-plugin-ref
@@ -6261,7 +6275,6 @@ if s:bundle.is_installed('vim-quickrun')
       augroup END
     endfunction
   endif
-
 
   " quickrun init {{{3
   function! s:vimrc_quickrun_init() "{{{4
