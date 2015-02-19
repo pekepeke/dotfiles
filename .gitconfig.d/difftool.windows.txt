@@ -1,25 +1,15 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
-[difftool winmerge]
-  path = C:/Program Files (x86)/WinMerge/winmergeu.exe
-  cmd = \"C:/Program Files (x86)/WinMerge/winmergeu.exe\" -r -u \"$LOCAL\" \"$REMOTE\"
+[difftool "winmerge"]
+  path = C:/Program Files (x86)/WinMerge/WinMergeU.exe
+  cmd = \"C:/Program Files (x86)/WinMerge/WinmergeU.exe\" -r -u \"$LOCAL\" \"$REMOTE\"
   ; path = C:/Apps/WinMerge/WinMergeU.exe
   ; cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" -e -ub -dl \"Base\" -dr \"Mine\" \"$LOCAL\" \"$REMOTE\"
-[difftool "p4merge"]
-  cmd = "p4merge.exe $LOCAL $REMOTE"
-[difftool "kdiff3"]
-  path = C:/Program Files (x86)/KDiff3/kdiff3.exe
-  keepBackup = false
-  trustExitCode = false
 
-[mergetool "winmerge"]
-  path = C:/Program Files (x86)/WinMerge/winmergeu.exe
-  cmd = \"C:/Program Files (x86)/WinMerge/winmergeu.exe\" \"$MERGED\"
-  ; path = C:/Apps/WinMerge/WinMergeU.exe
-  ; cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" \"$MERGED\"
 [mergetool "p4merge"]
   cmd = "p4merge.exe $BASE $LOCAL $REMOTE $MERGED"
   trustExitCode = true
   keepBackup = false
+
 [mergetool "kdiff3"]
   path = C:/Program Files (x86)/KDiff3/kdiff3.exe
   keepBackup = false

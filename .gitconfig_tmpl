@@ -2,6 +2,7 @@
 [include]
   path = ~/.gitconfig.d/core.txt
   ; path = ~/.gitconfig.d/core.osx.txt
+  ; path = ~/.gitconfig.d/core.windows.txt
   path = ~/.gitconfig.d/alias.txt
   path = ~/.gitconfig.d/color.txt
   path = ~/.gitconfig.d/diff.txt
