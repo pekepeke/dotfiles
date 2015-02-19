@@ -20,3 +20,10 @@ $(selector).hover(handlerIn, handlerOut)
 $(selector).mouseenter(handlerIn).mouseleave(handlerOut);
 ```
 
+## contains [>=1.4]
+
+```
+jQuery.contains( "対象のDOM要素" ,"含まれているか調べたいDOM要素" );
+jQuery(el, '#hoge').length > 0
+jQuery('#hoge').find(el).length > 0
+```
