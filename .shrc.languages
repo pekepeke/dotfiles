@@ -35,6 +35,10 @@ case $OSTYPE in
     soft_source $HOME/.shrc.cygwin
     PATH=$HOME/bin/windows:$PATH
     ;;
+  msys)
+    PATH=$(echo "$HOME/bin/windows:$PATH" |  sed 's/(/\\(/g' | sed 's/\\\\(/\\(/g')
+    PATH=$(echo "$HOME/bin/windows:$PATH" |  sed 's/)/\\)/g' | sed 's/\\\\)/\\)/g')
+    ;;
   darwin*)
     soft_source $HOME/.shrc.osx
     if [ -z "$HOMEBREW_PREFIX" ]; then
