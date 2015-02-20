@@ -3023,7 +3023,7 @@ if s:bundle.tap('lightline.vim')
 
     let nr = printf(nrformat, nr) " Format the numeric value
 
-    return "'". char ."' ". nr
+    return printf('%s[%s]', nr, char)
   endfunction
 
   function! g:ll_helper.fileinfo() "{{{3
@@ -3039,7 +3039,8 @@ if s:bundle.tap('lightline.vim')
 
   function! g:ll_helper.fugitive() "{{{3
     if !self.is_special_ft() && exists('*fugitive#head')
-      return fugitive#head()
+      let s = fugitive#head()
+      return len(s) > 10 ? "...".s[-10:] : s
     endif
     return ''
   endfunction
