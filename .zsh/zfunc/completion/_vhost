@@ -15,6 +15,7 @@ case $state in
       'help:Show this message'
       'init:initialize'
       'new:create vhost config file'
+      'xipio:print site url'
       'list:print site list'
       'docroot:Show docroot filepath'
       'which:Show conf file path or etc dir'
@@ -39,7 +40,7 @@ case $state in
     local -a _sites
     _sites=($(_call_program commands vhost list 2>/dev/null))
     case $line[1] in
-      which|open|edit|public|docroot|list)
+      which|open|edit|public|docroot|list|xipio)
         _describe -t _sites 'sites' _sites && ret=0
       ;;
     esac

@@ -65,6 +65,7 @@ env_unique() { # {{{1
 
 if_compile() { #{{{1
   [ -z "$ZSH_NAME" ] && return 0
+  [ "$OSTYPE" = "msys" ] && return 0
   for f in $*; do
     [ ! -e $f.zwc -o $f -nt $f.zwc ] && zcompile $f
   done

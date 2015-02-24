@@ -136,17 +136,19 @@ set fileformats=unix,dos,mac
 set synmaxcol=1000
 
 set display=lastline
-" function! s:fake_unnamed_clipboard(event) "{{{3
-"   if a:event ==# 'FocusGained'
-"     if strlen(@+) > 1 && @" !=# @+
-"       let @" = @+
-"     endif
-"   elseif a:event ==# 'FocusLost'
-"     if strlen(@") > 1
-"       let @+ = @"
-"     endif
-"   endif
-" endfunction " }}}
+function! s:fake_unnamed_clipboard(event) "{{{3
+  if a:event ==# 'FocusGained'
+    if strlen(@+) > 1 && @" !=# @+
+      let @" = @+
+    endif
+  elseif a:event ==# 'FocusLost'
+    if strlen(@") > 1
+      let @+ = @"
+    endif
+  endif
+endfunction " }}}
+command! -nargs=0 ClipFetch call s:fake_unnamed_clipboard('FocusGained')
+command! -nargs=0 ClipSend call s:fake_unnamed_clipboard('FocusLost')
 " MyAutoCmd FocusGained * silent call s:fake_unnamed_clipboard('FocusGained')
 " MyAutoCmd FocusLost * silent call s:fake_unnamed_clipboard('FocusLost')
 " set clipboard=unnamed
