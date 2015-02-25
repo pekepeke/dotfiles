@@ -1,10 +1,5 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [diff]
-[diff "applescript"]
-  binary = true
-  textconv = osadecompile
-[diff "rtf"]
-  textconv = textutil -convert txt -stdout
 [diff "xlsx"]
   binary = true
   textconv = $GOPATH/bin/git-xlsx-textconv
@@ -12,11 +7,10 @@
 [diff "exif"]
   binary = true
   textconv = exiftool -ImageSize -FileSize -DeviceModel -ColorType
-[diff "word"]
-  binary = true
-  textconv = catdoc
 [diff "odt"]
   binary = true
   textconv = $HOME/bin/odt-to-txt
-
+[diff "tika"]
+  binary = true
+  textconv = $HOME/bin/tika-text
 

@@ -4,8 +4,17 @@
 *.png    diff=exif
 *.jpg    diff=exif
 *.gif    diff=exif
-*.odt    diff=odt
+# *.odt    diff=odt
 *.scpt   diff=applescript
 *.rtf    diff=rtf
 
+*.pptx   diff=tika
+*.docx   diff=tika
+*.doc    diff=tika
+*.ppt    diff=tika
+*.pdf    diff=tika
+*.odt    diff=tika
+*.ods    diff=tika
+*.odp    diff=tika
+# *.chm    diff=tika
 

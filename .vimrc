@@ -147,8 +147,10 @@ function! s:fake_unnamed_clipboard(event) "{{{3
     endif
   endif
 endfunction " }}}
-command! -nargs=0 ClipFetch call s:fake_unnamed_clipboard('FocusGained')
+command! -nargs=0 ClipReceive call s:fake_unnamed_clipboard('FocusGained')
 command! -nargs=0 ClipSend call s:fake_unnamed_clipboard('FocusLost')
+command! -nargs=0 CS ClipSend
+command! -nargs=0 CR ClipReceive
 " MyAutoCmd FocusGained * silent call s:fake_unnamed_clipboard('FocusGained')
 " MyAutoCmd FocusLost * silent call s:fake_unnamed_clipboard('FocusLost')
 " set clipboard=unnamed

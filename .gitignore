@@ -70,6 +70,9 @@ doc/tags-ja
 /.zsh/zfunc/*.local
 /.zsh/zfunc/*.local.zsh
 
+# gitconfig
+/.gitconfig.d/*.local.txt
+
 # pip
 /.pip/pip.log
 

@@ -6,10 +6,13 @@
   path = ~/.gitconfig.d/alias.txt
   path = ~/.gitconfig.d/color.txt
   path = ~/.gitconfig.d/diff.txt
+  ; path = ~/.gitconfig.d/diff.osx.txt
+  path = ~/.gitconfig.d/diff.local.txt
   path = ~/.gitconfig.d/ghq.txt
   path = ~/.gitconfig.d/difftool.vim.txt
   ; path = ~/.gitconfig.d/difftool.osx.txt
   ; path = ~/.gitconfig.d/difftool.windows.txt
+  path = ~/.gitconfig.d/difftool.local.txt
 [user]
   name = hoge
   email = hoge+git@gmail.com
