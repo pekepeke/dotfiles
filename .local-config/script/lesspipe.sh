@@ -2,6 +2,11 @@
 
 trap 'exit 0' PIPE
 
+is_executable() {
+  which $1 >/dev/null 2>&1
+  return $?
+}
+
 fallback() {
   hexdump -C -- "$1"
 }
@@ -36,11 +41,13 @@ else
       antiword "$1" 2>/dev/null || catdoc "$1" 2>/dev/null || fallback "$1" ;;
     *.rtf)
       unrtf --nopict --text "$1" || fallback "$1" ;;
+    # ftp://*|http://*|https://*|*.htm|*.html)
     ftp://*|http://*|https://*|*.htm|*.html)
-      for b in links2 links lynx w3m ; do
-        ${b} -dump "$1" 2>/dev/null && exit 0
-      done
-      html2text -style pretty "$1" 2>/dev/null || curl -skL "$1"
+      cat "$1" 2>/dev/null || curl -skL "$1"
+      # for b in links2 links lynx w3m ; do
+      #   ${b} -dump "$1" 2>/dev/null && exit 0
+      # done
+      # html2text -style pretty "$1" 2>/dev/null || curl -skL "$1"
       ;;
     *.rpm)
       rpm -qpivl --changelog -- "$1" ;;
@@ -75,6 +82,9 @@ else
         ar p "$1" data.tar.gz | tar tzvvf -
       fi
       ;;
+    # OSX
+    *.scpt)
+      is_executable osadecompile && osadecompile "$1" 2>/dev/null ;;
   esac
 fi
 
