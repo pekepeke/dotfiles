@@ -27,7 +27,7 @@ xenv-init() {
 
 shrc_section_title "OS settings" # {{{1
 
-PATH=$HOME/bin:$HOME/.local/bin:$PATH
+PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
 case $OSTYPE in
   cygwin*)
@@ -36,8 +36,8 @@ case $OSTYPE in
     PATH=$HOME/bin/windows:$PATH
     ;;
   msys)
-    PATH=$(echo "$HOME/bin/windows:$PATH" |  sed 's/(/\\(/g' | sed 's/\\\\(/\\(/g')
-    PATH=$(echo "$HOME/bin/windows:$PATH" |  sed 's/)/\\)/g' | sed 's/\\\\)/\\)/g')
+    PATH="$(echo "$HOME/bin/windows:$PATH" |  sed 's/(/\\(/g' | sed 's/\\\\(/\\(/g')"
+    PATH="$(echo "$HOME/bin/windows:$PATH" |  sed 's/)/\\)/g' | sed 's/\\\\)/\\)/g')"
     ;;
   darwin*)
     soft_source $HOME/.shrc.osx
@@ -90,10 +90,10 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   #   xenv-init nenv
   xenv-init nodenv
 
-  PATH=node_modules/.bin:$PATH
+  PATH="node_modules/.bin:$PATH"
   if [ -e /usr/local/googkit ]; then
     export GOOGKIT_HOME=/usr/local/googkit
-    export PATH=$PATH:$GOOGKIT_HOME/bin
+    export PATH="$PATH:$GOOGKIT_HOME/bin"
   fi
 
   shrc_section_title "java" # {{{2
@@ -133,7 +133,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   # scala {{{2
   if [ -e ~/.svm ]; then
     export SCALA_HOME=~/.svm/current/rt
-    PATH=$SCALA_HOME/bin:$HOME/.svm/:$PATH
+    PATH="$SCALA_HOME/bin:$HOME/.svm/:$PATH"
   fi
 
   # go {{{2
@@ -143,7 +143,7 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   # if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/bin/go" ]; then
   #   export GOPATH=$(dirname $(dirname $HOMEBREW_PREFIX/bin/go/$(readlink /usr/local/bin/go)))
   export GOPATH=$HOME/.gopath
-  PATH=$GOPATH/bin:$PATH
+  PATH="$GOPATH/bin:$PATH"
   [ -e $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh ] \
     && source $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh
   # fi
@@ -153,12 +153,12 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
 
   # direnv {{{2
   if [ -e ~/.direnv ]; then
-    PATH=~/.direnv/bin:$PATH
+    PATH="$HOME/.direnv/bin:$PATH"
     eval "$(direnv hook $SHELL_NAME)"
   fi
 
   # haskell {{{2
-  PATH=${HOME}/.cabal/bin:$PATH
+  PATH="${HOME}/.cabal/bin:$PATH"
 
   shrc_section_title "for Ruby" # {{{2
   xenv-init rbenv

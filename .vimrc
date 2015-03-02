@@ -119,7 +119,7 @@ else
 endif
 
 " basic settings {{{1
-" 文字コード周り {{{2
+" encodings {{{2
 " if s:is_win && (!has('win32unix'))
 "   set encoding=cp932
 "   set termencoding=cp932

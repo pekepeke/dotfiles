@@ -52,7 +52,7 @@ env_unique() { # {{{1
   local env="$1"
   local sep="$2"
 
-  eval "export $env=$(perl -e 'my ($e, $s) = (shift, shift || q(:)); #\
+  eval "export $env=\"$(perl -e 'my ($e, $s) = (shift, shift || q(:)); #\
         for(split $s, $ENV{$e}) { #\
             $h{$_} or $h{$_}=++$i #\
         } #\
@@ -60,7 +60,7 @@ env_unique() { # {{{1
         %h=reverse %h; #\
         print map { $h{$_} } #\
               sort { $a <=> $b } keys %h' \
-    $env $sep)"
+    $env $sep)\""
 }
 
 if_compile() { #{{{1
