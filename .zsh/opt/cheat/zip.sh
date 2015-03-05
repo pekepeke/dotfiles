@@ -4,3 +4,5 @@ zip -r file.zip dir/
 zip -e file.zip filename
 # stored 圧縮
 zip -0 file.zip filename
+# fetch & unzip
+unzip =(curl -L http://path/to.zip)
