@@ -20,12 +20,15 @@
   ci = commit
   ca = commit --amend
   st = status
+  stt = status -uno
   ss = status -sb
   sl = shortlog -sn
   reba = rebase --abort
   rebc = rebase --continue
   br = branch
   fixup = commit --amend -C HEAD
+  today = log --oneline --since='12 hour ago'
+  info = "!f() { git config -l | grep -e '^\\(remote\\|branch\\|submodule\\|user\\)' | sort ; }; f;"
   edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
   add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
   log-graph = log --graph --date=short --pretty=format:'%Cgreen%h %cd %Cblue%cn %Creset%s'
