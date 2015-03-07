@@ -27,21 +27,25 @@ if s:is_win " {{{2
   "set guifont=Anonymous\ Pro:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
   command! -nargs=0 Consolas set guifont=Consolas:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
   command! -nargs=0 Ricty set guifont=Ricty:h11 guifontwide=Ricty:h11
+  command! -nargs=0 RictyDiminished set guifont=Ricty\ Diminished:h11 guifontwide=Ricty\ Diminished:h11
   " command! -nargs=0 Ricty set guifont=Ricty:h12 guifontwide=Ricty:h12
   command! -nargs=0 ConsolasBig set guifont=Consolas:h18,Lucida_Console:h18:w5 guifontwide=MS_Gothic:h18
   command! -nargs=0 RictyBig set guifont=Ricty:h20 guifontwide=Ricty:h20
+  command! -nargs=0 RictyDiminishedBig set guifont=Ricty\ Diminished:h20 guifontwide=Ricty\ Diminished:h20
 
   MyAutoCmd GUIEnter * set transparency=210
 
   if filereadable($WINDIR . '\Fonts\Ricty-Regular.ttf')
     Ricty
+  elseif  filereadable($WINDIR . '\Fonts\RictyDiminished-Regular.ttf')
+    RictyDiminished
   else
     Consolas
   endif
 
-  " if has('directx') && &encoding == 'utf-8'
-  "   silent! exe 'set' 'renderoptions=type:directx'
-  " endif
+  if has('directx') && &encoding == 'utf-8'
+    silent! execute 'set' 'renderoptions=type:directx'
+  endif
 
   if has('printer')
     set printfont=MS_Gothic:h12:cSHIFTJIS
