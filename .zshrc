@@ -205,7 +205,7 @@ bindkey -a '^E' end-of-line
 ## for insert mode {{{3
 bindkey -v '^[OH' beginning-of-line
 bindkey -v '^[OF' end-of-line
-bindkey -v "\e[1~" begginning-of-line   # Home
+bindkey -v "\e[1~" beginning-of-line   # Home
 bindkey -v "\e[4~" end-of-line          # End
 bindkey -v "^[[3~" delete-char          # Del
 bindkey -v "\e[Z" reverse-menu-complete # S-Tab
