@@ -33,3 +33,10 @@ git log --until=2011-2-6 --since=2011-2-4        # 指定した時間以降の�
 git log --topo-order                             # コミットメッセージのログの表示順序を変更
 git log --date-order
 git log --reverse
+
+# 過去の変更を検索
+git log -p -Squery
+# regexp
+git log -p -S'query' --pickaxe-regex
+# 過去の変更を検索＆同時にコミットしたファイルも表示
+git log --stat -Squery --pickaxe-all
