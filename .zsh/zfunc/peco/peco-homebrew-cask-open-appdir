@@ -2,7 +2,7 @@
 # peco-homebrew-cask-open-appdir() {
   local selected="$(find /opt/homebrew-cask/Caskroom -type d -depth 2 -not -name '.metadata' | peco --query="$LBUFFER")"
   if [ -n "$selected" ]; then
-    (($+functions[_os_gui_shell])) || . ~/.zsh/zfunc/peco/lib/util.zsh
+    (($+functions[_get_os_gui_shell])) || . ~/.zsh/zfunc/peco/lib/util.zsh
     BUFFER="$(_get_os_gui_shell) ${selected}"
     zle accept-line
   fi

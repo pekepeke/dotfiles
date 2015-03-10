@@ -5373,6 +5373,8 @@ let g:surround_custom_mapping.html = {
   \ 'I':  "<img src=\"\" alt=\"\r\" />",
   \ 'd':  "<div>\r</div>",
   \ 'D':  "<div class=\"selection\">\r</div>",
+  \ '!':  "<!-- \r -->",
+  \ '?':  "<?php \r ?>",
   \ '%':  "<?php \r ?>",
   \ '#':  "<?php # \r ?>",
   \ '/':  "<?php // \r ?>",
@@ -5420,6 +5422,7 @@ let g:surround_custom_mapping.markdown = {
   \ }
 let g:surround_custom_mapping.php = {
   \ '-':  "<?php \r ?>",
+  \ '?':  "<?php \r ?>",
   \ '=':  "<?php echo \r ?>",
   \ 'h':  "<?php echo h( \r ); ?>",
   \ 'e':  "<?php echo \r ?>",
