@@ -7466,6 +7466,7 @@ if s:is_mac "{{{3
   command! Subl silent execute '!open' '-a' 'Sublime\ Text\ 2' shellescape(expand('%:p'))
   command! CotEdit silent execute '!open' '-a' 'CotEditor' shellescape(expand('%:p'))
   command! Mate silent execute '!open' '-a' 'TextMate' shellescape(expand('%:p'))
+  command! Brackets silent execute '!open' '-a' 'Brackets' shellescape(expand('%:p'))
   command! Iterm silent execute "!osascript -e 'tell application \"iTerm\" to activate' &"
   command! -nargs=1 ActivateWindow silent execute "!osascript -e 'tell application \"<args>\" to activate' &"
   nnoremap <D-i> :<C-u>Iterm<CR>
