@@ -42,6 +42,7 @@ source_all() {
 }
 
 remove_path() { # {{{1
+  if ! is_exec perl; then return ; fi
   eval "export PATH=\"$(/usr/bin/perl -e '$p=$ENV{PATH};while($v=shift){$p=~s/^$v:|:$v:|:$v$/:/g}$p=~s/::/:/g;print $p;' $*)\""
   return 0
 }
@@ -49,6 +50,7 @@ remove_path() { # {{{1
 # http://d.hatena.ne.jp/tyru/20090526/1243339840
 env_unique() { # {{{1
   if [ $# = 0 ]; then return; fi
+  if ! is_exec perl; then return ; fi
   local env="$1"
   local sep="$2"
 

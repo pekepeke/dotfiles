@@ -415,7 +415,7 @@ zload() {
 }
 
 shrc_section_title "bdd" #{{{2
-source ~/.zsh/plugins/zsh-bd/bd.zsh
+# source ~/.zsh/plugins/zsh-bd/bd.zsh
 
 shrc_section_title "peco" #{{{2
 if type type peco >/dev/null 2>&1; then
@@ -473,8 +473,10 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
 fi
 shrc_section_title "autojump" #{{{2
 if [ -e ~/.zsh/plugins/z/z.sh ]; then
+  # if [ "$OSTYPE" != "msys" -a -z "$CYGWIN" ]; then
   _Z_CMD=j
   . ~/.zsh/plugins/z/z.sh
+  # fi
 fi
 
 shrc_section_title "zsh-syntax-highlighting" #{{{2
@@ -775,7 +777,6 @@ _zsh-complete-init() {
 }
 zle -N _zsh-complete-init
 bindkey -v '^I' _zsh-complete-init
-
 
 shrc_section_title "finish"
 # vim: ft=zsh fdm=marker sw=2 ts=2 et:

@@ -48,7 +48,7 @@ COL_CMD="perl -ne 's/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g;print'"
 export EDITOR="$EDITOR_VIM_MIN"
 export RLWRAP_HOME=~/.rlwrap
 # stty
-if type stty >/dev/null 2>&1; then
+if is_exec stty ; then
   stty stop undef
   stty werase undef
 fi
@@ -103,16 +103,18 @@ shrc_section_title "aliases" #{{{1
 shrc_section_title "notify" #{{{2
 
 shrc_section_title "basic commands" #{{{2
-if is_exec gls; then
-  alias ls="gls $LS_OPTIONS"
-  alias ll="gls -l $LS_OPTIONS"
-  alias la="gls -A $LS_OPTIONS"
-  alias l="gls -CF $LS_OPTIONS"
-elif is_mac ; then
-  alias ls="ls -GF"
-  alias ll="ls -GFl"
-  alias la="ls -GFA"
-  alias l="ls -GCF"
+if is_mac ; then
+  if is_exec gls; then
+    alias ls="gls $LS_OPTIONS"
+    alias ll="gls -l $LS_OPTIONS"
+    alias la="gls -A $LS_OPTIONS"
+    alias l="gls -CF $LS_OPTIONS"
+  else
+    alias ls="ls -GF"
+    alias ll="ls -GFl"
+    alias la="ls -GFA"
+    alias l="ls -GCF"
+  fi
 else
   alias ls="ls $LS_OPTIONS"
   alias ll="ls -l $LS_OPTIONS"
@@ -135,6 +137,7 @@ alias less='less -R'
 if type rlwrap > /dev/null 2>&1; then
   alias cap='rlwrap cap'
 fi
+
 shrc_section_title "vim" #{{{2
 if type lv > /dev/null 2>&1; then
   export PAGER=lv
@@ -285,7 +288,7 @@ if is_exec tscreen; then
 fi
 
 shrc_section_title "ssh logging" #{{{1
-which ssh-log >/dev/null 2>&1 && alias ssh='ssh-log'
+is_exec ssh-log && alias ssh='ssh-log'
 
 # function ssh_screen(){
 #   eval server=?${$#}
