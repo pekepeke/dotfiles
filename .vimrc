@@ -2609,25 +2609,8 @@ if s:bundle.is_installed('previm')
 endif
 
 " projectionist {{{2
-if s:bundle.is_installed('vim-projectionist')
-  function! s:edit_projectionist_json()
-    let fpath = ""
-    if exists('b:projectionist')
-      let fpath = get(keys(b:projectionist), 0, "") . "/" . ".projections.json"
-    endif
-    if empty(fpath)
-      let fpath = s:find_proj_dir() . "/" . ".projections.json"
-      if !filereadable(fpath)
-        let fpath = input( ".projections.json" . " :", fpath)
-      endif
-    endif
-
-    if !empty(fpath)
-      execute 'edit' '+split' fpath
-    endif
-  endfunction
-  command! ProjectionistJsonEdit call s:edit_projectionist_json()
-endif
+" if s:bundle.is_installed('vim-projectionist')
+" endif
 
 " phpcomplete-extended {{{2
 if s:bundle.is_installed('phpcomplete-extended')

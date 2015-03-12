@@ -4,7 +4,7 @@ GIT_URL="git://github.com/pekepeke/dotfiles.git"
 LOCAL_DIR="$HOME/.github-dotfiles"
 OS_DIFFER_FILES=".xinitrc"
 BACKUP_FILES=".bash_profile .bashrc .screenrc .vimrc"
-SKIP_FILES=". .. .git setup.sh"
+SKIP_FILES=". .. .git setup.sh .projections.json"
 COPY_FILES=""
 
 opt_uninstall=0
@@ -102,7 +102,7 @@ exec_install() {
         *)        echo "unknown: $OSTYPE - $" 1>&2 ;;
       esac
 
-      echo $F $base $prefix
+      # echo $F $base $prefix
       if [ x"$prefix" != x -a x"$F" = x"${base}.${prefix}" ]; then
         execfiles="$execfiles\n${YELLOW}ln -s $CDIR/$F $HOME/${base}${DEFAULT}"
         ln -s "$CDIR/$F" "$HOME/${base}"

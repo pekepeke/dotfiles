@@ -10,3 +10,6 @@ function isDate(o) {
     return Object.prototype.toString.call(o) === '[object Date]';
 }
 
+function selectorEscape(val){
+  return val.replace(/[ !"#$%&'()*+,.\/:;<=>?@\[\\\]^`{|}~]/g, '\\$&');
+}
