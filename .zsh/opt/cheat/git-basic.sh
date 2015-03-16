@@ -25,3 +25,5 @@ git fetch --prune
 git remote -v
 # 特定コミット/branch のファイル内容を出力
 git show <treeish>:<file>
+# origin の変更
+git remote set-url origin git@git.example.com:foo/bar.git

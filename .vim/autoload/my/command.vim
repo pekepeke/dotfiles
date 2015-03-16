@@ -122,7 +122,7 @@ function! my#command#exec_ctags(path) "{{{2
 endfunction
 
 function! my#command#toggle_option(opt) "{{{2
-  exe "setl inv".a:opt
+  exe "setlocal inv".a:opt
   let sts = eval('&'.a:opt)
   echo printf("set %s : %s", a:opt, sts ? "ON" : "OFF")
 endfunction

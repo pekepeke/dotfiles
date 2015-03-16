@@ -172,6 +172,28 @@ set viminfo& viminfo+=!
 set viminfo+=n$VIM_CACHE/viminfo.txt
 call s:mkdir($VIM_CACHE)
 
+" Use vsplit mode http://qiita.com/kefir_/items/c725731d33de4d8fb096
+if has("vim_starting") && !has('gui_running') && has('vertsplit')
+  function! g:EnableVsplitMode()
+    " enable origin mode and left/right margins
+    let &t_CS = "y"
+    let &t_ti = &t_ti . "\e[?6;69h"
+    let &t_te = "\e[?6;69l\e[999H" . &t_te
+    let &t_CV = "\e[%i%p1%d;%p2%ds"
+    call writefile([ "\e[?6;69h" ], "/dev/tty", "a")
+  endfunction
+
+  " old vim does not ignore CPR
+  map <special> <Esc>[3;9R <Nop>
+
+  " new vim can't handle CPR with direct mapping
+  " map <expr> ^[[3;3R g:EnableVsplitMode()
+  set t_F9=[3;3R
+
+  map <expr> <t_F9> g:EnableVsplitMode()
+  let &t_RV .= "\e[?6;69h\e[1;3s\e[3;9H\e[6n\e[0;0s\e[?6;69l"
+endif
+
 " IME の設定 {{{2
 if has('kaoriya') | set iminsert=0 imsearch=0 | endif
 
@@ -737,9 +759,6 @@ NeoBundleLazy 'h1mesuke/vim-alignta', {'autoload': {
 \ 'unite_sources': ['alignta']
 \ }}
 NeoBundle 'nishigori/increment-activator'
-NeoBundle 'AndrewRadev/switch.vim', {'autoload': {
-\ 'commands': ['Switch']
-\ }}
 NeoBundle 'tpope/vim-speeddating', {'autoload': {
 \ 'mappings' : [['nv', '<Plug>SpeedDatingUp', '<Plug>SpeedDatingDown'],
 \ ['n', '<Plug>SpeedDatingNowLocal', '<Plug>SpeedDatingNowUTC']],
@@ -1113,7 +1132,9 @@ NeoBundle 'slim-template/vim-slim'
 " javascript {{{4
 NeoBundle 'guileen/simple-javascript-indenter'
 NeoBundle 'pangloss/vim-javascript'
-" NeoBundle 'moll/vim-node'
+NeoBundle 'mxw/vim-jsx'
+" NeoBundle 'jsx/vim-jsx'
+NeoBundle 'moll/vim-node'
 NeoBundle 'pekepeke/vim-node', 'gf-user', {'autoload': {
   \ 'filetypes': ['javascript', 'coffee'],
   \ }}
@@ -2542,6 +2563,8 @@ let g:markdown_fenced_languages = [
 \  'xml',
 \]
 " \  'erb=eruby', " filetype=html をしている
+" vim-json {{{2
+let g:vim_json_syntax_conceal = 0
 
 " disables plugin {{{1
 if !s:is_mac
@@ -3539,64 +3562,6 @@ if s:bundle.is_installed('increment-activator')
     \   ["+", "\t+", "\t\t+", "\t\t\t+", ],
     \ ],
     \ }
-endif
-
-" switch.vim {{{2
-if s:bundle.is_installed('switch.vim')
-  " let g:switch_custom_definitions = [ {
-  "       \ } ]
-  nnoremap <silent> !! :<C-u>Switch<CR>
-  let g:switch_mapping = ''
-  " let b:switch_custom_definitions = [
-
-  let s:switch_definitions = {
-    \ '_': [
-    \   ['get', 'post', 'put', 'delete'],
-    \ ],
-    \ 'vim': [
-    \   ['echo', 'echomsg'],
-    \   ['if', 'elseif', 'endif'],
-    \   ['for', 'endfor'],
-    \   ['function', 'endfunction'],
-    \   ['try', 'catch', 'finally'],
-    \ ],
-    \ 'markdown': [
-    \   ['[ ]', '[x]'],
-    \   ['#', '##', '###', '####', '#####', ],
-    \   ["-", "\t-", "\t\t-", "\t\t\t-", ],
-    \   ["+", "\t+", "\t\t+", "\t\t\t+", ],
-    \ ],
-    \ }
-  function! s:switch_definitions_deploy()
-    if empty(s:switch_definitions) || empty(&filetype)
-      return
-    endif
-    let dict = exists('b:switch_custom_definitions') ? b:switch_custom_definitions : []
-
-    for ft in split(&filetype, '\.')
-      if has_key(s:switch_definitions, ft)
-        let dict = extend(dict, s:switch_definitions[ft])
-      endif
-    endfor
-    if exists('s:switch_definitions._')
-      let dict = extend(dict, s:switch_definitions._)
-    endif
-
-    let b:switch_custom_definitions = dict
-  endfunction
-  MyAutoCmd filetype * call <SID>switch_definitions_deploy()
-  " let g:switch_custom_definitions = [
-  "       \ {'ruby': [
-  "       \ ["describe", "context", "specific", "example"],
-  "       \ ['before', 'after'],
-  "       \ ['be_true', 'be_false'],
-  "       \ ['get', 'post', 'put', 'delete'],
-  "       \ ['==', 'eql', 'equal'],
-  "       \ { '.should_not': '.should' },
-  "       \ ['.to_not', '.to'],
-  "       \ { '([^. ]+).should(_not|)': 'expect(\1).to \2' },
-  "       \ { 'expect(([^. ]+)).to(_not|)': '\1.should \2' },
-  "       \ ]} ]
 endif
 
 " undotree {{{2
@@ -5922,7 +5887,7 @@ if s:bundle.is_installed('vim-quickrun')
   \   'type': 'json/jq',
   \ },
   \ 'jsx' : {
-  \   'type' : 'jsx/jsx',
+  \   'type' : 'denajsx/jsx',
   \ },
   \ 'coffee/to_javascript' : {
   \    'command': 'coffee',
@@ -5932,7 +5897,7 @@ if s:bundle.is_installed('vim-quickrun')
   \ 'json/jq': {
   \   'command': 'jq',
   \ },
-  \ 'jsx/jsx' : {
+  \ 'denajsx/jsx' : {
   \   'command': 'jsx',
   \   'exec' : '%c %o --run %s',
   \ },
@@ -6353,6 +6318,16 @@ if s:bundle.is_installed('vim-quickrun')
         \    'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,'
         \                           . '%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
         \ },
+        \ 'watchdogs_checker/jsonval' : {
+        \   'command' : 'jsonval',
+        \    'exec'    : '%c %o %s:p',
+        \    'quickfix/errorformat' : '%E%f: %m at line %l,%-G%.%#',
+        \ },
+        \ })
+  if executable('jsxhint')
+    let g:quickrun_config['javascript/watchdogs_checker'] = 'watchdogs_checker/jsxhint'
+  endif
+  call extend(g:quickrun_config, {
         \ 'watchdogs_checker/nodejs' : {
         \   'command' : 'node',
         \    'exec'    : '%c %o %s:p',
@@ -6363,11 +6338,13 @@ if s:bundle.is_installed('vim-quickrun')
         \                           .  '%*[\ ]%m (%f:%l:%c),%*[\ ]at\ %f:%l:%c,%Z%p^,'
         \                           .  '%A%f:%l,%C%m,%-G%.%#'
         \ },
-        \ 'watchdogs_checker/jsonval' : {
-        \   'command' : 'jsonval',
-        \    'exec'    : '%c %o %s:p',
-        \    'quickfix/errorformat' : '%E%f: %m at line %l,%-G%.%#',
+        \ 'watchdogs_checker/jsxhint' : {
+        \   'command' : 'jsxhint',
+        \    'exec'    : '%c --verbose %o %s:p',
+        \    'quickfix/errorformat' : '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
         \ },
+        \ })
+  call extend(g:quickrun_config, {
         \ 'coffee/watchdogs_checker' : {
         \   'type' : 'watchdogs_checker/coffee',
         \ },
@@ -6392,6 +6369,8 @@ if s:bundle.is_installed('vim-quickrun')
         \                            '%f\,%l\,%\d%#\,%tarn\,%m,' .
         \                            '%f\,%l\,%tarn\,%m'
         \ },
+        \ })
+  call extend(g:quickrun_config, {
         \ 'typescript/watchdogs_checker' : {
         \   'type' : 'watchdogs_checker/tsc',
         \ },
@@ -6399,6 +6378,11 @@ if s:bundle.is_installed('vim-quickrun')
         \   'command' : 'tsc',
         \    'exec'    : '%c %o %s:p',
         \    'quickfix/errorformat' : '%+A %#%f %#(%l\,%c): %m,%C%m',
+        \ },
+        \ 'watchdogs_checker/jsxhint' : {
+        \   'command' : 'jsxhint',
+        \    'exec'    : '%c --verbose %o %s:p',
+        \    'quickfix/errorformat' : '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
         \ },
         \ })
   call extend(g:quickrun_config, {
@@ -6435,16 +6419,16 @@ if s:bundle.is_installed('vim-quickrun')
   call extend(g:quickrun_config, {
         \ 'watchdogs_checker/python' : {
         \   'command' : 'python',
-        \    'exec'    : "%c %o -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
-        \    'quickfix/errorformat' :
-        \       '%A  File "%f"\, line %l\,%m,' .
-        \       '%C    %.%#,' .
-        \       '%+Z%.%#Error: %.%#,' .
-        \       '%A  File "%f"\, line %l,' .
-        \       '%+C  %.%#,' .
-        \       '%-C%p^,' .
-        \       '%Z%m,' .
-        \       '%-G%.%#'
+        \   'exec'    : "%c %o -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
+        \   'quickfix/errorformat' :
+        \      '%A  File "%f"\, line %l\,%m,' .
+        \      '%C    %.%#,' .
+        \      '%+Z%.%#Error: %.%#,' .
+        \      '%A  File "%f"\, line %l,' .
+        \      '%+C  %.%#,' .
+        \      '%-C%p^,' .
+        \      '%Z%m,' .
+        \      '%-G%.%#'
         \ },
         \ })
   call extend(g:quickrun_config, {

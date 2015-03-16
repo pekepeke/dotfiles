@@ -43,6 +43,10 @@ if s:is_win " {{{2
     Consolas
   endif
 
+  if &termencoding =~# 'utf-8'
+    set printheader=%<%f%h%m%=%N\ Page
+  endif
+
   if has('directx') && &encoding == 'utf-8'
     silent! execute 'set' 'renderoptions=type:directx'
   endif
