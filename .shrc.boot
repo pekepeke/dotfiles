@@ -134,6 +134,8 @@ alias telnet='telnet -K'
 alias ack='ack-grep'
 alias less='less -R'
 
+alias gdiff='git diff --no-index --textconv --diff-algorithm=histogram'
+
 if type rlwrap > /dev/null 2>&1; then
   alias cap='rlwrap cap'
 fi
