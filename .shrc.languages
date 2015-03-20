@@ -83,7 +83,6 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
   # export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
   # export PYTHONPATH=~/.lib/python:$PYTHONPATH
   export PYTHONSTARTUP=~/.pyrc
-  export PIP_DOWNLOAD_CACHE="$HOME/.pip_cache"
 
   shrc_section_title "for node.js" # {{{2
   # if [ -e ~/.nenv ];then
