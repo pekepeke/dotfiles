@@ -1,33 +1,40 @@
 [submodule ".vimperator/vimperator-plugins"]
 	path = .vimperator/vimperator-plugins
 	url = https://github.com/vimpr/vimperator-plugins.git
+	branch = master
 [submodule ".zsh/plugins/auto-fu.zsh"]
 	path = .zsh/plugins/auto-fu.zsh
 	url = http://github.com/hchbaw/auto-fu.zsh.git
+	branch = master
 [submodule ".vim/neobundle.vim"]
 	path = .vim/neobundle.vim
 	url = https://github.com/Shougo/neobundle.vim.git
+	branch = master
 [submodule ".zsh/plugins/opp.zsh"]
 	path = .zsh/plugins/opp.zsh
 	url = https://github.com/hchbaw/opp.zsh.git
+	branch = master
 [submodule ".zsh/plugins/zsh-completions"]
 	path = .zsh/plugins/zsh-completions
 	url = https://github.com/zsh-users/zsh-completions.git
+	branch = master
 [submodule ".zsh/plugins/z"]
 	path = .zsh/plugins/z
 	url = https://github.com/rupa/z.git
-[submodule ".zsh/antigen"]
-	path = .zsh/antigen
-	url = https://github.com/zsh-users/antigen.git
+	branch = master
 [submodule ".zsh/plugins/zaw"]
 	path = .zsh/plugins/zaw
 	url = git://github.com/zsh-users/zaw.git
+	branch = master
 [submodule ".zsh/plugins/zsh-syntax-highlighting"]
 	path = .zsh/plugins/zsh-syntax-highlighting
 	url = git://github.com/zsh-users/zsh-syntax-highlighting.git
+	branch = master
 [submodule ".zsh/plugins/zsh-perl-completions"]
 	path = .zsh/plugins/zsh-perl-completions
 	url = https://github.com/syohex/zsh-perl-completions.git
+	branch = master
 [submodule ".zsh/plugins/zsh-bd"]
 	path = .zsh/plugins/zsh-bd
 	url = https://github.com/Tarrasch/zsh-bd.git
+	branch = master
