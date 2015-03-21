@@ -113,7 +113,11 @@ if s:is_win
 
   " if !empty($MSYSTEM)
   " if executable('nyacus')
-  call s:cmd_init()
+  if exists('$HISTFILE')
+    call s:sh_init()
+  else
+    call s:cmd_init()
+endif
 else
   let $PAGER='less'
 endif
