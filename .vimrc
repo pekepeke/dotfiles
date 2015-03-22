@@ -653,15 +653,24 @@ NeoBundle 'Shougo/vimfiler.vim', {
 \ 'mappings' : ['<Plug>(vimfiler'],
 \ 'explorer' : 1,
 \ }}
-NeoBundle 'Shougo/vimproc.vim', {
-\ 'build' : {
-\ 'windows' : $VCVARSALL . ' ' . $PROCESSOR_ARCHITECTURE . ' & ' .
-\ 'nmake -f Make_msvc.mak nodebug=1',
-\ 'cygwin' : 'make -f make_cygwin.mak',
-\ 'mac'    : 'make -f make_mac.mak',
-\ 'unix'   : 'make -f make_unix.mak',
-\ }
-\ }
+if s:is_win
+  NeoBundle 'Shougo/vimproc.vim', {
+  \ 'build' : {
+  \ 'windows' : exexutable('nmake') ?
+  \   $VCVARSALL . ' ' . $PROCESSOR_ARCHITECTURE . ' & ' . 'nmake -f Make_msvc.mak nodebug=1'
+  \   : 'make -f make_mingw' . (has('win64') ? 64 : 32) . '.mak' ,
+  \ 'cygwin' : 'make -f make_cygwin.mak',
+  \ }}
+else
+  NeoBundle 'Shougo/vimproc.vim', {
+  \ 'build' : {
+  \ 'windows' : $VCVARSALL . ' ' . $PROCESSOR_ARCHITECTURE . ' & ' .
+  \ 'nmake -f Make_msvc.mak nodebug=1',
+  \ 'cygwin' : 'make -f make_cygwin.mak',
+  \ 'mac'    : 'make -f make_mac.mak',
+  \ 'unix'   : 'make -f make_unix.mak',
+  \ }}
+endif
 NeoBundle 'Shougo/vimshell.vim', {
 \ 'depends': 'Shougo/vimproc.vim', 'autoload' : {
 \ 'commands' : [{ 'name' : 'VimShell',
