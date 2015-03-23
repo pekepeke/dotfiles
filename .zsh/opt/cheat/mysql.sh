@@ -16,3 +16,5 @@ SHOW GRANTS FOR current_user();
 # update character set
 ALTER DATABASE databasename CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 ALTER TABLE tablename CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+CASE WHEN 条件 THEN 値1 ELSE 値2 END
