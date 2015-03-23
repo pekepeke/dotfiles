@@ -660,7 +660,7 @@ NeoBundle 'Shougo/vimfiler.vim', {
 if s:is_win
   NeoBundle 'Shougo/vimproc.vim', {
   \ 'build' : {
-  \ 'windows' : exexutable('nmake') ?
+  \ 'windows' : executable('nmake') ?
   \   $VCVARSALL . ' ' . $PROCESSOR_ARCHITECTURE . ' & ' . 'nmake -f Make_msvc.mak nodebug=1'
   \   : 'make -f make_mingw' . (has('win64') ? 64 : 32) . '.mak' ,
   \ 'cygwin' : 'make -f make_cygwin.mak',
