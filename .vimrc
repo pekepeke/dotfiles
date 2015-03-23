@@ -92,6 +92,13 @@ if s:is_win
   endfunction
   command! -nargs=0 CmdEnable call s:cmd_init()
 
+  function! s:ps_init()
+    set shell=powershell\ -NoLogo\ -NoProfile\ -NonInteractive
+    set shellcmdflag=-command
+    set shellpipe=>%s\ 2>&1
+    set shellxquote=\"
+  endfunction
+
   function! s:nyacus_init()
     " Use NYAOS.
     set shell=nyacus.exe
@@ -113,8 +120,11 @@ if s:is_win
 
   " if !empty($MSYSTEM)
   " if executable('nyacus')
-  if exists('$HISTFILE')
+  " if exists('$HISTFILE')
+  if exists('$CYGWIN')
     call s:sh_init()
+  elseif exists('$PSMODULEPATH')
+    call s:ps_init()
   else
     call s:cmd_init()
 endif
