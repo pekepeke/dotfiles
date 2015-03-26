@@ -7569,7 +7569,7 @@ if s:is_mac
   nnoremap <Plug>(dash-cword) :<C-u>Dash<Space><C-r>=expand('<cword>')<CR><CR>
   nnoremap <Plug>(dash-filetype-cword) :<C-u>DashFiletype<Space><C-r>=expand('<cword>')<CR><CR>
   command! -nargs=0 DashRemoveCace call my#docset#docset_cache_remove()
-fi
+endif
 
 command! -nargs=? -complete=customlist,my#docset#zeal_complete Zeal call my#docset#zeal(<f-args>)
 command! -nargs=? ZealFiletype call my#docset#zeal_with_filetype(<f-args>)
