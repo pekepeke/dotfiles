@@ -2,6 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " variables {{{1
+let s:is_win = has('win16') || has('win32') || has('win64')
 let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim')
 let s:dash_keywords = []
 let s:zeal_keywords = []
@@ -125,6 +126,9 @@ function! my#docset#zeal_complete(A, L, P) "{{{2
     if s:is_mac
       let s:zeal_keywords =
         \ s:docset_keywords_gather(expand('~/Library/Application Support/zeal/docsets'), 0)
+    elseif s:is_win
+      let s:zeal_keywords =
+        \ s:docset_keywords_gather(expand('$APPDATA/Local/zeal/docsets'), 0)
     else
       let s:zeal_keywords =
         \ s:docset_keywords_gather(expand('~/.local/share/zeal/docsets'), 0)

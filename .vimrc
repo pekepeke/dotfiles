@@ -7562,19 +7562,21 @@ command! -nargs=? -range=0 Gtj call my#buffer#gtrans(<count>, <line1>, <line2>, 
 command! -nargs=? -range=0 Ginger call my#buffer#ginger(<count>, <line1>, <line2>, <q-args>)
 
 " dash & zeal {{{2
-command! -nargs=? -complete=customlist,my#docset#dash_complete Dash call my#docset#dash(<f-args>)
-command! -nargs=? DashFiletype call my#docset#dash_with_filetype(<f-args>)
-nnoremap <Plug>(dash) :Dash<Space>
-nnoremap <Plug>(dash-cword) :<C-u>Dash<Space><C-r>=expand('<cword>')<CR><CR>
-nnoremap <Plug>(dash-filetype-cword) :<C-u>DashFiletype<Space><C-r>=expand('<cword>')<CR><CR>
-command! -nargs=0 ZealRemoveCache call my#docset#docset_cache_remove()
+if s:is_mac
+  command! -nargs=? -complete=customlist,my#docset#dash_complete Dash call my#docset#dash(<f-args>)
+  command! -nargs=? DashFiletype call my#docset#dash_with_filetype(<f-args>)
+  nnoremap <Plug>(dash) :Dash<Space>
+  nnoremap <Plug>(dash-cword) :<C-u>Dash<Space><C-r>=expand('<cword>')<CR><CR>
+  nnoremap <Plug>(dash-filetype-cword) :<C-u>DashFiletype<Space><C-r>=expand('<cword>')<CR><CR>
+  command! -nargs=0 DashRemoveCace call my#docset#docset_cache_remove()
+fi
 
 command! -nargs=? -complete=customlist,my#docset#zeal_complete Zeal call my#docset#zeal(<f-args>)
 command! -nargs=? ZealFiletype call my#docset#zeal_with_filetype(<f-args>)
 nnoremap <Plug>(zeal) :<C-u>Zeal<Space>
 nnoremap <Plug>(zeal-cword) :<C-u>Zeal<Space><C-r>=expand('<cword>')<CR><CR>
 nnoremap <Plug>(zeal-filetype-cword) :ZealFiletype<Space><C-r>=expand('<cword>')<CR><CR>
-command! -nargs=0 DashRemoveCace call my#docset#docset_cache_remove()
+command! -nargs=0 ZealRemoveCache call my#docset#docset_cache_remove()
 
 nmap [!space]ss <Plug>(zeal)
 nmap [!space]sw <Plug>(zeal-filetype-cword)
