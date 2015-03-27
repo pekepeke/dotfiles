@@ -167,10 +167,17 @@ command! -nargs=0 CS ClipSend
 command! -nargs=0 CR ClipReceive
 " MyAutoCmd FocusGained * silent call s:fake_unnamed_clipboard('FocusGained')
 " MyAutoCmd FocusLost * silent call s:fake_unnamed_clipboard('FocusLost')
-" set clipboard=unnamed
-" if has('unnamedplus')
-"   set clipboard+=unnamedplus
-" endif
+function! s:clip_on(bang)
+  if a:bang
+    set clipboard=
+  else
+    set clipboard=unnamed
+    if has('unnamedplus')
+      set clipboard+=unnamedplus
+    endif
+  endif
+endfunction
+command! -nargs=0 -bang ClipOn call s:clip_on(<bang>0)
 
 set nospell
 if v:version > 704 || (v:version == 704 && has('patch088'))
