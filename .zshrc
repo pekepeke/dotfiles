@@ -1,5 +1,6 @@
 # .boot
 [ -e ~/.shrc.boot ] && source ~/.shrc.boot
+_is_win=$(is_win; echo $?)
 
 shrc_section_title "init" #{{{1
 
@@ -414,9 +415,6 @@ zload() {
     done
 }
 
-shrc_section_title "bdd" #{{{2
-# source ~/.zsh/plugins/zsh-bd/bd.zsh
-
 shrc_section_title "peco" #{{{2
 if type type peco >/dev/null 2>&1; then
   # source_all ~/.zsh/zfunc/peco/*.zsh
@@ -480,7 +478,7 @@ if [ -e ~/.zsh/plugins/z/z.sh ]; then
 fi
 
 shrc_section_title "zsh-syntax-highlighting" #{{{2
-if [ -e ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
+if [ $_is_win -ne 0 -a -e ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
   source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 fi
 
