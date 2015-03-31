@@ -547,15 +547,18 @@ precmd_rprompt() {
 }
 
 precmd_multiterm() {
+  # echo precmd_multiterm
   if [ $TERM =~ "screen" ]; then
     print -n "\ek${PWD/${HOME}/\~}\e\\"
   fi
 }
 chpwd_multiterm() {
+  # echo chpwd_multiterm
   [ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#I") $PWD
 }
 
 preexec_multiterm() {
+  # echo preexec_multiterm
   if [ $TERM =~ "screen" ]; then
     local arg
     case $1 in

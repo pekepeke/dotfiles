@@ -21,8 +21,10 @@ case $OSTYPE in
       export TMUX_DEFAULT_COMMAND="reattach-to-user-namespace -l $SHELL"
       export TMUX_PREFIX_COMMAND="reattach-to-user-namespace"
       if [ -n "$TMUX" ]; then
+        if [ "$(tmux display -p '#{window_name}')" = reattach-to-user-namespace ]; then
+          tmux rename-window "$(pwd | perl -ne 's!'$HOME'!~!;print;')"
+        fi
         # exec reattach-to-user-namespace -l $SHELL
-        tmux rename-window "$HOST"
         # alias mvim="reattach-to-user-namespace -l mvim"
         # alias vim="reattach-to-user-namespace -l vim"
         # alias emacs="reattach-to-user-namespace -l emacs"
