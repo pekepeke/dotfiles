@@ -238,7 +238,7 @@ function! s:find_proj_dir() "{{{3
   endfor
   if pjdir == ''
     for f in ['build.xml', 'pom.xml', 'prj.el',
-      \ '.project', '.settings',
+      \ '.project',
       \ 'Gruntfile.js', 'Gruntfile.coffee',
       \ 'Jakefile', 'Cakefile',
       \ 'tiapp.xml', 'NAnt.build',
@@ -813,7 +813,7 @@ NeoBundle 'tomtom/quickfixsigns_vim', {
 \ 'depends': ['tomtom/tlib_vim'],
 \ }
 " NeoBundle 'mhinz/vim-signify'
-if has('python') && executable('editorconfig')
+if has('python')
   NeoBundle 'editorconfig/editorconfig-vim'
 endif
 NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {
@@ -3634,8 +3634,10 @@ endif
 let g:eregex_default_enable=0
 
 " vim-trimr {{{2
-let g:trimr_method = 'ignore_filetype'
-let g:trimr_targets = ['markdown', 'mkd', 'textile']
+if s:bundle.is_installed('vim-trimr')
+  let g:trimr_method = 'ignore_filetype'
+  let g:trimr_targets = ['markdown', 'mkd', 'textile']
+endif
 
 " clever-f {{{2
 if s:bundle.is_installed('clever-f.vim')
