@@ -80,8 +80,8 @@ if s:is_win
     elseif exists('$VS80COMNTOOLS')
       let $VCVARSALL = shellescape($VS80COMNTOOLS  . '..\..\VC\vcvarsall.bat')
     endif
-  let &shellslash = s:save_ssl
-  unlet s:save_ssl
+    let &shellslash = s:save_ssl
+    unlet s:save_ssl
   endif
   let $HOME=substitute($HOME, '\\', '/', 'ge')
   function! s:cmd_init()
@@ -127,9 +127,18 @@ if s:is_win
     call s:ps_init()
   else
     call s:cmd_init()
-endif
+  endif
 else
   let $PAGER='less'
+  if s:is_mac
+    function! s:detect_python3()
+      let paths = split(glob("/usr/local/Cellar/python3/*/Frameworks/Python.framework/Versions/*/Python"), "\n")
+      if len(paths) > 0
+        let $PYTHON3_DLL= paths[-1]
+      endif
+    endfunction
+    call s:detect_python3()
+  endif
 endif
 
 " basic settings {{{1
@@ -311,7 +320,7 @@ set mouse=nch                  " use mouse normal/command/help
 set nomousefocus
 set mousehide
 set timeoutlen=1000
-set ttimeoutlen=50
+set ttimeoutlen=100
 
 set showmatch                  " 対応する括弧の表示
 set showcmd                    " 入力中のコマンドを表示
@@ -703,17 +712,19 @@ NeoBundle 'Shougo/vimshell.vim', {
 NeoBundle "osyo-manga/unite-filters-collection"
 " NeoBundle 'osyo-manga/vim-precious'
 NeoBundle 'pekepeke/vim-gitcomplete', 'develop'
-NeoBundleLazy 'Shougo/vinarise', { 'autoload': {
-\ 'commands' : [
-\ {'name' : 'Vinarise',
-\  'complete' : 'customlist,vinarise#complete'},
-\ {'name' : 'VinariseDump',
-\  'complete' : 'customlist,vinarise#complete'},
-\ {'name' : 'VinariseScript2Hex',
-\  'complete' : 'customlist,vinarise#complete'}],
-\ 'unite_sources' : 'vinarise/analysis'
-\ },
-\ }
+if has('python') || has('python3')
+  NeoBundleLazy 'Shougo/vinarise', { 'autoload': {
+  \ 'commands' : [
+  \ {'name' : 'Vinarise',
+  \  'complete' : 'customlist,vinarise#complete'},
+  \ {'name' : 'VinariseDump',
+  \  'complete' : 'customlist,vinarise#complete'},
+  \ {'name' : 'VinariseScript2Hex',
+  \  'complete' : 'customlist,vinarise#complete'}],
+  \ 'unite_sources' : 'vinarise/analysis'
+  \ },
+  \ }
+endif
 NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
 \ 'commands' : ['JunkfileOpen'],
 \ 'unite_sources' : ['junkfile', 'junkfile/new'],
@@ -872,7 +883,9 @@ NeoBundle 'tokorom/vim-quickrun-xctool'
 NeoBundle 'osyo-manga/vim-anzu', {'autoload': {
 \ 'mappings': [['n', '<Plug>(anzu-']],
 \ }}
-NeoBundle 'kien/rainbow_parentheses.vim'
+" NeoBundle 'kien/rainbow_parentheses.vim'
+" NeoBundle 'oblitum/rainbow'
+NeoBundle 'luochen1990/rainbow'
 NeoBundle 'vim-scripts/matchit.zip', {'autoload': {
 \ 'mappings' : [['nx', '%']],
 \ }}
@@ -1150,9 +1163,11 @@ NeoBundle 'digitaltoad/vim-jade'
 NeoBundle 'mustache/vim-mustache-handlebars'
 
 " css {{{4
-NeoBundle 'Rykka/colorv.vim', {'autoload':{
-\ 'filetypes': ['html','javascript','css','sass','scss','less','slim','stylus'],
-\ }}
+if has('python') || has('python3')
+  NeoBundle 'Rykka/colorv.vim', {'autoload':{
+  \ 'filetypes': ['html','javascript','css','sass','scss','less','slim','stylus'],
+  \ }}
+endif
 
 NeoBundle 'hail2u/vim-css3-syntax'
 NeoBundle 'groenewege/vim-less'
@@ -2400,16 +2415,16 @@ inoremap <C-b> <Left>
 inoremap <C-d> <Delete>
 inoremap <C-a> <Home>
 
-inoremap <C-]>a <Home>
-inoremap <C-]>e <End>
-inoremap <C-]>f <S-Right>
-inoremap <C-]>b <S-Left>
-inoremap <C-]>d <Delete>
-inoremap <C-]><C-a> <Home>
-inoremap <C-]><C-e> <End>
-inoremap <C-]><C-f> <S-Right>
-inoremap <C-]><C-b> <S-Left>
-inoremap <C-]><C-d> <Delete>
+" inoremap <C-]>a <Home>
+" inoremap <C-]>e <End>
+" inoremap <C-]>f <S-Right>
+" inoremap <C-]>b <S-Left>
+" inoremap <C-]>d <Delete>
+" inoremap <C-]><C-a> <Home>
+" inoremap <C-]><C-e> <End>
+" inoremap <C-]><C-f> <S-Right>
+" inoremap <C-]><C-b> <S-Left>
+" inoremap <C-]><C-d> <Delete>
 
 inoremap <C-w> <C-g>u<C-w>
 inoremap <C-u> <C-g>u<C-u>
@@ -3699,6 +3714,39 @@ if s:bundle.tap('rainbow_parentheses.vim')
   endfunction
   call s:bundle.untap()
 endif
+
+" rainbow {{{2
+if s:bundle.tap('rainbow')
+  let g:rainbow_active = 1
+  let g:rainbow_conf = {
+  \  'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+  \  'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+  \  'operators': '_,_',
+  \  'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+  \  'separately': {
+  \    '*': {},
+  \    'tex': {
+  \      'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+  \    },
+  \    'lisp': {
+  \      'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+  \    },
+  \    'vim': {
+  \      'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+  \    },
+  \    'html': {
+  \      'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+  \    },
+  \    'css': 0,
+  \  }}
+  " let g:rainbow_load_separately = [
+  "   \ [ '*' , [['(', ')'], ['\[', '\]'], ['{', '}']] ],
+  "   \ [ '*.tex' , [['(', ')'], ['\[', '\]']] ],
+  "   \ [ '*.cpp' , [['(', ')'], ['\[', '\]'], ['{', '}']] ],
+  "   \ [ '*.{html,htm}' , [['(', ')'], ['\[', '\]'], ['{', '}'], ['<\a[^>]*>', '</[^>]*>']] ],
+  "   \ ]
+endif
+
 " lexima.vim {{{2
 if s:bundle.tap('lexima.vim')
   function! s:bundle.tapped.hooks.on_source(bundle)
@@ -3840,10 +3888,9 @@ if s:bundle.tap('lexima.vim')
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-SPACE)', '<Space>')
 
     call lexima#insmode#map_hook('before', '<CR>',
-    \ "<C-r>=neocomplete#smart_close_popup()\<CR>")
-    " TODO : iabbrev
+    \ "\<C-]><C-r>=neocomplete#smart_close_popup()\<CR>")
     call lexima#insmode#map_hook('before', '<Space>',
-    \ "\<C-r>=neocomplete#smart_close_popup()\<CR>")
+    \ "\<C-]>\<C-r>=neocomplete#smart_close_popup()\<CR>")
     call lexima#insmode#map_hook('before', '<C-h>', "\<C-r>=neocomplete#smart_close_popup()\<CR>")
     call lexima#insmode#map_hook('before', '<BS>', "\<C-r>=neocomplete#smart_close_popup()\<CR>")
 
