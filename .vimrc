@@ -820,9 +820,13 @@ NeoBundle 'rhysd/clever-f.vim', {'autoload': {
 NeoBundle 't9md/vim-smalls', {'autoload': {
 \ 'mappings': [['nxo', '<Plug>(smalls']]
 \ }}
-NeoBundle 'tomtom/quickfixsigns_vim', {
-\ 'depends': ['tomtom/tlib_vim'],
-\ }
+if s:is_win
+  NeoBundle 'sgur/vim-lazygutter'
+else
+  NeoBundle 'tomtom/quickfixsigns_vim', {
+  \ 'depends': ['tomtom/tlib_vim'],
+  \ }
+endif
 " NeoBundle 'mhinz/vim-signify'
 if has('python')
   NeoBundle 'editorconfig/editorconfig-vim'

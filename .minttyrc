@@ -1,7 +1,7 @@
 BoldAsFont=no
 FontHeight=10
 Transparency=high
-Font=Ricty
+Font=Consolas
 FontIsBold=no
 CursorColour=255,0,0
 CursorType=block
