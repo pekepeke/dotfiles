@@ -174,8 +174,9 @@ command! -nargs=0 ClipReceive call s:fake_unnamed_clipboard('FocusGained')
 command! -nargs=0 ClipSend call s:fake_unnamed_clipboard('FocusLost')
 command! -nargs=0 CS ClipSend
 command! -nargs=0 CR ClipReceive
-" MyAutoCmd FocusGained * silent call s:fake_unnamed_clipboard('FocusGained')
-" MyAutoCmd FocusLost * silent call s:fake_unnamed_clipboard('FocusLost')
+MyAutoCmd FocusGained * silent call s:fake_unnamed_clipboard('FocusGained')
+MyAutoCmd FocusLost * silent call s:fake_unnamed_clipboard('FocusLost')
+
 function! s:clip_on(bang)
   if a:bang
     set clipboard=
@@ -335,6 +336,7 @@ set splitbelow                 " 横分割は下に
 set splitright                 " 縦分割は右に
 set switchbuf=useopen          " 再利用
 set title
+set sessionoptions-=options
 
 set hidden                     " 編集中でも他のファイルを開けるように
 set sidescroll=5
@@ -1887,7 +1889,7 @@ endif
 MyAutoCmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
 function! s:auto_mkdir(dir, force)
   if !isdirectory(a:dir) && (a:force ||
-        \ input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
+      \ input(printf('"%s" does not exist. Create? [y/N]', a:dir)) =~? '^y\%[es]$')
     call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
   endif
 endfunction
@@ -1921,6 +1923,7 @@ MyAutoCmd FileType rb set filetype=ruby
 MyAutoCmd FileType pl set filetype=perl
 MyAutoCmd FileType py set filetype=python
 MyAutoCmd FileType md set filetype=markdown
+MyAutoCmd FileType docker set filetype=dockerfile
 " MySQL
 MyAutoCmd BufNewFile,BufRead *.sql set filetype=mysql
 " IO
@@ -1929,8 +1932,8 @@ MyAutoCmd BufNewFile,BufRead *.io set filetype=io
 MyAutoCmd BufNewFile,BufRead *.command set filetype=sh
 
 MyAutoCmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-      \ | exe "normal! g`\""
-      \ | endif
+  \ | exe "normal! g`\""
+  \ | endif
 
 function! s:vimrc_cmdwin_init() "{{{3
   noremap <buffer><nowait> q :q<CR>
@@ -3492,12 +3495,12 @@ if s:bundle.tap('vim-reanimate')
   let g:reanimate_default_save_name = "latest"
   " sessionoptions
   let g:reanimate_sessionoptions =
-        \ "blank,curdir,folds,help,localoptions,tabpages,unix"
+    \ "blank,curdir,folds,help,localoptions,tabpages,unix"
   let g:reanimate_disables = [
-        \ "reanimate_message",
-        \ "reanimate_viminfo",
-        \ "reanimate_window"
-        \ ]
+    \ "reanimate_message",
+    \ "reanimate_viminfo",
+    \ "reanimate_window"
+    \ ]
 
   function! s:bundle.tapped.hooks.on_source(bundle)
     augroup vimrc-plugin-reanimate
@@ -5659,9 +5662,9 @@ if s:bundle.is_installed('vim-textobj-user')
 
   let g:textobj_multitextobj_textobjects_i = [
   \ "\<Plug>(textobj-url-i)",
-  \ "\<Plug>(textobj-multiblock-i)",
-  \ "\<Plug>(textobj-parameter-i)",
   \ "\<Plug>(textobj-php-i)",
+  \ "\<Plug>(textobj-parameter-i)",
+  \ "\<Plug>(textobj-multiblock-i)",
   \ "\<Plug>(textobj-function-i)",
   \ "\<Plug>(textobj-indent-i)",
   \]
@@ -5669,9 +5672,9 @@ if s:bundle.is_installed('vim-textobj-user')
 
   let g:textobj_multitextobj_textobjects_a = [
   \ "\<Plug>(textobj-url-a)",
-  \ "\<Plug>(textobj-multiblock-a)",
-  \ "\<Plug>(textobj-parameter-a)",
   \ "\<Plug>(textobj-php-a)",
+  \ "\<Plug>(textobj-parameter-a)",
+  \ "\<Plug>(textobj-multiblock-a)",
   \ "\<Plug>(textobj-function-a)",
   \ "\<Plug>(textobj-indent-a)",
   \]
@@ -7454,6 +7457,7 @@ if s:bundle.is_installed('vimfiler.vim')
 
   MyAutoCmd FileType vimfiler call s:vimfiler_init() "{{{3
   function! s:vimfiler_init() " {{{3
+    nmap <silent><buffer> p <Plug>(vimfiler_quick_look)
     nnoremap <silent><buffer> E :<C-u>call <SID>vimfiler_do_action('tabopen')<CR>
     nnoremap <silent><buffer> T :<C-u>call <SID>vimfiler_tabopen_silently()<CR>
     nnoremap <silent><buffer> <C-e> :<C-u>call <SID>vimfiler_do_action('split')<CR>

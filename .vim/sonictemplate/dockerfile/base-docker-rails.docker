@@ -1,0 +1,10 @@
+FROM ruby:2.2.0
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev
+RUN mkdir /usr/src/app
+WORKDIR /usr/src/app
+ADD Gemfile /usr/src/app/Gemfile
+RUN bundle install
+ADD . /usr/src/app
+# docker-compose run web rails new . --force --database=postgresql --skip-bundle
+# docker-compose build
+# docker-compose run web rake db:create
