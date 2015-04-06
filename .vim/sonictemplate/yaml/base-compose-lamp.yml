@@ -1,5 +1,6 @@
 web:
-  image: php:5.4-apache
+  # image: php:5.4-apache
+  build: .
   ports:
     - "40080:80"
   volumes:
@@ -10,12 +11,15 @@ mysql:
   image: mysql:5.6
   ports:
     - '43306:3306'
-  volumes:
-    - ./mysql:/var/lib/mysql
+  volumes_from:
+    - file
+  # volumes:
+  #   - ./mysql:/var/lib/mysql
   environment:
     MYSQL_ROOT_PASSWORD: root
-  # password: <%= ENV['DB_ENV_MYSQL_ROOT_PASSWORD'] %>
-  # host: <%= ENV['DB_PORT_3306_TCP_ADDR'] %>
-  # port: <%= ENV['DB_PORT_3306_TCP_PORT'] %>
+  # password: <%= ENV['MYSQL_ENV_MYSQL_ROOT_PASSWORD'] %>
+  # host: <%= ENV['MYSQL_PORT_3306_TCP_ADDR'] %>
+  # port: <%= ENV['MYSQL_PORT_3306_TCP_PORT'] %>
 
-
+file:
+  build: containers/data/

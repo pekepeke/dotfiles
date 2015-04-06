@@ -825,11 +825,11 @@ NeoBundle 't9md/vim-smalls', {'autoload': {
 if s:is_win
   NeoBundle 'sgur/vim-lazygutter'
 else
+  " NeoBundle 'mhinz/vim-signify'
   NeoBundle 'tomtom/quickfixsigns_vim', {
   \ 'depends': ['tomtom/tlib_vim'],
   \ }
 endif
-" NeoBundle 'mhinz/vim-signify'
 if has('python')
   NeoBundle 'editorconfig/editorconfig-vim'
 endif
@@ -1227,6 +1227,9 @@ NeoBundleLazy 'clausreinke/typescript-tools', {
 \     'unix'   : 'npm install',
 \   },
 \ }
+" NeoBundleLazy 'Quramy/tsuquyomi', {{'autoload': {
+" \ 'filetypes': 'typescript',
+" \ }}}
 
 " python {{{4
 " http://rope.sourceforge.net/
@@ -1442,6 +1445,8 @@ NeoBundleLazy 'vim-scripts/dbext.vim', {'autoload':{
 
 " etc {{{4
 NeoBundle 'honza/dockerfile.vim'
+NeoBundle 'chase/vim-ansible-yaml'
+NeoBundle 'cespare/vim-toml'
 NeoBundleLazy 'xolox/vim-lua-ftplugin', {'autoload':{
 \ 'filetypes': ['lua'],
 \ },
@@ -6786,6 +6791,7 @@ if s:bundle.is_installed('neosnippet.vim')
     if s:bundle.is_sourced('emmet-vim')
       \ && len(matchstr(&filetype, 'x\?html\|s\?css\|php\|eruby')) > 0
       \ && emmet#isExpandable()
+      \ && len(matchstr(getline('.'), '^\(\w*\%'.col('.').'c\)')) > 0
       if g:vimrc_enabled_plugins.neocomplete
         call neocomplete#smart_close_popup()
       endif
@@ -6798,7 +6804,7 @@ if s:bundle.is_installed('neosnippet.vim')
 
   imap <expr><TAB> <SID>imap_tab()
   smap <expr><TAB> <SID>can_snip() ?
-        \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
+    \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
 
   imap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
   smap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"

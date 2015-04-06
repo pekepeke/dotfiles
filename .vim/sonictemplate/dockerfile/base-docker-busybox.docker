@@ -1,0 +1,5 @@
+FROM busybox
+VOLUME /var/www/html
+VOLUME /var/lib/mysql
+CMD echo "file container"
+
