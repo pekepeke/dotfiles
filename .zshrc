@@ -556,26 +556,45 @@ chpwd_multiterm() {
 }
 
 preexec_multiterm() {
-  # echo preexec_multiterm
+  # echo preexec_multiterm $1
   if [ $TERM =~ "screen" ]; then
     local arg
     case $1 in
-      ssh*|telnet*)
-        arg=":$(awk '{print $NF}' <<< $1)"
+      ssh*)
+        if [ -z "$TMUX" ]; then
+          arg="${1%% *}:$(awk '{print $NF}' <<< $1)"
+        fi
+        ;;
+      telnet*)
+        arg="${1%% *}:$(awk '{print $NF}' <<< $1)"
         ;;
       vagrant*)
-        arg=":vagrant"
+        arg="${1#* }:vagrant"
         ;;
-      sudo)
+      sudo*)
+        arg="${1#* }:sudo"
+        # arg="$(awk '{print $2}' <<< $1 ):sudo"
         ;;
-      su)
-        arg="!root!"
+      su*)
+        arg="${1#* }:!root!"
+        # arg="$(awk '{print $2}' <<< $1 ):sudo"
+        ;;
+      tmux*)
         ;;
       *)
+        if [ -n "$TMUX" ]; then
+          arg="$1"
+        fi
         ;;
     esac
     if [ -n "$arg" ]; then
-      print -n "\ek${1%% *}$arg\e\\"
+      if [ -n "$TMUX" ]; then
+        tmux_pane_title=$(tmux display -p '#{pane_title}')
+        printf '\033]2;%s\033\\' "$arg"
+        # echo $arg
+      else
+        print -n "\ek$arg\e\\"
+      fi
     fi
   fi
 }
@@ -583,8 +602,8 @@ preexec_multiterm() {
 if is_exec notify-send; then
   notify-preexec-hook() {
     zsh_notifier_cmd="$1"
-    if [[ "${zsh_notifier_cmd}" =~ "^(tmux|ssh|vim|telnet)" ]];then
-      zsh_notifier_cmd=
+    if [[ "${zsh_notifier_cmd}" =~ "^(tmux|screen|ssh|vim|telnet)" ]];then
+      unset zsh_notifier_cmd
       return
     fi
     zsh_notifier_time="`date +%s`"
@@ -593,14 +612,18 @@ if is_exec notify-send; then
   notify-precmd-hook() {
     local time_taken
 
-    if [[ "${zsh_notifier_cmd}" != "" ]]; then
+    if [ -n "${zsh_notifier_cmd}" ]; then
       time_taken=$(( `date +%s` - ${zsh_notifier_time} ))
       if (( $time_taken > $REPORTTIME )); then
         notify-send "task finished" \
           "'$zsh_notifier_cmd' exited after $time_taken seconds"
       fi
     fi
-    zsh_notifier_cmd=
+    if [ -n "$TMUX" -a -n "$tmux_pane_title" ]; then
+      printf "\033]2;%s\033\\" "${tmux_pane_title}"
+      unset tmux_pane_title
+    fi
+    unset zsh_notifier_cmd
   }
   add-zsh-hook preexec notify-preexec-hook
   add-zsh-hook precmd notify-precmd-hook
