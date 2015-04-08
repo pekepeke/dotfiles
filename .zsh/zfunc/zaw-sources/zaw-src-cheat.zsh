@@ -7,12 +7,25 @@
 [ x"$ZSH_ZAW_CHEAT" = x ] && ZSH_ZAW_CHEAT="$HOME/.zsh/opt/cheat"
 function zaw-src-cheat() {
   candidates+=($(find "$ZSH_ZAW_CHEAT" -type f | sed "s|${ZSH_ZAW_CHEAT}/*||g"))
-  actions=( "zaw-callback-cheat-pager" "zaw-callback-cheat-peco-yank" "zaw-callback-cheat-peco-input" "zaw-callback-cheat-cheat" "zaw-callback-cheat-yank" "zaw-callback-cheat-open" "zaw-callback-cheat-edit" "zaw-callback-cheat-cat" )
-  act_descriptions=( "view" "yank with peco" "input with peco" "preview cheat" "yank cheat" "open" "edit" "cat")
+  actions=( "zaw-callback-cheat-autorender" "zaw-callback-cheat-pager" "zaw-callback-cheat-peco-yank" "zaw-callback-cheat-peco-input" "zaw-callback-cheat-cheat" "zaw-callback-cheat-yank" "zaw-callback-cheat-open" "zaw-callback-cheat-edit" "zaw-callback-cheat-cat" )
+  act_descriptions=( "view(print or cat or pager)" "view" "yank with peco" "input with peco" "preview cheat" "yank cheat" "open" "edit" "cat")
 }
 
 function zaw-callback-cheat-cheat() {
   zle -M "`cat $ZSH_ZAW_CHEAT/$1`"
+}
+
+function zaw-callback-cheat-autorender() {
+  fname="$ZSH_ZAW_CHEAT/$1"
+  len=$(wc -l $fname | cut -d' ' -f1)
+  col=$(tput lines)
+  if [ $len -ge $col ]; then
+    zaw-callback-cheat-pager "$1"
+  elif [ $len -le `expr $col / 2` ]; then
+    zaw-callback-cheat-cheat "$1"
+  else
+    zaw-callback-cheat-cat "$1"
+  fi
 }
 
 function zaw-callback-cheat-pager(){
