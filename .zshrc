@@ -579,7 +579,7 @@ preexec_multiterm() {
         arg="${1#* }:!root!"
         # arg="$(awk '{print $2}' <<< $1 ):sudo"
         ;;
-      tmux*)
+      tmux*|echo*|print*)
         ;;
       *)
         if [ -n "$TMUX" ]; then
