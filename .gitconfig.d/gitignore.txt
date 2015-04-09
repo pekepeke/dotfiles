@@ -71,7 +71,8 @@ Session.vim
 .ropeproject
 .fragment_proj.txt
 .*.snip
-.vimrc_local.vim
+/.vimrc_local.vim
+/.*.snip
 
 # emacs
 *~
@@ -94,4 +95,6 @@ tramp
 # zed
 .zedstate
 
+# other files
+/,*
 

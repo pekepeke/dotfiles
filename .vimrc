@@ -2246,6 +2246,7 @@ let g:square_brackets = {
   \ 'coffee' : '->\s*$\|^\s*class\s',
   \ 'git-log.git-diff' : '^@@\|^diff ',
   \ 'git' : '^@@\|^diff ',
+  \ 'gitconfig' : '^\s*[',
   \ 'neosnippet' : '^snippet ',
   \ }
 function! s:nmap_square_brackets() "{{{3

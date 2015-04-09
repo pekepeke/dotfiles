@@ -16,14 +16,17 @@ function zaw-callback-cheat-cheat() {
 }
 
 function zaw-callback-cheat-autorender() {
-  fname="$ZSH_ZAW_CHEAT/$1"
-  len=$(wc -l $fname | cut -d' ' -f1)
-  col=$(tput lines)
+  local fname="$ZSH_ZAW_CHEAT/$1"
+  local len=$(wc -l $fname | awk '{print $1}')
+  local col=$(tput lines)
+  local buf=$BUFFER
   if [ $len -ge $col ]; then
+    [ -n "$buf" ] && zle push-line-or-edit
     zaw-callback-cheat-pager "$1"
   elif [ $len -le `expr $col / 2` ]; then
     zaw-callback-cheat-cheat "$1"
   else
+    [ -n "$buf" ] && zle push-line-or-edit
     zaw-callback-cheat-cat "$1"
   fi
 }
