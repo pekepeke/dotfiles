@@ -131,13 +131,16 @@ if s:is_win
 else
   let $PAGER='less'
   if s:is_mac
-    function! s:detect_python3()
-      let paths = split(glob("/usr/local/Cellar/python3/*/Frameworks/Python.framework/Versions/*/Python"), "\n")
+    function! s:python_path(ver)
+      let ver = a:ver == 2 ? "" : a:ver
+      let paths = split(glob("/usr/local/Cellar/python".ver."/*/Frameworks/Python.framework/Versions/*/Python"), "\n")
       if len(paths) > 0
-        let $PYTHON3_DLL= paths[-1]
+        return paths[-1]
       endif
     endfunction
-    call s:detect_python3()
+    " ycm
+    " let $PYTHON_DLL = s:python_path(2)
+    let $PYTHON3_DLL = s:python_path(3)
   endif
 endif
 
@@ -1030,7 +1033,13 @@ NeoBundleLazy 'm2ym/rsense', {
 " if !s:bundle.is_installed('rsense')
 "   NeoBundle "osyo-manga/vim-monster"
 " endif
-if has('lua') && (v:version > 703 ||
+if 0 && has('python')
+  NeoBundle 'Valloric/YouCompleteMe', {
+    \ 'build': {
+    \   'mac': './install.sh --clang-completer --omnisharp-completer',
+    \   'unix': './install.sh --clang-completer --system-libclang --system-boost --omnisharp-completer',
+    \ }}
+elseif has('lua') && (v:version > 703 ||
       \ (v:version == 703 && has('patch885')))
   NeoBundle 'Shougo/neocomplete.vim', {'autoload':{
   \ 'insert':1,
@@ -1130,16 +1139,18 @@ if has("signs") && has("clientserver") && v:version > 700
 else
   NeoBundleLazy 'astashov/vim-ruby-debugger'
 endif
-NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
-\ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails',
-\    'Shougo/vimproc.vim', 'Shougo/unite.vim'],
-\ 'autoload': {
-\   'unite_sources' : 'rails_support/locales',
-\   'commands' : [
-\     'RSCreateRoutesCache', 'RSCleanCache',
-\     'RSShowLocale', 'RSCreateLocaleCache',
-\   ]
-\ }}
+if s:bundle.is_installed('neocomplete.vim')
+  NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
+  \ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails',
+  \    'Shougo/vimproc.vim', 'Shougo/unite.vim'],
+  \ 'autoload': {
+  \   'unite_sources' : 'rails_support/locales',
+  \   'commands' : [
+  \     'RSCreateRoutesCache', 'RSCleanCache',
+  \     'RSShowLocale', 'RSCreateLocaleCache',
+  \   ]
+  \ }}
+endif
 
 " html {{{4
 NeoBundle 'othree/html5.vim'
@@ -1242,14 +1253,16 @@ NeoBundleLazy 'hachibeeDI/unite-pythonimport', {'autoload':{
 \ 'unite_sources' : ['pythonimport'],
 \ }}
 
-if has('python') || has('python3')
-  NeoBundleLazy 'davidhalter/jedi-vim', {
-  \   'autoload' : { 'filetypes' : ['python', 'python3'], },
-  \ }
-else
-  NeoBundleLazy 'davidhalter/jedi-vim'
+if !s:bundle.is_installed('YouCompleteMe')
+  if (has('python') || has('python3'))
+    NeoBundleLazy 'davidhalter/jedi-vim', {
+    \   'autoload' : { 'filetypes' : ['python', 'python3'], },
+    \ }
+  else
+    NeoBundleLazy 'davidhalter/jedi-vim'
+  endif
+  NeoBundle 'Glench/Vim-Jinja2-Syntax'
 endif
-NeoBundle 'Glench/Vim-Jinja2-Syntax'
 
 " perl {{{4
 NeoBundle 'vim-perl/vim-perl'
@@ -1273,13 +1286,15 @@ NeoBundleLazy 'vim-scripts/DoxygenToolkit.vim', {'autoload':{
 " NeoBundleLazy 'osyo-manga/vim-snowdrop', {'autoload':{
 " \ 'filetypes': ['c', 'cpp', 'objc', 'objcpp'],
 " \ }}
-NeoBundleLazy 'Rip-Rip/clang_complete', {'autoload':{
-\ 'filetypes': ['c', 'cpp', 'objc', 'objcpp'],
-\ }}
-if s:is_mac
-  NeoBundleLazy 'tokorom/clang_complete-getopts-ios', {'autoload': {
-  \ 'filetypes': ['objc', 'objcpp'],
+if !s:bundle.is_installed('YouCompleteMe')
+  NeoBundleLazy 'Rip-Rip/clang_complete', {'autoload':{
+  \ 'filetypes': ['c', 'cpp', 'objc', 'objcpp'],
   \ }}
+  if s:is_mac
+    NeoBundleLazy 'tokorom/clang_complete-getopts-ios', {'autoload': {
+    \ 'filetypes': ['objc', 'objcpp'],
+    \ }}
+  endif
 endif
 NeoBundle 'peterhoeg/vim-qml'
 
@@ -1288,14 +1303,16 @@ NeoBundle 'peterhoeg/vim-qml'
 " \ 'filetypes': ['cs'],
 " \ }}
 
-if (s:is_win && executable('MSBuild.exe')) || (!s:is_win && executable('xbuild'))
-  NeoBundleLazy 'OmniSharp/omnisharp-vim', {
-  \ 'autoload': {'filetypes': ['cs']},
-  \ 'build': {
-  \   'windows': 'MSBuild.exe server/OmniSharp.sln /p:Platform="Any CPU"',
-  \   'mac': 'xbuild server/OmniSharp.sln',
-  \   'unix': 'xbuild server/OmniSharp.sln',
-  \ }}
+if !s:bundle.is_installed('YouCompleteMe')
+  if (s:is_win && executable('MSBuild.exe')) || (!s:is_win && executable('xbuild'))
+    NeoBundleLazy 'OmniSharp/omnisharp-vim', {
+    \ 'autoload': {'filetypes': ['cs']},
+    \ 'build': {
+    \   'windows': 'MSBuild.exe server/OmniSharp.sln /p:Platform="Any CPU"',
+    \   'mac': 'xbuild server/OmniSharp.sln',
+    \   'unix': 'xbuild server/OmniSharp.sln',
+    \ }}
+  endif
 endif
 
 " OSX {{{4
@@ -2567,7 +2584,8 @@ let g:php_alt_AssignByReference = 1
 let g:php_folding = 0
 let g:php_sql_query = 1
 let g:php_baselib = 1
-let g:php_htmlInStrings = 1
+" let g:php_htmlInStrings = 1
+let g:php_html_in_strings = 0
 let g:php_noShortTags = 1
 let g:php_parent_error_close = 1
 let g:php_parent_error_open = 1
@@ -2665,6 +2683,7 @@ let g:vimrc_enabled_plugins = {
   \ 'neosnippet': s:bundle.is_installed('neosnippet.vim'),
   \ 'neocomplete': s:bundle.is_installed('neocomplete.vim'),
   \ 'neocomplcache': s:bundle.is_installed('neocomplcache.vim'),
+  \ 'youcompleteme': s:bundle.is_installed('YouCompleteMe'),
   \ 'unite_candidate_sorter': s:bundle.is_installed('unite-candidate_sorter'),
   \ 'fugitive': s:bundle.is_installed('vim-fugitive'),
   \ 'agit': s:bundle.is_installed('agit.vim'),
@@ -3900,12 +3919,14 @@ if s:bundle.tap('lexima.vim')
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-CR)', '<CR>')
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-SPACE)', '<Space>')
 
-    call lexima#insmode#map_hook('before', '<CR>',
-    \ "\<C-]><C-r>=neocomplete#smart_close_popup()\<CR>")
-    call lexima#insmode#map_hook('before', '<Space>',
-    \ "\<C-]>\<C-r>=neocomplete#smart_close_popup()\<CR>")
-    call lexima#insmode#map_hook('before', '<C-h>', "\<C-r>=neocomplete#smart_close_popup()\<CR>")
-    call lexima#insmode#map_hook('before', '<BS>', "\<C-r>=neocomplete#smart_close_popup()\<CR>")
+    if s:bundle.is_installed('neocomplete.vim')
+      call lexima#insmode#map_hook('before', '<CR>',
+      \ "\<C-]><C-r>=neocomplete#smart_close_popup()\<CR>")
+      call lexima#insmode#map_hook('before', '<Space>',
+      \ "\<C-]>\<C-r>=neocomplete#smart_close_popup()\<CR>")
+      call lexima#insmode#map_hook('before', '<C-h>', "\<C-r>=neocomplete#smart_close_popup()\<CR>")
+      call lexima#insmode#map_hook('before', '<BS>', "\<C-r>=neocomplete#smart_close_popup()\<CR>")
+    endif
 
   endfunction
   call s:bundle.untap()
@@ -6709,7 +6730,7 @@ endif
 " clang_complete {{{2
 if s:bundle.tap('clang_complete')
   let g:neocomplcache_force_overwrite_completefunc = 1
-  let g:neocomplete#force_overwrite_completefunc = 1
+  " let g:neocomplete#force_overwrite_completefunc = 1
   " clang_complete の自動呼び出し OFF
   let g:clang_complete_auto = 0
   let g:clang_auto_select = 0
@@ -6814,13 +6835,18 @@ if s:bundle.is_installed('neosnippet.vim')
   smap <C-l> <Plug>(neosnippet_jump_or_expand)
 endif
 
+" youcompleteme {{{2
+if s:bundle.is_installed('YouCompleteMe')
+
+endif
+
 " neocomplete, neocomplcache {{{2
 if s:bundle.is_installed('neocomplete.vim') "{{{3
   " options {{{4
   let g:neocomplete#data_directory = $VIM_CACHE . '/neocomplete'
   let g:neocomplete#enable_at_startup                   = 1
   let g:neocomplete#cursor_hold_i_time                  = 500
-  let g:neocomplete#max_list = 100  " 補完候補の数
+  let g:neocomplete#max_list = 30  " 補完候補の数
   let g:neocomplete#enable_auto_select = 1   " 一番目の候補を自動選択
 
   let g:neocomplete#enable_smart_case                   = 1
@@ -6918,7 +6944,6 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   \ 'objc':  '[^.[:digit:] *\t]\%(\.\|->\)',
   \ 'objcpp':  '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::',
   \ 'python': '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*',
-  \ 'php': '[^. \t]->\h\w*\|\h\w*::',
   \ })
   call extend(g:neocomplete#sources#omni#input_patterns, {
   \ 'perl':  '\h\w*->\h\w*\|\h\w*::',
@@ -6928,10 +6953,13 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   \ 'coffee':  '\h\w*\|[^. \t]\.\w*',
   \ 'typescript': '\h\w*\|[^. \t]\.\%(\h\w*\)\?',
   \ 'haxe': '\v([\]''"]|\w)(\.|\()\w*',
+  \ 'php': '[^. \t]->\h\w*\|\h\w*::',
   \ 'r': '[[:alnum:].\\]\+',
   \ 'xquery': '\k\|:\|\-\|&',
   \ 'go': '\h\w\.\w',
   \ })
+  " \ 'php': '[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
+  " \ 'php': '\h\w*\|[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
 
   " scala
   let g:neocomplete#sources#include#patterns.scala = '^import'

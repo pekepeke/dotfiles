@@ -17,13 +17,13 @@ EOM
   if [ -n "$selected" ]; then
     case "$selected" in
       main-vertical-with-change-pane)
-        BUFFER="tmux select-layout -t $winno main-vertical ; tmux swap-pane -s : -t 0 ; tmux select-pane -t 0 ; tmux resize-pane -R 9"
+        BUFFER="tmux select-layout main-vertical ; tmux swap-pane -s : -t 0 ; tmux select-pane -t 0 ; tmux resize-pane -R 9"
         ;;
       main-horizontal-with-change-pane)
-        BUFFER="tmux select-layout -t $winno main-horizontal; tmux swap-pane -s : -t 0 ; tmux select-pane -t 0 ; tmux resize-pane -D 18"
+        BUFFER="tmux select-layout main-horizontal; tmux swap-pane -s : -t 0 ; tmux select-pane -t 0 ; tmux resize-pane -D 18"
         ;;
       *)
-        BUFFER="tmux select-layout -t $winno $1 $selected"
+        BUFFER="tmux select-layout $selected"
       ;;
     esac
     zle accept-line
