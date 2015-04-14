@@ -8,12 +8,12 @@ let b:match_skip = 's:comment\|string'
 if !exists('b:match_words')
   let b:match_words = ''
 endif
-let b:match_words = &matchpairs . ',\<try\>:\<catch\>:\<finally\>'
+let b:match_words = &matchpairs . ',\<try\>:\<catch\>:\<finally\>,'
 let b:match_words .= '<?\(php\)\?:?>,\<switch\>:\<endswitch\>,' .
   \ '\<if\>:\<elseif\>:\<else\>:\<endif\>,' .
   \ '\<while\>:\<endwhile\>,\<do\>:\<while\>,' .
-  \ '\<for\>:\<endfor\>,\<foreach\>:\<endforeach\>' .
-  \ '\<begin\>:\<end/>' .
+  \ '\<for\>:\<endfor\>,\<foreach\>:\<endforeach\>,' .
+  \ '\<begin\>:\<end/>,' .
   \ '<\@<=[ou]l\>[^>]*\%(>\|$\):<\@<=li\>:<\@<=/[ou]l>,' .
   \ '<\@<=dl\>[^>]*\%(>\|$\):<\@<=d[td]\>:<\@<=/dl>,' .
   \ '<\@<=\([^/?][^ \t>]*\)[^>]*\%(>\|$\):<\@<=/\1>,' .

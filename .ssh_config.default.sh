@@ -32,19 +32,19 @@ Host github.com
   # Ciphers arcfour256
 
 Host *-ec2-
-    StrictHostKeyChecking no  
-    UserKnownHostsFile /dev/null 
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
 
 # Host localhost
 #    User docker
-#    StrictHostKeyChecking no  
-#    UserKnownHostsFile /dev/null 
+#    StrictHostKeyChecking no
+#    UserKnownHostsFile /dev/null
 #    IdentityFile ~/.ssh/id_rsa_boot2docker_vm
 #    HostName 127.0.0.1
 
 # Host 192.168.1.*
-#    StrictHostKeyChecking no  
-#    UserKnownHostsFile /dev/null 
+#    StrictHostKeyChecking no
+#    UserKnownHostsFile /dev/null
 
 #Host name
 #  HostName xxx.xxx.xxx.xxx
@@ -76,6 +76,13 @@ Host *-ec2-
 #   HostName host2
 #   User user2
 
+## socks proxy - http://blog.wktk.co.jp/ja/entry/2014/03/11/ssh-socks-proxy-mac-chrome
+# ssh -f -N -D 1080 user@example.com
+# Host fumidai.example.com
+#   User user
+#   Protocol 2
+#   ForwardAgent yes
+#   DynamicForward 1080
 
 # Host gh-private
 #     HostName github.com

@@ -1093,7 +1093,7 @@ NeoBundle 'tpope/vim-cucumber'
 NeoBundle 'yaymukund/vim-rabl'
 NeoBundle 'vim-scripts/eruby.vim'
 
-NeoBundle 'vim-vagrant'
+" NeoBundle 'vim-vagrant'
 NeoBundleLazy 't9md/vim-chef', {'autoload':{
 \ 'filetypes': ['ruby'],
 \ }}
@@ -1193,12 +1193,14 @@ NeoBundle 'slim-template/vim-slim'
 
 " javascript {{{4
 NeoBundle 'guileen/simple-javascript-indenter'
+" NeoBundle 'othree/yajs.vim'
 NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'mxw/vim-jsx'
 " NeoBundle 'jsx/vim-jsx'
-NeoBundle 'moll/vim-node'
-NeoBundle 'pekepeke/vim-node', 'gf-user', {'autoload': {
+" NeoBundle 'moll/vim-node'
+NeoBundle 'pekepeke/vim-node', {'autoload': {
   \ 'filetypes': ['javascript', 'coffee'],
+  \ 'depends': ['gf-user'],
   \ }}
 if has('python') || has('python3')
   NeoBundle 'marijnh/tern_for_vim', {
@@ -2624,6 +2626,9 @@ if s:bundle.is_installed('simple-javascript-indenter')
   let g:SimpleJsIndenter_BriefMode = 1
   " better switch indent
   let g:SimpleJsIndenter_CaseIndentLevel = -1
+endif
+if s:bundle.is_installed('javascript-libraries-syntax.vim')
+  let g:used_javascript_libs = 'jquery,underscore,react'
 endif
 
 " markdown {{{2

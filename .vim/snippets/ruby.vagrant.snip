@@ -1,0 +1,44 @@
+snippet vagrant_aws
+    config.vm.provider :aws do |aws, override|
+        aws.access_key_id = "xxxxxxxxx"
+        aws.secret_access_key = "xxxxxxxxxxxxxxxxxx"
+
+        aws.instance_type = "t2.micro"
+        aws.region = "ap-northeast-1"
+        aws.availability_zone = "ap-northeast-1c"
+
+        aws.security_groups = "securityGroupName"
+        # image(Amazon Linux)
+        aws.ami = "ami-29dc9228"
+        aws.keypair_name = "HogeKey"
+        override.ssh.username = "ec2-user"
+        override.ssh.private_key_path = "~/.ssh/HogeKey.pem"
+        # Tag
+        aws.tags = { 'Name' => 'MyMachineTest' }
+
+    end
+
+snippet     vagrant_cachier
+    if Vagrant.has_plugin?("vagrant-cachier")
+        config.cache.scope = :box
+    end
+snippet vagrant_proxyconf
+    if Vagrant.has_plugin?("vagrant-proxyconf")
+        config.proxy.http = "http://proxy.mycompany.co.jp:8080/"
+        config.proxy.https = "http://proxy.mycompany.co.jp:8080/"
+        config.proxy.no_proxy = "localhost,127.0.0.1"
+    end
+
+snippet vagrant_hostmanager
+    if Vagrant.has_plugin?("vagrant-hostmanager")
+        config.hostmanager.enabled = true
+        config.hostmanager.manage_host = true
+        config.hostmanager.ignore_private_ip = false
+        config.hostmanager.include_offline = true
+        config.vm.define 'example-box' do |node|
+            node.vm.hostname = 'example-box-hostname'
+            node.vm.network :private_network, ip: '192.168.42.42'
+            node.hostmanager.aliases = %w(example-box.localdomain example-box-alias)
+        end
+    end
+
