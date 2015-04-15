@@ -2470,7 +2470,8 @@ else
   cnoremap <C-f> <Right>
   cnoremap <C-b> <Left>
   cnoremap <C-d> <Delete>
-  Lazy cnoremap <C-x> <C-r>=substitute(expand('%:p:h'), ' ', '\\v:val', 'e')<CR>/
+  cnoremap <C-x> <C-r>=substitute(expand('%:p:h'), ' ', '\\v:val', 'e')<CR>/
+  cnoremap <C-z> <C-r>=expand('%:p:r')<CR>
 endif
 
 cnoremap <Up> <C-p>
