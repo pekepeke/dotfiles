@@ -2464,6 +2464,7 @@ inoremap <C-u> <C-g>u<C-u>
 " cmaps {{{3
 if s:bundle.is_installed('vim-emacscommandline')
   cnoremap <C-x><C-x> <C-r>=substitute(expand('%:p:h'), ' ', '\\v:val', 'e')<CR>/
+  cnoremap <C-x><C-z> <C-r>=expand('%:p:r')<CR>
 else
   cnoremap <C-a> <Home>
   cnoremap <C-e> <End>
@@ -7775,9 +7776,27 @@ function! s:set_coding_style(bang, arg) "{{{
   let expr = a:bang ? "set" : "setlocal"
   execute expr a:arg
 endfunction " }}}
-function! s:coding_style_complete(...) "{{{
-    return keys(s:coding_styles)
+function! s:coding_style_complete(A, L, P) "{{{
+  " return keys(s:coding_styles)
+  return filter(keys(s:coding_styles),'v:val =~? "^".a:A')
 endfunction "}}}
+
+let s:q = "['\"]"
+let s:pattern_replace = {
+\ 'DateTime2now' : join(['%s!', s:q, '\d\{4\}-\d\{2\}-\d\{2\}\( \d\{2\}:\d\{2\}:\d\{2\}\)?', s:q, '!now()!g'], ''),
+\ }
+
+function! s:replace_pattern(bang, arg) "{{{
+  if empty(a:arg)
+    return
+  endif
+  execute a:arg
+endfunction
+function! s:replace_pattern_complete(A, L, P) "{{{
+  return filter(keys(s:pattern_replace),'v:val =~? "^".a:A')
+endfunction "}}}
+command! -bar -nargs=1 -complete=customlist,s:replace_pattern_complete ReplacePattern
+  \ call s:replace_pattern("", get(s:pattern_replace, <f-args>, ''))
 
 " util {{{2
 command! -nargs=0 ToScratch call my#buffer#set_scratch()
