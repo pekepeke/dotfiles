@@ -7783,7 +7783,7 @@ endfunction "}}}
 
 let s:q = "['\"]"
 let s:pattern_replace = {
-\ 'DateTime2now' : join(['%s!', s:q, '\d\{4\}-\d\{2\}-\d\{2\}\( \d\{2\}:\d\{2\}:\d\{2\}\)?', s:q, '!now()!g'], ''),
+\ 'DateTime2now' : join(['%s!', s:q, '\d\{4\}-\d\{2\}-\d\{2\}\( \d\{2\}:\d\{2\}:\d\{2\}\)\?', s:q, '!now()!g'], ''),
 \ }
 
 function! s:replace_pattern(bang, arg) "{{{
