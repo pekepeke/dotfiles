@@ -7,11 +7,12 @@
       "peco.SelectNext"
     ]
   },
-  "CustomMatcher": {
-    "Migemo": [
-      "migemogrep",
-      "$QUERY"
-    ]
+  "CustomFilter": {
+    "Migemo": {
+      "Cmd": "migemogrep",
+      "Args": ["$QUERY"],
+      "BufferThreshold": 100
+    }
   },
   "Keymap": {
     "M-f": "peco.ForwardWord",
@@ -35,12 +36,12 @@
     "C-v": "peco.SelectNextPage",
 
     "C-l": "peco.ToggleSelectionAndSelectNext",
-    "C-s": "peco.SelectAll",
+    "C-s": "peco.SelectVisible",
     "C-/": "peco.ToggleRangeMode",
 
     "C-m": "peco.Finish",
     "C-j": "peco.Finish",
 
-    "C-g": "peco.Cancel"
+    "C-g": "peco.SelectNone"
   }
 }

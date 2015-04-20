@@ -33,6 +33,8 @@
   add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
   log-graph = log --graph --date=short --pretty=format:'%Cgreen%h %cd %Cblue%cn %Creset%s'
   log-all = log --graph --all --color --pretty='%x09%h %cn%x09%s %Cred%d%Creset'
+  diffh = !git diff `git log --oneline --branches | peco | awk '{print $1}' | rev | tac | rev`
+  dh = !git diff `git log --oneline --branches | peco | awk '{print $1}' | rev | tac | rev`
   d = diff
   dm = diff master
   dw = diff --color-words

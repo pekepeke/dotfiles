@@ -124,6 +124,8 @@ else
   alias l="ls -CF $LS_OPTIONS"
 fi
 
+alias grep="grep $GREP_OPTIONS"
+unset GREP_OPTIONS
 alias today='date +%Y%m%d'
 
 alias ..='cd ..'
@@ -255,8 +257,9 @@ shrc_section_title "zsh" #{{{2
 if [ -n "$ZSH_NAME" ]; then
   alias -g L="|& $PAGER"
   alias -g G="| grep -i"
-  alias -g H="| head"
-  alias -g T="| tail"
+  alias -g H=' $(git-hash-p)'
+  alias -g F=' $(git-changed-files-p)'
+  alias -g FA=' $(git-ls-files-p)'
   # alias -g V="| $EDITOR_VIM_MIN -"
   alias -g V="| $COL_CMD | $EDITOR_VIM_MIN -"
   alias -g P="| peco"
