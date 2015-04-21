@@ -488,7 +488,8 @@ setopt prompt_subst      # PROMPT内で変数展開・コマンド置換・算�
 setopt prompt_percent    # %文字から始まる置換機能を有効にする
 setopt transient_rprompt # コマンド実行後は右プロンプトを消す
 
-if [[ $ZSH_VERSION == (<5->|4.<4->|4.3.<10->)* ]]; then
+# if [[ $ZSH_VERSION == (<5->|4.<4->|4.3.<10->)* ]]; then
+if is-at-least 4.3.10 ; then
   autoload -Uz vcs_info
   zstyle ':vcs_info:*' enable git svn hg
   zstyle ':vcs_info:bzr:*' use-simple true
@@ -742,6 +743,7 @@ _zsh-complete-init() {
   zstyle ':completion:*:*files' ignored-patterns '*?.o' '*?~' '*\ # '                              # 補完させない
   zstyle ':completion:*:cd:*' ignore-parents parent pwd # cd カレントディレクトリを選択しないので表示させないようにする (例: cd ../<TAB>):
   zstyle ':completion:*:manuals' separate-sections true # man のセクション番号を補完
+  zstyle ':completion:*:processes' command "ps -u $USER -o pid,stat,%cpu,%mem,cputime,command" # kill
   # 補完候補の優先度
   #
   ## _oldlist 前回の補完結果を再利用する。

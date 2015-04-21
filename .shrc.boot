@@ -221,11 +221,6 @@ perlmodules() {
 }
 
 shrc_section_title "mysql" #{{{2
-if [ -n "$ZSH_NAME" ]; then
-  alias EXPLAIN="noglob EXPLAIN"
-  alias SELECT="noglob SELECT"
-  alias SHOW="noglob SHOW"
-fi
 EXPLAIN() {
   mysql -e "SET NAMES utf8; EXPLAIN $*"
 }
@@ -235,6 +230,11 @@ SELECT() {
 SHOW() {
   mysql -e "SET NAMES utf8; SHOW $*"
 }
+if [ -n "$ZSH_NAME" ]; then
+  alias EXPLAIN='noglob EXPLAIN'
+  alias SELECT='noglob SELECT'
+  alias SHOW='noglob SHOW'
+fi
 
 shrc_section_title "etc" #{{{2
 alias rsync='rsync -avzu'
