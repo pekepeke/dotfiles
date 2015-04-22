@@ -1,6 +1,6 @@
 
-PROJROOT=~/projects-html/soniaca
-STATICROOT=$(dirname $0; pwd)
+PROJROOT=~/projects-html/xxx
+STATICROOT=$(cd `dirname $0`; pwd)
 OPTS="--dry-run"
 
 rsync -av $OPTS $PROJROOT/css/ $STATICROOT/css/

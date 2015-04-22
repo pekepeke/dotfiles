@@ -857,7 +857,10 @@ NeoBundleLazy 'thinca/vim-prettyprint', { 'autoload': {
 \   { 'name' : 'PrettyPrint', 'complete': 'expression'},
 \ ]}}
 NeoBundle 'thinca/vim-ambicmd'
-
+NeoBundle 'deris/vim-rengbang', {'autoload':{
+\ 'commands': ['RengBang'],
+\ 'mappings': ['<Plug>(operator-rengbang'],
+\ }}
 NeoBundle 'nathanaelkane/vim-indent-guides'
 " if has('conceal') && !s:is_mac
 "   NeoBundle 'Yggdroot/indentLine'
@@ -2698,6 +2701,21 @@ let g:vimrc_enabled_plugins = {
   \ 'ambicmd': s:bundle.is_installed('vim-ambicmd'),
   \ 'endwize': s:bundle.is_installed('endwize.vim'),
   \ }
+
+" rengbang {{{2}}}
+if s:bundle.is_installed('vim-rengbang')
+  let g:rengbang_default_pattern  = '\(\d\+\)'
+  let g:rengbang_default_start    = 1
+  let g:rengbang_default_step     = 1
+  let g:rengbang_default_usefirst = 0
+  let g:rengbang_default_confirm_sequence = [
+    \ 'pattern',
+    \ 'start',
+    \ 'step',
+    \ 'usefirst',
+    \ 'format',
+    \ ]
+endif
 
 " jqplay {{{2
 let g:jqplay_opt = ""
