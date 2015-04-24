@@ -1,0 +1,32 @@
+source ~/.mutt/muttrc.local
+# smtp_authenticators is needed for sending via Gmail
+set smtp_authenticators = 'gssapi:login'
+set editor = "vim"
+
+set spoolfile = imaps://imap.gmail.com/INBOX
+set folder = imaps://imap.gmail.com/
+set record="imaps://imap.gmail.com/[Gmail]/送信済みメール"
+set postponed ="imaps://imap.gmail.com/[Gmail]/下書き"
+set trash="imaps://imap.gmail.com/[Gmail]/ゴミ箱"
+set signature = ~/.mutt/signature
+# Disable "Move read messages to ~/mbox? ([no]/yes):"
+set move = no
+
+# brew install urlview
+macro pager \cb <pipe-entry>'urlview'<enter> 'Follow links with urlview'
+
+# brew install w3m
+# need ~/.mailcap
+auto_view text/html
+alternative_order text/plain text/enriched text/html
+
+# Vim-like bindings
+bind pager / search
+bind pager <up> previous-line
+bind pager <down> next-line
+bind pager k previous-line
+bind pager j next-line
+bind pager gg top
+bind pager G bottom
+bind index gg first-entry
+bind index G last-entry

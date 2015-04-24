@@ -8,7 +8,7 @@ if search('<\(div\|body\|html\|head\|script\|span\|p\|ul\|ol\|li\)', 'cnw')
   endif
   runtime! syntax/html.vim
   " unlet b:current_syntax
-  setl commentstring={#<!--%s-->#}
+  setlocal commentstring={#<!--%s-->#}
 endif
 
 let &cpo = s:save_cpo

@@ -1,12 +1,12 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-"setl fdm=syntax
-setl formatoptions-=r formatoptions-=o
-setl complete=.,w,b,t,k,kspell
-setl iskeyword-=:
+"setlocal fdm=syntax
+setlocal formatoptions-=r formatoptions-=o
+setlocal complete=.,w,b,t,k,kspell
+setlocal iskeyword-=:
 setlocal softtabstop=0 tabstop=4 shiftwidth=4
-" setl expandtab
+" setlocal expandtab
 
 if exists('*PerlLocalLibPath')
   "y-uuki/perl-local-lib-path.vim"

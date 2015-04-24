@@ -3,9 +3,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 if &modifiable && &fileformat == 'dos'
-  setl ff=dos fenc=cp932
+  setlocal ff=dos fenc=cp932
 endif
-setl comments=:;
-setl commentstring=;%s
+setlocal comments=:;
+setlocal commentstring=;%s
 
 let &cpo = s:save_cpo

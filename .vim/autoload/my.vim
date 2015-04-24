@@ -16,7 +16,7 @@ function! my#output_to_buffer(bufname, text_list) " {{{2
   let l:bufnum = bufnr(a:bufname)
   if l:bufnum == -1
     exe 'new '.a:bufname
-    " edit +setl\ bufhidden=hide\ buftype=nofile\ noswapfile\ buflisted
+    " edit +setlocal\ bufhidden=hide\ buftype=nofile\ noswapfile\ buflisted
     setlocal bufhidden=hide buftype=nofile noswapfile buflisted
   else
     let l:winnum = bufwinnr(l:bufnum)
@@ -32,7 +32,7 @@ function! my#output_to_buffer(bufname, text_list) " {{{2
   call append(line('$'),
         \ type(a:text_list) == type([])
         \ ? a:text_list : split(a:text_list, "\n"))
-  "setl bufhidden=hide buftype=nofile noswapfile buflisted
+  "setlocal bufhidden=hide buftype=nofile noswapfile buflisted
   silent exe 'wincmd p'
 endfunction
 

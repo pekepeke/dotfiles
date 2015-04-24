@@ -38,8 +38,7 @@ endfunction
 
 function! s:source.opened(query)  " {{{2
   call s:syntax()
-  setl foldmethod=marker
-  1
+  setlocal foldmethod=marker
 endfunction
 
 

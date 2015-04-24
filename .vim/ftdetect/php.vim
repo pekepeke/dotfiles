@@ -1,2 +1,2 @@
-autocmd BufNewFile,BufRead *.phpm,*.inc setl filetype=php
-autocmd BufNewFile,BufRead *.ctp,*.thtml setl filetype=php
+autocmd BufNewFile,BufRead *.phpm,*.inc setlocal filetype=php
+autocmd BufNewFile,BufRead *.ctp,*.thtml setlocal filetype=php

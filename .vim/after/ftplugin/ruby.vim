@@ -3,17 +3,17 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
-setl formatoptions-=r formatoptions-=o
-setl iskeyword+=@,$,?,!
-setl iskeyword-=.,:
-setl expandtab
+setlocal formatoptions-=r formatoptions-=o
+setlocal iskeyword+=@,$,?,!
+setlocal iskeyword-=.,:
+setlocal expandtab
 if !exists('b:match_words')
   let b:match_words = ''
 endif
 let b:match_words .= '\<\(module\|class\|def\|until\|while\|begin\|do\|if\|unless\|case\)\>:'
       \ . '\<\(elsif\|when\|rescue\)\>:\<\(else\|ensure\)\>:\<end\>'
-" setl dictionary=~/.vim/dict/ruby.dict
-" setl tabstop=2 shiftwidth=2 textwidth=0 expandtab
+" setlocal dictionary=~/.vim/dict/ruby.dict
+" setlocal tabstop=2 shiftwidth=2 textwidth=0 expandtab
 
 " * ~ end block
 " nnoremap vab 0/end<CR>%V%0

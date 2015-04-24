@@ -206,9 +206,9 @@ function s:ParseTag( )
                 " Can't use \<Tab> because that indents 'tabstop' not 'shiftwidth'
                 " Also >> doesn't shift on an empty line hence the temporary char 'x'
                 let com_save = &comments
-                setl comments-=n:>
+                setlocal comments-=n:>
                 execute "normal! a\<Cr>\<Cr>\<Esc>kAx\<Esc>>>$\"xx"
-                execute "setl comments=" . com_save
+                execute "setlocal comments=" . com_save
 
                 " restore registers
                 let @" = old_reg_save
@@ -546,13 +546,13 @@ function! s:XmlInstallDocumentation(full_name, revision)
     endif
 
     " Create a new buffer & read in the plugin file (me):
-    setl nomodeline
+    setlocal nomodeline
     exe 'enew!'
     exe 'r ' . l:plugin_file
 
-    setl modeline
+    setlocal modeline
     let l:buf = bufnr("%")
-    setl noswapfile modifiable
+    setlocal noswapfile modifiable
 
     norm zR
     norm gg

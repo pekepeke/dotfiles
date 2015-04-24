@@ -1,1 +1,1 @@
-autocmd BufNewFile,BufRead *.scpt,*.applescript :setl filetype=applescript
+autocmd BufNewFile,BufRead *.scpt,*.applescript :setlocal filetype=applescript

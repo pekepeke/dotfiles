@@ -2,8 +2,8 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-setl noexpandtab
-setl comments=:#
-setl commentstring=#%s
+setlocal noexpandtab
+setlocal comments=:#
+setlocal commentstring=#%s
 
 let &cpo = s:save_cpo

@@ -4,15 +4,15 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " http://hail2u.net/blog/software/only-one-line-life-changing-vimrc-setting.html
-setl includeexpr=substitute(v:fname,'^\\/','','')
-setl path+=;/
+setlocal includeexpr=substitute(v:fname,'^\\/','','')
+setlocal path+=;/
 
 if &filetype =~# 'html'
-  setl iskeyword+=-
+  setlocal iskeyword+=-
 endif
-" setl dictionary=~/.vim/dict/html.dict
-" setl dictionary+=~/.vim/dict/css.dict
-" setl noexpandtab tabstop=2 shiftwidth=2 textwidth=0
+" setlocal dictionary=~/.vim/dict/html.dict
+" setlocal dictionary+=~/.vim/dict/css.dict
+" setlocal noexpandtab tabstop=2 shiftwidth=2 textwidth=0
 if !exists('b:match_words')
   let b:match_words = ''
 endif

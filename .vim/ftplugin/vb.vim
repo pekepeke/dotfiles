@@ -3,11 +3,11 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 if &modifiable " && &fileformat == 'dos'
-  setl fileformat=dos fileencoding=cp932
+  setlocal fileformat=dos fileencoding=cp932
 endif
-setl dictionary=~/.vim/dict/vbscript.dict
-setl dictionary+=~/.vim/dict/wsh.dict
-setl comments=:'
-setl commentstring='%s
+setlocal dictionary=~/.vim/dict/vbscript.dict
+setlocal dictionary+=~/.vim/dict/wsh.dict
+setlocal comments=:'
+setlocal commentstring='%s
 
 let &cpo = s:save_cpo

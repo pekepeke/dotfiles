@@ -3,9 +3,9 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-setl indentkeys-=0#
-setl cinkeys-=0#
-" setl noexpandtab
+setlocal indentkeys-=0#
+setlocal cinkeys-=0#
+" setlocal noexpandtab
 
 
 let &cpo = s:save_cpo

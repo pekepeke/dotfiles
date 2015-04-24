@@ -2,8 +2,8 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-setl comments=s1:{#,mb:#,ex:#}
-setl commentstring={#%s#}
+setlocal comments=s1:{#,mb:#,ex:#}
+setlocal commentstring={#%s#}
 
 let b:match_skip = 's:comment\|string'
 if !exists('b:match_words')

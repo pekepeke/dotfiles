@@ -892,6 +892,7 @@ NeoBundleLazy 'mattn/emoji-vim', {'autoload': {
 NeoBundle 'osyo-manga/shabadou.vim'
 NeoBundle 'osyo-manga/vim-watchdogs'
 NeoBundle 'tokorom/vim-quickrun-xctool'
+NeoBundle 'manicmaniac/vim-quickrun-qo'
 NeoBundle 'osyo-manga/vim-anzu', {'autoload': {
 \ 'mappings': [['n', '<Plug>(anzu-']],
 \ }}
@@ -1391,7 +1392,7 @@ NeoBundle 'tpope/vim-markdown'
 NeoBundle 'nelstrom/vim-markdown-folding'
 NeoBundle 'kannokanno/previm'
 NeoBundle 'timcharper/textile.vim'
-" NeoBundle 'aklt/plantuml-syntax'
+NeoBundle 'aklt/plantuml-syntax'
 " NeoBundle 'maxmeyer/vim-taskjuggler'
 NeoBundle 'hara/vim-opf'
 
@@ -2702,7 +2703,7 @@ let g:vimrc_enabled_plugins = {
   \ 'endwize': s:bundle.is_installed('endwize.vim'),
   \ }
 
-" rengbang {{{2}}}
+" rengbang {{{2
 if s:bundle.is_installed('vim-rengbang')
   let g:rengbang_default_pattern  = '\(\d\+\)'
   let g:rengbang_default_start    = 1
@@ -5987,22 +5988,32 @@ if s:bundle.is_installed('vim-quickrun')
   " csharp {{{4
   call extend(g:quickrun_config, {
   \ 'cs' : {
-  \   'type' : executable('csc') ? 'csharp/csc':
-  \            executable('cs') ? 'csharp/cs': '',
+  \   'type' : executable('csc') ? 'cs/csc':
+  \            executable('cs') ? 'cs/cs': '',
   \ },
-  \ 'csharp/csc' : {
+  \ 'cs/csc' : {
   \   'command' : 'csc',
   \   'runmode' : 'simple',
   \   'exec' : ['%c /nologo %s:gs?/?\\? > /dev/null', '"%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
   \   'tempfile' : '{tempname()}.cs',
   \ },
-  \ 'csharp/cs' : {
+  \ 'cs/cs' : {
   \   'command' : 'cs',
   \   'runmode' : 'simple',
   \   'exec' : ['%c %s > /dev/null', 'mono "%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
   \   'tempfile' : '{tempname()}.cs',
   \ },
   \ })
+  if s:is_win && executable('C:\Program Files (x86)\LINQPad4\LPRun.exe')
+    let g:quickrun_config['cs/lprun'] = {
+      \   'command': 'C:\Program Files (x86)\LINQPad4\LPRun.exe',
+      \ , 'cmdopt': '-lang=S',
+      \ , 'exec': '%c:gs?/?\\? %o %s',
+      \ , 'tempfile': '%{tempname()}.cs',
+      \ , 'hook/output_encode/encoding': '&termencoding',
+      \ , 'hook/sweep/files': ['%S:p:r.exe'],
+      \ }
+  endif
   " html {{{4
   call extend(g:quickrun_config, {
   \ 'html' : {
@@ -6025,9 +6036,6 @@ if s:bundle.is_installed('vim-quickrun')
   \ 'json': {
   \   'type': 'json/jq',
   \ },
-  \ 'jsx' : {
-  \   'type' : 'denajsx/jsx',
-  \ },
   \ 'coffee/to_javascript' : {
   \    'command': 'coffee',
   \    'cmdopt': '-pb',
@@ -6036,11 +6044,25 @@ if s:bundle.is_installed('vim-quickrun')
   \ 'json/jq': {
   \   'command': 'jq',
   \ },
-  \ 'denajsx/jsx' : {
-  \   'command': 'jsx',
-  \   'exec' : '%c %o --run %s',
-  \ },
   \ })
+
+  call extend(g:quickrun_config, {
+  \ 'javascript/babel': {
+  \   'cmdopt': '',
+  \   'exec': "babel %o %s",
+  \   'outputter/buffer/filetype': 'javascript',
+  \ }})
+
+  " call extend(g:quickrun_config, {
+  " \ 'jsx' : {
+  " \   'type' : 'denajsx/jsx',
+  " \ },
+  " \ 'denajsx/jsx' : {
+  " \   'command': 'jsx',
+  " \   'exec' : '%c %o --run %s',
+  " \ },
+  " \ })
+
   " css {{{4
   call extend(g:quickrun_config, {
   \ 'slim' : {
@@ -6379,40 +6401,40 @@ if s:bundle.is_installed('vim-quickrun')
 
   " watchdogs config {{{3
   call extend(g:quickrun_config, {
-        \ 'watchdogs_checker/_' : {
-        \   'hook/close_quickfix/enable_failure' : 1,
-        \   'hook/close_quickfix/enable_success' : 1,
-        \   'hook/hier_update/enable' : 1,
-        \   'hook/quickfix_status_enable/enable' : 1,
-        \   "hook/quickfixsigns_update/enable_exit" : 1,
-        \   "hook/quickfixsigns_update/priority_exit" : 3,
-        \   'hook/back_window/enable' : 1,
-        \   'outputter/quickfix/open_cmd' : '',
-        \ },
-        \ })
+    \ 'watchdogs_checker/_' : {
+    \   'hook/close_quickfix/enable_failure' : 1,
+    \   'hook/close_quickfix/enable_success' : 1,
+    \   'hook/hier_update/enable' : 1,
+    \   'hook/quickfix_status_enable/enable' : 1,
+    \   "hook/quickfixsigns_update/enable_exit" : 1,
+    \   "hook/quickfixsigns_update/priority_exit" : 3,
+    \   'hook/back_window/enable' : 1,
+    \   'outputter/quickfix/open_cmd' : '',
+    \ },
+    \ })
   call extend(g:quickrun_config, {
-        \ 'perl/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/perl-projectlibs',
-        \ },
-        \ 'cpanfile/watchdogs_checker': {
-        \   'type' : 'watchdogs_checker/cpanfile',
-        \ },
-        \ "watchdogs_checker/perl-locallib" : {
-        \   "command" : "perl",
-        \   "exec"    : "%c %o -Mlib=local/lib/perl5/ -Mlib=lib -Mlib=. -cw %s:p",
-        \   "quickfix/errorformat" : '%m\ at\ %f\ line\ %l%.%#',
-        \ },
-        \ 'watchdogs_checker/perl-projectlibs': {
-        \   'command' : 'perl',
-        \   'exec' : '%c %o -cw -MProject::Libs %s:p',
-        \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
-        \ },
-        \ 'watchdogs_checker/cpanfile': {
-        \   'command' : 'perl',
-        \   'exec' : '%c %o -w -MModule::CPANfile -e "Module::CPANfile->load(q|%S:p|)"',
-        \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
-        \ },
-        \ })
+    \ 'perl/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/perl-projectlibs',
+    \ },
+    \ 'cpanfile/watchdogs_checker': {
+    \   'type' : 'watchdogs_checker/cpanfile',
+    \ },
+    \ "watchdogs_checker/perl-locallib" : {
+    \   "command" : "perl",
+    \   "exec"    : "%c %o -Mlib=local/lib/perl5/ -Mlib=lib -Mlib=. -cw %s:p",
+    \   "quickfix/errorformat" : '%m\ at\ %f\ line\ %l%.%#',
+    \ },
+    \ 'watchdogs_checker/perl-projectlibs': {
+    \   'command' : 'perl',
+    \   'exec' : '%c %o -cw -MProject::Libs %s:p',
+    \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
+    \ },
+    \ 'watchdogs_checker/cpanfile': {
+    \   'command' : 'perl',
+    \   'exec' : '%c %o -w -MModule::CPANfile -e "Module::CPANfile->load(q|%S:p|)"',
+    \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
+    \ },
+    \ })
   if executable('tidy')
     call extend(g:quickrun_config, {
     \ 'html/watchdogs_checker' : {
@@ -6424,266 +6446,289 @@ if s:bundle.is_installed('vim-quickrun')
     \ })
   endif
   call extend(g:quickrun_config, {
-        \ 'watchdogs_checker/tidy' : {
-        \   'command' : 'tidy',
-        \    'exec'    : '%c -raw -quiet -errors --gnu-emacs yes %o %s:p',
-        \    'quickfix/errorformat' : '%f:%l:%c: %m',
-        \ },
-        \ 'haml/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/haml',
-        \ },
-        \ 'watchdogs_checker/haml' : {
-        \   'command' : 'haml',
-        \    'exec'    : '%c -c %o %s:p',
-        \    'quickfix/errorformat' : 'Haml error on line %l: %m,'
-        \                           . 'Syntax error on line %l: %m,%-G%.%#',
-        \ },
-        \ 'watchdogs_checker/slimrb' : {
-        \   'command' : 'slimrb',
-        \    'exec'    : '%c -c %o %s:p',
-        \    'quickfix/errorformat' : '%C\ %#%f\, Line %l\, Column %c,'.
-        \                             '%-G\ %.%#,'.
-        \                             '%ESlim::Parser::SyntaxError: %m,'.
-        \                             '%+C%.%#'
-        \ },
-        \ })
+    \ 'watchdogs_checker/tidy' : {
+    \   'command' : 'tidy',
+    \    'exec'    : '%c -raw -quiet -errors --gnu-emacs yes %o %s:p',
+    \    'quickfix/errorformat' : '%f:%l:%c: %m',
+    \ },
+    \ 'haml/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/haml',
+    \ },
+    \ 'watchdogs_checker/haml' : {
+    \   'command' : 'haml',
+    \    'exec'    : '%c -c %o %s:p',
+    \    'quickfix/errorformat' : 'Haml error on line %l: %m,'
+    \                           . 'Syntax error on line %l: %m,%-G%.%#',
+    \ },
+    \ 'watchdogs_checker/slimrb' : {
+    \   'command' : 'slimrb',
+    \    'exec'    : '%c -c %o %s:p',
+    \    'quickfix/errorformat' : '%C\ %#%f\, Line %l\, Column %c,'.
+    \                             '%-G\ %.%#,'.
+    \                             '%ESlim::Parser::SyntaxError: %m,'.
+    \                             '%+C%.%#'
+    \ },
+    \ })
   call extend(g:quickrun_config, {
-        \ 'json/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/jsonlint',
-        \ },
-        \ 'watchdogs_checker/jsonlint' : {
-        \   'command' : 'jsonlint',
-        \    'exec'    : '%c %s:p %o --compact',
-        \    'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,'
-        \                           . '%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
-        \ },
-        \ 'watchdogs_checker/jsonval' : {
-        \   'command' : 'jsonval',
-        \    'exec'    : '%c %o %s:p',
-        \    'quickfix/errorformat' : '%E%f: %m at line %l,%-G%.%#',
-        \ },
-        \ })
+    \ 'json/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/jsonlint',
+    \ },
+    \ 'watchdogs_checker/jsonlint' : {
+    \   'command' : 'jsonlint',
+    \    'exec'    : '%c %s:p %o --compact',
+    \    'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,'
+    \                           . '%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
+    \ },
+    \ 'watchdogs_checker/jsonval' : {
+    \   'command' : 'jsonval',
+    \    'exec'    : '%c %o %s:p',
+    \    'quickfix/errorformat' : '%E%f: %m at line %l,%-G%.%#',
+    \ },
+    \ })
   if executable('jsxhint')
     let g:quickrun_config['javascript/watchdogs_checker'] = 'watchdogs_checker/jsxhint'
   endif
   call extend(g:quickrun_config, {
-        \ 'watchdogs_checker/nodejs' : {
-        \   'command' : 'node',
-        \    'exec'    : '%c %o %s:p',
-        \    'quickfix/errorformat' : '%AError: %m,%AEvalError: %m,'
-        \                           . '%ARangeError: %m,%AReferenceError: %m,'
-        \                           . '%ASyntaxError: %m,%ATypeError: %m,'
-        \                           .  '%Z%*[\ ]at\ %f:%l:%c,%Z%*[\ ]%m (%f:%l:%c),'
-        \                           .  '%*[\ ]%m (%f:%l:%c),%*[\ ]at\ %f:%l:%c,%Z%p^,'
-        \                           .  '%A%f:%l,%C%m,%-G%.%#'
-        \ },
-        \ 'watchdogs_checker/jsxhint' : {
-        \   'command' : 'jsxhint',
-        \    'exec'    : '%c --verbose %o %s:p',
-        \    'quickfix/errorformat' : '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
-        \ },
-        \ })
+    \ 'watchdogs_checker/nodejs' : {
+    \   'command' : 'node',
+    \    'exec'    : '%c %o %s:p',
+    \    'quickfix/errorformat' : '%AError: %m,%AEvalError: %m,'
+    \                           . '%ARangeError: %m,%AReferenceError: %m,'
+    \                           . '%ASyntaxError: %m,%ATypeError: %m,'
+    \                           .  '%Z%*[\ ]at\ %f:%l:%c,%Z%*[\ ]%m (%f:%l:%c),'
+    \                           .  '%*[\ ]%m (%f:%l:%c),%*[\ ]at\ %f:%l:%c,%Z%p^,'
+    \                           .  '%A%f:%l,%C%m,%-G%.%#'
+    \ },
+    \ 'watchdogs_checker/jsxhint' : {
+    \   'command' : 'jsxhint',
+    \    'exec'    : '%c --verbose %o %s:p',
+    \    'quickfix/errorformat' : '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
+    \ },
+    \ })
   call extend(g:quickrun_config, {
-        \ 'coffee/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/coffee',
-        \ },
-        \ 'watchdogs_checker/coffee' : {
-        \   'command' : 'coffee',
-        \   'exec'    : '%c -c -p %o %s:p',
-        \   'quickfix/errorformat' : '%E%f:%l:%c: %trror: %m,' .
-        \                            'Syntax%trror: In %f\, %m on line %l,' .
-        \                            '%EError: In %f\, Parse error on line %l: %m,' .
-        \                            '%EError: In %f\, %m on line %l,' .
-        \                            '%W%f(%l): lint warning: %m,' .
-        \                            '%W%f(%l): warning: %m,' .
-        \                            '%E%f(%l): SyntaxError: %m,' .
-        \                            '%-Z%p^,' .
-        \                            '%-G%.%#'
-        \ },
-        \ 'watchdogs_checker/coffeelint' : {
-        \   'command' : 'coffeelint',
-        \   'exec'    : '%c -csv %o %s:p',
-        \   'quickfix/errorformat' : '%f\,%l\,%\d%#\,%trror\,%m,' .
-        \                            '%f\,%l\,%trror\,%m,' .
-        \                            '%f\,%l\,%\d%#\,%tarn\,%m,' .
-        \                            '%f\,%l\,%tarn\,%m'
-        \ },
-        \ })
+    \ 'coffee/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/coffee',
+    \ },
+    \ 'watchdogs_checker/coffee' : {
+    \   'command' : 'coffee',
+    \   'exec'    : '%c -c -p %o %s:p',
+    \   'quickfix/errorformat' : '%E%f:%l:%c: %trror: %m,' .
+    \                            'Syntax%trror: In %f\, %m on line %l,' .
+    \                            '%EError: In %f\, Parse error on line %l: %m,' .
+    \                            '%EError: In %f\, %m on line %l,' .
+    \                            '%W%f(%l): lint warning: %m,' .
+    \                            '%W%f(%l): warning: %m,' .
+    \                            '%E%f(%l): SyntaxError: %m,' .
+    \                            '%-Z%p^,' .
+    \                            '%-G%.%#'
+    \ },
+    \ 'watchdogs_checker/coffeelint' : {
+    \   'command' : 'coffeelint',
+    \   'exec'    : '%c -csv %o %s:p',
+    \   'quickfix/errorformat' : '%f\,%l\,%\d%#\,%trror\,%m,' .
+    \                            '%f\,%l\,%trror\,%m,' .
+    \                            '%f\,%l\,%\d%#\,%tarn\,%m,' .
+    \                            '%f\,%l\,%tarn\,%m'
+    \ },
+    \ })
   call extend(g:quickrun_config, {
-        \ 'typescript/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/tsc',
-        \ },
-        \ 'watchdogs_checker/tsc' : {
-        \   'command' : 'tsc',
-        \    'exec'    : '%c %o %s:p',
-        \    'quickfix/errorformat' : '%+A %#%f %#(%l\,%c): %m,%C%m',
-        \ },
-        \ 'watchdogs_checker/jsxhint' : {
-        \   'command' : 'jsxhint',
-        \    'exec'    : '%c --verbose %o %s:p',
-        \    'quickfix/errorformat' : '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
-        \ },
-        \ })
+    \ 'typescript/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/tsc',
+    \ },
+    \ 'watchdogs_checker/tsc' : {
+    \   'command' : 'tsc',
+    \    'exec'    : '%c %o %s:p',
+    \    'quickfix/errorformat' : '%+A %#%f %#(%l\,%c): %m,%C%m',
+    \ },
+    \ 'watchdogs_checker/jsxhint' : {
+    \   'command' : 'jsxhint',
+    \    'exec'    : '%c --verbose %o %s:p',
+    \    'quickfix/errorformat' : '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
+    \ },
+    \ })
   call extend(g:quickrun_config, {
-        \ 'css/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/csslint',
-        \ },
-        \ 'watchdogs_checker/csslint' : {
-        \   'command' : 'csslint',
-        \    'exec'    : '%c %o --format=compact %s:p',
-        \    'quickfix/errorformat' : '%-G,%-G%f: lint free!'.
-        \       ',%f: line %l\, col %c\, %trror - %m,%f: '.
-        \       'line %l\, col %c\, %tarning - %m,%f: line %l\, col %c\, %m,',
-        \ },
-        \ })
+    \ 'css/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/csslint',
+    \ },
+    \ 'watchdogs_checker/csslint' : {
+    \   'command' : 'csslint',
+    \    'exec'    : '%c %o --format=compact %s:p',
+    \    'quickfix/errorformat' : '%-G,%-G%f: lint free!'.
+    \       ',%f: line %l\, col %c\, %trror - %m,%f: '.
+    \       'line %l\, col %c\, %tarning - %m,%f: line %l\, col %c\, %m,',
+    \ },
+    \ })
   if executable('scss-lint')
     call extend(g:quickrun_config, {
-          \ 'scss/watchdogs_checker' : {
-          \   'type' : 'watchdogs_checker/scsslint',
-          \ },
-          \ 'watchdogs_checker/scsslint' : {
-          \   'command' : 'scss-lint',
-          \    'exec'    : '%c %o --format=compact %s:p',
-          \    'quickfix/errorformat' : '%A%f:\ line\ %l\\,\ col\ %c\\,\ %m'
-          \ },
-          \ })
+      \ 'scss/watchdogs_checker' : {
+      \   'type' : 'watchdogs_checker/scsslint',
+      \ },
+      \ 'watchdogs_checker/scsslint' : {
+      \   'command' : 'scss-lint',
+      \    'exec'    : '%c %o --format=compact %s:p',
+      \    'quickfix/errorformat' : '%A%f:\ line\ %l\\,\ col\ %c\\,\ %m'
+      \ },
+      \ })
   endif
   if !executable('pyflakes')
     call extend(g:quickrun_config, {
-        \  'python/watchdogs_checker' : {
-        \    'type' : 'watchdogs_checker/python',
-        \  },
-        \ })
+      \  'python/watchdogs_checker' : {
+      \    'type' : 'watchdogs_checker/python',
+      \  },
+      \ })
   endif
   call extend(g:quickrun_config, {
-        \ 'watchdogs_checker/python' : {
-        \   'command' : 'python',
-        \   'exec'    : "%c %o -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
-        \   'quickfix/errorformat' :
-        \      '%A  File "%f"\, line %l\,%m,' .
-        \      '%C    %.%#,' .
-        \      '%+Z%.%#Error: %.%#,' .
-        \      '%A  File "%f"\, line %l,' .
-        \      '%+C  %.%#,' .
-        \      '%-C%p^,' .
-        \      '%Z%m,' .
-        \      '%-G%.%#'
-        \ },
-        \ })
+    \ 'watchdogs_checker/python' : {
+    \   'command' : 'python',
+    \   'exec'    : "%c %o -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
+    \   'quickfix/errorformat' :
+    \      '%A  File "%f"\, line %l\,%m,' .
+    \      '%C    %.%#,' .
+    \      '%+Z%.%#Error: %.%#,' .
+    \      '%A  File "%f"\, line %l,' .
+    \      '%+C  %.%#,' .
+    \      '%-C%p^,' .
+    \      '%Z%m,' .
+    \      '%-G%.%#'
+    \ },
+    \ })
   call extend(g:quickrun_config, {
-        \ 'csharp/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/mcs',
-        \ },
-        \ 'watchdogs_checker/mcs' : {
-        \   'command' : 'mcs',
-        \    'exec'    : '%c %o %s:p',
-        \    'cmdopt'  : '--parse',
-        \    'quickfix/errorformat' : '%f(%l\\\,%c):\ error\ CS%n:\ %m',
-        \ },
-        \ })
+    \ 'csharp/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/mcs',
+    \ },
+    \ 'watchdogs_checker/mcs' : {
+    \   'command' : 'mcs',
+    \    'exec'    : '%c %o %s:p',
+    \    'cmdopt'  : '--parse',
+    \    'quickfix/errorformat' : '%f(%l\\\,%c):\ error\ CS%n:\ %m',
+    \ },
+    \ })
   call extend(g:quickrun_config, {
-        \ 'objc/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/gcc_objc',
-        \ },
-        \ 'watchdogs_checker/gcc_objc' : {
-        \   'command' : 'gcc',
-        \    'exec'    : '%c -fsyntax-only -lobjc %o %s:p',
-        \    'quickfix/errorformat' : '%-G%f:%s:,'
-        \                           . '%f:%l:%c: %trror: %m,'
-        \                           . '%f:%l:%c: %tarning: %m,'
-        \                           . '%f:%l:%c: %m,'
-        \                           . '%f:%l: %trror: %m,'
-        \                           . '%f:%l: %tarning: %m,'
-        \                           . '%f:%l: %m',
-        \ },
-        \ })
+    \ 'objc/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/gcc_objc',
+    \ },
+    \ 'watchdogs_checker/gcc_objc' : {
+    \   'command' : 'gcc',
+    \    'exec'    : '%c -fsyntax-only -lobjc %o %s:p',
+    \    'quickfix/errorformat' : '%-G%f:%s:,'
+    \                           . '%f:%l:%c: %trror: %m,'
+    \                           . '%f:%l:%c: %tarning: %m,'
+    \                           . '%f:%l:%c: %m,'
+    \                           . '%f:%l: %trror: %m,'
+    \                           . '%f:%l: %tarning: %m,'
+    \                           . '%f:%l: %m',
+    \ },
+    \ })
   call extend(g:quickrun_config, {
-        \ 'eruby/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/ruby_erb',
-        \ },
-        \ 'Gemfile/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/ruby',
-        \ },
-        \ 'watchdogs_checker/erubis' : {
-        \   'command' : 'erubis',
-        \    'exec'    : '%c -z %o %s:p',
-        \    'quickfix/errorformat' : '%f:%l:%m',
-        \ },
-        \ 'watchdogs_checker/ruby_erb' : {
-        \   'command' : 'ruby',
-        \    'exec'    : '%c -rerb -e "puts ERB.new('
-        \           . 'File.read(''%s:p'').gsub(''<\%='', ''<\%'')'
-        \           . ', nil, ''-'').src" | %c -c %o',
-        \    'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
-        \ },
-        \ 'cucumber/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/cucumber',
-        \ },
-        \ 'watchdogs_checker/cucumber' : {
-        \   'command': 'cucumber',
-        \    'exec'  : '%c --dry-run --quiet --strict --format pretty %o %s:p',
-        \    'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
-        \ },
-        \ 'watchdogs_checker/foodcritic': {
-        \   'command': 'foodcritic',
-        \   'exec'   : '%c %o %s:p',
-        \   'quickfix/errorformat': 'FC%n: %m: %f:%l',
-        \ },
-        \ })
+    \ 'eruby/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/ruby_erb',
+    \ },
+    \ 'Gemfile/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/ruby',
+    \ },
+    \ 'watchdogs_checker/erubis' : {
+    \   'command' : 'erubis',
+    \   'exec'    : '%c -z %o %s:p',
+    \   'quickfix/errorformat' : '%f:%l:%m',
+    \ },
+    \ 'watchdogs_checker/ruby_erb' : {
+    \   'command' : 'ruby',
+    \   'exec'    : '%c -rerb -e "puts ERB.new('
+    \           . 'File.read(''%s:p'').gsub(''<\%='', ''<\%'')'
+    \           . ', nil, ''-'').src" | %c -c %o',
+    \   'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
+    \ },
+    \ 'cucumber/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/cucumber',
+    \ },
+    \ 'watchdogs_checker/cucumber' : {
+    \   'command': 'cucumber',
+    \   'exec'  : '%c --dry-run --quiet --strict --format pretty %o %s:p',
+    \   'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
+    \ },
+    \ 'watchdogs_checker/foodcritic': {
+    \   'command': 'foodcritic',
+    \   'exec'   : '%c %o %s:p',
+    \   'quickfix/errorformat': 'FC%n: %m: %f:%l',
+    \ },
+    \ })
   call extend(g:quickrun_config, {
-        \ 'applescript/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/osacompile',
-        \ },
-        \ 'watchdogs_checker/osacompile' : {
-        \   'command' : 'osacompile',
-        \    'exec'    : '%c -o %o %s:p',
-        \    'quickfix/errorformat' : '%f:%l:%m',
-        \ },
-        \ })
+    \ 'applescript/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/osacompile',
+    \ },
+    \ 'watchdogs_checker/osacompile' : {
+    \   'command' : 'osacompile',
+    \   'exec'    : '%c -o %o %s:p',
+    \   'quickfix/errorformat' : '%f:%l:%m',
+    \ },
+    \ })
+  if executable('luac')
+    call extend(g:quickrun_config, {
+      \ 'lua/watchdogs_checker' : {
+      \   'type' : 'watchdogs_checker/luac',
+      \ },
+      \ })
+  endif
   call extend(g:quickrun_config, {
-        \ 'lua/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/luac',
-        \ },
-        \ 'watchdogs_checker/luac' : {
-        \   'command' : 'luac',
-        \    'exec'    : '%c -p %o %s:p',
-        \    'quickfix/errorformat' : 'luac: %#%f:%l: %m',
-        \ },
-        \ 'qml/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/qmlscene',
-        \ },
-        \ 'watchdogs_checker/qmlscene' : {
-        \   'command' : 'qmlscene',
-        \    'exec'    : '%c -c %o %s:p',
-        \    'cmdopt' : '--quit',
-        \    'quickfix/errorformat' : 'file:\/\/%f:%l %m',
-        \ },
-        \ })
+    \ 'watchdogs_checker/luac' : {
+    \   'command' : 'luac',
+    \   'exec'    : '%c -p %o %s:p',
+    \   'quickfix/errorformat' : 'luac: %#%f:%l: %m',
+    \ },
+    \ 'qml/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/qmlscene',
+    \ },
+    \ 'watchdogs_checker/qmlscene' : {
+    \   'command' : 'qmlscene',
+    \   'exec'    : '%c -c %o %s:p',
+    \   'cmdopt' : '--quit',
+    \   'quickfix/errorformat' : 'file:\/\/%f:%l %m',
+    \ },
+    \ })
   call extend(g:quickrun_config, {
-        \ 'watchdogs_checker/sqlplus' : {
-        \   'command' : 'sqlplus',
-        \   'cmdopt'  : '-S %{OracleCommandOptions()}',
-        \   'exec'    : '%c %o \@%s:p',
-        \   'quickfix/errorformat' : '%Eerror\ at\ line\ %l:,%Z%m',
-        \ },
-        \ })
+    \ 'watchdogs_checker/sqlplus' : {
+    \   'command' : 'sqlplus',
+    \   'cmdopt'  : '-S %{OracleCommandOptions()}',
+    \   'exec'    : '%c %o \@%s:p',
+    \   'quickfix/errorformat' : '%Eerror\ at\ line\ %l:,%Z%m',
+    \ },
+    \ })
   call extend(g:quickrun_config, {
-        \ 'watchdogs_checker/twig-lint' : {
-        \   'command' : 'twig-lint',
-        \   'exec'    : '%c lint --format=csv %o %s:p',
-        \   'quickfix/errorformat' : '"%f"\,%l\,%m',
-        \ },
-        \ })
+    \ 'watchdogs_checker/twig-lint' : {
+    \   'command' : 'twig-lint',
+    \   'exec'    : '%c lint --format=csv %o %s:p',
+    \   'quickfix/errorformat' : '"%f"\,%l\,%m',
+    \ },
+    \ })
+  if executable('golint')
+    call extend(g:quickrun_config, {
+      \ 'go/watchdogs_checker' : {
+      \   'type' : 'watchdogs_checker/golint',
+      \ },
+      \ })
+  endif
+  call extend(g:quickrun_config, {
+    \ 'watchdogs_checker/go' : {
+    \   'command' : 'gofmt',
+    \   'exec'    : '%c -l %o %s:p',
+    \   'quickfix/errorformat' : '%f:%l:%c: %m,%-G%.%#',
+    \ },
+    \ 'watchdogs_checker/golint' : {
+    \   'command' : 'golint',
+    \   'exec'    : '%c %o %s:p',
+    \   'quickfix/errorformat' : '%f:%l:%c: %m,%-G%.%#',
+    \ },
+    \ })
   " call extend(g:quickrun_config, {
-  "       \ '/watchdogs_checker' : {
-  "       \   'type' : 'watchdogs_checker/',
-  "       \ },
-  "       \ 'watchdogs_checker/' : {
-  "       \   'command' : '',
-  "       \   'exec'    : '%c -c %o %s:p',
-  "       \   'quickfix/errorformat' : '',
-  "       \ },
-  "       \ })
+  "   \ '/watchdogs_checker' : {
+  "   \   'type' : 'watchdogs_checker/',
+  "   \ },
+  "   \ 'watchdogs_checker/' : {
+  "   \   'command' : '',
+  "   \   'exec'    : '%c -c %o %s:p',
+  "   \   'quickfix/errorformat' : '',
+  "   \ },
+  "   \ })
   " watchdogs setup {{{3
   call watchdogs#setup(g:quickrun_config)
   let g:watchdogs_check_BufWritePost_enable = 1

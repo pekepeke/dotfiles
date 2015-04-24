@@ -2,7 +2,7 @@
 let s:save_cpo = &cpo
 set cpo&vim
 
-setl indentkeys-=0#
-setl formatoptions-=r formatoptions-=o
+setlocal indentkeys-=0#
+setlocal formatoptions-=r formatoptions-=o
 
 let &cpo = s:save_cpo

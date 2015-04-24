@@ -1,2 +1,2 @@
-autocmd BufNewFile,BufRead *.twig setl filetype=twig.html
+autocmd BufNewFile,BufRead *.twig setlocal filetype=twig.html
 

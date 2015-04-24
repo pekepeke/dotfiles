@@ -1,0 +1,16 @@
+#/bin/bash
+
+muttrc-local() {
+  cat <<EOM
+set imap_user = "uuu@gmail.com"
+set imap_pass = "xxx"
+set smtp_url = "smtp://uuu@smtp.gmail.com:587/"
+set smtp_pass = "xxx"
+set from = "uuu@gmail.com"
+set realname = "xxx"
+EOM
+}
+[ ! -e ~/.mutt ] && mkdir ~/.mutt
+[ ! -e ~/.mutt/muttrc.local ] && muttrc-local > ~/.mutt/muttrc.local
+[ ! -e ~/.mutt/signature ] && touch ~/.mutt/signature
+
