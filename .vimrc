@@ -547,16 +547,6 @@ augroup vimrc-color-init "{{{2
 augroup END
 
 
-if has('gui_running') "{{{2
-  autocmd vimrc-color-init GUIEnter *
-        \ colorscheme vividchalk | call <SID>gui_colorscheme_init()
-elseif &t_Co == 256 || s:is_win
-  colorscheme vividchalk
-else
-  " colorscheme wombat
-  colorscheme desert
-endif
-
 " vundle {{{1
 " setup {{{2
 if has('vim_starting')
@@ -658,14 +648,16 @@ else
 NeoBundle 'itchyny/lightline.vim'
 
 " colorscheme {{{3
-NeoBundle 'tpope/vim-vividchalk'
-NeoBundle 'tomasr/molokai'
+NeoBundle 'tpope/vim-vividchalk', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'tomasr/molokai', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundle 'mopp/mopkai.vim', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundle 'mrkn/mrkn256.vim', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundle 'fmoralesc/vim-vitamins', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundle 'morhetz/gruvbox', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundle 'vim-scripts/Lucius', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundle 'jaromero/vim-monokai-refined', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'freeo/vim-kalisi', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'w0ng/vim-hybrid', {'autoload': {'unite_sources':['colorscheme']}}
 
 " common {{{3
 NeoBundleLazy 'osyo-manga/vim-jplus', {'autoload':{
@@ -1871,6 +1863,18 @@ function! s:log(...)
   endif
 endfunction
 " }}}
+
+" colorscheme {{{1
+if has('gui_running')
+  autocmd vimrc-color-init GUIEnter *
+        \ colorscheme vividchalk | call <SID>gui_colorscheme_init()
+elseif &t_Co == 256 || s:is_win
+  colorscheme hybrid
+else
+  " colorscheme wombat
+  colorscheme desert
+endif
+
 
 " statusline {{{1
 set laststatus=2  " ステータス表示用変数

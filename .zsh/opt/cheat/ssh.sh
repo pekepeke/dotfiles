@@ -12,3 +12,7 @@ Host example.com
 ssh-keygen -t rsa
 ssh-copy-id -i .ssh/id_dsa.pub user@192.168.1.16
 
+# PEMパスフレーズ解除
+openssl rsa -in ssl.pem -out ssl-nopass.pem
+chmod 600 ssl-nopass.pem
+
