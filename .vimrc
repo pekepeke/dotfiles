@@ -1210,6 +1210,13 @@ endif
 NeoBundle 'othree/javascript-libraries-syntax.vim'
 NeoBundle 'claco/jasmine.vim'
 NeoBundle 'elzr/vim-json'
+NeoBundleLazy 'Quramy/vison', {'autoload':{
+\ 'commands': [
+\ 'VisonSetup',
+\ {'name': 'Vison', 'complete': 'vison#switch_type_complete'},
+\ 'VisonRemoveSchema',
+\ 'VisonRegisterSchema',
+\ ] }}
 
 NeoBundleLazy 'chikatoike/sourcemap.vim', {'autoload':{
 \ 'commands': [
