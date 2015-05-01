@@ -6047,7 +6047,7 @@ if s:bundle.is_installed('vim-quickrun')
   \ 'json': {
   \   'type': 'json/jq',
   \ },
-  \ 'coffee/to_javascript' : {
+  \ 'coffee/coffee2javascript' : {
   \    'command': 'coffee',
   \    'cmdopt': '-pb',
   \    'outputter/buffer/filetype': 'javascript',
