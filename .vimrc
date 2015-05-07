@@ -1389,7 +1389,8 @@ endif
 " texts {{{4
 NeoBundle 'tpope/vim-markdown'
 NeoBundle 'nelstrom/vim-markdown-folding'
-NeoBundle 'kannokanno/previm'
+" NeoBundle 'kannokanno/previm'
+NeoBundle 'beckorz/previm'
 NeoBundle 'timcharper/textile.vim'
 NeoBundle 'aklt/plantuml-syntax'
 " NeoBundle 'maxmeyer/vim-taskjuggler'
@@ -2741,8 +2742,8 @@ endif
 " previm {{{2
 if s:bundle.is_installed('previm')
   let g:previm_enable_realtime=1
-  let g:previm_disable_default_css = 1
-  let g:previm_custom_css_path = expand('~/.vim/lib/previm/github.css')
+  " let g:previm_disable_default_css = 1
+  " let g:previm_custom_css_path = expand('~/.vim/lib/previm/github.css')
 endif
 
 " projectionist {{{2
