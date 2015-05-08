@@ -641,9 +641,7 @@ NeoBundleLocal ~/.vim/bundle
 
 " vundles {{{2
 " vundle start
-if neobundle#has_fresh_cache($MYVIMRC)
-  NeoBundleLoadCache
-else
+if neobundle#load_cache($MYVIMRC)
 " statusline {{{3
 NeoBundle 'itchyny/lightline.vim'
 

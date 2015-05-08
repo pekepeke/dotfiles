@@ -46,6 +46,10 @@ Host *-ec2-
 #    StrictHostKeyChecking no
 #    UserKnownHostsFile /dev/null
 
+# Host 192.168.33.*
+#    StrictHostKeyChecking no
+#    UserKnownHostsFile /dev/null
+
 #Host name
 #  HostName xxx.xxx.xxx.xxx
 #  Port 22
