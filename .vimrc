@@ -5512,6 +5512,7 @@ let g:surround_custom_mapping.eruby = {
   \ '#':  "<%# \r %>",
   \ 'h':  "<%= h \r %>",
   \ 'e':  "<% \r %>\n<% end %>",
+  \ '%':  "<% \r %>",
   \ }
 let g:surround_custom_mapping.markdown = {
   \ 'h': "`\r`",
