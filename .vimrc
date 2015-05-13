@@ -6446,6 +6446,20 @@ if s:bundle.is_installed('vim-quickrun')
     \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
     \ },
     \ })
+
+  function! PhpcsStandardDetect() "{{{
+    let standard = get(b:, 'watchdogs_checker_phpcs_standard', 'PSR2')
+    let extra_opt = get(b:, 'watchdogs_checker_phpcs_options', '')
+    return printf('--standard=%s %s', standard, extra_opt)
+  endfunction "}}}
+  call extend(g:quickrun_config, {
+  \ 'watchdogs_checker/phpcs': {
+  \    'command': 'phpcs',
+  \    'cmdopt' : '--report=csv %{PhpcsStandardDetect()}',
+  \    'exec': '%c %o %s:p',
+  \    'quickfix/errorformat': "\"%f\"\\,%l\\,%c\\,%t%*[a-zA-Z]\\,\"%m\"\\,%*[a-zA-Z0-9_.-\\,]"
+  \ }
+  \ })
   if executable('tidy')
     call extend(g:quickrun_config, {
     \ 'html/watchdogs_checker' : {
