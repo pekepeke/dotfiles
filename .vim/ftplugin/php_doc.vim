@@ -322,7 +322,7 @@ func! PhpDocFunc()
     " Local indent
     let l:txtBOL = g:pdv_cfg_BOL . l:indent
 
-    if g:pdv_cfg_EnalbedFoldMarker
+    if get(b:, 'pdv_cfg_EnalbedFoldMarker', g:pdv_cfg_EnalbedFoldMarker)
       exec l:txtBOL . g:pdv_cfg_CommentStart . l:scope ." "
             \ . funcname . "(" . l:params . ") {{" . "{"
             \ . g:pdv_cfg_CommentStartTail . g:pdv_cfg_EOL
@@ -372,7 +372,7 @@ func! PhpDocFunc()
 	" Close the comment block.
 	exe l:txtBOL . g:pdv_cfg_CommentTail . g:pdv_cfg_EOL
 
-  if g:pdv_cfg_EnalbedFoldMarker
+  if get(b:, 'pdv_cfg_EnalbedFoldMarker', g:pdv_cfg_EnalbedFoldMarker)
     return l:modifier ." ". l:funcname . PhpDocFuncEndAuto()
   endif
 endfunc
@@ -479,9 +479,9 @@ func! PhpDocClass()
     endif
 	exe l:txtBOL . g:pdv_cfg_Commentn . "@package " . g:pdv_cfg_Package . g:pdv_cfg_EOL
 	exe l:txtBOL . g:pdv_cfg_Commentn . "@version " . g:pdv_cfg_Version . g:pdv_cfg_EOL
-	exe l:txtBOL . g:pdv_cfg_Commentn . "@copyright " . g:pdv_cfg_Copyright . g:pdv_cfg_EOL
-	exe l:txtBOL . g:pdv_cfg_Commentn . "@author " . g:pdv_cfg_Author g:pdv_cfg_EOL
-	exe l:txtBOL . g:pdv_cfg_Commentn . "@license " . g:pdv_cfg_License . g:pdv_cfg_EOL
+	exe l:txtBOL . g:pdv_cfg_Commentn . "@copyright " . get(b:, 'pdv_cfg_Copyright', g:pdv_cfg_Copyright) . g:pdv_cfg_EOL
+	exe l:txtBOL . g:pdv_cfg_Commentn . "@author " . get(b:, 'pdv_cfg_Author', g:pdv_cfg_Copyright) . g:pdv_cfg_EOL
+	exe l:txtBOL . g:pdv_cfg_Commentn . "@license " . get(b:, 'pdv_cfg_License', g:pdv_cfg_License) . g:pdv_cfg_EOL
 
 	" Close the comment block.
 	exe l:txtBOL . g:pdv_cfg_CommentTail . g:pdv_cfg_EOL

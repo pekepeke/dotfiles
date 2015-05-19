@@ -2624,6 +2624,7 @@ endif
 let g:pdv_cfg_Copyright = ""
 let g:pdv_cfg_License = 'PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}'
 let g:pdv_cfg_CommentEnd = "// }}}"
+let g:pdv_cfg_EnalbedFoldMarker = 0
 
 " ruby {{{2
 let g:ruby_operators = 1
