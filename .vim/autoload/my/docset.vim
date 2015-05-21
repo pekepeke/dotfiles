@@ -33,6 +33,10 @@ function! s:docset_keywords_gather(root, is_dash) "{{{2
 endfunction
 
 function! s:zeal_query(word) "{{{2
+  if exists('g:zeal_cmd')
+    call system(printf("%s --query %s &", g:zeal_cmd, shellescape(a:word)))
+    return
+  endif
   if s:is_mac
     let not_found = 1
     for bin in [$HOME . '/Applications/zeal.app/Contents/MacOS/zeal', '/Applications/zeal.app/Contents/MacOS/zeal']

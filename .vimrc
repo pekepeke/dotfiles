@@ -94,6 +94,7 @@ if s:is_win
 
   function! s:ps_init()
     set shell=powershell\ -NoLogo\ -NoProfile\ -NonInteractive
+    " TODO shellslash
     set shellcmdflag=-command
     set shellpipe=>%s\ 2>&1
     set shellxquote=\"
@@ -121,10 +122,10 @@ if s:is_win
   " if !empty($MSYSTEM)
   " if executable('nyacus')
   " if exists('$HISTFILE')
-  if exists('$CYGWIN')
+  if exists('$CYGWIN') || exists('$MSYSTEM')
     call s:sh_init()
-  elseif exists('$PSMODULEPATH')
-    call s:ps_init()
+  " elseif exists('$PSMODULEPATH')
+  "   call s:ps_init()
   else
     call s:cmd_init()
   endif
