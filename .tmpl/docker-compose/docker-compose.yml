@@ -1,0 +1,49 @@
+web:
+  build: containers/app
+  ports:
+    - "80:80"
+  environment:
+    XXX_ENV: development
+  volumes:
+    - .:/var/www/html
+    - ~/path/to/bin:/root/bin
+    - ~/Sites:/root/Sites
+  links:
+    - mysql
+
+mysql:
+  image: mysql:5.6
+  ports:
+    - '3306:3306'
+  volumes_from:
+    - datastore
+  environment:
+    MYSQL_ROOT_PASSWORD: root
+  # password: <%= ENV['MYSQL_ENV_MYSQL_ROOT_PASSWORD'] %>
+  # host: <%= ENV['MYSQL_PORT_3306_TCP_ADDR'] %>
+  # port: <%= ENV['MYSQL_PORT_3306_TCP_PORT'] %>
+
+# redis:
+#   image: redis:2.8.19
+#   ports:
+#     - '6379:6379'
+#   volumes_from:
+#     - datastore
+#
+# elasticsearch:
+#   build: containers/elasticsearch
+#   ports:
+#     - '9200:9200'
+#     - '9300:9300'
+#   volumes_from:
+#     - datastore
+#
+# nginx:
+#   build: containers/nginx
+#   ports:
+#     - '8080:80'
+#   volumes_from:
+#     - datastore
+
+datastore:
+  build: containers/datastore

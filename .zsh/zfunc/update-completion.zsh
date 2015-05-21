@@ -29,6 +29,7 @@ main() {
 
   curl -Lo _gcloud https://raw.githubusercontent.com/littleq0903/gcloud-zsh-completion/master/src/_gcloud
   curl -Lo _appcfg.py https://raw.githubusercontent.com/littleq0903/gcloud-zsh-completion/master/src/_appcfg.py
+  curl -Lo _docker-compose https://raw.githubusercontent.com/sdurrheimer/docker-compose-zsh-completion/master/_docker-compose
   cd $cwd
 }
 

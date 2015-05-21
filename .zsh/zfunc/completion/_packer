@@ -11,7 +11,9 @@ _packer_cmds=(
   'build:Build commands.'
   'fix:Repair templates from old versions of packer.'
   'inspect:View template in human readable form.'
+  'push:Push to a remote packer host to build template.'
   'validate:Check that a template is valid.'
+  'version:Display packer version.'
 )
 
 __build() {
@@ -37,6 +39,12 @@ __inspect() {
   __json_template
 }
 
+__push() {
+  _arguments \
+    '-create[Create the build configuration if it does not exist.]' \
+    '-token=[Access token to use to upload. If blank, the ATLAS_TOKEN environmental variable will be used.]'
+}
+
 __validate() {
   _arguments \
     '-syntax-only[Check syntax only.]' \
@@ -45,6 +53,10 @@ __validate() {
     '-var[Set variable in template.]' \
     '-var-file=[Set JSON file containing user variables.]'
   __json_template
+}
+
+__version() {
+  true  
 }
 
 _arguments '*:: :->command'
@@ -62,6 +74,10 @@ case "$words[1]" in
     __fix ;;
   inspect)
     __inspect ;;
+  push)
+    __push ;;
   validate)
     __validate ;;
+  version)
+    __version ;;
 esac
