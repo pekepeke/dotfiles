@@ -36,6 +36,7 @@ case $OSTYPE in
     PATH=$HOME/bin/windows:$PATH
     ;;
   msys)
+    soft_source $HOME/.shrc.cygwin
     PATH="$(echo "$HOME/bin/windows:$PATH" |  /usr/bin/sed 's/(/\\(/g' | /usr/bin/sed 's/\\\\(/\\(/g')"
     PATH="$(echo "$HOME/bin/windows:$PATH" |  /usr/bin/sed 's/)/\\)/g' | /usr/bin/sed 's/\\\\)/\\)/g')"
     remove_path /usr/local/bin /usr/bin /bin /usr/local/sbin /usr/sbin /sbin

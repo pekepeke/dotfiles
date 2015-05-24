@@ -2,12 +2,13 @@ web:
   build: containers/app
   ports:
     - "80:80"
+    - "443:443"
+    - "50022:22"
   environment:
     XXX_ENV: development
   volumes:
-    - .:/var/www/html
+    - .:/home/developer
     - ~/path/to/bin:/root/bin
-    - ~/Sites:/root/Sites
   links:
     - mysql
 
