@@ -26,10 +26,18 @@ Host *
   RemoteForward 52698 127.0.0.1:52698
 
 Host github.com
-  # User xxx
+  User git
   HostName github.com
-  Compression yes
-  # Ciphers arcfour256
+  TCPKeepAlive yes
+  IdentitiesOnly yes
+
+
+# Host xxx.github.com
+#   User git
+#   HostName github.com
+#   TCPKeepAlive yes
+#   IdentitiesOnly yes
+#   IdentityFile ~/.ssh/certs/hoge_id_rsa
 
 Host *-ec2-
     StrictHostKeyChecking no
