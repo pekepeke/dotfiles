@@ -933,6 +933,10 @@ NeoBundle 'tpope/vim-fugitive', {'autoload':{
 \ 'commands': [ "Git", "Gstatus", "Gcommit", "Gedit",
 \   "Gwrite", "Ggrep", "Glog", "Gdiff"],
 \ }}
+" NeoBundle 'lambdalisue/vim-gita', {
+" \ 'autoload': {
+" \   'commands': ['Gita'],
+" \ }}
 NeoBundle 'rhysd/committia.vim'
 NeoBundle 'idanarye/vim-merginal', {'autoload':{
 \ 'commands': [ "Merginal", "MerginalToggle", "MerginalClose",],
@@ -2709,6 +2713,7 @@ let g:vimrc_enabled_plugins = {
   \ 'youcompleteme': s:bundle.is_installed('YouCompleteMe'),
   \ 'unite_candidate_sorter': s:bundle.is_installed('unite-candidate_sorter'),
   \ 'fugitive': s:bundle.is_installed('vim-fugitive'),
+  \ 'gita': s:bundle.is_installed('vim-gita'),
   \ 'agit': s:bundle.is_installed('agit.vim'),
   \ 'concealedyank': s:bundle.is_installed('concealedyank.vim'),
   \ 'ambicmd': s:bundle.is_installed('vim-ambicmd'),
@@ -2983,7 +2988,7 @@ if s:bundle.tap('lightline.vim')
   \ 'S': 'S-LINE', "\<C-s>": 'S-BLOCK', '?': ' ',
   \ },
   \ 'active': {
-  \   'left': [ [ 'mode', 'paste' ], [ 'diff_mode', 'fugitive', 'filename', 'cwdirname', 'xenv_version', ] ],
+  \   'left': [ [ 'mode', 'paste' ], [ 'diff_mode', 'git', 'filename', 'cwdirname', 'xenv_version', ] ],
   \   'right': [
   \     [ 'qfcount', ],
   \     [ 'linestat' ], [ 'filetype' ],
@@ -3001,7 +3006,7 @@ if s:bundle.tap('lightline.vim')
   \ },
   \ 'component_function': {
   \   'diff_mode' : 'g:ll_helper.diff_mode',
-  \   'fugitive' : 'g:ll_helper.fugitive',
+  \   'git' : 'g:ll_helper.git',
   \   'filename' : 'g:ll_helper.filename',
   \   'cwdirname' : 'g:ll_helper.cwdirname',
   \   'absfilename' : 'g:ll_helper.get_absfilename',
@@ -3097,6 +3102,11 @@ if s:bundle.tap('lightline.vim')
     return ""
   endfunction
 
+  function! g:ll_helper.shorten(s, len) "{{{
+    let p = - (a:len - 3)
+    return len(a:s) > a:len ? "..." . a:s[p :] : a:s
+  endfunction "}}}
+
   function! g:ll_helper.diff_mode() "{{{3
     if !&diff
       return ""
@@ -3162,10 +3172,15 @@ if s:bundle.tap('lightline.vim')
     return &filetype =~ 'help\|vimfiler\|gundo'
   endfunction
 
-  function! g:ll_helper.fugitive() "{{{3
-    if !self.is_special_ft() && exists('*fugitive#head')
+  function! g:ll_helper.git() "{{{3
+    if self.is_special_ft()
+      return ""
+    endif
+    if g:vimrc_enabled_plugins.gita
+      return self.shorten(gita#statusline#format('%lb'), 10)
+    elseif g:vimrc_enabled_plugins.fugitive
       let s = fugitive#head()
-      return len(s) > 10 ? "...".s[-10:] : s
+      return self.shorten(s, 10)
     endif
     return ''
   endfunction
@@ -3200,7 +3215,7 @@ if s:bundle.tap('lightline.vim')
 
   function! g:ll_helper.cwdirname() "{{{3
     let dir = substitute(fnamemodify(getcwd(), ":p:h"), $HOME, '~', '')
-    return (strlen(dir) > 13 ? "..." . dir[-10:] : dir)
+    return self.shorten(dir, 13)
   endfunction
 
   let g:ll_helper.xenvs = {
@@ -5175,6 +5190,50 @@ function! s:git_qfix(...)
   Unite -no-quit quickfix
 endfunction
 
+if s:bundle.is_installed('vim-gita')
+  if s:is_mac
+    map <leader>1 :diffget //2 <Bar> duffupdate<CR>
+    map <leader>2 :diffget //3 <Bar> duffupdate<CR>
+    map <leader>3 :diffupdate <Bar>
+      \ echo '<Leader>1 = merges from target branch(left buffer), '."\n"
+      \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
+  else
+    map <leader>1 :diffget LOCAL <Bar> duffupdate<CR>
+    map <leader>2 :diffget REMOTE <Bar> duffupdate<CR>
+    map <leader>3 :diffupdate <Bar>
+      \ echo '<Leader>1 = merges from target branch(left buffer), '."\n"
+      \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
+  endif
+  nnoremap <silent> [!space]gd :<C-u>Gita diff --cached<CR>
+  nnoremap <silent> [!space]gD :<C-u>Gita diff<CR>
+  nnoremap <silent> [!space]gs :<C-u>Gita status<CR>
+  nnoremap [!space]gl :<C-u>silent Gita log <Bar> Unite -no-quit quickfix<CR>
+  nnoremap [!space]gL :<C-u>silent Gita log --<Bar> Unite -no-quit quickfix<CR>
+  nnoremap [!space]gg :<C-u>call <SID>git_qfix('Gita grep -i "%s"')<CR>
+  nnoremap [!space]ggg :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
+  nnoremap [!space]ggr :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
+  nnoremap [!space]ggm :<C-u>call <SID>git_qfix('Gita log --grep="%s"')<CR>
+  nnoremap [!space]ggl :<C-u>call <SID>git_qfix('Gita log -S="%s"')<CR>
+  nnoremap [!space]gR :<C-u>Gita rm<CR>
+  nnoremap [!space]gm :<C-u>Gita mv<Space>
+  nnoremap [!space]ga :<C-u>Gita add<CR>
+  nnoremap [!space]gA :<C-u>Gita add <cfile><CR>
+  nnoremap <silent> [!space]gc :<C-u>Gita commit<CR>
+  nnoremap <silent> [!space]gC :<C-u>Gita commit --amend<CR>
+  nnoremap <silent> [!space]gb :<C-u>Gita blame<CR>
+  nnoremap <silent> [!space]gB :<C-u>Gita browse<CR>
+  nnoremap <silent> [!space]gp :<C-u>Gita push
+  if g:vimrc_enabled_plugins.agit
+    nnoremap <silent> [!space]gv :<C-u>Agit<CR>
+    nnoremap <silent> [!space]gV :<C-u>AgitFile<CR>
+  elseif g:vimrc_enabled_plugins.gitv
+    nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
+    nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
+  endif
+  command! Gdiffoff diffoff | q | Gedit
+
+endif
+
 if s:bundle.is_installed('vim-fugitive')
   " if &diff
   " //2 = target-branch, //3 = merge branch
@@ -6498,7 +6557,8 @@ if s:bundle.is_installed('vim-quickrun')
     \ })
   call extend(g:quickrun_config, {
     \ 'json/watchdogs_checker' : {
-    \   'type' : 'watchdogs_checker/jsonlint',
+    \   'type' : executable('jsonlint') ? 'watchdogs_checker/jsonlint' :
+    \            executable('jsonval') ? 'watchdogs_checker/jsonval' : '',
     \ },
     \ 'watchdogs_checker/jsonlint' : {
     \   'command' : 'jsonlint',

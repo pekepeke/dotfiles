@@ -73,8 +73,10 @@ exec_install() {
   if [ ! -e $HOME/.rc-org ]; then
     mkdir $HOME/.rc-org
     for F in "$BACKUP_FILES" ;do
-      echo -e "${RED}mv $HOME/$F $HOME/.rc-org${DEFAULT}"
-      mv $HOME/$F $HOME/.rc-org
+      if [ -e "${HOME}/${F}" ]; then
+        echo -e "${RED}mv $HOME/$F $HOME/.rc-org${DEFAULT}"
+        mv $HOME/$F $HOME/.rc-org
+      fi
     done
   fi
   local skipfiles=""

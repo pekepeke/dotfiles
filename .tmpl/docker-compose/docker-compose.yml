@@ -7,7 +7,6 @@ web:
   environment:
     XXX_ENV: development
   volumes:
-    - .:/home/developer
     - ~/path/to/bin:/root/bin
   links:
     - mysql
@@ -15,7 +14,7 @@ web:
 mysql:
   image: mysql:5.6
   ports:
-    - '3306:3306'
+    - '53306:3306'
   volumes_from:
     - datastore
   environment:
@@ -24,6 +23,18 @@ mysql:
   # host: <%= ENV['MYSQL_PORT_3306_TCP_ADDR'] %>
   # port: <%= ENV['MYSQL_PORT_3306_TCP_PORT'] %>
 
+# mongo:
+#   image: mongo:2.6
+#   ports:
+#     - '57017:27017'
+#   volumes_from:
+#     - datastore
+#
+# memcache:
+#   image: memcached:latest
+#   ports:
+#     - '51211:11211'
+#
 # redis:
 #   image: redis:2.8.19
 #   ports:
