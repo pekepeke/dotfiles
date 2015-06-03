@@ -1,0 +1,5 @@
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+[pager]
+  log = diff-highlight | less
+  show = diff-highlight | less
+  diff = diff-highlight | less
