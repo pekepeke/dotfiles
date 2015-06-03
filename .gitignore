@@ -53,7 +53,7 @@ doc/tags-ja
 
 #emacs
 /.emacs.d/cache
-/.emacs.d/elisp.d
+/.emacs.d/elisp
 
 # freemind
 /.freemind/log.*

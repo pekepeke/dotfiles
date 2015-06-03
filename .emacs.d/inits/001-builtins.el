@@ -1,32 +1,22 @@
 ;; auto-complete
-(setq ac-comphist-file "~/.emacs.d/cache/auto-complete/ac-comphist.dat")
-
-;; eshell
-(setq eshell-directory-name "~/.emacs.d/cache/eshell/")
+(setq ac-comphist-file (locate-local-data-file ac-comphist.dat))
 
 ;; migemo
-(setq migemo-pattern-alist-file "~/.emacs.d/cache/migemo/migemo-pattern")
-(setq migemo-frequent-pattern-alist-file "~/.emacs.d/cache/migemo/migemo-frequent")
-
-;; recentf
-(custom-set-variables
- '(recentf-save-file
-   (format "~/.emacs.d/cache/recentf/%s"
-           (replace-regexp-in-string "\\." "_" system-configuration))))
+(setq migemo-pattern-alist-file (locate-local-data-file "migemo/migemo-pattern"))
+(setq migemo-frequent-pattern-alist-file (locate-local-data-file "migemo/migemo-frequent"))
 
 ;; savehist
-(setq savehist-file "~/.emacs.d/cache/savehist-history")
+(setq savehist-file (locate-local-data-file "savehist-history"))
 
 ;; savehistのファイルに保存する履歴からfile-name-historyをのぞく
 (setq savehist-ignored-variables '(file-name-history))
 
-(setq auto-save-list-file-prefix "~/.emacs.d/cache/auto-save-list")
-
+(setq auto-save-list-file-prefix (locate-local-data-file "auto-save-list"))
 
 (require 'autoinsert)
 (require 'cl)
 
-(setq auto-insert-directory "~/.emacs.d/assets/templates/")
+(setq auto-insert-directory (locate-user-emacs-file "assets/"))
 (setq auto-insert-alist
       (nconc
        (remove nil
