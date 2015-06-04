@@ -1,0 +1,13 @@
+#compdef ansible-vault
+# 
+# Description
+# -----------
+# Completion script for ansible-vault command
+# Ansible v1.8.2 (http://www.ansible.com)
+#
+# Author
+# ------
+# Jonathan Thompson
+# https://github.com/jdottdot
+#
+# TODO

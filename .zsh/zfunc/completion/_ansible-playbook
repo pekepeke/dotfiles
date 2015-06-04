@@ -1,0 +1,46 @@
+#compdef ansible-playbook
+# 
+# Description
+# -----------
+# Completion script for ansible-playbook command
+# Ansible v1.8.2 (http://www.ansible.com)
+#
+# Author
+# ------
+# Jonathan Thompson
+# https://github.com/jdottdot
+#
+
+_arguments -C \
+  '(-k --ask-pass)'{-k,--ask-pass}'[ask for SSH password]' \
+  '(--ask-su-pass)--ask-su-pass[ask for su password]' \
+  '(-K --ask-sudo-pass)'{-K,--ask-sudo-pass}'[ask for sudo password]' \
+  '(--ask-vault-pass)--ask-vault-pass[ask for vault password]' \
+  "(-C --check)"{-C,--check}"[don't make any changes; instead, try to predict some of the changes that may occur]" \
+  '(-c --connection)'{-c\ CONNECTION,--connection=CONNECTION}'[connection type to use (default=smart)]' \
+  '(-D --diff)'{-D,--diff}'[when changing (small) files and templates, show the differences in those files; works great with --check]' \
+  '(-e --extra-vars)'{-e\ EXTRA_VARS,--extra-vars=EXTRA_VARS}'[set additional variables as key=value or YAML/JSON]' \
+  '(-f --forks)'{-f\ FORKS,--forks=FORKS}'[specify number of parallel processes to use (default=5)]' \
+  '(--flush-cache)--flush-cache[clear the fact cache]' \
+  '(--force-handlers)--force-handlers[run handlers even if a task fails]' \
+  '(-h --help)'{-h,--help}'[show this help message and exit]' \
+  '(-i --inventory-file)'{-i\ INVENTORY,--inventory-file=INVENTORY}'[specify inventory host file (default=/etc/ansible/hosts)]' \
+  '(-l --limit)'{-l\ SUBSET,--limit=SUBSET}'[further limit selected hosts to an additional pattern]' \
+  '(--list-hosts)--list-hosts[outputs a list of matching hosts; does not execute anything else]' \
+  '(--list-tasks)--list-tasks[list all tasks that would be executed]' \
+  '(-M --module-path)'{-M\ MODULE_PATH,--module-path=MODULE_PATH}'[specify path(s) to module library (default=None)]' \
+  '(--private-key)--private-key=PRIVATE_KEY_FILE[use this file to authenticate the connection]' \
+  '(--skip-tags)--skip-tags=SKIP_TAGS[only run plays and tasks whose tags do not match these values]' \
+  '(--start-at-task)--start-at-task=START_AT[start the playbook at the task matching this name]' \
+  '(--step)--step[one-step-at-a-time: confirm each task before running]' \
+  '(-S --su)'{-S,--su}'[run operations with su]' \
+  '(-R --su-user)'{-R\ SU_USER,--su-user=SU_USER}'[run operations with su as this user (default=root)]' \
+  '(-s --sudo)'{-s,--sudo}'[run operations with sudo (nopasswd)]' \
+  '(-U --sudo-user)'{-U\ SUDO_USER,--sudo-user=SUDO_USER}'[desired sudo user (default=root)]' \
+  '(--syntax-check)--syntax-check[perform a syntax check on the playbook, but do not execute it]' \
+  '(-t --tags)'{-t\ TAGS,--tags=TAGS}'[only run plays and tasks tagged with these values]' \
+  '(-T,--timeout)'{-T\ TIMEOUT,--timeout=TIMEOUT}'[override the SSH timeout in seconds (default=10)]' \
+  '(-u --user)'{-u\ REMOTE_USER,--user=REMOTE_USER}'[connect as this user (default=logged_in_user)]' \
+  '(--vault-password-file=VAULT_PASSWORD_FILE)--vault-password-file=VAULT_PASSWORD_FILE[vault password file]' \
+  '(-v --verbose)'{-v,--verbose}'[verbose mode (-vvv for more, -vvvv to enable connection debugging)]' \
+  "(--version)--version[show program's version number and exit]" \

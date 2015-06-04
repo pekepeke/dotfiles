@@ -1,0 +1,13 @@
+#compdef ansible-pull
+# 
+# Description
+# -----------
+# Completion script for ansible-pull command
+# Ansible v1.8.2 (http://www.ansible.com)
+#
+# Author
+# ------
+# Jonathan Thompson
+# https://github.com/jdottdot
+#
+# TODO
