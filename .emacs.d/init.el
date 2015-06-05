@@ -22,14 +22,6 @@
 ;; url-cache
 (setq url-cache-directory (locate-local-data-file "cache"))
 
-;; recentf
-(custom-set-variables
- '(recentf-save-file
-   (locate-local-data-file (replace-regexp-in-string "\\." "_" system-configuration))))
-
-;; eshell
-(setq eshell-directory-name (locate-local-data-file "eshell/"))
-
 
 (unless (require 'el-get nil 'noerror)
   (with-current-buffer
@@ -37,6 +29,7 @@
        "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
     (goto-char (point-max))
     (eval-print-last-sexp)))
+(add-to-list 'el-get-recipe-path (locate-user-emacs-file "recipes"))
 
 
 (require 'package)

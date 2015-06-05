@@ -54,6 +54,7 @@ doc/tags-ja
 #emacs
 /.emacs.d/cache
 /.emacs.d/elisp
+*.elc
 
 # freemind
 /.freemind/log.*

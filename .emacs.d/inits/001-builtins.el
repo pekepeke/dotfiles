@@ -1,17 +1,66 @@
+(if (eq system-type 'windows-nt) ;; no user-full-name on windows emacs env.
+    (custom-set-variables '(user-full-name (getenv "USERNAME"))))
+
+;; trash
+(when (not (functionp 'system-move-file-to-trash))
+  ;; system-move-file-to-trashが環境で定義されていないときに使われる。
+  (custom-set-variables '(trash-directory "~/.Trash"))
+  (if (not (file-directory-p trash-directory)) (make-directory trash-directory)))
+
+;; savehist
+(setq savehist-file (locate-local-data-file "savehist"))
+
+(setq auto-save-list-file-prefix (locate-local-data-file "auto-save-list/.saves-"))
+
+(setq auto-save-file-name-transforms
+      `((".*" ,(locate-local-data-file "auto-save-list/") t)))
+
+(setq backup-directory-alist
+      (cons (cons "\\.*$" (locate-local-data-file "backup/"))
+            backup-directory-alist))
+
+;; recentf
+(custom-set-variables
+ '(recentf-save-file
+   (locate-local-data-file (replace-regexp-in-string "\\." "_" system-configuration))))
+
+;; eshell
+(setq eshell-directory-name (locate-local-data-file "eshell/"))
+
 ;; auto-complete
-(setq ac-comphist-file (locate-local-data-file ac-comphist.dat))
+(setq ac-comphist-file (locate-local-data-file "ac-comphist.dat"))
 
 ;; migemo
 (setq migemo-pattern-alist-file (locate-local-data-file "migemo/migemo-pattern"))
 (setq migemo-frequent-pattern-alist-file (locate-local-data-file "migemo/migemo-frequent"))
 
-;; savehist
-(setq savehist-file (locate-local-data-file "savehist-history"))
+;; bookmark
+(setq bookmark-default-file (locate-local-data-file "bookmark-" user-full-name))
 
-;; savehistのファイルに保存する履歴からfile-name-historyをのぞく
-(setq savehist-ignored-variables '(file-name-history))
+;; tramp
+(setq tramp-persistency-file-name (locate-local-data-file "tramp-" user-full-name))
 
-(setq auto-save-list-file-prefix (locate-local-data-file "auto-save-list"))
+;; save-place
+(setq save-place-file (locate-local-data-file "places"))
+
+;; 外部拡張
+;; save-kill
+(setq save-kill-file-name (locate-local-data-file "kill-ring-saved"))
+
+;; undohist
+(setq undohist-directory (locate-local-data-file "undohist"))
+
+;; multiple-cursors
+(setq mc/list-file (locate-local-data-file "mc-lists.el"))
+
+;; request
+(setq request-storage-directory (locate-local-data-file "request-" user-full-name))
+
+;; helm-github-stars
+(setq helm-github-stars-cache-file (locate-local-data-file "helm-github-stars-cache"))
+
+;; helm-recentd
+(setq helm-recentd-file (locate-local-data-file "helm-recentd-" user-full-name))
 
 (require 'autoinsert)
 (require 'cl)

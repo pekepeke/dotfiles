@@ -1,0 +1,4 @@
+(:name tmt-mode
+   :type http
+   :url "https://github.com/yoshiki/tmt-mode/raw/master/tmt-mode.el"
+   )
