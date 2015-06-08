@@ -1,5 +1,7 @@
 # .kitchen.yml を作成する
 kitchen init
+kitchen init -P chef_zero -D kitchen-vagrant
+kitchen init -P ansible_playbook -D kitchen-docker
 # ドライバを表示する
 kitchen driver discover
 # インスタンス作成
@@ -28,3 +30,7 @@ kitchen console
 # ドライバ作成用の Gem プロジェクト雛形を作成する
 kitchen driver
 
+## テスト作成
+cd test/integration/default
+serverspec-init
+mv spec serverspec

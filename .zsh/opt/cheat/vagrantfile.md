@@ -25,6 +25,9 @@ Vagrant.configure(2) do |config|
 			cmd: "bash -l",
 			args: "-v '/vagrant:/var/www'"
 	end
+	config.vm.provision "ansible" do |ansible|
+		ansible.playbook = "playbook.yml"
+	end
 	# vagrant omnibus
 	# config.omnibus.chef_version = :latest
 	# synced folder
