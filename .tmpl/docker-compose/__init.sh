@@ -1,6 +1,6 @@
 #!/bin/bash
 
-compose() {
+docker-compose-wrapper() {
   cat <<'EOM'
 #!/bin/sh
 
@@ -11,20 +11,20 @@ EOM
 
 
 
-compose_local() {
+fig() {
   local dir=$(pwd)
   cat <<EOM
 #!/bin/sh
 
-boot2docker ssh -t 'cd $dir && ./compose' "\$@"
+boot2docker ssh -t 'cd $dir && ./docker-compose-wrapper' "\$@"
 
 EOM
 }
 
-if [ -n "$WINDIR" ]; then
-  compose > compose
-  chmod +x compose
-  compose_local > compose_local
-  chmod +x compose_local
+if [ -n "${WINDIR}" ]; then
+  docker-compose-wrapper > docker-compose-wrapper
+  chmod +x docker-compose-wrapper
+  fig > fig
+  chmod +x fig
 fi
 
