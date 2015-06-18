@@ -156,6 +156,7 @@ else " unix setting {{{2
     \ || filereadable($HOME . '/.local/share/fonts/' . a:fname)
   endfunction
   if s:font_exists('SourceHanCodeJP-Regular.otf')
+    SourceHanCodeJP
   elseif s:font_exists('Ricty-Regular.ttf')
     Ricty
   elseif s:font_exists('RictyDiminished-Regular.ttf')
