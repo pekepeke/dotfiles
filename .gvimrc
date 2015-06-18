@@ -144,12 +144,22 @@ else " unix setting {{{2
   command! -nargs=0 Inconsolata set guifont=Inconsolata\ 11
   " command! -nargs=0 Ricty set guifont=Ricty\ 14
   command! -nargs=0 Ricty set guifont=Ricty\ 11
+  command! -nargs=0 RictyDiminished set guifont=Ricty\ Diminished\ 11
+  command! -nargs=0 SourceHanCodeJP set guifont=Source\ Han\ Code\ JP\ Regular\ 9
 
   command! -nargs=0 InconsolataBig set guifont=Inconsolata\ 18
+  command! -nargs=0 SourceHanCodeJPBig set guifont=Source\ Han\ Code\ JP\ Regular\ 16
   command! -nargs=0 RictyBig set guifont=Ricty\ 20
-  if filereadable($HOME . '/.fonts/Ricty-Regular.ttf')
-    \ || filereadable($HOME . '/.local/share/fonts/Ricty-Regular.ttf')
+  command! -nargs=0 RictyDiminishedBig set guifont=Ricty\ Diminished\ 20
+  function! s:font_exists(fname)
+    return filereadable($HOME . '/.fonts/' . a:fname)
+    \ || filereadable($HOME . '/.local/share/fonts/' . a:fname)
+  endfunction
+  if s:font_exists('SourceHanCodeJP-Regular.otf')
+  elseif s:font_exists('Ricty-Regular.ttf')
     Ricty
+  elseif s:font_exists('RictyDiminished-Regular.ttf')
+    RictyDiminished
   endif
 endif
 "source $HOME/.vimrc

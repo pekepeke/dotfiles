@@ -6,6 +6,7 @@ export MOZ_PLUGIN_PATH="/usr/lib/mozilla/plugins"
 # export LANG=C
 # xdg-user-dirs-gtk-update
 
+alias fig='docker-compose'
 # dstat
 alias dstat-full='dstat -Tclmdrn'
 alias dstat-mem='dstat -Tclm'
