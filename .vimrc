@@ -460,14 +460,11 @@ endif
 " color settings "{{{1
 if !has('gui_running')
   let s:t_Co=&t_Co
+  set t_Co=256
   MyAutoCmd VimLeave * let &l:t_Co=s:t_Co
-else
+elseif !exists('$WONT_256COLOR')
   set t_Co=256
 endif
-if $COLORTERM == 'gnome-terminal'
-  set t_Co=256
-endif
-" set t_Co=256
 set background=dark
 
 function! s:highlights_add() "{{{2
