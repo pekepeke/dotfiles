@@ -1349,15 +1349,18 @@ NeoBundleLazy 'kamichidu/unite-javaimport', {'autoload': {
 NeoBundle 'kamichidu/vim-javaclasspath', {
 \   'depends': ['kamichidu/vim-javalang'],
 \}
-NeoBundleLazy 'kamichidu/javacomplete', {
-\   'build' : {
-\      'windows' : 'javac autoload/Reflection.java',
-\      'cygwin'  : 'javac autoload/Reflection.java',
-\      'mac'     : 'javac autoload/Reflection.java',
-\      'unix'    : 'javac autoload/Reflection.java',
-\   },
+NeoBundleLazy 'artur-shaik/vim-javacomplete2', {
 \   'autoload' : { 'filetypes' : 'java' },
 \ }
+" NeoBundleLazy 'kamichidu/javacomplete', {
+" \   'build' : {
+" \      'windows' : 'javac autoload/Reflection.java',
+" \      'cygwin'  : 'javac autoload/Reflection.java',
+" \      'mac'     : 'javac autoload/Reflection.java',
+" \      'unix'    : 'javac autoload/Reflection.java',
+" \   },
+" \   'autoload' : { 'filetypes' : 'java' },
+" \ }
 NeoBundleLazy 'vim-scripts/jcommenter.vim', {'autoload':{
 \ 'filetypes': ['java'],
 \ }}
@@ -7746,8 +7749,9 @@ function! s:exe_if_diff(s)
     execute a:s
   endif
 endfunction
-command! -nargs=0 DiffQuit call <SID>exe_if_diff('diffoff')
-command! -nargs=0 DQ call <SID>exe_if_diff('diffoff')
+command! -nargs=0 DiffQuit call s:exe_if_diff('diffoff')
+command! -nargs=0 DQ call s:exe_if_diff('diffoff')
+MyAutoCmd InsertLeave call s:exe_if_diff('diffupdate')
 
 " rename {{{2
 command! -nargs=? -complete=file Rename call my#command#rename(<q-args>)

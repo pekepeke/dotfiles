@@ -49,6 +49,7 @@ doc/tags-ja
 # vim
 /.vim/vundle
 /.vim/neobundle
+/.vim/spell
 /.vim/doc/xml-plugin.txt
 
 #emacs

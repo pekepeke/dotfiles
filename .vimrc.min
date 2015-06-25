@@ -29,6 +29,7 @@ command! -bang -nargs=* MyAutoCmd autocmd<bang> vimrc-myautocmd <args>
 command! -nargs=* Lazy autocmd vimrc-myautocmd VimEnter * <args>
 " }}}
 " basic settings {{{1
+" {{{2
 " set encoding=japan
 " if s:is_win
 "   set termencoding=cp932
@@ -200,6 +201,16 @@ function! MyStatusLine()
   return s
 endfunction
 set statusline=%!MyStatusLine()
+
+" diff {{{2
+function! s:exe_if_diff(s)
+  if &diff
+    execute a:s
+  endif
+endfunction
+command! -nargs=0 DiffQuit call s:exe_if_diff('diffoff')
+command! -nargs=0 DQ call s:exe_if_diff('diffoff')
+MyAutoCmd InsertLeave call s:exe_if_diff('diffupdate')
 
 " }}}
 
