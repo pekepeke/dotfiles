@@ -13,16 +13,23 @@ set ignore-space = all
 set ignore-case = yes
 set wrap-lines = yes
 
-# Enable both ID and line numbers in the blame view
-set blame-view = date:default author:full file-name:auto id:yes,color \
-                 line-number:yes,interval=5 text
-# Change grep view to be similar to `git grep` format
-set grep-view = file-name:yes line-number:yes,interval=1 text
-# Show file sizes as units
-set tree-view = line-number:no,interval=5 mode author:full \
-                file-size:units date:default id:no file-name
-# Show line numbers for every 10th line in the pager view
+set blame-view = date:local author:full id line-number:true,interval=1 text
+set main-view = line-number:true,interval=10 date:local author:full id commit-title:true,graph=true,refs=true
+set refs-view = date:local author:full id ref:true commit-title:true
+set status-view = file-name status:long
+set tree-view = date:local author:full id file-size:unit mode file-name
 set pager-view = line-number:yes,interval=10 text
+
+# # Enable both ID and line numbers in the blame view
+# set blame-view = date:default author:full file-name:auto id:yes,color \
+#                  line-number:yes,interval=5 text
+# # Change grep view to be similar to `git grep` format
+# set grep-view = file-name:yes line-number:yes,interval=1 text
+# # Show file sizes as units
+# set tree-view = line-number:no,interval=5 mode author:full \
+#                 file-size:units date:default id:no file-name
+# # Show line numbers for every 10th line in the pager view
+# set pager-view = line-number:yes,interval=10 text
 
 # binds {{{1
 bind generic g move-first-line
@@ -39,6 +46,14 @@ bind diff l scroll-right
 bind diff h scroll-left
 
 bind main Y !@git pbcopy %(commit)
+bind main H view-refs
+bind main <Ctrl-g> view-grep
+bind main ! !?git revert %(commit)
+bind main C !?git checkout %(commit)
 
+bind refs D !?git branch -D %(branch)
+bind refs d !?git branch -d %(branch)
+# originへのpush
+bind refs P !git push -u origin %(branch)
 
 # __END__ {{{1
