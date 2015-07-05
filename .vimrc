@@ -33,6 +33,11 @@ let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim
 let s:type_s = type('')
 let s:type_a = type([])
 let s:type_h = type({})
+let s:exec_npm = executable('npm')
+let s:exec_go = executable('go')
+let s:exec_ruby = executable('ruby')
+let s:exec_java = executable('java')
+let s:exec_php = executable('php')
 
 function! VimrcScope()
   return s:
@@ -845,7 +850,7 @@ NeoBundleLazy 'thinca/vim-prettyprint', { 'autoload': {
 \   { 'name' : 'PrettyPrint', 'complete': 'expression'},
 \ ]}}
 NeoBundle 'thinca/vim-ambicmd'
-NeoBundle 'deris/vim-rengbang', {'autoload':{
+NeoBundleLazy 'deris/vim-rengbang', {'autoload':{
 \ 'commands': ['RengBang'],
 \ 'mappings': ['<Plug>(operator-rengbang'],
 \ }}
@@ -1020,12 +1025,14 @@ NeoBundleLazy 'vim-jp/vital.vim', {'autoload': {
 NeoBundle 'mattn/learn-vimscript'
 
 " completion {{{4
-NeoBundleLazy 'm2ym/rsense', {
-\ 'rtp' : 'etc',
-\ 'build' : {
-\    'mac': 'ruby etc/config.rb > ~/.rsense',
-\    'unix': 'ruby etc/config.rb > ~/.rsense',
-\ } }
+if s:exec_ruby
+  NeoBundleLazy 'm2ym/rsense', {
+  \ 'rtp' : 'etc',
+  \ 'build' : {
+  \    'mac': 'ruby etc/config.rb > ~/.rsense',
+  \    'unix': 'ruby etc/config.rb > ~/.rsense',
+  \ } }
+endif
 " if !s:bundle.is_installed('rsense')
 "   NeoBundle "osyo-manga/vim-monster"
 " endif
@@ -1065,76 +1072,75 @@ NeoBundle 'hrsh7th/vim-neco-calc'
 
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
-NeoBundle 'tpope/vim-rails', {'autoload':{
-\ 'filetypes': ['ruby','haml','eruby'],
-\ }}
-NeoBundle 'tpope/vim-bundler', {'autoload':{
-\ 'filetypes': ['ruby'],
-\ }}
-NeoBundle 'hallison/vim-ruby-sinatra'
-" NeoBundle 'taq/vim-rspec'
-" NeoBundleLazy 'skwp/vim-rspec', {'autoload': {
-"       \ 'commands' : ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
-"       \ }}
-NeoBundleLazy 'alpaca-tc/neorspec.vim', {
-\ 'depends' : ['alpaca-tc/vim-rails', 'tpope/vim-dispatch'],
-\ 'autoload' : {
-\   'commands' : ['RSpec', 'RSpecAll', 'RSpecCurrent', 'RSpecNearest', 'RSpecRetry']
-\ }}
-NeoBundle 'ecomba/vim-ruby-refactoring', {'autoload':{
-\ 'filetypes': ['ruby'],
-\ }}
-
-NeoBundle 'tpope/vim-cucumber'
-NeoBundle 'yaymukund/vim-rabl'
-NeoBundle 'vim-scripts/eruby.vim'
-
-" NeoBundle 'vim-vagrant'
-NeoBundleLazy 't9md/vim-chef', {'autoload':{
-\ 'filetypes': ['ruby'],
-\ }}
-
-NeoBundle 'rodjek/vim-puppet'
-NeoBundle 'joker1007/vim-ruby-heredoc-syntax', {'autoload':{
-\ 'filetypes': ['ruby'],
-\ }}
-
-NeoBundleLazy 'rhysd/unite-ruby-require.vim', { 'autoload' : {
-\ 'unite_sources' : ['ruby/require'],
-\ }}
-NeoBundle 'rhysd/neco-ruby-keyword-args'
-
-NeoBundleLazy 'ujihisa/unite-gem', { 'autoload' : {
-\ 'unite_sources' : ['gem'],
-\ }}
-NeoBundleLazy 'ujihisa/unite-rake', { 'autoload' : {
-\ 'unite_sources' : ['rake'],
-\ }}
-NeoBundleLazy 'basyura/unite-rails', { 'autoload' : {
-\ 'unite_sources' : [
-\   'rails/bundle', 'rails/bundled_gem', 'rails/config',
-\   'rails/controller', 'rails/db', 'rails/destroy', 'rails/features',
-\   'rails/gem', 'rails/gemfile', 'rails/generate', 'rails/git',
-\   'rails/helper', 'rails/heroku', 'rails/initializer',
-\   'rails/javascript', 'rails/lib', 'rails/log', 'rails/mailer',
-\   'rails/model', 'rails/rake', 'rails/route', 'rails/schema',
-\   'rails/spec', 'rails/stylesheet', 'rails/view'
-\ ],
-\ }}
-NeoBundleLazy 'moro/unite-stepdefs', { 'autoload' : {
-\ 'unite_sources': ['stepdefs'],
-\ }}
-NeoBundleLazy 'osyo-manga/unite-highlight', {'autoload':{
-\ 'unite_sources': ['highlight'],
-\ }}
-
-if has("signs") && has("clientserver") && v:version > 700
-  NeoBundleLazy 'astashov/vim-ruby-debugger', {'autoload':{
-  \ 'commands': ['Rdebugger']
+if s:exec_ruby
+  NeoBundle 'tpope/vim-rails', {'autoload':{
+  \ 'filetypes': ['ruby','haml','eruby'],
   \ }}
-else
-  NeoBundleLazy 'astashov/vim-ruby-debugger'
+  NeoBundle 'tpope/vim-bundler', {'autoload':{
+  \ 'filetypes': ['ruby'],
+  \ }}
+  NeoBundle 'hallison/vim-ruby-sinatra'
+  " NeoBundle 'taq/vim-rspec'
+  " NeoBundleLazy 'skwp/vim-rspec', {'autoload': {
+  "       \ 'commands' : ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
+  "       \ }}
+  NeoBundleLazy 'alpaca-tc/neorspec.vim', {
+  \ 'depends' : ['alpaca-tc/vim-rails', 'tpope/vim-dispatch'],
+  \ 'autoload' : {
+  \   'commands' : ['RSpec', 'RSpecAll', 'RSpecCurrent', 'RSpecNearest', 'RSpecRetry']
+  \ }}
+  NeoBundle 'ecomba/vim-ruby-refactoring', {'autoload':{
+  \ 'filetypes': ['ruby'],
+  \ }}
+
+  NeoBundle 'tpope/vim-cucumber'
+  NeoBundle 'yaymukund/vim-rabl'
+  NeoBundle 'vim-scripts/eruby.vim'
+
+  " NeoBundle 'vim-vagrant'
+  NeoBundleLazy 't9md/vim-chef', {'autoload':{
+  \ 'filetypes': ['ruby'],
+  \ }}
+
+  NeoBundle 'rodjek/vim-puppet'
+  NeoBundle 'joker1007/vim-ruby-heredoc-syntax', {'autoload':{
+  \ 'filetypes': ['ruby'],
+  \ }}
+
+  NeoBundleLazy 'rhysd/unite-ruby-require.vim', { 'autoload' : {
+  \ 'unite_sources' : ['ruby/require'],
+  \ }}
+  NeoBundle 'rhysd/neco-ruby-keyword-args'
+
+  NeoBundleLazy 'ujihisa/unite-gem', { 'autoload' : {
+  \ 'unite_sources' : ['gem'],
+  \ }}
+  NeoBundleLazy 'ujihisa/unite-rake', { 'autoload' : {
+  \ 'unite_sources' : ['rake'],
+  \ }}
+  NeoBundleLazy 'basyura/unite-rails', { 'autoload' : {
+  \ 'unite_sources' : [
+  \   'rails/bundle', 'rails/bundled_gem', 'rails/config',
+  \   'rails/controller', 'rails/db', 'rails/destroy', 'rails/features',
+  \   'rails/gem', 'rails/gemfile', 'rails/generate', 'rails/git',
+  \   'rails/helper', 'rails/heroku', 'rails/initializer',
+  \   'rails/javascript', 'rails/lib', 'rails/log', 'rails/mailer',
+  \   'rails/model', 'rails/rake', 'rails/route', 'rails/schema',
+  \   'rails/spec', 'rails/stylesheet', 'rails/view'
+  \ ],
+  \ }}
+  NeoBundleLazy 'moro/unite-stepdefs', { 'autoload' : {
+  \ 'unite_sources': ['stepdefs'],
+  \ }}
+  if has("signs") && has("clientserver") && v:version > 700
+    NeoBundleLazy 'astashov/vim-ruby-debugger', {'autoload':{
+    \ 'commands': ['Rdebugger']
+    \ }}
+  else
+    NeoBundleLazy 'astashov/vim-ruby-debugger'
+  endif
 endif
+
 if s:bundle.is_installed('neocomplete.vim')
   NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
   \ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails',
@@ -1154,7 +1160,7 @@ NeoBundle 'amirh/HTML-AutoCloseTag'
 NeoBundleLazy 'mattn/emmet-vim', {'autoload':{
 \ 'filetypes': ['html','xhtml','eruby','php','css','scss'],
 \ }}
-if executable('go')
+if s:exec_go
   NeoBundleLazy 'mattn/livestyle-vim', {'autoload':{
   \ 'commands': ['LiveStyle'],
   \ },
@@ -1198,7 +1204,7 @@ NeoBundle 'pekepeke/vim-node', {'autoload': {
   \ 'filetypes': ['javascript', 'coffee'],
   \ 'depends': ['gf-user'],
   \ }}
-if has('python') || has('python3')
+if s:exec_npm && has('python') || has('python3')
   NeoBundle 'marijnh/tern_for_vim', {
   \ 'build' : {
   \   'cygwin': 'npm install',
@@ -1233,16 +1239,18 @@ NeoBundleLazy 'jdonaldson/vaxe', {'autoload':{
 \ }}
 NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'leafgarland/typescript-vim'
-NeoBundleLazy 'clausreinke/typescript-tools', {
-\ 'script_type' : 'plugin',
-\ 'autoload' : { 'filetypes' : 'typescript' },
-\ 'build' : {
-\     'cygwin' : 'npm install',
-\     'windows' : 'npm install',
-\     'mac'    : 'npm install',
-\     'unix'   : 'npm install',
-\   },
-\ }
+if s:exec_npm
+  NeoBundleLazy 'clausreinke/typescript-tools', {
+  \ 'script_type' : 'plugin',
+  \ 'autoload' : { 'filetypes' : 'typescript' },
+  \ 'build' : {
+  \     'cygwin' : 'npm install',
+  \     'windows' : 'npm install',
+  \     'mac'    : 'npm install',
+  \     'unix'   : 'npm install',
+  \   },
+  \ }
+endif
 " NeoBundleLazy 'Quramy/tsuquyomi', {{'autoload': {
 " \ 'filetypes': 'typescript',
 " \ }}}
@@ -1343,24 +1351,26 @@ NeoBundleLazy 'hachibeeDI/vim-vbnet', {'autoload':{
 NeoBundleLazy 'mikelue/vim-maven-plugin', {'autoload':{
 \ 'filetypes': ['java'],
 \ }}
-NeoBundleLazy 'kamichidu/unite-javaimport', {'autoload': {
-\ 'unite_sources': ['javaimport']
-\ }}
-NeoBundle 'kamichidu/vim-javaclasspath', {
-\   'depends': ['kamichidu/vim-javalang'],
-\}
-NeoBundleLazy 'artur-shaik/vim-javacomplete2', {
-\   'autoload' : { 'filetypes' : 'java' },
-\ }
-" NeoBundleLazy 'kamichidu/javacomplete', {
-" \   'build' : {
-" \      'windows' : 'javac autoload/Reflection.java',
-" \      'cygwin'  : 'javac autoload/Reflection.java',
-" \      'mac'     : 'javac autoload/Reflection.java',
-" \      'unix'    : 'javac autoload/Reflection.java',
-" \   },
-" \   'autoload' : { 'filetypes' : 'java' },
-" \ }
+if s:exec_java
+  NeoBundleLazy 'kamichidu/unite-javaimport', {'autoload': {
+  \ 'unite_sources': ['javaimport']
+  \ }}
+  NeoBundle 'kamichidu/vim-javaclasspath', {
+  \   'depends': ['kamichidu/vim-javalang'],
+  \}
+  NeoBundleLazy 'artur-shaik/vim-javacomplete2', {
+  \   'autoload' : { 'filetypes' : 'java' },
+  \ }
+  " NeoBundleLazy 'kamichidu/javacomplete', {
+  " \   'build' : {
+  " \      'windows' : 'javac autoload/Reflection.java',
+  " \      'cygwin'  : 'javac autoload/Reflection.java',
+  " \      'mac'     : 'javac autoload/Reflection.java',
+  " \      'unix'    : 'javac autoload/Reflection.java',
+  " \   },
+  " \   'autoload' : { 'filetypes' : 'java' },
+  " \ }
+endif
 NeoBundleLazy 'vim-scripts/jcommenter.vim', {'autoload':{
 \ 'filetypes': ['java'],
 \ }}
@@ -1383,7 +1393,7 @@ NeoBundleLazy 'derekwyatt/vim-scala', {'autoload':{
 NeoBundleLazy 'fatih/vim-go', {'autoload':{
 \ 'filetypes': ['go'],
 \ }}
-if executable('gocode')
+if s:exec_go
   NeoBundle 'undx/vim-gocode'
 else
   NeoBundleLazy 'undx/vim-gocode'
@@ -1550,9 +1560,12 @@ NeoBundleLazy 'Shougo/unite-outline', { 'autoload' : {
 NeoBundleLazy 'sgur/unite-git_grep', { 'autoload' : {
 \ 'unite_sources' : ['vcs_grep', 'vcs_grep/git', 'vcs_grep/hg'],
 \ }}
+NeoBundleLazy 'osyo-manga/unite-highlight', {'autoload':{
+\ 'unite_sources': ['highlight'],
+\ }}
 NeoBundleLazy 'osyo-manga/unite-candidate_sorter', {'autoload': {
-      \ 'mappings': [['n', '<Plug>(unite-candidate_sort)']]
-      \ }}
+\ 'mappings': [['n', '<Plug>(unite-candidate_sort)']]
+\ }}
 NeoBundleLazy 'osyo-manga/unite-quickfix', { 'autoload' : {
 \ 'unite_sources' : ['quickfix', 'location_list'],
 \ }}
@@ -2392,7 +2405,7 @@ function! s:replace_at_caret_data_scheme() " {{{4
   if empty(cfile) || !filereadable(cpath)
     let errmsg = "file not found : " . cfile
   endif
-  if executable('ruby')
+  if s:exec_ruby
     let cmd = printf("ruby -rwebrick/httputils -e '%s'",
           \ printf('fp="%s";include WEBrick::HTTPUtils;'
           \      . 'puts "data:#{mime_type(fp, DefaultMimeTypes)};base64,'
@@ -2400,7 +2413,7 @@ function! s:replace_at_caret_data_scheme() " {{{4
   " elseif executable('python')
   "   let cmd = printf("python -c 'import mimetypes;fp=\"%s\";print %s'"
   "         \ , cpath, printf('"data:%s;base64,%s" % mimetypes.guess_type(fp)[0], open(fp).read().encode("base64")'))
-  elseif executable('php')
+  elseif s:exec_php
     let cmd = printf("php -r '$fp=\"%s\";%s;'", cpath,
           \ 'printf("data:%s;base64,%s",mime_content_type($fp),base64_encode(file_get_contents($fp)))'
           \ )
@@ -2529,6 +2542,8 @@ onoremap ak a)
 vnoremap ak a)
 onoremap ik i)
 vnoremap ik i)
+vnoremap <C-a> <C-a>gv
+vnoremap <C-x> <C-x>gv
 
 " vmaps {{{3
 vnoremap . :normal .<CR>
@@ -5961,7 +5976,7 @@ if s:bundle.is_installed('vim-ref')
   "let g:ref_jquery_use_cache = 1
   let g:ref_nodejsdoc_dir=$VIM_REFDOC.'/nodejs/doc'
 
-  if executable('rurema')
+  if s:exec_ruby && executable('rurema')
     let g:ref_refe_cmd     = "rurema"
     let g:ref_refe_version = 2
   endif
@@ -7282,9 +7297,9 @@ if s:bundle.is_installed('vimproc.vim')
       if has('unix')
         let path = expand(vimproc_root . '/autoload/proc_cygwin.dll')
       elseif has('win64')
-        let path = expand('$VIM/plugins/vimproc/autoload/vimproc_win64.dll')
+        let path = expand('$VIM/plugins/vimproc/autoload/') . 'vimproc_win64.dll'
       elseif has('win32')
-        let path = expand('$VIM/plugins/vimproc/autoload/vimproc_win32.dll')
+        let path = expand('$VIM/plugins/vimproc/autoload/') . 'vimproc_win32.dll'
       endif
     elseif s:is_mac
       let path = expand(vimproc_root . '/autoload/proc_mac.so')
