@@ -62,6 +62,17 @@ function! s:mkdir(path) "{{{3
   endif
 endfunction
 
+let s:enable_features = {} "{{{3
+function! s:is_enables(feature) "{{{3
+  if !exists('s:enable_features["_"]')
+    for k in split($VIMRC_ENBALES, " ")
+      let s:enable_features[k] = 1
+    endfor
+    let s:enable_features["_"] = 1
+  endif
+  return has_key(s:enable_features, a:feature)
+endfunction
+
 " reset settings & restore runtimepath {{{2
 " let s:configured_runtimepath = &runtimepath
 set guioptions+=T guioptions-=m guioptions-=M
@@ -1073,13 +1084,17 @@ NeoBundle 'hrsh7th/vim-neco-calc'
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
 if s:exec_ruby
-  NeoBundle 'tpope/vim-rails', {'autoload':{
-  \ 'filetypes': ['ruby','haml','eruby'],
-  \ }}
+  if s:is_enables('rails')
+    NeoBundle 'tpope/vim-rails', {'autoload':{
+    \ 'filetypes': ['ruby','haml','eruby'],
+    \ }}
+  endif
   NeoBundle 'tpope/vim-bundler', {'autoload':{
   \ 'filetypes': ['ruby'],
   \ }}
-  NeoBundle 'hallison/vim-ruby-sinatra'
+  if s:is_enables('sinatra')
+    NeoBundle 'hallison/vim-ruby-sinatra'
+  endif
   " NeoBundle 'taq/vim-rspec'
   " NeoBundleLazy 'skwp/vim-rspec', {'autoload': {
   "       \ 'commands' : ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
@@ -1118,17 +1133,19 @@ if s:exec_ruby
   NeoBundleLazy 'ujihisa/unite-rake', { 'autoload' : {
   \ 'unite_sources' : ['rake'],
   \ }}
-  NeoBundleLazy 'basyura/unite-rails', { 'autoload' : {
-  \ 'unite_sources' : [
-  \   'rails/bundle', 'rails/bundled_gem', 'rails/config',
-  \   'rails/controller', 'rails/db', 'rails/destroy', 'rails/features',
-  \   'rails/gem', 'rails/gemfile', 'rails/generate', 'rails/git',
-  \   'rails/helper', 'rails/heroku', 'rails/initializer',
-  \   'rails/javascript', 'rails/lib', 'rails/log', 'rails/mailer',
-  \   'rails/model', 'rails/rake', 'rails/route', 'rails/schema',
-  \   'rails/spec', 'rails/stylesheet', 'rails/view'
-  \ ],
-  \ }}
+  if s:is_enables('rails')
+    NeoBundleLazy 'basyura/unite-rails', { 'autoload' : {
+    \ 'unite_sources' : [
+    \   'rails/bundle', 'rails/bundled_gem', 'rails/config',
+    \   'rails/controller', 'rails/db', 'rails/destroy', 'rails/features',
+    \   'rails/gem', 'rails/gemfile', 'rails/generate', 'rails/git',
+    \   'rails/helper', 'rails/heroku', 'rails/initializer',
+    \   'rails/javascript', 'rails/lib', 'rails/log', 'rails/mailer',
+    \   'rails/model', 'rails/rake', 'rails/route', 'rails/schema',
+    \   'rails/spec', 'rails/stylesheet', 'rails/view'
+    \ ],
+    \ }}
+  endif
   NeoBundleLazy 'moro/unite-stepdefs', { 'autoload' : {
   \ 'unite_sources': ['stepdefs'],
   \ }}
@@ -1445,9 +1462,11 @@ NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
 NeoBundle 'shawncplus/phpcomplete.vim'
 NeoBundle 'beberlei/vim-php-refactor'
-NeoBundleLazy 'violetyk/cake.vim', {'autoload':{
-\ 'filetypes': ['php'],
-\ }}
+if s:is_enables('cakephp')
+  NeoBundleLazy 'violetyk/cake.vim', {'autoload':{
+  \ 'filetypes': ['php'],
+  \ }}
+endif
 
 " sql {{{4
 NeoBundle 'mattn/vdbi-vim'
