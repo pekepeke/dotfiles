@@ -63,7 +63,7 @@ function! s:mkdir(path) "{{{3
 endfunction
 
 let s:enable_features = {} "{{{3
-function! s:is_enables(feature) "{{{3
+function! s:is_enable(feature) "{{{3
   if !exists('s:enable_features["_"]')
     for k in split($VIMRC_ENBALES, " ")
       let s:enable_features[k] = 1
@@ -1084,7 +1084,7 @@ NeoBundle 'hrsh7th/vim-neco-calc'
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
 if s:exec_ruby
-  if s:is_enables('rails')
+  if s:is_enable('rails')
     NeoBundle 'tpope/vim-rails', {'autoload':{
     \ 'filetypes': ['ruby','haml','eruby'],
     \ }}
@@ -1092,7 +1092,7 @@ if s:exec_ruby
   NeoBundle 'tpope/vim-bundler', {'autoload':{
   \ 'filetypes': ['ruby'],
   \ }}
-  if s:is_enables('sinatra')
+  if s:is_enable('sinatra')
     NeoBundle 'hallison/vim-ruby-sinatra'
   endif
   " NeoBundle 'taq/vim-rspec'
@@ -1133,7 +1133,7 @@ if s:exec_ruby
   NeoBundleLazy 'ujihisa/unite-rake', { 'autoload' : {
   \ 'unite_sources' : ['rake'],
   \ }}
-  if s:is_enables('rails')
+  if s:is_enable('rails')
     NeoBundleLazy 'basyura/unite-rails', { 'autoload' : {
     \ 'unite_sources' : [
     \   'rails/bundle', 'rails/bundled_gem', 'rails/config',
@@ -1276,7 +1276,9 @@ endif
 " http://rope.sourceforge.net/
 NeoBundle 'klen/python-mode'
 NeoBundle 'lambdalisue/vim-python-virtualenv'
-NeoBundle 'gerardo/vim-django-support'
+if s:is_enable('django')
+  NeoBundle 'gerardo/vim-django-support'
+endif
 NeoBundle 'voithos/vim-python-matchit'
 NeoBundle 'heavenshell/vim-pydocstring'
 NeoBundleLazy 'hachibeeDI/unite-pythonimport', {'autoload':{
@@ -1460,9 +1462,20 @@ NeoBundle 'Gasol/vim-php'
 NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
-NeoBundle 'shawncplus/phpcomplete.vim'
+
+if s:is_enable('phpcomplete-extended')
+  NeoBundle 'm2mdas/phpcomplete-extended'
+  if s:is_enable('laravel')
+    NeoBundle 'm2mdas/phpcomplete-extended-laravel'
+  endif
+  if s:is_enable('symfony')
+    NeoBundle 'm2mdas/phpcomplete-extended-symfony'
+  endif
+else
+  NeoBundle 'shawncplus/phpcomplete.vim'
+endif
 NeoBundle 'beberlei/vim-php-refactor'
-if s:is_enables('cakephp')
+if s:is_enable('cakephp')
   NeoBundleLazy 'violetyk/cake.vim', {'autoload':{
   \ 'filetypes': ['php'],
   \ }}
