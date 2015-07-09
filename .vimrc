@@ -33,6 +33,8 @@ let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim
 let s:type_s = type('')
 let s:type_a = type([])
 let s:type_h = type({})
+let s:exec_make = executable('make') || executable('nmake')
+let s:exec_xbuild = executable('MSBuild.exe') || executable('xbuild')
 let s:exec_npm = executable('npm')
 let s:exec_go = executable('go')
 let s:exec_ruby = executable('ruby')
@@ -62,16 +64,11 @@ function! s:mkdir(path) "{{{3
   endif
 endfunction
 
-let s:enable_features = {} "{{{3
-function! s:is_enable(feature) "{{{3
-  if !exists('s:enable_features["_"]')
-    for k in split($VIMRC_ENBALES, " ")
-      let s:enable_features[k] = 1
-    endfor
-    let s:enable_features["_"] = 1
-  endif
-  return has_key(s:enable_features, a:feature)
+let g:vimrc_enabled_features = {} "{{{3
+function! s:set_features_flag(feature)
+  let g:vimrc_enabled_features[a:feature] = 1
 endfunction
+call map(split($VIMRC_ENABLES), 's:set_features_flag(v:val)')
 
 " reset settings & restore runtimepath {{{2
 " let s:configured_runtimepath = &runtimepath
@@ -692,19 +689,12 @@ NeoBundle 'Shougo/vimfiler.vim', {
 \ 'mappings' : ['<Plug>(vimfiler'],
 \ 'explorer' : 1,
 \ }}
-if s:is_win
+if s:exec_make
   NeoBundle 'Shougo/vimproc.vim', {
   \ 'build' : {
   \ 'windows' : executable('nmake') ?
   \   $VCVARSALL . ' ' . $PROCESSOR_ARCHITECTURE . ' & ' . 'nmake -f Make_msvc.mak nodebug=1'
   \   : 'make -f make_mingw' . (has('win64') ? 64 : 32) . '.mak' ,
-  \ 'cygwin' : 'make -f make_cygwin.mak',
-  \ }}
-else
-  NeoBundle 'Shougo/vimproc.vim', {
-  \ 'build' : {
-  \ 'windows' : $VCVARSALL . ' ' . $PROCESSOR_ARCHITECTURE . ' & ' .
-  \ 'nmake -f Make_msvc.mak nodebug=1',
   \ 'cygwin' : 'make -f make_cygwin.mak',
   \ 'mac'    : 'make -f make_mac.mak',
   \ 'unix'   : 'make -f make_unix.mak',
@@ -1084,7 +1074,7 @@ NeoBundle 'hrsh7th/vim-neco-calc'
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
 if s:exec_ruby
-  if s:is_enable('rails')
+  if get(g:vimrc_enabled_features, "rails", 0)
     NeoBundle 'tpope/vim-rails', {'autoload':{
     \ 'filetypes': ['ruby','haml','eruby'],
     \ }}
@@ -1092,7 +1082,7 @@ if s:exec_ruby
   NeoBundle 'tpope/vim-bundler', {'autoload':{
   \ 'filetypes': ['ruby'],
   \ }}
-  if s:is_enable('sinatra')
+  if get(g:vimrc_enabled_features, "sinatra", 0)
     NeoBundle 'hallison/vim-ruby-sinatra'
   endif
   " NeoBundle 'taq/vim-rspec'
@@ -1133,7 +1123,7 @@ if s:exec_ruby
   NeoBundleLazy 'ujihisa/unite-rake', { 'autoload' : {
   \ 'unite_sources' : ['rake'],
   \ }}
-  if s:is_enable('rails')
+  if get(g:vimrc_enabled_features, "rails", 0)
     NeoBundleLazy 'basyura/unite-rails', { 'autoload' : {
     \ 'unite_sources' : [
     \   'rails/bundle', 'rails/bundled_gem', 'rails/config',
@@ -1206,8 +1196,12 @@ if has('python') || has('python3')
 endif
 
 NeoBundle 'hail2u/vim-css3-syntax'
-NeoBundle 'groenewege/vim-less'
-NeoBundle 'wavded/vim-stylus'
+if executable('less')
+  NeoBundle 'groenewege/vim-less'
+endif
+if executable('stylus')
+  NeoBundle 'wavded/vim-stylus'
+endif
 NeoBundle 'slim-template/vim-slim'
 
 " javascript {{{4
@@ -1276,7 +1270,7 @@ endif
 " http://rope.sourceforge.net/
 NeoBundle 'klen/python-mode'
 NeoBundle 'lambdalisue/vim-python-virtualenv'
-if s:is_enable('django')
+if get(g:vimrc_enabled_features, "django", 0)
   NeoBundle 'gerardo/vim-django-support'
 endif
 NeoBundle 'voithos/vim-python-matchit'
@@ -1284,6 +1278,7 @@ NeoBundle 'heavenshell/vim-pydocstring'
 NeoBundleLazy 'hachibeeDI/unite-pythonimport', {'autoload':{
 \ 'unite_sources' : ['pythonimport'],
 \ }}
+NeoBundle 'Glench/Vim-Jinja2-Syntax'
 
 if !s:bundle.is_installed('YouCompleteMe')
   if (has('python') || has('python3'))
@@ -1293,14 +1288,15 @@ if !s:bundle.is_installed('YouCompleteMe')
   else
     NeoBundleLazy 'davidhalter/jedi-vim'
   endif
-  NeoBundle 'Glench/Vim-Jinja2-Syntax'
 endif
 
 " perl {{{4
 NeoBundle 'vim-perl/vim-perl'
 NeoBundle 'moznion/vim-cpanfile'
-NeoBundle 'c9s/perlomni.vim'
-NeoBundle 'motemen/xslate-vim'
+if executable('perl')
+  NeoBundle 'c9s/perlomni.vim'
+  NeoBundle 'motemen/xslate-vim'
+endif
 NeoBundleLazy 'y-uuki/unite-perl-module.vim', { 'autoload' : {
 \ 'unite_sources' : ['perl/global', 'perl/local'],
 \ }}
@@ -1336,7 +1332,7 @@ NeoBundle 'peterhoeg/vim-qml'
 " \ }}
 
 if !s:bundle.is_installed('YouCompleteMe')
-  if (s:is_win && executable('MSBuild.exe')) || (!s:is_win && executable('xbuild'))
+  if s:exec_xbuild
     NeoBundleLazy 'OmniSharp/omnisharp-vim', {
     \ 'autoload': {'filetypes': ['cs']},
     \ 'build': {
@@ -1380,15 +1376,6 @@ if s:exec_java
   NeoBundleLazy 'artur-shaik/vim-javacomplete2', {
   \   'autoload' : { 'filetypes' : 'java' },
   \ }
-  " NeoBundleLazy 'kamichidu/javacomplete', {
-  " \   'build' : {
-  " \      'windows' : 'javac autoload/Reflection.java',
-  " \      'cygwin'  : 'javac autoload/Reflection.java',
-  " \      'mac'     : 'javac autoload/Reflection.java',
-  " \      'unix'    : 'javac autoload/Reflection.java',
-  " \   },
-  " \   'autoload' : { 'filetypes' : 'java' },
-  " \ }
 endif
 NeoBundleLazy 'vim-scripts/jcommenter.vim', {'autoload':{
 \ 'filetypes': ['java'],
@@ -1463,19 +1450,19 @@ NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
 
-if s:is_enable('phpcomplete-extended')
+if get(g:vimrc_enabled_features, 'phpcomplete-extended', 0)
   NeoBundle 'm2mdas/phpcomplete-extended'
-  if s:is_enable('laravel')
+  if get(g:vimrc_enabled_features, 'laravel', 0)
     NeoBundle 'm2mdas/phpcomplete-extended-laravel'
   endif
-  if s:is_enable('symfony')
+  if get(g:vimrc_enabled_features, 'symfony', 0)
     NeoBundle 'm2mdas/phpcomplete-extended-symfony'
   endif
 else
   NeoBundle 'shawncplus/phpcomplete.vim'
 endif
 NeoBundle 'beberlei/vim-php-refactor'
-if s:is_enable('cakephp')
+if get(g:vimrc_enabled_features, 'cakephp', 0)
   NeoBundleLazy 'violetyk/cake.vim', {'autoload':{
   \ 'filetypes': ['php'],
   \ }}
@@ -1485,31 +1472,22 @@ endif
 NeoBundle 'mattn/vdbi-vim'
 NeoBundleLazy 'vim-scripts/dbext.vim', {'autoload':{
 \ 'commands': [
-\ { 'name': 'DBExecSQL'},
-\ { 'name': 'DBExecSQLTopX'},
-\ { 'name': 'DBConnect'},
-\ { 'name': 'DBDisconnect'},
-\ { 'name': 'DBDisconnectAll'},
-\ { 'name': 'DBCommit'},
-\ { 'name': 'DBRollback'},
-\ { 'name': 'DBListConnections'},
-\ { 'name': 'DBExecRangeSQL'},
-\ { 'name': 'Call'},
+\ { 'name': 'DBExecSQL'}, { 'name': 'DBExecSQLTopX'},
+\ { 'name': 'DBConnect'}, { 'name': 'DBDisconnect'},
+\ { 'name': 'DBDisconnectAll'}, { 'name': 'DBCommit'},
+\ { 'name': 'DBRollback'}, { 'name': 'DBListConnections'},
+\ { 'name': 'DBExecRangeSQL'}, { 'name': 'Call'}, { 'name': 'Create' },
 \ { 'name': 'Select', 'complete': 'customlist,dbext#DB_completeTables' },
 \ { 'name': 'Alter', 'complete': 'customlist,dbext#DB_completeTables' },
 \ { 'name': 'Update', 'complete': 'customlist,dbext#DB_completeTables' },
 \ { 'name': 'Insert', 'complete': 'customlist,dbext#DB_completeTables' },
 \ { 'name': 'Delete', 'complete': 'customlist,dbext#DB_completeTables' },
 \ { 'name': 'Drop', 'complete': 'customlist,dbext#DB_completeTables' },
-\ { 'name': 'Create' },
 \ { 'name': 'DBSetOption', 'complete': 'customlist,dbext#DB_completeSettings' },
 \ { 'name': 'DBGetOption', 'complete': 'customlist,dbext#DB_completeSettings' },
-\ { 'name': 'DBVarRangeAssign' },
-\ { 'name': 'DBListVar'},
+\ { 'name': 'DBVarRangeAssign' }, { 'name': 'DBListVar'},
 \ { 'name': 'DBSetVar', 'complete': 'customlist,dbext#DB_completeVariable'},
 \ ] }}
-" NeoBundleLazy 'vim-scripts/SQLUtilities', {'autoload':{}}
-" \ 'filetypes': ['sql'],
 
 " etc {{{4
 NeoBundle 'honza/dockerfile.vim'
@@ -1618,12 +1596,14 @@ NeoBundleLazy 'tsukkee/unite-tag', { 'autoload' : {
 NeoBundleLazy 'haya14busa/unite-ghq', {'autoload' : {
 \ 'unite_sources' : ['ghq'],
 \ }}
-NeoBundleLazy 'alpaca-tc/vim-unite-watson.vim', {
-\ 'commands' : 'Watson',
-\ 'depends' : 'Shougo/unite.vim',
-\ 'autoload' : {
-\ 'unite_sources' : ['watson', 'watson/dirty', 'watson/clean', 'watson/current_file'],
-\ }}
+if executable('watson')
+  NeoBundleLazy 'alpaca-tc/vim-unite-watson.vim', {
+  \ 'commands' : 'Watson',
+  \ 'depends' : 'Shougo/unite.vim',
+  \ 'autoload' : {
+  \ 'unite_sources' : ['watson', 'watson/dirty', 'watson/clean', 'watson/current_file'],
+  \ }}
+endif
 NeoBundleLazy 'pekepeke/quicklearn', { 'autoload' : {
 \ 'unite_sources' : ['quicklearn'],
 \ }}
@@ -1711,9 +1691,11 @@ NeoBundleLazy 'sgur/vim-gf-autoload', {'autoload':{
 NeoBundleLazy 'zhaocai/vim-gf-python', {'autoload':{
 \ 'filetypes': ['python'],
 \ }}
-NeoBundleLazy 'pekepeke/vim-gf-ruby-require', {'autoload':{
-\ 'filetypes': ['ruby'],
-\ }}
+if s:exec_ruby
+  NeoBundleLazy 'pekepeke/vim-gf-ruby-require', {'autoload':{
+  \ 'filetypes': ['ruby'],
+  \ }}
+endif
 NeoBundleLazy 'pekepeke/vim-gf-vundle', {'autoload':{
 \ 'filetypes': ['vim'],
 \ }}
