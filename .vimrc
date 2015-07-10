@@ -1078,22 +1078,29 @@ if s:exec_ruby
     NeoBundle 'tpope/vim-rails', {'autoload':{
     \ 'filetypes': ['ruby','haml','eruby'],
     \ }}
+    if s:bundle.is_installed('neocomplete.vim')
+      NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
+      \ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails',
+      \    'Shougo/vimproc.vim', 'Shougo/unite.vim'],
+      \ 'autoload': {
+      \   'unite_sources' : 'rails_support/locales',
+      \   'commands' : [
+      \     'RSCreateRoutesCache', 'RSCleanCache',
+      \     'RSShowLocale', 'RSCreateLocaleCache',
+      \   ]
+      \ }}
+    endif
   endif
+  " NeoBundle 'taq/vim-rspec'
+  NeoBundleLazy 'skwp/vim-rspec', {'autoload': {
+  \ 'commands' : ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
+  \ }}
   NeoBundle 'tpope/vim-bundler', {'autoload':{
   \ 'filetypes': ['ruby'],
   \ }}
   if get(g:vimrc_enabled_features, "sinatra", 0)
     NeoBundle 'hallison/vim-ruby-sinatra'
   endif
-  " NeoBundle 'taq/vim-rspec'
-  " NeoBundleLazy 'skwp/vim-rspec', {'autoload': {
-  "       \ 'commands' : ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
-  "       \ }}
-  NeoBundleLazy 'alpaca-tc/neorspec.vim', {
-  \ 'depends' : ['alpaca-tc/vim-rails', 'tpope/vim-dispatch'],
-  \ 'autoload' : {
-  \   'commands' : ['RSpec', 'RSpecAll', 'RSpecCurrent', 'RSpecNearest', 'RSpecRetry']
-  \ }}
   NeoBundle 'ecomba/vim-ruby-refactoring', {'autoload':{
   \ 'filetypes': ['ruby'],
   \ }}
@@ -1146,19 +1153,6 @@ if s:exec_ruby
   else
     NeoBundleLazy 'astashov/vim-ruby-debugger'
   endif
-endif
-
-if s:bundle.is_installed('neocomplete.vim')
-  NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
-  \ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails',
-  \    'Shougo/vimproc.vim', 'Shougo/unite.vim'],
-  \ 'autoload': {
-  \   'unite_sources' : 'rails_support/locales',
-  \   'commands' : [
-  \     'RSCreateRoutesCache', 'RSCleanCache',
-  \     'RSShowLocale', 'RSCreateLocaleCache',
-  \   ]
-  \ }}
 endif
 
 " html {{{4
@@ -1244,10 +1238,14 @@ NeoBundleLazy 'chikatoike/sourcemap.vim', {'autoload':{
 \ }}
 NeoBundle 'briancollins/vim-jst'
 
-NeoBundle 'vim-scripts/Dart'
-NeoBundleLazy 'jdonaldson/vaxe', {'autoload':{
-\ 'filetypes': ['haxe','hxml','nmml'],
-\ }}
+if get(g:vimrc_enabled_features, "dart", 0)
+  NeoBundle 'vim-scripts/Dart'
+endif
+if get(g:vimrc_enabled_features, "haxe", 0)
+  NeoBundleLazy 'jdonaldson/vaxe', {'autoload':{
+  \ 'filetypes': ['haxe','hxml','nmml'],
+  \ }}
+endif
 NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'leafgarland/typescript-vim'
 if s:exec_npm
@@ -1344,23 +1342,27 @@ if !s:bundle.is_installed('YouCompleteMe')
 endif
 
 " OSX {{{4
-NeoBundle 'b4winckler/vim-objc'
-NeoBundle 'pekepeke/cocoa.vim'
-if has('ruby')
-  NeoBundleLazy 'eraserhd/vim-ios', {'autoload':{
-  \ 'filetypes': ['objc'],
-  \ }}
+if s:is_mac
+  NeoBundle 'b4winckler/vim-objc'
+  NeoBundle 'pekepeke/cocoa.vim'
+  if has('ruby')
+    NeoBundleLazy 'eraserhd/vim-ios', {'autoload':{
+    \ 'filetypes': ['objc'],
+    \ }}
+  endif
+  NeoBundle 'vim-scripts/applescript.vim'
 endif
-NeoBundle 'vim-scripts/applescript.vim'
 
 " windows {{{4
 NeoBundle 'PProvost/vim-ps1'
 if s:is_win
   NeoBundle 'cd01/poshcomplete-vim'
 endif
-NeoBundleLazy 'hachibeeDI/vim-vbnet', {'autoload':{
-\ 'filetypes': ['vbnet'],
-\ }}
+if get(g:vimrc_enabled_features, "vbnet", 0)
+  NeoBundleLazy 'hachibeeDI/vim-vbnet', {'autoload':{
+  \ 'filetypes': ['vbnet'],
+  \ }}
+endif
 
 " java, android {{{4
 NeoBundleLazy 'mikelue/vim-maven-plugin', {'autoload':{
@@ -1425,22 +1427,23 @@ NeoBundle 'nvie/vim-rst-tables'
 NeoBundle 'vim-scripts/sequence'
 
 " haskell {{{4
-NeoBundleLazy 'dag/vim2hs', {'autoload':{
-\ 'filetypes': ['haskell'],
-\ }}
-NeoBundleLazy 'ujihisa/ref-hoogle', {'autoload':{
-\ 'filetypes': ['haskell'],
-\ }}
-NeoBundle 'ujihisa/neco-ghc'
-NeoBundleLazy "ujihisa/unite-haskellimport", {'autoload':{
-\ 'filetypes': ['haskell'],
-\ }}
-NeoBundle 'eagletmt/ghcmod-vim'
-NeoBundleLazy 'eagletmt/unite-haddock', {'autoload':{
-\ 'filetypes': ['haskell'],
-\ }}
-
-NeoBundle 'elixir-lang/vim-elixir'
+if get(g:vimrc_enabled_features, "haskell", 0)
+  NeoBundleLazy 'dag/vim2hs', {'autoload':{
+  \ 'filetypes': ['haskell'],
+  \ }}
+  NeoBundleLazy 'ujihisa/ref-hoogle', {'autoload':{
+  \ 'filetypes': ['haskell'],
+  \ }}
+  NeoBundle 'ujihisa/neco-ghc'
+  NeoBundleLazy "ujihisa/unite-haskellimport", {'autoload':{
+  \ 'filetypes': ['haskell'],
+  \ }}
+  NeoBundle 'eagletmt/ghcmod-vim'
+  NeoBundleLazy 'eagletmt/unite-haddock', {'autoload':{
+  \ 'filetypes': ['haskell'],
+  \ }}
+  NeoBundle 'elixir-lang/vim-elixir'
+endif
 
 " php {{{4
 NeoBundle 'captbaritone/better-indent-support-for-php-with-html'
