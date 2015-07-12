@@ -1,0 +1,50 @@
+#!/bin/bash
+
+if [ `which gseq` ]; then
+  seq() {
+    gseq $*
+  }
+fi
+
+usage() {
+  prg_name=`basename $0` num cmd
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  num=$1
+  shift
+  cmd=$*
+  for i in $(seq 1 $num) ; do
+    $cmd
+    ret=$?
+    if [ $ret -ne 0 ] ; then
+      echo "fail[$ret] : $cmd"
+      break
+    fi
+  done
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

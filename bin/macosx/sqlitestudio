@@ -1,0 +1,41 @@
+#!/bin/bash
+
+base="$(basename $0)"
+appname="$base"
+appname="Wish"
+
+for OPT in "$@"; do
+  case "$OPT" in
+    --*=*)
+      args+=($OPT)
+      shift
+      ;;
+    --*)
+      args+=($OPT)
+      args+=($2)
+      shift 2
+      ;;
+      *)
+      if [[ "$OPT" =~ ^[^/] ]]; then
+        args+=( "$(pwd)/$OPT" )
+      fi
+  esac
+done
+
+found=0
+for dir in /Applications ~/Applications ; do
+  if [ -e "$dir/$base.app/Contents/MacOS/$appname" ]; then
+    appbase=$(find $dir -iname "$base.app" -depth 1)
+    # "$dir/$base.app/Contents/MacOS/$base" "$@" &
+    "$appbase/Contents/MacOS/$appname" "$args" &
+    found=1
+    break
+  fi
+done
+
+if [ $found -eq 0 ]; then
+  echo "app not found: $base"
+  exit 1
+fi
+
+

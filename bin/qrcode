@@ -1,0 +1,65 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long;
+use Pod::Usage;
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+my $opt_help;
+my $path;
+
+GetOptions(
+    'h|help' => \$opt_help,
+    'o|output=s' => \$path,
+) or usage;
+
+usage if $opt_help;
+
+my $s = $ARGV[0] || "";
+usage unless $s;
+
+$path ||= "qrcode.gif";
+
+use Imager::QRCode; ## please install Imager::File::GIF, Imager::QRCode
+
+my $qrcode = Imager::QRCode->new(
+    size          => 4,
+    margin        => 2,
+    version       => 1,
+    level         => 'L',
+    casesensitive => 1,
+    lightcolor    => Imager::Color->new(255, 255, 255),
+    darkcolor     => Imager::Color->new(0, 0, 0),
+);
+my $img = $qrcode->plot($s);
+$img->write(file => $path) or die $img->errstr." : $!";
+
+# use Imager::QRCode qw(plot_qrcode);
+#
+# my $img = plot_qrcode("blah blah", \%params);
+# $img->write(file => "qrcode.gif") or die $img->errstr." : $!";
+
+__END__
+
+=head1 NAME
+
+    qrcode - output qrcode image
+
+=head1 SYNOPSIS
+
+
+=head1 OPTIONS
+
+
+=head1 AUTHOR
+
+pekepeke <pekepekesamurai+github@gmail.com>

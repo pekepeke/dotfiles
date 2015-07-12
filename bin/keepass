@@ -1,0 +1,441 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use File::KeePass;
+package KeePass;
+
+sub new {
+    my $class = shift;
+    my $self = {};
+
+    $self->{kp} = File::KeePass->new;
+    $self->{collection} = undef;
+    bless $self, $class;
+    $self;
+}
+
+sub open {
+    my $self = shift;
+    my ($fpath, $pwd) = @_;
+    my $kp = $self->{kp};
+
+    eval {
+        $kp->load_db($fpath, $pwd);
+        } or die "Can't open file : $fpath - $@";
+    $kp->unlock();
+
+    $self->{collection} = KeePass::Collection->new($self->{kp});
+    $self;
+}
+
+sub find {
+    my $self = shift;
+    $self->{collection}->filter(@_);
+    $self->{collection};
+}
+
+sub findById {
+    my $self = shift;
+    my $id = shift;
+    $self->{collection}->get($id);
+}
+
+
+package KeePass::Collection;
+
+sub new {
+    my $class = shift;
+    my $self = {};
+
+    my ($kp) = @_;
+
+    $self->{kp} = $kp;
+    $self->{count} = 0;
+    $self->{entries} = [];
+    $self->{filtered} = undef;
+    bless $self, $class;
+
+    $self->init();
+    $self;
+}
+
+sub init {
+    my $self = shift;
+    my $kp = $self->{kp};
+
+    $self->fetch_groups($kp);
+}
+
+sub get {
+    my $self = shift;
+    my $id = shift;
+    for my $e (@{$self->{entries}}) {
+        if ( $e->id == $id ) {
+            KeePass::Entry::clear_length();
+            $e->calc_length();
+            return $e
+        }
+    }
+    return undef;
+}
+
+sub filter {
+    my $self = shift;
+    my @args = @_;
+
+    return $self->{entries} unless scalar(@args);
+    my @entries = @{$self->{entries}};
+    my @filtered = ();
+
+    KeePass::Entry::clear_length();
+    for (@entries) {
+        if ($_->match(@args)) {
+            push(@filtered, $_);
+            $_->calc_length();
+        }
+    }
+    $self->{filtered} = \@filtered;
+}
+
+sub filtered {
+    my $self = shift;
+    $self->{filtered} ? @{$self->{filtered}} : @{$self->{entries}};
+}
+
+sub print_short {
+    my $self = shift;
+    my @filtered = $self->filtered;
+
+    for my $e (@filtered) {
+        print $e->to_s . "\n";
+    }
+}
+
+sub print {
+    my $self = shift;
+    my @filtered = $self->filtered;
+
+    KeePass::Entry::clear_length();
+    for my $e (@filtered) {
+        print $e->to_long_s;
+        print "-" x 50 . "\n";
+    }
+}
+
+sub fetch_groups {
+    my $self = shift;
+    my $kp = shift;
+    my $_groups = shift || [];
+    my $level = shift || 1;
+
+    for my $g (@{$kp->{groups}}) {
+        my @groups = @{$_groups};
+        next if ($g->{title} =~ "Backup");
+        push(@groups, $g->{title}) if ($level > 1);
+
+        $self->fetch_groups($g, \@groups, $level + 1);
+        $self->fetch_entries($g->{entries}, \@groups);
+    }
+}
+
+sub fetch_entries {
+    my $self = shift;
+    my $entries = shift;
+    my $groups = shift;
+    my $item;
+
+    for my $e (@{$entries}) {
+        next if ($e->{title} =~ /Meta-Info/);
+        $self->{count}++;
+
+        $item = KeePass::Entry->new($self->{count}, $e, $groups);
+        push(@{$self->{entries}}, $item);
+    }
+}
+
+package KeePass::Entry;
+use base 'Exporter';
+our @EXPORT = qw/clear_length/;
+
+my (
+    $len_id, $len_group_name,
+    $len_title,
+    $len_username, $len_mask_password,
+    $len_url,
+    ) = (0, 0, 0, 0, 0, "");
+
+sub clear_length {
+    (
+        $len_id, $len_group_name,
+        $len_title,
+        $len_username, $len_mask_password,
+        $len_url,
+    ) = (0, 0, 0, 0, 0, "");
+}
+
+
+sub new {
+    my $class = shift;
+    my $self = {};
+    my ($index, $entry, $groups) = @_;
+
+    $self->{id} = $index;
+    $self->{entry} = $entry;
+    $self->{groups} = $groups;
+    bless $self, $class;
+    $self->init();
+    $self;
+}
+
+sub init {
+    my $self = shift;
+    $self->calc_length;
+}
+
+sub calc_length {
+    my $self = shift;
+
+    $len_id = length($self->id)
+        if $len_id < length($self->id);
+    $len_group_name = length($self->group_name)
+        if $len_group_name < length($self->group_name);
+    $len_title = length($self->title)
+        if $len_title < length($self->title);
+    $len_username = length($self->username)
+        if $len_username < length($self->username);
+    $len_mask_password = length($self->mask_password)
+        if $len_mask_password < length($self->mask_password);
+    # $len_url = length($self->url)
+    #     if $len_url < length($self->url);
+}
+
+sub match {
+    my $self = shift;
+    my $str = $self->to_s;
+    for my $s (@_) {
+        return 0 unless $str =~ $s;
+    }
+    return 1;
+}
+
+sub id {
+    my $self = shift;
+    $self->{id};
+}
+
+sub group_name {
+    my $self = shift;
+    join(">", @{$self->{groups}});
+}
+
+sub title {
+    my $self = shift;
+    $self->{entry}->{title};
+}
+
+sub username {
+    my $self = shift;
+    $self->{entry}->{username};
+}
+
+sub password {
+    my $self = shift;
+    $self->{entry}->{password};
+}
+sub mask_password {
+    my $self = shift;
+    "*" x length($self->password);
+}
+
+sub url {
+    my $self = shift;
+    $self->{entry}->{url};
+}
+
+sub curl_cmd {
+    my $self = shift;
+    sprintf('curl --basic --user %s:%s %s', $self->username, $self->password, $self->url);
+}
+
+sub comment {
+    my $self = shift;
+    $self->{entry}->{comment};
+}
+
+sub to_short_a {
+    my $self = shift;
+    (
+        $self->id, $self->group_name,
+        $self->title,
+        $self->username, $self->mask_password,
+        $self->url,
+    );
+}
+
+sub to_long_a {
+    my $self = shift;
+    my @arr = ();
+    for my $m (qw(id group_name title url username mask_password comment)) {
+        push(@arr, $self->$m);
+    }
+    @arr;
+}
+
+sub to_s {
+    my $self = shift;
+    my @lens = (
+        $len_id, $len_group_name,
+        $len_title,
+        $len_username, $len_mask_password,
+        $len_url,
+        );
+    my @strs = map {
+        sprintf("%-".shift(@lens)."s", $_);
+    } $self->to_short_a;
+    join(" | ", @strs);
+}
+
+sub to_long_s {
+    my $self = shift;
+    for my $m (qw(id group_name title url username mask_password comment)) {
+        printf("%-10s : %s\n", $m, $self->$m);
+    }
+}
+
+sub print_short {
+    my $self = shift;
+    print $self->to_s . "\n";
+}
+sub print {
+    my $self = shift;
+    print $self->to_long_s;
+}
+
+sub copy_password {
+    my $self = shift;
+    KeePass::Util::copy_to_clipboard($self->password);
+}
+
+package KeePass::Util;
+
+sub get_clip_cmd {
+    my $os = $^O;
+    return "pbcopy" if $os =~ /darwin/;
+    return "putclip" if $os =~ /mswin/i;
+    #if $os =~ /linux/;
+    #return "xclip -i -selection clipboard";
+    return "xsel --input --clipboard";
+}
+
+sub copy_to_clipboard {
+    my $text = shift;
+    my $cmd = get_clip_cmd($text);
+
+    my $s = $text;
+    $s =~ s/'/\\'/g;
+
+    system sprintf("/bin/echo -n '%s' | %s", $s, $cmd);
+    $text;
+}
+
+package main;
+
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Config::Pit;
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+use Pod::Usage;
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+my %opts = ();
+Getopt::Long::Configure("bundling");
+GetOptions(\%opts,
+    'help|h', 'file|f=s', 'password|p=s', 'number|n=i',
+    'verbose|v',
+    ) or usage;
+usage if $opts{help};
+
+my $kp = KeePass->new;
+
+unless ($opts{file}) {
+    my $config = pit_get("keepass", require => {
+        "file" => "filepath",
+        "password" => "password",
+    });
+    $opts{file} = $config->{file};
+    $opts{password} = $config->{password};
+}
+$kp->open($opts{file}, $opts{password});
+
+my $method = $opts{verbose} ? "print" : "print_short";
+
+if ($opts{number}) {
+    my $entry = $kp->findById($opts{number});
+    if ($entry) {
+        $entry->$method();
+        $entry->copy_password();
+    } else {
+        print STDERR "entry not found\n";
+    }
+} else {
+    $kp->find(@ARGV)->$method();
+}
+
+# print Dumper \%opts;
+# print Dumper @ARGV;
+# $kp->find()->print_short();
+# $kp->find()->print();
+# print $kp->findById(1)->to_s();
+
+__END__
+
+=head1 NAME
+
+    keepass.pl - desc
+
+=head1 SYNOPSIS
+
+usage : keepass.pl -f [file] -p [pass] [search words ...]
+
+=head1 OPTIONS
+
+=over 4
+
+=item * -f [file], --file [file]
+
+specify keepass file
+
+=item * -p [password], --password [password]
+
+specify password
+
+=item * -B, --backup
+
+show buckup entries
+
+=item * -n, --number
+
+specify id and copy password
+
+=item * -v, --verbose
+
+verbose output
+
+=item * -s, --show
+
+show password field
+
+=back
+
+
+=head1 AUTHOR
+
+pekepeke <pekepekesamurai+github@gmail.com>

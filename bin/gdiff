@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# bin=git-xlsx-textconv.pl
+filenames=""
+opts=""
+for arg in "$@"; do
+  if [[ $arg =~ ^- ]]; then
+    opts="$opts $arg"
+  else
+    # filenames="$filenames <($bin $arg)"
+    filenames="$filenames $arg"
+  fi
+done
+# eval diff $opts $filenames
+git diff --no-index --diff-algorithm=histogram --textconv $opts $filenames
+

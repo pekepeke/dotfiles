@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# ssh into a machine and automatically set the background
+# color of Mac OS X Terminal depending on the hostname.
+#
+# Installation:
+# 1. Save this script to /some/bin/ssh-host-color
+# 2. chmod 755 /some/bin/ssh-host-color
+# 3. alias ssh=/some/bin/ssh-host-color
+# 4. Configure your host colors below.
+
+set_term_bgcolor() {
+   local R=$1
+   local G=$2
+   local B=$3
+   [ -z "$R" ] && R=0
+   [ -z "$G" ] && G=0
+   [ -z "$B" ] && B=0
+   /usr/bin/osascript <<EOF
+tell application "Terminal"
+   tell window 0
+      set the background color to {$(($R*65535/255)), $(($G*65535/255)), $(($B*65535/255)), 32767}
+   end tell
+end tell
+EOF
+}
+
+set_term_bgcolor "$@"

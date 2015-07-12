@@ -1,0 +1,6 @@
+#!/bin/bash
+
+selected="$(ls local/lib/perl5/**/*.pm | peco)"
+if [ -n "$selected"]; then
+  perldoc "$selected"
+fi

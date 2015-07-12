@@ -1,0 +1,3 @@
+#!/bin/bash
+
+svn propget -R svn:ignore | grep -v "^$" | sed "s/\(\(.*\) - \)\(.*\)/\2\/\3/g" | sort

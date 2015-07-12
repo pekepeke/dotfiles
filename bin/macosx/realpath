@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+python -c "from os import path; print(path.abspath('$*'))"
+

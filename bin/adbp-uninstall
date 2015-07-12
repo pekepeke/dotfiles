@@ -1,0 +1,6 @@
+#!/bin/bash
+
+selected="$(adbp shell pm list package | sed -e s/package:// | peco)"
+if [ -n "$selected" ]; then
+  echo "$selected" | xargs adbp uninstall
+fi

@@ -1,0 +1,56 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long;
+use Pod::Usage;
+use Cwd;
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+sub get_cmd {
+    my $os = $^O;
+    return "pbcopy" if $os =~ /darwin/;
+    return "putclip" if $os =~ /mswin/i;
+    #if $os =~ /linux/;
+    #return "xclip -i -selection clipboard";
+    return "xsel --input --clipboard";
+}
+
+sub copy {
+    my $s = shift;
+    my $cmd = get_cmd;
+    system "echo '${s}' | ${cmd}";
+}
+
+my $opt_help;
+Getopt::Long::Configure ("bundling");
+GetOptions(
+    'h|help' => \$opt_help,
+) or usage;
+usage if $opt_help;
+
+copy(getcwd());
+
+__END__
+
+=head1 NAME
+
+    cpwd.pl - desc
+
+=head1 SYNOPSIS
+
+
+=head1 OPTIONS
+
+
+=head1 AUTHOR
+
+pekepeke <pekepekesamurai+github@gmail.com>

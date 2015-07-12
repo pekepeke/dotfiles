@@ -1,0 +1,3 @@
+#!/bin/sh
+
+vim -N -u ~/.vimrc.min +Gapply "$@"

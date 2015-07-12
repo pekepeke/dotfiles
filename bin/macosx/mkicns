@@ -1,0 +1,61 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  ICOFILE=$1
+  ICONAME=${ICOFILE%.*}
+  if [ x"$ICONAME" = x ]; then
+    echo "file not found : $ICOFILE" 1>&2
+    return 1
+  fi
+  if [ ! -e "$ICOFILE" ]; then
+    echo "file not found : $ICOFILE" 1>&2
+  fi
+  ICONSET="/var/tmp/$$-Icon.iconset"
+  if [ -e "$ICONSET" ]; then
+    echo "cannot mkdir : $ICONSET" 1>&2
+    return 2
+  fi
+
+  mkdir "$ICONSET"
+  sips -z 16 16     "${ICOFILE}" --out "${ICONSET}/icon_16x16.png"
+  sips -z 32 32     "${ICOFILE}" --out "${ICONSET}/icon_16x16@2x.png"
+  sips -z 32 32     "${ICOFILE}" --out "${ICONSET}/icon_32x32.png"
+  sips -z 64 64     "${ICOFILE}" --out "${ICONSET}/icon_32x32@2x.png"
+  sips -z 128 128   "${ICOFILE}" --out "${ICONSET}/icon_128x128.png"
+  sips -z 256 256   "${ICOFILE}" --out "${ICONSET}/icon_128x128@2x.png"
+  sips -z 256 256   "${ICOFILE}" --out "${ICONSET}/icon_256x256.png"
+  sips -z 512 512   "${ICOFILE}" --out "${ICONSET}/icon_256x256@2x.png"
+  sips -z 512 512   "${ICOFILE}" --out "${ICONSET}/icon_512x512.png"
+  cp "${ICOFILE}" "${ICONSET}/icon_512x512@2x.png"
+  iconutil -c icns "${ICONSET}" --output "${ICONAME}.icns"
+  rm -rf "${ICONSET}"
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

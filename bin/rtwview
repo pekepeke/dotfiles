@@ -1,0 +1,855 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import sys, imp
+import codecs
+import optparse, re
+import urllib
+from PyQt4 import Qt, QtCore, QtGui, QtWebKit
+import os, fnmatch
+
+from HTMLParser import HTMLParser
+import markdown
+from docutils.core import publish_parts
+from sphinx.directives.other import *
+from sphinx.directives.code import *
+import textile
+
+# usable_yaml = False
+usable_jade = False
+usable_haml = False
+# try:
+#     import yaml
+#     usable_yaml = True
+# except:
+#     # do nothing
+#     print("yaml not found")
+try:
+    import jinja2
+    env = jinja2.Environment(extensions=['pyjade.ext.jinja.PyJadeExtension'])
+    # env.loader = jinja2.FileSystemLoader(".")
+    usable_jade = True
+except:
+    # do nothing
+    print >> sys.stderr, "module not found : jinja2, pyjade"
+
+try:
+    from hamlpy import hamlpy
+    usable_haml = True
+except:
+    # do nothing
+    print >> sys.stderr, "module not found : hamlpy"
+
+
+def find_files(directory, pattern):
+    for root, dirs, files in os.walk(directory):
+        for basename in files:
+            if fnmatch.fnmatch(basename, pattern):
+                filename = os.path.join(root, basename)
+                yield filename
+
+def render_path(fpath):
+    is_win = os.name == "nt"
+    if is_win:
+        return unicode(fpath, "mbcs")
+    return unicode(fpath)
+
+class FileHandlerBase:
+    def __init__(self):
+        self.extensions = []
+        self.init()
+
+    def init(self):
+        self.extensions = []
+
+    def canAccept(self, fpath, ext):
+        return ext in self.extensions
+
+    def canDirectConvert(self):
+        return False
+
+    def directConvert(self, fpath):
+        return None
+
+    def convert(self, content):
+        return content
+
+class MarkdownHandler(FileHandlerBase):
+    def init(self):
+        self.extensions = [".md", ".markdown", ".mkd"]
+
+    def convert(self, content):
+        return markdown.markdown(content, Setting.get().md_extensions)
+
+class RestHandler(FileHandlerBase):
+    def init(self):
+        self.extensions = [".rst"]
+
+    def convert(self, content):
+        return publish_parts(content, writer_name='html')
+
+class TextileHandler(FileHandlerBase):
+    def init(self):
+        self.extensions = [".textile"]
+
+    def convert(self, content):
+        return textile.textile(content)
+
+class JadeHandler(FileHandlerBase):
+    def init(self):
+        if usable_jade:
+            self.extensions = [".jade"] 
+
+    def convert(self, content):
+        return env.from_string(content).render().encode('utf-8')
+        return textile.textile(content)
+
+class HamlHandler(FileHandlerBase):
+    def init(self):
+        if usable_haml:
+            self.extensions = [".haml"] 
+
+    def canDirectConvert(self):
+        return True
+
+    def directConvert(self, fpath):
+        lines = codecs.open(fpath, "r", encoding="utf-8").read().splitlines()
+        compiler = hamlpy.Compiler()
+        content = compiler.process_lines(lines)
+        return content
+
+
+class Setting:
+    @classmethod
+    def config_path(cls, fpath):
+        cls._config_path = fpath
+
+    @classmethod
+    def get(cls, key=None):
+        if not hasattr(cls, 'instance'):
+            cls.instance = Setting(cls._config_path)
+        if key is None:
+            return cls.instance
+        return getattr(cls.instance, key)
+
+    @classmethod
+    def findUA(cls, label):
+        for ua in cls.get().useragents:
+            if ua['label'] == label:
+                return ua
+        return None
+
+    @classmethod
+    def toLocalFile(cls, url):
+        if url.isLocalFile():
+            return render_path(url.toLocalFile())
+        scheme, host, path = url.scheme(), url.host(), url.path()
+        fullUrl = scheme + "://" + host + path
+        for item in cls.get().mappings:
+            if fullUrl.startsWith(item['url']):
+                if 'path' in item:
+                    local_path = os.path.expanduser(item['path'])
+                else:
+                    local_path = ""
+
+                # TODO : wildcard
+                fpath = os.path.join(local_path,
+                        render_path(fullUrl).replace(item['url'], ""))
+                # if local_path.find("*") == -1:
+                #     fpath = os.path.join(local_path,
+                #             str(fullUrl).replace(item['url'], ""))
+                # else:
+                #     fpath = local_path
+                if os.path.isdir(fpath):
+                    return os.path.join(fpath, "index.html")
+                return fpath
+        return None
+
+    @classmethod
+    def findContentsHandler(cls, fpath, ext):
+        setting = cls.get()
+        if setting.fileHandlerInstances is None:
+            instances = []
+            for klass in setting.fileHandlers:
+                if hasattr(setting.settingModule, klass):
+                    f = getattr(setting.settingModule, klass)
+                    instances.append(f())
+                else:
+                    instances.append(globals()[klass]())
+            setting.fileHandlerInstances = instances
+
+        for handler in setting.fileHandlerInstances:
+            if handler.canAccept(fpath, ext):
+                return handler
+        return None
+
+
+    def load(self, config_path=None):
+        global mappings, useragents
+        self.mappings = mappings
+        self.useragents = useragents
+        self.md_extensions = """
+        def_list footnotes tables toc codehilite
+        """.split()
+        self.fileHandlers = """
+            MarkdownHandler RestHandler TextileHandler HamlHandler
+        """.split()
+        self.fileHandlerInstances = None
+        self.settingModule = None
+        self.css = self.defaultCss()
+
+        config = os.path.expanduser(config_path)
+        if os.path.exists(config):
+            settings = imp.load_source("", config)
+            # settings = __import__(config)
+            self.settingModule = settings
+
+            if hasattr(settings, "useragents"):
+                self.useragents = settings.useragents
+            if hasattr(settings, "mappings"):
+                self.mappings = settings.mappings
+            if hasattr(settings, "md_extensions"):
+                self.md_extensions = settings.md_extensions
+            if hasattr(settings, "fileHandlers"):
+                self.fileHandlers = settings.fileHandlers
+            if hasattr(settings, "css"):
+                self.css = settings.css
+        # if os.path.exists(config):
+        #     fp = codecs.open(config, "r", "utf-8")
+        #     if usable_yaml:
+        #         settings = yaml.load(fp)
+        #         if "useragents" in settings:
+        #             self.useragents = settings["useragents"]
+        #         if "mappings" in settings:
+        #             self.mappings = settings["mappings"]
+        #         if "markdown-extensions" in settings:
+        #             self.md_extensions = settings["markdown-extensions" ]
+
+    def __init__(self, config_path=None):
+        self.load(config_path)
+
+    def defaultCss(self):
+        css = """
+body{ font-family: helvetica, arial, freesans, clean, sans-serif; color: #333; background-color: #fff; border: none; line-height: 1.5; margin: 2em 3em; text-align:left; }
+pre{ background-color: #eee; padding: 10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; overflow: auto; }
+code{ background-color: #eee; padding: 1px 3px; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px;}
+li p{ margin: 0.3em; }
+li{ list-style-type: disc; }
+a:link, a:visited{ color: #33e; text-decoration: none; }
+a:hover{ color: #00f; text-shadow:1px 1px 2px #ccf; text-decoration:underline; }
+h1{ color: #999; font-weight: bold; }
+h2{ border-bottom: 1px dotted #aaa; margin-bottom: 1em; color: #333; }
+h3{ color: #666; }
+.shadow{ -webkit-box-shadow:0 5px 15px #000; -moz-box-shadow:0 5px 15px #000; box-shadow:0 5px 15px #000;}
+.hll { background-color: #ffffcc }
+.c { color: #888888 } /* Comment */
+.err { color: #a61717; background-color: #e3d2d2 } /* Error */
+.k { color: #008800; font-weight: bold } /* Keyword */
+.cm { color: #888888 } /* Comment.Multiline */
+.cp { color: #cc0000; font-weight: bold } /* Comment.Preproc */
+.c1 { color: #888888 } /* Comment.Single */
+.cs { color: #cc0000; font-weight: bold; background-color: #fff0f0 } /* Comment.Special */
+.gd { color: #000000; background-color: #ffdddd } /* Generic.Deleted */
+.ge { font-style: italic } /* Generic.Emph */
+.gr { color: #aa0000 } /* Generic.Error */
+.gh { color: #303030 } /* Generic.Heading */
+.gi { color: #000000; background-color: #ddffdd } /* Generic.Inserted */
+.go { color: #888888 } /* Generic.Output */
+.gp { color: #555555 } /* Generic.Prompt */
+.gs { font-weight: bold } /* Generic.Strong */
+.gu { color: #606060 } /* Generic.Subheading */
+.gt { color: #aa0000 } /* Generic.Traceback */
+.kc { color: #008800; font-weight: bold } /* Keyword.Constant */
+.kd { color: #008800; font-weight: bold } /* Keyword.Declaration */
+.kn { color: #008800; font-weight: bold } /* Keyword.Namespace */
+.kp { color: #008800 } /* Keyword.Pseudo */
+.kr { color: #008800; font-weight: bold } /* Keyword.Reserved */
+.kt { color: #888888; font-weight: bold } /* Keyword.Type */
+.m { color: #0000DD; font-weight: bold } /* Literal.Number */
+.s { color: #dd2200; background-color: #fff0f0 } /* Literal.String */
+.na { color: #336699 } /* Name.Attribute */
+.nb { color: #003388 } /* Name.Builtin */
+.nc { color: #bb0066; font-weight: bold } /* Name.Class */
+.no { color: #003366; font-weight: bold } /* Name.Constant */
+.nd { color: #555555 } /* Name.Decorator */
+.ne { color: #bb0066; font-weight: bold } /* Name.Exception */
+.nf { color: #0066bb; font-weight: bold } /* Name.Function */
+.nl { color: #336699; font-style: italic } /* Name.Label */
+.nn { color: #bb0066; font-weight: bold } /* Name.Namespace */
+.py { color: #336699; font-weight: bold } /* Name.Property */
+.nt { color: #bb0066; font-weight: bold } /* Name.Tag */
+.nv { color: #336699 } /* Name.Variable */
+.ow { color: #008800 } /* Operator.Word */
+.w { color: #bbbbbb } /* Text.Whitespace */
+.mf { color: #0000DD; font-weight: bold } /* Literal.Number.Float */
+.mh { color: #0000DD; font-weight: bold } /* Literal.Number.Hex */
+.mi { color: #0000DD; font-weight: bold } /* Literal.Number.Integer */
+.mo { color: #0000DD; font-weight: bold } /* Literal.Number.Oct */
+.sb { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Backtick */
+.sc { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Char */
+.sd { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Doc */
+.s2 { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Double */
+.se { color: #0044dd; background-color: #fff0f0 } /* Literal.String.Escape */
+.sh { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Heredoc */
+.si { color: #3333bb; background-color: #fff0f0 } /* Literal.String.Interpol */
+.sx { color: #22bb22; background-color: #f0fff0 } /* Literal.String.Other */
+.sr { color: #008800; background-color: #fff0ff } /* Literal.String.Regex */
+.s1 { color: #dd2200; background-color: #fff0f0 } /* Literal.String.Single */
+.ss { color: #aa6600; background-color: #fff0f0 } /* Literal.String.Symbol */
+.bp { color: #003388 } /* Name.Builtin.Pseudo */
+.vc { color: #336699 } /* Name.Variable.Class */
+.vg { color: #dd7700 } /* Name.Variable.Global */
+.vi { color: #3333bb } /* Name.Variable.Instance */
+.il { color: #0000DD; font-weight: bold } /* Literal.Number.Integer.Long */
+        """
+        return css
+
+    def sample_config(self):
+        conf = """# coding: utf-8
+
+import re
+import textile
+
+class FileHandlerBase:
+    def __init__(self):
+        self.extensions = []
+        self.init()
+
+    def init(self):
+        self.extensions = []
+
+    def canAccept(self, fpath, ext):
+        return ext in self.extensions
+
+    def canDirectConvert(self):
+        return False
+
+    def directConvert(self, fpath):
+        return None
+
+    def convert(self, content):
+        return content
+"""
+        conf += """
+class SampleHandler(FileHandlerBase):
+    def init(self):
+        self.extensions = [".sample"]
+
+    def convert(self, content):
+        content = re.compile(r'^(\*+)(.*)$', re.M).sub(self.replace_h, content)
+        content = re.compile(r'^[\+\-]+', re.M).sub(self.replace_list, content)
+        return textile.textile(content)
+
+    def replace_h(self, m):
+        return "h" + str(len(m.group(1))) + ". " + m.group(2) + "\\n"
+
+    def replace_list(self, m):
+        return m.group(0).replace("+", "#").replace("-", "*") + " "
+        """
+        conf += """
+## define useragents list
+# useragents = [{
+#     'label' : 'Default',
+#     'value' : ''
+#     }]
+## define url mappings
+# mappings = [{
+#     'url' : "http://sample.jp/",
+#     'path': "~/Sites/",
+#     }]
+## markdown extension modules
+# md_extensions = "def_list footnotes tables toc codehilite".split()
+## contents converter modulenames
+fileHandlers = "MarkdownHandler RestHandler TextileHandler HamlHandler ".split()
+        """
+        return conf
+
+mappings = [
+    # {
+    #     'url': 'http://www.google.co.jp',
+    #     'path': '~/Desktop/',
+    # }
+]
+useragents = [{
+    'label' : 'Default',
+    'value' : ''
+    }, {
+    'label' : 'ie6',
+    'value' : 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.1.4322; .NET CLR 2.0.41115)',
+    }, {
+    'label' : 'ie7',
+    'value' : 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)',
+    }, {
+    'label' : 'ie8',
+    'value' : 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0)',
+    }, {
+    'label' : 'ie9',
+    'value' : 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+    }, {
+    'label' : 'ie10',
+    'value' : 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Win64; x64; Trident/6.0)',
+    }, {
+    'label' : 'iPhone4',
+    'value' : 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_5 like Mac OS X; ja-jp) AppleWebKit/533.17.9 (KHTML, like Gecko) Mobile/8L1',
+    'size'  : [320, 480],
+    }, {
+    'label' : 'iPhone5',
+    'value' : 'Mozilla/5.0 (iPhone; CPU iPhone OS 5_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Mobile/9A405 Safari/7534.48.3',
+    'size'  : [320, 480],
+    }, {
+    'label' : 'iPod',
+    'value' : 'Mozilla/5.0 (iPod; CPU iPhone OS 5_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A405 Safari/7534.48.3',
+    'size'  : [320, 480],
+    }, {
+    'label' : 'iPad4',
+    'value' : 'Mozilla/5.0 (iPad; U; CPU OS 4_3_5 like Mac OS X; ja-jp) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8L1 Safari/6533.18.5',
+    'size'  : [1024, 768],
+    }, {
+    'label' : 'iPad5',
+    'value' : 'Mozilla/5.0 (iPad; CPU OS 5_0_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9A405 Safari/7534.48.3',
+    'size'  : [1024, 768],
+    }, {
+    # 'label' : 'Android 1.6',
+    # 'value' : 'Mozilla/5.0 (Linux; U; Android 1.6; ja-jp; SonyEricssonSO-01B Build/R1EA029) AppleWebKit/528.5+ (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1',
+    # }, {
+    # 'label' : 'Android 2.1',
+    # 'value' : 'Mozilla/5.0 (Linux; U; Android 2.1-update1; ja-jp; SonyEricssonSO-01B Build/2.0.2.B.0.29) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17',
+    # }, {
+    # 'label' : 'Android 2.2',
+    # 'value' : 'Mozilla/5.0 (Linux; U; Android 2.2.1; ja-jp; IS03 Build/S9090) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1',
+    # }, {
+    'label' : 'Android 2.3',
+    'value' : 'Mozilla/5.0 (Linux; U; Android 2.3.4; ja-jp; SonyEricssonIS11S Build/4.0.1.B.0.112) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1',
+    'size'  : [320, 480],
+    }, {
+    'label' : 'Android 3.x(Tablet)',
+    'value' : 'Mozilla/5.0 (Linux; U; Android 3.2; ja-jp; A01SH Build/HTJ85B) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Safari/533.1',
+    }, {
+    'label' : 'Android 4.x',
+    'value' : 'Mozilla/5.0 (Linux; U; Android 4.0.1; ja-jp; Galaxy Nexus Build/ITL41D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30',
+    }, {
+    'label' : 'Windows Phone',
+    'value' : 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; KDDI-TS01; Windows Phone 6.5.3.5)',
+    }, {
+    'label' : 'Chrome',
+    'value' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/535.7 (KHTML, like Gecko) Chrome/16.0.912.75 Safari/535.7',
+    }, {
+    'label' : 'Firefox',
+    'value' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:9.0.1) Gecko/20100101 Firefox/9.0.1',
+    }, {
+    'label' : 'Safari',
+    'value' : 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/534.52.7 (KHTML, like Gecko) Version/5.1.2 Safari/534.52.7',
+    }, {
+    'label' : 'Opera',
+    'value' : 'Mozilla/4.0 (compatible; MSIE 6.0; X11; Linux i686; ja) Opera 10.10',
+    # }, {
+    # 'label' : '',
+    # 'value' : '',
+    }]
+
+
+class ExtractLinkParser(HTMLParser):
+    def __init__(self, base_path=None):
+        # super(ExtractLinkParser, self).__init__()
+        HTMLParser.__init__(self)
+        self.sources = []
+        self.base_path = base_path
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        link = None
+        if tag == "script":
+            if "src" in attrs:
+                link = attrs["src"]
+        elif tag == "link":
+            if "href" in attrs:
+                link = attrs["href"]
+        if not link is None:
+            self.sources.append(link)
+
+    def getSourceFiles(self):
+        links = self.sources
+        res = []
+        for l in links:
+            base_path = self.base_path
+            while True:
+                fpath = os.path.join(base_path, l)
+                if not base_path:
+                    break
+                if os.path.exists(fpath):
+                    res.append(fpath)
+                    break
+                if base_path == "/":
+                    break
+                base_path = os.path.dirname(base_path)
+        return res
+
+    # def handle_endtag(self, tag):
+
+    # def handle_data(self, data):
+
+class UserAgentWebPage(QtWebKit.QWebPage):
+    def __init__(self, parent=None):
+        super(UserAgentWebPage, self).__init__(parent)
+        self.ua = ""
+
+    def setUserAgent(self, ua):
+        self.ua = ua
+
+    def userAgentForUrl(self, url):
+        return QtCore.QString(self.ua)
+
+class WatchDogWebview(QtWebKit.QWebView):
+    def __init__(self):
+        super(WatchDogWebview, self).__init__()
+        self.fs_watcher = QtCore.QFileSystemWatcher()
+        # self.fs_watcher.directoryChanged.connect(self.directory_changed)
+        self.fs_watcher.fileChanged.connect(self.file_changed)
+        self.mutex = QtCore.QMutex()
+        self.syncing = False
+        self.lastWatchFpath = None
+        self.watchFiles = []
+        self.counter = 0
+        self.vpsize = None
+
+    def setViewportSize(self, sizes):
+        if sizes is not None:
+            self.vpsize = sizes
+            self.onResized()
+        else:
+            if self.vpsize is not None:
+                self.vpsize = None
+                self.page().setViewportSize(self.size())
+
+    def onResized(self):
+        if self.vpsize is not None:
+            self.size()
+            # qsize = QtCore.QSize(self.vpsize[0], self.vpsize[1])
+            qsize = QtCore.QSize(self.vpsize[0], self.size().height())
+            self.page().setViewportSize(qsize)
+
+    def resizeEvent(self, e):
+        super(WatchDogWebview, self).resizeEvent(e)
+        self.onResized()
+
+    def dragEnterEvent(self, e):
+        if e.mimeData().hasUrls:
+            e.accept()
+        else:
+            e.ignore()
+
+    def dragMoveEvent(self, e):
+        if e.mimeData().hasUrls:
+            e.accept()
+        else:
+            e.ignore()
+
+    def dropEvent(self, e):
+        if e.mimeData().hasUrls:
+            url = e.mimeData().urls().pop(0)
+            self.openUrl(url)
+
+    def openUrl(self, url):
+        if isinstance(url, basestring):
+            url = QtCore.QUrl(url)
+        content = self.readFile(url)
+        if content == None:
+            self.load(url)
+        else:
+            self.setHtml(QtCore.QString(content), url)
+
+        fpath = Setting.get().toLocalFile(url)
+        if fpath is not None:
+            self._watchFile(fpath)
+
+    def readFile(self, url):
+        fpath = render_path(url.toLocalFile())
+        root, ext = os.path.splitext(fpath)
+        content = None
+
+        if not os.path.exists(fpath) or ext == ".html" or ext == ".htm":
+            return content
+
+        handler = Setting.findContentsHandler(fpath, ext)
+        if handler is None:
+            return content
+
+        if handler.canDirectConvert():
+            return handler.directConvert(fpath)
+
+        # TODO : detect encoding
+        src = codecs.open(fpath, "r", "utf-8").read()
+        content = handler.convert(src)
+        content = "<style>" + Setting.get().css + "</style>" + content
+        return content
+        # if ext == ".md" or ext == ".markdown":
+        #     content = markdown.markdown(src, Setting.get().md_extensions)
+        # elif ext == ".rst":
+        #     content = publish_parts(src, writer_name='html')
+        # elif ext == ".textile":
+        #     content = textile.textile(src)
+        # elif ext == '.jade' and usable_jade:
+        #     content = env.from_string(src).render().encode('utf-8')
+        # elif ext == ".haml" and usable_haml:
+        #     lines = codecs.open(fpath, "r", encoding="utf-8").read().splitlines()
+        #     compiler = hamlpy.Compiler()
+        #     content = compiler.process_lines(lines)
+        return content
+
+    def reloadUrl(self):
+        url = self.url()
+        content = self.readFile(url)
+        if content is None:
+            self.reload()
+        else:
+            self.setHtml(QtCore.QString(content), url)
+        self.counter += 1
+        if self.counter > 50:
+            self.counter = 0
+            self._watchFile(self.lastWatchFpath, True)
+
+    def _sync(self, path):
+        if not self.syncing:
+        # try:
+        #     self.mutex.lock()
+            self.syncing = True
+            self.reloadUrl()
+            self.syncing = False
+        # finally:
+        #     self.mutex.unlock()
+
+    def file_changed(self, path):
+        self._sync(path)
+
+    def directory_changed(self, path):
+        self._sync(path)
+
+    def _watchFile(self, fpath, force = False):
+        if self.lastWatchFpath != fpath or force:
+            if self.lastWatchFpath:
+                # self.fs_watcher.removePath(self.lastWatchFpath)
+                for l in self.watchFiles:
+                    self.fs_watcher.removePath(l)
+
+            # TODO : wildcard
+            # if fpath.find('*') != -1:
+            #     files = find_files(os.path.dirname(fpath),
+            #             os.path.basename(fpath))
+            #     for f in files:
+            #         self.fs_watcher.addPath(f)
+            #     self.watchFiles = files
+            #     self.lastWatchFpath = fpath
+
+            if os.path.exists(fpath):
+                files = self._parseFiles(fpath)
+                for l in files:
+                    self.fs_watcher.addPath(l)
+                self.fs_watcher.addPath(fpath)
+                files.append(fpath)
+                self.watchFiles = files
+                self.lastWatchFpath = fpath
+
+    def _parseFiles(self, fpath):
+        fp = open(fpath)
+        content = fp.read()
+        fp.close()
+        parser = ExtractLinkParser(os.path.dirname(fpath))
+        parser.feed(content)
+        parser.close()
+        links = parser.getSourceFiles()
+        return [l for l in links 
+                if l.find("://") == -1 and not l.startswith(fpath)]
+
+class ReloadButton(QtGui.QPushButton):
+    def __init__(self, label, parent=None):
+        super(ReloadButton, self).__init__(label, parent)
+        self.clicked.connect(self.onClicked)
+
+    def setWebview(self, webview):
+        self.webview = webview
+        return self
+
+    def onClicked(self):
+        self.webview.reloadUrl()
+
+class UrlInputBox(QtGui.QLineEdit):
+    def setWebview(self, webview):
+        self.webview = webview
+        self.setReadOnly(False)
+        self.webview.urlChanged.connect(self.onEscPressed)
+        self.returnPressed.connect(self.onReturnPressed)
+        return self
+
+    # def onUrlChanged(self, url#QtCore.QUrl)
+    def onEscPressed(self):
+        url = self.webview.url().toString()
+        self.setText(url)
+
+    def onReturnPressed(self):
+        s = str(self.text())
+        if not os.path.exists(s) and not re.match("^\w+:", s):
+            s = "http://www.google.com/search?q=" + urllib.quote_plus(s)
+
+        url = QtCore.QUrl(s)
+        self.webview.openUrl(url)
+
+    def keyPressEvent(self, ev):
+        if ev.key() == QtCore.Qt.Key_Escape:
+            self.onEscPressed()
+        else:
+            super(UrlInputBox, self).keyPressEvent(ev)
+
+class UserAgentSelectBox(QtGui.QComboBox):
+    def __init__(self, parent=None):
+        super(UserAgentSelectBox, self).__init__(parent)
+        for ua in Setting.get().useragents:
+            self.addItem(ua['label'])
+        self.activated.connect(self.onActivated)
+        self.activated[str].connect(self.onActivatedStr)
+        self.webview = None
+
+    def setWebview(self, webview):
+        self.webview = webview
+        return self
+
+    def onActivated(self):
+        if self.webview is None:
+            return
+        sizes = None
+        ua = Setting.findUA(str(self.currentText()))
+        if ua is None:
+            useragent = ''
+        else:
+            useragent = ua['value']
+            if 'size' in ua:
+                sizes = ua['size']
+
+        if isinstance(self.webview.page(), UserAgentWebPage):
+            self.webview.page().setUserAgent(useragent)
+
+            self.webview.setViewportSize(sizes)
+
+            self.webview.reloadUrl()
+
+    def onActivatedStr(self):
+        self.currentText
+
+
+class SimpleCheckBox(QtGui.QCheckBox):
+    def __init__(self, label, parent=None, isChecked = False):
+        super(SimpleCheckBox, self).__init__(label, parent)
+        self.stateChanged.connect(self.onStateChanged)
+        if isChecked:
+            self.setCheckState(QtCore.Qt.Checked)
+        else:
+            self.setCheckState(QtCore.Qt.Unchecked)
+
+    def onStateChanged(self, state):
+        checked = state == QtCore.Qt.Checked
+        self.onChange(checked)
+
+    # def onChange(self, checked):
+    #     # 
+
+class TopDockWidget(QtGui.QWidget):
+    def __init__(self, parent=None):
+        super(TopDockWidget, self).__init__(parent)
+        hbox = QtGui.QHBoxLayout(self)
+        self.setLayout(hbox)
+        self.hbox = hbox
+
+    def addWidget(self, widget):
+        self.hbox.addWidget(widget)
+
+class SimpleDockWidget(QtGui.QDockWidget):
+    def __init__(self, parent=None):
+        super(SimpleDockWidget, self).__init__(parent)
+
+        self.dockTitlebar = QtGui.QWidget(self)
+        self.dockTitlebar.setMinimumSize(0, 0)
+        self.dockTitlebar.setMaximumSize(0, 0)
+        self.dockTitlebar.setBaseSize(0, 0)
+        self.setTitleBarWidget(self.dockTitlebar)
+        self.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
+        self.setFloating(False)
+
+class MainWindow(QtGui.QMainWindow):
+
+    def __init__(self, parent=None):
+        super(MainWindow, self).__init__(parent)
+
+        self.webview = WatchDogWebview() #QtWebKit.QWebView()
+        self.webview.titleChanged.connect(self.titleChange)
+
+        page = UserAgentWebPage(self.webview)
+        self.webview.setPage(page)
+        self.webview.settings().setAttribute(
+                QtWebKit.QWebSettings.DeveloperExtrasEnabled, True)
+
+        # QtWebKit.QWebSettings.globalSettings().setAttribute(
+        #         QtWebKit.QWebSettings.PluginsEnabled,
+        #         True)
+
+        self.topDock = SimpleDockWidget(self)
+        self.topDockWidget = TopDockWidget(self)
+        self.topDock.setWidget(self.topDockWidget)
+        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.topDock)
+
+        self.topDockWidget.addWidget(UrlInputBox().setWebview(self.webview))
+
+        reloadButton = ReloadButton("Reload").setWebview(self.webview)
+        reloadButton.setMaximumWidth(100)
+        self.topDockWidget.addWidget(reloadButton)
+
+        self.uaSelector = UserAgentSelectBox(self)
+        self.uaSelector.setMaximumWidth(200)
+        self.uaSelector.setWebview(self.webview)
+
+        self.topDockWidget.addWidget(self.uaSelector)
+        # self.topDockWidget.addWidget(SimpleCheckBox("javascript", self))
+        # self.topDockWidget.addWidget(SimpleCheckBox("css", self))
+
+        self.inspector = QtWebKit.QWebInspector()
+        # webView.pageAction(QtWebKit.QWebPage.InspectElement)
+        self.inspector.setPage(self.webview.page())
+
+        self.bottomDock = SimpleDockWidget(self)
+        self.bottomDock.setWidget(self.inspector)
+
+        self.setCentralWidget(self.webview)
+        self.addDockWidget(QtCore.Qt.BottomDockWidgetArea, self.bottomDock)
+        self.webview.openUrl("about:blank")
+
+    def titleChange(self, e):
+        self.setWindowTitle(self.webview.url().toString() + "-" + self.webview.title())
+
+
+def main():
+    parser = optparse.OptionParser(usage="%prog ", version="%prog 0.0.1")
+    parser.add_option('-f', help="config path (default:~/.rtwview.py)",
+            dest="config_path",
+            default="~/.rtwview.py")
+    parser.add_option('-s', help="show sample config", 
+            action="store_true", default=False)
+    (opts, args) = parser.parse_args()
+
+    # init
+    Setting.config_path(opts.config_path)
+
+    if opts.s:
+        print(Setting.get().sample_config())
+        return
+
+
+    app = QtGui.QApplication(sys.argv)
+
+    window = MainWindow()
+    window.show()
+    if len(args) > 0:
+        window.webview.openUrl(args.pop())
+
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
+

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+genstrings -a $(find . -name "*.m" -o -name "*.swift")

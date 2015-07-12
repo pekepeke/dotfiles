@@ -1,0 +1,89 @@
+#!/usr/bin/env perl -w
+# codenode.com/mysql myqps Feb 7 2005 v1.0
+
+use DBI;
+use Getopt::Long;
+use POSIX 'floor';
+
+$mycnf{'user'} = '';
+$mycnf{'pass'} = '';
+$opt_log       = '/var/log/myqps.log';
+$opt_interval  = 300; # 5 minutes
+
+GetOptions(
+   "log=s"        => \$opt_log,
+   "interval|n=s" => \$opt_interval
+);
+
+$0 = "myqps -log $opt_log -interval $opt_interval";
+
+$SIG{'TERM'} = 'sig_handler';
+
+if (fork()) { exit(); }
+
+# Null input
+open(STDIN, "</dev/null");
+
+# Send all ouput to log
+open(LOG, ">>$opt_log") or die "Can't open $opt_log: $!\n";
+open(STDOUT, ">&LOG") or die "Can't dup STDOUT: $!\n";
+open(STDERR, ">&LOG") or die "Can't dup STDERR: $!\n";
+
+select(LOG);
+$| = 1;
+
+# Read ~/.my.cnf
+open(MYCNF, "$ENV{HOME}/.my.cnf") or die "Debug: Can't open $ENV{HOME}/.my.cnf: $!\n";
+while(<MYCNF>) { if($_ =~ /^(.+?)\s*=\s*"?(.+?)"?\s*$/) { $mycnf{$1} = $2; } }
+close(MYCNF);
+
+$qs = 0; # Number of queries at start
+$us = 0; # Uptime at start
+$q  = 0; # Last number of queries
+$u  = 0; # Last uptime
+$i  = 0; # Intervals
+
+chomp($date = `date`);
+print "- myqps starting $date ($opt_interval second log interval)\n";
+
+while(1)
+{
+   $dbh = DBI->connect("dbi:mysql::localhost", $mycnf{'user'}, $mycnf{'pass'}) or die;
+   $query = $dbh->prepare("SHOW STATUS LIKE 'uptime';");
+   $query->execute();
+   @row = $query->fetchrow_array();
+   $now_u = $row[1];
+
+   $query = $dbh->prepare("SHOW STATUS LIKE 'questions';");
+   $query->execute();
+   @row = $query->fetchrow_array();
+   $now_q = $row[1];
+
+   $query->finish();
+   $dbh->disconnect();
+
+   chomp($load = `cat /proc/loadavg`);
+
+   (undef,$min,$hour) = localtime(time);
+
+   printf("%2u:%-2u %3u  (%s)\n", $hour, $min, floor( ($now_q - $q) / ($now_u - $u) ), $load);
+
+   $q = $now_q;
+   $u = $now_u;
+
+   # Save number of queries and uptime at start
+   if($qs == 0) { $qs = $q; $us = $u; }
+
+   $i++;
+
+   sleep($opt_interval);
+}
+
+sub sig_handler
+{
+   chomp($date = `date`);
+   print '- Average queries/second ' . floor(($q - $qs) / $u - $us) . "\n" if $i > 1;
+   print "- myqps ending $date ($i intervals logged)\n";
+   close(LOG);
+   exit(0);
+}

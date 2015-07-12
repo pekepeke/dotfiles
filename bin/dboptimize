@@ -1,0 +1,23 @@
+#!/bin/bash
+
+create_my_cnf() {
+  [ -e ~/.my.cnf ] && return
+  cat <<EOM > ~/.my.cnf
+[client]
+user=root
+password=root
+EOM
+  print "create : ~/.my.cnf\n";
+}
+
+create_my_cnf
+if which mysqlcheck >/dev/null 2>&1; then
+  mysqlcheck --analyze --all-databases
+  mysqlcheck --optimize --all-databases
+  mysqlcheck --auto-repair --check --all-databases
+  # mysqlcheck --all-databases --check-only-changed --silent
+fi
+if type vacuumdb >/dev/null 2>&1;then
+  vacuumdb -a
+fi
+

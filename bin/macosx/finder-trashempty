@@ -1,0 +1,29 @@
+#!/bin/bash
+
+osascript <<EOF
+property showWarning : true
+
+on run
+  set currentApp to short name of (info for (path to frontmost application))
+
+  tell application "Finder"
+    set trashCount to count of items in the trash
+    if trashCount > 0 then
+      if showWarning then
+        activate
+        try
+          display alert "Are you sure you want to remove the items in the Trash permanently?" message ¬
+            "You cannot undo this action." buttons {"Cancel", "OK"} cancel button "Cancel" default button "OK"
+          empty the trash
+        end try
+      else
+        try
+          empty the trash
+        end try
+      end if
+    end if
+  end tell
+
+  tell application currentApp to activate
+end run
+EOF

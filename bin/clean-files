@@ -1,0 +1,54 @@
+#!/bin/bash
+
+opt_exec=0
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+Usage: $prg_name [-h] [-e]
+
+Options:
+  -h    show usage
+  -e    remove trash files
+EOM
+  exit 1
+}
+
+main() {
+  local f target
+  local args="."
+  [ $# -ne 0 ] && args="$@"
+  for target in "$args" ; do
+    find ${target} -name ".DS_Store" \
+      -o -name "Thumbs.db" \
+      -o -name "_note" \
+       | while read f; do
+      if [ $opt_exec -eq 1 ] ; then
+        rm -rf ${f}
+        echo "delete : ${f}"
+      else
+        echo $f
+      fi
+    done
+  done
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "he" opt; do
+  case $opt in
+    h)
+      usage ;;
+    e) opt_exec=1;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

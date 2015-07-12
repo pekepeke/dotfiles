@@ -1,0 +1,86 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use JSON;
+use URI;
+use LWP::Simple;
+use String::Diff qw(diff);
+use Term::ANSIColor qw(color);
+use Pod::Usage qw(pod2usage);
+
+my $api_base_url = 'http://services.gingersoftware.com/Ginger/correct/json/GingerTheText';
+my $api_key      = '6ae0c3a0-afdc-4532-a810-82ded0054236'; # This API key must not be used
+
+pod2usage(1) unless @ARGV;
+
+my $text = join ' ', @ARGV;
+
+main: {
+    my $uri = URI->new($api_base_url);
+    $uri->query_form({
+        lang          => 'US',
+        clientVersion => '2.0',
+        apiKey        => $api_key,
+        text          => $text,
+    });
+
+    my $res = decode_json get($uri);
+
+    print STDERR JSON->new->pretty->encode($res) if $ENV{DEBUG};
+
+    unless (@{ $res->{LightGingerTheTextResult} }) {
+        print "Good English :)\n";
+        exit;
+    }
+
+    my $fixed_text = $text;
+    my $gap = 0;
+    for my $rs (@{ $res->{LightGingerTheTextResult} }) {
+        my $from    = $rs->{From};
+        my $to      = $rs->{To} || 0;
+        my $suggest = $rs->{Suggestions}[0]{Text};
+        $to -= $from if $to;
+        substr($fixed_text, $from + $gap, $to + 1) = $suggest;
+        $gap += length($suggest) - 1 - $to;
+    }
+
+    my $diff = diff "$text\n", "$fixed_text\n", (
+        remove_open  => color('black on_red'),
+        remove_close => color('reset'),
+        append_open  => color('black on_green'),
+        append_close => color('reset'),
+    );
+
+    print "From: $diff->[0]";
+    print "To  : $diff->[1]";
+}
+
+exit;
+
+__END__
+
+=head1 NAME
+
+ginger - Yet another spell checker
+
+=head1 SYNOPSIS
+
+    ginger <write your any Engrish>
+
+=head1 AUTHOR
+
+xaicron E<lt>xaicron {at} cpan.orgE<gt>
+
+=head1 COPYRIGHT
+
+Copyright 2012 - xaicron
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+L<< http://www.getginger.jp/ >>

@@ -1,0 +1,75 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+mcd() {
+    local args="$1 $2 $3 $4 $5 $6 $7 $8 $9"
+    local dir=`milk dir --top $args`
+
+    if [ "$dir" = "" ]; then
+        echo "fatal: Not found package: $1 $2 $3 $4 $5 $6 $7 $8 $9"
+    elif [ "$dir" = "Not registered." ]; then
+        echo "fatal: Not a package dir: `pwd`"
+    else
+        cd $dir
+        pwd
+    fi
+}
+# For Cygwin.
+mcd_cygwin() {
+    local args="$1 $2 $3 $4 $5 $6 $7 $8 $9"
+    local dir=`milk.bat dir --top $args`
+
+    if [ "$dir" = "" ]; then
+        echo "fatal: Not found package: $1 $2 $3 $4 $5 $6 $7 $8 $9"
+    elif [ "$dir" = "Not registered." ]; then
+        echo "fatal: Not a package dir: `pwd`"
+    else
+        cd $dir
+        pwd
+    fi
+}
+
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+
+case $OSTYPE in
+  cygwin*)
+    mcd_cygwin $*
+    ;;
+  # darwin*)
+  #   ;;
+  # bsd*)
+  #   ;;
+  # linux*)
+  #   ;;
+  # solaris*)
+  #   ;;
+  *)
+    mcd $*
+    ;;
+esac
+exec $SHELL

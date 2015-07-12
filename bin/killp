@@ -1,0 +1,4 @@
+#/bin/bash
+
+kill $* $(ps aux | percol | awk '{print $2}')
+

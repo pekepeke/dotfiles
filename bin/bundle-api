@@ -1,0 +1,38 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h] on/off
+EOM
+  exit 1
+}
+
+main() {
+  if [ x"$1" = xon ];then
+    ruby -i -pe "gsub %r{^(source.*)https://rubygems\.org(.*)},  '\1http://bundler-api.herokuapp.com/\2'" Gemfile
+  elif [ x"$1" = xoff ]; then
+    ruby -i -pe "gsub %r{^(source.*)http://bundler-api\.herokuapp\.com/(.*)},  '\1https://rubygems.org\2'" Gemfile
+  fi
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

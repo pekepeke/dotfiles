@@ -1,0 +1,48 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h] file.mm output.gan
+
+FreeMindのノード属性を使い、タスクの情報を追加します。
+
+- 属性名:startに開始日(format yyyy/mm/dd)
+- 属性名:durationに所要日数
+- 属性名:allocateに割当リソース
+- 属性名:completeに完成割合(%)
+
+- ガントチャートの注意事項
+  - アクティビティが直列する場合、前のアクティビティが完了してから、後のアクティビティが開始になります。(孫→子の順番でガントチャートが作成されます。)
+EOM
+  exit 1
+}
+
+main() {
+  local cwd=$(pwd)
+  local scriptdir=$(cd $(dirname $0); pwd)
+  cd "$cwd"
+
+  if [ x"$1" = x -o x"$2" = x ]; then
+    usage
+  fi
+
+  java -jar $scriptdir/.opt/mm2gantt.jar $1 $2
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

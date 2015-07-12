@@ -1,0 +1,10 @@
+#!/bin/bash
+
+clipboard() {
+  local copy_cmd="xsel -b"
+  which putclip >/dev/null 2>&1 && copy_cmd="putclip"
+  which pbcopy >/dev/null 2>&1 && copy_cmd="pbcopy"
+  which xclip >/dev/null 2>&1 && copy_cmd="xclip -i -selection clipboard"
+  eval $copy_cmd
+}
+clipboard

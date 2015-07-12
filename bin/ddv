@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+. sentaku -n
+
+_SENTAKU_SEPARATOR=$'\n'
+
+_sf_execute () { # {{{
+  :
+} # }}}
+
+_sf_select () { # {{{
+  vim -d "$_s_first_dir/${_s_inputs[$_s_current_n]}"\
+    "$_s_second_dir/${_s_inputs[$_s_current_n]}" </dev/tty
+  tput civis >/dev/tty 2>/dev/null || tput vi >/dev/tty 2>/dev/null
+} # }}}
+
+_sf_d () {
+  _sf_remove
+}
+
+_sf_set_header () { # {{{
+  _s_show="$_s_first_dir"
+  _sf_show 0 $((_s_cols-3))
+  local a_dir="$_s_show"
+  _s_show="$_s_second_dir"
+  _sf_show 0 $((_s_cols-3))
+  local b_dir="$_s_show"
+  _s_header=""
+  if [ $_s_noheader = 1 -o $_s_lines -lt 10 ];then
+    return
+  elif [ $_s_cols -ge 66 ];then
+    _s_header=" $_s_n files are different in
+<:$a_dir
+>:$b_dir
+ [n]j(n-down), [n]k(n-up), gg(top), G(bottom), [n]gg/G, (go to n)
+ ^D(lf page down), ^U(Half page up), ^F(Page down), ^B(Page Up)
+ d(delete from the list), Enter/Space(vim diff), q(quit)"
+  elif [ $_s_cols -ge 40 ];then
+      _s_header=" $_s_n values in total
+a:$a_dir
+b:$b_dir
+ vimike updown, e.g)j:down, k:up, gg/G
+ d(delete from the list),
+ Enter/Space(vim diff), q(quit)"
+  fi
+}  # }}}
+
+if [ $# -ne 2 ];then
+  echo "usage: ex_diff_vim dir1 dir2"
+  exit 1
+fi
+_s_first_dir="${1%/}/"
+_s_second_dir="${2%/}/"
+
+diff_ret=$(diff -r "$_s_first_dir" "$_s_second_dir" |grep diff |grep -v Binary|\
+  sed "s!.*${_s_second_dir}!!g")
+if [ "$diff_ret" = "" ];then
+  echo "There are no remained diff files"
+else
+  echo "$diff_ret"|_sf_main
+fi

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+jmap -histo:live $(ps aux | grep java | grep -v grep | peco | awk '{print $2}')
+

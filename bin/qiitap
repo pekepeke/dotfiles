@@ -1,0 +1,31 @@
+#!/bin/bash
+
+TAG="$1"
+if [ -z "$TAG" ]; then
+  TAG_API="https://qiita.com/api/v1/tags"
+  TAG=$(curl $TAG_API | jq -r '.[] | "\(.name)\t\(.following)"' | peco | awk '{print $1}')
+fi
+if [ -z "$TAG" ]; then
+  echo "empty TAG" 1>&2
+  exit 1
+fi
+
+ARTICLE_API="https://qiita.com/api/v1/tags/${TAG}/items?per_page=50"
+URL=$(curl -s $ARTICLE_API | jq '.[] | "\(.created_at)«\(.stock_count)«\(.url)«\(.title)«\(.raw_body)"' | sed 's/\"//g' | awk -F '«' '{printf "%s %3s %-60s %-70s %s\n", substr($1,6,11), $2, $3, $4, $5}    ' | peco | awk '{print $4}')
+
+if [ -n $URL ]; then
+  case $OSTYPE in
+    cygwin*)
+      cygstart "$URL" ;;
+    darwin*)
+      open "$URL" ;;
+    bsd*)
+      xdg-open "$URL" ;;
+    linux*)
+      xdg-open "$URL" ;;
+    solaris*)
+      xdg-open "$URL" ;;
+    *)
+      ;;
+  esac
+fi

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  local env_root=$(phpenv root)
+  for f in $env_root/versions/*/bin/pyrus; do
+    if [ $(grep '\-d detect_unicode=0' $f | wc -l) -eq 0 ]; then
+      # perl -ne 's/(-dphar.readonly=0)/$1 -d detect_unicode=0/; print' < $f > $f
+      perl -ne 's/(-dphar.readonly=0)/$1 -d detect_unicode=0/; print' < $f | tee $f.tmp > /dev/null
+      chmod +x $f.tmp
+      cp $f.tmp $f
+      rm $f.tmp
+    fi
+  done
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage ;;
+    # s)
+      #$OPTARG
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

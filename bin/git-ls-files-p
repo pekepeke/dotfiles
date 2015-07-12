@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for CMD in peco percol; do
+  if type $CMD >/dev/null 2>&1; then
+    git ls-files | $CMD | awk '{print $1}'
+    break
+  fi
+done
+

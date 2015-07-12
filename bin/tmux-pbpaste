@@ -1,0 +1,12 @@
+#!/bin/sh
+
+TF="/tmp/tmux_to_pbcopy-$USER"
+
+if [[ $(uname) == 'Darwin' ]]; then
+  pbpaste > "$TF"
+else
+  xsel -o -b > $TF
+fi
+tmux load-buffer $TF
+tmux paste-buffer
+

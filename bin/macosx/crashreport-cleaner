@@ -1,0 +1,80 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long;
+use Pod::Usage;
+use Cwd qw(realpath);
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+my $opt_help;
+my ($opt_delete);
+Getopt::Long::Configure ("bundling");
+GetOptions(
+    'h|help' => \$opt_help,
+    'd|delete' => \$opt_delete,
+) or usage;
+usage if $opt_help;
+
+my $log_dir = "${ENV{HOME}}/Library/Logs/CrashReporter";
+
+sub _do_action {
+    my $fpath = shift;
+    if ($fpath) {
+        if ($opt_delete) {
+            unlink $fpath;
+            print "remove : $fpath\n";
+        } else {
+            print "$fpath\n";
+        }
+    }
+}
+sub do_action {
+    my ($fpath, $link_path) = @_;
+    _do_action($fpath);
+    _do_action($link_path);
+}
+
+my $filter = $ARGV[0];
+
+opendir my $dh, $log_dir or die "opendir - $log_dir : $!";
+my $entry;
+while ($entry = readdir $dh) {
+    next unless (!$filter or index($entry, $filter) != -1);
+    my $fpath = "$log_dir/$entry";
+    if ( -l $fpath) {
+        my $link_path = readlink($fpath);
+        if ($link_path !~ /^\//) {
+            $link_path = realpath("$log_dir/$link_path")
+        }
+        do_action $fpath;
+        do_action $link_path;
+    } elsif ( -f $fpath ) {
+        do_action $fpath;
+    }
+}
+closedir $dh or die "closedir - $log_dir : $!";
+
+__END__
+
+=head1 NAME
+
+    crashreport-cleaner - remove crash report files.
+
+=head1 SYNOPSIS
+
+
+=head1 OPTIONS
+
+
+=head1 AUTHOR
+
+pekepeke <pekepekesamurai+github@gmail.com>

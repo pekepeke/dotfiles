@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# vim:fdm=marker sw=2 ts=2 ft=sh noexpandtab:
+escape_quote() {
+	echo $* | sed -e 's/\(["\\]\)/\\\1/g'
+}
+cwd=$(pwd)
+scriptdir=$(cd $(dirname $0); pwd)
+opt_image=0
+imgoptargs=""
+optargs=""
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "i:u:A:S:O:E:G:" opt; do
+  case $opt in
+    i)
+      [ -e "$OPTARG" ] && imgoptargs="-appIcon $OPTARG"
+			;;
+    u)
+      [ -e "$scriptdir/.lib/${OPTARG}.png" ] && imgoptargs="-group notify-send -appIcon $scriptdir/.lib/${OPTARG}.png"
+      ;;
+		A)
+			optargs="$optargs -activate $OPTARG"
+			;;
+		S)
+			optargs="$optargs -sender $OPTARG"
+			;;
+		O)
+			optargs="$optargs -open $OPTARG"
+			;;
+		E)
+			optargs="$optargs -execute \"$OPTARG\""
+			;;
+		G)
+			optargs="$optargs -group \"$OPTARG\""
+			;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+title="$(escape_quote $1)"
+shift
+message="$(escape_quote $*)"
+
+shift
+shift
+# if type growlnotify >/dev/null 2>&1 ; then
+#   growlnotify -t "${title}" -m "${message}" "$@"
+# fi
+
+$scriptdir/.lib/terminal-notifier.app/Contents/MacOS/terminal-notifier -title "${title}" -message "${message}" $imgoptargs $optargs
+
+# osascript <<APPLESCRIPT &
+# display notification "$(escape_quote $message)" with title "$(escape_quote $title)" subtitle "$(escape_quote $title)"
+# APPLESCRIPT
+

@@ -1,0 +1,34 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  #open -a Firefox --args -P develop -no-remote
+  BIN=/Applications/Firefox.app/Contents/MacOS/firefox-bin
+  if [ -e $BIN ]; then
+    $BIN -P normal -no-remote &
+  else
+    $BIN -P normal -no-remote &
+  fi
+}
+
+while getopts "hv" opt; do
+  case $opt in
+    h) 
+      usage ;;
+    v) ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+main() {
+  local module="tern"
+  local name=$(basename $0)
+  # local cmd="~/.vim/neobundle/tern_for_vim/node_modules/tern/bin/$name"
+  # if [ ! -e $cmd ]; then
+  #   echo "$name not found" 1>&2
+  #   exit 1
+  # fi
+  # $cmd "$@"
+  if !nodenv which $module >/dev/null 2>&1; then
+    echo "$module and $name not found" 1>&2
+    exit 1
+  fi
+  local nodemodules="$(dirname $(nodenv which $module))/../lib/node_modules"
+  local moduledir="$nodemodules/$module"
+
+  local cwd=$(pwd)
+  if [ ! -e $moduledir/node_modules/typescript ]; then
+    cd "$moduledir"
+    npm install typescript
+    cd "$cwd"
+  fi
+  # NODE_PATH=$nodemodules:$moduledir/node_modules:$NODE_PATH
+  $moduledir/bin/$name "$@"
+}
+
+main "$@"

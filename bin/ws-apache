@@ -1,0 +1,298 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long;
+use Pod::Usage;
+use Cwd;
+use File::Temp qw(tempfile tempdir);
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+
+my %opt;
+Getopt::Long::Configure ("bundling");
+GetOptions(
+    \%opt, 'help|h', 'port|p=i', 'save|s'
+) or usage;
+usage if $opt{help};
+
+# conf parameters
+my $progname = "ws-apache";
+my $port = $opt{port} || 50080;
+my $ssl_port = $port + 1;
+my $server_count = 50;
+my $pidfile = "/tmp/ws-apache-$port.pid";
+my $is_save_conf = $opt{save} || 0;
+
+my $cwd = Cwd::getcwd();
+my @confs = qw[
+    /usr/local/apache2/etc/httpd.conf
+    /usr/local/etc/apache2/2.4/httpd.conf
+    /usr/local/etc/apache2/2.2/httpd.conf
+    /etc/apache2/httpd.conf
+    /etc/httpd/conf/httpd.conf
+];
+my @enable_modules = qw[
+    include_module
+    php5_module
+];
+
+my ($server_root, $types_config, $mime_magic) = ("", "", "");
+my @directives = ();
+for my $conf_path (@confs) {
+    next unless -e $conf_path;
+    open my $cfh, "<", $conf_path or die "cannot open file:$conf_path - $!";
+    while (<$cfh>) {
+        if (/^\s*ServerRoot\s+(.+)$/) {
+            $server_root = $1;
+        } elsif (/(^\s*LoadModule.*)/) {
+            push @directives, $1;
+        } elsif (/^\s*(TypesConfig\s+.+)$/) {
+            $types_config = $1;
+        } elsif (/^\s*(MIMEMagicFile\s+.+)$/) {
+            $mime_magic = $1;
+        } elsif (/^\s*#\s*(LoadModule\s+([^ \t]+).*)$/) {
+            my $s = $1;
+            my $mod = $2;
+            push @directives, $s if scalar(grep { $mod =~ $_ } @enable_modules);
+        }
+    }
+    close $cfh;
+    last;
+}
+die "cannot found directives" unless $server_root && scalar(@directives);
+my $directive_string = join("\n", @directives);
+my $handler_php = "";
+
+$handler_php = "AddHandler php5-script .php" if (grep(/\s+php5_module\s+/, @directives));
+
+# my ($fh, $fpath) = tempfile();
+my $action = $ARGV[0] ? $ARGV[0] : "restart";
+my $fpath = "$cwd/$progname.conf";
+# my $bin = `which httpd`;
+my $bin = "env httpd";
+chomp($bin);
+
+sub cmd_run_apache {
+    my $action = shift;
+
+    if ($action =~ /start$/) {
+        print "### starting server...\n";
+    }
+    # sprintf("%s %s -f %s -k %s", ($ENV{USER} eq "root" ? "" : "sudo "), $bin, $fpath, $action);
+    sprintf("%s -f %s -k %s", $bin, $fpath, $action); # can't create accept.lock
+}
+
+sub cmd_configtest_apache {
+    # sprintf("%s -f %s -t %s", $bin, $fpath, "configtest"); # configtest
+    sprintf("%s -f %s -t", $bin, $fpath); # configtest
+}
+
+unless ($is_save_conf || -e $fpath) {
+    $fpath = "/tmp/$progname-$port-apache.conf";
+    if (-e $fpath) {
+        system(cmd_run_apache("stop"));
+        unlink($fpath)
+    }
+}
+my $run_cmd = cmd_run_apache($action);
+
+unless (-e $fpath) {
+    open my $fh, ">", $fpath or die "cannot open file:$fpath-$!";
+
+    my $template = <<EOM
+#!$run_cmd
+ServerRoot $server_root
+
+Listen $port
+
+$directive_string
+
+Timeout 300
+KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 5
+AccessFileName .htaccess
+ServerTokens Prod
+ServerSignature Off
+TraceEnable Off
+UseCanonicalName Off
+HostnameLookups Off
+EnableSendfile On
+FileETag None
+AllowEncodedSlashes On
+
+User $ENV{"USER"}
+
+<IfModule !mpm_netware_module>
+    PidFile "$pidfile"
+</IfModule>
+
+<IfVersion = /^2.2./>
+<IfModule !mpm_winnt_module>
+<IfModule !mpm_netware_module>
+    LockFile "/tmp/$progname-$port-accept.lock"
+</IfModule>
+</IfModule>
+</IfVersion>
+
+<IfModule mpm_prefork_module>
+    StartServers        $server_count
+    MinSpareServers     $server_count
+    MaxSpareServers     $server_count
+    <IfVersion = /^2.2./>
+        MaxClients          $server_count
+        MaxRequestsPerChild  50
+    </IfVersion>
+    <IfVersion = /^2.4./>
+        MaxRequestWorkers      $server_count
+        MaxConnectionsPerChild 50
+    </IfVersion>
+</IfModule>
+<IfModule mpm_worker_module>
+    StartServers        $server_count
+    MinSpareServers     $server_count
+    MaxSpareServers     $server_count
+    <IfVersion = /^2.2./>
+        MaxClients          $server_count
+        MaxRequestsPerChild  100
+    </IfVersion>
+    <IfVersion = /^2.4./>
+        MaxRequestWorkers      $server_count
+        MaxConnectionsPerChild 100
+    </IfVersion>
+</IfModule>
+
+$handler_php
+AddHandler cgi-script .cgi .pl
+Options +ExecCGI -MultiViews
+
+$types_config
+<IfVersion = /^2.2./>
+    DefaultType text/plain
+</IfVersion>
+<IfModule mod_mime_magic.c>
+    $mime_magic
+</IfModule>
+
+ErrorLog /tmp/$progname-$port-error_log
+CustomLog /tmp/$progname-$port-access_log common
+
+LogFormat "%h %l %u %t \\"%r\\" %>s %b" common
+
+ServerName $progname.localhost
+DocumentRoot $cwd
+<Directory $cwd>
+    AllowOverride All
+    <IfVersion = /^2.2./>
+        Order Allow,Deny
+        Allow from all
+    </IfVersion>
+    <IfVersion = /^2.4./>
+        Require all granted
+    </IfVersion>
+</Directory>
+
+
+# RewriteEngine On
+# # RewriteCond  $cwd/%{REQUEST_FILENAME} !-f
+# # RewriteCond  %{HTTPS} on
+# # RewriteRule (.*) https://%{HTTP_HOST}\$1 [P]
+# RewriteCond  $cwd/%{REQUEST_FILENAME} !-f
+# RewriteRule (.*) http://%{HTTP_HOST}\$1 [P]
+
+#RewriteLogLevel 2
+#RewriteLog /tmp/$progname-$port-rewrite_log
+EOM
+;
+    # TODO : sslcertificatefile
+    my $ssl_template;
+    $ssl_template = <<EOM
+Listen *:$ssl_port
+<VirtualHost *:$ssl_port>
+    ServerName $progname.localhost:$ssl_port
+    ErrorLog /tmp/$progname-$port-error_log
+    CustomLog /tmp/$progname-$port-access_log common
+
+    LogFormat "%h %l %u %t \\"%r\\" %>s %b" common
+    DocumentRoot $cwd
+
+    #   SSL Engine Switch:
+    #   Enable/Disable SSL for this virtual host.
+    SSLEngine on
+    SSLProxyEngine on
+    SSLProxyVerify none
+
+    # RewriteEngine On
+    # # RewriteCond  $cwd/%{REQUEST_FILENAME} !-f
+    # # RewriteCond  %{HTTPS} on
+    # # RewriteRule (.*) https://%{HTTP_HOST}\$1 [P]
+    # RewriteCond  $cwd/%{REQUEST_FILENAME} !-f
+    # RewriteRule (.*) http://%{HTTP_HOST}\$1 [P]
+
+    # ProxyPass / https://\$ssl_domain/
+    # ProxyPassReverse / https://\$ssl_domain/
+
+    <Directory $cwd>
+        AllowOverride All
+        <IfVersion = /^2.2./>
+            Order Allow,Deny
+            Allow from all
+        </IfVersion>
+        <IfVersion = /^2.4./>
+            Require all granted
+        </IfVersion>
+    </Directory>
+
+
+</VirtualHost>
+EOM
+    ;
+    # $template .= $ssl_template;
+
+    print $fh $template;
+    close($fh);
+# chmod(0755, $fpath);
+    print "create file:$fpath\n";
+} else {
+    $is_save_conf = 1;
+}
+system(cmd_configtest_apache);
+system($run_cmd);
+print "executed `$run_cmd`\n";
+
+# TODO LWP
+sleep 3;
+if (-e $pidfile) {
+    system(
+        sprintf("tail -f /tmp/$progname-$port-*_log | perl -pe '%s'", 's/^.*(error|warn|fatal).*$/\033\[1;31m$&\033\[0m/gim')
+    );
+
+    system(cmd_run_apache("stop"));
+    unlink $fpath unless $is_save_conf;
+}
+
+__END__
+
+=head1 NAME
+
+    ws-apache - instant http server for development
+
+=head1 SYNOPSIS
+
+
+=head1 OPTIONS
+
+
+=head1 AUTHOR
+
+
+

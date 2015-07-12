@@ -1,0 +1,22 @@
+#!/bin/bash
+
+main() {
+  local SERVICE=$(service --status-all 2>&1 \
+    | awk -F '  ' '{print $2}' | peco --prompt='Service >')
+  if [ -z "$SERVICE" ]; then
+    exit 1
+  fi
+  local ACTION=$(printf "start\nstop\nrestart\nreload" | peco --prompt='Action >')
+  if [ -z "$ACTION" ]; then
+    exit 2
+  fi
+
+  echo service $ACTION $SERVICE
+  if [ ${EUID:-${UID}} = 0 ]; then
+    service $ACTION $SERVICE
+  else
+    sudo service $ACTION $SERVICE
+  fi
+}
+
+main "$@"

@@ -1,0 +1,46 @@
+#!/usr/bin/perl
+
+################################################################################
+# Copyright (c) 2011 University of Utah Student Computing Labs.
+# All Rights Reserved.
+#
+# Permission to use, copy, modify, and distribute this software and
+# its documentation for any purpose and without fee is hereby granted,
+# provided that the above copyright notice appears in all copies and
+# that both that copyright notice and this permission notice appear
+# in supporting documentation, and that the name of The University
+# of Utah not be used in advertising or publicity pertaining to
+# distribution of the software without specific, written prior
+# permission. This software is supplied as is without expressed or
+# implied warranties of any kind.
+################################################################################
+
+use Foundation;
+use FindBin;
+use lib $FindBin::Bin . "/.lib";
+#use lib "/usr/local/lib/";
+require "perlplist.pl";
+
+usage() if ! defined $ARGV[0] or defined $ARGV[2];
+
+if ( ! defined $ARGV[1] ) {
+	my $dict = loadDefaults ($ARGV[0]) or die "Error loading $ARGV[0]\n";
+	printObject ( $dict );
+} else {
+	my $dict1 = loadDefaults ($ARGV[0]) or die "Error loading $ARGV[0]\n";
+	my $dict2 = loadDefaults ($ARGV[1]) or die "Error loading $ARGV[1]\n";
+	my $dict3 = combineObjects( $dict1, $dict2 );
+	printObject ( $dict3 );
+}
+
+sub usage {
+  print <<EOF;
+Usage: 
+	$0 FILE
+	$0 FILE [FILE]
+
+Specifying one file will just print the file in xml format.
+Specifying 2 files will combine them.  This script can only combine 2 files at this time.
+EOF
+  exit;
+}

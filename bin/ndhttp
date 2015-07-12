@@ -1,0 +1,126 @@
+#!/usr/bin/env node
+
+var http = require("http"),
+    url = require("url"),
+    path = require("path"),
+    fs = require("fs"),
+    util = require("util"),
+    port = process.argv[2] || 50080;
+var mime = {
+  ".html": "text/html",
+  ".css":  "text/css",
+  ".js":   "application/javascript",
+  ".png":  "image/png",
+  ".jpg":  "image/jpeg",
+  ".gif":  "image/gif",
+  ".txt":  "text/plain",
+};
+
+var server = http.createServer(function(request, response) {
+
+  var Response = {
+    "200":function(file, filename) {
+      // var extname = path.extname(filename);
+      var header = {
+        "Access-Control-Allow-Origin":"*",
+        "Pragma": "no-cache",
+        "Cache-Control" : "no-cache"
+      };
+      var mimeType = mime[path.extname(filename)];
+      if (typeof mimeType !== 'undefined') {
+        header["Content-Type"] = mimeType;
+      }
+
+      response.writeHead(200, header);
+      response.write(file, "binary");
+      response.end();
+    },
+    "404":function() {
+      response.writeHead(404, {"Content-Type": "text/plain"});
+      response.write("404 Not Found\n");
+      response.end();
+
+    },
+    "500":function(err) {
+      response.writeHead(500, {"Content-Type": "text/plain"});
+      response.write(err + "\n");
+      response.end();
+    },
+  };
+
+
+  var uri = url.parse(request.url).pathname
+    , filename = path.join(process.cwd(), uri);
+
+  var walk = function(dir, done) {
+    var results = [];
+    fs.readdir(dir, function(err, list) {
+      if (err) {
+        console.error(err)
+        return done(err);
+      }
+      var pending = list.length;
+      if (!pending) {
+        return done(null, results);
+      }
+      list.forEach(function(file) {
+        if (file.substr(0, 1) == ".") {
+          if (!--pending) {
+            done(null, results);
+          }
+          return;
+        }
+        file = dir + '/' + file;
+        fs.stat(file, function(err, stat) {
+          if (stat && stat.isDirectory()) {
+            walk(file, function(err, res) {
+              results = results.concat(res);
+              if (!--pending) {
+                done(null, results);
+              }
+            });
+          } else {
+            results.push(file);
+            if (!--pending) {
+              done(null, results);
+            }
+          }
+        });
+      });
+    });
+  };
+
+
+  fs.exists(filename, function(exists){
+    if (exists && fs.statSync(filename).isDirectory()) {
+      filename += '/index.html';
+      exists = fs.existsSync(filename);
+    }
+    if (!exists) {
+      if (uri == "/_") {
+        var cwd = process.cwd();
+        walk(process.cwd(), function(err, list) {
+          var html = "<html><body><ul>" + list.map(function(v) {
+            v = v.replace(cwd, "");
+            return util.format('<li><a href="%s">%s</a></li>', v, v);
+          }).join("\n") + "</ul></body></html>";
+          Response["200"](html, filename);
+        });
+        return;
+      } else {
+        console.error(filename + " :"+ (exists ? "found" : "not found"));
+        Response["404"](); return ;
+      }
+    }
+    console.info("request :" + uri)
+
+    fs.readFile(filename, "binary", function(err, file){
+      if (err) { Response["500"](err); return ; }
+      Response["200"](file, filename);
+    });
+  });
+
+}).listen(parseInt(port, 10), '0.0.0.0');
+
+console.info("Server running at http://localhost:" + port );
+

@@ -1,0 +1,86 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+import ConfigParser
+import sys, os, shutil, glob
+
+set_values = [
+        ("PHP"       , "detect_unicode"                , "Off"), # for commandline
+        ("PHP"       , "short_open_tag"                , "On"),
+        ("PHP"       , "allow_url_fopen"               , "On"), # for pyrus => on
+        ("PHP"       , "allow_url_include"             , "Off"),
+        ("PHP"       , "expose_php"                    , "Off"),
+        ("PHP"       , "register_globals"              , "Off"),
+        ("PHP"       , "default_charset"               , "UTF-8"),
+        ("PHP"       , "allow_call_time_pass_reference", "Off"),
+        ("PHP"       , "register_long_arrays"          , "Off"),
+        # etc security
+        # ("PHP"       , "error_reporting"               , "E_ALL | E_STRICT"),
+        # ("PHP"       , "display_errors"                , "Off"),
+        # ("PHP"       , "log_errors"                    , "On"),
+        # ("PHP"       , "error_log"                     , "/path/to/logfile"),
+        # magic quotes
+        ("PHP"       , "magic_quotes_gpc"              , "Off"),
+        ("PHP"       , "magic_quotes_runtime"          , "Off"),
+        ("PHP"       , "magic_quotes_sybase"           , "Off"),
+        # date
+        ("Date"      , "date.timezone"                 , "Asia/Tokyo"),
+        # mysql
+        # postgresql
+        # mbstring
+        ("mbstring"  , "mbstring.language"             , "Japanese"),
+        ("mbstring"  , "mbstring.internal_encoding"    , "UTF-8"),
+        ("mbstring"  , "mbstring.http_input"           , "pass"),
+        ("mbstring"  , "mbstring.http_output"          , "pass"),
+        ("mbstring"  , "mbstring.encoding_translation" , "Off"),
+        ("mbstring"  , "mbstring.detect_order"         , "UTF-8,SJIS,EUC-JP,JIS,ASCII"),
+        ("mbstring"  , "mbstring.substitute_character" , "None"),
+        ("mbstring" , "mbstring.strict_detection"      , "Off") ,
+        # APC
+        ("APC"      , "pc.enabled"                     , 1),
+        ("APC"      , "apc.shm_size"                   , "30M"),
+        ("APC"      , "apc.gc_ttl"                     , 7200),
+        ("APC"      , "apc.ttl"                        , 3600),
+        ]
+
+if os.path.exists("/etc/my.cnf"):
+    mysql_ini = ConfigParser.SafeConfigParser(allow_no_value=True)
+    try:
+        mysql_ini.read("/etc/my.cnf")
+    except ConfigParser.ParsingError as e:
+        sys.stderr.write(e.message)
+
+    if mysql_ini.has_option("mysqld", "socket"):
+        socket = mysql_ini.get("mysqld", "socket")
+        # mysql
+        mysql_params = [
+            ("MySQL"     , "mysql.default_socket"          , socket),
+            ("MySQLi"    , "mysql.default_socket"          , socket),
+            ("Pdo_mysql" , "pdo_mysql.default_socket"      , socket),
+        ]
+        set_values.extend(mysql_params)
+
+
+def main():
+    # pathes = sys.argv[:]
+    script = sys.argv[:].pop(0)
+    phpenv_root = os.path.dirname(os.path.dirname(script))
+    pathes = glob.glob(phpenv_root + "/versions/*/etc/php.ini")
+    for path in pathes:
+        ini = ConfigParser.SafeConfigParser()
+        ini.read(path)
+        for sec, key, val in set_values:
+            if not ini.has_section(sec):
+                ini.add_section(sec)
+            ini.set(sec, key, str(val))
+
+        if not os.path.exists(path + ".org"):
+            shutil.copyfile(path, path + ".org")
+        f = open(path, "w")
+        ini.write(f)
+        f.close()
+    return 0
+
+if __name__ == '__main__':
+    main()
+

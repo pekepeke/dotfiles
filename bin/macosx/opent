@@ -1,0 +1,94 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+use Pod::Usage;
+use Cwd;
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+my %opts;
+Getopt::Long::Configure("bundling");
+GetOptions(
+    \%opts, 'help|h', 'directory|d=s',
+) or usage;
+usage if $opts{help};
+
+my ($cwd, $bin, $args) = (getcwd(), shift @ARGV, join(" ", @ARGV));
+$cwd = Cwd::realpath($opts{directory}) if $opts{directory};
+my $s = <<EOM
+set the_path to "$cwd"
+set bin_path to "$bin"
+set script_path to "$args"
+EOM
+;
+$s .= <<'EOM'
+tell application "System Events"
+	set appWasRunning to exists (processes where name is "iTerm")
+	if appWasRunning then
+		tell application "iTerm"
+			make new terminal
+			tell the current terminal
+				activate current session
+				launch session "Default Session"
+				tell the last session
+					write text "cd \"" & the_path & "\"; " & bin_path & " " & script_path & "; exit;"
+				end tell
+			end tell
+		end tell
+		return
+	end if
+
+	set appWasRunning to exists (processes where name is "Terminal")
+	tell application "Terminal"
+		activate
+		if appWasRunning then
+			tell application "System Events" to tell process "Terminal" to keystroke "t" using command down
+			delay 0.25
+		end if
+		do script "cd \"" & the_path & "\"; " & bin_path & " " & script_path & "; exit;" in front window
+	end tell
+end tell
+EOM
+;
+
+# $s .= <<'EOM'
+# tell application "Terminal"
+# 	do script "cd \"" & the_path & "\"; " & bin_path & " " & script_path & "; exit;"
+# end tell
+# EOM
+# ;
+system sprintf("osascript -e '%s'", $s);
+
+__END__
+
+=head1 NAME
+
+    opent - Execute command in a new Terminal.app window
+
+=head1 SYNOPSIS
+
+    opent sl
+
+=head1 OPTIONS
+
+=over 2
+
+=item -h                        Show this message
+
+=item -d [directory]            Specify a working directory
+
+=back
+
+=head1 AUTHOR
+
+pekepeke <pekepekesamurai+github@gmail.com>
+

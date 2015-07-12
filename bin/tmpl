@@ -1,0 +1,83 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+use Pod::Usage;
+use Cwd;
+use File::Spec;
+use File::Path;
+use File::Copy::Recursive;
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+sub compdef() {
+    print <<EOM
+# tmpl
+compdef _tmpl tmpl
+function _tmpl {
+  local -a _candidates
+
+  _candidates=( `find ~/.tmpl/* -type d -maxdepth 0 -exec basename '{}' ';'` )
+  _describe -t templates "Templates" _candidates
+
+  return 1;
+}
+# vim:fdm=marker sw=2 ts=2 ft=zsh noexpandtab:
+EOM
+    ;
+    exit 1;
+}
+
+my %opts;
+Getopt::Long::Configure("bundling");
+GetOptions(
+    \%opts,
+    'help|h',
+    'directory|d=s',
+    'complete',
+) or usage;
+usage if $opts{help};
+compdef if $opts{complete};
+
+my $template_dir = $opts{directory}
+    || File::Spec->catfile($ENV{HOME} || $ENV{HOME}, ".tmpl");
+my $curdir = getcwd();
+
+for my $name (@ARGV) {
+    my $fpath = File::Spec->catfile($template_dir, $name);
+    unless (-d $fpath) {
+        die "template not found : $fpath";
+    }
+    File::Copy::Recursive::rcopy_glob(File::Spec->catfile($fpath, "*"), $curdir);
+    my $init_sh = File::Spec->catfile($curdir, "__init.sh");
+    if (-x $init_sh) {
+        print "executing : $init_sh\n";
+        system($init_sh) == 0 or die "failed: $init_sh\n";
+        unlink($init_sh);
+    }
+    print "import : $name\n";
+}
+
+__END__
+
+=head1 NAME
+
+    tmpl - Tiny template manager
+
+=head1 SYNOPSIS
+
+
+=head1 OPTIONS
+
+
+=head1 AUTHOR
+
+pekepeke <pekepekesamurai+github@gmail.com>

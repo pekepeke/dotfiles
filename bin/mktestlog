@@ -1,0 +1,96 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+use Pod::Usage;
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+
+my %opts;
+GetOptions(\%opts, qw(
+    help|h
+    pattern|p=s
+    type|t=s
+    count|n=i
+));
+usage if $opts{help};
+usage unless %opts;
+$opts{pattern} = "dummy_*.log" unless $opts{pattern};
+$opts{type} = "date" if !$opts{type} || (
+    $opts{type} ne "number"
+);
+$opts{count} = 1 unless $opts{count};
+
+my $now = time;
+my ($pattern, $s, $tm);
+
+for my $i (1..$opts{count}) {
+    $pattern = $opts{pattern} . "";
+    $tm = $now - ($i * 3600 * 24);
+    if ($opts{type} eq "date") {
+        $s = format_date($tm);
+    } else {
+        $s = $i;
+    }
+    $pattern =~ s/\*/$s/g;
+    unless (-e $pattern) {
+        open my $fh, '>', $pattern or die "$pattern: $!";
+        print $fh $pattern;
+        close($fh);
+        utime $tm, $tm, $pattern;
+        printf("created:%s\n", $pattern);
+    } else {
+        printf("skip - already file exists:%s\n", $pattern);
+    }
+}
+
+sub format_date {
+    my $tm = shift;
+    my ($day, $month, $year) = (localtime($tm))[3..5];
+    sprintf("%04d%02d%02d", $year + 1900, $month + 1, $day);
+}
+
+__END__
+
+=head1 NAME
+
+    mktestlog - make dummy log files
+
+=head1 SYNOPSIS
+
+
+=head1 OPTIONS
+
+=over
+
+=item --help, -h
+
+show help message
+
+=item --pattern=[pattern], -p [pattern]
+
+filename pattern(default=C<dummy_*.log>)
+
+=item --type=[type], -t [type]
+
+specify substitute method. [ number or date]
+
+=item --count=[count], -c [count]
+
+specify file count
+
+=back
+
+=head1 AUTHOR
+
+

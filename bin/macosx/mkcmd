@@ -1,0 +1,50 @@
+#!/bin/bash
+
+opt_force=0
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h] [name] [command...]
+EOM
+  exit 1
+}
+
+main() {
+  fname=$1
+  if [ $# -ge 2 ]; then
+    shift
+  fi
+  if [ x$fname = x ]; then
+    echo "invalid arguments"
+    usage
+  fi
+  if [ $opt_force -ne 1 -a -e $fname ]; then
+    echo "already exist : $fname"
+    exit 2
+  fi
+  cat <<EOM > $fname.command
+#!/bin/sh
+
+cd \$(dirname \$0)
+$@
+EOM
+  chmod +x $fname.command
+  echo "created : $fname.command"
+}
+
+while getopts "hvf" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    f)
+      opt_force=1 ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

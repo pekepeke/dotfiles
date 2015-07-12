@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [ -n "$TMUX" ]; then
+  printf '\033]2;%s\033\\' "$*"
+fi

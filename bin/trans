@@ -1,0 +1,98 @@
+#!/usr/bin/env php
+<?php
+
+define('YOURCLIENTID', getenv("BING_CLIENTID"));
+define('YOURCLIENTSECRET', getenv("BING_CLIENTSECRET"));
+define('PRIMARY_LANG', 'ja');
+
+//set_include_path(implode(PATH_SEPARATOR,
+//array(
+//	get_include_path(),
+//	dirname(__FILE__).'/lib',
+//)));
+//
+class BingAPI {
+	var $client_id;
+	var $client_secret;
+	var $scope;
+	var $grant_type;
+	var $token;
+
+	function __construct($cid,$csec,$scp,$gt){
+		$this->client_id = $cid;
+		$this->client_secret = $csec;
+		$this->scope = $scp;
+		$this->grant_type = $gt;
+	}
+
+	function oAuth(){
+		$url = "https://datamarket.accesscontrol.windows.net/v2/OAuth2-13";
+		$arg = array(
+			"client_id" => $this->client_id,
+			"client_secret" => $this->client_secret,
+			"scope" => $this->scope,
+			"grant_type" => $this->grant_type
+		);
+		//POSTオプション
+		$options = array('http' => array(
+			'method' => 'POST',
+			'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+			'content' => http_build_query($arg, "", "&"),
+		));
+
+		$this->token = $token = file_get_contents($url,false,stream_context_create($options));
+		$json = json_decode($token);
+
+		return $json->access_token;
+
+	}
+
+	function translate($text, $from, $to, $token = null){
+		is_null($token) && $token = $this->toekn;
+		$data = array(
+			"Text" => $text,
+			"To" => $to,
+			"From" => $from
+		);
+		$url = "http://api.microsofttranslator.com/v2/Http.svc/Translate?".http_build_query($data);
+		$options = array('http' => array(
+			'method' => 'GET',
+			'header' => "Authorization: Bearer ". $token,
+			//'content' => http_build_query($arg, "", "&")
+		));
+
+		$result = file_get_contents($url,false,stream_context_create($options));
+
+		return $result;
+	}
+}
+
+if (basename(__FILE__) == basename($_SERVER['PHP_SELF'])) {
+	if (empty($argv[1])) {
+		die("text not found");
+	}
+	$text = $argv[1];
+	$from = PRIMARY_LANG;
+	if (!empty($argv[2])) {
+		$from = $argv[2];
+	} elseif (preg_match('/^[\x20-\x7E]+$/', $text)) {
+		$from = "en";
+	}
+
+	if (!empty($argv[3])) {
+		$to = $argv[3];
+	} elseif ($from == PRIMARY_LANG) {
+		$to = "en";
+	} elseif (empty($to)) {
+		$to = PRIMARY_LANG;
+	}
+	$bing = new BingAPI(
+		YOURCLIENTID, YOURCLIENTSECRET,
+		"http://api.microsofttranslator.com",
+		"client_credentials"
+	);
+	$token = $bing->oAuth();
+	$s = $bing->translate($text, $from, $to, $token);
+	$xml = simplexml_load_string($s);
+	echo (string) $xml . "\n";
+}

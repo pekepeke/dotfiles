@@ -1,0 +1,7 @@
+#!/usr/bin/osascript
+
+if application "Safari" is running then
+    tell application "Safari"
+        do JavaScript "location.reload(true);" in document 1
+    end tell
+end if

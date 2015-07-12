@@ -1,0 +1,11 @@
+#!/bin/bash
+
+MYNAME=$(basename $0)
+VIM=${MYNAME#ag}
+
+selected="$(ag $@ | peco | awk -F : '{print "-c " $2 " \"" $1 "\""}')"
+
+if [ -n "$selected" ]; then
+  eval $VIM $(echo $selected)
+fi
+

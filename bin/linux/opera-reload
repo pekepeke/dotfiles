@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cur_win=$(xdotool getactivewindow)
+xdotool search --onlyvisible --name "Opera" windowactivate key --clearmodifiers ctrl+r
+xdotool windowactivate ${cur_win}
+

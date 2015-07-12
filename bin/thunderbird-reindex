@@ -1,0 +1,85 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  local PROFILE
+  case $OSTYPE in
+    cygwin*)
+      PROFILE="~/Application Data/Thunderbird/Profiles"
+      cygstart file ;;
+    darwin*)
+      PROFILE=~/Library/Thunderbird/Profiles
+      ;;
+    bsd*)
+      PROFILE=~/.mozilla-thunderbird/Profiles
+      ;;
+    linux*)
+      PROFILE=~/.mozilla-thunderbird/Profiles
+      ;;
+    solaris*)
+      PROFILE=~/.mozilla-thunderbird/Profiles
+      ;;
+    *)
+      PROFILE=~/.mozilla-thunderbird/Profiles
+      ;;
+  esac
+  local PROG=$(basename $0)
+  if [ $(ps aux | grep -i thunderbird | grep -v grep | grep -v $PROG | wc -l) -gt 0 ]; then
+    echo "Thunderbird is running"
+    exit 2
+  fi
+  if [ ! -e "$PROFILE" ]; then
+    echo "folder not found : $PROFILE"
+    exit 3
+  fi
+  # exit 0
+  (
+    IFS=$'\n';
+    for d in $(find "$PROFILE" -maxdepth 1 -type d); do
+      cd "$d"
+      for f in $(ls *.sqlite 2>/dev/null); do
+        echo "optimize $d/$f"
+        sqlite3 $f vacuum
+        sqlite3 $f reindex
+      done
+    done
+  )
+
+  cat <<EOM
+# recommended settings
+
+- OFF => [環境設定]>[詳細]>[高度な設定]で”グローバル検索と索引…”
+
+- about:config
+
+config.trim_on_minimize
+EOM
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

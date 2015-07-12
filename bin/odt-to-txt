@@ -1,0 +1,27 @@
+#!/usr/bin/env perl
+# Simplistic OpenDocument Text (.odt) to plain text converter.
+# Author: Philipp Kempgen
+
+if (! defined($ARGV[0])) {
+    print STDERR "No filename given!\n";
+    print STDERR "Usage: $0 filename\n";
+    exit 1;
+}
+
+my $content = '';
+open my $fh, '-|', 'unzip', '-qq', '-p', $ARGV[0], 'content.xml' or die $!;
+{
+    local $/ = undef;  # slurp mode
+    $content = <$fh>;
+}
+close $fh;
+$_ = $content;
+s/<text:span\b[^>]*>//g;           # remove spans
+s/<text:h\b[^>]*>/\n\n*****  /g;   # headers
+s/<text:list-item\b[^>]*>\s*<text:p\b[^>]*>/\n    --  /g;  # list items
+s/<text:list\b[^>]*>/\n\n/g;       # lists
+s/<text:p\b[^>]*>/\n  /g;          # paragraphs
+s/<[^>]+>//g;                      # remove all XML tags
+s/\n{2,}/\n\n/g;                   # remove multiple blank lines
+s/\A\n+//;                         # remove leading blank lines
+print "\n", $_, "\n\n";

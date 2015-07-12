@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ x"$1" = x ]; then
+  exit 1
+fi
+
+for f in $(find "$1" -type d -links 2); do
+  if [ "$f" !~ "/.git/" ]; then
+    echo touch $f/.gitempty
+    touch $f/.gitempty
+  fi
+done
+

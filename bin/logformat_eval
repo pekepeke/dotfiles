@@ -1,0 +1,114 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+binmode STDOUT, "utf8";
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+use Pod::Usage;
+
+my %CHARMAPPING = (
+    '%' => 'パーセント記号',
+    a => 'リモート IP アドレス',
+    A => 'ローカル IP アドレス',
+    B => 'レスポンスのバイト数(HTTPヘッダ以外)',
+    b => 'レスポンスのバイト数(HTTPヘッダ以外)',
+    C => 'クッキー値',
+    D => 'リクエスト処理時間(マイクロ秒単位)',
+    e => '環境変数',
+    f => 'ファイル名',
+    h => 'リモートホスト',
+    H => 'リクエストプロトコル',
+    i => 'リクエストヘッダ内容',
+    l => 'リモートログ名',
+    m => 'リクエストメソッド',
+    n => '他モジュールからのメモ',
+    o => '応答ヘッダの内容',
+    p => 'リクエストを扱っているサーバの正式なポート',
+    P => 'リクエストを扱った子プロセスのプロセス ID',
+    q => '問い合せ文字列',
+    r => 'リクエストの最初の行',
+    s => 'ステータス',
+    '>s' => '最終ステータスコード',
+    t => '時刻',
+    T => 'リクエストを扱うのにかかった時間、秒単位',
+    u => 'リモートユーザ ',
+    U => 'リクエストされた URL パス(クエリ文字列なし)',
+    v => 'ServerName',
+    V => 'ServerName(UseCanonicalName)',
+    X => '応答完了時の接続ステータス(X:abort,+:conn,-:close)',
+    I => '受信バイト数(リクエスト,ヘッダ含)',
+    O => '送信バイト数(ヘッダを含)',
+);
+my $charmaps = join '|', map { quotemeta } keys %CHARMAPPING;
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+sub title_formatter {
+    my ($opt, $key) = @_;
+    $opt = $opt || "";
+    return $CHARMAPPING{$key} . $opt if $CHARMAPPING{$key};
+    '%'. $opt . $key;
+}
+
+sub get_title {
+    my $format = shift;
+    $format =~ s/\%(\{[\w\-_\.]*\})?($charmaps)/&title_formatter($1, $2)/eg;
+    $format =~ s/\\t/\t/g;
+    $format =~ s/\\[rn]/\n/g;
+    $format =~ s/\\(.)/$1/g;
+    $format;
+}
+
+my $opt_help;
+Getopt::Long::Configure("bundling");
+GetOptions(
+    'h|help' => \$opt_help,
+) or usage;
+usage if $opt_help;
+
+
+for my $fpath ($#ARGV < 0 ? undef : @ARGV) {
+    my $fh;
+    if (-f $fpath) {
+        open $fh, '<', $fpath or die "$fpath: $!";
+    } elsif ($fpath) {
+        print get_title($fpath) . "\n";
+        next;
+    } else {
+        $fh = *STDIN;
+    }
+    while (<$fh>) {
+        s/[\r\n]+//g;
+        if (/^\s*(LogFormat)\s+"(.*)"\s*(.*)?\s*$/i) {
+            my $format = $2;
+            print get_title($format) . "\n";
+        }
+    }
+    if ($fpath) {
+        close($fpath);
+    }
+}
+
+
+
+__END__
+
+=head1 NAME
+
+    logformat_eval - desc
+
+=head1 SYNOPSIS
+
+
+=head1 OPTIONS
+
+
+=head1 AUTHOR
+

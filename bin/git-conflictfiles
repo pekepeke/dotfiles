@@ -1,0 +1,18 @@
+#!/bin/bash
+
+(
+  IFS=$'\n';
+  for line in $(git ls-files -u | awk '{print $2 " " $3 " " $4}'); do
+    hash=$(echo $line | cut -d" " -f1)
+    number=$(echo $line | cut -d" " -f2)
+    orig_filename=$(echo $line | cut -d" " -f3)
+    filename=$(echo $orig_filename | sed "s/\(\..*\)$/_$number\1/")
+    echo git show :$number:$orig_filename
+    if [ ! -e "$filename" ]; then
+      eval git show :$number:$orig_filename > $filename
+      echo "output: $filename - $hash[$orig_filename]"
+    else
+      echo "cannot write $filname : already exists" 1>&2
+    fi
+  done
+)

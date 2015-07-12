@@ -1,0 +1,10 @@
+#!/bin/bash
+
+DIR="/Applications/Xcode.app/Contents/Developer/Applications"
+for f in "iPhone Simulator" "iOS Simulator"; do
+  if [ -e "${DIR}/${f}.app" ]; then
+    open -a "${f}"
+    break
+  fi
+done
+

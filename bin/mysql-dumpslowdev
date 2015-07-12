@@ -1,0 +1,98 @@
+#!/bin/bash
+
+TM=$(date +'%Y%m%d-%s')
+LOG="/tmp/mysql-$TM.log"
+REPORT="/tmp/mysql-report-$TM.log"
+MYSQL="mysql $@"
+
+show_query_log=0
+show_query_log_file=/tmp/mysql-slowlog.log
+long_query_time=10
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+echoerr() {
+  echo "$@" 1>&1
+}
+
+log_restore() {
+  slow_query_log=$($MYSQL -N -e 'select @@slow_query_log')
+  slow_query_log_file=$($MYSQL -N -e 'select @@slow_query_log_file')
+  long_query_time=$($MYSQL -N -e 'select @@long_query_time')
+}
+
+print_log_enable() {
+  cat <<EOM
+  set global slow_query_log = 1;
+  set global slow_query_log_file = '$LOG';
+  set global long_query_time = 0;
+EOM
+}
+
+print_log_disable() {
+  cat <<EOM
+  set global slow_query_log = $slow_query_log;
+  set global slow_query_log_file = '$slow_query_log_file';
+  set global long_query_time = $long_query_time;
+EOM
+}
+
+log_enable() {
+  print_log_enable | $MYSQL
+}
+
+log_disable() {
+  print_log_disable | $MYSQL
+}
+
+log_disable_with_exit() {
+  log_disable
+  echoerr "canceled"
+  exit 2
+}
+
+main() {
+  log_restore
+  
+  trap log_disable_with_exit 2
+  #echo $slow_query_log
+  #echo $slow_query_log_file
+  #echo $long_query_time
+  #exit 1
+  log_enable | $MYSQL
+
+  echoerr "capturing sql queries..."
+  sleep 100
+
+  log_disable | $MYSQL
+
+  mysqldumpslow -s t $LOG > $REPORT
+  echoerr "finish : $REPORT"
+}
+
+# OPTIND_OLD=$OPTIND
+# OPTIND=1
+# while getopts "hvs:" opt; do
+#   case $opt in
+#     h)
+#       usage ;;
+#     v) ;;
+#     s)
+#       #$OPTARG
+#       ;;
+#   esac
+# done
+# shift `expr $OPTIND - 1`
+# OPTIND=$OPTIND_OLD
+# if [ $OPT_ERROR ]; then
+#   usage
+# fi
+
+main
+

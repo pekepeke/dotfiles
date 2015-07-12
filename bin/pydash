@@ -1,0 +1,227 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import sqlite3, plistlib
+import os, glob
+import threading
+
+class Docset(object):
+    DB_TYPE_DASH = 1
+    DB_TYPE_ZDASH = 2
+    def __init__(self, docset_path):
+        self.name = os.path.basename(docset_path).replace(".docset", "")
+        self.docset_path = docset_path
+        self.database_path = os.path.join(docset_path, "Contents", "Resources", "docSet.dsidx")
+        # self.icon_path
+        self.con = None
+        self.db_type = None
+        self.lang_type = ""
+        plist = plistlib.readPlist(os.path.join(docset_path, "Contents", "Info.plist"))
+        for key in ("DocSetPlatformFamily", "CFBundleIdentifier"):
+            if key in plist:
+                self.lang_type = plist[key].lower()
+                break
+        self.lang_types = [self.lang_type] if len(self.lang_type) > 0 else []
+        for key in ("DashDocSetKeyword", "DashDocSetPluginKeyword", ):
+            if key in plist and not (plist[key] in self.lang_types):
+                self.lang_types.append(plist[key])
+
+    def match_lang_types(self, lang):
+        return len(filter(lambda x: x.find(lang.lower()) >= 0, self.lang_types)) > 0
+
+    def is_available(self):
+        return os.path.exists(self.database_path)
+
+    def connect(self):
+        if not self.con:
+            self.con = sqlite3.connect(self.database_path)
+            self.con.row_factory = sqlite3.Row
+        return self.con
+
+    def close(self):
+        self.con.close()
+        self.con = None
+
+    def find(self, query):
+        # con = self.connect()
+        con = self.con
+        (sql, params) = self.query_sql(query)
+        c = con.execute(sql, params)
+        rows = c.fetchall()
+        results = []
+        for row in rows:
+            results.append({
+                "title": row["name"],
+                "subtitle": self.name,
+                # icon_path :
+                "path": self.htmldoc_path(row["path"]),
+            })
+        return results
+
+    def htmldoc_path(self, path):
+        return os.path.join(self.docset_path, "Contents", "Resources", "Documents", path)
+
+    def is_exists_table(self, table):
+        sql = u"SELECT name FROM sqlite_master WHERE type='table' AND name= ?"
+        # con = self.connect()
+        con = self.con
+        c = con.execute(sql, (table, ))
+        row = c.fetchone()
+        return row
+
+    def query_sql(self, query):
+        if not self.db_type:
+            self.db_type = self.DB_TYPE_DASH if self.is_exists_table(u"searchIndex") \
+                else self.DB_TYPE_ZDASH
+        sql = ""
+        params = ()
+        if self.db_type == self.DB_TYPE_DASH:
+            sql = u"""
+            select * from searchIndex where name like ? order by name = ? desc, name like ? desc limit 30
+            """
+            params = ('%' + query + '%', query, query + '%')
+        elif self.db_type == self.DB_TYPE_ZDASH:
+            sql = u"""
+            select ztokenname as name, zpath as path from ztoken
+            join ztokenmetainformation on ztoken.zmetainformation = ztokenmetainformation.z_pk
+            join zfilepath on ztokenmetainformation.zfile = zfilepath.z_pk
+            where (ztokenname like ?) order by length(ztokenname), lower(ztokenname) asc, zpath asc limit 30
+            """
+            params = ('%' + query + '%', )
+        return (sql, params)
+
+class DocsetCollection(object):
+    def __init__(self, filenames):
+        self.docsets = docsets = []
+        self.threads = []
+        for f in filenames:
+            d = Docset(f)
+            if d.is_available():
+                docsets.append(d)
+
+    def search(self, query):
+        threads = []
+        (lang, keyword) = self.parse_query(query)
+        for docsets in self.split_docsets(lang):
+            th = DocsetCollectionThread(docsets, keyword)
+            threads.append(th)
+            th.start()
+
+        self.threads = threads
+
+    def collect_results(self):
+        if not self.threads:
+            return []
+        results = []
+        for th in self.threads:
+            th.join()
+            results.extend(th.results)
+        return results
+
+    def split_docsets(self, lang):
+        import multiprocessing
+
+        num = multiprocessing.cpu_count()
+        docsets = self.filter_docsets_by_lang(lang)
+
+        docset_len = len(docsets)
+        each_len = int(round(docset_len / num))
+        if each_len <= 0:
+            each_len = 1
+        i = 0
+        thread_sets = []
+        while i < docset_len:
+            next_i = i + each_len
+            if next_i > docset_len:
+                next_i = docset_len
+
+            thread_sets.append(docsets[i:next_i])
+            i = next_i
+        return thread_sets
+
+    def filter_docsets_by_lang(self, lang):
+        docsets = list(self.docsets)
+        if not lang:
+            return docsets
+
+        return [x for x in docsets if x.match_lang_types(lang)]
+
+    def parse_query(self, query):
+        words = query.split(u":")
+        if len(words) <= 1:
+            return (None, query)
+        lang = words.pop(0)
+        return (lang.lower(), ":".join(words))
+
+class DocsetCollectionThread(threading.Thread):
+    def __init__(self, docsets, query):
+        super(DocsetCollectionThread, self).__init__()
+        self.docsets = docsets
+        self.query = query
+        self.results = None
+
+    def run(self):
+        results = []
+        for d in self.docsets:
+            d.connect()
+            results.extend(d.find(self.query))
+            d.close()
+        self.results = results
+
+def print_text(results):
+    for r in results:
+        print("%-25s\t%-10s\t%s" % (r["title"], r["subtitle"], r["path"]))
+
+def print_html(results):
+    html = """
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Dash</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+		<!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+                %s
+			</div>
+		</div>
+		<script src="http://code.jquery.com/jquery.js"></script>
+		<!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	</body>
+</html>
+"""
+    s = ""
+    for r in results:
+        s += '<a href="%s"><div class="span4">%s(%s)</div></a>' %(r["path"], r["title"], r["subtitle"], )
+    print(html % s)
+
+def main():
+    files = glob.glob(os.path.expanduser('~/Library/Application Support/Dash/DocSets/*/*.docset'))
+    files.extend(glob.glob(os.path.expanduser('~/Library/Developer/Shared/Documentation/DocSets/*.docset')))
+    files.extend(glob.glob(os.path.expanduser('~/Library/Application Support/Dash/Cheat Sheets/*/*.docset')))
+    dc = DocsetCollection(files)
+
+    import sys
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("-f", "--format", dest="format", default="text",
+            help="output format")
+    (options, args) = parser.parse_args()
+    dc.search(" ".join(args))
+
+    results = dc.collect_results()
+    if options.format == "text":
+        print_text(results)
+    elif options.format == "html":
+        print_html(results)
+
+if __name__ == '__main__':
+    main()

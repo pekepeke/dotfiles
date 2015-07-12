@@ -1,0 +1,13 @@
+# vim:fdm=marker sw=2 ts=2 ft=conf noexpandtab:
+'phpunit/phpunit:*'
+'phpunit/phpunit-skeleton-generator:*'
+'fabpot/php-cs-fixer:dev-master'
+# phing/phing
+# squizlabs/php_codesniffer
+# phploc/phploc
+# pdepend/pdepend
+phpmd/phpmd
+sebastian/phpcpd
+theseer/phpdox
+apigen/apigen:2.*
+# apigen/apigen:4.*

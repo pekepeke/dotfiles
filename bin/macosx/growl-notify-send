@@ -1,0 +1,91 @@
+#!/bin/bash
+
+notify-script() {
+	# if (count argv) ≥ 2 then
+	# 	set the_title to item 1 of argv
+	# 	set the_description to item 2 of argv
+	# end if
+  [ -n "$icon_statement" ] && NOTIFY_EOF="¬"
+  cat <<EOM
+on run argv
+	set the_title to "$title"
+	set the_description to "$message"
+
+	tell application "System Events"
+		set isRunning to (count of (every process whose bundle identifier is "com.Growl.GrowlHelperApp")) > 0
+	end tell
+
+
+	if isRunning then
+		tell application id "com.Growl.GrowlHelperApp"
+			-- Make a list of all the notification types
+			-- that this script will ever send:
+			set the allNotificationsList to ¬
+				{"Alert Notification"}
+
+			-- Make a list of the notifications
+			-- that will be enabled by default.
+			-- Those not enabled by default can be enabled later
+			-- in the 'Applications' tab of the growl prefpane.
+			set the enabledNotificationsList to ¬
+				{"Alert Notification"}
+
+			-- Register our script with growl.
+			-- You can optionally (as here) set a default icon
+			-- for this script's notifications.
+			register as application ¬
+				"AlertNotificationCommand" all notifications allNotificationsList ¬
+				default notifications enabledNotificationsList
+
+			--       Send a Notification...
+			notify with name ¬
+				"Alert Notification" title ¬
+				the_title description ¬
+				the_description application name "AlertNotificationCommand"$NOTIFY_EOF
+EOM
+  [ -n "$icon_statement" ] && echo "$icon_statement"
+  cat <<EOM
+		end tell
+	end if
+end run
+EOM
+}
+
+escape_quote() {
+	echo $* | sed -e 's/\(["\\]\)/\\\1/g'
+}
+
+icon_statement=""
+cwd=$(pwd)
+scriptdir=$(cd $(dirname $0); pwd)
+# bundleoptargs=""
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "i:u:b:A:" opt; do
+  case $opt in
+    A)
+      icon_statement="icon of application \"$OPTARG\""
+      ;;
+    i)
+    [ -e "$OPTARG" ] && icon_statement="icon of file://$OPTARG"
+			;;
+    u)
+      [ -e "$scriptdir/.lib/${OPTARG}.png" ] && icon_statement="icon of file://$scriptdir/.lib/${OPTARG}.png"
+      ;;
+		b)
+			bundleoptargs="-activate $OPTARG"
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+# if [ $OPT_ERROR ]; then
+#   usage
+# fi
+
+title="$(escape_quote $1)"
+shift
+message="$(escape_quote $*)"
+
+notify-script "$title" "$message" | osascript

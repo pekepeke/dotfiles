@@ -1,0 +1,11 @@
+#!/bin/sh
+
+selected_function=$(php -r '$fs=get_defined_functions();echo join(PHP_EOL, $fs["internal"]), PHP_EOL;' | sort | peco)
+
+if [ -n "$selected_function" ]; then
+  php --rf "$selected_function"
+  exit 0
+else
+  echo "No function is selected"
+  exit 1
+fi

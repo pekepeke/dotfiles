@@ -1,0 +1,90 @@
+#!/bin/bash
+
+ZEAL="$HOME/Library/Application Support/zeal/docsets"
+DASH="$HOME/Library/Application Support/Dash/DocSets"
+DASH_VERSIONED="$HOME/Library/Application Support/Dash/Versioned Docsets"
+XCODE="$HOME/Library/Developer/Shared/Documentation/DocSets"
+
+alternatives() {
+  cat <<EOM
+Cheat Sheets
+Ruby Docsets
+Cocoa Docsets
+EOM
+
+}
+
+debug() {
+  # echo "$*"
+  return 0
+}
+
+
+__readlink_f() {
+  local TARGET_FILE=$1
+  local FILENAME
+
+  while [ "$TARGET_FILE" != "" ]; do
+    cd `dirname $TARGET_FILE` || return 1
+    FILENAME=`basename $TARGET_FILE`
+    TARGET_FILE=`readlink $FILENAME`
+  done
+
+  echo `pwd -P`/$FILENAME
+}
+
+[ ! -e "$ZEAL" ] && mkdir -p "$ZEAL"
+(
+  IFS=$'\n';
+
+  debug "unlink"
+  for f in $(find "$ZEAL" -maxdepth 1 -name '*.docset'); do
+    debug $f
+    debug $(__readlink_f "$f")
+    if [ ! -e "$(__readlink_f "$f")" ] ; then
+      echo rm $f
+      rm $f
+    fi
+  done
+
+  debug "dash"
+  for f in $(find "$DASH" -maxdepth 2 -type d -name '*.docset'); do
+    if [ ! -e "$ZEAL/$(basename $f)" ]; then
+      echo ln -s "$f" "$ZEAL"
+      ln -s "$f" "$ZEAL"
+    fi
+  done
+
+  debug "ver"
+  for f in $(find "$DASH_VERSIONED" -maxdepth 3 -type d -name '*.docset'); do
+    ver="$(basename $(dirname $f))"
+    z_f="$ZEAL/$(basename $f)"
+    z_f="${z_f%%.docset}_v${ver}.docset"
+    if [ ! -e "$ZEAL/$(basename $z_f)" ]; then
+      echo ln -s "$f" "$z_f"
+      ln -s "$f" "$z_f"
+    fi
+  done
+
+  debug "dname"
+  for dname in $(alternatives); do
+    for f in $(find "$(dirname $DASH)/$dname" -maxdepth 2 -type d -name '*.docset'); do
+      fname="$dname-$(basename $f)"
+      debug $fname
+      if [ ! -e "$ZEAL/$fname" ]; then
+        echo ln -s "$f" "$ZEAL/$fname"
+        ln -s "$f" "$ZEAL/$fname"
+      fi
+    done
+
+  done
+
+
+  for f in $(find "$XCODE" -maxdepth 1 -type d -name '*.docset'); do
+    if [ ! -e "$ZEAL/$(basename $f)" ]; then
+      echo ln -s "$f" "$ZEAL"
+      ln -s "$f" "$ZEAL"
+    fi
+  done
+
+)

@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Copywrong (C) 2012 slowpoke (Proxy) <proxypoke at lavabit dot com>
+# This script is licensed under the WTFPL v2.
+
+# Converts a rar archive into a zip archive. Because fuck rar.
+
+# Requires unrar, which is unfree software. While that certainly sucks,
+# the goal of this script is to get rid of all the rar archives so you
+# don't need unrar anymore.
+
+# You can try to use this script with unrar-free, but since unrar-free
+# can't read all rar archives (fuck closed formats), I can't guarantee
+# that it will work.
+
+ZIP_OPTIONS="-0"
+(
+  IFS=$'\n';
+  retval=0
+  cwd=$(pwd)
+  for f in "$@"; do
+    cd "$cwd"
+    rarfile=$( readlink -f "$f" )
+
+    case "$rarfile" in
+      *.rar )
+        ;; #everything's fine
+      * )
+        echo "This does not seem to be a rar file: $rarfile"
+        echo "Exiting..."
+        retval=2
+        continue
+        # exit 1
+        ;;
+    esac
+
+    tmpdir=$( mktemp -d --tmpdir=/tmp rar2zip.XXXX )
+    zipfile=$( echo $rarfile | sed "s/rar$/zip/")
+    if [ -e "$zipfile" ]; then
+      echo "skip : already exists - $zipfile"
+      continue
+    fi
+
+    echo "Converting $rarfile to $zipfile..."
+
+    echo "Extracting rar archive..."
+    unrar x "$rarfile" $tmpdir > /dev/null
+
+    ret=$?
+
+    if [ $ret -ne 0 ]
+    then
+      echo "unrar failed."
+      retval=1
+    else
+      echo "Creating zip archive..."
+      cd $tmpdir
+      zip -r $ZIP_OPTIONS "$zipfile" * > /dev/null
+    fi
+
+    echo "Cleaning up..."
+    rm -rf $tmpdir
+
+  done
+
+  exit $retval
+)

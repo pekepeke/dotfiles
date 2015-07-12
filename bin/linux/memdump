@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# GREP="/bin/grep"
+# AWK="/bin/awk"
+# PRINTF="/usr/bin/printf"
+# PGREP="/usr/bin/pgrep"
+GREP="grep"
+AWK="awk"
+PRINTF="printf"
+PGREP="pgrep"
+
+if [ $# -lt 1 ]; then
+  echo "usage: ${0} [pid ...]" 1>&2
+  echo " ${0} \`pgrep httpd\`" 1>&2
+  exit 100
+fi
+
+$PRINTF "PID\tRSS\t(peak)\tVM\t(peak)\n"
+
+for p in $@; do
+  status="/proc/${p}/status"
+  if [ -f $status ]; then
+    rsssize=`$GREP '^VmRSS:' $status | $AWK '{print $2}'`
+    rsspeak=`$GREP '^VmHWM:' $status | $AWK '{print $2}'`
+    vmsize=`$GREP '^VmSize:' $status | $AWK '{print $2}'`
+    vmpeak=`$GREP '^VmPeak:' $status | $AWK '{print $2}'`
+    $PRINTF \
+      "%d\t%d\t(%d)\t%d\t(%d)\n" \
+      $p \
+      $rsssize \
+      $rsspeak \
+      $vmsize \
+      $vmpeak
+  fi
+done

@@ -1,0 +1,45 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  local root=$1
+  if [ x"$root" = x ]; then
+    root=~/.vim/neobundle
+  fi
+  local d name
+  for d in $(find $root -type d -depth 1); do
+    if [ ! -e $d/plugin ]; then
+      name=$(basename $d)
+      # grep $name ~/.vimrc | grep NeoBundleLazy
+      grep $name ~/.vimrc | grep NeoBundleLazy | grep -v unite
+    fi
+  done
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

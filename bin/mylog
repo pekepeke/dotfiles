@@ -1,0 +1,758 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+package MyLog; #{{{1
+our $VERSION = '0.0.1';
+
+use FindBin qw($Bin);
+use File::Basename;
+use File::Path;
+use File::Spec;
+use File::Which;
+use File::Find;
+use JSON::PP qw(encode_json);
+
+my $TAILVIEW_REPO = "https://github.com/pekepeke/tailview.git";
+my $MAX_LOG_FILE_SIZE = 10_000_000_000; # byte
+my $EXPIRES = -7; # day
+
+sub new { #{{{2
+    my $class = shift;
+    my $self = {};
+    my %opt = @_;
+    my @props = qw/
+    /;
+
+    for (@props) {
+        if ($opt{$_}) {
+            $self->{$_} = $opt{$_};
+        } else {
+            die "required $_";
+        }
+    }
+
+    bless $self, $class;
+
+    $self->init();
+
+    return $self;
+}
+
+sub init { #{{{2
+    my $self = shift;
+
+    # init other variables;
+    $self->{name_len_max} = 0;
+}
+
+sub run { #{{{2
+    my ($self, $command, $args) = @_;
+
+    $command ||= '';
+    $command =~ s/-/_/g;
+
+    if (my $cmd = $self->can("_cmd_$command")) {
+        $self->init_env();
+        $cmd->($self, $args);
+    } else {
+        $self->_cmd_help();
+    }
+};
+
+sub _cmd_add { #{{{2
+    my ($self, $args) = @_;
+
+    die "invalid arguments" if (@$args < 2);
+
+    my ($alias, $path) = @$args;
+    my $src = Cwd::realpath($path);
+    unless (-d $src) {
+        $src = Cwd::realpath($alias) ;
+        $alias = $path;
+    }
+
+    die "path not found : $path" unless -d $src;
+
+    my $alias_path = File::Spec->catfile($self->logdir, $alias);
+    die "alias is already exists : $alias_path" if -e $alias_path;
+
+    symlink($src, $alias_path) or die "$!";
+}
+
+sub _cmd_remove { #{{{2
+    my ($self, $args) = @_;
+    my ($alias) = @$args;
+    my $fpath = File::Spec->catfile($self->logdir, $alias);
+    die "file not found: $fpath" unless (-l $fpath);
+
+    unlink($fpath);
+}
+
+sub _cmd_list { #{{{2
+    my ($self, $args) = @_;
+    my @entries = $self->get_entries();
+    my @strs = map {
+        sprintf("%".$self->{name_len_max}."s => %s", $_->{name}, $_->{realpath});
+    } @entries;
+    print join("\n", @strs) . "\n";
+    # print join("\n", @files) . "\n";
+}
+
+
+sub _cmd_files {
+    my ($self, $args) = @_;
+    my @entries = $self->get_entries();
+    my @dirs = map {
+        # `find $_->{realpath} -type f 2>/dev/null`;
+        $_->{realpath};
+    } @entries;
+    find({
+        wanted => sub {
+            print $File::Find::name."\n" if -f $File::Find::name and $_ !~ /^[.]/;
+        },
+        follow => 1,
+    }, grep { -e $_ } @dirs);
+    # print join("", @strs);
+}
+
+sub _cmd_which { #{{{2
+    my ($self, $args) = @_;
+
+    my $realpath = $self->get_realpath_by_alias(@$args);
+
+    if ($realpath) {
+        print "$realpath\n";
+    } else {
+        die "alias not found : $args->[0]";
+    }
+}
+
+sub _cmd_clean { #{{{2
+    my ($self, $args) = @_;
+    my @entries = $self->get_entries();
+    for my $f (@entries) {
+        unless ( -e $f->{realpath} ) {
+            unlink File::Spec->catfile($self->logdir, $f->{name});
+            print "delete:". File::Spec->catfile($self->logdir, $f->{name}) . "\n";
+        }
+    }
+
+}
+
+sub _cmd_open { #{{{2
+    my ($self, $args) = @_;
+
+    my $realpath = $self->get_realpath_by_alias(@$args);
+
+    if ($realpath) {
+        MyLog::Util::shell($realpath);
+    } else {
+        die "alias not found : $args->[0]";
+    }
+}
+
+
+sub _cmd_alias { #{{{2
+    my ($self, $args) = @_;
+    my @entries = $self->get_entries();
+    print join("\n", map { $_->{name} } @entries)."\n";
+}
+
+sub _cmd_log_shift { #{{{2
+    my ($self, $args) = @_;
+
+    my ($opts, $argv) = MyLog::Util::get_opts([
+        "expire|e=i",
+    ], $args);
+
+    $EXPIRES = $opts->{expire} if (defined $opts->{expire});
+
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+    $year += 1900; $mon += 1;
+    my $today = sprintf("%04d-%02d-%02d", $year, $mon, $mday);
+    my $mod_tm;
+    my $size;
+    my $expire_tm = time() - (24 * 60 * 60 * abs($EXPIRES));
+
+    my ($required_httpd_restart, $is_httpd) = (0, 0);
+
+    for my $c ($self->get_entries()) {
+        my @files = glob("$c->{realpath}/*");
+
+        $is_httpd = ($c->{name} =~ /^httpd/ or $c->{name} =~ /^apache/);
+        for my $f (@files) {
+            next if (-d $f);
+
+            $mod_tm = (stat($f))[9];
+            if ($mod_tm < $expire_tm) {
+                unlink($f);
+                print "remove : $f\n";
+                next;
+            }
+            if ($f =~ /\.gz$/) {
+                next;
+            }
+            $size = (-s $f) || 0;
+            if ($size > $MAX_LOG_FILE_SIZE) {
+                system("mv $f $f.$today");
+                system("gzip $f.$today");
+                print sprintf("shift : %s -> %s.%s.gz\n", $f, $f, $today);
+                $required_httpd_restart = 1 if $is_httpd;
+            }
+        }
+    }
+
+    MyLog::Util::exec_sudo("apachectl graceful") if $required_httpd_restart;
+}
+
+sub _cmd_viewer { # {{{2
+    my ($self, $args) = @_;
+    $self->_cmd_server($args);
+}
+
+sub _cmd_view { #{{{2
+    my ($self, $args) = @_;
+    $self->_cmd_server($args);
+}
+
+sub _cmd_server { #{{{2
+    my ($self, $args) = @_;
+    my $parent_dir = dirname($self->tailview_dir);
+
+    if (! -d $parent_dir) {
+        mkdir($parent_dir);
+        print "created : $parent_dir\n";
+    }
+    if (! -d $self->tailview_dir) {
+        print "running clone $TAILVIEW_REPO\n";
+        system(sprintf("git clone '%s' '%s'", $TAILVIEW_REPO, $self->tailview_dir));
+        system(sprintf("cd '%s'; npm install", $self->tailview_dir));
+    }
+    die "can't launch viewer" if (! -d $self->tailview_dir);
+    my $node_bin = which("node");
+
+    my $node_conf = $self->config_file("nodebin");
+    unless (defined $node_bin and -f $node_bin) {
+        open my $fh, '<', $node_conf or die "$node_conf: $!";
+        $node_bin = <$fh>;
+        close($fh);
+        die "node not found: $node_bin" unless (-f $node_bin);
+    # } else {
+    #     open my $fh, '>', $node_conf or die "$node_conf: $!";
+    #     print $fh $node_bin;
+    #     close($fh);
+    }
+
+    my $pid = fork;
+    if (defined $pid) {
+        if ($pid) {
+            # parent process
+            my $handler = sub {
+                my $sig = shift;
+
+                kill HUP => $pid;
+                waitpid($pid, 0);
+
+                die "killed by $sig";
+                exit(1);
+            };
+            local $SIG{INT} = $handler; # Ctrl-c
+            local $SIG{HUP} = $handler; # HUP
+            local $SIG{QUIT} = $handler; # QUIT
+            local $SIG{KILL} = $handler; # KILL
+            local $SIG{TERM} = $handler; # TERM
+
+            my @files = glob($self->logdir . "/*");
+            my $prev = scalar(@files);
+            while (1) {
+                my $now = time;
+                @files = glob($self->logdir . "/*");
+                my $current = scalar(@files);
+                if ($prev ne $current) {
+                    $self->write_viewer_json;
+                }
+                $prev = $current;
+                sleep(1);
+            }
+
+            wait();
+            exit(0);
+        } else {
+            # child
+            $self->write_viewer_json;
+            exec(sprintf("cd '%s'; $node_bin node_modules/.bin/coffee main.coffee", $self->tailview_dir));
+            exit(0);
+        }
+    } else {
+        warn "Cannot fork: $!";
+    }
+
+    $self->write_viewer_json;
+    system(sprintf("cd '%s'; node_modules/.bin/coffee main.coffee", $self->tailview_dir));
+
+}
+
+sub _cmd_install_daemon { #{{{2
+    my $self = shift;
+    my $s = "";
+
+    my $node_bin = which("node");
+
+    my $node_conf = $self->config_file("nodebin");
+    unless (defined $node_bin and -f $node_bin) {
+        open my $fh, '<', $node_conf or die "$node_conf: $!";
+        $node_bin = <$fh>;
+        close($fh);
+        die "node not found: $node_bin" unless (-f $node_bin);
+    } else {
+        open my $fh, '>', $node_conf or die "$node_conf: $!";
+        print $fh $node_bin;
+        close($fh);
+    }
+
+    if (MyLog::Util::is_mac()) {
+        my $plist = $self->plist_path;
+        $s = $self->generate_launchd();
+        $self->write_file($plist, $s);
+        system "launchctl load -Fw $plist";
+        system "launchctl start " . basename($plist, ".plist");
+    } else {
+        my $upstart = $self->upstart_path;
+        $s = $self->generate_upstart();
+        my $conf = basename($upstart, ".conf");
+        eval {
+            $self->write_file($upstart, $s);
+        };
+        if ($@) {
+            print $s;
+
+            warn "cannot write file: $@";
+            warn <<EOM
+#
+# please execute folloing commands
+#
+mylog install_daemon | sudo tee $upstart >/dev/null
+
+sudo initctl reload-configuration
+sudo initctl start $conf
+EOM
+;
+            die "abort";
+        }
+        system "initctl reload-configuration";
+        system "initctl start $conf";
+    }
+}
+
+sub _cmd_uninstall_daemon { #{{{2
+    my $self = shift;
+    my $s = "";
+    if (MyLog::Util::is_mac()) {
+        my $plist = $self->plist_path;
+        system "launchctl stop " . basename($plist, ".plist");
+        system "launchctl unload " . $plist;
+        unlink($plist);
+    } else {
+        my $upstart = $self->upstart_path;
+        my $conf = basename($upstart, ".conf");
+        eval {
+            system "initctl stop $conf" or die "initctl stop $conf";
+            unlink($upstart) or die "cannot rm: $upstart";
+            system "initctl reload-configuration";
+        };
+        if ($@) {
+            warn "error : $@";
+            warn <<EOM
+#
+# please execute folloing commands
+#
+
+sudo initctl stop $conf
+rm $upstart
+sudo initctl reload-configuration
+EOM
+;
+            die "abort";
+        }
+    }
+}
+
+sub _cmd_help { #{{{2
+    my ($self, $args) = @_;
+    my $prog = "mylog";
+
+    print <<"...";
+$prog $VERSION
+
+Usage:
+    $prog help                 Show this message
+    $prog list                 Show alias and realpath of file
+    $prog files                Print list of log files
+    $prog add [alias] [path]   Add path
+    $prog remove [alias]       Remove alias
+    $prog which  [alias]       Show realpath
+    $prog open   [alias]       Open realpath with OS Shell
+    $prog log_shift            Shift log files and remove old log files
+        -e [day]               Specify the past day threshold
+    $prog clean                Clean not exist links
+    $prog server               Launch log viewer server(requires Node.js)
+    $prog view                 Alias `server`
+    $prog viewer               Alias `server`
+    $prog install_daemon       Register daemon
+    $prog uninstall_daemon     Unregister daemon
+
+Example:
+    $prog help
+...
+}
+
+sub generate_launchd { #{{{2
+    my $self = shift;
+    my $LABEL = "mylog";
+    my $BIN = "$FindBin::Bin/$FindBin::Script";
+    my $PERL = which("perl");
+    my $debug = 1 ? "" : <<EOM
+  <key>StandardOutPath</key>
+  <string>/tmp/mylog.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/mylog.log</string>
+  <key>Debug</key>
+  <true/>
+EOM
+    ;
+    <<EOM
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>$LABEL</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$PERL</string>
+    <string>$BIN</string>
+    <string>view</string>
+  </array>
+$debug
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>OnDemand</key>
+  <false/>
+</dict>
+</plist>
+EOM
+;
+}
+
+sub generate_upstart { #{{{2
+    my $self = shift;
+    my $LABEL = "mylog";
+    my $BIN = "$FindBin::Bin/$FindBin::Script";
+    my $PERL = which("perl");
+    my $USER = $ENV{USER};
+    my $HOME = $ENV{HOME};
+
+    <<EOM
+description "$LABEL"
+author  "pekepeke <pekepekesamurai+github\@gmail.com>"
+
+start on filesystem
+stop on runlevel [!2345]
+# start on runlevel [2345]
+# stop on runlevel [016]
+
+env RUN_AS_USER=$USER
+env USER=$USER
+env HOME=$HOME
+chdir /tmp
+exec $PERL $BIN view
+respawn
+EOM
+;
+}
+
+sub plist_path { #{{{2
+    my $self = shift;
+    my $basename = basename($FindBin::Script);
+    $ENV{HOME} . "/Library/LaunchAgents/com.github.pekepeke.$basename.plist"
+}
+
+sub upstart_path { #{{{2
+    my $self = shift;
+    my $basename = basename($FindBin::Script);
+    "/etc/init/$basename.conf";
+}
+
+sub write_file { #{{{2
+    my $self = shift;
+    my $fpath = shift;
+    my $s = shift;
+
+    open my $fh, '>', $fpath or die "$fpath: $!";
+    print $fh $s;
+    close($fh);
+}
+
+sub write_viewer_json { #{{{2
+    my $self = shift;
+    my $json = $self->generate_viewer_json();
+
+    # system(sprintf("cd '%s'; git pull && npm install", $self->tailview_dir));
+    $self->write_file(File::Spec->catfile($self->tailview_dir, "config.json"), $json);
+    # open my $fh, '>', File::Spec->catfile($self->tailview_dir, "config.json") or die "config.json: $!";
+    # print $fh $json;
+    # close($fh);
+}
+
+sub generate_viewer_json { #{{{2
+    my $self = shift;
+    my @files = map {
+        {
+            name => basename($_),
+            path => (readlink($_) ? readlink($_) : $_) . "/*log",
+        }
+    } glob($self->logdir . "/*");
+    my $json = encode_json({
+        port => 60081,
+        files => \@files,
+    });
+}
+
+sub get_entries { #{{{2
+    my $self = shift;
+    my @files;
+    my $max = 0;
+    my $name;
+
+    for my $f (glob(File::Spec->catfile($self->logdir, "*"))) {
+        $name = File::Basename::basename($f);
+        push(@files,  {
+            name => $name,
+            realpath => readlink($f),
+        });
+        $max = length($name) if ($max < length($name));
+    }
+    $self->{name_len_max} = $max;
+    @files;
+}
+
+sub get_realpath_by_alias { #{{{2
+    my $self = shift;
+    my ($alias) = @_;
+    my @entries = $self->get_entries();
+
+    return undef unless $alias;
+
+    my @results = grep { $_->{name} eq $alias } @entries;
+
+    @results ? $results[0]->{realpath} : undef;
+}
+
+sub init_env { #{{{2
+    my $self = shift;
+    unless ( -d $self->logdir ) {
+        File::Path::mkpath($self->logdir);
+        # system("mkdir -p ".$self->logdir);
+        # if (MyLog::Util::is_mac()) {
+        #     system("mkdir ".$self->logdir);
+        # } else {
+        #     MyLog::Util::exec_sudo("mkdir ".$self->logdir);
+        #     MyLog::Util::exec_sudo("chown $ENV{USER} ".$self->logdir);
+        # }
+    }
+}
+
+sub logdir { #{{{2
+    my $self = shift;
+    # my $dir = "/var/log";
+    my $dir = $ENV{HOME} . "/.mylog/logs";
+    # $dir = $ENV{HOME} . "/Library/Logs" if MyLog::Util::is_mac();
+    File::Spec->catfile($dir, "apps_" . $ENV{USER});
+}
+
+sub tailview_dir { #{{{2
+    my $self = shift;
+    my $dir = $ENV{HOME} . "/.mylog/tailview";
+    return $dir;
+}
+
+sub config_file {
+    my $self = shift;
+    my $f = shift;
+    die "invalid argument: $f" unless $f;
+    $ENV{HOME} . "/.mylog/$f";
+}
+
+package MyLog::Util; #{{{1
+
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+
+sub get_opts { # {{{2
+    my $parse_strs = shift;
+    my $args = shift;
+    my %opts = ();
+    my @argv = ();
+
+    $parse_strs = [$parse_strs] if ref($parse_strs) ne "ARRAY";
+    {
+        local @ARGV = @{$args};
+        Getopt::Long::Configure("bundling");
+        GetOptions(\%opts, @$parse_strs);
+
+        @argv = @ARGV;
+    }
+
+    (\%opts, \@argv);
+}
+
+sub exec_sudo { # {{{2
+    my @args = @_;
+    my $cmd = join(" ", @args);
+    $cmd = "sudo $cmd" if ($ENV{USER} ne "root");
+
+    print STDERR `$cmd`;
+    print STDERR "executed : $cmd\n";
+}
+
+sub is_win { # {{{2
+    $^O =~ /MSWin/;
+}
+
+sub is_mac { # {{{2
+    $^O =~ /darwin/;
+}
+
+sub is_linux { # {{{2
+    $^O =~ /linux/;
+}
+
+sub is_bsd { # {{{2
+    $^O =~ /freebsd/;
+}
+
+sub shell { # {{{2
+    my $path = shift;
+    if (is_mac()) {
+        system(qq[open \"$path\"]);
+    } elsif (is_linux()) {
+        system(qq["gnome-open \"$path\"]);
+    } elsif (is_bsd()) {
+        system(qq["gnome-open \"$path\"]);
+    } elsif (is_win()) {
+        system(qq["start \"\" \"$path\"]);
+    } else {
+        print STDERR "unknown OS\n";
+    }
+}
+
+sub trash { # {{{2
+    my @files = @_;
+
+    if (is_mac()) {
+        _osx_trash(@files);
+    } elsif (is_linux()) {
+        _linux_trash(@files);
+    } elsif (is_bsd()) {
+        _bsd_trash(@files);
+    } elsif (is_win()) {
+        _win_trash(@files);
+    } else {
+        print STDERR "unknown OS\n";
+    }
+}
+
+sub _linux_trash { # {{{2
+    my @files = grep { -f $_ ? 1 : 0 } @_;
+    return unless scalar(@files);
+
+    my $dst = undef;
+    if (-d "$ENV{HOME}/.Trash") {
+        $dst = "$ENV{HOME}/.Trash";
+    } elsif (-d "$ENV{HOME}/.local/share/Trash") {
+        $dst = "$ENV{HOME}/.local/share/Trash/";
+    } else {
+        $dst = "/var/tmp/";
+    }
+    for my $f (@files) {
+        File::Copy::move($f, $dst) or dir $!;
+    }
+}
+
+sub _bsd_trash { # {{{2
+    my @files = grep { -e $_ ? 1 : 0 } @_;
+    return unless scalar(@files);
+    _linux_trash(@files);
+}
+
+sub _win_trash { # {{{2
+    my @files = grep { -e $_ ? 1 : 0 } @_;
+    return unless scalar(@files);
+    my $vbs_src = <<EOM
+Const ssfBITBUCKET = 10
+Set o = CreateObject("Shell.Application")
+Set n = o.Namespace(ssfBITBUCKET)
+For Each fpath In WScript.Arguments
+    n.movehere fpath
+Next
+EOM
+    ;
+    # my $dir = File::Temp::tempdir();
+    my ($fh, $fpath) = File::Temp::tempfile(
+        "trash_vbs",
+        # DIR=>$dir,
+        SUFFIX=>'.vbs',
+    );
+    print $fh, $vbs_src;
+
+    # TODO test
+    system(sprintf("$ENV{COMSPEC} /c CScript %s %s", $fpath, join(" ", @files)));
+}
+
+sub _osx_trash { # {{{2
+    my @files = grep { -e $_ ? 1 : 0 } @_;
+    return unless scalar(@files);
+
+    my $s = <<EOF
+on run argv
+    set itemArray to {}
+
+    repeat with i in argv
+        set itemArray to itemArray & (i as POSIX file as Unicode text)
+    end repeat
+
+    tell application "Finder"
+        delete itemArray
+    end tell
+end run
+EOF
+    ;
+    system sprintf("osascript -e '%s' %s", $s, join(" ", @files));
+
+}
+
+package main; # {{{1
+use utf8;
+
+use Cwd 'abs_path';
+
+use Carp;
+use Data::Dumper;
+
+sub main { #{{{2
+
+    my $xxx_dir = abs_path($ENV{'MYLOG_ROOT'} || $ENV{'HOME'} . '/.mylog');
+    my $command = shift @ARGV;
+    my $args = \@ARGV;
+
+    MyLog->new(
+        mylog_dir        => $xxx_dir,
+    )->run($command, $args);
+}
+# main loop {{{2
+main() unless caller;
+
+__END__

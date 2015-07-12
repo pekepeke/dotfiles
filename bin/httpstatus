@@ -1,0 +1,181 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+# taken from https://metacpan.org/source/GAAS/HTTP-Message-6.06/lib/HTTP/Status.pm
+my %StatusCode = (
+    100 => 'Continue',
+    101 => 'Switching Protocols',
+    102 => 'Processing',                      # RFC 2518 (WebDAV)
+    200 => 'OK',
+    201 => 'Created',
+    202 => 'Accepted',
+    203 => 'Non-Authoritative Information',
+    204 => 'No Content',
+    205 => 'Reset Content',
+    206 => 'Partial Content',
+    207 => 'Multi-Status',                    # RFC 2518 (WebDAV)
+    208 => 'Already Reported',             # RFC 5842
+    300 => 'Multiple Choices',
+    301 => 'Moved Permanently',
+    302 => 'Found',
+    303 => 'See Other',
+    304 => 'Not Modified',
+    305 => 'Use Proxy',
+    307 => 'Temporary Redirect',
+    400 => 'Bad Request',
+    401 => 'Unauthorized',
+    402 => 'Payment Required',
+    403 => 'Forbidden',
+    404 => 'Not Found',
+    405 => 'Method Not Allowed',
+    406 => 'Not Acceptable',
+    407 => 'Proxy Authentication Required',
+    408 => 'Request Timeout',
+    409 => 'Conflict',
+    410 => 'Gone',
+    411 => 'Length Required',
+    412 => 'Precondition Failed',
+    413 => 'Request Entity Too Large',
+    414 => 'Request-URI Too Large',
+    415 => 'Unsupported Media Type',
+    416 => 'Request Range Not Satisfiable',
+    417 => 'Expectation Failed',
+    418 => 'I\'m a teapot',            # RFC 2324
+    422 => 'Unprocessable Entity',            # RFC 2518 (WebDAV)
+    423 => 'Locked',                          # RFC 2518 (WebDAV)
+    424 => 'Failed Dependency',               # RFC 2518 (WebDAV)
+    425 => 'No code',                         # WebDAV Advanced Collections
+    426 => 'Upgrade Required',                # RFC 2817
+    428 => 'Precondition Required',
+    429 => 'Too Many Requests',
+    431 => 'Request Header Fields Too Large',
+    449 => 'Retry with',                      # unofficial Microsoft
+    500 => 'Internal Server Error',
+    501 => 'Not Implemented',
+    502 => 'Bad Gateway',
+    503 => 'Service Unavailable',
+    504 => 'Gateway Timeout',
+    505 => 'HTTP Version Not Supported',
+    506 => 'Variant Also Negotiates',         # RFC 2295
+    507 => 'Insufficient Storage',            # RFC 2518 (WebDAV)
+    509 => 'Bandwidth Limit Exceeded',        # unofficial
+    510 => 'Not Extended',                    # RFC 2774
+    511 => 'Network Authentication Required',
+);
+
+if (@ARGV==1) {
+    my $key = shift @ARGV;
+    if (my $msg = $StatusCode{$key}) {
+        # httpstatus 403
+        # httpstatus 500
+        printf "%s\n", $msg;
+    } elsif ($key =~ /^[12345]/) {
+        # httpstatus 4
+        # httpstatus 40
+        for (sort keys %StatusCode) {
+            next unless /^$key/;
+            print "$_ $StatusCode{$_}\n";
+        }
+    } else {
+        # httpstatus Bad
+        # httpstatus Forbidden
+        for (sort keys %StatusCode) {
+            next unless $StatusCode{$_} =~ /^$key/;
+            print "$_ $StatusCode{$_}\n";
+        }
+    }
+} else {
+    # List all http status
+    for (sort keys %StatusCode) {
+        print "$_ $StatusCode{$_}\n";
+    }
+}
+
+__END__
+
+=encoding utf8
+
+=head1 NAME
+
+httpstatus - Display HTTP status code information
+
+=head1 SYNOPSIS
+
+    # List 4xx status
+    % httpstatus 4
+    400 Bad Request
+    401 Unauthorized
+    402 Payment Required
+    403 Forbidden
+    404 Not Found
+    405 Method Not Allowed
+    406 Not Acceptable
+    407 Proxy Authentication Required
+    408 Request Timeout
+    409 Conflict
+    410 Gone
+    411 Length Required
+    412 Precondition Failed
+    413 Request Entity Too Large
+    414 Request-URI Too Large
+    415 Unsupported Media Type
+    416 Request Range Not Satisfiable
+    417 Expectation Failed
+    418 I'm a teapot
+    422 Unprocessable Entity
+    423 Locked
+    424 Failed Dependency
+    425 No code
+    426 Upgrade Required
+    428 Precondition Required
+    429 Too Many Requests
+    431 Request Header Fields Too Large
+    449 Retry with
+
+    # List 40x status
+    % httpstatus 40
+    400 Bad Request
+    401 Unauthorized
+    402 Payment Required
+    403 Forbidden
+    404 Not Found
+    405 Method Not Allowed
+    406 Not Acceptable
+    407 Proxy Authentication Required
+    408 Request Timeout
+    409 Conflict
+
+    % httpstatus 500
+    Internal Server Error
+
+    % httpstatus 403
+    Forbidden
+
+    # grep status messages
+    % httpstatus Bad
+    400 Bad Request
+    502 Bad Gateway
+
+    # And, display all messages
+    % httpstatus
+    ...
+
+=head1 DESCRIPTION
+
+App::httpstatus is a simple application to display information about HTTP status code.
+
+=head1 AUTHOR
+
+Tokuhiro Matsuno E<lt>tokuhirom AAJKLFJEF@ GMAIL COME<gt>
+
+=head1 SEE ALSO
+
+=head1 LICENSE
+
+Copyright (C) Tokuhiro Matsuno
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

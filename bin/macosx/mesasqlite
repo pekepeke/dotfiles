@@ -1,0 +1,12 @@
+#!/bin/bash
+
+base="$(basename $0)"
+
+for dir in /Applications ~/Applications ; do
+  if [ -e "$dir/$base.app/Contents/MacOS/$base" ]; then
+    "$dir/$base.app/Contents/MacOS/$base" "$@" &
+    break
+  fi
+done
+
+

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if which xdbg-open >/dev/null 2>&1; then
+  xdbg-open "$@" &
+elif which gnome-open; then
+  gnome-open "$@" &
+else
+  nautilus "$@" &
+fi
+

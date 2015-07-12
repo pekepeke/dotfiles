@@ -1,0 +1,70 @@
+#!/bin/bash
+
+APPBUNDLER_URL="http://java.net/downloads/appbundler/appbundler-1.0.jar"
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+ant-buildxml() {
+  local appname=$1
+  if [ x"$1" = x ]; then
+    echo "appname not found" 1>&2
+    return 1
+  fi
+  local bundler_name="lib/$(basename $APPBUNDLER_URL)"
+cat <<EOM
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="${appname}" default="default" basedir=".">
+
+<taskdef name="bundleapp"
+         classname="com.oracle.appbundler.AppBundlerTask"
+         classpath="lib/appbundler-1.0.jar" />
+
+<target name="bundle-buildapp">
+    <bundleapp outputdirectory="dist"
+        name="${appname}"
+        displayname="${appname}"
+        identifier="components.${appname}"
+        mainclassname="components.${appname}"
+        icon="${appname}.icns"
+        >
+        <classpath file="dist/${appname}" />
+    </bundleapp>
+</target>
+EOM
+}
+
+main() {
+  [ ! -e lib ] && mkdir lib
+  [ ! -e "lib/$(basename $APPBUNDLER_URL)" ] && curl -Lo "lib/$(basename $APPBUNDLER_URL)" "$APPBUNDLER_URL"
+  [ ! -e build.xml ] && ant-buildxml "$@" > build.xml
+  echo "### exec following"
+  echo ""
+  echo "\$ ant bundle-buildapp"
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

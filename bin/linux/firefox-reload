@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if nc -z localhost 4242 >/dev/null 2>&1; then
+  cat <<'EOM' | python
+import telnetlib
+import re
+
+HOST = "localhost"
+PORT = 4242
+telnet = telnetlib.Telnet(HOST, PORT)
+#telnet.read_until(re.compile('repl\d*>'))
+telnet.read_until('repl>')
+telnet.write("content.location.reload(true)\n")
+telnet.write("repl.quit()\n")
+# print telnet.read_all()
+telnet.close()
+EOM
+
+else
+	cur_win=$(xdotool getactivewindow)
+	xdotool search --onlyvisible --name "Mozilla Firefox" windowactivate key --clearmodifiers ctrl+r
+	xdotool windowactivate ${cur_win}
+fi
+

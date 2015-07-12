@@ -1,0 +1,42 @@
+#!/usr/bin/perl
+
+
+	my ($tm, $host, $ip, $query_tm, $lock_tm, $rows_send, $rows_examined,$sql);
+	my $put_flag = 0;
+	csv_put("Time","Host","Host_IP","Query_Time","Lock_Time","Rows_Send","Rows_Examined","SQL");
+    while (<STDIN>) {
+		next if ( m|/.*mysqld, Version:.+ started with:| );
+		next if ( m|Tcp port: \d+  Unix socket: .*.sock| );
+		next if ( m|Time\s+Id\s+Command\s+Argument| );
+	    if (m/^# Time: ([\d: ]+)/) {
+			if ($put_flag) {
+				$sql =~ s/[\t\r\n]+/ /g;
+				$sql = '"'.$sql.'"';
+				csv_put($tm,$host,$ip,$query_tm,$lock_tm,$rows_send,$rows_examined,$sql);
+				$put_flag = 0; $sql = "";
+			}
+		    $tm = $1;
+		} elsif (m/^# User\@Host: ([a-zA-Z\[\]]+)\s*@\s*\[([\d\.]+)\]/) {
+			if ($put_flag) {
+				$sql =~ s/[\t\r\n]+/ /g;
+				$sql = '"'.$sql.'"';
+				csv_put($tm,$host,$ip,$query_tm,$lock_tm,$rows_send,$rows_examined,$sql);
+				$put_flag = 0; $sql = "";
+			}
+			$host = $1;
+			$ip = '"'.$2.'"';
+		} elsif (m/^# Query_time: (\d+)\s+Lock_time: (\d+)\s+Rows_sent: (\d+)\s+Rows_examined: (\d+)/){
+			$query_tm = $1;
+			$lock_tm = $2;
+			$rows_send = $3;
+			$rows_examined = $4;
+		} else {
+			$sql .= $_;
+			$put_flag = 1;
+		}
+		next;
+	}
+
+sub csv_put {
+	print join(',',@_)."\n";
+}

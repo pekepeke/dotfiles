@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for CMD in peco percol; do
+  if type $CMD >/dev/null 2>&1; then
+    git status --short | $CMD | awk '{print $2}'
+    break
+  fi
+done
+

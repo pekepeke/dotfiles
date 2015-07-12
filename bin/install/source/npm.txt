@@ -1,0 +1,45 @@
+# vim:fdm=marker sw=2 ts=2 ft=sh noexpandtab:
+babel
+coffee-script
+js2coffee
+less
+typescript
+tsd
+tern
+jshint
+jsonlint
+csslint
+mdr
+# recess
+# uglify-js
+
+yo
+# grunt-cli
+# grunt-init
+bower
+gulp
+
+# hoxy
+# easymock
+jake
+# ender
+# titanium
+# node-dev
+# node-inspector
+# forever
+# gh-markdown-cli
+# marked
+reveal-md
+# jumly
+# spine.app
+
+# testem
+# mocha
+# karma
+
+hem
+# ws
+# express
+# jade
+
+https://github.com/pekepeke/vim-markdown-helpfile/archive/master.tar.gz

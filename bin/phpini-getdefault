@@ -1,0 +1,40 @@
+#!/bin/bash
+
+
+OPTION_TYPE="production"
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-hd]
+EOM
+  exit 1
+}
+
+main() {
+  local ver="$1"
+  if [ -z "$ver" ]; then
+    echo "required version" 1>&2
+    exit 1
+  fi
+  local URL="https://raw.githubusercontent.com/php/php-src/php-${ver}/php.ini-${OPTION_TYPE}"
+  curl -Ls $URL
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hd" opt; do
+  case $opt in
+    h)
+      usage ;;
+    d) OPTION_TYPE="development" ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

@@ -1,0 +1,85 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  local PROFILE
+  case $OSTYPE in
+    cygwin*)
+      PROFILE="~/Application Data/Mozilla/firefox/Profiles"
+      cygstart file ;;
+    darwin*)
+      PROFILE=~/Library/Application\ Support/Firefox/Profiles
+      ;;
+    bsd*)
+      PROFILE=~/.mozilla/firefox/Profiles
+      ;;
+    linux*)
+      PROFILE=~/.mozilla/firefox/Profiles
+      ;;
+    solaris*)
+      PROFILE=~/.mozilla/firefox/Profiles
+      ;;
+    *)
+      PROFILE=~/.mozilla/firefox/Profiles
+      ;;
+  esac
+  local PROG=$(basename $0)
+  if [ $(ps aux | grep -i firefox | grep -v grep | grep -v $PROG | wc -l) -gt 0 ]; then
+    echo "Firefox is running"
+    exit 2
+  fi
+  if [ ! -e "$PROFILE" ]; then
+    echo "folder not found : $PROFILE"
+    exit 3
+  fi
+  # exit 0
+  (
+    IFS=$'\n';
+    for d in $(find "$PROFILE" -maxdepth 1 -type d); do
+      cd "$d"
+      for f in $(ls *.sqlite 2>/dev/null); do
+        echo "optimize $d/$f"
+        sqlite3 $f vacuum
+        sqlite3 $f reindex
+      done
+    done
+  )
+
+  cat <<EOM
+# recommended settings
+
+- about:config
+
+config.trim_on_minimize:true
+browser.cache.memory.capacity : 16384
+browser.sessionhistory.max_total_viewers : 8
+EOM
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

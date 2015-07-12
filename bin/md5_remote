@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+<?php
+
+if (basename(__FILE__) == basename($_SERVER['PHP_SELF'])) {
+	$script_path = array_shift($argv);
+	$algo = preg_replace('!_remote(\.php)?!', '', basename(__FILE__));
+	foreach ($argv as $filename) {
+		$data = @file_get_contents($filename);
+		$hash = $data === false ? "file not found" : hash($algo, $data);
+		echo sprintf("%s : %s\n", $filename, $hash);
+	}
+}

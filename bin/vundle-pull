@@ -1,0 +1,27 @@
+#!/bin/bash
+
+main () {
+  local f cwd=$(pwd)
+  for f in $(ls ~/.vim/neobundle); do
+    f=~/.vim/neobundle/$f
+    [ ! -d $f ] && continue
+    echo $f
+    cd $f
+    if [ -e .git ] ; then
+      git pull
+      [ -e package.json ] && npm install
+      [ -e .gitmodules ] && git submodule update --init
+      case "$(basename $f)" in
+        *vimproc*)
+          [ -e Makefile ] && make
+          ;;
+        *)
+          [ -e Makefile ] && echo "found : $f/Makefile"
+          ;;
+      esac
+    fi
+  done
+  cd $cwd
+}
+
+main "$@"

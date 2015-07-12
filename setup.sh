@@ -46,8 +46,10 @@ purge_files() {
   local RED="\033[1;31m"
   local DEFAULT="\033[00m"
 
-  for f in $(find ~ -maxdepth 1 -type l -name '.*'); do
-    if [ ! -e "$(readlink $f)" ] ; then
+  local files="$(find ~ -maxdepth 1 -type l -name '.*')"
+  files="${files} ~/bin"
+  for f in $files; do
+    if [ -e $f -a ! -e "$(readlink $f)" ] ; then
       echo -e ${RED}rm "$f"${DEFAULT}
       rm "$f"
     fi
@@ -82,7 +84,7 @@ exec_install() {
   fi
   local skipfiles=""
   local execfiles=""
-  for F in .?* ;do
+  for F in .?* bin ;do
     if matchin "$F" $SKIP_FILES ; then
       # echo -e "${GRAY}skip object $F${DEFAULT}"
       skipfiles="$skipfiles\n${GRAY}skip object $F${DEFAULT}"
@@ -139,6 +141,7 @@ exec_uninstall() {
   else
     files=$(find ~/ -type l -name '.*' -maxdepth 1 -mindepth 1)
   fi
+  $files="${files} ~/bin"
 
   for f in $files; do
     fpath=~/$(basename $f)

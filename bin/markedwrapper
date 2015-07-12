@@ -1,0 +1,112 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+mdown-header() {
+  local title
+  [ x"$1" != x ] && title=$(dirname $1)
+cat <<EOF
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <title>$title</title>
+
+
+  <link rel="stylesheet" href="https://a248.e.akamai.net/assets.github.com/assets/github-9451d40668f9b6ec251395cf57e5d8afbb3b7e41.css" />
+  <link rel="stylesheet" href="https://a248.e.akamai.net/assets.github.com/assets/github2-f9d12e1074375a2006ac017418b399c6a727367d.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/prettify.css"></script>
+
+  <style>
+    .previewPage {
+      margin: 64px auto;
+      width: 920px;
+    }
+  </style>
+
+
+</head>
+<body>
+  <div class="page">
+
+  <div class="previewPage">
+    <div id="readme" class="announce md">
+      <article class="markdown-body entry-content">
+
+EOF
+}
+
+mdown-footer() {
+cat <<'EOF'
+      </article>
+    </div>
+  </div>
+
+  <div>&nbsp;</div>
+
+  </div>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/prettify.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-yaml.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-xq.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-wiki.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-vhdl.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-vb.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-tex.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-sql.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-scala.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-proto.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-n.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-ml.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-lua.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-lisp.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-hs.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-go.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-css.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-clj.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prettify/r224/lang-apollo.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script>
+		jQuery(function($) {
+			$('code').addClass('prettyprint');
+			prettyPrint();
+		})
+	</script>
+</body>
+</html>
+EOF
+}
+main() {
+  for f in $*; do
+    mdown-header
+    marked --gfm --tables $f
+    mdown-footer
+  done
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

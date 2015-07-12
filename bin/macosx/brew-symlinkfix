@@ -1,0 +1,53 @@
+#!/bin/bash
+
+opt_dry_run=0
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  local BREW_HOME=$(brew --prefix)
+  local abs_f
+  local f_name
+  for brew_f in $BREW_HOME/*; do
+    f_name=$(basename $brew_f)
+    if [ $f_name = ".git" -o $f_name = "Library" -o $f_name = "Cellar" ]; then
+      continue
+    fi
+    for f in $(find $brew_f -type l); do
+      abs_f=$(greadlink -f $f)
+      if [ ! -e "$abs_f" ]; then
+        echo "file not found : $f -> $abs_f"
+        echo "rm $f"
+        [ $opt_dry_run -eq 0 ] && rm "$f"
+      fi
+    done
+  done
+
+}
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvd" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    d) opt_dry_run=1;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

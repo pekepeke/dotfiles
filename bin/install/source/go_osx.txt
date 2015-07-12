@@ -1,0 +1,2 @@
+github.com/dinedal/textql
+-x -ldflags -linkmode=external github.com/laurent22/massren

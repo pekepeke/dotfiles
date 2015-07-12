@@ -1,0 +1,38 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  if [ x$1 != x ];then
+    local NAME=$(echo $* | tr "[ \t]" '_')
+    local TARGET=$HOME/Desktop/$(date +'%y%m%d')_$NAME
+    local EXT=md
+    mkdir -p "$TARGET"
+    touch "$TARGET/01_request.$EXT"
+    touch "$TARGET/02_memo.$EXT"
+  fi
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "h:v" opt; do
+  case $opt in
+    h) 
+      usage ;;
+    v) ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

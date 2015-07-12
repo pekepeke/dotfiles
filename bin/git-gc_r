@@ -1,0 +1,48 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h] [directory]
+EOM
+  exit 1
+}
+
+main() {
+  local TARGETS="$*"
+  local cwd=$(pwd)
+  local cur
+  [ x"$1" = x ] && TARGETS=.
+
+  (
+    IFS=$'\n';
+    for TARGET in $TARGETS; do
+      for d in $(find "$TARGET" -type d -name '.git'); do
+        cur=$(dirname $d)
+        echo "entering: $cur..."
+        cd $cur
+        git gc
+        cd $cwd
+        echo "gc completed: $cur..."
+      done
+    done
+  )
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hv" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

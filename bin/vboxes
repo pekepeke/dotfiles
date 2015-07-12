@@ -1,0 +1,200 @@
+#!/usr/bin/env perl
+
+package VBoxes;
+
+use LWP;
+use Storable qw/freeze thaw/;
+use File::Spec;
+use File::Basename;
+use URI::Escape;
+
+sub new { # {{{2
+    my $class = shift;
+    $class = ref $class if ref $class;
+    my $self = bless {
+        url => "http://www.vagrantbox.es/",
+        storage => File::Spec->catfile($ENV{HOME} || $ENV{USERPROFILE}, ".vboxes_cache"),
+        records => [],
+        cache_expired => 24 * 60 * 60, # 1 day
+    }, $class;
+
+    $self->init;
+    $self;
+}
+
+sub init { # {{{2
+    my $self = shift;
+    if ( -f $self->{storage} ) {
+        my $expired = time() - $self->{cache_expired};
+        my $lastmodified = (stat $self->{storage})[9];
+        return $self->restore if ($expired < $lastmodified);
+    }
+
+    $self->parse_from_www;
+    $self->save;
+}
+
+sub run { # {{{2
+    my ($self, $command, $args) = @_;
+
+    $command ||= '';
+    $command =~ s/-/_/g;
+
+    if (my $cmd = $self->can("_cmd_$command")) {
+        $cmd->($self, $args);
+    } else {
+        $self->_cmd_help();
+    }
+};
+
+# commands {{{2
+sub _cmd_search {
+    my ($self, $args) = @_;
+    $self->show(@$args);
+}
+
+sub _cmd_list {
+    my ($self, $args) = @_;
+    $self->show(@$args);
+}
+
+sub _cmd_example {
+    my ($self, $args) = @_;
+    for my $item ($self->filter(@$args)) {
+        $self->format_example($item);
+    }
+}
+
+sub _cmd_help {
+    my ($self, $args) = @_;
+    my $prog = "vboxes";
+    print <<"...";
+$prog $VERSION - A commandline utility to search from vabrantbox.es
+
+Usage:
+    $prog help                          Show this message
+    $prog search                        Search boxes
+    $prog list                          Show boxes
+    $prog example                       Show command line to add box
+...
+;
+
+}
+
+# interfaces {{{2
+sub restore { # {{{3
+    my $self = shift;
+    $self->{records} = Storable::retrieve($self->{storage});
+}
+
+sub save { # {{{3
+    my $self = shift;
+    Storable::nstore $self->{records}, $self->{storage};
+}
+
+sub parse_from_www { # {{{3
+    my $self = shift;
+    my $ua = LWP::UserAgent->new;
+    my $res = $ua->get($self->{url});
+
+    $self->parse_from_string($res->as_string);
+}
+
+sub parse_from_string { # {{{3
+    my $self = shift;
+    my $content = shift;
+
+    my @tr = split(/<tr>/, $content);
+    shift @tr; # remove html
+    shift @tr; # remove header
+
+    my @records = ();
+    for my $line (@tr) {
+        my ($s) = split(/<\/tr>/, $line);
+        if ($s =~ /<th[^<>]*>(.*)<\/th>\s*<td[^<>]*>([^<>]*)<\/td>\s*<td[^<>]*>([^<>]*)<\/td>/) {
+            my @items = ($1, $2, $3);
+            my ($title, $url, $size) = map { s/^\s*|\s*$//g; $_ } @items;
+            push @records, {
+                title => $title,
+                url => $url,
+                size => $size,
+            };
+        }
+    }
+
+    $self->{records} = \@records;
+}
+
+sub show { # {{{3
+    my $self = shift;
+    my @records = $self->filter(@_);
+
+    for my $item (@records) {
+        $self->format_long($item);
+    }
+}
+
+sub format_long { # {{{3
+    my $self = shift;
+    my $item = shift;
+
+    printf("%s  [%s]\n    %s\n", $item->{title}, $item->{size}, $item->{url});
+}
+
+sub format_example { # {{{3
+    my $self = shift;
+    my $item = shift;
+
+    my $name = File::Basename::basename(URI::Escape::uri_unescape($item->{url}), ".box");
+    $name =~ s/\s/_/g;
+    printf("vagrant box add %s %s\n", $name, $item->{url});
+}
+
+sub filter {
+    my $self = shift;
+    my @records = @{$self->{records}};
+
+    if (scalar(@_)) {
+        my @matchers = map { quotemeta } @_;
+        my $matchers_len = scalar(@matchers);
+        my $title;
+        @records = grep {
+            $title = $_->{title};
+            scalar(grep { $title =~ /$_/i } @matchers) >= $matchers_len;
+        } @records;
+    }
+    @records;
+}
+
+1;
+
+
+package main; #{{{1
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+# use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+
+
+# my $opt_help;
+# Getopt::Long::Configure("bundling");
+# GetOptions(
+#     'h|help' => \$opt_help,
+# ) or usage;
+# usage if $opt_help;
+
+sub main { # {{{2
+    my $command = shift @ARGV;
+    my $args = \@ARGV;
+    VBoxes->new()->run($command, $args);
+}
+
+main() unless caller;
+
+__END__
+{{{1
+

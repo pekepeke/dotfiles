@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+
+#$:.push(File.join(File.dirname(__FILE__), 'lib'))
+#require 'rubygems'
+
+require 'nkf'
+require 'time'
+require 'optparse'
+
+def parse(src)
+  src = NKF.nkf("-wm", src)
+  subject = src.match(/^Subject:\s*(.+)/i).to_a[1].to_s.strip
+  to = src.match(/^To\s*(.+)/i).to_a[1].to_s.strip
+  from = src.match(/^From\s*(.+)/i).to_a[1].to_s.strip
+  date = src.match(/^Date:\s*(.+)/i).to_a[1].to_s.strip
+
+  #src = ERB::Util.h(src)
+  #src = src.gsub(%r{https?://[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+},'<a href="\0">\0</a>')
+  body = src.split(/\r\n|\r|\n/).inject(nil){|r,v| 
+    if r.nil? 
+      r = "" if v.empty?
+    else
+      r += v + "\n"
+    end
+  }
+  src = src.sub(/(?:\r\n|\r|\n)/, "\n") #"<br />\n")
+  
+  if date.empty?
+    date = Time.now
+  else
+    date = Time.parse(date)
+  end
+  puts <<-EOM
+Subject : #{subject}
+To      : #{to}
+from    : #{from}
+date    : #{date}
+#{body}
+  EOM
+end
+
+if __FILE__ == $0
+  if ARGV.size <= 0
+    src = $stdin.read
+    parse(src)
+  else
+    is_queue = false
+    ARGV.options do |opts|
+      opts.on("-q", "from queue[with postcat]") do
+        is_queue = true
+      end
+
+      opts.parse!
+    end
+
+    ARGV.each {|name|
+      if is_queue
+        src =  %x[postcat -q #{name}]
+      else
+        src = open(name, "r").read
+      end
+      parse(src)
+    }
+  end
+end
+
+__END__

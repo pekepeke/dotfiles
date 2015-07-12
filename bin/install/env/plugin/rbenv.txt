@@ -1,0 +1,6 @@
+git://github.com/sstephenson/ruby-build.git
+git://github.com/chriseppstein/rbenv-each.git
+git://github.com/carsomyr/rbenv-bundler.git
+git://github.com/sstephenson/rbenv-vars.git
+git://github.com/sstephenson/rbenv-gem-rehash.git
+https://github.com/ianheggie/rbenv-binstubs.git

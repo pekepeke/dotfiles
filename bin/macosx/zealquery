@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# vim:fdm=marker sw=2 ts=2 ft=sh expandtab:
+ZEAL=zeal.app/Contents/MacOS/zeal
+for fpath in /Applications ~/Applications; do
+  if [ -e "$fpath/$ZEAL" ]; then
+    $fpath/$ZEAL --query="$*" >/dev/null 2>&1 &
+    break
+  fi
+done

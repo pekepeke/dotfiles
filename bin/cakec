@@ -1,0 +1,12 @@
+#!/bin/bash
+
+main() {
+  local cwd=$(pwd)
+  local cur_dir=$(cd $(dirname $0);pwd)
+  . $cur_dir/.lib/functions.sh
+
+  cd "${cwd}"
+  cake-dispatch console $*
+}
+
+main "$@"

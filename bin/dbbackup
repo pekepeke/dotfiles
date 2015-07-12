@@ -1,0 +1,22 @@
+#!/bin/sh
+
+dumpfilename() {
+  echo ~/.dbsave/$1/$(_dumpfilename)
+}
+_dumpfilename() {
+  echo $(date +'%Y%m%d').sql.gz
+}
+
+if which mysqldump > /dev/null 2>&1; then
+  [ ! -e ~/.dbsave/mysql/ ] && mkdir -p ~/.dbsave/mysql/
+  mysqldump -u root --all-databases --single-transaction --compact --opt --default-character-set=binary | gzip -c > $(dumpfilename mysql)
+  echo created : $(dumpfilename mysql)
+fi
+
+if which pg_dump > /dev/null 2>&1; then
+  [ ! -e ~/.dbsave/postgresql/ ] && mkdir -p ~/.dbsave/postgresql/
+  pg_dumpall | gzip -c > $(dumpfilename postgresql)
+  echo created : $(dumpfilename postgresql)
+fi
+
+

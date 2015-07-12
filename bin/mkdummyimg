@@ -1,0 +1,284 @@
+#!/usr/bin/env php
+<?php
+
+class Command {
+	var $argv = array();
+	var $opts = array();
+	var $originalOpts = array();
+	var $parseOptions = "hd:f:s:a:c:n:b:";
+	var $extractOptionArray = array(
+		"h" => "help",
+		"s" => "size",
+		"f" => "format",
+		"a" => "alpha",
+		"b" => "bgcolor",
+		"c" => "fgcolor",
+		"n" => "number",
+		"t" => "text",
+	);
+
+	var $dir = ".";
+	var $format = "jpeg";
+	var $height = 50;
+	var $width = 50;
+	var $alpha = 0;
+	var $fg_text = "";
+
+	var $r = 0xCC;
+	var $g = 0xCC;
+	var $b = 0xCC;
+	var $fg_r = 0x00;
+	var $fg_g = 0x00;
+	var $fg_b = 0x00;
+
+	var $number = 1;
+	var $file_prefix = "";
+
+	static function run() {
+		$command = new static();
+		$ret = $command->exec();
+	}
+
+	function exec() {
+		$this->optparse();
+		$this->init();
+
+		$ret = $this->beforeMain();
+		if ($ret != 0) {
+			return 255;
+		}
+		$ret = $this->main();
+		$this->afterMain($ret);
+
+		return $ret;
+	}
+
+	function optparse() {
+		$argv = $GLOBALS['argv'];
+		$options = $this->parseOptions;
+		$opts = getopt($options);
+		foreach( $opts as $o => $a ) {
+			while( $k = array_search("-".$o, $argv) ) {
+				if ($k) {
+					unset($argv[$k]);
+				}
+
+				if (strpos($options, $o . ":") !== false) {// preg_match( "/^.*".$o.":.*$/i", $options) ) {
+					unset($argv[$k+1]);
+				} else {
+					$opts[$o] = isset($opts[$o]);	// convert bool vars
+				}
+			}
+		}
+		array_shift($argv);				// remove prog name
+		$argv = array_merge($argv);		// reindex
+
+		$parsed = array();
+		foreach ($this->extractOptionArray as $f => $key) {
+			if (isset($opts[$f])) {
+				$parsed[$key] = is_bool($opts[$f]) ? true : $opts[$f];
+			}
+		}
+		$this->argv = $argv;
+		$this->opts = $parsed;
+		$this->originalOpts = $opts;
+	}
+
+	function stdin($msg = null, $prompt = "> ") {
+		if ($msg) {
+			echo "" . $msg . " ";
+		}
+		echo $prompt;
+		return chop(fgets(STDIN));
+	}
+
+	function yesno($msg = null) {
+		$s = $this->stdin($msg, "[y/n] > ");
+		$yes_or_no = strtolower($s);
+		return ($yes_or_no == "yes" || $yes_or_no == "y");
+	}
+
+	function err($msg = null) {
+		fputs(STDERR, "[Error] " . $msg . "\n");
+		return $this;
+	}
+
+	function out($msg = null) {
+		echo $msg . "\n";
+		return $this;
+	}
+
+	function error($msg = null) {
+		if ($msg) {
+			$this->err($msg);
+		}
+		$this->afterMain(1);
+		exit(1);
+	}
+
+	function init() {
+		extract($this->opts);
+		if (isset($help)) {
+			$this->usage();
+			exit(1);
+		}
+
+		if (isset($text)) {
+			$this->fg_text = $text;
+		}
+
+		// dir
+		if (isset($dir)) {
+			if (!file_exists($dir)) {
+				mkdir($dir, umask(), true);
+			}
+		}
+		// format
+		if (isset($format)) {
+			$format = strtolower($format);
+			$format == "jpg" && $format = "jpeg";
+			if ($format == "jpeg" || $format == "png" || $format == "gif") {
+				$this->format = $format;
+			}
+		}
+		// size
+		if (isset($size)) {
+			if (preg_match('/^\d+$/', $size, $matches) == 1) {
+				$this->width = $this->height = $matches[0];
+			} elseif (preg_match('/(\d+)x(\d+)/', $size, $matches) == 1) {
+					$this->width = $matches[1];
+					$this->height = $matches[2];
+			}
+		}
+		// alpha
+		if (isset($alpha)) {
+			$this->alpha = intval($alpha);
+		}
+		// bgcolor && fgcolor
+		foreach (array(
+			"bgcolor" => str_split('rgb'),
+			"fgcolor" => array('fg_r', 'fg_g', 'fg_b')
+			) as $var => $names) {
+			if (isset($this->opts[$var])) {
+				$color = $this->opts[$var];
+				$color = preg_replace('/^#/', '', $color);
+				if (strlen($color) == 6) {
+					$cols = str_split($color, 2);
+					foreach ($cols as $i => $k) {
+						$this->{$names[$i]} = hexdec($k);
+					}
+				} else if(strlen($color) == 3) {
+					$cols = str_split($color, 1);
+					foreach ($cols as $i => $k) {
+						$this->{$names[$i]} = hexdec($k.$k);
+					}
+				}
+			}
+		}
+
+		// number
+		if (isset($number)) {
+			$this->number = intval($number);
+		}
+	}
+
+	function beforeMain() {
+		return 0;
+	}
+
+	function afterMain($ret) {}
+
+	function main() {
+		$width = $this->width;
+		$height = $this->height;
+		$format = $this->format;
+		$alpha = $this->alpha;
+		$fg_text = $this->fg_text;
+
+		$r = $this->r;
+		$g = $this->g;
+		$b = $this->b;
+		$fg_r = $this->fg_r;
+		$fg_g = $this->fg_g;
+		$fg_b = $this->fg_b;
+
+		$font_size = 5;
+		$font = null;
+		foreach (array("/System/Library/Fonts/Menlo.ttc") as $fontpath) {
+			if (file_exists($fontpath)) {
+				$font = $fontpath;
+			}
+		}
+
+		$number = $this->number;
+
+		$ext = $format;
+		if ($ext == "jpeg") {
+			$ext = "jpg";
+		}
+		if (!$this->file_prefix) {
+			$this->file_prefix = $width . "x" . $height . "_";
+		}
+
+		$i = 0;
+		// text position
+		$x = $y = 0;
+		// $x = ($width - strlen($fg_text) * 9) / 2;
+		// $x = ($width - strlen($fg_text) * 10) / 2;
+		$y = ($height - 15)/ 2;
+		// ($x < 0) && $x = 0;
+		($y < 0) && $y = 0;
+
+		$img = imagecreate($width, $height);
+		for ($i=0;$i<$number;$i++) {
+			// text
+			if (!$fg_text) {
+				$fg_text = $width . 'x' . $height . ($number > 1 ? "-".$i+1:"");
+			}
+
+			$fpath = sprintf("%s" .DIRECTORY_SEPARATOR. "%s%d.%s", $this->dir, $this->file_prefix, $i + 1, $ext);
+
+			if (file_exists($fpath) && !$this->yesno("overwrite? : $fpath")) {
+				$this->out("canceled");
+				continue;
+			}
+			$bg_color = imagecolorallocatealpha($img, $r, $g, $b, $alpha * 127 / 100);
+			imagefilledrectangle($img, 0, 0, $width, $height, $bg_color);
+
+			$fg_color = imagecolorallocatealpha($img, $fg_r, $fg_g, $fg_b, 0);
+			if (function_exists('imagettftext') && $font) {
+				$font_size = intval($width / 50) + 5;
+				$x = ($width - strlen($fg_text) * $font_size) / 2;
+				($x < 0) && $x = 0;
+				imagettftext($img, $font_size, 0, $x, $y, $fg_color, $font, $fg_text);
+			} else {
+				$font_size = intval($width / 100) + 5;
+				$x = ($width - strlen($fg_text) * ($font_size * 2)) / 2;
+				($x < 0) && $x = 0;
+				imagestring($img, $font_size, $x, $y, $fg_text, $fg_color);
+			}
+
+			$output_fn = 'image'.$format;
+			$output_fn($img, $fpath);
+		}
+		imagedestroy($img);
+	}
+
+	function usage() {
+		$prog = basename(__FILE__);
+		echo <<<EOF
+Usage: $prog [options]
+  -h                  : Show this message
+  -s [width]x[height] : Image size(default=50x50)
+  -f [format]         : Image format(default=jpg)
+  -a [alpha]          : Alpha(default=0)
+  -b [bgcolor]        : Background color(default=#cccccc)
+  -c [fgcolor]        : Font color(default=#000000)
+  -n [number]         : Number of images(default=1)
+EOF;
+	}
+}
+
+if (basename(__FILE__) == basename($_SERVER['PHP_SELF'])) {
+	Command::run();
+}

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+pulist() { # {{{3
+  local ARG i
+  for i in $*; do
+    if [ -z "$ARG" ]; then
+      ARG=$i
+    else
+      ARG=$ARG"|"$i
+    fi
+  done
+  if [ -z "$ARG" ]; then
+    ps aux
+  else
+    ps aux | grep -E "PID|$ARG"
+  fi
+}
+
+pulist "$@"

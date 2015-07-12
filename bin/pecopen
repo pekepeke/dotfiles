@@ -1,0 +1,114 @@
+#!/bin/bash
+
+set -o pipefail
+# set -e
+opt_filter=""
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+Usage: $prg_name [options] [directory] [command] [fallback command...]
+
+Options:
+  -f [filter regexp]    Filter filename by regexp
+  -h                    Show help message and exit
+EOM
+  exit 1
+}
+
+executable() {
+  local BIN=$1
+  if which $BIN >/dev/null 2>&1; then
+    return 0
+  fi
+  return 1
+}
+
+get_findbin_option() {
+  case "$1" in
+    ag|ack|ack-grep)
+       echo ' --noheading --nocolor --nogroup --nopager -g "" '"$2"
+      ;;
+    find)
+      # echo "$2"' -type f | grep -v ".git"'
+      echo "$2"' -type f'
+      ;;
+    files)
+      echo -a=true "$2"
+      ;;
+    *)
+      echo "$2"
+  esac
+}
+
+main() {
+  local DIR=$1
+  shift
+
+  if [ x"${DIR}" = x -o ! -e "${DIR}" ]; then
+    echo "directory not found : ${DIR}" 1>&2
+    exit 10
+  fi
+  if [ -L "$DIR" ]; then
+    DIR="$(python -c 'import os,sys;print os.path.realpath(sys.argv[1])' "$DIR")"
+  fi
+
+  local findbin
+  # slow : ack-grep
+  for findbin in files ag find; do
+  # for findbin in find; do
+    if executable $findbin; then
+      break
+    fi
+  done
+  if [ x"${findbin}" = x ]; then
+    echo "directory scanner command not found" 1>&2
+    exit 11
+  fi
+
+  local findbin_option=$(get_findbin_option $findbin $DIR)
+
+  local FILENAME
+  if [ x"$opt_filter" = x ]; then
+    FILENAME=$(eval $findbin $findbin_option | peco)
+  else
+    FILENAME=$(eval $findbin $findbin_option | grep -e "${opt_filter}" | peco)
+  fi
+
+  if [ x"${FILENAME}" = x ]; then
+    exit 1
+  fi
+
+  if [[ ! $FILENAME =~ ^/ ]]; then
+    FILENAME="$DIR/$FILENAME"
+  fi
+
+  local bin
+  for bin in "$@"; do
+    if executable $bin; then
+      $bin "${FILENAME}"
+      exit $?
+    fi
+  done
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts ":hvf:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    f)
+      opt_filter="$OPTARG"
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

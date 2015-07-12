@@ -1,0 +1,57 @@
+#!/bin/bash
+
+mysql_port=3306
+opt_device=""
+mysql_filter="UPDATE|DELETE|INSERT"
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  tcpdump $opt_device -s 0 -l -w - dst port $mysql_port | strings | perl -e '
+  while (<>) {
+    chomp;
+    next if /^[^ ]+[ ]+$/;
+    if (/^($mysql_filter)/i) {
+      if (defined $q) {
+        print "$q\n";
+      }
+      $q = $_;
+    }
+    else {
+      $_ =~ s/^[ \t]+//;
+      $q .= " $_";
+    }
+  }'
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hp:f:i:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    p)
+      mysql_port=$OPTARG
+      #$OPTARG
+      ;;
+    f)
+      mysql_filter=$OPTARG
+      ;;
+    i)
+      opt_device=" -i $OPTARG "
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

@@ -1,0 +1,63 @@
+#!/bin/bash
+
+PROGNAME=$(basename $0)
+usage() {
+  cat <<EOM
+usage: $PROGNAME [options] [site1] [site2]
+
+EOM
+  exit 1
+}
+
+CMD_OPTIONS=""
+for arg in "$@"; do
+  shift
+  if [[ "$arg" =~ ^-m ]]; then
+    CMD_OPTIONS="$CMD_OPTIONS -W 320 --scale=1 --user-agent='Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A403 Safari/8536.25'"
+    continue
+  fi
+  if [[ "$arg" =~ ^- ]]; then
+    CMD_OPTIONS="$CMD_OPTIONS $arg"
+    continue
+  fi
+  if [ -z "$URL1" ]; then
+    URL1="$arg"
+  elif [ -z "$URL2" ]; then
+    URL2="$arg"
+  fi
+done
+
+if [ x"$URL1" = x -o x"$URL2" = x ]; then
+  usage
+fi
+if !which webkit2png >/dev/null 2>&1 ;then
+  exit "command not found: webkit2png"
+  exit 2
+fi
+if !which composite >/dev/null 2>&1 ;then
+  exit "command not found: composite"
+  exit 2
+fi
+
+OPTION="--ignore-ssl-check -F --timeout=15"
+
+eval webkit2png $OPTION -o /tmp/$PROGNAME-1 $CMD_OPTIONS "$URL1"
+eval webkit2png $OPTION -o /tmp/$PROGNAME-2 $CMD_OPTIONS "$URL2"
+
+composite -compose difference /tmp/$PROGNAME-1-full.png /tmp/$PROGNAME-2-full.png /tmp/$PROGNAME-diff.png
+
+case $OSTYPE in
+  cygwin*)
+    cygstart /tmp/$PROGNAME-diff.png ;;
+  darwin*)
+    open /tmp/$PROGNAME-diff.png ;;
+  bsd*)
+    xdg-open /tmp/$PROGNAME-diff.png ;;
+  linux*)
+    xdg-open /tmp/$PROGNAME-diff.png ;;
+  solaris*)
+    xdg-open /tmp/$PROGNAME-diff.png ;;
+  *)
+    ;;
+esac
+

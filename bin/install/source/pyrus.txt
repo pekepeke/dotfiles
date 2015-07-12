@@ -1,0 +1,8 @@
+set auto_discover on
+channel-discover pear.phpunit.de
+channel-discover components.ez.no
+channel-discover pear.symfony-project.com
+install phpunit/PHPUnit
+install phpunit/PHPUnit_SkeletonGenerator
+install pear/PhpDocumentor
+

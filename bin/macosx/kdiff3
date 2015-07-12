@@ -1,0 +1,15 @@
+#!/bin/sh
+
+APP_BIN=kdiff3.app/Contents/MacOS/kdiff3
+for d in ~/Applications /Applications; do
+  if [ -e "$d/$APP_BIN" ]; then
+    KDIFF="$d/$APP_BIN"
+    break
+  fi
+done
+
+if [ -z "$KDIFF" ]; then
+  echo "command not found $*" 1>&2
+  exit 1
+fi
+${KDIFF} $*

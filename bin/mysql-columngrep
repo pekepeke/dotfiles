@@ -1,0 +1,42 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  local args=""
+  local arg=""
+  local last_arg=""
+  for arg in "$@" ; do
+    args="$args $last_arg"
+    last_arg="$arg"
+  done
+  echo "select * from columns where column_name like '%${last_arg}%'" | mysql $args information_schema | grep -i --color=auto "${last_arg}"
+}
+
+# OPTIND_OLD=$OPTIND
+# OPTIND=1
+# while getopts "hvs:" opt; do
+#   case $opt in
+#     h)
+#       usage ;;
+#     v) ;;
+#     s)
+#       #$OPTARG
+#       ;;
+#   esac
+# done
+# shift `expr $OPTIND - 1`
+# OPTIND=$OPTIND_OLD
+# if [ $OPT_ERROR ]; then
+#   usage
+# fi
+
+main "$@"
+
+

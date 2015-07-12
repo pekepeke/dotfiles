@@ -1,0 +1,134 @@
+#!/bin/bash
+
+ssh_filter_template() {
+    cat <<'EOM'
+ssh_before() {
+  # if [[ "$@" =~ (thomd|prod) ]]; then
+  #   set_iterm_bgcolor 40 0 0
+  # elif [[ "$@" =~ (git) ]]; then
+  #   set_iterm_bgcolor 0 40 0
+  # fi
+  # if [ -n "$TMUX" ]; then
+  #   TMUX_WINDOW_NAME=$(tmux display -p '#w')
+  # fi
+  return 0
+}
+
+ssh_after() {
+  # set_iterm_bgcolor 0 0 0
+  # if [ -n "$TMUX" -a "$TMUX_WINDOW_NAME" ]; then
+  #   tmux rename-window "$TMUX_WINDOW_NAME"
+  # fi
+  return 0
+}
+
+EOM
+}
+
+is_executable() {
+  which $1 >/dev/null 2>&1
+  return $?
+}
+
+get_logfile() {
+  local log_dir="$HOME/.ssh/transcripts/$1"
+  # local log_file="$log_dir/$(date +'%Y-%m-%d-%H%M%S-%s').txt"
+  local log_file="$log_dir/$(date +'%Y-%m-%d').txt"
+  echo $log_file
+}
+
+extract_host() {
+  local host=$(echo "$*" | perl -ne 'm/#\s*([^ ]+)/;print $1;')
+  [ -z "$host" ] && host="$(echo "$*" | perl -pe 's/\s-[bcDEeFIiLlmOopQRw]\s+[^ ]*/ /g;s/\s-\w/ /g' | awk '{ print $2}')"
+  [ -z "$host" ] && host="undetected_host"
+  echo $host
+}
+
+ssh_with_coo-tee() {
+  local host="$(extract_host "ssh $*")"
+  local log_file=$(get_logfile $host)
+  local log_dir=$(dirname $log_file)
+  [ ! -e $log_dir ] && mkdir -p $log_dir
+
+  if [ -n "${local_command}" ]; then
+    ssh -o PermitLocalCommand=yes -o LocalCommand="${local_command}" \
+      "$@" 2>&1 | coo-tee -a -t $log_file
+  else
+    echo ssh "$@"
+    ssh "$@" 2>&1 | coo-tee -a -t $log_file
+  fi
+}
+
+ssh_with_tee() {
+  local host="$(extract_host "ssh $*")"
+  local log_file=$(get_logfile $host)
+  local log_dir=$(dirname $log_file)
+  [ ! -e $log_dir ] && mkdir -p $log_dir
+
+  echo $(date +'%Y-%m-%d %H:%M:%S') ssh "$@" 2>&1 >> $log_file
+  if [ -n "${local_command}" ]; then
+    ssh -o PermitLocalCommand=yes -o LocalCommand="${local_command}" \
+      "$@" 2>&1 | tee -a $log_file
+  else
+    ssh "$@" 2>&1 | tee -a $log_file
+  fi
+  perl -pi -e 's/\e(\[\d*m?(;\d*m)?|\]\d*)//g' $log_file
+}
+
+archive_ssh_logfiles() {
+  local log_dir=~/.ssh/transcripts
+  local archive_log_dir=~/.ssh/archive-transcripts
+
+  [ ! -e $log_dir ] && mkdir -p $log_dir
+  [ ! -e $log_dir/.last_touch ] && touch $log_dir/.last_touch
+  [ ! -e $archive_log_dir ] && mkdir -p $archive_log_dir
+
+  if [ $(find $log_dir/.last_touch -mtime +1 2>/dev/null | wc -l) -eq 1 ]; then
+    touch $log_dir/.last_touch
+    find $log_dir -name "*.txt" -type f -mtime +7 | xargs gzip
+    local host ym
+    for f in $(find $log_dir -name "*.gz" -type f); do
+      ym=$(basename $f | perl -ne 'm/^(\d*-\d*)/; print $1;')
+      host=$(basename $(dirname $f))
+
+      [ ! -e $archive_log_dir/$ym/$host/ ] && mkdir -p $archive_log_dir/$ym/$host/
+      mv $f $archive_log_dir/$ym/$host/
+    done
+  find $log_dir -type d -empty | xargs rmdir
+  fi
+
+}
+
+archive_ssh_logfiles >/dev/null 2>&1 &
+
+[ ! -e ~/.ssh_filter.sh ] && ssh_filter_template > ~/.ssh_filter.sh
+. ~/.ssh_filter.sh
+
+ssh_before "$@"
+
+window_name=
+pane_title=
+if [ -n "$TMUX" ]; then
+  window_name=$(tmux display -p '#{window_name}')
+  pane_title=$(tmux display -p '#{pane_title}')
+  # local_command='tmux rename-window $(echo "%r@%n(%h:%p)")'
+  # local_command='printf "\033]2;%s\033\\\" $(echo "%r@%n(%h:%p))'
+  # printf '\033]2;%s\033\\' 'title goes here'
+  local_command='echo -n "\033]2;%r@%n(%h:%p)\033\\"'
+fi
+
+if is_executable coo-tee; then
+  ssh_with_coo-tee "$@"
+# if is_executable coo; then
+#   coo "$@"
+else
+  ssh_with_tee "$@"
+fi
+
+if [ -n "$TMUX" ]; then
+  tmux rename-window $window_name
+  printf "\033]2;%s\033\\" "${pane_title}"
+  # tmux set-window-option -u automatic-rename
+fi
+
+ssh_after "$@"

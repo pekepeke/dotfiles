@@ -1,0 +1,95 @@
+#!/usr/bin/env sudo perl
+
+use utf8;
+use strict;
+use warnings;
+use lib lib => glob 'modules/*/lib';
+use Net::DNS::Nameserver;
+use Path::Class;
+use Perl6::Say;
+
+my $base = shift || 'local.example.com';
+my $addr = shift || '127.0.0.1';
+my $port = shift || 49152;
+
+my $nameserver;
+
+while ($port++ < 65535) {
+	eval {
+		$nameserver = Net::DNS::Nameserver->new(
+			# Verbose      => 1,
+			LocalAddr    => ['::1' , '127.0.0.1' ],
+			LocalPort    => $port,
+			ReplyHandler => sub {
+				my ($qname, $qclass, $qtype, $peerhost, $query, $conn) = @_;
+				my ($rcode, @ans, @auth, @add);
+
+				say "Received query from $peerhost to ". $conn->{"sockhost"}. " :: qname: $qname";
+				$query->print;
+
+				if ($qtype eq "A") {
+					my ($ttl, $rdata) = (120, $addr);
+					push @ans, Net::DNS::RR->new("$qname $ttl $qclass $qtype $rdata");
+					$rcode = "NOERROR";
+				} elsif ($qtype eq "AAAA") {
+					my ($ttl, $rdata) = (120, "::1");
+					push @ans, Net::DNS::RR->new("$qname $ttl $qclass $qtype $rdata");
+					$rcode = "NOERROR";
+				} else {
+					$rcode = "NXDOMAIN";
+				}
+
+				return ($rcode, \@ans, \@auth, \@add, { aa => 1 });
+			},
+		);
+	};
+	if ($@) {
+		warn $@;
+		next;
+	}
+	last;
+}
+
+my $file = file("/etc/resolver/$base");
+$file->parent->mkpath;
+$SIG{INT} = sub {
+	$file->remove;
+	exit;
+};
+
+my $fh = $file->openw;
+print $fh <<EOS;
+nameserver 127.0.0.1
+port $port
+EOS
+close $fh;
+
+say "*.$base point to localhost";
+say "Ctrl-C to stop";
+$nameserver->main_loop;
+
+__END__
+
+=head1 NAME
+
+localhost.pl - Make temporary DNS server.
+
+=head1 SYNOPSIS
+
+  localhost.pl [basedomain]
+
+  localhost.pl example.com
+  #=> All *.example.com domain point to localhost while script is running.
+
+=head1 AUTHOR
+
+cho45 E<lt>cho45@lowreal.netE<gt>
+
+=head1 SEE ALSO
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=cut

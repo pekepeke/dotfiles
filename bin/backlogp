@@ -1,0 +1,17 @@
+#!/bin/bash
+
+project="$(git config --get backlog.project)"
+if [ -n "$project" ]; then
+  echo do nothing >/dev/null
+elif [[ "$1" =~ ^[^\-] ]]; then
+  project="$1"
+  shift
+else
+  project=$(backlog project list | peco | awk '{print $1}')
+fi
+
+if [ -n "$project" ]; then
+  # backlog issue list $project "$@" | peco --initial-matcher=Migemo
+  backlog issue list $project "$@" | peco
+fi
+

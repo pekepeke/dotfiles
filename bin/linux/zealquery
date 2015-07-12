@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# vim:fdm=marker sw=2 ts=2 ft=sh expandtab:
+zeal --query="$*" >/dev/null 2>&1 &

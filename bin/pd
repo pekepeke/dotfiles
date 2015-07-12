@@ -1,0 +1,21 @@
+#!/bin/sh
+
+PECO=$(which peco);
+PERLDOC_QUERY="";
+# Require a key to cancel peco search in config.json.
+# Example:
+# { "Keymap": { "C-c": "peco.Cancel" } }
+if [ "_$PECO" = "_" ]; then
+  echo "You need to install peco. https://github.com/peco/peco";
+  exit 1;
+fi
+while true; do
+  POD=$(perl -MFile::Find -E'for my $d (grep{/\w/}@INC){find sub{$File::Find::name=~/$d\/?(.*)\.(?:pod|pm)$/&&say $1=~s!/!::!gr},$d;}' | $PECO --query "$PERLDOC_QUERY");
+  if echo $POD | grep -i '[a-z]' >/dev/null; then
+    perldoc $@ $POD;
+    PERLDOC_QUERY=$(perl -E'$ARGV[0]=~s!::\w+$!!;say $ARGV[0]=~s!::! !gr' $POD);
+  else
+    perldoc $@;
+    exit 0;
+  fi
+done

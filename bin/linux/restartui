@@ -1,0 +1,10 @@
+#!/bin/bash
+
+main() {
+  pkill glippy
+  glippy &
+  nautilus -q
+  nautilus &
+}
+
+main "$@"

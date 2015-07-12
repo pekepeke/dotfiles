@@ -1,0 +1,15 @@
+ubuntu-tweak
+unity-tweak-tool
+
+# sysv-rc-conf
+# calibre
+
+mbuntu-y-ithemes-v5
+mbuntu-y-icons-v5
+gksu
+# indicator-weather
+indicator-cpufreq
+indicator-multiload
+caffeine
+
+

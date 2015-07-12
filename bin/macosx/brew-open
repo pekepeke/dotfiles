@@ -1,0 +1,44 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  if [ -z "$1" ]; then
+    echo "required arguments." 1>&2
+    exit 1
+  fi
+  URL=$(brew info $1 | awk '/^http/ {print $0}' | head -1)
+  if [ -n "$URL" ]; then
+    open "$URL"
+  else
+    echo "url not found : $1" 1>&2
+    exit 2
+  fi
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

@@ -1,0 +1,48 @@
+# vim:fdm=marker sw=2 ts=2 ft=conf noexpandtab:
+# validation
+pyflakes
+pep8
+
+# tools
+mercurial
+demjson
+glue
+mitmproxy
+vim-vint
+# percol
+# http://www.atzm.org/etc/files/pymigemo/pymigemo-0.4.tar.gz
+googlecl
+
+# text
+Pygments
+sphinx
+Markdown
+Textile
+blockdiag
+seqdiag
+nwdiag
+actdiag
+# sphinxcontrib-markdown
+sphinxcontrib-blockdiag
+sphinxcontrib-seqdiag
+sphinxcontrib-nwdiag
+sphinxcontrib-actdiag
+blockdiagcontrib-cisco
+
+sphinxjp.themes.s6
+sphinxjp.themecore
+sphinxjp.themes.sphinxjp
+sphinxcontrib-googleanalytics
+cloud_sptheme
+
+# venv
+virtualenv
+# virtualenvwrapper
+
+# test
+nose
+rednose
+
+# other libs
+rlcompleter2
+

@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo_and_exec() {
+  echo $*
+  $@
+}
+
+echo_and_exec killall SystemUIServer
+echo_and_exec killall Finder
+echo_and_exec killall Dock
+
+for f in /Applications ~/Applications; do
+  [ -e $f/XtraFinder.app ] && open -a XtraFinder.app
+  [ -e $f/TotalFinder.app ] && open -a TotalFinder.app
+done
+
+echo_and_exec sudo killall -KILL appleeventsd

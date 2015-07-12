@@ -1,0 +1,12 @@
+github.com/nsf/gocode
+github.com/golang/lint/golint
+github.com/jstemmer/gotags
+code.google.com/p/rog-go/exp/cmd/godef
+github.com/laurent22/massren
+github.com/mattn/jvgrep
+github.com/typester/gh-open
+github.com/mattn/files
+github.com/tokuhirom/git-xlsx-textconv
+github.com/mizoR/coo/cmd/{coo,coo-tee}
+github.com/ericchiang/pup
+github.com/andlabs/qo

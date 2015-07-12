@@ -1,0 +1,5 @@
+#!/usr/bin/osascript
+
+if application "Google Chrome" is running then
+    tell application "Google Chrome" to reload active tab of window 1
+end if

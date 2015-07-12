@@ -1,0 +1,2 @@
+git://github.com/CHH/php-build.git
+git://github.com/chriseppstein/rbenv-each.git

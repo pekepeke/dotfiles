@@ -1,0 +1,69 @@
+#!/bin/bash
+
+if nc -z localhost 4242 >/dev/null 2>&1; then
+  cat <<'EOM' | python
+import telnetlib
+import re
+
+HOST = "localhost"
+PORT = 4242
+telnet = telnetlib.Telnet(HOST, PORT)
+#telnet.read_until(re.compile('repl\d*>'))
+telnet.read_until('repl')
+telnet.read_until('>')
+telnet.write("content.location.reload(true)\n")
+telnet.write("repl.quit()\n")
+# print telnet.read_all()
+telnet.close()
+EOM
+
+else
+	cat <<EOM | osascript
+global frontApp, frontAppName
+
+if application "Firefox" is running then
+	tell application "System Events"
+		set frontApp to first application process whose frontmost is true
+		set frontAppName to name of frontApp
+	end tell
+
+	tell application "Firefox"
+		activate
+		tell application "System Events" to keystroke "r" using command down
+	end tell
+
+	tell application "System Events"
+		tell process frontAppName
+			activate
+		end tell
+	end tell
+end if
+EOM
+fi
+
+exit 0
+
+
+cat <<'EOM' | perl
+
+use strict;
+use warnings;
+use Net::Telnet;
+
+my $host = 'localhost';
+my $port = 4242;
+my $prompt = '/[repl(\d*)?>]/';
+
+my $telnet = new Net::Telnet(
+    Host => $host,
+    Port => $port,
+    Timeout => 10,
+    Prompt => $prompt,
+);
+
+$telnet->open($host);
+$telnet->cmd("content.location.reload(true)\n");
+$telnet->cmd("repl.quit()\n");
+$telnet->close;
+EOM
+

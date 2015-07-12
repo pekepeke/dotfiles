@@ -1,0 +1,38 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+symbolicatecrash [app].crash [app].app.dSYM/
+EOM
+  exit 1
+}
+
+main() {
+  if [ x = x"${DEVELOPER_DIR}" ] ; then
+    export DEVELOPER_DIR='/Applications/Xcode.app/Contents/Developer/'
+  fi
+  local BIN=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/PrivateFrameworks/DTDeviceKitBase.framework/Versions/A/Resources/symbolicatecrash
+  if [ ! -e $BIN ]; then
+    BIN=/Applications/Xcode.app/Contents/SharedFrameworks/DTDeviceKitBase.framework/Versions/A/Resources/symbolicatecrash
+  fi
+  $BIN "$@"
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

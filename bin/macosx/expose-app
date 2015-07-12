@@ -1,0 +1,11 @@
+#!/bin/bash
+
+EXPOSE_OPTION="2"
+
+if [ -e "/Applications/Mission Control.app" ]; then
+  /Applications/Mission\ Control.app/Contents/MacOS/Mission\ Control ${EXPOSE_OPTION}
+else
+  /Applications/Utilities/Expose.app/Contents/MacOS/Expose/Applications/Utilities/Expose.app/Contents/MacOS/Expose ${EXPOSE_OPTION}
+fi
+
+

@@ -1,0 +1,79 @@
+#!/bin/bash
+
+
+usage() {
+  local progname=$(basename $0)
+  cat <<EOM
+usage : $progname (start|stop|restart|unload)
+EOM
+}
+
+pick-running-launchctl-services() {
+  launchctl list | grep -v "^-" | peco | head -n 1 | cut -f 3
+}
+
+pick-stopped-launchctl-services() {
+  launchctl list | grep "^-" | peco | head -n 1 | cut -f 3
+}
+
+pick-launchctl-services() {
+  launchctl list | peco | head -n 1 | cut -f 3
+}
+
+exec-launchctl() {
+  echo launchctl "$@"
+  launchctl "$@"
+}
+
+pick-launchctl-action() {
+  local ACTION=$(printf "unload\nstart\nstop\nrestart" | peco --prompt="Action >")
+  if [ -n "$ACTION" ]; then
+    exec-launchctl "$ACTION" "$1"
+  else
+    exit 1
+  fi
+}
+
+main() {
+  local CMD=$1
+  if [ x"$1" = x ]; then
+    SERVICE=$(pick-launchctl-services)
+    if [ -n "$SERVICE" ]; then
+      pick-launchctl-action "$SERVICE"
+    else
+      exit 1
+    fi
+  fi
+  local SERVICE
+  # =$(pick-launchctl-services)
+  if [ -n "$CMD" ]; then
+    case $CMD in
+      unload)
+        SERVICE=$(pick-launchctl-services)
+        ;;
+      start)
+        SERVICE=$(pick-stopped-launchctl-services)
+        ;;
+      stop|restart)
+        SERVICE=$(pick-running-launchctl-services)
+        if [ "$CMD" = "restart" ]; then
+          exec-launchctl stop $SERVICE
+          CMD=start
+        fi
+        ;;
+      *)
+        SERVICE=$(pick-launchctl-services)
+        ;;
+    esac
+    if [ -n "$SERVICE" ]; then
+      exec-launchctl $CMD $SERVICE
+    else
+      exit 1
+    fi
+  else
+    exit 2
+  fi
+}
+
+
+main "$@"

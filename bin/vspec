@@ -1,0 +1,12 @@
+#!/bin/bash
+
+VSPEC_DIR=~/.vim/neobundle/vim-vspec
+
+if [ -e $VSPEC_DIR ]; then
+  exec $VSPEC_DIR/bin/vspec $VSPEC_DIR . $*
+else
+  echo "not found : vspec"
+fi 
+
+# __END__
+# vim: foldmethod=marker

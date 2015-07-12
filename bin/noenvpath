@@ -1,0 +1,3 @@
+#/bin/bash
+
+perl -e '$p=$ENV{PATH};$h=$ENV{HOME};print join ":", grep { not m!$h/\.\w+(env|vm|brew)! } split(":",$p);'

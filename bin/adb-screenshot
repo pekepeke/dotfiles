@@ -1,0 +1,19 @@
+#!/bin/bash
+
+imgfile=$TMPDIR/screenshot.png
+screenshot2 $imgfile
+case $OSTYPE in
+  cygwin*)
+    cygstart $imgfile ;;
+  darwin*)
+    open $imgfile ;;
+  bsd*)
+    xdg-open $imgfile ;;
+  linux*)
+    xdg-open $imgfile ;;
+  solaris*)
+    xdg-open $imgfile ;;
+  *)
+    ;;
+esac
+

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cur_win=$(xdotool getactivewindow)
+# xdotool search --onlyvisible --name "Chrome" windowactivate key --clearmodifiers ctrl+r
+xdotool search --onlyvisible --name "Chromium-browser" key --clearmodifiers ctrl+r
+xdotool windowactivate ${cur_win}
+

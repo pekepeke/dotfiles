@@ -1,0 +1,89 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long;
+use Pod::Usage;
+use File::Basename;
+use Cwd qw[getcwd abs_path chdir];
+
+my $head_cmd = qq[ENV=development];
+my $additional_option = join(" ", qw[
+]);
+    # --directive xdebug.profiler_enable=0
+    # --directive xdebug.remote_enable=false
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+my $opt_help;
+Getopt::Long::Configure ("bundling");
+GetOptions(
+    'h|help' => \$opt_help,
+) or usage;
+usage if $opt_help;
+
+my $is_win = $^O =~ /mswin|cygwin/i;
+
+sub find_cakeroot {
+    my $fpath = shift;
+    my $pwd = $fpath;
+    while ($pwd = dirname($fpath)) {
+        last if ($pwd eq $fpath);
+        return $fpath if ( -x "$fpath/Console/cake");
+        return $fpath if ( -x "$fpath/console/cake");
+        $fpath = $pwd;
+    }
+    return "";
+}
+
+sub mkcmd {
+    my $fpath = abs_path(shift);
+    my $root = shift;
+
+    return "" unless $root;
+    $fpath =~ s!\\!/!g;
+
+    my ($cake, $type) = ("$root/Console/cake", "app");
+    $type = "core" if $fpath =~ m!/Core/!;
+    $type = $1 if $fpath =~ m!/Plugin/(\w+)/!;
+
+    my $target = $fpath;
+    $target =~ s!.*/Test/Case/!!;
+    return "$head_cmd $cake testsuite $additional_option $type $target";
+}
+
+my $pwd = getcwd();
+for my $fpath (@ARGV) {
+    $fpath = abs_path($fpath);
+    my $root = find_cakeroot($fpath);
+    if ($root) {
+        chdir($root);
+        system mkcmd($fpath, $root);
+        chdir($pwd);
+    } else {
+        warn "can't find cakephp approot";
+    }
+}
+
+__END__
+
+=head1 NAME
+
+    caketest.pl - desc
+
+=head1 SYNOPSIS
+
+
+=head1 OPTIONS
+
+
+=head1 AUTHOR
+
+pekepeke <pekepekesamurai+github@gmail.com>

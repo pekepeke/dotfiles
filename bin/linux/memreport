@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]; then
+  echo "usage: ${0} [pid ...]" 1>&2
+  echo " ${0} \`pgrep httpd\`" 1>&2
+  exit 100
+fi
+
+SUM=0
+COUNT=0
+
+printf "MEM\tS_Clean\tS_Dirty\tOwn_Memory\n"
+for pid in $@; do
+  MEM=$(cat /proc/$pid/status | grep 'VmHWM' | awk '{print $2}')
+  SC=$(grep Shared_Clean /proc/$pid/smaps | awk 'BEGIN{n=0}{n+=$2}END{print n}')
+  SD=$(grep Shared_Dirty /proc/$pid/smaps | awk 'BEGIN{n=0}{n+=$2}END{print n}')
+  OWN_MEM=`expr $MEM - \( $SC + $SD \)`
+  SUM=`expr $SUM + $OWN_MEM`
+  printf "$MEM\t$SC\t$SD\t$OWN_MEM\n"
+  COUNT=`expr $COUNT + 1`
+done
+
+printf "SUMMARY\t$SUM kb\n"
+AVG=`expr $SUM / $COUNT`
+printf "AVG\t$AVG kb\n"
+

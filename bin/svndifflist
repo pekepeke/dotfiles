@@ -1,0 +1,52 @@
+#!/bin/bash
+
+opt_revision=""
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h] -r NN:NN
+EOM
+  exit 1
+}
+
+main() {
+  if [ x$opt_revision = x ]; then
+    usage
+  fi
+  # svn diff $* | grep -e "^Index:" | sed 's/^Index:\s*//'
+  if [ x$opt_archive = x ]; then
+    svn diff -r $opt_revision --summarize | grep -e '^[ MA]\+\s*' | sed 's/^[ MA]*\s*//'
+  else
+    local files=$(svn diff -r $opt_revision --summarize | grep -e '^[ MA]\+\s*' | sed 's/^[ MA]*\s*//')
+    if [ "$opt_archive" =~ ".zip$" ]; then
+      zip -D $opt_archive $files
+    elif [ "$opt_archive" =~ ".tar.bz$" -o "$opt_archive" =~ ".tbz$" ] ; then
+      tar jcvf $opt_archive $files
+    else
+      tar zcvf $opt_archive $files
+    fi
+  fi
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "ha:r:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    r)
+      opt_revision=$OPTARG
+      ;;
+    a)
+      opt_archive=$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

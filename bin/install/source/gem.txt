@@ -1,0 +1,84 @@
+bundler
+
+rubocop
+sass
+scss-lint
+compass
+haml
+# csscss
+# gemignore
+# taskjuggler
+# mdpress
+
+myrurema
+prmd
+
+gem-search
+gem-browse
+
+rdefs
+fastri
+rcodetools
+# what_methods
+
+listen
+irbtools
+
+git-trend
+milkode
+rurema
+# reditor
+tmuxinator
+# middleman
+specific_install
+alpaca_complete
+rails_best_practices
+reek
+proxylocal
+# ltsvr
+docdiff
+
+pry
+pry-doc
+pry-clipboard
+pry-nav
+pry-rescue
+pry-stack_explorer
+pry-coolline
+pry-remote
+hirb
+hirb-unicode
+wirble
+
+rails
+sinatra
+# padrino
+rack-weinre
+rack-legacy
+
+# guard
+# guard-coffeescript
+# rb-fsevent
+# growl
+# guard-shell
+# guard-sass
+# guard-livereload
+# guard-pow
+
+capistrano
+# capistrano-ext
+# capistrano_colors
+# capistrano_rsync_with_remote_cache
+# capifony
+# capcake
+
+chef
+# librarian
+berkshelf
+knife-zero
+kitchen-docker
+
+tapp
+awesome_print
+rails-sh
+

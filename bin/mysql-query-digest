@@ -1,0 +1,30 @@
+#!/bin/bash
+
+FILENAME=
+for d in /usr/local/var/log/mysql /var/log/mysql /opt/brew/var/log/mysql ; do
+  if [ ! -e $d ]; then
+    continue
+  fi
+  FILENAME=$(find $d -type f -name '*slow*' | head -1)
+  if [ -e "$FILENAME" ]; then
+    break
+  fi
+done
+
+if [ -e "$FILENAME" ]; then
+  OUTPUT_FILENAME=/tmp/$(basename $0).log
+  # echo "#############################################################" > $OUTPUT_FILENAME
+  # # 時間かかった順で集計
+  # mysqldumpslow -s t $FILENAME >> $OUTPUT_FILENAME
+  # echo "#############################################################" >> $OUTPUT_FILENAME
+  # # スローログに検出された件数が多い順で集計
+  # mysqldumpslow -s s $FILENAME >> $OUTPUT_FILENAME
+  # echo "#############################################################" >> $OUTPUT_FILENAME
+  pt-query-digest --filter '$event->{fingerprint} =~ m/^select/i'  --order-by Query_time:cnt --limit 100 $FILENAME > $OUTPUT_FILENAME
+  # pt-query-digest --filter '$event->{fingerprint} =~ m/^select/'  --order-by Query_time:cnt --limit 100 $FILENAME >> $OUTPUT_FILENAME
+  # pt-query-digest --group-by=tables --order-by=Query_time:cnt --limit=100 $FILENAME >> $OUTPUT_FILENAME
+  less $OUTPUT_FILENAME
+else
+  echo "file not found" 2>&1
+fi
+

@@ -1,0 +1,142 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+
+use File::Basename;
+use File::Spec;
+# use lib File::Spec->catdir(dirname(__FILE__), '..', 'lib');
+
+use DBI;
+use SQL::Translator;
+use SQL::Translator::Diff;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+use Pod::Usage;
+
+
+my $db_type = "MySQL";
+
+my %opts;
+my @dbi_config;
+my $ddl_path;
+
+sub main {
+    my $dbh    = DBI->connect( @dbi_config );
+    my $st;
+    my $source = do {
+        $st = SQL::Translator->new(
+            parser      => 'DBI',
+            parser_args => +{ dbh => $dbh },
+        );
+        $st->translate;
+    };
+    die $st->error if $st->error;
+
+    my $target = do {
+        $st = SQL::Translator->new(
+            parser   => $db_type,
+            filename => $ddl_path,
+        );
+        $st->translate;
+    };
+    die $st->error if $st->error;
+
+    # AUTO_INCREMENT情報を削る
+    for my $schema ($source, $target) {
+        for my $table ($schema->get_tables) {
+            my @options = $table->options;
+            if (my ($idx) = grep { $options[$_]->{AUTO_INCREMENT} } 0..$#options) {
+                splice @{ $table->options }, $idx, 1;
+            }
+        }
+    }
+
+    # diffの検出
+    my $std = SQL::Translator::Diff->new(+{
+            output_db     => $db_type,
+            source_schema => $source,
+            target_schema => $target,
+            producer_args => +{
+            quote_field_names => '`',
+        },
+    });
+    my $diff = $std->compute_differences->produce_diff_sql;
+    print $diff;
+
+}
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+Getopt::Long::Configure("bundling");
+GetOptions(
+    \%opts,
+    'user|u=s', 'password|p=s', 'host|h=s', 'port=i',
+    'schema|s=s',
+    'help',
+) or usage;
+usage if $opts{help};
+$opts{host} = $opts{host} || '127.0.0.1';
+$opts{port} = $opts{port} || 3306;
+my $schema_name = $opts{schema} || shift(@ARGV) || "test";
+
+
+@dbi_config = ("DBI:mysql:$schema_name:$opts{host}:$opts{port}", $opts{user}, $opts{password});
+$ddl_path = $opts{ddl} || shift(@ARGV);
+
+usage unless $ddl_path;
+main();
+
+__END__
+
+=head1 NAME
+
+mysqldiff.pl - show diff between ddl and database
+
+=head1 SYNOPSIS
+
+    mysqldiff.pl [-h] -- cmd args...
+
+=head1 DESCRIPTION
+
+show diff between ddl and database
+
+=head1 OPTIONS
+
+=over 4
+
+=item -h --help
+
+show help
+
+=item -u [user] --user=[user]
+
+specific database user
+
+=item -p [password] --password=[password]
+
+specific password
+
+=item -h [host] --host=[host]
+
+specific database host
+
+=item -p [port] --port=[port]
+
+specific database port
+
+=back
+
+=head1 AUTHOR
+
+pekepeke
+
+=cut
+

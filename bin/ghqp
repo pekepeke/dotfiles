@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+main() {
+  local repo=$(ghq list -p | peco)
+  local ret=$?
+  if [ x"$repo" = x ] ; then
+    exit $?
+  fi
+  ghq look $(basename "${repo}")
+  exit $?
+}
+
+main "$@"

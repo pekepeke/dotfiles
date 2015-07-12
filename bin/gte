@@ -1,0 +1,14 @@
+#!/bin/bash
+
+gtj() { #{{{2
+  google_translate "$*" "ja-en"
+}
+
+main() {
+  cd "$(dirname $0;pwd)"
+  . $(pwd)/.lib/functions.sh
+  gte "$@"
+}
+
+main "$@"
+

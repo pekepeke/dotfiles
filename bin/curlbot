@@ -1,0 +1,70 @@
+#!/bin/bash
+
+BOT_TYPE=""
+get_ua() {
+  case $1 in
+    facebook)
+      echo 'facebookexternalhit/1.1 (+https://www.facebook.com/externalhit_uatext.php)',
+      echo 'facebookplatform/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+      ;;
+    google)
+      echo 'Googlebot/2.1 (+http://www.googlebot.com/bot.html)',
+      echo 'Googlebot-Image/1.0'
+      ;;
+    yahoo)
+      echo 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)',
+      ;;
+    msn)
+      echo 'msnbot/2.0b (+http://search.msn.com/msnbot.htm)'
+      ;;
+      *)
+      echo 'Googlebot/2.1 (+http://www.googlebot.com/bot.html)',
+      ;;
+  esac
+}
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h] -t [type]
+
+Type
+facebook : facebook crawler
+google   : google bot
+yahoo    : yahoo bot
+msn      : msnbot
+EOM
+  exit 1
+}
+
+main() {
+  (
+    IFS=$'\n';
+    for ua in $(get_ua "$BOT_TYPE"); do
+      for url in $*; do
+        echo "###### $ua ###################################"
+        curl -I -S -A $ua $url
+      done
+    done
+  )
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvt:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    t)
+      BOT_TYPE=$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

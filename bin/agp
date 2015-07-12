@@ -1,0 +1,10 @@
+#!/bin/bash
+
+selected="$(ag -i -S --nocolor --nogroup --column --nopager "$@" | peco | cut -d ':' -f1 | sort | uniq | sed -e 's/ /\\ /g' | tr "[:cntrl:]" " ")"
+
+if [ -n "$selected" ]; then
+  echo "$selected" | pbcopy-wrapper
+  echo "copied : $selected"
+  # $EDITOR "$selected"
+fi
+

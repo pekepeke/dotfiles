@@ -1,0 +1,23 @@
+#!/bin/bash
+
+main() {
+
+  local winno=$(tmux display -p '#I')
+  if [ -z "$winno" ]; then
+    return 1
+  fi
+
+  local selected="$(cat <<EOM | peco --query="$LBUFFER"
+tiled
+even-horizontal
+main-horizontal
+even-vertical
+main-vertical
+EOM
+  )"
+  if [ -n "$selected" ]; then
+    tmux select-layout "$selected"
+  fi
+}
+
+main "$@"

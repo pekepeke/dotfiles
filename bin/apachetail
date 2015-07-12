@@ -1,0 +1,59 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h] [tail options] file
+EOM
+  exit 1
+}
+
+apache_colorize() {
+  cat <<EOM
+#!/bin/sed -f
+## MEMO
+# [0m  reset
+# [1m  bold
+# [3m  italic
+# [4m  underline
+# [5m  blink
+# [30m black
+# [31m red
+# [32m green
+# [33m yellow
+# [34m blue
+# [35m magenta
+# [36m cyan
+# [37m white
+s/\(HTTP\/1..\"\) \(2[0-9][0-9]\) /\1 \x1b[34m\2\x1b[0m /
+s/\(HTTP\/1..\"\) \(3[0-9][0-9]\) /\1 \x1b[32m\2\x1b[0m /
+s/\(HTTP\/1..\"\) \(4[0-9][0-9]\) /\1 \x1b[33m\2\x1b[0m /
+s/\(HTTP\/1..\"\) \(5[0-9][0-9]\) /\1 \x1b[31m\2\x1b[0m /
+EOM
+}
+
+main() {
+  tail -f "$@" | sed '
+s/\(HTTP\/1..\"\) \(2[0-9][0-9]\) /\1 \x1b[1;34m\2\x1b[0m /
+s/\(HTTP\/1..\"\) \(3[0-9][0-9]\) /\1 \x1b[1;32m\2\x1b[0m /
+s/\(HTTP\/1..\"\) \(4[0-9][0-9]\) /\1 \x1b[1;33m\2\x1b[0m /
+s/\(HTTP\/1..\"\) \(5[0-9][0-9]\) /\1 \x1b[1;31m\2\x1b[0m /
+'
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

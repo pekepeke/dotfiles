@@ -1,0 +1,68 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  PATH=$PATH:/usr/sbin/:/usr/local/sbin/
+  if which nginx > /dev/null 2>&1 ; then
+    case $OSTYPE in
+      darwin*)
+        IF=en0;;
+      freebsd*)
+        IF=en0;;
+      *)
+        IF=eth1;;
+    esac
+
+    IPADDR=$(LANG=C ifconfig ${IF} | perl -ne 'print $2 if $_ =~ /inet (addr:)?([\d\.]+)/')
+    # IPADDR=$(LANG=C ifconfig en0 | perl -ne 'print $2 if $_ =~ /inet6 (addr:)?([a-z\d:]+)/')
+    cat <<EOM
+######################################################################
+#
+# starting $(basename $0)
+#
+# please setting proxy ${IPADDR}:8087
+#
+######################################################################
+EOM
+    [ ! -e ./logs ] && mkdir logs/
+    nginx -p . -c "$HOME/bin/.opt/cocproxy.nginx.conf"
+    for dname in fastcgi client_body uwsgi scgi proxy ; do
+      [ -e ./${dname}_temp ] && rmdir ./${dname}_temp
+    done
+    if [ -e ./logs ] ; then
+      find ./logs -type f -empty -exec rm {} \;
+      rmdir ./logs > /dev/null 2>&1
+    fi
+  else
+    echo Error : nginx not found
+    exit 1
+  fi
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

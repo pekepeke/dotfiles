@@ -1,0 +1,71 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+use Pod::Usage;
+
+sub usage {
+    pod2usage(-verbose => 2, -help => 1, -output => '>&STDOUT' );
+    exit 1;
+}
+
+my %opts = (
+    port => 13306,
+);
+Getopt::Long::Configure("bundling");
+GetOptions(\%opts, qw(
+    help|h
+    target|t=s
+    port|p=i
+));
+
+usage if $opts{help};
+$opts{target} = "localhost:".($opts{port} - 10000) unless $opts{target} || $opts{port} - 10000 <= 0;
+
+die "unknown target." unless $opts{target};
+die "required hostname." unless $ARGV[0];
+
+my $cmd = sprintf('ssh -N -L %d:%s %s', $opts{port}, $opts{target}, $ARGV[0]);
+print $cmd . "\n";
+system($cmd);
+
+__END__
+
+=head1 NAME
+
+    sshtunnel - wrapper command to ssh tunneling
+
+=head1 SYNOPSIS
+
+    sshtunnel [option] host
+
+=head1 OPTIONS
+
+=over 2
+
+=item -h --help
+
+Show this message.
+
+=item --target=[host:port] -t [host:port]
+
+Specify target host on remote host.
+
+=item --port=[local port] -p [local port]
+
+Specify local port to tunneling.
+
+=item host
+
+remote host.
+
+=back
+
+
+=head1 AUTHOR
+

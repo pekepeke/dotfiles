@@ -1,0 +1,73 @@
+#!/bin/sh
+
+GIT_CONFIG='.git/config'
+
+OLD_REP=$1
+NEW_REP=$2
+WORKSPACE=$3
+
+# show usage
+if [ -z "$OLD_REP" -o -z "$NEW_REP" ]; then
+  echo "git-svn-relocate OLD_REPOSITORY NEW_REPOSITORY [GIT_WORKSPACE]"
+  exit 1
+fi
+
+# change woking directory
+if [ $WORKSPACE ]; then
+  cd $WORKSPACE
+  if [ 0 -ne $? ]; then
+    echo "invalid git workspace"
+    exit 1
+  fi
+fi
+
+# git config file is exists?
+if [ ! -f $GIT_CONFIG ];then
+  echo "not exists $GIT_CONFIG"
+  exit 1
+fi
+
+# check old repository
+grep $OLD_REP $GIT_CONFIG > /dev/null
+if [ 0 -ne $? ]; then
+  echo "url not found (invalid old repository)"
+  exit 1
+fi
+
+# check current branch
+RET=`git branch| grep master | grep '*'`
+if [ -z "$RET" ]; then
+  echo "not master branch"
+  exit 1
+fi
+
+# check git index
+RET=`git diff`
+if [ "$RET" ]; then
+  echo "dirty workspace..."
+  exit 1
+fi
+
+# start relocation
+echo "rewrite url $OLD_REP -> $NEW_REP"
+sed -i -e "s|$OLD_REP|$NEW_REP|" $GIT_CONFIG
+
+RET=`git svn fetch`
+if [ 0 -ne $? -o -z "$RET" ]; then
+  echo "revert url $NEW_REP -> $OLD_REP"
+  sed -i -e "s|$NEW_REP|$OLD_REP|" $GIT_CONFIG
+  if [ -z "$RET" ]; then
+    echo "empty fetch from new repository."
+  else
+    echo "invalid repository?"
+  fi
+  exit 1
+fi
+
+echo "rewrite url $NEW_REP -> $OLD_REP"
+sed -i -e "s|$NEW_REP|$OLD_REP|" $GIT_CONFIG
+git svn rebase -l
+echo "rewrite url $OLD_REP -> $NEW_REP"
+sed -i -e "s|$OLD_REP|$NEW_REP|" $GIT_CONFIG
+
+echo "repository relocation is completed"

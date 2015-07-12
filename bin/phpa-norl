@@ -1,0 +1,240 @@
+#!/usr/bin/env php
+<?php
+/*
+    $Id: phpa-norl.php 2010/06/16 $
+
+    Stefan Fischerländer <stefan@fischerlaender.de>, http://www.fischerlaender.net/php/phpa-norl
+    original version: David Phillips <david@acz.org>, http://david.acz.org/phpa/
+    
+    
+    2010/07/16 - register_shutdown_function
+    2010/07/16 - now using PHP_EOL
+    2010/07/16 - replaced deprecated split function
+    2007/07/10 - CTRL-D now exits the script instead of entering an infinite loop
+    2007/07/08 - initial version of phpa-norl published
+    
+*/
+	register_shutdown_function('shutdown');
+	
+    __phpa__setup();
+    __phpa__print_info();
+
+    /*
+     * begin edit by Stefan Fischerländer
+     */
+    define("__PHPA_HISTORY_COMMAND", 'h');     // defines the command name for history manipulation
+    define("__PHPA_EXIT_COMMAND", 'q');        // defines the command name to exit the shell
+    define("__PHPA_MAX_HIST", 20);             // maximum number of history entries
+    define("__PHPA_PROMPT", '>>> ');
+    $__phpa_myhist = array();
+    $__phpa_fh = fopen('php://stdin','rb') or die($php_errormsg);
+    /*
+     * end edit by Stefan Fischerländer
+     */
+
+
+    for (;;)
+    {
+        /*
+         * begin edit by Stefan Fischerländer
+         */
+        $__phpa_line = myReadLine($__phpa_fh, __PHPA_PROMPT);
+        if ($__phpa_line == __PHPA_EXIT_COMMAND)
+        {
+            echo PHP_EOL;
+            break;
+        } elseif( $__phpa_line == __PHPA_HISTORY_COMMAND ) {
+            showHistory($__phpa_myhist);
+            continue;
+        } elseif( preg_match('/^'.__PHPA_HISTORY_COMMAND.'\s*(\d+)$/', $__phpa_line, $__phpa_result) ) {
+            $__phpa_line = $__phpa_myhist[$__phpa_result[1]];
+            array_splice($__phpa_myhist, $__phpa_result[1], 1);
+            echo __PHPA_PROMPT.$__phpa_line.PHP_EOL;
+        }
+        if (strlen($__phpa_line) == 0)
+            continue;
+
+        # manage history
+        array_unshift($__phpa_myhist, $__phpa_line);
+        if( count($__phpa_myhist) > __PHPA_MAX_HIST )
+            array_pop($__phpa_myhist);
+        /*
+         * end edit by Stefan Fischerländer
+         */
+
+        if (__phpa__is_immediate($__phpa_line))
+            $__phpa_line = "return ($__phpa_line)";
+
+        ob_start();
+        $__phpa_ret = eval("unset(\$line); $__phpa_line;");
+        if (ob_get_length() == 0)
+        {
+            if (is_bool($__phpa_ret))
+                echo ($__phpa_ret ? "true" : "false");
+            else if (is_string($__phpa_ret))
+                echo "'" . addcslashes($__phpa_ret, "\0..\37\177..\377")  . "'";
+            else if (!is_null($__phpa_ret))
+                print_r($__phpa_ret);
+        }
+        unset($__phpa_ret);
+        $__phpa_out = ob_get_contents();
+        ob_end_clean();
+        if ((strlen($__phpa_out) > 0) && (substr($__phpa_out, -1) != PHP_EOL))
+            $__phpa_out .= PHP_EOL;
+        echo $__phpa_out;
+        unset($__phpa_out);
+    }
+    fclose($__phpa_fh);
+
+
+    /**
+     *
+     * @author Stefan Fischerländer
+     * @return STRING input from keyboard, may contain line breaks
+     */
+    function myReadLine($fh, $prompt)
+    {
+        echo $prompt;
+        $complete_line = '';
+        for(;;) {
+            $line = fgets($fh,1024);
+            if( !$line && strlen($line)==0 )        # this is true, when CTRL-D is pressed
+                die("\nUser pressed CTRL-D. phpa-norl quits.\n");
+            $line = rtrim($line);
+            $complete_line .= $line;
+            if( substr($line,-1) != '#')
+                break;
+            else
+                $complete_line = substr($complete_line,0,-1).PHP_EOL;
+        }
+        return $complete_line;
+    }
+
+    /**
+     *
+     * @author Stefan Fischerländer
+     * @return STRING input from keyboard, may contain line breaks
+     */
+    function showHistory($myhist)
+    {
+        echo "History:\n";
+        for( $i=count($myhist)-1; $i>=0; $i--) {
+            $val = $myhist[$i];
+            $prompt = "[$i] => ";
+            echo $prompt;
+            if( strpos($val, PHP_EOL) > 0 ) {
+                echo str_replace("\n",  str_pad("\n", strlen($prompt)+1, ' '), str_replace("\t", '    ', $val));
+                echo "\n";
+            }
+            else
+                echo "$val\n";
+        }
+    }
+
+
+
+
+
+
+    function __phpa__rl_complete($line, $pos, $cursor)
+    {
+        $const = array_keys(get_defined_constants());
+        $var = array_keys($GLOBALS);
+
+        $func = get_defined_functions();
+        $s = "__phpa__";
+        foreach ($func["user"] as $i)
+            if (substr($i, 0, strlen($s)) != $s)
+                $func["internal"][] = $i;
+        $func = $func["internal"];
+
+        return array_merge($const, $var, $func);
+    }
+
+    function __phpa__is_immediate($line)
+    {
+        $skip = array("class", "declare", "die", "echo", "exit", "for",
+                      "foreach", "function", "global", "if", "include",
+                      "include_once", "print", "require", "require_once",
+                      "return", "static", "switch", "while");
+        $okeq = array("===", "!==", "==", "!=", "<=", ">=");
+        $code = "";
+        $sq = false;
+        $dq = false;
+        for ($i = 0; $i < strlen($line); $i++)
+        {
+            $c = $line{$i};
+            if ($c == "'")
+                $sq = !$sq;
+            else if ($c == '"')
+                $dq = !$dq;
+            else if (($sq) || ($dq))
+            {
+                if ($c == "\\")
+                    $i++;
+            }
+            else
+                $code .= $c;
+        }
+        $code = str_replace($okeq, "", $code);
+        if (strcspn($code, ";{=") != strlen($code))
+            return false;
+        $kw = preg_split("/[^A-Za-z0-9_]/", $code);
+        foreach ($kw as $i)
+            if (in_array($i, $skip))
+                return false;
+        return true;
+    }
+
+    function __phpa__print_info()
+    {
+        $ver = phpversion();
+        $sapi = php_sapi_name();
+        $date = __phpa__build_date();
+        $os = PHP_OS;
+        echo "PHP $ver ($sapi) ($date) [$os]\n";
+    }
+
+    function __phpa__build_date()
+    {
+        ob_start();
+        phpinfo(INFO_GENERAL);
+        $x = ob_get_contents();
+        ob_end_clean();
+        $x = strip_tags($x);
+        $x = explode(PHP_EOL, $x);
+        $s = array("Build Date => ", "Build Date ");
+        foreach ($x as $i)
+            foreach ($s as $j)
+                if (substr($i, 0, strlen($j)) == $j)
+                    return trim(substr($i, strlen($j)));
+        return "???";
+    }
+
+    function __phpa__setup()
+    {
+        if (version_compare(phpversion(), "4.3.0", "<"))
+        {
+            echo "PHP 4.3.0 or above is required.\n";
+            exit(111);
+        }
+        error_reporting(E_ALL ^ E_NOTICE);
+        ini_set("html_errors", 0);
+        while (ob_get_level())
+            ob_end_clean();
+        ob_implicit_flush(true);
+    }
+
+
+	// This is our shutdown function, in
+	// here we can do any last operations
+	// before the script is complete.
+	function shutdown() {
+		global $gEvalError, $gErrorScript;
+		if ( $gEvalError ) {
+			echo PHP_EOL;
+			echo PHP_EOL;
+			echo 'eval() error: ' . $gErrorScript, PHP_EOL;
+		}
+	}
+?>

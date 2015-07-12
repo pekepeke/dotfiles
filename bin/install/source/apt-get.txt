@@ -1,0 +1,143 @@
+git
+mercurial
+bzr
+cmake
+curl
+zsh
+build-essential
+m4
+texinfo
+libbz2-dev
+libcurl4-openssl-dev
+libexpat-dev
+libncurses-dev
+zlib1g-dev
+
+tmux
+tig
+xclip
+cmigemo
+libmigemo-dev
+editorconfig
+jq
+unar
+docker.io
+p7zip-full
+
+silversearcher-ag
+exuberant-ctags
+
+# vim-nox
+# vim-lua
+# vim-gnome
+emacs24
+emacs24-el
+emacs24-common-non-dfsg
+
+retext
+gitg
+gedit-gmate
+gedit-plugins
+chromium-browser
+easystroke
+
+# mozc-utils-gui
+# ibus-mozc
+# launchy
+# launchy-skins
+# launchy-plugins
+
+gnome-tweak-tool
+xdg-user-dirs-gtk
+activity-log-manager
+# gnome-do
+# albert
+# autokey-gtk
+nautilus-open-terminal
+
+conky
+indicator-multiload
+# glipper
+clipit
+trash-cli
+
+vlc
+smplayer
+jd
+comix
+gwenview
+shutter
+okular
+gimp
+inkscape
+keepass2
+polipo
+goldendict
+
+ruby
+python3-dev
+python3-pip
+python-dev
+python-pip
+ruby-dev
+libperl-dev
+golang
+
+php5
+php5-common
+php5-cli
+php5-curl
+php5-gd
+php5-intl
+php5-json
+php5-mcrypt
+php5-mysql
+php5-sqlite
+php5-xdebug
+php5-xhprof
+
+libluajit-5.1-dev
+libssl-dev
+libreadline-dev
+libbiz2-dev
+libsqlite3-dev
+libclang-dev
+libxml2-dev
+libcurl-dev
+libmcrypt-dev
+
+mysql-client
+postgresql-client
+# mongodb
+mongodb-clients
+
+zeal
+guake
+w3m
+filezilla
+compizconfig-settings-manager
+compiz-plugins
+
+virtualbox
+virtualbox-guest-additions-iso
+wine
+
+mysql-workbench
+
+# openjdk-8-jre
+oracle-java8-installer
+
+android
+android-emulator
+android-tools-adb
+android-tools-adbd
+android-tools-fsutils
+androidsdk-ddms
+androidsdk-hierarchyviewer
+androidsdk-traceview
+androidsdk-uiautomatorviewer
+
+freemind
+freemind-plugins-help
+freemind-plugins-script
+freemind-plugins-svg

@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# pip install pit
+
+import smtplib
+import sys
+
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from pit import Pit
+
+def main():
+    config = Pit.get('html_mail_send', {
+        'require': {
+            'to': '',
+            'from': 'root@localhost.com',
+            'subject': 'HTML Mail',
+            'smtp_host': 'localhost',
+            'smtp_port': 25,
+            # 'smtp_user': '',
+            # 'smtp_password': '',
+        }
+    })
+
+    args = sys.argv[1:]
+    if len(args) <= 0:
+        print("required arguments.")
+        exit(1)
+
+    text = None
+    for fpath in args:
+
+        from_addr = config['from']
+        to_addr = config["to"]
+        if isinstance(to_addr, list):
+            to_addr = ",".join(to_addr)
+        # Create message container - the correct MIME type is multipart/alternative.
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = config['subject']
+        msg['From'] = from_addr
+        msg['To'] = to_addr
+
+        # Create the body of the message (a plain-text and an HTML version).
+        # text = "Hi!\nHow are you?\nHere is the link you wanted:\nhttp://www.python.org"
+        html = open(fpath).read()
+
+        # Record the MIME types of both parts - text/plain and text/html.
+        if text:
+            part1 = MIMEText(text, 'plain', "utf-8")
+        part2 = MIMEText(html, 'html', "utf-8")
+
+        # Attach parts into message container.
+        # According to RFC 2046, the last part of a multipart message, in this case
+        # the HTML message, is best and preferred.
+        if text:
+            msg.attach(part1)
+        msg.attach(part2)
+        # Send the message via local SMTP server.
+        mail = smtplib.SMTP(config["smtp_host"], config["smtp_port"])
+
+        mail.ehlo()
+
+        if config["smtp_port"] == 587:
+            mail.starttls()
+
+        if config.get('smtp_user'):
+            mail.login(config["smtp_user"], config["smtp_password"])
+        mail.sendmail(from_addr, to_addr, msg.as_string())
+        mail.quit()
+    return 0
+
+if __name__ == '__main__':
+    main()
+

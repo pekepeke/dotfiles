@@ -1,0 +1,151 @@
+#!/bin/bash
+
+INSTALL_LIBS=""
+# ENV_DEFAULTS="plenv rbenv pyenv phpenv nodenv goenv mysqlenv luaenv direnv"
+# ENV_DEFAULTS="plenv rbenv pyenv phpenv nodenv mysqlenv gobrew luaenv direnv"
+ENV_DEFAULTS="plenv rbenv pyenv phpenv nodenv mysqlenv luaenv direnv"
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+Usage: $prg_name [command] [argments...]
+
+env [env]         : install language env (eg. rbenv phpenv)
+lib [manager]     : install by package manager(eg. gem pyrus brew pip gem npm cpanm)
+package [package] : install package
+help              : show this message
+
+EOM
+# Options:
+#   -l [manager] : specify package manager(eg. gem pyrus brew pip gem npm cpanm)
+  exit 1
+}
+
+main() {
+  local cwd=$(pwd)
+  cd $(dirname $0); . $(pwd)/install/functions.sh
+  cd "$cwd"
+
+  local command=$1
+  shift
+
+  if [ x"$command" = x ]; then
+    usage
+  fi
+
+  case $command in
+    env)
+      env_install "$@"
+      ;;
+    lib)
+      lib_install "$@"
+      ;;
+    package)
+      package_install "$@"
+      ;;
+    help)
+      usage
+      ;;
+    *)
+      echo "subcommand not found : $command"
+      usage
+      ;;
+  esac
+
+  # if [ x"$INSTALL_LIBS" != x ]; then
+  #   install_libs $INSTALL_LIBS
+  #   return $?
+  # fi
+}
+
+get_args() {
+  local args=""
+  for a in "$@"; do
+    if [[ ! "$a" =~ ^- ]]; then
+      args="$args $a"
+    fi
+    if [ "$a" = "--" ]; then
+      break
+    fi
+  done
+  echo "$args"
+}
+
+get_options() {
+  local args=""
+  local force_add=0
+  for a in "$@"; do
+    if [ "$force_add" = 1 ]; then
+      args="$args $a"
+      continue
+    elif [ "$a" == "--" ]; then
+      force_add=1
+      continue
+    fi
+    if [[ "$a" =~ ^- ]]; then
+      args="$args $a"
+    fi
+  done
+  echo $args
+}
+
+env_install() {
+  local arglist=$(get_args "$@")
+  local options=$(get_options "$@")
+  if [ x"$1" = x ]; then
+    arglist="$ENV_DEFAULTS"
+  fi
+  local env
+  for env in $arglist; do
+    install_env $env $options
+  done
+}
+
+lib_install() {
+  local pm
+  local arglist=$(get_args "$@")
+  local options=$(get_options "$@")
+  if [ x"$1" = x ]; then
+    show_libs | awk 'NR % 3==0{ printf("%-18s\n", $0)} NR % 3 !=0 {printf("%-18s ", $0)}'
+    exit
+  fi
+  for pm in $arglist; do
+    install_by $pm $options
+  done
+}
+
+package_install() {
+  local package
+  local arglist=$(get_args "$@")
+  local options=$(get_options "$@")
+  if [ x"$1" = x ]; then
+    # show_packages
+    show_packages | awk 'NR % 3==0{ printf("%-18s\n", $0)} NR % 3 !=0 {printf("%-18s ", $0)}'
+    echo ""
+  else
+    for package in $arglist; do
+      install_package $package $options
+    done
+  fi
+}
+
+# OPTIND_OLD=$OPTIND
+# OPTIND=1
+# while getopts "hl:" opt; do
+#   case $opt in
+#     h)
+#       usage ;;
+#     l)
+#       INSTALL_LIBS="$INSTALL_LIBS $OPTARG"
+#       #$OPTARG
+#       ;;
+#   esac
+# done
+# shift `expr $OPTIND - 1`
+# OPTIND=$OPTIND_OLD
+# if [ $OPT_ERROR ]; then
+#   usage
+# fi
+
+main "$@"
+

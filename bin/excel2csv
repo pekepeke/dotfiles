@@ -1,0 +1,8 @@
+#!/bin/sh
+
+cwd=$(pwd)
+scriptdir=$(cd dirname $0; pwd)
+
+cd "$cwd"
+java -Dfile.encoding=utf8 -Xms512m -Xmx512m -XX:MaxPermSize=256m -jar $scriptdir/.opt/excel2csv-1.0.2.jar $*
+

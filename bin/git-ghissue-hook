@@ -1,0 +1,33 @@
+#!/bin/bash
+
+prepare-commit-msg() {
+  cat <<'EOM'
+#!/bin/sh
+#
+
+if [ "$2" == "" ] ; then
+mv $1 $1.tmp
+echo "issue #`git branch | grep "*" | awk '{print $2}' | sed -e "s/^\([0-9]*\).*/\1/g"`" > $1
+cat $1.tmp >> $1
+fi
+EOM
+}
+usage() {
+
+  cat <<EOM 1>&2
+## please enter following.
+
+prepare-commit-msg > .git/hooks/prepare-commit-msg"
+chmod +x .git/hooks/prepare-commit-msg
+
+EOM
+  exit 1
+}
+
+if [ -f /dev/stdout ]; then
+  prepare-commit-msg
+else
+  usage
+fi
+
+

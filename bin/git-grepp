@@ -1,0 +1,9 @@
+#!/bin/bash
+
+selected="$(git grep "$@" | peco | cut -d ':' -f1 | sort | uniq | sed -e 's/ /\\ /g' | tr "[:cntrl:]" " ")"
+
+if [ -n "$selected" ]; then
+  echo "$selected" | pbcopy-wrapper
+  echo "copied : $selected"
+  # $EDITOR "$selected"
+fi

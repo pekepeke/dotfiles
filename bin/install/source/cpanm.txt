@@ -1,0 +1,31 @@
+DBI
+DBD::mysql
+DBD::pg
+DBD::SQLite
+Plack
+JSON
+
+JavaScript::Beautifier
+XML::Beautify
+SQL::Beautify
+# Data::Section::Simple
+# Text::Markdown
+Text::Xslate
+Path::Class
+Module::Install
+Minilla
+
+App::pmuninstall
+App::cpanoutdated
+local::lib
+# App::gh
+JSON::XS
+# Plack::App::CocProxy
+Term::ReadKey
+# Text::LTSV
+# Spreadsheet::XLSX
+
+# Eval::WithLexicals
+Reply
+Data::Printer
+

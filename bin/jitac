@@ -1,0 +1,12 @@
+#!/bin/bash
+
+main() {
+  local cwd=$(pwd)
+  local scriptdir=$(cd $(dirname $0); pwd)
+  cd "$cwd"
+
+  java -jar $scriptdir/.opt/jitac-0.3.0.jar "$@"
+}
+
+main "$@"
+

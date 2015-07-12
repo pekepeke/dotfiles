@@ -1,0 +1,57 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h] [version...]
+
+available versions : 6, 7, 8, 9, 10, 11
+available variables :
+  CURL_OPTS=""
+  REUSE_XP=yes   (default)
+  REUSE_WIN7=yes (default)
+notice: if you want to install windows 8, you must set REUSE_WIN7=no and specify ie10
+
+### To rearm, go into a command prompt with Administrator privileges and type followings.
+
+> slmgr –rearm
+
+### Change 109 Keyboard
+- [Windowsスタートメニュー] > [コントロールパネル] > [システムとセキュリティ] > [デバイス マネージャー]
+- [標準 PS/2 キーボード] > Right Click > [ドライバー ソフトウェアの更新...]
+- [コンピューター上のデバイス ドライバーの一覧から選択します]
+- Check off from  [[互換性のあるハードウェアを表示]
+- Select "Japanese PS/2 Keyboard (106/109 Key Ctrl + Eisuu"
+- Change IME EN to Ja
+
+EOM
+  exit 1
+}
+
+main() {
+  # echo env IEVMS_VERSIONS="$*" bash
+  curl -s https://raw.github.com/xdissent/ievms/master/ievms.sh | env IEVMS_VERSIONS="$*" bash
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    # v) ;;
+    # s)
+      #$OPTARG
+      # ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+if [ x"$1" = x ]; then
+  usage
+fi
+main "$@"
+

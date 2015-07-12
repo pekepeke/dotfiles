@@ -1,0 +1,21 @@
+#!/bin/bash
+
+main () {
+  local f cwd=$(pwd)
+  local subcommand=$1
+  if [ x"" = x"$1" ]
+  then
+    echo "subcommand not found : $1" >&2
+  fi
+  for f in $(ls --color=no ~/.vim/neobundle)
+  do
+    f=~/.vim/neobundle/$f
+    [ ! -d $f ] && continue
+    echo $f
+    cd $f
+    [ -e .git ] && git $@
+  done
+  cd $cwd
+}
+
+main "$@"

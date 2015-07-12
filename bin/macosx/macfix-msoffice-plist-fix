@@ -1,0 +1,19 @@
+#!/bin/bash
+
+osascript <<EOM &
+set theLibrary to path to library folder from user domain
+set theTemplateFilename to (theLibrary's POSIX path as string) & "Application Support/Microsoft/Office/ユーザー テンプレート/Normal.dotm"
+set thePreferenceFilename to (theLibrary's POSIX path as string) & "Preferences/com.microsoft.office.plist"
+
+tell application "Finder"
+	set thePrefFile to (POSIX file thePreferenceFilename as alias)
+	set theTemplFile to (POSIX file theTemplateFilename as alias)
+	if exists thePrefFile then
+		delete thePrefFile
+	end if
+	if exists theTemplFile then
+		delete theTemplFile
+	end if
+end tell
+EOM
+

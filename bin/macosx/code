@@ -1,0 +1,18 @@
+#!/bin/bash
+
+APP_BINARY="Visual Studio Code.app/Contents/MacOS/Atom"
+BIN=""
+
+for dir in ~/Applications /Applications ; do
+  if [ -e "$dir/$APP_BINARY" ]; then
+    BIN="$dir/$APP_BINARY"
+    break
+  fi
+done
+
+if [ -z "$BIN" ]; then
+  echo "command not found: $*" 1>&2
+  exit 1
+fi
+"$BIN" "$@" >/dev/null &
+

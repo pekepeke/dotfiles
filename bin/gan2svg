@@ -1,0 +1,13 @@
+#!/bin/bash
+
+args=""
+for arg in "$@"; do
+  if [ $# -eq 1 ]; then
+    break
+  fi
+  args="$args $arg"
+  shift
+done
+
+xsltproc $args ~/bin/.lib/xslt/gan2svg-hidehide55.xsl "$@"
+

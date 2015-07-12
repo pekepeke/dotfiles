@@ -1,0 +1,62 @@
+#!/bin/bash
+
+if [ -z "$BREW_PREFIX" ]; then
+  BREW_PREFIX=/usr/local
+fi
+if [ $# -ne 1 ]; then
+  echo
+  cat <<EOM >&2
+Usage: sphp [phpversion]
+
+## mod_php -> $BREW_PREFIX/lib/libphp5.so
+LoadModule php5_module $BREW_PREFIX/lib/libphp5.so
+AddType application/x-httpd-php .php
+DirectoryIndex index.html index.php index.cgi
+EOM
+	exit 1
+fi
+
+currentversion="`php -r \"echo str_replace('.', '', substr(phpversion(), 0, 3));\"`"
+newversion="$1"
+
+brew list php$newversion 2> /dev/null > /dev/null
+
+if [ $? -eq 0 ]; then
+	echo "PHP version $newversion found"
+
+	echo "Unlinking old binaries..."
+	brew unlink php$currentversion 2> /dev/null > /dev/null
+
+	echo "Linking new binaries..."
+	brew link php$newversion
+
+	echo "Linking new modphp addon..."
+	sudo ln -sf `brew list php$newversion | grep libphp` $BREW_PREFIX/lib/libphp5.so
+
+	echo "Updating version file..."
+
+	pgrep -f /usr/sbin/httpd 2> /dev/null > /dev/null
+	if [ $? -eq 0 ]; then
+		echo "Restarting system Apache..."
+		sudo pkill -9 -f /usr/sbin/httpd
+		sudo /usr/sbin/apachectl -k restart > /dev/null 2>&1
+	fi
+	pgrep -f $BREW_PREFIX/Cellar/*/httpd 2> /dev/null > /dev/null
+	if [ $? -eq 0 ]; then
+		echo "Restarting homebrew Apache..."
+		sudo pkill -9 -f $BREW_PREFIX/Cellar/*/httpd
+		sudo $BREW_PREFIX/bin/apachectl -k restart > /dev/null 2>&1
+  else
+    pgrep -f $BREW_PREFIX/opt/*/httpd 2> /dev/null > /dev/null
+    if [ $? -eq 0 ]; then
+      echo "Restarting homebrew Apache..."
+      sudo pkill -9 -f $BREW_PREFIX/opt/*/httpd
+      sudo $BREW_PREFIX/bin/apachectl -k restart > /dev/null 2>&1
+    fi
+	fi
+
+	echo "Done."
+else
+	echo "PHP version $newversion was not found."
+	exit 1
+fi

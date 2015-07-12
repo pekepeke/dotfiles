@@ -1,0 +1,100 @@
+#!/bin/bash
+
+opt_install_application=0
+opt_install_autostart=0
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+Usage: $prg_name [-h] [progname or path]
+
+Option:
+  -a : put into ~/.local/share/applications
+  -s : put into ~/.config/autostart/
+EOM
+  exit 1
+}
+
+make_desktop() {
+  name=$1
+  if [ x"$2" = x ]; then
+    exepath="$(which $1)"
+  else
+    exepath="$2"
+  fi
+  if [ x"$exepath" = x ]; then
+    exepath=$name
+  fi
+  if [ x"$3" != x ]; then
+    desc="$3"
+  else
+    desc="$1"
+  fi
+  cat <<EOM
+[Desktop Entry]
+Version=1.0
+Name=$1
+GenericName=$desc
+Comment=$desc
+Exec=$exepath
+Terminal=false
+Type=Application
+Categories=Development;
+EOM
+}
+
+main() {
+
+  if [ x"$1" = x ]; then
+    exit 1
+  fi
+  local name=$(basename $1 2>/dev/null)
+  if [ -e "$1" ]; then
+    exepath="$1"
+  elif ! which $1 >/dev/null 2>&1; then
+    echo "$1 : command not found" 1>&2
+    exit 1
+  else
+    exepath=$(which $1)
+  fi
+
+  desktop_fname="${name}.desktop"
+  desktop_fpath="${desktop_fname}"
+  if [ $opt_install_application -eq 1 ]; then
+    desktop_fpath="${HOME}/.local/share/applications/${desktop_fname}"
+  elif [ $opt_install_autostart -eq 1 ]; then
+    desktop_fpath="${HOME}/.config/autostart/${desktop_fname}"
+  fi
+  if [ ! -e "$desktop_fpath" ]; then
+    make_desktop "${name}" "$exepath" > "$desktop_fpath"
+    # chmod +x "$desktop_fpath"
+    echo "created: $desktop_fpath"
+  else
+    make_desktop "$@"
+    echo "already exists: $desktop_fpath" 1>&2
+  fi
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "ashv" opt; do
+  case $opt in
+    a)
+      opt_install_application=1
+      ;;
+    s)
+      opt_install_autostart=1
+      ;;
+    h)
+      usage ;;
+    v) ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

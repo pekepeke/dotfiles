@@ -1,0 +1,52 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  cat <<EOM
+mpdump > mpdump.txt
+mpfilter < mpdump.txt | mpreport | head - 100
+
+## mpdump
+定期的に実行中の SQL クエリ一覧を MySQL から取得します。
+デフォルトでは 0.1 秒間隔で 1,000 回サンプリングを行います (つまり、実行に100秒強かかります)。
+実行間隔やサンプリング回数、MySQL サーバ接続時のパラメータは引数で指定できるので、詳しくは --help を参照ください。
+
+## mpfilter, mpreport
+mpfilter コマンドを使ってクエリの変数を「?」に書き換え、mpreport コマンドでクエリを負荷順にソートして表示します。
+mpreport は、「実行確率:SQLクエリ」の一覧を実行確率の降順で表示します。
+「クエリの実行確率」とは、そのクエリが実行されていた確率をパーセントで表示したものです。
+同一クエリが複数スレッドから実行されていれば、値は 100% を超えることもあります。
+
+どのようなクエリが一番負荷を与えているか、また、一番重たいクエリが、どれくらいの確率＝平均 n スレッドによって実行されていることが一目瞭然です。
+あとは、この一覧の順に、最適化が可能か、あるいは memcached でキャッシュすべきか、といったことを検討していくことになります。
+
+EOM
+}
+
+# OPTIND_OLD=$OPTIND
+# OPTIND=1
+# while getopts "hvs:" opt; do
+#   case $opt in
+#     h)
+#       usage ;;
+#     v) ;;
+#     s)
+#       #$OPTARG
+#       ;;
+#   esac
+# done
+# shift `expr $OPTIND - 1`
+# OPTIND=$OPTIND_OLD
+# if [ $OPT_ERROR ]; then
+#   usage
+# fi
+
+main "$@"
+

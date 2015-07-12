@@ -1,0 +1,63 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  local env_root=$(phpenv root)
+  local cgi_bin="/php-cgi-versions"
+  local real_bin="$env_root/httpd/cgi-bin"
+  local conf="$env_root/httpd/conf/php-cgi.conf"
+
+  if [ ! -e $env_root/httpd ] ; then
+    mkdir -p $env_root/httpd/cgi-bin
+    mkdir -p $env_root/httpd/conf
+  fi
+
+  cat << EOM > $conf
+  ScriptAlias $cgi_bin/ "$real_bin/"
+  <Directory "$real_bin">
+    Options FollowSymLinks
+  </Directory>
+EOM
+
+  rm $real_bin/php*
+
+  for ver in $(ls $env_root/versions) ; do
+    ln -s $env_root/versions/$ver/bin/php-cgi "$real_bin/php${ver}"
+    echo "Action php${ver}-script $cgi_bin/php${ver}" >> $conf
+  done
+
+  cat <<EOM
+Please add below into your apache configuration file.
+
+  Include "$conf"
+
+And restart apache, you can use these settings.
+
+EOM
+
+  for ver in $(ls $env_root/versions) ; do
+    echo "  AddHandler php${ver}-script .php"
+  done
+
+}
+
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

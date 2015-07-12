@@ -1,0 +1,64 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long;
+use Pod::Usage;
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+
+my %opts;
+GetOptions(\%opts, qw(
+    help|h
+    alnum|a
+));
+usage if $opts{help};
+
+# my @letters = ('a'..'z', 'A'..'Z', 0..9);
+# push @letters, map { chr } (33, 35..41, 43..47, 58..62, 64, 93..96, 123..126);
+my @letters;
+if ($opts{alnum}) {
+    @letters = ('a'..'z', 'A'..'Z', 0..9);
+} else {
+    @letters = map { chr($_) } (32..126);
+}
+@letters = grep { index("\"* ?", $_) == -1 } @letters;
+my ($length, $loop)  = (shift || 5, shift || 1);
+
+for(1 .. $loop){
+  print $letters[int(rand(@letters))] for(1 .. $length);
+  print "\n";
+}
+
+__END__
+
+=head1 NAME
+
+    mkpasswd - generate password
+
+=head1 SYNOPSIS
+
+
+=head1 OPTIONS
+
+=over 4
+
+=item --alnum -a
+
+alphabet and number only
+
+=back
+
+
+=head1 AUTHOR
+
+pekepeke <pekepekesamurai+github@gmail.com>

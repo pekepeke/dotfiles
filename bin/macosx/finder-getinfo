@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Show information window in Finder.
+# Usage: getinfo [files]
+
+CWD=`pwd | sed -E -e 's/\\\\/\\\\\\\\/g' -e 's/"/\\\\"/g'`
+
+osascript - "$@" <<EOF
+on run argv
+    repeat with i in argv
+        if first character of i is not "/" then
+            set i to "$CWD" & "/" & i
+        end if
+        set i to (i as POSIX file as Unicode text)
+
+        tell application "Finder"
+            open information window of item i
+        end tell
+    end repeat
+
+    tell application "Finder"
+        activate
+    end tell
+end run
+EOF

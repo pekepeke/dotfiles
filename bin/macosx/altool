@@ -1,0 +1,10 @@
+#!/bin/bash
+
+name=$(basename $0)
+for d in "/Applications/Xcode.app/Contents/Applications/Application Loader.app/Contents/Frameworks/ITunesSoftwareService.framework/Support/"; do
+  if [ -e "$d/altool" ]; then
+    "$d/$name" "$@"
+    break
+  fi
+done
+

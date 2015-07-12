@@ -1,0 +1,12 @@
+#!/bin/bash
+
+print_tags() {
+  for repo in $*; do
+    curl -s https://registry.hub.docker.com/v1/repositories/$repo/tags | jq -r '"'$repo':\(.[].name)"'
+  done
+}
+selected="$(docker search "$@" | peco | awk '{print $1}')"
+
+if [ -n "$selected" ]; then
+  print_tags $selected | peco
+fi

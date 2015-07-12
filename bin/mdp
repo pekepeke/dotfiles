@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+pecopen -f '\.\(md\|mkd\|markdown\)$' ~/memos mdr cat

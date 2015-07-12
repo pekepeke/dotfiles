@@ -1,0 +1,263 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long;
+use Pod::Usage;
+use Cwd;
+use File::Temp qw(tempfile tempdir);
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+
+my %opt;
+Getopt::Long::Configure ("bundling");
+GetOptions(
+    \%opt, 'help|h', 'port|p=i', 'save|s'
+) or usage;
+usage if $opt{help};
+
+# conf parameters
+my $progname = "httpd-instant";
+my $port = $opt{port} || 50080;
+my $server_count = 10;
+my $server_max_count = 10 + 10;
+my $pidfile = "/tmp/$progname.pid";
+my $is_save_conf = $opt{save} || 0;
+my $additional_conf = $ENV{HOME} . "/.$progname.conf";
+
+my $cwd = Cwd::getcwd();
+my @confs = qw[
+    /usr/local/apache2/etc/httpd.conf
+    /usr/local/etc/apache2/httpd.conf
+    /usr/local/etc/apache2/2.4/httpd.conf
+    /usr/local/etc/apache2/2.2/httpd.conf
+    /etc/apache2/httpd.conf
+    /etc/httpd/conf/httpd.conf
+];
+
+my ($server_root, $types_config, $mime_magic) = ("", "", "");
+my @directives = ();
+for my $conf_path (@confs) {
+    next unless -e $conf_path;
+    open my $cfh, "<", $conf_path or die "cannot open file:$conf_path - $!";
+    while (<$cfh>) {
+        if (/^\s*ServerRoot\s+(.+)$/) {
+            $server_root = $1;
+        } elsif (/(^\s*LoadModule.*)/) {
+            push @directives, $1;
+        } elsif (/^\s*(TypesConfig\s+.+)$/) {
+            $types_config = $1;
+        } elsif (/^\s*(MIMEMagicFile\s+.+)$/) {
+            $mime_magic = $1;
+        }
+    }
+    close $cfh;
+    last;
+}
+die "cannot found directives" unless $server_root && scalar(@directives);
+my $directive_string = join("\n", @directives);
+
+if ( -f $additional_conf ) {
+    open my $fp, '<', $additional_conf or die "$additional_conf: $!";
+    my @lines = <$fp>;
+    close($fp);
+    $directive_string .= "\n" . join("\n", @lines);
+}
+
+my $handler_php = "";
+
+# $handler_php = "AddHandler php5-script .php" if (grep(/\s+php5_module\s+/, @directives));
+if (grep(/\s+php5_module\s+/, @directives)) {
+    $handler_php = <<'EOM'
+<FilesMatch "\.php$">
+  AddHandler php5-script .php
+  AddType text/html .php
+</FilesMatch>
+EOM
+;
+
+}
+
+# my ($fh, $fpath) = tempfile();
+my $action = $ARGV[0] ? $ARGV[0] : "restart";
+my $fpath = "$cwd/$progname-apache.conf";
+my $bin = `which httpd`;
+chomp($bin);
+
+sub cmd_run_apache {
+    my $action = shift;
+    # sprintf("%s %s -f %s -k %s", ($ENV{USER} eq "root" ? "" : "sudo "), $bin, $fpath, $action);
+    sprintf("%s -f %s -k %s", $bin, $fpath, $action); # can't create accept.lock
+}
+
+unless ($is_save_conf || -e $fpath) {
+    $fpath = "/tmp/$progname-apache.conf";
+    if (-e $fpath) {
+        system(cmd_run_apache("stop"));
+        unlink($fpath)
+    }
+}
+my $run_cmd = cmd_run_apache($action);
+
+unless (-e $fpath) {
+    open my $fh, ">", $fpath or die "cannot open file:$fpath-$!";
+
+    mkdir "/tmp/$progname-accept" unless -d "/tmp/$progname-accept";
+    my $template = <<EOM
+#!$run_cmd
+ServerRoot $server_root
+
+Listen $port
+Timeout 300
+KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 5
+AccessFileName .htaccess
+ServerTokens Full
+HostnameLookups Off
+
+User $ENV{"USER"}
+
+$directive_string
+
+<IfModule !mpm_netware_module>
+    PidFile "$pidfile"
+</IfModule>
+<IfModule !mpm_winnt_module>
+<IfModule !mpm_netware_module>
+    <IfVersion = /^2.2./>
+        LockFile "/tmp/$progname-accept.lock"
+    </IfVersion>
+    <IfVersion = /^2.4./>
+        Mutex default:/tmp/$progname-accept
+    </IfVersion>
+</IfModule>
+</IfModule>
+
+<IfModule mpm_prefork_module>
+    StartServers        $server_count
+    MinSpareServers     $server_count
+    MaxSpareServers     $server_count
+    MaxClients          $server_max_count
+    MaxRequestsPerChild  100
+</IfModule>
+<IfModule mpm_worker_module>
+    StartServers        $server_count
+    MinSpareServers     $server_count
+    MaxSpareServers     $server_count
+    MaxClients          $server_max_count
+    MaxRequestsPerChild  0
+</IfModule>
+
+$handler_php
+<FilesMatch \\.cgi\$>
+    SetHandler cgi-script
+</FilesMatch>
+<FilesMatch \\.pl\$>
+    SetHandler cgi-script
+</FilesMatch>
+Options +ExecCGI
+
+$types_config
+
+<IfVersion = /^2.2./>
+    DefaultType text/plain
+</IfVersion>
+<IfModule mod_mime_magic.c>
+    $mime_magic
+</IfModule>
+
+ErrorLog /tmp/$progname-error_log
+CustomLog /tmp/$progname-access_log common
+
+LogFormat "%h %l %u %t \\"%r\\" %>s %b" common
+
+ServerName $progname.localhost
+DocumentRoot $cwd
+
+<Directory "$cwd">
+    Options +FollowSymLinks +ExecCGI +Indexes
+    DirectoryIndex index.html index.php index.cgi index.pl
+
+    AllowOverride All
+    <IfVersion = /^2.2./>
+        Order Allow,Deny
+        Allow from all
+    </IfVersion>
+    <IfVersion = /^2.4./>
+        Require all granted
+    </IfVersion>
+</Directory>
+
+# RewriteEngine On
+# RewriteCond  $cwd/%{REQUEST_FILENAME} !-f
+# RewriteRule (.*) http://%{HTTP_HOST}\$1 [P]
+
+#RewriteLogLevel 2
+#RewriteLog /tmp/$progname-rewrite_log
+
+
+<IfModule ssl_module>
+SSLRandomSeed startup builtin
+SSLRandomSeed connect builtin
+<IfModule mod_socache>
+    <IfVersion = /^2.2./>
+        SSLSessionCache shm:/tmp/$progname-ssl_gcache_data(512000)
+    </IfVersion>
+    <IfVersion = /^2.4./>
+        SSLSessionCache shmcb:/tmp/$progname-ssl_gcache_data(512000)
+    </IfVersion>
+</IfModule>
+<IfModule !mod_socache>
+    SSLSessionCache none
+</IfModule>
+SSLSessionCacheTimeout 300
+</IfModule>
+
+EOM
+;
+
+    print $fh $template;
+    close($fh);
+# chmod(0755, $fpath);
+    print "create file:$fpath\n";
+} else {
+    $is_save_conf = 1;
+}
+system($run_cmd);
+print "executed `$run_cmd`\n";
+
+# TODO LWP
+sleep 3;
+if (-e $pidfile) {
+    system(
+        sprintf("tail -f /tmp/$progname-*_log | perl -pe '%s'", 's/^.*(error|warn|fatal).*$/\033\[1;31m$&\033\[0m/gim')
+    );
+
+    system(cmd_run_apache("stop"));
+    unlink $fpath unless $is_save_conf;
+}
+
+__END__
+
+=head1 NAME
+
+    httpd-instant - instant httpd server for development
+
+=head1 SYNOPSIS
+
+
+=head1 OPTIONS
+
+
+=head1 AUTHOR
+
+

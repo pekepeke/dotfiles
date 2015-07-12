@@ -1,0 +1,230 @@
+#!/bin/sh
+
+## Functions
+
+    _exit_with() {
+        local message=$1
+
+        echo $message
+        exit 0
+    }
+
+    _is_executable() {
+        local command=$1
+        type $command > /dev/null 2>&1
+    }
+
+    _pecrant() {
+        vagrant global-status | awk '/^[[:alnum:]]{7} /' | peco
+    }
+
+    _pecrant_selected_ids() {
+        _pecrant | awk '{print $1}'
+    }
+
+    _pecrant_list() {
+        _pecrant
+    }
+
+    _pecrant_dir() {
+        _pecrant | awk '{
+          for (i = 5; i < NF; i++) {
+              printf("%s ", $i)
+          }
+          print $NF
+        }'
+    }
+
+    _pecrant_ssh() {
+        local id=$(_pecrant_selected_ids | awk 'NR == 1')
+
+        [ -z "$id" ] && _exit_with "Machine id is not specified"
+        vagrant ssh $id
+    }
+
+    _pecrant_up() {
+        local ids=$(_pecrant_selected_ids)
+
+        [ -z "$ids" ] && _exit_with "Machine id is not specified"
+
+        for id in $ids ; do
+            vagrant up $id
+        done
+    }
+
+    _pecrant_provision() {
+        local ids=$(_pecrant_selected_ids)
+
+        [ -z "$ids" ] && _exit_with "Machine id is not specified"
+
+        for id in $ids ; do
+            vagrant provision $id
+        done
+    }
+
+    _pecrant_reload() {
+        local ids=$(_pecrant_selected_ids)
+
+        [ -z "$ids" ] && _exit_with "Machine id is not specified"
+
+        for id in $ids ; do
+            vagrant reload $id
+        done
+    }
+
+    _pecrant_suspend() {
+        local ids=$(_pecrant_selected_ids)
+
+        [ -z "$ids" ] && _exit_with "Machine id is not specified"
+
+        for id in $ids ; do
+            vagrant suspend $id
+        done
+    }
+
+    _pecrant_resume() {
+        local ids=$(_pecrant_selected_ids)
+
+        [ -z "$ids" ] && _exit_with "Machine id is not specified"
+
+        for id in $ids ; do
+            vagrant resume $id
+        done
+    }
+
+    _pecrant_halt() {
+        local ids=$(_pecrant_selected_ids)
+
+        [ -z "$ids" ] && _exit_with "Machine id is not specified"
+
+        for id in $ids ; do
+            vagrant halt $id
+        done
+    }
+
+    _pecrant_destroy() {
+        local ids=$(_pecrant_selected_ids)
+
+        [ -z "$ids" ] && _exit_with "Machine id is not specified"
+
+        for id in $ids ; do
+            vagrant destroy $id
+        done
+    }
+
+    _pecrant_box_list() {
+        vagrant box list | peco | awk '{
+            print $1, substr($2,2,length($2)-2), substr($3,0,length($3)-1)
+        }'
+    }
+
+    _pecrant_box_update() {
+        local arg_lines=$(_pecrant_box_list | awk '{
+            printf("--box %s --provider %s\n", $1, $2)
+        }')
+
+        local IFS=$'\n'
+
+        for args in $arg_lines ; do
+            IFS=" "; vagrant box update $args
+        done
+    }
+
+    _pecrant_box_remove() {
+        local arg_lines=$(_pecrant_box_list | awk '{
+            printf("%s --provider %s --box-version %s\n", $1, $2, $3)
+        }')
+
+        local IFS=$'\n'
+
+        for args in $arg_lines ; do
+            IFS=" "; vagrant box remove $args
+        done
+    }
+
+    _pecrant_box_help() {
+        cat <<EOF
+Usage: pecrant box <command>
+
+  update  Update the selected vagrant box
+  remove  Remove the selected vagrant box
+  list    List vagrant boxes for this user
+  help    Show this message
+EOF
+    }
+
+    _pecrant_box() {
+        local sub=$1
+
+        if [ -z "$sub" ] ; then
+            _pecrant_box_help
+            return
+        fi
+
+        if _is_executable "_pecrant_box_$sub" ; then
+            "_pecrant_box_$sub"
+        else
+            cat <<EOF
+pecrant: no such command \`box $sub'
+EOF
+        fi
+    }
+
+    _pecrant_help() {
+        cat <<EOF
+Usage: pecrant <command>
+
+  up        Start the selected vagrant machine
+  provision Provision the selected vagrant machine
+  reload    Restart the selected vagrant machine
+  suspend   Suspend the selected vagrant machine
+  resume    Resume the selected vagrant machine
+  halt      Stop the selected vagrant machine
+  destroy   Stop and delete all traces of the vagrant machine
+  ssh       Connect to machine via SSH
+  dir       Show directory path for vagrant environments
+  list      Show vagrant environments for this user
+  box       Manage vagrant boxes: update, remove
+  help      Show this message
+EOF
+    }
+
+    pecrant() {
+        local sub=$1
+
+        if _is_executable "_pecrant_$sub" ; then
+            _pecrant_$sub "$2"
+        else
+            cat <<EOF
+pecrant: no such command \`$sub'
+EOF
+        fi
+    }
+
+## Check required command
+
+    _is_executable peco || {
+        cat <<EOF
+"peco" couldn't be found. Please install or set \$PATH.
+
+See: https://github.com/peco/peco#installation
+EOF
+        exit 1
+    }
+
+    _is_executable vagrant || {
+        cat <<EOF
+"vagrant" couldn't be found. Please install or set \$PATH.
+
+See: http://docs.vagrantup.com/v2/installation/index.html
+EOF
+        exit 1
+    }
+
+## Main routine
+
+    if [ $# -ge 1 ] ; then
+        pecrant "$*"
+    else
+        pecrant help
+    fi

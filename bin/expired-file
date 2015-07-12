@@ -1,0 +1,70 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM 1>&2
+  Usage: $prg_name [-h] [filename] [expired day]
+EOM
+  exit 255
+}
+
+get_expired() {
+  local expired="$1"
+  local param=0
+  case "$2" in
+    second)
+      param=1
+      ;;
+    minute)
+      param=60
+      ;;
+    hour)
+      param=3600
+      ;;
+    day)
+      param=86400
+      ;;
+  esac
+  expr $expired \* $param 2>/dev/null
+}
+
+main() {
+  local filename="$1"
+  local expired=$(get_expired $2 day)
+  local now=$(date +'%s')
+  local success=0
+
+  if [ -z "$filename" -o -z "$expired" ]; then
+    usage
+  fi
+  local tm
+  if [ -e "$filename" ]; then
+    tm=$(expr $(cat "$filename") + $expired 2>/dev/null)
+    [ -z "$tm" ] && tm=0
+    if [ $now -gt $tm ]; then
+      echo $now > "$filename"
+      exit 0
+    fi
+  else
+    echo $now > "$filename"
+    exit 0
+  fi
+  exit 1
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

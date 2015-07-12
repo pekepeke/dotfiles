@@ -1,0 +1,132 @@
+#!/bin/sh
+
+usage()
+{
+    echo >&2 "\
+Usage: `basename $0` [--class] [--title] [--name] PATTERN [ACTION]
+Toggle focus status of certain window.
+
+  PATTERN  RegExp pattern for WM_CLASS and WM_NAME (controlled by option)
+  ACTION   command which is executed when window is not found
+
+Use 'xprop WM_CLASS WM_NAME' to investigate the condition"
+}
+
+if [ $# -lt 1 ]; then
+    usage
+    exit 1
+fi
+
+# ============================================================ #
+# Process Options
+# ============================================================ #
+
+unset GETOPT_COMPATIBLE
+OPT=`getopt -o "" -l class,title,name -- "$@"`
+
+if [ $? != 0 ]; then
+    echo ""
+    usage
+    exit 1
+fi
+
+eval set -- $OPT
+
+while [ -n "$1" ]; do
+    case $1 in
+        --class) CLASS=1; shift 1;;
+        --title) TITLE=1; shift 1;;
+        --name) NAME=1; shift 1;;
+        --) shift; break;;
+        *) echo "Unknown option $1\n"; usage; exit 1;;
+    esac
+done
+
+if [ $# -lt 1 -o $# -gt 2 ]; then
+    usage
+    exit 1
+fi
+
+# ============================================================ #
+# Setup condition
+# ============================================================ #
+
+COND="'$1'"
+[ -n "$CLASS" ] && COND="--class $COND"
+[ -n "$NAME" ] && COND="--name $COND"
+[ -n "$TITLE" ] && COND="--title $COND"
+
+ACTION="$2"
+
+# ============================================================ #
+# Get IDs of target and active window
+# ============================================================ #
+
+search_window()
+{
+    echo `eval xdotool search $@ | head -1`
+}
+
+is_valid_wid()
+{
+    echo $1 | grep -q -s "^[0-9]*$"
+}
+
+TARGET_WID=`search_window $COND`
+ACTIVE_WID=`xdotool getactivewindow`
+
+is_valid_wid "$TARGET_WID" || exit 1;
+
+# ============================================================ #
+# Create directory and get file path to store ID
+# ============================================================ #
+
+PREV_WID_DIR="/tmp/togwin_dir"
+
+if [ ! -d $PREV_WID_DIR ]; then
+    mkdir "$PREV_WID_DIR"
+fi
+
+PREV_WID_FILE=`echo ${COND} | md5sum - | sed -e "s/[ -]//g"`
+PREV_WID_PATH="$PREV_WID_DIR/$PREV_WID_FILE"
+
+# ============================================================ #
+# Main
+# ============================================================ #
+
+raise_window()
+{
+    WID=$1
+    xdotool windowactivate $WID || xdotool windowfocus $WID
+}
+
+save_active_window()
+{
+    echo $ACTIVE_WID > $PREV_WID_PATH
+}
+
+if [ -z "$TARGET_WID" ]; then
+    # target is not running. execute action.
+    save_active_window
+    if [ -n "$ACTION" ]; then
+        $ACTION
+    fi
+else
+    # target is running
+
+    if [ "$ACTIVE_WID" = "$TARGET_WID" ]; then
+        # already focused to target
+        # Try to focus previous active window
+        PREV_WID=`cat $PREV_WID_PATH 2> /dev/null`
+
+        if [ -n "$PREV_WID" ]; then
+            # raise previous active window
+            raise_window $PREV_WID
+        fi
+    else
+        # save current wid
+        save_active_window
+        # raise target
+        raise_window $TARGET_WID
+    fi
+fi

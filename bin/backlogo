@@ -1,0 +1,32 @@
+#!/bin/bash
+
+project="$(git config --get backlog.project)"
+if [ -n "$project" ]; then
+  echo do nothing >/dev/null
+elif [[ "$1" =~ ^[^\-] ]]; then
+  project="$1"
+  shift
+else
+  project=$(backlog project list | peco | awk '{print $1}')
+fi
+
+if [ -n "$project" ]; then
+  # selected=$(backlog issue list $project "$@" | peco --initial-matcher=Migemo| awk '{ print $NF }')
+  selected="$(backlog issue list $project "$@" | peco | awk '{ print $NF }')"
+  case $OSTYPE in
+    cygwin*)
+      open_cmd=cygstart;;
+    darwin*)
+      open_cmd=open ;;
+    bsd*)
+      open_cmd=xdg-open ;;
+    linux*)
+      open_cmd=xdg-open ;;
+    solaris*)
+      open_cmd=xdg-open ;;
+    *)
+      ;;
+  esac
+  eval $open_cmd ${selected}
+fi
+
