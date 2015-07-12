@@ -135,10 +135,10 @@ ${color lightgrey}RAM Usage :$color $mem / $memmax - $memperc% ${alignr}${membar
 ${color lightgrey}Swap Usage:$color $swap / $swapmax - $swapperc% ${alignr}${swapbar 5,70}
 ${color lightgrey}Processes :$color $processes ${color grey}Running:$color $running_processes
 ${color lightgrey}$hr
-${color lightgrey}LAN :$color ${addr eth1}
-Down:${color #9370DB}  ${downspeed eth1} k/s ${alignr}${totaldown eth1} total
-${color lightgrey}Up  : ${color #87CEFA} ${upspeed eth1} k/s ${alignr}${totalup eth1} total
-${color #9370DB}${downspeedgraph eth1 20,160 00ffff 0033ff} ${alignr}${color #87CEFA}${upspeedgraph eth1 20,160 fff000 ff0000}
+${color lightgrey}LAN :$color ${addr eth0}
+Down:${color #9370DB}  ${downspeed eth0} k/s ${alignr}${totaldown eth0} total
+${color lightgrey}Up  : ${color #87CEFA} ${upspeed eth0} k/s ${alignr}${totalup eth0} total
+${color #9370DB}${downspeedgraph eth0 20,160 00ffff 0033ff} ${alignr}${color #87CEFA}${upspeedgraph eth0 20,160 fff000 ff0000}
 ${color lightgrey}Wifi:$color ${addr wlan0}
 Down:${color #9370DB}  ${downspeed wlan0} k/s ${alignr}${totaldown wlan0} total
 ${color lightgrey}Up  : ${color #87CEFA} ${upspeed wlan0} k/s ${alignr}${totalup wlan0} total
