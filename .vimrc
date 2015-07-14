@@ -819,13 +819,15 @@ NeoBundle 'rhysd/clever-f.vim', {'autoload': {
 NeoBundle 't9md/vim-smalls', {'autoload': {
 \ 'mappings': [['nxo', '<Plug>(smalls']]
 \ }}
-if s:is_win
-  NeoBundle 'sgur/vim-lazygutter'
-else
-  " NeoBundle 'mhinz/vim-signify'
-  NeoBundle 'tomtom/quickfixsigns_vim', {
-  \ 'depends': ['tomtom/tlib_vim'],
-  \ }
+if get(g:vimrc_enabled_features, "gitsign", 0)
+  if s:is_win
+    NeoBundle 'sgur/vim-lazygutter'
+  else
+    " NeoBundle 'mhinz/vim-signify'
+    NeoBundle 'tomtom/quickfixsigns_vim', {
+    \ 'depends': ['tomtom/tlib_vim'],
+    \ }
+  endif
 endif
 if has('python')
   NeoBundle 'editorconfig/editorconfig-vim'
