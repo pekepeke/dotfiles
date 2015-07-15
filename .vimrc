@@ -4490,6 +4490,14 @@ if s:bundle.is_installed('vim-smartchr')
   inoremap <expr>, smartchr#one_of(', ', ',')
 endif
 
+" fakeclip "{{{2
+if s:bundle.is_installed('vim-fakeclip')
+  nmap ,y <Plug>(fakeclip-screen-y)
+  nmap ,p <Plug>(fakeclip-screen-p)
+  vmap ,y <Plug>(fakeclip-screen-y)
+  vmap ,p <Plug>(fakeclip-screen-p)
+endif
+
 " unite.vim {{{2
 if s:bundle.tap('unite.vim')
   LCAlias Unite

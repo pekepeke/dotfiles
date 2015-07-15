@@ -65,6 +65,7 @@
 
 --langmap=PHP:+.inc
 --php-types=c+f+d
+--regex-php=/^[ \t]*trait[ \t]+([a-z0_9_]+)/\1/t, traits/i ] ]
 
 --langdef=actionscript
 --langmap=actionscript:.as

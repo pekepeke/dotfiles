@@ -76,6 +76,7 @@
 ## PHP {{{1
 --langmap=PHP:+.inc
 --php-types=c+f+d
+--regex-php=/^[ \t]*trait[ \t]+([a-z0_9_]+)/\1/t, traits/i ] ]
 
 ## actionscript {{{1
 --langdef=actionscript
