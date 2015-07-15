@@ -1028,7 +1028,9 @@ NeoBundleLazy 'vim-jp/vital.vim', {'autoload': {
 NeoBundle 'mattn/learn-vimscript'
 
 " completion {{{4
-if s:exec_ruby
+if get(g:vimrc_enabled_features, "eclim", 0)
+  " do nothing
+elseif s:exec_ruby
   NeoBundleLazy 'm2ym/rsense', {
   \ 'rtp' : 'etc',
   \ 'build' : {
@@ -1370,7 +1372,17 @@ endif
 NeoBundleLazy 'mikelue/vim-maven-plugin', {'autoload':{
 \ 'filetypes': ['java'],
 \ }}
-if s:exec_java
+if get(g:vimrc_enabled_features, "eclim", 0)
+  NeoBundle 'ervandew/eclim', {
+  \ 'build' : {
+  \   'windows': 'ant -Declipse.home='.escape($ECLIPSE_HOME, '')
+  \              .' -Dvim.files='.escape(expand('~/.vim/bundle/eclim'), ''),
+  \   'mac': 'ant -Declipse.home='.$ECLIPSE_HOME
+  \          . '-Dvim.files='.escape(expand('~/.vim/bundle/eclim'), ''),
+  \   'linux': 'ant -Declipse.home='.$ECLIPSE_HOME
+  \          . '-Dvim.files='.escape(expand('~/.vim/bundle/eclim'), ''),
+  \ }}
+elseif s:exec_java
   NeoBundleLazy 'kamichidu/unite-javaimport', {'autoload': {
   \ 'unite_sources': ['javaimport']
   \ }}
@@ -1455,7 +1467,9 @@ NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
 
-if get(g:vimrc_enabled_features, 'phpcomplete-extended', 0)
+if get(g:vimrc_enabled_features, "eclim", 0)
+  " do nothing
+elseif get(g:vimrc_enabled_features, 'phpcomplete-extended', 0)
   NeoBundle 'm2mdas/phpcomplete-extended'
   if get(g:vimrc_enabled_features, 'laravel', 0)
     NeoBundle 'm2mdas/phpcomplete-extended-laravel'
@@ -2767,6 +2781,11 @@ if s:bundle.is_installed('vim-rengbang')
     \ 'usefirst',
     \ 'format',
     \ ]
+endif
+
+" eclim {{{2
+if s:bundle.is_installed('eclim')
+  let g:EclimCompletionMethod = 'omnifunc'
 endif
 
 " jqplay {{{2
