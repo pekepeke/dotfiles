@@ -7143,6 +7143,8 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   \ 'objc':  '[^.[:digit:] *\t]\%(\.\|->\)',
   \ 'objcpp':  '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::',
   \ 'python': '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*',
+  \ 'java': '\k\.\k*',
+  \ 'scala': '\k\.\k*',
   \ })
   call extend(g:neocomplete#sources#omni#input_patterns, {
   \ 'perl':  '\h\w*->\h\w*\|\h\w*::',
