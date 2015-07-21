@@ -1373,7 +1373,7 @@ NeoBundleLazy 'mikelue/vim-maven-plugin', {'autoload':{
 \ 'filetypes': ['java'],
 \ }}
 if get(g:vimrc_enabled_features, "eclim", 0)
-  NeoBundle 'ervandew/eclim', {
+  NeoBundleLazy 'ervandew/eclim', {
   \ 'build' : {
   \   'windows': 'ant -Declipse.home='.escape($ECLIPSE_HOME, '')
   \              .' -Dvim.files='.escape(expand('~/.vim/bundle/eclim'), ''),
