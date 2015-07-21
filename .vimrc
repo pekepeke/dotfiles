@@ -2049,7 +2049,7 @@ augroup vimrc-binary
   autocmd BufWritePre *.bin if &bin | %!xxd -r
   autocmd BufWritePre *.bin endif
   autocmd BufWritePost *.bin if &bin | silent %!xxd -g 1
-  autocmd BufWritePost *.bin setlocal nomodified | endif
+  autocmd BufWritePost *.bin if &bin | setlocal nomodified | endif
 augroup END
 
 " some commands & altercmd {{{1
@@ -3581,7 +3581,7 @@ if s:bundle.tap('gitv')
     MyAutoCmd FileType git setlocal foldlevel=99
     " MyAutoCmd FileReadCmd,BufReadCmd fugitive://** setlocal foldlevel=99
     function! s:vimrc_gitv_init()
-      setl iskeyword+=/,-,.
+      setlocal iskeyword+=/,-,.
 
       nnoremap <buffer> gx :<C-u>Gbrowse <C-r>=GitvGetCurrentHash()<CR><CR>
       if g:vimrc_enabled_plugins.unite
@@ -4266,7 +4266,7 @@ if s:bundle.tap('junkfile.vim')
   nnoremap ,sj :<C-u>JunkfileOpen<CR>
   call s:bundle.untap()
 endif
-command! -nargs=0 EnewNofile enew | setl buftype=nofile
+command! -nargs=0 EnewNofile enew | setlocal buftype=nofile
 
 nmap ,ss :<C-u>EnewNofile<CR>
 
@@ -5343,8 +5343,8 @@ if s:bundle.is_installed('vim-fugitive')
   command! Gdiffoff diffoff | q | Gedit
 endif
 function! s:vimrc_git_init()
-  setl foldmethod=expr
-  " setl foldexpr=getline(v:lnum)!~'^commit'
+  setlocal foldmethod=expr
+  " setlocal foldexpr=getline(v:lnum)!~'^commit'
   setlocal foldexpr=GitLogViewerFoldExpr(v:lnum)
   setlocal foldtext=GitLogViewerFoldText()
 endfunction
@@ -6502,10 +6502,10 @@ if s:bundle.is_installed('vim-quickrun')
   nnoremap <Leader><Leader>r :<C-u>QuickRun command/cat<CR>
 
   " for testcase {{{4
-  MyAutoCmd BufWinEnter,BufNewFile *_spec.rb setl filetype=ruby.rspec
-  MyAutoCmd BufWinEnter,BufNewFile *test.php,*Test.php setl filetype=php.phpunit
-  MyAutoCmd BufWinEnter,BufNewFile test_*.py setl filetype=python.nosetests
-  MyAutoCmd BufWinEnter,BufNewFile *.t setl filetype=perl.prove
+  MyAutoCmd BufWinEnter,BufNewFile *_spec.rb setlocal filetype=ruby.rspec
+  MyAutoCmd BufWinEnter,BufNewFile *test.php,*Test.php setlocal filetype=php.phpunit
+  MyAutoCmd BufWinEnter,BufNewFile test_*.py setlocal filetype=python.nosetests
+  MyAutoCmd BufWinEnter,BufNewFile *.t setlocal filetype=perl.prove
 
   command! PhpUnitSkelGen call my#php#generate_phpunit_skelgen()
 
@@ -7290,34 +7290,34 @@ let g:jscomplete_use = ['dom', 'es6th', 'moz']
 
 if exists("+omnifunc") " {{{4
   if s:bundle.is_installed('phpcomplete-extended')
-    MyAutoCmd FileType php           setl omnifunc=phpcomplete_extended#CompletePHP
+    MyAutoCmd FileType php           setlocal omnifunc=phpcomplete_extended#CompletePHP
   elseif s:bundle.is_installed('phpcomplete.vim')
-    MyAutoCmd FileType php           setl omnifunc=phpcomplete#CompletePHP
+    MyAutoCmd FileType php           setlocal omnifunc=phpcomplete#CompletePHP
   endif
-  MyAutoCmd FileType html,markdown setl omnifunc=htmlcomplete#CompleteTags
+  MyAutoCmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
   if s:bundle.is_installed('jedi-vim')
     MyAutoCmd FileType python let b:did_ftplugin = 1
           \ | setlocal omnifunc=jedi#completions
   else
-    MyAutoCmd FileType python        setl omnifunc=pythoncomplete#Complete
+    MyAutoCmd FileType python        setlocal omnifunc=pythoncomplete#Complete
   endif
-  " MyAutoCmd FileType javascript   setl omnifunc=javascriptcomplete#CompleteJS
-  " MyAutoCmd FileType javascript    setl omnifunc=jscomplete#CompleteJS
+  " MyAutoCmd FileType javascript   setlocal omnifunc=javascriptcomplete#CompleteJS
+  " MyAutoCmd FileType javascript    setlocal omnifunc=jscomplete#CompleteJS
   if s:bundle.is_installed('tern_for_vim')
     " mark
     MyAutoCmd FileType coffee    call tern#Enable()
   elseif s:bundle.is_installed('vim-nodejs-complete')
-    MyAutoCmd FileType javascript,coffee    setl omnifunc=nodejscomplete#CompleteJS
+    MyAutoCmd FileType javascript,coffee    setlocal omnifunc=nodejscomplete#CompleteJS
   endif
   if s:bundle.is_installed('javacomplete')
-    MyAutoCmd FileType java          setl omnifunc=javacomplete#Complete completefunc=javacomplete#CompleteParamsInfo
+    MyAutoCmd FileType java          setlocal omnifunc=javacomplete#Complete completefunc=javacomplete#CompleteParamsInfo
   endif
-  MyAutoCmd FileType xml           setl omnifunc=xmlcomplete#CompleteTags
-  MyAutoCmd FileType css           setl omnifunc=csscomplete#CompleteCSS
-  MyAutoCmd FileType c             setl omnifunc=ccomplete#Complete
-  MyAutoCmd FileType actionscript  setl omnifunc=actionscriptcomplete#CompleteAS
+  MyAutoCmd FileType xml           setlocal omnifunc=xmlcomplete#CompleteTags
+  MyAutoCmd FileType css           setlocal omnifunc=csscomplete#CompleteCSS
+  MyAutoCmd FileType c             setlocal omnifunc=ccomplete#Complete
+  MyAutoCmd FileType actionscript  setlocal omnifunc=actionscriptcomplete#CompleteAS
   if s:bundle.is_installed('poshcomplete-vim')
-    MyAutoCmd FileType ps1 setl omnifunc=poshcomplete#CompleteCommand
+    MyAutoCmd FileType ps1 setlocal omnifunc=poshcomplete#CompleteCommand
   endif
   MyAutoCmd FileType *
         \ if &l:omnifunc == ''
@@ -7333,7 +7333,7 @@ endif
 "   let g:rsenseHome=$RSENSE_HOME
 "   let g:rsenseUseOmniFunc=0
 " elseif exists('+omnifunc')
-"   "MyAutoCmd FileType ruby setl omnifunc=rubycomplete#Complete
+"   "MyAutoCmd FileType ruby setlocal omnifunc=rubycomplete#Complete
 " endif
 
 " vimproc {{{2
@@ -7447,7 +7447,7 @@ if s:bundle.tap('vimshell.vim')
   " }}}
 
   function! s:vimshell_init() " {{{3
-    setl textwidth=0
+    setlocal textwidth=0
 
     call vimshell#altercmd#define('g'  , 'git')
     call vimshell#altercmd#define('i'  , 'iexe')
@@ -7964,7 +7964,7 @@ function! s:set_verbose(off)
   endif
 endfunction
 command! -nargs=0 -bang VerboseOn call s:set_verbose("<bang>")
-command! -nargs=0 VerboseOn call s:set_verbose("1")
+command! -nargs=0 VerboseOff call s:set_verbose("1")
 
 " for vim {{{2
 command! -nargs=0 ThisSyntaxName echo synIDattr(synID(line("."), col("."), 1), "name")
