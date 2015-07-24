@@ -3,7 +3,6 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 setlocal foldmethod=marker
-setlocal noexpandtab
 let b:match_skip = 's:comment\|string'
 if !exists('b:match_words')
   let b:match_words = ''

@@ -1467,18 +1467,18 @@ NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
 
-if get(g:vimrc_enabled_features, "eclim", 0)
-  " do nothing
-elseif get(g:vimrc_enabled_features, 'phpcomplete-extended', 0)
-  NeoBundle 'm2mdas/phpcomplete-extended'
-  if get(g:vimrc_enabled_features, 'laravel', 0)
-    NeoBundle 'm2mdas/phpcomplete-extended-laravel'
+if !get(g:vimrc_enabled_features, "eclim", 0)
+  if get(g:vimrc_enabled_features, 'phpcomplete-extended', 0)
+    NeoBundle 'm2mdas/phpcomplete-extended'
+    if get(g:vimrc_enabled_features, 'laravel', 0)
+      NeoBundle 'm2mdas/phpcomplete-extended-laravel'
+    endif
+    if get(g:vimrc_enabled_features, 'symfony', 0)
+      NeoBundle 'm2mdas/phpcomplete-extended-symfony'
+    endif
+  else
+    NeoBundle 'shawncplus/phpcomplete.vim'
   endif
-  if get(g:vimrc_enabled_features, 'symfony', 0)
-    NeoBundle 'm2mdas/phpcomplete-extended-symfony'
-  endif
-else
-  NeoBundle 'shawncplus/phpcomplete.vim'
 endif
 NeoBundle 'beberlei/vim-php-refactor'
 if get(g:vimrc_enabled_features, 'cakephp', 0)
@@ -4203,10 +4203,19 @@ if s:bundle.tap('vim-altr')
     call altr#define('%.js', 'test/%Test.js', 'test/%_test.js', 'spec/%_spec.js', 'spec/%Spec.js')
     call altr#define('%.coffee', 'test/%Test.coffee', 'test/%_test.coffee', 'spec/%_spec.coffee', 'spec/%Spec.coffee')
 
-    call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
-    call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
-    call altr#define('View/Helper/%.php', 'Test/Case/View/Helper/%Test.php')
-    call altr#define('View/%.php', 'Test/Case/View/%Test.php')
+    if get(g:vimrc_enabled_features, 'laravel', 0)
+      call altr#define('controllers/%.php', 'tests/controllers/%Test.php')
+      call altr#define('models/%.php', 'tests/models/%Test.php')
+      call altr#define('commands/%.php', 'tests/commands/%Test.php')
+      call altr#define('views/%.php', 'tests/libs/%Test.php')
+      call altr#define('views/%.php', 'tests/views/%Test.php')
+    endif
+    if get(g:vimrc_enabled_features, 'cakephp', 0)
+      call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
+      call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
+      call altr#define('View/Helper/%.php', 'Test/Case/View/Helper/%Test.php')
+      call altr#define('View/%.php', 'Test/Case/View/%Test.php')
+    endif
   endfunction
 
   nmap [!space]k <Plug>(altr-back)
@@ -7782,9 +7791,15 @@ if s:is_mac "{{{3
   nnoremap <D-i> :<C-u>Iterm<CR>
 elseif s:is_win "{{{3
   " Utility command for Windows
-  command! Here silent execute '!explorer' substitute(expand('%:p:h'), '/', '\', 'g')
-  command! This silent execute '!start cmd /c "%"'
-  command! In silent execute '!start cmd /k cd "'.substitute(expand('%:p:h'), '/', '\', 'g').'"'
+  if &shell =~ 'sh\(\.exe\)\?$'
+    command! Here silent execute '!explorer' "'".substitute(expand('%:p:h'), '/', '\\', 'g')."'" '&'
+    command! This silent execute '!start cmd /c "%"'
+    command! In silent execute "!start cmd /k cd '".substitute(expand('%:p:h'), '/', '\\', 'g')."'"
+  else
+    command! Here silent execute '!explorer' substitute(expand('%:p:h'), '/', '\\', 'g') '&'
+    command! This silent execute '!start cmd /c "%"'
+    command! In silent execute '!start cmd /k cd "'.substitute(expand('%:p:h'), '/', '\\', 'g').'"'
+  endif
   command! -nargs=1 -complete=file That silent execute '!explorer' shellescape(expand(<f-args>), 1)
 else "{{{3
   " command! Here silent execute '!gnome-open' expand('%:p:h')

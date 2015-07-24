@@ -1,0 +1,22 @@
+{
+  "composer.json": { "type" : "configs"},
+  "bootstrap/*.php": { "type" : "configs"},
+  "app/config/*.php": { "type" : "configs"},
+  "app/filters.php": { "type" : "configs"},
+  "app/start/*.php": { "type" : "configs"},
+  "app/routes.php": { "type" : "routes"},
+  "app/lang/*.php": { "type" : "langs"},
+  "app/database/*.php": { "type" : "database"},
+  "app/commands/*.php": { "type" : "commands", "alternate": "app/tests/commands/{}.php"},
+  "app/libs/*.php": { "type" : "libs", "alternate": "app/tests/libs/{}.php"},
+  "app/controllers/*.php": { "type" : "controllers", "alternate": "app/tests/controllers/{}.php"},
+  "app/models/*.php": { "type" : "models", "alternate": "app/test/models/{}.php"},
+  "app/tests/*Test.php": { "type" : "tests", "alternate": "app/{}.php"},
+  "app/views/*.php": { "type" : "views"},
+  "public/js/*.js": { "type" : "scripts"},
+  "public/css/*.css": { "type" : "styles"},
+  "vendor/*.php": { "type" : "vendors"},
+  "vendor/laravel/*.php": {"type":"core"},
+  "README.md": { "type": "doc" }
+}
+

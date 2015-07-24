@@ -628,8 +628,10 @@ fi
 
 shrc_section_title "complete" #{{{1
 
-[ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
-[ -e ~/.zsh/plugins/zsh-perl-completions ] && fpath=(~/.zsh/plugins/zsh-perl-completions $fpath)
+if [ -z "$ZSH_DISABLES[zsh-heavy-completions]" ]; then
+  [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
+  [ -e ~/.zsh/plugins/zsh-perl-completions ] && fpath=(~/.zsh/plugins/zsh-perl-completions $fpath)
+fi
 [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
 # source_all ~/.zsh/zfunc/commands/*
 (( $+functions[___main] )) || ___main() {} # for git
@@ -639,11 +641,13 @@ else
   fpath=($BREW_PREFIX/share/zsh/site-functions(N-/) ${fpath})
 fi
 
-if [ ! -e ~/.zsh.d ]; then
-  mkdir -p ~/.zsh.d
-  cp ~/.zsh/zfunc/tools/rb_optparse.zsh ~/.zsh.d/rb_optparse.zsh
+if [ -z "$ZSH_DISABLES[zsh-heavy-completions]" ]; then
+  if [ ! -e ~/.zsh.d ]; then
+    mkdir -p ~/.zsh.d
+    cp ~/.zsh/zfunc/tools/rb_optparse.zsh ~/.zsh.d/rb_optparse.zsh
+  fi
+  fpath=(~/.zsh.d/Completion $fpath)
 fi
-fpath=(~/.zsh.d/Completion $fpath)
 
 zmodload -i zsh/complist
 
@@ -666,11 +670,13 @@ _zsh-complete-init() {
   autoload -U bashcompinit
   bashcompinit
 
-  . ~/.zsh.d/rb_optparse.zsh
+  if [ -z "$ZSH_DISABLES[zsh-heavy-completions]" ]; then
+    . ~/.zsh.d/rb_optparse.zsh
 
-  # from bash
-  # source_all $HOME/.bash/compfunc/*
-  source_all $HOME/.zsh/zfunc/compfunc/*
+    # from bash
+    # source_all $HOME/.bash/compfunc/*
+    source_all $HOME/.zsh/zfunc/compfunc/*
+  fi
 
   # complete options {{{2
   setopt auto_list            # 一覧表示する

@@ -18,6 +18,10 @@ Vagrant.configure(2) do |config|
 		v.memory = 1024 # メモリサイズ
 		# VBoxManage list ostypes
 		v.customize ["modifyvm", :id, "--ostype", "RedHat_64"] # Ubuntu/Ubuntu_64/RedHat/RedHat_64
+		v.customize ["modifyvm", :id, "--paravirtprovider", "kvm"] # with KVM(VBox 5)
+		# ホストマシンのDNSを使用(ただしMXが引けなくなるので resolv.conf 修正要)
+		# echo options single-request-reopen | sudo tee -a /etc/resolv.conf
+		v.customize ["modifyvm", :id, "--natdnsproxy1", "on", "--natdnshostresolver1", "on"]
 	end
 	# provisioner - http://docs.vagrantup.com/v2/provisioning/index.html
 	config.vm.provision "docker" do |p|
