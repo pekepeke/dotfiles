@@ -7171,8 +7171,6 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   \ 'objc':  '[^.[:digit:] *\t]\%(\.\|->\)',
   \ 'objcpp':  '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::',
   \ 'python': '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*',
-  \ 'java': '\k\.\k*',
-  \ 'scala': '\k\.\k*',
   \ })
   call extend(g:neocomplete#sources#omni#input_patterns, {
   \ 'perl':  '\h\w*->\h\w*\|\h\w*::',
@@ -7182,11 +7180,19 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   \ 'coffee':  '\h\w*\|[^. \t]\.\w*',
   \ 'typescript': '\h\w*\|[^. \t]\.\%(\h\w*\)\?',
   \ 'haxe': '\v([\]''"]|\w)(\.|\()\w*',
-  \ 'php': '[^. \t]->\h\w*\|\h\w*::',
+  \ 'php': '[^. \t]->\h\w*\|\h\w*::\|\h\w\\',
   \ 'r': '[[:alnum:].\\]\+',
   \ 'xquery': '\k\|:\|\-\|&',
   \ 'go': '\h\w\.\w',
   \ })
+
+  if get(g:vimrc_enabled_features, "eclim", 0)
+    let g:neocomplete#force_omni_input_patterns.java = '\%(\h\w*\|)\)\.\w*'
+    let g:neocomplete#force_omni_input_patterns.scala = '\%(\h\w*\|)\)\.\w*'
+  else
+    let g:neocomplete#sources#omni#input_patterns.java = '\k\.\k*'
+    let g:neocomplete#sources#omni#input_patterns.scala = '\k\.\k*'
+  endif
   " \ 'php': '[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
   " \ 'php': '\h\w*\|[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
 
