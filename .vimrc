@@ -2768,6 +2768,7 @@ let g:vimrc_enabled_plugins = {
   \ 'concealedyank': s:bundle.is_installed('concealedyank.vim'),
   \ 'ambicmd': s:bundle.is_installed('vim-ambicmd'),
   \ 'endwize': s:bundle.is_installed('endwize.vim'),
+  \ 'php_namespace': s:bundle.is_installed('vim-php-namespace'),
   \ }
 
 " rengbang {{{2
@@ -3514,6 +3515,11 @@ endif
 if s:bundle.is_installed('vim-php-namespace')
   command! -nargs=0 PHPInsertUse call PhpInsertUse()
   command! -nargs=0 PHPExpandClass call PhpExpandClass()
+
+  nnoremap <Plug>(php-ns-inser-use) :<C-u>call PhpInsertUse()<CR>
+  nnoremap <Plug>(php-ns-expand-class) :<C-u>call PhpExpandClass()<CR>
+  inoremap <Plug>(php-ns-inser-use) <C-r>=PhpInsertUse()<CR>
+  inoremap <Plug>(php-ns-expand-class) <C-r>=PhpExpandClass()<CR>
 endif
 
 " cake.vim {{{2
