@@ -1041,9 +1041,11 @@ endif
 " if !s:bundle.is_installed('rsense')
 "   NeoBundle "osyo-manga/vim-monster"
 " endif
-if 0 && has('python')
+if get(g:vimrc_enabled_features, "ycm", 0) && has('python')
   NeoBundle 'Valloric/YouCompleteMe', {
     \ 'build': {
+    \   'windows': "~/.vim/lib/ycm_build_win64.sh",
+    \   'cygwin': './install.sh --clang-completer --system-libclang --system-boost --omnisharp-completer',
     \   'mac': './install.sh --clang-completer --omnisharp-completer',
     \   'unix': './install.sh --clang-completer --system-libclang --system-boost --omnisharp-completer',
     \ }}
@@ -3508,6 +3510,12 @@ if s:bundle.tap('perlomni.vim')
   call s:bundle.untap()
 endif
 
+" vim-php-namespace {{{2
+if s:bundle.is_installed('vim-php-namespace')
+  command! -nargs=0 PHPInsertUse call PhpInsertUse()
+  command! -nargs=0 PHPExpandClass call PhpExpandClass()
+endif
+
 " cake.vim {{{2
 if s:bundle.tap('cake.vim')
   let g:cakephp_no_default_keymappings = 1
@@ -4895,11 +4903,15 @@ if s:bundle.tap('unite.vim')
     let g:unite_source_menu_menus["ft_php"] = s:unite_menu_create(
     \ 'PHP Menu', [
     \   ["Man php"  , s:gui_manual("php")]  ,
+    \   ["Insert use", 'PHPInsertUse'],
+    \   ["Expand class", 'PHPExpandClass'],
     \   ["Composer install"  , s:dispatch('composer install')]  ,
     \   ["Composer update"  , s:dispatch('composer update')]  ,
     \   ["Server", s:dispatch("php -S localhost:8111")] ,
     \ ])
-    let g:unite_source_menu_menus["ft_php_cake"] = s:unite_menu_create(
+
+    if get(g:vimrc_enabled_features, 'cakephp', 0)
+    let g:unite_source_menu_menus["ft_php_cakephp"] = s:unite_menu_create(
     \ 'CakePHP Menu', [
     \   ["Man cakephp", s:gui_manual("cakephp")],
     \   ["CakePHP controller", "Unite cake_controller"],
@@ -4916,6 +4928,7 @@ if s:bundle.tap('unite.vim')
     \   ["CakePHP fixture", "Unite cake_fixture"],
     \   ["CakePHP Server", s:dispatch("php -S localhost:8111 -t app/webroot")] ,
     \ ])
+    endif
     " ruby {{{5
     let g:unite_source_menu_menus["ft_ruby"] = s:unite_menu_create(
     \ 'Ruby Menu', [
@@ -4995,9 +5008,16 @@ if s:bundle.tap('unite.vim')
     " \  ["", ""],
     " \ ])
 
+    function! s:unite_source_menu_menus_filter_by_filetypes(key)
+      return len(filter(split(&filetype, '\.'), 'a:key =~# "^ft_".v:val')) > 0
+    endfunction
+
     function! s:unite_context_menu() "{{{5
-      let menus = map(filter(sort(keys(g:unite_source_menu_menus)),
-      \ 'v:val =~# "^ft_".&filetype'), '"menu:".v:val')
+      let menukeys = sort(keys(g:unite_source_menu_menus))
+      let filtered = filter(menukeys,
+      \ 's:unite_source_menu_menus_filter_by_filetypes(v:val)')
+      let menus = map(filtered,
+      \ '"menu:".v:val')
       " if !exists('g:unite_source_menu_menus["ft_' . &filetype . '"]')
       if len(menus) <= 0
         echohl Error
@@ -7064,7 +7084,11 @@ endif
 
 " youcompleteme {{{2
 if s:bundle.is_installed('YouCompleteMe')
-
+  let g:ycm_min_num_of_chars_for_completion = 1
+  let g:ycm_collect_identifiers_from_tags_files = 1
+  " inoremap <expr> <C-e> pumvisible() ? neocomplete#cancel_popup() : "\<End>"
+  " inoremap <expr> <C-j> pumvisible() ? neocomplete#close_popup() : "\<CR>"
+  " imap <C-s> <Plug>(neocomplete_start_unite_complete)
 endif
 
 " neocomplete, neocomplcache {{{2
