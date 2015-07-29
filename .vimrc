@@ -1471,7 +1471,8 @@ NeoBundle 'pekepeke/phpfolding.vim'
 
 if !get(g:vimrc_enabled_features, "eclim", 0)
   if get(g:vimrc_enabled_features, 'phpcomplete-extended', 0)
-    NeoBundle 'm2mdas/phpcomplete-extended'
+    " NeoBundle 'm2mdas/phpcomplete-extended'
+    NeoBundle 'pekepeke/phpcomplete-extended'
     if get(g:vimrc_enabled_features, 'laravel', 0)
       NeoBundle 'm2mdas/phpcomplete-extended-laravel'
     endif

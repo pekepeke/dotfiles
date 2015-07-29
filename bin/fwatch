@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+
+/*
+ * File watch and exec command cli tool.
+ *
+ * Example
+ *
+ * $ stakeout *.less -- lessc style.less {}
+ *
+ */
+
+'use strict';
+
+var fs = require('fs');
+var exec = require('child_process').exec;
+var argv = process.argv.slice(2);
+var separator = argv.indexOf('--');
+var targets = argv.slice(0, separator);
+var command = argv.slice(separator + 1).join(' ');
+
+if (!targets.length || !command.length) {
+  console.log('Usage: stakeout file [file] -- command');
+  console.log('');
+  console.log('Example');
+  console.log('$ stakeout *.less -- lessc foo.less {}');
+  process.exit();
+}
+
+targets.forEach(function(file) {
+  // fs.watch(file, function(curr, prev) {
+  //   if (curr.mtime > prev.mtime) {
+  var filestat = fs.lstatSync(file);
+  fs.watch(file, { recursive: true }, function(event, filename) {
+    if (event == 'change') {
+      var filepath = filestat.isDirectory() ? file + filename : file;
+      console.log("changed: " + filepath);
+      exec(command.replace(/{}/g, filepath), function(err, stdout, stderr) {
+        if (err) {
+          console.error(err);
+        }
+        if (stdout) {
+          console.log(stdout);
+        }
+        if (stderr) {
+          console.error(stderr);
+        }
+      });
+    }
+  });
+});
