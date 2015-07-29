@@ -13,8 +13,8 @@ if [ -f ~/.bashrc ]; then
 fi
 
 # prompt
-PS1='\u@\h[\w]\$ '
-PS9='\u@\h[\w]\$ '
+[ -z "$PS1" ] && PS1='\u@\h[\w]\$ '
+[ -z "$PS9" ] && PS9='\u@\h[\w]\$ '
 
 LV='-Ia -Kej -Oej -Dej -Pej -c'
 

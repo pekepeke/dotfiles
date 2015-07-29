@@ -4,8 +4,10 @@ _is_win=$(is_win; echo $?)
 
 shrc_section_title "init" #{{{1
 
-if_compile ~/.shrc.*[^zwc]
-if_compile ~/.zshenv
+local _f
+for _f in ~/.shrc.*[^zwc] ~/.zshenv ; do
+  [ ! -e $_f.zwc -o $_f -nt $_f.zwc ] && zcompile $_f
+done
 [ -e ~/.zshrc.zwc ] && rm -f ~/.zshrc.zwc
 
 shrc_section_title "env vars" #{{{1
@@ -776,5 +778,6 @@ zle -N _zsh-complete-init
 bindkey -v '^I' _zsh-complete-init
 
 shrc_section_title "finish"
+type zprof >/dev/null 2>&1 && zprof | less
 # vim: ft=zsh fdm=marker sw=2 ts=2 et:
 # __END__ #{{{1

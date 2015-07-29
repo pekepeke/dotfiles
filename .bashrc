@@ -50,8 +50,6 @@ HISTCONTROL=ignoreboth
 HISTIGNORE="fg*:bg*:history*:cd*: *"
 HISTTIMEFORMAT='%Y%m%d %T'
 
-export BLOCKSIZE FIGNORE \
-  HISTSIZE HISTFILESIZE HISTCONTROL HISTIGNORE HISTTIMEFORMAT
 
 # etc settings {{{1
 shopt -s checkwinsize
@@ -68,7 +66,7 @@ soft_source $HOME/.screeninator/scripts/screeninator
 ## prompt {{{1
 case $COLORTERM in
   gnome-terminal)
-    export TERM=xterm-256color
+    TERM=xterm-256color
     ;;
 esac
 
@@ -168,6 +166,11 @@ source_all $HOME/.bash/commands/*
 source_all $HOME/.bash/compfunc/*
 complete -C aws_completer aws
 
+# export {{{1
+export PATH PS1 TERM \
+  BLOCKSIZE FIGNORE \
+  HISTSIZE HISTFILESIZE HISTCONTROL HISTIGNORE HISTTIMEFORMAT
+
 # cd {{{1
 # soft_source ~/.zsh/plugins/z/z.sh # too heavy..
 cd() {
@@ -215,4 +218,5 @@ if type peco >/dev/null 2>&1; then
   bind -x '"\C-r":_peco_command_history'
 fi
 
+# __END__ {{{1
 # vim:fdm=marker sw=2 ts=2 ft=sh expandtab:

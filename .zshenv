@@ -1,5 +1,5 @@
 #SHELL=zsh
-
+# zmodload zsh/zprof && zprof
 source $HOME/.shrc.languages
 
 ## http://www.clear-code.com/blog/2011/9/5.html
