@@ -11,7 +11,7 @@ function! my#php#generate_phpunit_skelgen() "{{{2
   let matches = matchlist(getline(1,30), 'namespace\s\+\([^;]\+\);')
   if exists('matches[1]')
     let ns = matches[1]
-    let name = ns . '\' . name
+    let name = shellescape(ns . '\' . name)
   endif
   " let m = matchlist(join(getline(1, 10), "\n"), "\s*namespace\s*\(\w+\)\s*;")
   " let type = match(name, '\(_test|Test\)$') == -1 ? "--test" : "--class"

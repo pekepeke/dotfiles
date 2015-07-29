@@ -7,7 +7,31 @@ let s:is_mac = has('mac') || has('macunix') || has('gui_mac') || has('gui_macvim
 let s:dash_keywords = []
 let s:zeal_keywords = []
 
+" g:zeal_cmd
+" g:zeal_docset_dir
+
 " utils {{{1
+function! s:get_zeal_docset_dir() "{{{2
+  if exists('g:zeal_docset_dir')
+    return g:zeal_docset_dir
+  endif
+  let candidates = []
+
+  if s:is_mac
+    let candidates = [expand('~/Library/Application Support/zeal/docsets')]
+  endif
+  if s:is_win
+    let candidates = [
+      \ expand('$APPDATA/Local/Silverlake Software LLC/Velocity/Docsets/Dash'),
+      \ expand('$APPDATA/Local/Zeal/Zeal/docsets'),
+      \ ]
+  else
+    let candidates = [ expand('~/.local/share/zeal/docsets') ]
+  endif
+  let filtered = filter(candidates, 'isdirectory(v:val)')
+  return len(filtered) > 0 ? filtered[0] : ""
+endfunction
+
 function! s:docset_keywords_gather(root, is_dash) "{{{2
   let pattern = '*.docset/Contents/Info.plist'
   if a:is_dash
@@ -51,6 +75,14 @@ function! s:zeal_query(word) "{{{2
       echomsg "command not found: zeal"
       echohl Normal
     endif
+  elseif s:is_win
+    let words = split(a:word, ":")
+    if len(words) < 2
+      let query = a:word
+    else
+      let query = "keys=" . remove(words, 0) . "&query=" . split(words, ":")
+    endif
+    call system(printf("dash-plugin://%s &"), query)
   else
     call system(printf("zeal --query %s &", shellescape(a:word)))
   endif
@@ -74,7 +106,7 @@ function! s:dash_query(word) "{{{2
   call system(printf("open dash://'%s'", a:word))
 endfunction
 
-function! s:keyword_with_filetype(func, word)
+function! s:keyword_with_filetype(func, word) "{{{2
   let filetypes = reverse(split(&filetype, '\.'))
   for ft in filetypes
     let keywords = call(a:func, [ft, 1, 1])
@@ -127,15 +159,10 @@ endfunction
 
 function! my#docset#zeal_complete(A, L, P) "{{{2
   if empty(s:zeal_keywords)
-    if s:is_mac
+    let dir = s:get_zeal_docset_dir
+    if !empty(dir)
       let s:zeal_keywords =
-        \ s:docset_keywords_gather(expand('~/Library/Application Support/zeal/docsets'), 0)
-    elseif s:is_win
-      let s:zeal_keywords =
-        \ s:docset_keywords_gather(expand('$APPDATA/Local/zeal/docsets'), 0)
-    else
-      let s:zeal_keywords =
-        \ s:docset_keywords_gather(expand('~/.local/share/zeal/docsets'), 0)
+        \ s:docset_keywords_gather(dir, 0)
     endif
   endif
   if stridx(a:A, ":") != -1

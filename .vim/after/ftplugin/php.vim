@@ -11,6 +11,7 @@ setlocal commentstring=//\ %s
 setlocal formatoptions-=r,o
 " setlocal iskeyword-=$,\-,:
 setlocal iskeyword-=- iskeyword-=$ iskeyword-=:
+setlocal expandtab shiftwidth=4 tabstop=4
 
 " setlocal noexpandtab
 
