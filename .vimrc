@@ -1256,7 +1256,6 @@ NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'leafgarland/typescript-vim'
 if s:exec_npm
   NeoBundleLazy 'clausreinke/typescript-tools', {
-  \ 'script_type' : 'plugin',
   \ 'autoload' : { 'filetypes' : 'typescript' },
   \ 'build' : {
   \     'cygwin' : 'npm install',
@@ -1378,12 +1377,13 @@ if get(g:vimrc_enabled_features, "eclim", 0)
   NeoBundleLazy 'ervandew/eclim', {
   \ 'build' : {
   \   'windows': 'ant -Declipse.home='.escape($ECLIPSE_HOME, '')
-  \              .' -Dvim.files='.escape(expand('~/.vim/bundle/eclim'), ''),
+  \              .' -Dvim.files='.escape(expand('~/.vim/eclim/eclim'), ''),
   \   'mac': 'ant -Declipse.home='.$ECLIPSE_HOME
-  \          . '-Dvim.files='.escape(expand('~/.vim/bundle/eclim'), ''),
+  \          . '-Dvim.files='.escape(expand('~/.vim/eclim/eclim'), ''),
   \   'linux': 'ant -Declipse.home='.$ECLIPSE_HOME
-  \          . '-Dvim.files='.escape(expand('~/.vim/bundle/eclim'), ''),
+  \          . '-Dvim.files='.escape(expand('~/.vim/eclim/eclim'), ''),
   \ }}
+  NeoBundleLocal ~/.vim/eclim
 elseif s:exec_java
   NeoBundleLazy 'kamichidu/unite-javaimport', {'autoload': {
   \ 'unite_sources': ['javaimport']
@@ -2406,9 +2406,13 @@ if has('gui_running')
     MyAutoCmd GUIEnter * call s:map_gui()
   elseif s:is_win
     function! s:map_gui()
-      nnoremap <A-Up>   :<C-u>call <SID>set_transparency('+=5')<CR>
-      nnoremap <A-Down> :<C-u>call <SID>set_transparency('-=5')<CR>
-      nnoremap <A-Right> :<C-u>call <SID>set_transparency(230)<CR>
+      nnoremap <M-Up>   :<C-u>call <SID>set_transparency('+=5')<CR>
+      nnoremap <M-Down> :<C-u>call <SID>set_transparency('-=5')<CR>
+      nnoremap <M-Right> :<C-u>call <SID>set_transparency(230)<CR>
+      nnoremap <M-Space> :<C-u>simalt ~<CR>
+      nnoremap <M-x> :<C-u>simalt ~x<CR>
+      nnoremap <M-r> :<C-u>simalt ~r<CR>
+      nnoremap <M-s> :<C-u>simalt ~s<CR>
       execute 'nnoremap <A-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
     endfunction
     MyAutoCmd GUIEnter * call s:map_gui()
@@ -4219,11 +4223,11 @@ if s:bundle.tap('vim-altr')
     call altr#define('%.coffee', 'test/%Test.coffee', 'test/%_test.coffee', 'spec/%_spec.coffee', 'spec/%Spec.coffee')
 
     if get(g:vimrc_enabled_features, 'laravel', 0)
-      call altr#define('controllers/%.php', 'tests/controllers/%Test.php')
-      call altr#define('models/%.php', 'tests/models/%Test.php')
-      call altr#define('commands/%.php', 'tests/commands/%Test.php')
-      call altr#define('views/%.php', 'tests/libs/%Test.php')
-      call altr#define('views/%.php', 'tests/views/%Test.php')
+      call altr#define('app/controllers/%.php', 'app/tests/controllers/%Test.php')
+      call altr#define('app/models/%.php', 'app/tests/models/%Test.php')
+      call altr#define('app/commands/%.php', 'app/tests/commands/%Test.php')
+      call altr#define('app/views/%.php', 'app/tests/libs/%Test.php')
+      call altr#define('app/views/%.php', 'app/tests/views/%Test.php')
     endif
     if get(g:vimrc_enabled_features, 'cakephp', 0)
       call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
@@ -6543,7 +6547,8 @@ if s:bundle.is_installed('vim-quickrun')
   MyAutoCmd BufWinEnter,BufNewFile test_*.py setlocal filetype=python.nosetests
   MyAutoCmd BufWinEnter,BufNewFile *.t setlocal filetype=perl.prove
 
-  command! PhpUnitSkelGen call my#php#generate_phpunit_skelgen()
+  command! -nargs=0 PhpUnitSkelGen call my#php#generate_phpunit_skelgen()
+  command! -nargs=0 PhpUnitUpdateSource call my#php#update_phpunit_sourcecode()
 
   if s:bundle.is_installed('vim-ref')
     augroup vimrc-plugin-ref

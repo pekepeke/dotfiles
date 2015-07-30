@@ -32,5 +32,27 @@ function! my#php#generate_phpunit_skelgen() "{{{2
   silent exe 'lcd' old_cwd
 endfunction
 
+function! my#php#update_phpunit_sourcecode() "{{{2
+  let s:save_cursor = getpos('.')
+  let s:save_search = @/
+
+  %s!protected function setUp!public function setUp!
+  %s!protected function tearDown!public function tearDown!
+  let lines = join(getline(1, 50), "\n")
+  if !matchstr(lines, 'parent::setUp()')
+    %s!\(setUp()\s*\([\r\n]*\)\s*{\s*\)!\1\2parent::setUp();!
+    normal! =j
+  endif
+  if !matchstr(lines, 'parent::tearDown()')
+    %s!\(tearDown()\s*\([\r\n]*\)\s*{\s*\)!\1\2parent::tearDown();!
+    normal! =j
+  endif
+
+  call setpos('.', s:save_cursor)
+  let @/ = s:save_search
+  unlet s:save_search s:save_cursor
+endfunction
+
+
 let &cpo = s:save_cpo
 " __END__ {{{1

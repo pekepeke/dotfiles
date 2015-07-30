@@ -7,11 +7,34 @@ usage() {
 EOM
   exit 1
 }
+get_desktop() {
+  if [ -n "$USERPROFILE" ]; then
+    local ROOT
+    if which cygpath >/dev/null 2>&1; then
+      ROOT="$(cygpath -u $USERPROFILE)/Desktop"
+    else
+      ROOT="$USERPROFILE/Desktop"
+    fi
+
+    if [ ! -e "$ROOT" ] ; then
+      if which cygpath >/dev/null 2>&1; then
+        ROOT="$(cygpath -u $USERPROFILE)/デスクトップ"
+      else
+        ROOT="$USERPROFILE/デスクトップ"
+      fi
+    fi
+    echo $ROOT
+    return 0
+  fi
+  echo $HOME/Desktop
+  return 0
+}
 
 main() {
   if [ x$1 != x ];then
     local NAME=$(echo $* | tr "[ \t]" '_')
-    local TARGET=$HOME/Desktop/$(date +'%y%m%d')_$NAME
+    local TARGET="$(get_desktop)/$(date +'%y%m%d')_$NAME"
+
     local EXT=md
     mkdir -p "$TARGET"
     touch "$TARGET/01_request.$EXT"
@@ -23,7 +46,7 @@ OPTIND_OLD=$OPTIND
 OPTIND=1
 while getopts "h:v" opt; do
   case $opt in
-    h) 
+    h)
       usage ;;
     v) ;;
   esac

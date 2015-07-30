@@ -73,6 +73,7 @@ Session.vim
 .*.snip
 /.vimrc_local.vim
 /.*.snip
+/.phpcomplete_extended
 
 # emacs
 *~
@@ -91,6 +92,7 @@ tramp
 # sublime
 *.sublime-project
 *.sublime-workspace
+/.phpcodeintel
 
 # zed
 .zedstate
