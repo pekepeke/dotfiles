@@ -344,7 +344,7 @@ if [[ "$TERM" == "screen" || "$TERM" == "screen-bce" ]]; then
       echo -ne "\033]0;${PWD/${HOME}/~}\007"
     fi
     #ls -A
-    _reg_pwd_screennum
+    (( $+functions[_reg_pwd_screennum] )) && _reg_pwd_screennum
   }
 fi
 
@@ -635,8 +635,10 @@ if [ -z "$ZSH_DISABLES[zsh-heavy-completions]" ]; then
   [ -e ~/.zsh/plugins/zsh-perl-completions ] && fpath=(~/.zsh/plugins/zsh-perl-completions $fpath)
 fi
 [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
-# source_all ~/.zsh/zfunc/commands/*
+source_all ~/.zsh/zfunc/commands/*
+
 (( $+functions[___main] )) || ___main() {} # for git
+
 if [ -z "$BREW_PREFIX" ]; then
   fpath=(/usr/local/share/zsh/site-functions(N-/) ${fpath})
 else

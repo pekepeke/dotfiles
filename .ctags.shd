@@ -9,7 +9,7 @@
 --regex-objc=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+)[[:space:]]*\;/\1/m,method/
 --regex-objc=/^[[:space:]]*\@property[[:space:]]+.*[[:space:]]+\*?(.*);$/\1/p,property/
 --regex-objc=/^[[:space:]]*\@implementation[[:space:]]+(.*)$/\1/c,class/
---regex-objc=/^[[:space:]]*\@interface[[:space:]]+(.*)[[:space:]]+:.*{/\1/i,interface/
+--regex-objc=/^[[:space:]]*\@interface[[:space:]]+(.*)[[:space:]]+:.*\{/\1/i,interface/
 
 ## ruby {{{1
 --regex-ruby=/^[[:space:]]*(has_(one|many)|has_and_belongs_to_many|belongs_to)[[:space:]]+:([a-z0-9_]+)/\3/
@@ -76,7 +76,7 @@
 ## PHP {{{1
 --langmap=PHP:+.inc
 --php-types=c+f+d
---regex-php=/^[ \t]*trait[ \t]+([a-z0_9_]+)/\1/t, traits/i ] ]
+--regex-php=/^[ \t]*trait[ \t]+([a-z0_9_]+)/\1/t, traits/i
 
 ## actionscript {{{1
 --langdef=actionscript
