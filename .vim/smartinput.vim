@@ -127,4 +127,48 @@ call smartinput#define_rule({
   \   'filetype' : ['python'],
   \   })
 
+" vim-smartinput {{{2
+if s:bundle.tap('vim-smartinput')
+  function! s:bundle.tapped.hooks.on_source(bundle)
+    function! s:smartinput_init() "{{{
+      " if hasmapto('<CR>', 'c')
+      "   cunmap <CR>
+      " endif
+    endfunction " }}}
+
+    function! s:sminput_define_rules(is_load_default_rules) "{{{
+      if a:is_load_default_rules
+        call smartinput#define_default_rules()
+      endif
+      source ~/.vim/smartinput.vim
+    endfunction "}}}
+
+    command! SmartinputOff call smartinput#clear_rules()
+    command! SmartinputOn call s:sminput_define_rules(1) | call s:smartinput_init()
+    " --;;;;;;;;
+    command! -nargs=? SmartinputBufferMapClear call s:sminput_buffer_mapclear(<q-args>)
+
+    function! s:sminput_buffer_mapclear(mode) "{{{
+      let mode = empty(a:mode) ? '*' : a:mode
+      let vars = smartinput#scope()
+      let hash = {}
+      " TODO special keys
+      let rules = filter(get(vars, 'available_nrules', []), 'v:val._char =~# "^[a-zA-Z0-9!-/:-@\\[-`{-~]\\+$"')
+      for item in copy(filter(rules, 'mode == "*" || mode == v:val.mode'))
+        if get(hash, item._char, 1)
+          let char = substitute(item._char, '[|]', '\\\1', 'g')
+          execute printf("silent! %smap \<buffer> %s", item.mode, char)
+          " execute printf("%smap \<buffer> %s %s", item.mode, char, char)
+          " execute printf("%sunmap \<buffer> %s", item.mode, char)
+          let hash[item._char] = 0
+        endif
+      endfor
+    endfunction "}}}
+
+    call s:sminput_define_rules(0)
+    call s:smartinput_init()
+  endfunction
+  call s:bundle.untap()
+endif
+
 let &cpo = s:save_cpo

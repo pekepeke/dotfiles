@@ -759,6 +759,8 @@ NeoBundle 'cohama/vim-hier', {'autoload':{
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 't9md/vim-surround_custom_mapping'
+" TODO : http://qiita.com/hokorobi/items/f1bd7b52b1049a652dc2
+" NeoBundle 'machakann/vim-sandwich'
 
 " NeoBundleLazy 'tpope/vim-abolish', {'autoload': {
 " \ 'commands': [
@@ -1058,6 +1060,9 @@ elseif has('lua') && (v:version > 703 ||
   \ 'insert':1,
   \ 'unite_sources': ['neocomplete'],
   \ }}
+  NeoBundle 'Shougo/neoinclude.vim'
+  NeoBundle 'Shougo/neco-syntax'
+  NeoBundle 'Shougo/neco-vim'
   if s:bundle.is_installed('rsense')
     NeoBundle 'supermomonga/neocomplete-rsense.vim'
   endif
@@ -2698,6 +2703,11 @@ if s:bundle.is_installed('vim-go')
   let g:go_highlight_methods = 1
   let g:go_highlight_structs = 1
 endif
+if s:bundle.is_installed('vim-gocode')
+  if s:bundle.is_installed('vimproc.vim')
+    let g:gocomplete#system_function = 'vimproc#system'
+  endif
+endif
 
 " javascript {{{2
 if s:bundle.is_installed('simple-javascript-indenter')
@@ -4055,50 +4065,6 @@ if s:bundle.tap('lexima.vim')
       call lexima#insmode#map_hook('before', '<BS>', "\<C-r>=neocomplete#smart_close_popup()\<CR>")
     endif
 
-  endfunction
-  call s:bundle.untap()
-endif
-
-" vim-smartinput {{{2
-if s:bundle.tap('vim-smartinput')
-  function! s:bundle.tapped.hooks.on_source(bundle)
-    function! s:smartinput_init() "{{{
-      " if hasmapto('<CR>', 'c')
-      "   cunmap <CR>
-      " endif
-    endfunction " }}}
-
-    function! s:sminput_define_rules(is_load_default_rules) "{{{
-      if a:is_load_default_rules
-        call smartinput#define_default_rules()
-      endif
-      source ~/.vim/smartinput.vim
-    endfunction "}}}
-
-    command! SmartinputOff call smartinput#clear_rules()
-    command! SmartinputOn call s:sminput_define_rules(1) | call s:smartinput_init()
-    " --;;;;;;;;
-    command! -nargs=? SmartinputBufferMapClear call s:sminput_buffer_mapclear(<q-args>)
-
-    function! s:sminput_buffer_mapclear(mode) "{{{
-      let mode = empty(a:mode) ? '*' : a:mode
-      let vars = smartinput#scope()
-      let hash = {}
-      " TODO special keys
-      let rules = filter(get(vars, 'available_nrules', []), 'v:val._char =~# "^[a-zA-Z0-9!-/:-@\\[-`{-~]\\+$"')
-      for item in copy(filter(rules, 'mode == "*" || mode == v:val.mode'))
-        if get(hash, item._char, 1)
-          let char = substitute(item._char, '[|]', '\\\1', 'g')
-          execute printf("silent! %smap \<buffer> %s", item.mode, char)
-          " execute printf("%smap \<buffer> %s %s", item.mode, char, char)
-          " execute printf("%sunmap \<buffer> %s", item.mode, char)
-          let hash[item._char] = 0
-        endif
-      endfor
-    endfunction "}}}
-
-    call s:sminput_define_rules(0)
-    call s:smartinput_init()
   endfunction
   call s:bundle.untap()
 endif
