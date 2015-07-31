@@ -649,6 +649,9 @@ endif
 " filetype off
 call neobundle#begin(expand("~/.vim/neobundle"))
 NeoBundleLocal ~/.vim/bundle
+if get(g:vimrc_enabled_features, "eclim", 0)
+  NeoBundleLocal ~/.vim/eclim
+endif
 
 " vundles {{{2
 " vundle start
@@ -1383,7 +1386,6 @@ if get(g:vimrc_enabled_features, "eclim", 0)
   \   'linux': 'ant -Declipse.home='.$ECLIPSE_HOME
   \          . '-Dvim.files='.escape(expand('~/.vim/eclim/eclim'), ''),
   \ }}
-  NeoBundleLocal ~/.vim/eclim
 elseif s:exec_java
   NeoBundleLazy 'kamichidu/unite-javaimport', {'autoload': {
   \ 'unite_sources': ['javaimport']

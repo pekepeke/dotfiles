@@ -86,13 +86,20 @@ endfunction
 
 function! my#command#exec_ctags(path) "{{{2
   let path = a:path
-  let options = ' --exclude=".git"'
-  if &filetype != 'javascript'
-    let options .= ' --exclude="*.js"'
-  elseif &filetype != 'coffee'
-    let options .= ' --exclude="*.coffee"'
+  let ctags_cmds = ["ctags", "-R"]
+  if &filetype
+    call add(ctags_cmds, "--input-encoding-" . split(&filetype, '\.')[0] . "=" . &encoding)
   endif
-  let ctags_cmd = "ctags -R"
+  call add(ctags_cmds, '--exclude=".git"')
+  if &filetype != 'javascript'
+    call add(ctags_cmds, '--exclude="*.js"')
+  endif
+  if &filetype != 'coffee'
+    call add(ctags_cmds, '--exclude="*.coffee"')
+  endif
+  if &filetype != 'html'
+    call add(ctags_cmds, '--exclude="*.html"')
+  endif
   if empty(path)
     " let path = input("input base dir : ", expand('%:p:h'))
     let path = input("cd : ", getcwd(), "dir")
@@ -107,9 +114,9 @@ function! my#command#exec_ctags(path) "{{{2
 
   let bundle = VimrcScope().bundle
   if bundle.is_installed('vimproc.vim')
-    call vimproc#system_bg(ctags_cmd)
+    call vimproc#system_bg(join(ctags_cmds, " "))
   else
-    execute "!" ctags_cmd
+    execute "!" join(ctags_cmds, " ")
     if bundle.is_installed('neocomplcache.vim')
       NeoComplCacheCachingTags
     elseif bundle.is_installed('neocomplete.vim')
