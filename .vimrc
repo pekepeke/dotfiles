@@ -2680,6 +2680,7 @@ let g:DisableAutoPHPFolding = 1
 
 " let g:PHP_autoformatcomment=0
 "" php-doc.vim
+let g:pdv_cfg_php4always = 0
 let g:pdv_cfg_Type = 'mixed'
 let g:pdv_cfg_Package = ""
 let g:pdv_cfg_Version = '$id$'
@@ -2689,7 +2690,7 @@ else
   let g:pdv_cfg_Author = ''
 endif
 let g:pdv_cfg_Copyright = ""
-let g:pdv_cfg_License = 'PHP Version 3.0 {@link http://www.php.net/license/3_0.txt}'
+let g:pdv_cfg_License = ''
 let g:pdv_cfg_CommentEnd = "// }}}"
 let g:pdv_cfg_EnalbedFoldMarker = 0
 

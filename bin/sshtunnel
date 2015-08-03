@@ -22,6 +22,7 @@ GetOptions(\%opts, qw(
     help|h
     target|t=s
     port|p=i
+    identity_file|i=s
 ));
 
 usage if $opts{help};
@@ -30,7 +31,14 @@ $opts{target} = "localhost:".($opts{port} - 10000) unless $opts{target} || $opts
 die "unknown target." unless $opts{target};
 die "required hostname." unless $ARGV[0];
 
-my $cmd = sprintf('ssh -N -L %d:%s %s', $opts{port}, $opts{target}, $ARGV[0]);
+my @cmd_options = ();
+push @cmd_options, sprintf("-N -L %d:%s", $opts{port}, $opts{target});
+
+
+push @cmd_options, "-i " . $opts{identity_file} if defined $opts{identity_file};
+
+my $cmd = sprintf('ssh %s %s', join(" ", @cmd_options), $ARGV[0]);
+# my $cmd = sprintf('ssh -N -L %d:%s %s', $opts{port}, $opts{target}, $ARGV[0]);
 print $cmd . "\n";
 system($cmd);
 
