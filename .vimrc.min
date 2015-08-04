@@ -346,6 +346,7 @@ if v:version > 702
     call neobundle#begin(expand('~/.vim/neobundle'))
 
     " minimum plugin
+    NeoBundle 'tpope/vim-vividchalk', {'autoload': {'unite_sources':['colorscheme']}}
     NeoBundle 'Shougo/unite.vim', {
       \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
       \ }
@@ -459,7 +460,14 @@ filetype indent plugin on
 syntax enable
 
 set background=dark
-colorscheme vividchalk
+
+if exists(':NeoBundle')
+  MyAutoCmd GUIEnter * colorscheme vividchalk
+  colorscheme vividchalk
+else
+  MyAutoCmd GUIEnter * colorscheme desert256
+  colorscheme desert256
+endif
 
 " some autocmd {{{1
 MyAutoCmd FileType txt,rst,markdown,gitcommit setlocal spell

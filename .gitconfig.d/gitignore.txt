@@ -50,6 +50,9 @@ pm_to_blib/
 nytprof.out
 .last_cover_status
 
+# node
+node_modules/
+
 # Sass
 *.sass-cache
 
@@ -73,7 +76,8 @@ Session.vim
 .*.snip
 /.vimrc_local.vim
 /.*.snip
-/.phpcomplete_extended
+/.phpcomplete_extended/
+/.projections.json
 
 # emacs
 *~
@@ -93,6 +97,7 @@ tramp
 *.sublime-project
 *.sublime-workspace
 /.phpcodeintel
+/.phpintel
 
 # zed
 .zedstate
