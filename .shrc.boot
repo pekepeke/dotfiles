@@ -216,6 +216,7 @@ alias phpprove='prove --ext=.t.php --exec=php'
 alias iperl='perl -de0'
 alias iphp='php -a'
 alias rol='ruby -n -e '
+alias ar='php `git rev-parse --show-toplevel`/artisan'
 perlmodules() {
   cat `perldoc -l perllocal` | perl -nle '/C<Module> L<([^\|]*?)\|.*?>/ and print "$1"'
 }
