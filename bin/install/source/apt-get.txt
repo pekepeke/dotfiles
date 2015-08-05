@@ -38,7 +38,8 @@ retext
 gitg
 gedit-gmate
 gedit-plugins
-chromium-browser
+# chromium-browser
+google-chrome-stable
 easystroke
 
 # mozc-utils-gui
