@@ -1477,7 +1477,13 @@ NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
 
 if !get(g:vimrc_enabled_features, "eclim", 0)
-  if get(g:vimrc_enabled_features, 'phpcomplete-extended', 0)
+  if  get(g:vimrc_enabled_features, 'padawan', 0)
+    NeoBundle 'mkusher/padawan.vim', {
+    \ 'windows': 'cd padawan.php && composer install',
+    \ 'mac': 'cd padawan.php && composer install',
+    \ 'unix': 'cd padawan.php && composer install',
+    \ }
+  elseif get(g:vimrc_enabled_features, 'phpcomplete-extended', 0)
     " NeoBundle 'm2mdas/phpcomplete-extended'
     NeoBundle 'pekepeke/phpcomplete-extended'
     if get(g:vimrc_enabled_features, 'laravel', 0)
@@ -5660,6 +5666,8 @@ let g:surround_custom_mapping.php = {
   \ '%':  "<?php \r ?>",
   \ '#':  "<?php # \r ?>",
   \ '/':  "<?php // \r ?>",
+  \ 'v':  "var_dump(\r);",
+  \ 'p':  "print_r(\r);",
   \ }
 let g:surround_custom_mapping.javascript = {
   \ 'f':  "function(){ \r }"
@@ -7185,13 +7193,13 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   \ 'coffee':  '\h\w*\|[^. \t]\.\w*',
   \ 'typescript': '\h\w*\|[^. \t]\.\%(\h\w*\)\?',
   \ 'haxe': '\v([\]''"]|\w)(\.|\()\w*',
-  \ 'php': '[^. \t]->\h\w*\|\h\w*::\|\h\w\\',
+  \ 'php': '[^. \t]->\h\w*\|\h\w*::\|\h\w*\\',
   \ 'r': '[[:alnum:].\\]\+',
   \ 'xquery': '\k\|:\|\-\|&',
   \ 'go': '\h\w\.\w',
   \ })
 
-  if get(g:vimrc_enabled_features, "eclim", 0)
+  if s:bundle.is_installed('eclim')
     let g:neocomplete#force_omni_input_patterns.java = '\%(\h\w*\|)\)\.\w*'
     let g:neocomplete#force_omni_input_patterns.scala = '\%(\h\w*\|)\)\.\w*'
   else

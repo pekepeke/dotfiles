@@ -1,0 +1,6 @@
+	<!-- phpunit bootstrap="path/to/php" -->
+  <php>
+    <const name="WEB_SERVER_HOST" value="localhost" />
+    <const name="WEB_SERVER_PORT" value="1349" />
+    <const name="WEB_SERVER_DOCROOT" value="./public" />
+  </php>
