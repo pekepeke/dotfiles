@@ -1477,8 +1477,9 @@ NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
 
 if !get(g:vimrc_enabled_features, "eclim", 0)
-  if  get(g:vimrc_enabled_features, 'padawan', 0)
+  if s:exec_php && get(g:vimrc_enabled_features, 'padawan', 0)
     NeoBundle 'mkusher/padawan.vim', {
+    \ 'cygwin': 'cd padawan.php && composer install',
     \ 'windows': 'cd padawan.php && composer install',
     \ 'mac': 'cd padawan.php && composer install',
     \ 'unix': 'cd padawan.php && composer install',
@@ -2814,6 +2815,16 @@ endif
 if s:bundle.is_installed('eclim')
   let g:EclimCompletionMethod = 'omnifunc'
 endif
+
+" padawan {{{2
+if s:bundle.is_installed('padawan.vim')
+  command -nargs=0 PadawanIndex call padawan#GenerateIndex()
+  command -nargs=0 PadawanSave call padawan#SaveIndex()
+  command -nargs=0 PadawanStart call padawan#StartServer()
+  command -nargs=0 PadawanStop call padawan#StopServer()
+  command -nargs=0 PadawanRestart call padawan#RestartServer()
+endif
+
 
 " jqplay {{{2
 let g:jqplay_opt = ""
