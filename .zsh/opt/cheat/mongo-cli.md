@@ -11,6 +11,37 @@ db.help()
 col.help()
 ```
 
+## ユーザ作成
+
+```
+use admin
+# すべてのDBの管理権限をもつユーザーの作成
+db.createUser({
+	user: "username",
+	pwd: "username",
+	roles:[ {
+		role: "userAdminAnyDatabase",
+		db: "admin"
+	} ]
+})
+
+# 特定のDBの管理者権限を持つユーザー
+use [database]
+db.createUser({
+	user: "username",
+	pwd: "username",
+	roles:[ {
+		role: "userAdminAnyDatabase", // "read", "readWrite"
+		db: "database"
+	} ]
+})
+
+db.addUser("read", "pwd", true)
+db.addUser("readwrite", "pwd")
+
+# delete user
+db.system.users.remove({user: "username"})
+```
 ## クエリ例
 
 ```

@@ -1,5 +1,14 @@
 git status -sb                         # 色足してくれてメッセージも要らないのも省いてくれる
 git shortlog -sn                       # 誰がいくらコミットしたかを一覧表示
+## 追加行数
+git log --oneline --numstat --no-merges --pretty=format:"" | cut -f1 | awk 'BEGIN {sum=0} {sum+=$1} END {print sum}'
+## 削除行数
+git log --oneline --numstat --no-merges --pretty=format:"" | cut -f2 | awk 'BEGIN {sum=0} {sum+=$1} END {print sum}'
+## 追加・削除
+git log --numstat --pretty="%H"  | awk 'NF==3 {plus+=$1; minus+=$2} END {printf("+%d, -%d\n", plus, minus)}'
+## 絞込
+git log --author="hogehoge"
+git log --since=2013-01-01 --until=2013-06-30
 
 git log -p                              # パッチ形式のコミットログを表示する
 
