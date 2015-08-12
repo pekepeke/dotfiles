@@ -939,14 +939,17 @@ NeoBundle 'mattn/sonictemplate-vim', {'autoload': {
 NeoBundle 'ujihisa/shadow.vim'
 NeoBundle 'mhinz/vim-hugefile'
 NeoBundle 'tpope/vim-git'
-NeoBundle 'tpope/vim-fugitive', {'autoload':{
-\ 'commands': [ "Git", "Gstatus", "Gcommit", "Gedit",
-\   "Gwrite", "Ggrep", "Glog", "Gdiff"],
-\ }}
-" NeoBundle 'lambdalisue/vim-gita', {
-" \ 'autoload': {
-" \   'commands': ['Gita'],
-" \ }}
+if s:is_win
+  NeoBundle 'tpope/vim-fugitive', {'autoload':{
+  \ 'commands': [ "Git", "Gstatus", "Gcommit", "Gedit",
+  \   "Gwrite", "Ggrep", "Glog", "Gdiff"],
+  \ }}
+else
+  NeoBundle 'lambdalisue/vim-gita', {
+  \ 'autoload': {
+  \   'commands': ['Gita'],
+  \ }}
+endif
 NeoBundle 'rhysd/committia.vim'
 NeoBundle 'idanarye/vim-merginal', {'autoload':{
 \ 'commands': [ "Merginal", "MerginalToggle", "MerginalClose",],
@@ -964,6 +967,7 @@ NeoBundle 'cohama/agit.vim', {'autoload': {
 NeoBundle 'rhysd/git-messenger.vim', {
 \ 'gui': 1,
 \ }
+NeoBundle 'lambdalisue/vim-unified-diff'
 NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
 \ 'commands' : [
 \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
@@ -2795,6 +2799,21 @@ let g:vimrc_enabled_plugins = {
   \ 'endwize': s:bundle.is_installed('endwize.vim'),
   \ 'php_namespace': s:bundle.is_installed('vim-php-namespace'),
   \ }
+
+" unified-diff {{{2
+if s:bundle.is_installed('vim-unified-diff')
+  set diffexpr=unified_diff#diffexpr()
+
+  " configure with the followings (default values are shown below)
+  let unified_diff#executable = 'git'
+  let unified_diff#arguments = [
+    \   'diff', '--no-index', '--no-color', '--no-ext-diff', '--unified=0',
+    \   '--diff-algorithm=histogram',
+    \ ]
+  let unified_diff#iwhite_arguments = [
+    \   '--ignore--all-space',
+    \ ]
+endif
 
 " rengbang {{{2
 if s:bundle.is_installed('vim-rengbang')

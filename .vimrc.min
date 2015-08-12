@@ -393,6 +393,7 @@ if v:version > 702
     NeoBundle 'AndrewRadev/gapply.vim', {'autoload':{
       \ 'commands': [ 'Gapply',],
       \ }}
+    NeoBundle 'lambdalisue/vim-unified-diff'
     NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
       \ 'commands' : [
       \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
@@ -425,6 +426,7 @@ if v:version > 702
     " curl -L https://github.com/Shougo/unite.vim/tarball/master | tar zxv
 
     function! s:plugin_install() " {{{3
+      let exec_git = executable('git')
       let repos = [
       \ 'https://github.com/Shougo/vimfiler',
       \ 'https://github.com/Shougo/unite.vim',
@@ -438,11 +440,16 @@ if v:version > 702
       call mkdir(exppand('~/.vim'))
       call mkdir(expand('~/.vim/autoload'))
       call mkdir(expand('~/.vim/bundle'))
+      if exec_git
+          call system('git clone https://github.com/Shougo/neobundle.vim.git ~/.vim/neobundle.vim')
+        return
+      endif
+
       call system('curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim')
       let cwd = getcwd()
       execute 'lcd' expand('~/.vim/bundle')
       for repo in repos
-        if executable('git')
+        if exec_git
           call system(printf('git clone %s.git', repo))
           call system('git clone https://github.com/Shougo/unite.vim.git')
         else
@@ -487,6 +494,21 @@ MyAutoCmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
 
 " plugin settings {{{1
 let g:vimrc_enabled_plugins = {}
+" unified-diff {{{2
+if s:has_plugin('vim-unified-diff')
+  set diffexpr=unified_diff#diffexpr()
+
+  " configure with the followings (default values are shown below)
+  let unified_diff#executable = 'git'
+  let unified_diff#arguments = [
+    \   'diff', '--no-index', '--no-color', '--no-ext-diff', '--unified=0',
+    \   '--diff-algorithm=histogram',
+    \ ]
+  let unified_diff#iwhite_arguments = [
+    \   '--ignore--all-space',
+    \ ]
+endif
+
 " vimfiler "{{{2
 let g:vimfiler_as_default_explorer = 1
 let g:vimfiler_safe_mode_by_default = 0
