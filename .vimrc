@@ -1119,7 +1119,7 @@ if s:exec_ruby
   if get(g:vimrc_enabled_features, "sinatra", 0)
     NeoBundle 'hallison/vim-ruby-sinatra'
   endif
-  NeoBundle 'ecomba/vim-ruby-refactoring', {'autoload':{
+  NeoBundleLazy 'ecomba/vim-ruby-refactoring', {'autoload':{
   \ 'filetypes': ['ruby'],
   \ }}
 
@@ -1208,6 +1208,7 @@ if has('python') || has('python3')
 endif
 
 NeoBundle 'hail2u/vim-css3-syntax'
+NeoBundle 'npacker/vim-css3complete'
 if executable('less')
   NeoBundle 'groenewege/vim-less'
 endif
@@ -1483,10 +1484,10 @@ NeoBundle 'pekepeke/phpfolding.vim'
 if !get(g:vimrc_enabled_features, "eclim", 0)
   if s:exec_php && get(g:vimrc_enabled_features, 'padawan', 0)
     NeoBundle 'mkusher/padawan.vim', {
-    \ 'cygwin': 'cd padawan.php && composer install',
-    \ 'windows': 'cd padawan.php && composer install',
-    \ 'mac': 'cd padawan.php && composer install',
-    \ 'unix': 'cd padawan.php && composer install',
+    \ 'cygwin': 'bash install.sh',
+    \ 'windows': 'bash install.sh',
+    \ 'mac': 'bash install.sh',
+    \ 'unix': 'bash install.sh',
     \ }
   elseif get(g:vimrc_enabled_features, 'phpcomplete-extended', 0)
     " NeoBundle 'm2mdas/phpcomplete-extended'
@@ -1532,6 +1533,7 @@ NeoBundleLazy 'vim-scripts/dbext.vim', {'autoload':{
 " etc {{{4
 NeoBundle 'honza/dockerfile.vim'
 NeoBundle 'chase/vim-ansible-yaml'
+NeoBundle 'MicahElliott/Rocannon'
 NeoBundle 'cespare/vim-toml'
 NeoBundleLazy 'xolox/vim-lua-ftplugin', {'autoload':{
 \ 'filetypes': ['lua'],
@@ -7236,8 +7238,13 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
     let g:neocomplete#sources#omni#input_patterns.java = '\k\.\k*'
     let g:neocomplete#sources#omni#input_patterns.scala = '\k\.\k*'
   endif
-  " \ 'php': '[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
-  " \ 'php': '\h\w*\|[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
+  if s:bundle.is_installed('padawan.vim')
+    let g:neocomplete#force_omni_input_patterns.php =
+    \ '\h\w*\|[^- \t]->\w*'
+    " let g:neocomplete#sources#omni#input_patterns.php =
+    " \ '[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
+    " \ 'php': '\h\w*\|[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
+  endif
 
   " scala
   let g:neocomplete#sources#include#patterns.scala = '^import'
