@@ -1,3 +1,14 @@
+## よく忘れる
+### 特定リビジョンのファイル内容の出力
+```
+cvs update -p -r リビジョン ファイル
+```
+
+### ローカル更新を無視する
+```
+cvs update -C filepath
+```
+
 ## checkout
 cvs checkout 〔-d 作業用ディレクトリ名〕 プロジェクト名
 cvs co
