@@ -939,12 +939,13 @@ NeoBundle 'mattn/sonictemplate-vim', {'autoload': {
 NeoBundle 'ujihisa/shadow.vim'
 NeoBundle 'mhinz/vim-hugefile'
 NeoBundle 'tpope/vim-git'
-if s:is_win
+if 1 || s:is_win
   NeoBundle 'tpope/vim-fugitive', {'autoload':{
   \ 'commands': [ "Git", "Gstatus", "Gcommit", "Gedit",
   \   "Gwrite", "Ggrep", "Glog", "Gdiff"],
   \ }}
 else
+  " XXX : heavy...
   NeoBundle 'lambdalisue/vim-gita', {
   \ 'autoload': {
   \   'commands': ['Gita'],
