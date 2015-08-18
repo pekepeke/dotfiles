@@ -23,6 +23,7 @@ try {
     while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) {
         echo $r["id"];
     }
+    $stmt->closeCursor();
 } catch (PDOException $e) {
     die("Error : " . $e->getMessage());
 }

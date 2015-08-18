@@ -383,7 +383,7 @@ zload() {
 }
 
 shrc_section_title "peco" #{{{2
-if [ "$MSYSCON" != "mintty.exe" ] && type peco >/dev/null 2>&1; then
+if [[ "${MSYSCON} ${CYGWIN}" != mintty ]] && type peco >/dev/null 2>&1; then
   # source_all ~/.zsh/zfunc/peco/*.zsh
   bindkey -v '^Vp' peco-clipmenu-copy
   bindkey -v '^Vs' peco-snippets-copy
