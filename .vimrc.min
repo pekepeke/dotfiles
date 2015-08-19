@@ -225,12 +225,36 @@ function! s:tselect_immediately()
   execute 'normal!' (len(taglist(expand('<cword>'))) > 1 ? 'g' : '')."\<C-]>"
 endfunction
 
-nnoremap te t
+noremap [!t] <Nop>
+nmap t [!t]
+
+nnoremap <silent> [!t]e t
+nnoremap <silent> [!t]2 t"
+nnoremap <silent> [!t]7 t'
+nnoremap <silent> [!t]8 t(
+nnoremap <silent> [!t]9 t)
+nnoremap <silent> [!t][ t[
+nnoremap <silent> [!t]] t]
+
 nnoremap <silent> [!t]t :<C-u>call <SID>tselect_immediately()<CR>
 nnoremap <silent> <C-w>tt <C-w>s:<C-u>call <SID>tselect_immediately()<CR>
 nnoremap <silent> [!t]j :<C-u>tag<CR>
 nnoremap <silent> [!t]k :<C-u>pop<CR>
 nnoremap <silent> [!t]l :<C-u>tselect<CR>
+
+" for i in range(10)
+"   execute 'nnoremap <silent>' ('[!t]'.i) (((i+10) % 10).'gt')
+" endfor
+" unlet i
+nnoremap <silent> [!t]n gt
+nnoremap <silent> [!t]p gT
+nnoremap <silent> [!t]h gT
+nnoremap <silent> [!t]l gt
+nnoremap <silent> [!t]c :<C-u>tabnew<CR>
+nnoremap <silent> [!t]C :<C-u>tabnew %<CR>
+nnoremap <silent> [!t]* :<C-u>tabedit %<CR>*
+nnoremap <silent> [!t]# :<C-u>tabedit %<CR>#
+nnoremap <silent> [!t]q :<C-u>tabclose<CR>
 
 "
 nnoremap <C-w><Space> <C-w>p
@@ -350,6 +374,13 @@ if v:version > 702
     NeoBundle 'Shougo/unite.vim', {
       \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
       \ }
+    " NeoBundle 'Shougo/neomru.vim', {'autoload': {
+    " \ 'unite_sources': ['file_mru', 'directory_mru',
+    " \   'neomru/file', 'neomru/directory']
+    " \}}
+    NeoBundleLazy 'eiiches/unite-tselect', { 'autoload' : {
+    \ 'unite_sources' : ['tselect'],
+    \ }}
     NeoBundleLazy 'Shougo/vimfiler.vim', {
       \ 'depends': 'Shougo/unite.vim', 'autoload' : {
       \ 'commands' : [
@@ -380,11 +411,7 @@ if v:version > 702
       \ 'mappings' : [
       \ ['nx', '_', '<Plug>(operator-replace)']]
       \ }}
-    NeoBundle 'anyakichi/vim-surround', {'autoload':{
-      \ 'mappings': [['n', 'ds', 'cs', 'ys', 'yS', 'yss', 'ygs', 'ygS', 'ygss', 'ygsgs'],
-      \ ['x', 's', 'S', 'gs', 'gS'],
-      \ ['i', '<C-S>', '<C-G>s', '<C-G>S']],
-      \ }}
+    NeoBundle 'tpope/vim-surround'
     NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'rhysd/committia.vim'
     NeoBundle 'idanarye/vim-merginal', {'autoload':{

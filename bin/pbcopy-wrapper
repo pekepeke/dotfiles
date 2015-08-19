@@ -8,7 +8,12 @@ clipboard() {
     cat > /dev/clipboard
     return 0
   elif type clip >/dev/null 2>&1; then
-    copy_cmd=clip
+    if [[ $LANG = UTF-8 ]]; then
+      copy_cmd="iconv -f utf-8 -t shift_jis | clip"
+    else
+      copy_cmd=clip
+    fi
+    # copy_cmd=clip
   elif which pbcopy >/dev/null 2>&1; then
     copy_cmd="pbcopy"
   elif which xclip >/dev/null 2>&1; then

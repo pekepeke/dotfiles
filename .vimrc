@@ -649,8 +649,9 @@ endif
 " filetype off
 call neobundle#begin(expand("~/.vim/neobundle"))
 NeoBundleLocal ~/.vim/bundle
+NeoBundleLocal ~/.vim/local_bundle
 if get(g:vimrc_enabled_features, "eclim", 0)
-  NeoBundleLocal ~/.vim/eclim
+  NeoBundleLocal ~/.vim/eclim_bundle
 endif
 
 " vundles {{{2
@@ -1391,11 +1392,11 @@ if get(g:vimrc_enabled_features, "eclim", 0)
   NeoBundleLazy 'ervandew/eclim', {
   \ 'build' : {
   \   'windows': 'ant -Declipse.home='.escape($ECLIPSE_HOME, '')
-  \              .' -Dvim.files='.escape(expand('~/.vim/eclim/eclim'), ''),
+  \              .' -Dvim.files='.escape(expand('~/.vim/eclim_bundle/eclim'), ''),
   \   'mac': 'ant -Declipse.home='.$ECLIPSE_HOME
-  \          . '-Dvim.files='.escape(expand('~/.vim/eclim/eclim'), ''),
+  \          . '-Dvim.files='.escape(expand('~/.vim/eclim_bundle/eclim'), ''),
   \   'linux': 'ant -Declipse.home='.$ECLIPSE_HOME
-  \          . '-Dvim.files='.escape(expand('~/.vim/eclim/eclim'), ''),
+  \          . '-Dvim.files='.escape(expand('~/.vim/eclim_bundle/eclim'), ''),
   \ }}
 elseif s:exec_java
   NeoBundleLazy 'kamichidu/unite-javaimport', {'autoload': {
@@ -2188,10 +2189,10 @@ cnoremap <expr> ?  getcmdtype() == '?' ? '\?' : '?'
 nnoremap [!space]= call <SID>execute_motionless('normal! gg=G')
 
 " tab switch
-for i in range(10)
-  execute 'nnoremap <silent>' ('[!t]'.i) (((i+10) % 10).'gt')
-endfor
-unlet i
+" for i in range(10)
+"   execute 'nnoremap <silent>' ('[!t]'.i) (((i+10) % 10).'gt')
+" endfor
+" unlet i
 nnoremap <silent> [!t]n gt
 nnoremap <silent> [!t]p gT
 nnoremap <silent> [!t]h gT

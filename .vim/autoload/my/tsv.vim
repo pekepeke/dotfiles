@@ -145,14 +145,18 @@ function! my#tsv#to_sqlinsert() range "{{{2
   endif
 
   let texts = []
+  let values = []
   for items in lines
     if empty(items)
       continue
     endif
     let items = map(items, "<SID>escape(v:val)")
     let datas = map(copy(head), 'get(items, v:key, "NULL")')
-    call add(texts, 'INSERT INTO X ('.join(head, ', ').') VALUES ('.join(datas, ', ').');')
+    call add(values, printf('  (%s)', join(datas, ', ')))
+    " call add(texts, 'INSERT INTO X ('.join(head, ', ').') VALUES ('.join(datas, ', ').');')
   endfor
+  call add(texts, printf('INSERT INTO X (%s) VALUES', join(head, ', ')))
+  let texts += split(join(values, ",\n") . ";", "\n")
   call my#output_to_buffer('__TSV__', texts)
 endfunction
 

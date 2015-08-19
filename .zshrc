@@ -383,7 +383,8 @@ zload() {
 }
 
 shrc_section_title "peco" #{{{2
-if [[ "${MSYSCON} ${CYGWIN}" != mintty ]] && type peco >/dev/null 2>&1; then
+local isnt_mintty=$([[ "${MSYSCON} ${CYGWIN}" =~ mintty ]]; echo $?)
+if [ $isnt_mintty -eq 1 ] && type peco >/dev/null 2>&1; then
   # source_all ~/.zsh/zfunc/peco/*.zsh
   bindkey -v '^Vp' peco-clipmenu-copy
   bindkey -v '^Vs' peco-snippets-copy
@@ -399,6 +400,12 @@ if [[ "${MSYSCON} ${CYGWIN}" != mintty ]] && type peco >/dev/null 2>&1; then
   bindkey '^Vgm' peco-git-ls-files-insert-at-pos
   bindkey '^O' peco-zle-launch
   bindkey '^Vo' peco-zle-launch
+fi
+if [ $isnt_mintty -eq 0 ]; then
+  peco() {
+    echo "unavailable command on mintty" 1>&2
+    return 1
+  }
 fi
 
 shrc_section_title "textobj" #{{{2

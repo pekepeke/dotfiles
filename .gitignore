@@ -51,7 +51,8 @@ doc/tags-ja
 /.vim/neobundle
 /.vim/spell
 /.vim/doc/xml-plugin.txt
-/.vim/eclim
+/.vim/local_bundle
+/.vim/eclim_bundle
 
 #emacs
 /.emacs.d/cache
