@@ -3571,8 +3571,8 @@ endif
 
 " vim-php-namespace {{{2
 if s:bundle.is_installed('vim-php-namespace')
-  command! -nargs=0 PHPInsertUse call PhpInsertUse()
-  command! -nargs=0 PHPExpandClass call PhpExpandClass()
+  command! -nargs=0 PhpInsertUse call PhpInsertUse()
+  command! -nargs=0 PhpExpandClass call PhpExpandClass()
 
   nnoremap <Plug>(php-ns-inser-use) :<C-u>call PhpInsertUse()<CR>
   nnoremap <Plug>(php-ns-expand-class) :<C-u>call PhpExpandClass()<CR>
@@ -7240,12 +7240,15 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
     let g:neocomplete#sources#omni#input_patterns.java = '\k\.\k*'
     let g:neocomplete#sources#omni#input_patterns.scala = '\k\.\k*'
   endif
-  if s:bundle.is_installed('padawan.vim')
+  if 0 && s:bundle.is_installed('padawan.vim')
     let g:neocomplete#force_omni_input_patterns.php =
     \ '\h\w*\|[^- \t]->\w*'
     " let g:neocomplete#sources#omni#input_patterns.php =
     " \ '[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
     " \ 'php': '\h\w*\|[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
+  else
+    let g:neocomplete#sources#omni#input_patterns.php =
+    \ '\h\w*\|[^- \t]->\w*'
   endif
 
   " scala
