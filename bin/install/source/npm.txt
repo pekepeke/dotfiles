@@ -10,6 +10,8 @@ jshint
 jsonlint
 csslint
 mdr
+electron-prebuilt
+shiba
 # recess
 # uglify-js
 
@@ -21,7 +23,7 @@ gulp
 
 # hoxy
 # easymock
-jake
+# jake
 # ender
 # titanium
 # node-dev
@@ -29,7 +31,7 @@ jake
 # forever
 # gh-markdown-cli
 # marked
-reveal-md
+# reveal-md
 # jumly
 # spine.app
 
@@ -37,7 +39,7 @@ reveal-md
 # mocha
 # karma
 
-hem
+# hem
 # ws
 # express
 # jade
