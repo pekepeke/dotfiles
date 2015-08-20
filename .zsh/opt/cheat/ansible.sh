@@ -75,6 +75,24 @@
       - dir_d
 ```
 
+## コマンドの実行結果で分岐
+
+```
+- shell: hogehoge
+  register: result
+  ignore_errors: True
+
+- debug: msg="hogehoge failed"
+  when: result|failed
+
+- shell: uname
+  register: result
+  ignore_errors: True
+
+- debug: msg="uname success"
+  when: result|success
+```
+
 # 設定ファイルを書き換える
 
 ```

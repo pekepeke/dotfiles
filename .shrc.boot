@@ -238,6 +238,7 @@ if [ -n "$ZSH_NAME" ]; then
 fi
 
 shrc_section_title "etc" #{{{2
+alias dm='docker-machine'
 alias rsync='rsync -avzu'
 alias adbchrome='adb forward tcp:92222 localabstract:chrome_devtools_remote'
 
@@ -272,23 +273,9 @@ if [ -n "$ZSH_NAME" ]; then
 fi
 
 shrc_section_title "some commands" #{{{1
-cdtask() { #{{{2
-  local name="$1"
-  local target
-  if ! [[ "$name" =~ ^[0-9]+_ ]]; then
-    target=$(find ~/Desktop/ -maxdepth 1 -type d -name "*${name}*" -regex '.*/[0-9]*_.*$' | sort -r | awk 'NR==1')
-    if [ -e "${target}" ]; then
-      cd "$target"
-      return
-    fi
-  fi
-  target=~/Desktop/$name
-  if [ -e "${target}" ]; then
-    cd "$target"
-    return
-  fi
-  echo "directory not found: $name" 1>&2
-}
+if [ "$SHELL" != "/bin/sh" ]; then
+  source ~/.shrc.d/cdtask
+fi
 
 shrc_section_title "GNU screen setting" #{{{1
 if is_exec tscreen; then
