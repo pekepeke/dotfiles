@@ -7,7 +7,9 @@ mysqldump --single-transaction --skip-lock-tables --opt --flush-logs -u root -p 
 mysqldump -uroot -pxxxxxxxx --flush-logs  --master-data=2 --opt --single-transaction --default-character-set=utf8 --hex-blob [db] > dump.sql
 
 # create
-mysqldump --no-data --compact schema > ~/db_new.sql
+mysqldump --no-data --compact --skip-lock-tables --default-character-set=binary schema > db_new.sql
+mysqldump --no-data --compact --skip-lock-tables --default-character-set=binary --databases schema1 schema2 > ddl.sql
+mysqldump --no-data --compact --skip-lock-tables --default-character-set=binary --all-databases > ddl.sql
 # data only
 mysqldump --skip-extended-insert --add-drop-table=false -t --where '1 = 1'
 

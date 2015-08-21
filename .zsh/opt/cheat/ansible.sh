@@ -130,3 +130,25 @@ name: install python3.3
    chdir=/usr/local/src creates=/usr/local/python3.3.2/bin/python3.3
 ```
 
+## distribution
+
+```yaml
+- include: ubuntu.yml
+     when: ansible_distribution == "Ubuntu"
+```
+
+## $ENV
+ansible_facts で取得できない場合はstdoutを使うこともできる
+
+```yaml
+- shell: make
+  environment:
+    PATH: "/opt/local/bin:{{ ansible_env.PATH }}"
+
+- shell: echo $PATH
+  register: path
+
+- shell: echo $PATH
+  environment:
+    PATH: "/opt/local/bin:{{ path.stdout }}"
+```
