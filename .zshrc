@@ -6,7 +6,7 @@ shrc_section_title "init" #{{{1
 
 local _f
 for _f in ~/.shrc.*[^zwc] ~/.zshenv ; do
-  [ ! -e $_f.zwc -o $_f -nt $_f.zwc ] && zcompile $_f
+  [ -f $_f ] && [ ! -e $_f.zwc -o $_f -nt $_f.zwc ] && zcompile $_f
 done
 [ -e ~/.zshrc.zwc ] && rm -f ~/.zshrc.zwc
 

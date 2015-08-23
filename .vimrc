@@ -6433,6 +6433,7 @@ if s:bundle.is_installed('vim-quickrun')
     call extend(g:quickrun_config, {
     \ 'markdown' : {
     \   'type' :
+    \      executable('shiba') ? 'markdown/shiba' :
     \      s:is_mac && isdirectory('/Applications/Marked.app') ? 'markdown/Marked':
     \      executable('markedwrapper')    ? 'markdown/markedwrapper':
     \      executable('mdown')            ? 'markdown/mdown':
@@ -6457,6 +6458,10 @@ if s:bundle.is_installed('vim-quickrun')
   \ },
   \ })
   call extend(g:quickrun_config, {
+  \ 'markdown/shiba' : {
+  \   'command' : 'shiba',
+  \   'exec' : '%c %o %s',
+  \ },
   \ 'markdown/markedwrapper' : {
   \   'command' : 'markedwrapper',
   \   'exec' : '%c %o %s',
