@@ -18,6 +18,7 @@ cvs get
 ```
 cvs update [option] [file]
 cvs up
+cvs up -dP
 ```
 
 -I ファイル   | 更新したくないファイルを指定。（通常は全ファイルが対象になるから）

@@ -835,9 +835,11 @@ if get(g:vimrc_enabled_features, "gitsign", 0)
     \ }
   endif
 endif
-if has('python')
-  NeoBundle 'editorconfig/editorconfig-vim'
-endif
+NeoBundle 'sgur/vim-editorconfig'
+" if has('python')
+"   NeoBundle 'editorconfig/editorconfig-vim'
+" endif
+
 NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {
 \ 'commands': ['MemoNew', 'MemoGrep', 'MemoList']
 \ }}
@@ -893,7 +895,9 @@ NeoBundleLazy 'mattn/emoji-vim', {'autoload': {
 \ }}
 NeoBundle 'osyo-manga/shabadou.vim'
 NeoBundle 'osyo-manga/vim-watchdogs'
-NeoBundle 'tokorom/vim-quickrun-xctool'
+if s:is_mac
+  NeoBundle 'tokorom/vim-quickrun-xctool'
+endif
 NeoBundle 'manicmaniac/vim-quickrun-qo'
 NeoBundle 'osyo-manga/vim-anzu', {'autoload': {
 \ 'mappings': [['n', '<Plug>(anzu-']],
@@ -2841,11 +2845,11 @@ endif
 
 " padawan {{{2
 if s:bundle.is_installed('padawan.vim')
-  command -nargs=0 PadawanIndex call padawan#GenerateIndex()
-  command -nargs=0 PadawanSave call padawan#SaveIndex()
-  command -nargs=0 PadawanStart call padawan#StartServer()
-  command -nargs=0 PadawanStop call padawan#StopServer()
-  command -nargs=0 PadawanRestart call padawan#RestartServer()
+  command! -nargs=0 PadawanIndex call padawan#GenerateIndex()
+  command! -nargs=0 PadawanSave call padawan#SaveIndex()
+  command! -nargs=0 PadawanStart call padawan#StartServer()
+  command! -nargs=0 PadawanStop call padawan#StopServer()
+  command! -nargs=0 PadawanRestart call padawan#RestartServer()
 endif
 
 
@@ -6119,30 +6123,40 @@ if s:bundle.is_installed('vim-quickrun')
 
   " objc {{{4
   call extend(g:quickrun_config, {
-  \ 'objc' : {
-  \   'type' : executable('xctool') ? 'objc/xctool' : 'objc/gcc',
-  \ },
-  \ 'objc/gcc' : {
-  \   'command' : 'gcc',
-  \   'exec' : ['%c %o %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
-  \   'tempfile': '{tempname()}.m'
-  \ },
-  \ 'objc/xctool' : {
-  \    'command': 'xctool',
-  \    'cmdopt': 'test',
-  \    'outputter': 'xctool',
-  \    'exec': ['%c %o %a'],
-  \ },
-  \ 'swift' : {
-  \   'type' : 'swift/xcrun',
-  \ },
-  \ 'swift/xcrun' : {
-  \    'command': 'xcrun swift',
-  \    'cmdopt': '-i',
-  \    'outputter': 'xctool',
-  \    'exec': ['%c %s %o %a'],
-  \ },
-  \ })
+    \ 'objc/gcc' : {
+    \   'command' : 'gcc',
+    \   'exec' : ['%c %o %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
+    \   'tempfile': '{tempname()}.m'
+    \ },
+    \ })
+  if s:is_mac
+    call extend(g:quickrun_config, {
+    \ 'objc' : {
+    \   'type' : 'objc/xctool',
+    \ },
+    \ 'objc/xctool' : {
+    \    'command': 'xctool',
+    \    'cmdopt': 'test',
+    \    'outputter': 'xctool',
+    \    'exec': ['%c %o %a'],
+    \ },
+    \ 'swift' : {
+    \   'type' : 'swift/xcrun',
+    \ },
+    \ 'swift/xcrun' : {
+    \    'command': 'xcrun swift',
+    \    'cmdopt': '-i',
+    \    'outputter': 'xctool',
+    \    'exec': ['%c %s %o %a'],
+    \ },
+    \ })
+  else
+    call extend(g:quickrun_config, {
+    \ 'objc' : {
+    \   'type' : 'objc/gcc',
+    \ },
+    \ })
+  endif
   " gcc {{{4
   call extend(g:quickrun_config, {
   \ 'cpp': {
@@ -6412,7 +6426,24 @@ if s:bundle.is_installed('vim-quickrun')
   \ }
   \ })
   " texts {{{4
-  if s:bundle.is_installed('previm')
+  if executable('shiba')
+    function! s:shiba_open()
+      call system(printf("shiba \"%s\" &", expand('%:p')))
+    endfunction
+    command! -nargs=0 ShibaOpen call s:shiba_open()
+    call extend(g:quickrun_config, {
+    \ 'markdown': { 'type': 'markdown/shiba' },
+    \ })
+    call extend(g:quickrun_config, {
+    \ 'markdown/shiba' : {
+    \   'runner': 'vimscript',
+    \   'command' : 'shiba',
+    \   'exec' : 'silent ShibaOpen',
+    \   'outputter' : 'null',
+    \ },
+    \ })
+    call extend(g:quickrun_config, { 'rst': { 'type': 'rst/rst2html', }})
+  elseif 0 && s:bundle.is_installed('previm')
     call extend(g:quickrun_config, {
     \ 'markdown': { 'type': 'text/previm' },
     \ 'rst': { 'type': 'text/previm' },
@@ -6425,15 +6456,10 @@ if s:bundle.is_installed('vim-quickrun')
     \   'outputter' : 'null',
     \ }})
   else
-    call extend(g:quickrun_config, {
-    \ 'rst': {
-    \   'type': 'rst/rst2html',
-    \ }})
-
+    call extend(g:quickrun_config, { 'rst': { 'type': 'rst/rst2html', }})
     call extend(g:quickrun_config, {
     \ 'markdown' : {
     \   'type' :
-    \      executable('shiba') ? 'markdown/shiba' :
     \      s:is_mac && isdirectory('/Applications/Marked.app') ? 'markdown/Marked':
     \      executable('markedwrapper')    ? 'markdown/markedwrapper':
     \      executable('mdown')            ? 'markdown/mdown':
@@ -6458,10 +6484,6 @@ if s:bundle.is_installed('vim-quickrun')
   \ },
   \ })
   call extend(g:quickrun_config, {
-  \ 'markdown/shiba' : {
-  \   'command' : 'shiba',
-  \   'exec' : '%c %o %s',
-  \ },
   \ 'markdown/markedwrapper' : {
   \   'command' : 'markedwrapper',
   \   'exec' : '%c %o %s',
