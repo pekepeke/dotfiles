@@ -23,7 +23,7 @@ Host *
   GSSAPIAuthentication no
   ControlMaster auto
   ControlPath /tmp/%r@%h:%p
-  RemoteForward 52698 127.0.0.1:52698
+  # RemoteForward 52698 127.0.0.1:52698 # for remote edit(subl, mate2)
 
 Host github.com
   User git
