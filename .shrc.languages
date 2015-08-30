@@ -27,7 +27,7 @@ xenv-init() {
 
 shrc_section_title "OS settings" # {{{1
 
-PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+PATH="$HOME/.bin:$HOME/bin:$HOME/.local/bin:$PATH"
 
 case $OSTYPE in
   cygwin*)

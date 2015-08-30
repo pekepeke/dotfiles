@@ -5466,72 +5466,130 @@ if s:bundle.is_installed('taglist.vim') "{{{4
   nnoremap <silent> ,to :<C-u>TlistOpen<CR>1<C-w>h
 else "{{{4
   let g:tagbar_type_objc = {
-        \ 'ctagstype' : 'objc',
-        \ 'kinds'     : [
-        \   'P:protocols',
-        \   'i:interfaces',
-        \   'I:implementations',
-        \   'M:instance methods',
-        \   'C:implementation methods',
-        \   'Z:protocol methods',
-        \   'v:property',
-        \ ]}
+    \ 'ctagstype' : 'objc',
+    \ 'kinds'     : [
+    \   'P:protocols',
+    \   'i:interfaces',
+    \   'I:implementations',
+    \   'M:instance methods',
+    \   'C:implementation methods',
+    \   'Z:protocol methods',
+    \   'v:property',
+    \ ]}
   let g:tagbar_type_ruby = {'ctagstype': 'Ruby', 'kinds':
-        \   ['c:classes', 'f:methods', 'm:modules', 'F:singleton methods', 'r:regex']
-        \ }
+    \   ['c:classes', 'f:methods', 'm:modules', 'F:singleton methods', 'r:regex']
+    \ }
   let g:tagbar_type_javascript = {
-        \ 'ctagstype' : 'js',
-        \ 'kinds'     : [
-        \   'o:object',
-        \   'f:function',
-        \   'a:array',
-        \   's:string',
-        \   'v:variable',
-        \   'b:boolean',
-        \   'n:number',
-        \ ]}
+    \ 'ctagstype' : 'js',
+    \ 'kinds'     : [
+    \   'o:object',
+    \   'f:function',
+    \   'a:array',
+    \   's:string',
+    \   'v:variable',
+    \   'b:boolean',
+    \   'n:number',
+    \ ]}
+  if executable('phpctags')
+    let g:tagbar_type_php = {
+      \ 'ctagsbin'  : 'phpctags',
+      \ 'ctagsargs' : '--memory="128M" -f -',
+      \ 'kinds'     : [
+      \   'd:Constants:0:0',
+      \   'v:Variables:0:0',
+      \   'f:Functions:1',
+      \   'i:Interfaces:0',
+      \   'c:Classes:0',
+      \   'p:Properties:0:0',
+      \   'm:Methods:1',
+      \   'n:Namespaces:0',
+      \   't:Traits:0',
+      \ ],
+      \ 'sro'        : '::',
+      \ 'kind2scope' : {
+      \   'c' : 'class',
+      \   'm' : 'method',
+      \   'f' : 'function',
+      \   'i' : 'interface',
+      \   'n' : 'namespace',
+      \   't' : 'trait',
+      \ },
+      \ 'scope2kind' : {
+      \   'class'     : 'c',
+      \   'method'    : 'm',
+      \   'function'  : 'f',
+      \   'interface' : 'i',
+      \   'namespace' : 'n',
+      \   'trait'     : 't',
+      \ }}
+  endif
   " let g:tagbar_type_javascript = {'ctagstype': 'JavaScript',
   "       \   'kinds': ['f:functions', 'c:classes', 'm:methods', 'p:properties', 'v:global variables', 'I:inner'] }
   if executable('coffeetags')
     let g:tagbar_type_coffee = {
-          \ 'ctagsbin' : 'coffeetags',
-          \ 'ctagsargs' : '',
-          \ 'kinds' : [
-          \   'f:functions',
-          \   'o:object',
-          \ ],
-          \ 'sro' : ".",
-          \ 'kind2scope' : {
-          \   'f' : 'object',
-          \   'o' : 'object',
-          \ }
-          \ }
+      \ 'ctagsbin' : 'coffeetags',
+      \ 'ctagsargs' : '',
+      \ 'kinds' : [
+      \   'f:functions',
+      \   'o:object',
+      \ ],
+      \ 'sro' : ".",
+      \ 'kind2scope' : {
+      \   'f' : 'object',
+      \   'o' : 'object',
+      \ }}
   else
     let g:tagbar_type_coffee = {'ctagstype': 'coffee',
-          \   'kinds': ['c:class', 'n:namespace', 'f:function', 'm:method', 'v:var', 'i:ivar'] }
+      \   'kinds': ['c:class', 'n:namespace', 'f:function', 'm:method', 'v:var', 'i:ivar'] }
   endif
   let g:tagbar_type_scala = {'ctagstype': 'scala',
-        \   'kinds': ['c:classes', 'o:objects', 't:traits', 'r:cclasses',
-        \   'a:aclasses', 'm:methods', 'V:values', 'v:variables',
-        \   'T:types', 'i:includes', 'p:packages'] }
+    \   'kinds': ['c:classes', 'o:objects', 't:traits', 'r:cclasses',
+    \   'a:aclasses', 'm:methods', 'V:values', 'v:variables',
+    \   'T:types', 'i:includes', 'p:packages'] }
   let g:tagbar_type_actionscript = {'ctagstype': 'actionscript',
-        \   'kinds': ['f:functions', 'p:properties', 'v:variables',
-        \   'r:function, functions', 'c:classes'] }
+    \   'kinds': ['f:functions', 'p:properties', 'v:variables',
+    \   'r:function, functions', 'c:classes'] }
   let g:tagbar_type_tex = {
-        \ 'ctagstype' : 'latex',
-        \   'kinds': ['c:chapters', 's:sections', 'u:subsections', 'b:subsubsections',
-        \   'p:parts', 'P:paragraphs', 'G:subparagraphs'] }
+    \ 'ctagstype' : 'latex',
+    \   'kinds': ['c:chapters', 's:sections', 'u:subsections', 'b:subsubsections',
+    \   'p:parts', 'P:paragraphs', 'G:subparagraphs'] }
   let g:tagbar_type_make = { 'ctagstype' : 'make',
-        \   'kinds': ['m:macros', 't:targets'] }
+    \   'kinds': ['m:macros', 't:targets'] }
   let g:tagbar_type_ant = {'ctagstype': 'Ant',
-        \   'kinds': ['p:projects', 't:targets'] }
+    \   'kinds': ['p:projects', 't:targets'] }
   let g:tagbar_type_typescript = {'ctagstype': 'typescript',
-        \   'kinds': ['c:classes', 'n:modules', 'f:functions', 'v:variables', 'm:members',
-        \   'i:interfaces', 'e:enums'] }
+    \   'kinds': ['c:classes', 'n:modules', 'f:functions', 'v:variables', 'm:members',
+    \   'i:interfaces', 'e:enums'] }
   let g:tagbar_type_haxe = {'ctagstype': 'haxe', 'kinds': [
-        \ 'p:package', 'f:function', 'v:variable', 'p:package', 'c:class', 'i:interface', 't:typedef',
-        \ ] }
-
+    \ 'p:package', 'f:function', 'v:variable', 'p:package', 'c:class', 'i:interface', 't:typedef',
+    \ ] }
+  let g:tagbar_type_go = {
+    \ 'ctagstype' : 'go',
+    \ 'kinds'     : [
+    \   'p:package',
+    \   'i:imports:1',
+    \   'c:constants',
+    \   'v:variables',
+    \   't:types',
+    \   'n:interfaces',
+    \   'w:fields',
+    \   'e:embedded',
+    \   'm:methods',
+    \   'r:constructor',
+    \   'f:functions'
+    \ ],
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+    \   't' : 'ctype',
+    \   'n' : 'ntype'
+    \ },
+    \ 'scope2kind' : {
+    \   'ctype' : 't',
+    \   'ntype' : 'n'
+    \ },
+    \ 'ctagsbin'  : 'gotags',
+    \ 'ctagsargs' : '-sort -silent',
+    \ }
   " let g:tagbar_type_xxx = {
   "       \ 'ctagstype' : '',
   "       \ 'kinds'     : [

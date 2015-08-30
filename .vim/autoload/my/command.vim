@@ -100,6 +100,7 @@ function! my#command#exec_ctags(path) "{{{2
   if &filetype != 'html'
     call add(ctags_cmds, '--exclude="*.html"')
   endif
+  call add(ctags_cmds, '--exclude="*.json"')
   if empty(path)
     " let path = input("input base dir : ", expand('%:p:h'))
     let path = input("cd : ", getcwd(), "dir")
