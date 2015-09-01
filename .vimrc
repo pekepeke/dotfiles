@@ -661,6 +661,7 @@ if neobundle#load_cache($MYVIMRC)
 NeoBundle 'itchyny/lightline.vim'
 
 " colorscheme {{{3
+NeoBundle 'freeo/vim-kalisi', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundle 'tpope/vim-vividchalk', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundle 'tomasr/molokai', {'autoload': {'unite_sources':['colorscheme']}}
 NeoBundle 'mopp/mopkai.vim', {'autoload': {'unite_sources':['colorscheme']}}
