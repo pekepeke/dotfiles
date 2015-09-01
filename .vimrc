@@ -4289,8 +4289,8 @@ if s:bundle.tap('vim-template')
 endif
 
 " sonictemplate-vim {{{2
+let g:sonictemplate_vim_template_dir = expand('$HOME/.vim/sonictemplate/')
 if s:bundle.tap('sonictemplate-vim')
-  let g:sonictemplate_vim_template_dir = expand('$HOME/.vim/sonictemplate/')
   " nmap <C-y><C-t> <Plug>(sonictemplate)
   " imap <C-y><C-t> <Plug>(sonictemplate)
   nmap <C-y><C-t> :<C-u>Unite sonictemplate<CR>
@@ -6711,12 +6711,21 @@ if s:bundle.is_installed('vim-quickrun')
     let extra_opt = get(b:, 'watchdogs_checker_phpcs_options', '')
     return printf('--standard=%s %s', standard, extra_opt)
   endfunction "}}}
+
   call extend(g:quickrun_config, {
   \ 'watchdogs_checker/phpcs': {
   \    'command': 'phpcs',
   \    'cmdopt' : '--report=csv %{PhpcsStandardDetect()}',
   \    'exec': '%c %o %s:p',
-  \    'quickfix/errorformat': "\"%f\"\\,%l\\,%c\\,%t%*[a-zA-Z]\\,\"%m\"\\,%*[a-zA-Z0-9_.-\\,]"
+  \    'quickfix/errorformat': "\"%f\"\\,%l\\,%c\\,%t%*[a-zA-Z]\\,\"%m\"\\,%*[a-zA-Z0-9_.-\\,]",
+  \ }
+  \ })
+  call extend(g:quickrun_config, {
+  \ 'watchdogs_checker/phpmd': {
+  \    'command': 'phpmd',
+  \    'cmdopt' : 'text codesize,design,unusedcode,naming',
+  \    'exec': '%c %o %s:p',
+  \    'quickfix/errorformat': '%E%f:%l%\s%#%m',
   \ }
   \ })
   if executable('tidy')
