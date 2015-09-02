@@ -5,7 +5,9 @@ scriptencoding utf-8
 
 let g:unite_watchdogs_config_selected_prefix =
 \ get(g:, "unite_watchdogs_config_selected_prefix", "> ")
-
+let g:unite_watchdogs_config_default_action =
+\ get(g:, 'unite_watchdogs_config_default_action', 'execute')
+" 'set_local_watchdogs_config'
 
 function! s:watchdogs_config_all()
   return filter(copy(get(g:, "quickrun_config", {})),
@@ -13,7 +15,8 @@ function! s:watchdogs_config_all()
 endfunction
 
 function! s:watchdogs_config_type_filetype(filetype)
-  return get(get(s:watchdogs_config_all(), a:filetype . "/watchdogs_checker", {}), "type", a:filetype)
+  return get(get(s:watchdogs_config_all(),
+  \ a:filetype . "/watchdogs_checker", {}), "type", a:filetype)
 endfunction
 
 function! s:watchdogs_config_type_bufnr(bufnr)
@@ -63,7 +66,7 @@ function! s:gather_candidates(args, context)
   \   "action__config" : v:key,
   \   "action__val_command" : get(v:val, "command", ""),
   \   "action__filetype" : filetype,
-  \   "action__command" : ":QuickRun " . v:key,
+  \   "action__command" : ":WatchdogsRun " . v:key,
   \ }')))
   " \ }'))), 'sort.sort')
 endfunction
@@ -77,7 +80,7 @@ endfunction
 let s:source = {
   \ "name" : "watchdogs_config",
   \ 'description' : 'quickrun select filetype config',
-  \ "default_action" : "set_local_watchdogs_config",
+  \ "default_action" : g:unite_watchdogs_config_default_action,
   \ "action_table" : {
   \   "set_global_watchdogs_config" : {
   \     "description" : "let g:quickrun_config.watchdogs_checker/{filetype} =",
