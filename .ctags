@@ -1,3 +1,8 @@
+--fields=aimS
+--languages=-json
+--append=yes
+--recurse=yes
+
 --langdef=objc
 --langmap=objc:.m.h
 --regex-objc=/^[[:space:]]*[-+][[:space:]]*\([[:alpha:]]+[[:space:]]*\*?\)[[:space:]]*([[:alnum:]]+):[[:space:]]*\(/\1/m,method/

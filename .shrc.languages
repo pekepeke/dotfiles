@@ -33,12 +33,14 @@ case $OSTYPE in
   cygwin*)
     export CYGWIN='cygwin'
     soft_source $HOME/.shrc.cygwin
+    type /usr/bin/perl >/dev/null 2>&1 && PATH="$(echo $PATH | /usr/bin/perl -ne 'print join ":",grep {$_ !~ /(Intel|WindowsPowerShell|\/Wbem|Skype)/} split(":", $_);')"
     PATH=$HOME/bin/windows:$PATH
     ;;
   msys)
     soft_source $HOME/.shrc.cygwin
     PATH="$(echo "$HOME/bin/windows:$PATH" |  /usr/bin/sed 's/(/\\(/g' | /usr/bin/sed 's/\\\\(/\\(/g')"
     PATH="$(echo "$HOME/bin/windows:$PATH" |  /usr/bin/sed 's/)/\\)/g' | /usr/bin/sed 's/\\\\)/\\)/g')"
+    type /usr/bin/perl >/dev/null 2>&1 && PATH="$(echo $PATH | /usr/bin/perl -ne 'print join ":",grep {$_ !~ /(Intel|WindowsPowerShell|\/Wbem|Skype)/} split(":", $_);')"
     # remove_path /usr/local/bin /usr/bin /bin /usr/local/sbin /usr/sbin /sbin
     # PATH=$PATH:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
     ;;

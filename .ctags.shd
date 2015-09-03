@@ -1,6 +1,12 @@
 ## perl -ne 'print unless /^\s*#/'
 # vim:fdm=marker sw=2 ts=2 ft=conf noexpandtab:
 
+# --fields=fks
+--fields=aimS
+--languages=-json
+--append=yes
+--recurse=yes
+
 ## objective-c {{{1
 --langdef=objc
 --langmap=objc:.m.h
