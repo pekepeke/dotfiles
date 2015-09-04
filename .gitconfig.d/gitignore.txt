@@ -99,6 +99,9 @@ tramp
 /.phpcodeintel
 /.phpintel
 
+# vagrant
+/.vagrant
+
 # zed
 .zedstate
 

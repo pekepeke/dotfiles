@@ -6485,7 +6485,7 @@ if s:bundle.is_installed('vim-quickrun')
   \ }
   \ })
   " texts {{{4
-  if executable('shiba')
+  if !s:is_win && executable('shiba')
     function! s:shiba_open()
       call system(printf("shiba \"%s\" &", expand('%:p')))
     endfunction
@@ -6502,7 +6502,7 @@ if s:bundle.is_installed('vim-quickrun')
     \ },
     \ })
     call extend(g:quickrun_config, { 'rst': { 'type': 'rst/rst2html', }})
-  elseif 0 && s:bundle.is_installed('previm')
+  elseif s:bundle.is_installed('previm')
     call extend(g:quickrun_config, {
     \ 'markdown': { 'type': 'text/previm' },
     \ 'rst': { 'type': 'text/previm' },
