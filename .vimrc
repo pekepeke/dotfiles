@@ -5162,7 +5162,7 @@ if s:bundle.tap('unite.vim')
   UniteNMap   d         directory_mru -default-action=vimfiler
   UniteNMap   zz        z -default-action=vimfiler
   UniteNMap   za        fold
-  UniteNMap   <Leader>r quickrun_config
+  UniteNMap   <Leader>r quickrun_config watchdogs_config
   UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR> -profile-name=files
   UniteNMap   m         file_mru -default-action=open -profile-name=files
   UniteNMap   y         sonictemplate
