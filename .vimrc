@@ -1095,6 +1095,7 @@ NeoBundle 'Shougo/neosnippet.vim', {
 \ }}
 NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'hrsh7th/vim-neco-calc'
+NeoBundle 'rhysd/github-complete.vim'
 
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
@@ -2808,6 +2809,14 @@ let g:vimrc_enabled_plugins = {
   \ 'endwize': s:bundle.is_installed('endwize.vim'),
   \ 'php_namespace': s:bundle.is_installed('vim-php-namespace'),
   \ }
+
+" github-complete.vim {{{2
+if s:bundle.is_installed('github-complete.vim')
+  if !s:is_mac && !s:is_win
+    let g:github_complete_emoji_japanese_workaround = 1
+  endif
+  " let g:github_complete_enable_neocomplete = s:bundle.is_installed('neocomplete.vim')
+endif
 
 " unified-diff {{{2
 if s:bundle.is_installed('vim-unified-diff')
