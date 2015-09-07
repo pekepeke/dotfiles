@@ -6808,6 +6808,12 @@ if s:bundle.is_installed('vim-quickrun')
     \    'exec'    : '%c --verbose %o %s:p',
     \    'quickfix/errorformat' : '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
     \ },
+    \ 'watchdogs_checker/eslint': {
+    \   'command' : 'eslint',
+    \    'exec'    : '%c -f compact %o %s:p',
+    \    'quickfix/errorformat' : '%E%f: line %l\, col %c\, Error - %m,' .
+    \       '%W%f: line %l\, col %c\, Warning - %m'
+    \ },
     \ })
   call extend(g:quickrun_config, {
     \ 'coffee/watchdogs_checker' : {
