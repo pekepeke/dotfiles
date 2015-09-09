@@ -7,6 +7,8 @@ github.com/mattn/jvgrep
 github.com/typester/gh-open
 github.com/mattn/files
 github.com/tokuhirom/git-xlsx-textconv
-github.com/mizoR/coo/cmd/{coo,coo-tee}
+# github.com/mizoR/coo/cmd/{coo,coo-tee}
+github.com/mizoR/coo/cmd/coo-tee
 github.com/ericchiang/pup
 github.com/andlabs/qo
+github.com/yudai/gotty
