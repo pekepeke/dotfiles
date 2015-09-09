@@ -990,7 +990,7 @@ NeoBundle 'vim-scripts/ConflictDetection', {
 \ 'depends': 'vim-scripts/ingo-library',
 \ }
 if has('python')
-  NeoBundleLazy 'joonty/vdebug.git', {'autoload': {
+  NeoBundleLazy 'joonty/vdebug', {'autoload': {
   \ 'commands': [
   \ "VdebugStart", "Breakpoint",
   \ "BreakpointRemove", "BreakpointWindow",
@@ -2816,6 +2816,18 @@ if s:bundle.is_installed('github-complete.vim')
     let g:github_complete_emoji_japanese_workaround = 1
   endif
   " let g:github_complete_enable_neocomplete = s:bundle.is_installed('neocomplete.vim')
+endif
+
+" vdebug {{{2
+if s:bundle.is_installed('vdebug')
+  let g:vdebug_options = {
+  \ 'server': 'localhost',
+  \ 'port': 9000,
+  \ 'timeout': 20,
+  \ 'break_on_open': 1,
+  \ 'on_close': 'detach',
+  \ 'path_maps': {},
+  \ }
 endif
 
 " unified-diff {{{2
@@ -6717,7 +6729,8 @@ if s:bundle.is_installed('vim-quickrun')
     \ })
 
   function! PhpcsStandardDetect() "{{{
-    let standard = get(b:, 'watchdogs_checker_phpcs_standard', 'PSR2')
+    let standard = get(b:, 'watchdogs_checker_phpcs_standard',
+      \ (filereadable('ruleset.xml') ? 'ruleset.xml': 'PSR2'))
     let extra_opt = get(b:, 'watchdogs_checker_phpcs_options', '')
     return printf('--standard=%s %s', standard, extra_opt)
   endfunction "}}}

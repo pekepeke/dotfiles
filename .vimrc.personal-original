@@ -3,6 +3,11 @@
 let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
 
+" template {{{1
+let g:author                          = ""
+let g:email                           = ""
+let g:company                         = ""
+
 " hatena.vim & changelog, etc "{{{1
 " hateblo.vim {{{2
 let g:hateblo_vim = {
@@ -29,20 +34,19 @@ let g:changelog_timeformat            = "%Y-%m-%d"
 let g:changelog_username              = ""
 let g:changelog_date_end_entry_search = '^\s*$'
 
-" template {{{2
-let g:author                          = ""
-let g:email                           = ""
-let g:author                          = ""
-let g:email                           = ""
-let g:company                         = ""
-
 " languages, or web services {{{1
+" vdebug {{{2
+let g:vdebug_options = get(g:, 'vdebug_options', {})
+" let g:vdebug_options.path_maps = {
+"   \ "remote": "local",
+"   \ }
+
 " php-doc.vim {{{2
 let g:pdv_cfg_Type = "mixed"
 let g:pdv_cfg_Package = ""
 let g:pdv_cfg_Version = "$id$"
-let g:pdv_cfg_Author = ""
-let g:pdv_cfg_Copyright = ""
+let g:pdv_cfg_Author = g:author
+let g:pdv_cfg_Copyright = printf("%s All Rights Reserved", g:company)
 let g:pdv_cfg_License = ""
 
 " rmine.vim {{{2
