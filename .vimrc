@@ -568,7 +568,7 @@ if has('vim_starting')
   " let g:neobundle#default_options._ = { 'verbose' : 1, 'focus' : 1 }
 
   " http://blog.supermomonga.com/articles/vim/neobundle-sugoibenri.html {{{3
-  let s:bundle = {'uninstalled':{}, 'vimrc_installed':[]}
+  let s:bundle = {'vimrc_installed':[]}
   function! s:bundle.tap(bundle) " {{{
     let self.tapped = neobundle#get(a:bundle)
     return self.is_installed(a:bundle)
@@ -600,48 +600,11 @@ if has('vim_starting')
 
   function! s:bundle.is_installed(name) "{{{
     let ret = neobundle#is_installed(a:name)
-    if !ret
-      let self.uninstalled[a:name] = 1
-    endif
     return ret
   endfunction "}}}
 
-  function! s:bundle.summary_report() "{{{
-    let bundles = neobundle#config#get_neobundles()
-    let msgs = [
-    \ printf("Installed   : %d", len(bundles)),
-    \ printf("Enabled     : %d", len(filter(copy(bundles), '!v:val.lazy'))),
-    \ printf("Lazy        : %d", len(filter(copy(bundles), 'v:val.lazy'))),
-    \ printf("Not Sourced : %d", len(filter(copy(bundles), '!v:val.sourced'))),
-    \ printf("Sourced     : %d", len(filter(copy(bundles), 'v:val.sourced'))),
-    \ printf("\n### Sourced plugins\n%s", join(map(
-    \   filter(copy(bundles), 'v:val.lazy && v:val.sourced'),
-    \   'v:val.name'), "\n")),
-    \ printf("\n### Uninstalled plugins\n%s", join(keys(self.uninstalled), "\n")),
-    \ ]
-    echo join(msgs, "\n")
-  endfunction " }}}
-
-  function! s:bundle.validate_report() "{{{
-    let bundles = neobundle#config#get_neobundles()
-    let lazies = filter(copy(bundles), 'v:val.lazy && v:val.sourced')
-    let plugins = []
-    for item in lazies
-      if isdirectory(item.path . '/plugin')
-        continue
-      endif
-      call add(plugins, item)
-    endfor
-    if !empty(plugins)
-      echo printf("Following plugins looks good should not be Lazy\n%s",
-            \ join(map(plugins, 'v:val.name'), "\n"))
-    else
-      echo "Finish validate"
-    endif
-  endfunction " }}}
-
-  command! NeoBundleSummary call s:bundle.summary_report()
-  command! NeoBundleValidate call s:bundle.validate_report()
+  command! NeoBundleSummary call my#neobundle#summary_report()
+  command! NeoBundleValidate call my#neobundle#validate_report()
 endif
 
 " load neobundle {{{2
@@ -1963,7 +1926,6 @@ else
   colorscheme desert
 endif
 
-
 " statusline {{{1
 set laststatus=2  " ステータス表示用変数
 let s:status_generator = { 'cfi':s:bundle.is_installed('current-func-info.vim') }
@@ -1987,11 +1949,10 @@ function! s:status_generator.get_line() "{{{3
 
   return s
 endfunction "}}}3
-function! MyStatusLine()
+function! VimrcStatusLine()
   return s:status_generator.get_line()
 endfunction
-set statusline=%!MyStatusLine()
-
+set statusline=%!VimrcStatusLine()
 
 " for filetypes {{{1
 " shebang {{{2
@@ -2000,10 +1961,6 @@ if !s:is_win
         \ if getline(1) =~ "^#!"
         \ | exe "silent !chmod +x %"
         \ | endif
-  " MyAutoCmd BufEnter *
-  "       \ if bufname("") !~ "^\[A-Za-z0-9\]*://"
-  "       \ | silent! exe '!echo -n "k%\\"'
-  "       \ | endif
 endif
 " auto mkdir {{{2
 MyAutoCmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
@@ -2044,11 +2001,8 @@ MyAutoCmd FileType pl set filetype=perl
 MyAutoCmd FileType py set filetype=python
 MyAutoCmd FileType md set filetype=markdown
 MyAutoCmd FileType docker set filetype=dockerfile
-" MySQL
-MyAutoCmd BufNewFile,BufRead *.sql set filetype=mysql
-" IO
+" MyAutoCmd BufNewFile,BufRead *.sql set filetype=mysql
 MyAutoCmd BufNewFile,BufRead *.io set filetype=io
-" command
 MyAutoCmd BufNewFile,BufRead *.command set filetype=sh
 
 MyAutoCmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
@@ -2062,8 +2016,6 @@ function! s:vimrc_cmdwin_init() "{{{3
   inoremap <buffer><expr> <BS> col('.') == 1 ? '<Esc>:quit<CR>' : '<BS>'
 
   if g:vimrc_enabled_plugins.ambicmd
-    " imap <expr><buffer> <Space> ambicmd#expand("\<Space>")
-    " imap <expr><buffer> <CR> ambicmd#expand("\<CR>")
     imap <expr><buffer> <Space> <SID>ambicmd_expand("\<Space>", 'i', getcmdline())
     imap <expr><buffer> <CR> <SID>ambicmd_expand("\<CR>", 'i', getcmdline())
   endif
@@ -2131,11 +2083,6 @@ vnoremap g<Space> <Space>
 nmap <Space> [!space]
 vmap <Space> [!space]
 
-" noremap [!prefix] <Nop>
-" nmap [!prefix] ,
-" vmap [!prefix] ,
-" xmap [!prefix] ,
-
 noremap [!edit] <Nop>
 nmap <C-e> [!edit]
 vmap <C-e> [!edit]
@@ -2169,7 +2116,6 @@ nnoremap <expr> j v:count == 0 ? 'gj' : 'j'
 xnoremap <expr> j (v:count == 0 && mode() !=# 'V') ? 'gj' : 'j'
 nnoremap <expr> k v:count == 0 ? 'gk' : 'k'
 xnoremap <expr> k (v:count == 0 && mode() !=# 'V') ? 'gk' : 'k'
-" nmap gb :ls<CR>:buf
 
 " disable danger keymaps {{{2
 nnoremap ZZ <Nop>
@@ -2182,11 +2128,6 @@ endif
 nnoremap gs :<C-u>setf<Space>
 nmap Y y$
 
-" nnoremap <silent> x "_x
-" nnoremap <silent> X "_X
-" nnoremap <silent> sx x
-" nnoremap <silent> sX X
-
 " http://vim-users.jp/2009/10/hack91/
 cnoremap <expr> /  getcmdtype() == '/' ? '\/' : '/'
 cnoremap <expr> ?  getcmdtype() == '?' ? '\?' : '?'
@@ -2194,11 +2135,6 @@ cnoremap <expr> ?  getcmdtype() == '?' ? '\?' : '?'
 " indent whole buffer
 nnoremap [!space]= call <SID>execute_motionless('normal! gg=G')
 
-" tab switch
-" for i in range(10)
-"   execute 'nnoremap <silent>' ('[!t]'.i) (((i+10) % 10).'gt')
-" endfor
-" unlet i
 nnoremap <silent> [!t]n gt
 nnoremap <silent> [!t]p gT
 nnoremap <silent> [!t]h gT
@@ -2318,21 +2254,6 @@ let Grep_OpenQuickfixWindow = 1
 
 let MyGrep_ExcludeReg = '[~#]$\|\.bak$\|\.o$\|\.obj$\|\.exe$\|\.dll$\|\.pdf$\|\.doc$\|\.xls$\|[/\\]tags$\|^tags$'
 let MyGrepcmd_useropt = '--exclude="*\.\(svn\|git\|hg)*"'
-
-" function! s:vimrc_quickfix_init()
-"   " nnoremap <buffer> < :<C-u><CR>
-" endfunction
-" MyAutoCmd FileType qf call s:vimrc_quickfix_init()
-
-" quickfix のエラー箇所を波線でハイライト
-" let g:hier_highlight_group_qf  = "qf_error_ucurl"
-" function! s:vimrc_make_init()
-"   HierUpdate
-"   QuickfixStatusEnable
-" endfunction
-" MyAutoCmd QuickfixCmdPost make call s:vimrc_make_init()
-" MyAutoCmd QuickfixCmdPost make,grep,grepadd,vimgrep copen
-" MyAutoCmd QuickfixCmdPost l* lopen
 
 " tags-and-searches {{{2
 nnoremap [!t]r t
