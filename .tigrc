@@ -49,7 +49,8 @@ bind main Y !@git pbcopy %(commit)
 bind main H view-refs
 bind main <Ctrl-g> view-grep
 bind main ! !?git revert %(commit)
-bind main C !?git checkout %(commit)
+# bind main C !?git checkout %(commit)
+bind branch n !git checkout -b %(prompt) %(branch)
 
 bind refs D !?git branch -D %(branch)
 bind refs d !?git branch -d %(branch)
