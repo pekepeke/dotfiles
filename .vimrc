@@ -313,17 +313,19 @@ endfunction
 
 " diff {{{2
 set diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
-set diffexpr=GitDiffNormal()
-function! GitDiffNormal()
-  let args=["git-diff-normal", '--diff-algorithm=histogram']
-  if &diffopt =~ "iwhite"
-    call add(args, '--ignore-all-space')
-  endif
-  let args += [v:fname_in, v:fname_new, '>', v:fname_out]
-  let cmd='!' . join(args, ' ')
-  silent execute cmd
-  redraw!
-endfunction
+if !get(g:vimrc_enabled_features, "git_under1.8", 0)
+  set diffexpr=GitDiffNormal()
+  function! GitDiffNormal()
+    let args=["git-diff-normal", '--diff-algorithm=histogram']
+    if &diffopt =~ "iwhite"
+      call add(args, '--ignore-all-space')
+    endif
+    let args += [v:fname_in, v:fname_new, '>', v:fname_out]
+    let cmd='!' . join(args, ' ')
+    silent execute cmd
+    redraw!
+  endfunction
+endif
 
 " 表示周り {{{2
 set lazyredraw ttyfast
@@ -937,7 +939,9 @@ NeoBundle 'cohama/agit.vim', {'autoload': {
 NeoBundle 'rhysd/git-messenger.vim', {
 \ 'gui': 1,
 \ }
-NeoBundle 'lambdalisue/vim-unified-diff'
+if !get(g:vimrc_enabled_features, "git_under1.8", 0)
+  NeoBundle 'lambdalisue/vim-unified-diff'
+endif
 NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
 \ 'commands' : [
 \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
@@ -1374,7 +1378,7 @@ elseif s:exec_java
   NeoBundle 'kamichidu/vim-javaclasspath', {
   \   'depends': ['kamichidu/vim-javalang'],
   \}
-  NeoBundleLazy 'artur-shaik/vim-javacomplete2', {
+  NeoBundle 'artur-shaik/vim-javacomplete2', {
   \   'autoload' : { 'filetypes' : 'java' },
   \ }
 endif
@@ -2752,7 +2756,8 @@ if s:bundle.is_installed('vdebug')
 endif
 
 " unified-diff {{{2
-if s:bundle.is_installed('vim-unified-diff')
+if !get(g:vimrc_enabled_features, "git_under1.8", 0)
+  \ && s:bundle.is_installed('vim-unified-diff')
   set diffexpr=unified_diff#diffexpr()
 
   " configure with the followings (default values are shown below)
