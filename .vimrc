@@ -334,6 +334,11 @@ set sidescrolloff=999
 set number                     " 行番号の表示
 set ruler
 
+set nowrap     " 折り返しなし
+set nrformats-=octal
+set modeline
+set modelines=10
+
 set mouse=nch                  " use mouse normal/command/help
 " set mouse=a
 " set mouse=nv
@@ -341,6 +346,7 @@ set nomousefocus
 set mousehide
 set timeoutlen=1000
 set ttimeoutlen=100
+set updatetime=200
 
 set showmatch                  " 対応する括弧の表示
 set showcmd                    " 入力中のコマンドを表示
@@ -415,14 +421,10 @@ if has('conceal')
 endif
 
 "set wm=2
-set nowrap     " 折り返しなし
-set nrformats-=octal
-set updatetime=200
 if has('winaltkeys')
   set winaltkeys=no
 endif
-set modeline
-set modelines=10
+set pastetoggle=<F10>
 
 " 検索周り {{{2
 set ignorecase smartcase wrapscan
