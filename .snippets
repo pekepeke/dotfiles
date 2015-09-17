@@ -40,8 +40,10 @@ find ./ -daystart -ctime -2
 # date
 date +%Y%m%d
 
+# git
 git submodule foreach 'git pull origin master'
 git submodule foreach 'git checkout master; git pull'
+git commit --amend --author="$(git config user.name) <$(git config user.email)>"
 
 # recursive-touch
 find . -print0 | xargs -0 touch
