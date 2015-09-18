@@ -1,5 +1,6 @@
 #!/bin/bash
 
+root="$(cd $(dirname $0); pwd)"
 usage() {
   prg_name=`basename $0`
   cat <<EOM
@@ -8,12 +9,11 @@ EOM
   exit 1
 }
 
-main() {
-  local cwd=$(pwd)
-  cd $(dirname $0)/completion/
-
-  curl -Lo git-completion.bash https://raw.github.com/git/git/master/contrib/completion/git-completion.bash
-  curl -Lo _git https://raw.github.com/git/git/master/contrib/completion/git-completion.zsh
+update_complation() {
+  cd $root/completion/
+  # curl -Lo git-completion.bash https://raw.github.com/git/git/master/contrib/completion/git-completion.bash
+  # curl -Lo _git https://raw.github.com/git/git/master/contrib/completion/git-completion.zsh
+  curl -Lo _git "http://sourceforge.net/p/zsh/code/ci/master/tree/Completion/Unix/Command/_git?format=raw"
   curl -Lo _git-issue https://raw.githubusercontent.com/glidenote/git-issue-zsh-completion/master/_git-issue
   curl -Lo _padrino https://raw.github.com/matthias-guenther/padrino-zsh-completion/master/_padrino
   curl -Lo _loga https://raw.github.com/tacahiroy/loga-zsh-completion/master/_loga_zsh_completion.zsh
@@ -33,6 +33,17 @@ main() {
   for f in "" -doc -galaxy -playbook -pull -vault; do
     curl -Lo _ansible${f} https://raw.githubusercontent.com/jdottdot/ansible-zsh-completion/master/_ansible${f}
   done
+}
+
+update_compfunc() {
+  cd $root/compfunc
+  curl -Lo git-flow-completion.zsh https://raw.githubusercontent.com/bobthecow/git-flow-completion/master/git-flow-completion.zsh
+}
+
+
+main() {
+  local cwd=$(pwd)
+
   cd $cwd
 }
 
