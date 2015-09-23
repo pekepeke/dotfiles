@@ -5,6 +5,9 @@ let g:gf#php_composer#max_line = get(g:, 'gf#php_composer#max_line', 0)
 let s:bin = expand('<sfile>:p:h') . '/../../lib/get_module_path.php'
 
 function! gf#php_composer#find()
+  if !s:is_filetype_applicable()
+    return 0
+  endif
   let composer_path = s:find_composer_json()
   if composer_path == ''
     return 0
@@ -24,6 +27,11 @@ function! gf#php_composer#find()
     \ 'line': 1,
     \ 'col': 0,
     \ }
+endfunction
+
+function! s:is_filetype_applicable()
+  let fts = split(&filetype, '\.')
+  return len(filter(fts, 'v:val =~# "php"')) > 0
 endfunction
 
 function! s:find_composer_json()
