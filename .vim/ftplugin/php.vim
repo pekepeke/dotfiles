@@ -23,7 +23,7 @@ if g:vimrc_enabled_plugins.php_namespace
   imap <buffer> <C-x>c <Plug>(php-ns-expand-class)
 endif
 
-if expand('%:p') =~? '/\(view\|template\)s\?/'
+if expand('%:p') =~? '\(/\(view\|template\)s\?/\|\.html\.\)'
   let g:php_html_load = 1
   let g:php_html_in_heredoc = 1
   let g:php_sql_heredoc = 0
