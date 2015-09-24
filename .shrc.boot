@@ -222,19 +222,19 @@ perlmodules() {
 }
 
 shrc_section_title "mysql" #{{{2
-EXPLAIN() {
+EXPLAIN_MYSQL() {
   mysql -e "SET NAMES utf8; EXPLAIN $*"
 }
-SELECT() {
+SELECT_MYSQL() {
   mysql -e "SET NAMES utf8; SELECT $*"
 }
-SHOW() {
+SHOW_MYSQL() {
   mysql -e "SET NAMES utf8; SHOW $*"
 }
 if [ -n "$ZSH_NAME" ]; then
-  alias EXPLAIN='noglob EXPLAIN'
-  alias SELECT='noglob SELECT'
-  alias SHOW='noglob SHOW'
+  alias EXPLAIN='noglob EXPLAIN_MYSQL'
+  alias SELECT='noglob SELECT_MYSQL'
+  alias SHOW='noglob SHOW_MYSQL'
 fi
 
 shrc_section_title "etc" #{{{2

@@ -53,7 +53,7 @@ function! s:find_fqcns()
     let endline = line('$')
   endif
   let ns = map(filter(getline(0, endline),
-    \ 'v:val =~# "\\(use\\|namespace\\)\\s\\+\\([[:alnum:]\\\\_]\\+\\)"'),
+    \ 'v:val =~# "\\(use\\|namespace\\)\\s\\+\\([[:alnum:]\\\\_]\\+\\).*;"'),
     \ 's:parse_line(v:val)')
 
   if empty(ns)
@@ -69,6 +69,19 @@ function! s:find_fqcns()
   let namespace = filter(ns, 'v:val.is_ns')
   if len(namespace) > 0
     return [namespace.class . '\' . class]
+  endif
+
+  let word = ""
+  try
+    let org_iskeyword = &iskeyword
+    setlocal iskeyword+=\\
+    let word = expand('<cword>')
+  catch /.*/
+  finally
+    let &l:iskeyword = org_iskeyword
+  endtry
+  if !empty(word)
+    return [word]
   endif
 
   return []
@@ -90,7 +103,7 @@ endfunction
 
 function! s:parse_line(line)
   let m = matchlist(a:line,
-    \ '\(use\|namespace\)\s\+\([[:alnum:]\\_]\+\)\(\s\+as\s\+\([[:alnum:]_]\+\)\)\?')
+    \ '\(use\|namespace\)\s\+\([[:alnum:]\\_]\+\)\(\s\+as\s\+\([[:alnum:]_]\+\)\)\?\s*;')
   let is_ns = (m[1]) == 'namespace'
   return {
     \ 'class': m[2],
