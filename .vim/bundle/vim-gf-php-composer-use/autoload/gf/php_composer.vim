@@ -53,7 +53,7 @@ function! s:find_fqcns()
     let endline = line('$')
   endif
   let ns = map(filter(getline(0, endline),
-    \ 'v:val =~# "\\(use\\|namespace\\)\\s\\+\\([[:alnum:]\\\\_]\\+\\).*;"'),
+    \ 'v:val =~# "\\(use\\|namespace\\)\\s\\+\\([[:alnum:]\\\\_]\\+\\)[^,]*;"'),
     \ 's:parse_line(v:val)')
 
   if empty(ns)
@@ -71,19 +71,6 @@ function! s:find_fqcns()
     return [namespace.class . '\' . class]
   endif
 
-  let word = ""
-  try
-    let org_iskeyword = &iskeyword
-    setlocal iskeyword+=\\
-    let word = expand('<cword>')
-  catch /.*/
-  finally
-    let &l:iskeyword = org_iskeyword
-  endtry
-  if !empty(word)
-    return [word]
-  endif
-
   return []
 endfunction
 
@@ -99,11 +86,29 @@ function! s:get_class_from_line()
       return m[2]
     endif
   endfor
+
+  let word = ""
+  try
+    let org_iskeyword = &iskeyword
+    setlocal iskeyword+=\\
+    let word = expand('<cword>')
+  catch /.*/
+  finally
+    let &l:iskeyword = org_iskeyword
+  endtry
+  if !empty(word)
+    return word
+  endif
+
 endfunction
 
 function! s:parse_line(line)
   let m = matchlist(a:line,
     \ '\(use\|namespace\)\s\+\([[:alnum:]\\_]\+\)\(\s\+as\s\+\([[:alnum:]_]\+\)\)\?\s*;')
+  if empty(m)
+    call vimconsole#log(a:line)
+    return { 'class': '', 'as': '', 'is_ns': 0 }
+  endif
   let is_ns = (m[1]) == 'namespace'
   return {
     \ 'class': m[2],
