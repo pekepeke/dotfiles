@@ -37,7 +37,15 @@ endfunction
 function! s:find_composer_json()
   let cdir = expand('%:p:h')
   let f = 'composer.json'
-  return findfile(f, cdir . ';')
+  let composer = findfile(f, cdir . ';')
+  if composer != ''
+    let cdir = fnamemodify(composer, ':p:h:h')
+    let root_composer = findfile(f, cdir . ';')
+    if root_composer != ''
+      let composer = root_composer
+    endif
+  endif
+  return composer
 endfunction
 
 function! s:find_fqcns()

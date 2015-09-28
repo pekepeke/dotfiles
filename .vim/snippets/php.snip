@@ -224,3 +224,15 @@ snippet headerpng
 snippet headerhtml
 	header("Content-Type: text/html; charset=${1:utf-8}");
 
+snippet funcgetset
+    public function set${2:$1}($$1)
+    {
+        $this->${1} = $$1;
+        return $this;
+    }
+
+    public function get$2()
+    {
+        return $this->$1;
+    }
+
