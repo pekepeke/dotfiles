@@ -1,6 +1,6 @@
 BoldAsFont=no
 FontHeight=10
-Transparency=high
+Transparency=medium
 Font=Consolas
 FontIsBold=no
 CursorColour=255,0,0
