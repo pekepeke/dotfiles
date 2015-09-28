@@ -83,10 +83,8 @@ function! s:find_fqcns()
 endfunction
 
 function! s:get_class_from_line()
-  " TODO: parse folloing statement
-  " use A, B
   for re in [
-    \ '\(use\|new\)\s*\([[:alnum:]\\_]\+\)\s*;',
+    \ '\s*\(use\|new\)\s\+\([[:alnum:]\\_]\+\)\s*;',
     \ '\(\s*\)\?\([[:alnum:]\\_]\+\)::',
     \ ]
     let m = matchlist(getline('.'), re)
@@ -114,7 +112,7 @@ function! s:parse_line(line)
   let m = matchlist(a:line,
     \ '\(use\|namespace\)\s\+\([[:alnum:]\\_]\+\)\(\s\+as\s\+\([[:alnum:]_]\+\)\)\?\s*;')
   if empty(m)
-    call vimconsole#log(a:line)
+    call s:log('s:parse_line: not found pattern - ' . a:line)
     return { 'class': '', 'as': '', 'is_ns': 0 }
   endif
   let is_ns = (m[1]) == 'namespace'
@@ -123,6 +121,10 @@ function! s:parse_line(line)
     \ 'as': empty(m[4]) ? matchstr(m[2], '[^\\]\+$') : m[4],
     \ 'is_ns': is_ns,
     \ }
+endfunction
+
+function! s:log(msg)
+  " call vimconsole#log(a:msg)
 endfunction
 
 let &cpo = s:save_cpo

@@ -1722,17 +1722,17 @@ NeoBundleLazy 'pekepeke/vim-gf-vundle', {'autoload':{
 " operator {{{3
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace', {
-\ 'depends' : 'vim-operator-user', 'autoload' : {
+\ 'depends' : 'kana/vim-operator-user', 'autoload' : {
 \ 'mappings' : [
 \ ['nx', '<Plug>(operator-replace)']]
 \ }}
 NeoBundleLazy 'tyru/operator-camelize.vim', {
-\ 'depends' : 'vim-operator-user', 'autoload' : {
+\ 'depends' : 'kana/vim-operator-user', 'autoload' : {
 \ 'mappings' : [
 \ ['nx', '<Plug>(operator-camelize', '<Plug>(operator-decamelize)']]
 \ }}
 NeoBundleLazy 'tyru/operator-html-escape.vim', {
-\ 'depends' : 'vim-operator-user', 'autoload' : {
+\ 'depends' : 'kana/vim-operator-user', 'autoload' : {
 \ 'mappings' : [
 \ ['nx', '<Plug>(operator-html-']]
 \ }}
@@ -1747,7 +1747,7 @@ NeoBundleLazy 'sgur/vim-operator-openbrowser', {'autoload': {
 \ ['nx', '<Plug>(operator-openbrowser)']]
 \ }}
 NeoBundleLazy 'pekepeke/vim-operator-shuffle', {
-\ 'depends' : 'vim-operator-user', 'autoload' : {
+\ 'depends' : 'kana/vim-operator-user', 'autoload' : {
 \ 'mappings' : [
 \ ['nx', '<Plug>(operator-shuffle)']]
 \ }}
@@ -1758,7 +1758,7 @@ NeoBundleLazy 'pekepeke/vim-operator-tabular', {
 \ ['nx', '<Plug>(operator-tabular-', ]]
 \ }}
 NeoBundleLazy 'pekepeke/vim-operator-normalize-utf8mac', {
-\ 'depends' : 'vim-operator-user',
+\ 'depends' : 'kana/vim-operator-user',
 \ 'autoload' : {
 \ 'mappings' : [['nx', '<Plug>(operator-normalize_utf8mac)']]
 \ }}
