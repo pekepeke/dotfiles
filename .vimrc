@@ -1549,7 +1549,7 @@ NeoBundle 'smerrill/vcl-vim-plugin'
 NeoBundle 'ksauzz/haproxy.vim'
 " NeoBundle 'empanda/vim-varnish.vim'
 NeoBundle 'glidenote/keepalived-syntax.vim'
-NeoBundle 'Shougo/vim-nyaos'
+" NeoBundle 'Shougo/vim-nyaos'
 
 " unite.vim {{{3
 NeoBundle 'Shougo/unite.vim', {
@@ -2197,8 +2197,9 @@ function! s:set_grep(...) "{{{3
       let g:ackprg="ag -i -S --nocolor --nogroup --column --nopager"
 
       let g:unite_source_grep_command = 'ag'
+      " \ '--ignore-case -S --noheading --nocolor --nogroup --nopager',
       let opts = [
-        \ '--ignore-case -S --noheading --nocolor --nogroup --nopager',
+        \ '-i --vimgrep --hidden --noheading --nocolor --nogroup --nopager',
         \ '--ignore', '".hg"',
         \ '--ignore', '".git"',
         \ '--ignore', '".bzr"',
