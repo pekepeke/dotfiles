@@ -18,7 +18,7 @@ let b:match_words .= '<?\(php\)\?:?>,\<switch\>:\<endswitch\>,' .
   \ '<\@<=\([^/?][^ \t>]*\)[^>]*\%(>\|$\):<\@<=/\1>,' .
   \ '<:>,(:),{:},[:]'
 
-if g:vimrc_enabled_plugins.php_namespace
+if get(g:vimrc_enabled_plugins, 'php_namespace')
   imap <buffer> <C-x>u <Plug>(php-ns-inser-use)
   imap <buffer> <C-x>c <Plug>(php-ns-expand-class)
 endif
