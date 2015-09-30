@@ -6659,7 +6659,7 @@ if s:bundle.is_installed('vim-quickrun')
 
   function! PhpcsStandardDetect() "{{{
     let standard = get(b:, 'watchdogs_checker_phpcs_standard',
-      \ (filereadable('ruleset.xml') ? 'ruleset.xml': 'PSR2'))
+      \ (filereadable('phpcs.xml') ? 'phpcs.xml': 'PSR2'))
     let extra_opt = get(b:, 'watchdogs_checker_phpcs_options', '')
     return printf('--standard=%s %s', standard, extra_opt)
   endfunction "}}}
