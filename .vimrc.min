@@ -55,7 +55,9 @@ else
   set spelllang=en_us
 endif
 set spellfile=~/.vim/spell/spellfile.utf-8.add
-set noautochdir
+if exists('+autochdir')
+  set noautochdir
+endif
 set shellslash
 set directory=$VIM_CACHE,/var/tmp,/tmp
 call s:mkdir($VIM_CACHE)
@@ -93,9 +95,11 @@ set scrolloff=10000000
 set sidescrolloff=999
 set number ruler
 
-set mouse=nch
-set nomousefocus
-set mousehide
+if has('mouse')
+  set mouse=nch
+  set nomousefocus
+  set mousehide
+endif
 set timeoutlen=1000
 set ttimeoutlen=50
 
@@ -121,7 +125,9 @@ set noequalalways
 set langmenu=none
 set helplang=ja,en
 set keywordprg=":help"
-set foldmethod=marker
+if has('folding')
+  set foldmethod=marker
+endif
 
 " tab character {{{2
 set autoindent nosmartindent cindent
