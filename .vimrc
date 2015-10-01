@@ -6664,6 +6664,13 @@ if s:bundle.is_installed('vim-quickrun')
     return printf('--standard=%s %s', standard, extra_opt)
   endfunction "}}}
 
+  if !exists('g:quickrun_config["watchdogs_checker/php"]')
+    call extend(g:quickrun_config, {
+    \ 'watchdogs_checker/php': {
+    \   'cmdopt': '-d error_reporting=E_ALL',
+    \ },
+    \ })
+  endif
   call extend(g:quickrun_config, {
   \ 'watchdogs_checker/phpcs': {
   \    'command': 'phpcs',
