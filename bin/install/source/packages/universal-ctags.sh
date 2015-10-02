@@ -9,11 +9,16 @@ EOM
 }
 
 main() {
+  if ! which autoreconf >/dev/null 2>&1; then
+    echo "please install autoconf."
+    exit 1
+  fi
   git clone https://github.com/universal-ctags/ctags.git /tmp/ctags --depth=1
   cd /tmp/ctags
   autoreconf -vfi
   ./configure --enable-iconv
   make
+  [ ! -e ~/.bin ] && mkdir -p ~/.bin
   cp ctags ~/.bin/
 }
 
