@@ -1,8 +1,8 @@
 <?php
 
-require '<%= substitute(expand('%:t:h'), 'Test', '', 'ie') %>';
+// require '<%= substitute(expand('%:t:h'), 'Test', '', 'ie') %>';
 
-class <+FILENAME_NOEXT+> extends PHPUnit_Framework_TestCase
+class <%= substitute(substitute(expand('%:p:t:r'), '\(^.\)', '\u\1', ''), '_\(.\)', '\u\1', 'g') %> extends PHPUnit_Framework_TestCase
 {
     /**
      * @var <%= substitute(expand('%:t:r'), 'Test', '', 'ie') %>
