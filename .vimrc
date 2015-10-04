@@ -1415,8 +1415,8 @@ endif
 " texts {{{4
 NeoBundle 'tpope/vim-markdown'
 NeoBundle 'nelstrom/vim-markdown-folding'
-" NeoBundle 'kannokanno/previm'
-NeoBundle 'beckorz/previm'
+NeoBundle 'kannokanno/previm'
+" NeoBundle 'beckorz/previm'
 NeoBundle 'timcharper/textile.vim'
 NeoBundle 'aklt/plantuml-syntax'
 " NeoBundle 'maxmeyer/vim-taskjuggler'
@@ -6436,24 +6436,7 @@ if s:bundle.is_installed('vim-quickrun')
   \ }
   \ })
   " texts {{{4
-  if !s:is_win && executable('shiba')
-    function! s:shiba_open()
-      call system(printf("shiba \"%s\" &", expand('%:p')))
-    endfunction
-    command! -nargs=0 ShibaOpen call s:shiba_open()
-    call extend(g:quickrun_config, {
-    \ 'markdown': { 'type': 'markdown/shiba' },
-    \ })
-    call extend(g:quickrun_config, {
-    \ 'markdown/shiba' : {
-    \   'runner': 'vimscript',
-    \   'command' : 'shiba',
-    \   'exec' : 'silent ShibaOpen',
-    \   'outputter' : 'null',
-    \ },
-    \ })
-    call extend(g:quickrun_config, { 'rst': { 'type': 'rst/rst2html', }})
-  elseif s:bundle.is_installed('previm')
+  if s:bundle.is_installed('previm')
     call extend(g:quickrun_config, {
     \ 'markdown': { 'type': 'text/previm' },
     \ 'rst': { 'type': 'text/previm' },
