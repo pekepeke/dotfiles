@@ -2626,6 +2626,7 @@ let g:php_parent_error_open = 1
 "let g:php_sync_method = x
 " phpfolding.vim
 let g:DisableAutoPHPFolding = 1
+let g:php_syntax_extensions_enabled = 1
 
 " let g:PHP_autoformatcomment=0
 "" php-doc.vim
