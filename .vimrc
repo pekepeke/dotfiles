@@ -772,7 +772,8 @@ NeoBundleLazy 'h1mesuke/vim-alignta', {'autoload': {
 \ ],
 \ 'unite_sources': ['alignta']
 \ }}
-NeoBundle 'nishigori/increment-activator'
+NeoBundle 'syngan/vim-clurin'
+" NeoBundle 'nishigori/increment-activator'
 NeoBundle 'tpope/vim-speeddating', {'autoload': {
 \ 'mappings' : [['nv', '<Plug>SpeedDatingUp', '<Plug>SpeedDatingDown'],
 \ ['n', '<Plug>SpeedDatingNowLocal', '<Plug>SpeedDatingNowUTC']],
@@ -2738,6 +2739,86 @@ let g:vimrc_enabled_plugins = {
   \ 'php_namespace': s:bundle.is_installed('vim-php-namespace'),
   \ }
 
+" clurin.vim {{{2
+if s:bundle.is_installed('vim-clurin')
+  nmap <C-a> <Plug>(clurin-next)
+  nmap <C-x> <Plug>(clurin-prev)
+  vmap <C-a> <Plug>(clurin-next)
+  vmap <C-x> <Plug>(clurin-prev)
+  nmap + <Plug>(clurin-next)
+  nmap - <Plug>(clurin-prev)
+  vmap + <Plug>(clurin-next)
+  vmap - <Plug>(clurin-prev)
+  let g:clurin = {
+    \ '-': {
+    \   'def': [
+    \     ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
+    \     [ 'january', 'february', 'march', 'april', 'may',
+    \       'june', 'july', 'august', 'september', 'october',
+    \       'november', 'december'],
+    \     ['get', 'post', 'put', 'delete'],
+    \     ['pick', 'squash', 'edit', 'reword', 'fixup', 'exec'],
+    \     ['previous', 'current', 'next'],
+    \     ['=', ':='],
+    \     ['true', 'false'],
+    \     ['月','火','水','木','金','土','日'],
+    \   ],
+    \ },
+    \ 'php': {
+    \   'def': [
+    \     ['private', 'protected', 'public'],
+    \     ['extends', 'implements'],
+    \     ['assert', 'depends', 'dataProvider', 'expectedException', 'group', 'test'],
+    \   ],
+    \ },
+    \ 'vim': {
+    \   'def': [
+    \     ['echo', 'echomsg'],
+    \     ['if', 'elseif', 'endif'],
+    \     ['for', 'endfor'],
+    \     ['function', 'endfunction'],
+    \     ['try', 'catch', 'finally'],
+    \     ['nnoremap', 'xnoremap', 'inoremap', 'vnoremap', 'cnoremap', 'onoremap'],
+    \     ['nmap', 'xmap', 'imap', 'vmap', 'cmap', 'omap'],
+    \     ['NeoBundle', 'NeoBundleLazy'],
+    \     ['Home', 'End', 'Left', 'Right', 'Delete'],
+    \     ['has', 'has_key', 'exists'],
+    \   ],
+    \ },
+    \ 'go': {
+    \   'def': [
+    \     ['true', 'false', 'iota', 'nil'],
+    \     ['print', 'println'],
+    \     ['byte', 'complex64', 'complex128'],
+    \     ['int', 'int8', 'int16', 'int32', 'int64'],
+    \     ['uint', 'uint8', 'uint16', 'uint32', 'uint64'],
+    \     ['float32', 'float64'],
+    \     ['interface', 'struct'],
+    \   ],
+    \ },
+    \ 'ruby': {
+    \   'def': [
+    \     ["describe", "context", "specific", "example"],
+    \     ['public', 'protected', 'private'],
+    \     ['before', 'after'],
+    \     ['be_true', 'be_false'],
+    \     ['get', 'post', 'put', 'delete'],
+    \     ['==', 'eql', 'equal'],
+    \     [ '.should_not', '.should' ],
+    \     ['.to_not', '.to'],
+    \   ],
+    \ },
+    \ 'markdown': {
+    \   'def': [
+    \     ['[ ]', '[x]'],
+    \     ['#', '##', '###', '####', '#####', ],
+    \     ["-", "\t-", "\t\t-", "\t\t\t-", ],
+    \     ["+", "\t+", "\t\t+", "\t\t\t+", ],
+    \   ],
+    \ },
+    \ }
+endif
+
 " github-complete.vim {{{2
 if s:bundle.is_installed('github-complete.vim')
   if !s:is_mac && !s:is_win
@@ -3451,10 +3532,7 @@ if s:bundle.tap('vim-speeddating')
     nmap <silent> <C-a> :<C-u>call <SID>speeddating_or_incact(v:count1)<CR>
     nmap <silent> <C-x> :<C-u>call <SID>speeddating_or_incact(-v:count1)<CR>
 
-  elseif !g:vimrc_enabled_plugins.cycle
-    nmap <C-A> <Plug>SpeedDatingUp
-    nmap <C-X> <Plug>SpeedDatingDown
-  else
+  elseif g:vimrc_enabled_plugins.cycle
     function! s:speeddating_or_cycle(incr) "{{{3
       let line = getline('.')
       execute 'normal' abs(a:incr)."\<Plug>SpeedDating".(a:incr < 0 ? 'Down' : 'Up')
@@ -3464,6 +3542,10 @@ if s:bundle.tap('vim-speeddating')
     endfunction " }}}
     nmap <silent> <C-a> :<C-u>call <SID>speeddating_or_cycle(v:count1)<CR>
     nmap <silent> <C-x> :<C-u>call <SID>speeddating_or_cycle(-v:count1)<CR>
+  elseif s:bundle.is_installed('vim-clurin')
+  else
+    nmap <C-A> <Plug>SpeedDatingUp
+    nmap <C-X> <Plug>SpeedDatingDown
   endif
   xmap <C-A> <Plug>SpeedDatingUp
   xmap <C-X> <Plug>SpeedDatingDown
