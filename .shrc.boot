@@ -270,6 +270,7 @@ if [ -n "$ZSH_NAME" ]; then
   # alias -g C="| col -bx | pbcopy-wrapper"
   alias -g C="| $COL_CMD | pbcopy-wrapper"
   # alias -g V="| view -"
+  alias -g W=" 2>&1 | iconv -c -f Shift_JIS -t UTF-8"
 fi
 
 shrc_section_title "some commands" #{{{1
