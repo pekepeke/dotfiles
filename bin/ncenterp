@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if !which nsenter >/dev/null 2>&1; then
+  echo "command not found : nsenter" >&2
+fi
+PID=$(docker ps | awk '{print $1}' | peco)
+echo $PID
+
+if [ -n "$PID" ]; then
+  DOCKER_PID=$(docker inspect --format "{{.State.Pid}}" ${PID})
+  if [ -n "$DOCKER_PID" ]; then
+    sudo nsenter --mount --uts --ipc --net --pid --target ${DOCKER_PID} /bin/bash
+  fi
+fi
+

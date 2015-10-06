@@ -28,4 +28,14 @@ docker rm `docker ps -a -q`
 docker rmi $(docker images | awk '/^<none>/ { print $3 }')
 # 特定の TAG/REPOSITORY イメージを削除
 docker rmi local/debian-ja:7.2
+
+# nsenter
+## install
+docker run --rm -v /usr/local/bin:/target jpetazzo/nsenter
+
+## exec
+docker ps 
+docker inspect --format "{{.State.Pid}}" [id]
+sudo nsenter --mount --uts --ipc --net --pid --target $PID
+
 ```
