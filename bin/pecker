@@ -293,7 +293,7 @@ EOF
     exit 1
   }
 
-  if [ -z "$DOCKER_HOST" ] ; then
+  if [ "$(expr substr $(uname -s) 1 5)" != 'Linux' -a -z "$DOCKER_HOST" ] ; then
     cat <<EOF
 "DOCKER_HOST" is not set. Please set it for your Docker host.
 
