@@ -7,6 +7,12 @@ tail -n 5000 /usr/local/apache2/logs/access_log | awk '{print $1}'  | sort | uni
 tail -n 5000 /usr/local/apache2/logs/access_log | awk '{print $2}'  | sort | uniq -c | sort -gr | head -n 4
 tail -n 5000 /usr/local/apache2/logs/access_log | awk '{print $12}' | sort | uniq -c | sort -gr | head -n 4
 tail -n 5000 /usr/local/apache2/logs/access_log | awk '{print $13}' | sort | uniq -c | sort -gr | head -n 4
+# combined
+| perl -ne 'print join("\t",  /^(.*?) (.*?) (.*?) \[(.*?)\] "(.*?)" (.*?) (.*?) "(.*?)" "(.*?)"/),  "\n"' | awk -F'\t' '{print $6}'
+| perl -ne 'print join("\t",  /^(.*?) (.*?) (.*?) \[(.*?)\] "(.*?)" (.*?) (.*?) "(.*?)" "(.*?)"/),  "\n"' | awk -F'\t' '{sum[$6]+=1}; END { for (key in sum) { print key,  sum[key] }}'
+' } }'
+| perl -pe 's/ (?:\[(.*?)\]|"(.*?)"|(\S*))/\t$1$2$3/g' | awk -F'\t' '{print $9}'
+| perl -F'\t' -nale '%h=map{split/:/, $_, 2}@F;print"$h{time}\t$h{ua}"'
 
 # stress
  # rpm -hiv http://packages.sw.be/stress/stress-1.0.2-1.el5.rf.x86_64.rpm
