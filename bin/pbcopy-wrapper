@@ -2,6 +2,14 @@
 
 clipboard() {
   local copy_cmd
+  if [ -n "$PBCOPY_SERVER" ]; then
+    local body="" buffer
+    while read buffer; do
+      body=$body$buffer"\n";
+    done
+    curl $PBCOPY_SERVER --data-urlencode body="$(echo -e $body)" >/dev/null
+    return $?
+  fi
   if type putclip >/dev/null 2>&1; then
     copy_cmd="putclip"
   elif [ -e /dev/clipboard ];then

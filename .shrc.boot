@@ -280,7 +280,8 @@ fi
 
 if [ -n "$SSH_CLIENT" ]; then
   xdebugctl() {
-    local REMOTE_HOST=$(echo $SSH_CLIENT | awk '{print $1}')
+    local REMOTE_HOST=localhost
+    [ -n "$SSH_CLIENT" ] && $(echo $SSH_CLIENT | awk '{print $1}')
     local idekey=
     case "$1" in
       phpstorm)

@@ -2251,7 +2251,7 @@ command! -nargs=0 SetPt call s:set_grep("pt")
 let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
 let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
 let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
-if s:is_win
+if s:is_win || get(g:vimrc_enabled_features, 'jvgrep', 0)
   call s:set_grep("jvgrep", "ag", "ack-grep")
 else
   call s:set_grep("ag", "jvgrep", "ack-grep")

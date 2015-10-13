@@ -1,8 +1,9 @@
 #!/bin/sh
 
-copy_cmd="xsel -b"
-[[ $(uname) == 'Darwin' ]] && copy_cmd=pbcopy
-which xclip >/dev/null 2>&1 && copy_cmd="xclip -i -selection clipboard  -loops 3"
+copy_cmd=pbcopy-wrapper
+# copy_cmd="xsel -b"
+# [[ $(uname) == 'Darwin' ]] && copy_cmd=pbcopy
+# which xclip >/dev/null 2>&1 && copy_cmd="xclip -i -selection clipboard  -loops 3"
 
 TF="/tmp/tmux_to_pbcopy-$USER"
 tmux save-buffer "$TF"
@@ -13,5 +14,5 @@ tmux save-buffer - | $copy_cmd
 # 以下はメッセージを表示するだけ。無くてもOK。
 HEAD=`head -1 "$TF"`
 TAIL=`tail -1 "$TF"`
-tmux display-message "Copy:  $HEAD  -  $TAIL"
+tmux display-message "Copy:  $HEAD ... $TAIL"
 
