@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# https://github.com/mailhog/MailHog/releases
+# url example = https://github.com/mailhog/MailHog/releases/download/v0.1.8/MailHog_linux_amd64
+ver="v0.1.8"
+platform="$(uname -s | tr A-Z a-z)"
+if [ "$(uname -i)" == x86_64 ]; then
+  binary=amd64
+else
+  binary=386
+fi
+
+URL="https://github.com/mailhog/MailHog/releases/download/${ver}/MailHog_${platform}_${binary}"
+
+curl -L "$URL" -o "mailhog"
+chmod +x mailhog
+

@@ -32,6 +32,15 @@ if [ $(id -u) = $(id -u root) ]; then
 fi
 ```
 
+## 大文字・小文字変換
+
+```
+## toUpperCase
+tr a-z A-Z
+## toLowerCase
+tr A-Z a-z
+```
+
 ## 一行ずつ処理
 
 ```bash
