@@ -7532,29 +7532,6 @@ endif
 
 " vimproc {{{2
 if s:bundle.is_installed('vimproc.vim')
-  function! s:setup_vimproc_dll() " {{{3
-    let path = ""
-    let vimproc_root = s:bundle.get('vimproc.vim').path
-    if s:is_win
-      if has('unix')
-        let path = expand(vimproc_root . '/autoload/proc_cygwin.dll')
-      elseif has('win64')
-        let path = expand('$VIM/plugins/vimproc/autoload/') . 'vimproc_win64.dll'
-      elseif has('win32')
-        let path = expand('$VIM/plugins/vimproc/autoload/') . 'vimproc_win32.dll'
-      endif
-    elseif s:is_mac
-      let path = expand(vimproc_root . '/autoload/proc_mac.so')
-    else
-      let path = expand(vimproc_root . '/autoload/proc_unix.so')
-    endif
-    if filereadable(path)
-      let g:vimproc_dll_path = path
-      let g:vimproc#dll_path = path
-    endif
-  endfunction " }}}
-
-  call s:setup_vimproc_dll()
 endif
 
 " vimshell {{{2
