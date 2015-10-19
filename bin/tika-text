@@ -3,5 +3,8 @@
 CWD=`pwd`
 PRGDIR=`cd $(dirname "$0");pwd`
 cd "$CWD"
+source $PRGDIR/.lib/tika/_functions
 
-java -jar $PRGDIR/.lib/tika/tika-app-1.7.jar --text "$@"
+required_download "$@"
+
+java -jar $JAR --text "$@"

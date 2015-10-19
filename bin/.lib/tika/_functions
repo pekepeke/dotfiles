@@ -1,0 +1,12 @@
+
+JAR="$(ls $PRGDIR/.lib/tika/tika*.jar | sort -r --version-sort | head -1)"
+
+required_download() {
+  URL="http://ftp.jaist.ac.jp/pub/apache/tika/tika-app-1.10.jar"
+  if [ "$1" == "--download" ]; then
+    curl -L $URL -o $(basename $URL)
+    JAR="$PRGDIR/.lib/tika/$(ls $PRGDIR/.lib/tika/tika*.jar | sort -r --version-sort | head -1)"
+    return 1
+  fi
+  return 0
+}
