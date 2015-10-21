@@ -3,12 +3,6 @@
 # [ $SHLVL -gt 1 ] && return 0
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
 
-if [ -f $HOME/.shrc.local ] ; then
-  source $HOME/.shrc.local
-else
-  touch $HOME/.shrc.local
-fi
-
 shrc_section_title "ostype" #{{{1
 export TMUX_DEFAULT_COMMAND=$SHELL
 case $OSTYPE in
@@ -279,8 +273,11 @@ if [ "$SHELL" != "/bin/sh" ]; then
 fi
 
 xdebugctl() {
-  local REMOTE_HOST=localhost
-  [ -n "$SSH_CLIENT" ] && REMOTE_HOST=$(echo $SSH_CLIENT | awk '{print $1}')
+  local REMOTE_HOST=$REMOTE_HOST
+  if [ -z "$REMOTE_HOST" ]; then
+    REMOTE_HOST=localhost
+    [ -n "$SSH_CLIENT" ] && REMOTE_HOST=$(echo $SSH_CLIENT | awk '{print $1}')
+  fi
   local idekey=
   case "$1" in
     phpstorm)
@@ -320,6 +317,13 @@ is_exec ssh-log && alias ssh='ssh-log'
 # if [ x$TERM = xscreen ]; then
   # alias ssh=ssh_screen
 # fi
+
+shrc_section_title "source .local" #{{{1
+if [ -f $HOME/.shrc.local ] ; then
+  source $HOME/.shrc.local
+else
+  touch $HOME/.shrc.local
+fi
 
 # __END__ {{{1
 # vim: fdm=marker sw=2 ts=2 ft=zsh et:
