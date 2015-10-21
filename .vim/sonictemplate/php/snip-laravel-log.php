@@ -26,6 +26,11 @@ Event::listen('illuminate.query', function ($query, $bindings, $time, $name)
                 $bindings[$i] = "'$binding'";
             }
         }
+        // for MongoDate
+        $query = preg_replace_callback('!:{"sec":(\d+),"usec":(\d+)}!', function($m) {
+            $str = preg_replace('!(\+[\d:]+|Z)$!', sprintf('.%03d\1', $m[2]), date(DATE_ISO8601, $m[1]));
+            return sprintf(':ISODate("%s")', $str);
+        }, $query);
         $query = str_replace(['%', '?'], array('%%', '%s'), $query);
         $query = vsprintf($query, $bindings);
         $sqlLogger->info($query, $data);

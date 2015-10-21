@@ -278,33 +278,31 @@ if [ "$SHELL" != "/bin/sh" ]; then
   source ~/.shrc.d/cdtask
 fi
 
-if [ -n "$SSH_CLIENT" ]; then
-  xdebugctl() {
-    local REMOTE_HOST=localhost
-    [ -n "$SSH_CLIENT" ] && $(echo $SSH_CLIENT | awk '{print $1}')
-    local idekey=
-    case "$1" in
-      phpstorm)
-        export XDEBUG_CONFIG="remote_host=$REMOTE_HOST idekey=phpstorm remote_autostart=1"
-        ;;
-      netbeans)
-        export XDEBUG_CONFIG="remote_host=$REMOTE_HOST idekey=netbeans-xdebug remote_autostart=1"
-        ;;
-      eclipse)
-        export XDEBUG_CONFIG="remote_host=$REMOTE_HOST idekey=ECLIPSE_DBGP remote_autostart=1"
-        ;;
-      npp*)
-        export XDEBUG_CONFIG="remote_host=$REMOTE_HOST idekey=npp-plus remote_autostart=1 remote_connect_back=1"
-        ;;
-      *)
-        # unalias php
-        export XDEBUG_CONFIG=""
-        ;;
-    esac
-    echo XDEBUG_CONFIG=${XDEBUG_CONFIG}
-  }
-  # xdebugctl >/dev/null
-fi
+xdebugctl() {
+  local REMOTE_HOST=localhost
+  [ -n "$SSH_CLIENT" ] && REMOTE_HOST=$(echo $SSH_CLIENT | awk '{print $1}')
+  local idekey=
+  case "$1" in
+    phpstorm)
+      export XDEBUG_CONFIG="remote_host=$REMOTE_HOST idekey=phpstorm remote_autostart=1"
+      ;;
+    netbeans)
+      export XDEBUG_CONFIG="remote_host=$REMOTE_HOST idekey=netbeans-xdebug remote_autostart=1"
+      ;;
+    eclipse)
+      export XDEBUG_CONFIG="remote_host=$REMOTE_HOST idekey=ECLIPSE_DBGP remote_autostart=1"
+      ;;
+    npp*)
+      export XDEBUG_CONFIG="remote_host=$REMOTE_HOST idekey=npp-plus remote_autostart=1 remote_connect_back=1"
+      ;;
+    *)
+      # unalias php
+      export XDEBUG_CONFIG=""
+      ;;
+  esac
+  echo XDEBUG_CONFIG=${XDEBUG_CONFIG}
+}
+# xdebugctl >/dev/null
 
 shrc_section_title "GNU screen setting" #{{{1
 if is_exec tscreen; then
