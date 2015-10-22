@@ -269,6 +269,20 @@ function! my#tsv#to_flat_json() range "{{{2
   call my#output_to_buffer('__TSV__', texts)
 endfunction
 
+
+function! my#tsv#excel_tsv_normalize_vlookup()
+  let saved_view = winsaveview()
+  try
+    %s!\t0\t!\t\t!g
+    %s!\t0\t!\t\t!g
+    %s!^0\t!\t!g
+    %s!\t0$!\t!g
+    %s!#N/A!!g
+  finally
+    call winrestview(saved_view)
+  endtry
+endfunction
+
 function! s:zip(...)
   let item = map(range(min(map(copy(a:000), 'len(v:val)'))), "map(copy(a:000), 'v:val['.v:val.']')")
   let hash = {}

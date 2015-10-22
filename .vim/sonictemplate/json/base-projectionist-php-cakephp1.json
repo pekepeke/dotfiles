@@ -1,0 +1,22 @@
+{
+  "cake/*.php": { "type": "core" },
+  "vendors/*.php": { "type": "vendors" },
+  "plugins/*.php": { "type": "plugins" },
+  "app/config/*.php": { "type": "configs" },
+  "app/controllers/*.php": { "type": "controllers" },
+  "app/libs/*.php": { "type": "libs" },
+  "app/locale/*.php": { "type": "locales" },
+  "app/models/*.php": { "type": "models" },
+  "app/plugins/*.php": { "type": "plugins" },
+  "app/vendors/*.php": { "type": "vendors" },
+  "app/views/*.ctp": { "type": "views" },
+  "app/views/*.php": { "type": "views" },
+  "app/views/*.tpl": { "type": "views" },
+  "app/views/*.twig": { "type": "views" },
+  "app/webroot/*.html": { "type": "html" },
+  "app/webroot/*.js": { "type": "javascripts" },
+  "app/webroot/*.coffee": { "type": "coffescripts" },
+  "app/webroot/*.css": { "type": "styles" },
+  "README.md": { "type": "doc" }
+}
+

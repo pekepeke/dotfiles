@@ -8024,6 +8024,7 @@ command! -range Tsvtosqlupdate     <line1>,<line2>call my#tsv#to_sqlupdate()
 command! -range Tsvtocsv           <line1>,<line2>call my#tsv#to_csv()
 command! -range Tsvtojson          <line1>,<line2>call my#tsv#to_json()
 command! -range Tsvtoflatjson      <line1>,<line2>call my#tsv#to_flat_json()
+command! -nargs=0 ExcelTsvNormalizeVlookup call my#tsv#excel_tsv_normalize_vlookup()
 
 " MySQL {{{3
 command! -nargs=0 -range TMY <line1>,<line2>call my#mysql#to_tsv()
