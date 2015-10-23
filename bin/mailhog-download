@@ -2,15 +2,13 @@
 
 # https://github.com/mailhog/MailHog/releases
 # url example = https://github.com/mailhog/MailHog/releases/download/v0.1.8/MailHog_linux_amd64
-ver="v0.1.8"
-platform="$(uname -s | tr A-Z a-z)"
-if [ "$(uname -i)" == x86_64 ]; then
-  binary=amd64
-else
-  binary=386
-fi
+pwd=$(pwd)
+root=$(cd $(basename $0); pwd)
+. $root/.lib/github_go.sh
 
-URL="https://github.com/mailhog/MailHog/releases/download/${ver}/MailHog_${platform}_${binary}"
+PACKAGE="mailhog/MailHog"
+VER="v0.1.8"
+URL=$(get_release_binary_url "$PACKAGE" "$VER")
 
 curl -L "$URL" -o "mailhog"
 chmod +x mailhog

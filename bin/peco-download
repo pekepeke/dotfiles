@@ -1,14 +1,14 @@
 #!/bin/bash
 
+pwd=$(pwd)
+root=$(cd $(basename $0); pwd)
+. $root/.lib/github_go.sh
+
 PACKAGE="peco/peco"
-ARCH=$(uname -i)
-KERNEL=$(uname -s | tr [A-Z] [a-z])
 VER=0.3.4
 EXT=zip
 
-[ "$ARCH" = "x86_64" ] && ARCH=amd64
-[ "$KERNEL" = "linux" ] && EXT=tar.gz
-URL="https://github.com/${PACKAGE}/releases/download/v${VER}/$(basename $PACKAGE)_${KERNEL}_${ARCH}.${EXT}"
+URL=$(get_release_binary_url "$PACKAGE" "$VER" "$EXT")
 
 if [ $EXT = zip ] ; then
   curl -L "${URL}" | unzip
