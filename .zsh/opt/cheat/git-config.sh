@@ -13,4 +13,6 @@ git config --global alias.ci commit
 git config --global alias.ca commit --amend
 git config --global alias.br branch
 
+## msg : SSL certificate problem,  verify that the CA cert is OK. Details
+got config --local http.sslVerify false
 
