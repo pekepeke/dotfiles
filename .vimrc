@@ -1560,6 +1560,7 @@ NeoBundle 'Shougo/neomru.vim', {'autoload': {
 \ 'unite_sources': ['file_mru', 'directory_mru',
 \   'neomru/file', 'neomru/directory']
 \}}
+NeoBundle 'Shougo/neoyank.vim'
 NeoBundleLazy 'thinca/vim-unite-history', {'autoload':{
 \ 'unite_sources': ['history/command', 'history/search'],
 \ }}

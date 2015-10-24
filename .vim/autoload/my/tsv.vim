@@ -270,14 +270,15 @@ function! my#tsv#to_flat_json() range "{{{2
 endfunction
 
 
-function! my#tsv#excel_tsv_normalize_vlookup()
+function! my#tsv#excel_tsv_normalize_vlookup() "{{{2
   let saved_view = winsaveview()
   try
-    %s!\t0\t!\t\t!g
-    %s!\t0\t!\t\t!g
-    %s!^0\t!\t!g
-    %s!\t0$!\t!g
-    %s!#N/A!!g
+    silent! %s!\t0\t!\t\t!g
+    silent! %s!\t0\t!\t\t!g
+    silent! %s!^0\t!\t!g
+    silent! %s!\t0$!\t!g
+    silent! %s!#N/A!!g
+    silent! %s!^0$!!g
   finally
     call winrestview(saved_view)
   endtry
