@@ -2750,6 +2750,20 @@ if s:bundle.is_installed('vim-clurin')
   nmap - <Plug>(clurin-prev)
   vmap + <Plug>(clurin-next)
   vmap - <Plug>(clurin-prev)
+  function! VimrcCtrlAX(cnt) abort
+    let fallback = a:cnt > 0 ? "\<C-a>" : "\<C-x>"
+    if !s:bundle.is_installed('vim-speeddating')
+      execute 'normal!' abs(a:cnt) . fallback
+      return
+    endif
+    let speeddating = "\<Plug>SpeedDating" . (a:cnt > 0 ? "Up" : "Down")
+
+    let line = getline('.')
+    execute 'normal' abs(a:incr) . speeddating
+    if line == getline('.')
+      execute 'normal!' abs(a:cnt) . fallback
+    endif
+  endfunction
   let g:clurin = {
     \ '-': {
     \   'def': [
@@ -2764,6 +2778,7 @@ if s:bundle.is_installed('vim-clurin')
     \     ['true', 'false'],
     \     ['月','火','水','木','金','土','日'],
     \   ],
+    \   'nomatch': function('VimrcCtrlAX'),
     \ },
     \ 'php': {
     \   'def': [
@@ -3532,6 +3547,8 @@ if s:bundle.tap('vim-speeddating')
     endfunction " }}}
     nmap <silent> <C-a> :<C-u>call <SID>speeddating_or_incact(v:count1)<CR>
     nmap <silent> <C-x> :<C-u>call <SID>speeddating_or_incact(-v:count1)<CR>
+    xmap <C-A> <Plug>SpeedDatingUp
+    xmap <C-X> <Plug>SpeedDatingDown
 
   elseif g:vimrc_enabled_plugins.cycle
     function! s:speeddating_or_cycle(incr) "{{{3
@@ -3543,13 +3560,15 @@ if s:bundle.tap('vim-speeddating')
     endfunction " }}}
     nmap <silent> <C-a> :<C-u>call <SID>speeddating_or_cycle(v:count1)<CR>
     nmap <silent> <C-x> :<C-u>call <SID>speeddating_or_cycle(-v:count1)<CR>
+    xmap <C-A> <Plug>SpeedDatingUp
+    xmap <C-X> <Plug>SpeedDatingDown
   elseif s:bundle.is_installed('vim-clurin')
   else
     nmap <C-A> <Plug>SpeedDatingUp
     nmap <C-X> <Plug>SpeedDatingDown
+    xmap <C-A> <Plug>SpeedDatingUp
+    xmap <C-X> <Plug>SpeedDatingDown
   endif
-  xmap <C-A> <Plug>SpeedDatingUp
-  xmap <C-X> <Plug>SpeedDatingDown
   nmap d<C-A> <Plug>SpeedDatingNowUTC
   nmap d<C-X> <Plug>SpeedDatingNowLocal
 

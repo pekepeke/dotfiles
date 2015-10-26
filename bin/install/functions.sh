@@ -237,6 +237,7 @@ install_env() {
     echo "illegal arguments." 1>&2
     return 1
   fi
+  # echo $repo_url
   if [ x"$repo_url" = x -a x"$install_cmd" = x ]; then
     echo "installer not found : $llenv" 1>&2
     return 2
