@@ -97,6 +97,8 @@ php5-sqlite
 php5-xdebug
 php5-xhprof
 
+luajit
+libluajit
 libluajit-5.1-dev
 libssl-dev
 libreadline-dev
