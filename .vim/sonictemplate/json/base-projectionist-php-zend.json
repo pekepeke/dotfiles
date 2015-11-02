@@ -1,0 +1,22 @@
+{
+  "Gemfile": { "type" : "configs"},
+  "Gruntfile.coffee": { "type" : "configs"},
+  "composer.json": { "type" : "configs"},
+  "application/Bootstrap.php": { "type" : "routes"},
+  "application/configs/*.php": { "type" : "configs"},
+  "application/configs/*.ini": { "type" : "configs"},
+  "application/controllers/*.php": { "type" : "controllers"},
+  "application/models/*.php": { "type" : "models"},
+  "application/views/helper/*.php": { "type" : "helpers"},
+  "application/views/scripts/*.php": { "type" : "views"},
+  "application/views/scripts/*.html": { "type" : "views"},
+  "application/views/layouts/*.php": { "type" : "layouts"},
+  "application/views/layouts/*.html": { "type" : "layouts"},
+  "public/js/*.js": { "type" : "scripts"},
+  "public/css/*.css": { "type" : "styles"},
+  "tests/*.php": {"type": "tests"},
+  "library/*.php": { "type" : "libs" },
+  "vendors/*.php": { "type" : "vendors"},
+  "README.md": { "type": "doc" }
+}
+

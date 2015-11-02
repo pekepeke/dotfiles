@@ -109,8 +109,10 @@ ssh_before "$@"
 window_name=
 pane_title=
 if [ -n "$TMUX" ]; then
-  window_name=$(tmux display -p '#{window_name}')
-  pane_title=$(tmux display -p '#{pane_title}')
+  # window_name=$(tmux display -p '#{window_name}')
+  # pane_title=$(tmux display -p '#{pane_title}')
+  window_name=$(tmux display -p '#W')
+  pane_title=$(tmux display -p '#P')
   # local_command='tmux rename-window $(echo "%r@%n(%h:%p)")'
   # local_command='printf "\033]2;%s\033\\\" $(echo "%r@%n(%h:%p))'
   # printf '\033]2;%s\033\\' 'title goes here'
@@ -126,8 +128,8 @@ else
 fi
 
 if [ -n "$TMUX" ]; then
-  tmux rename-window $window_name
-  printf "\033]2;%s\033\\" "${pane_title}"
+  [ -n "${window_name}" ] && tmux rename-window ${window_name}
+  [ -n "${pane_title}" ] && printf "\033]2;%s\033\\" "${pane_title}"
   # tmux set-window-option -u automatic-rename
 fi
 
