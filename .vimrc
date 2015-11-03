@@ -348,14 +348,16 @@ set timeoutlen=1000
 set ttimeoutlen=100
 set updatetime=200
 
-set showmatch                  " 対応する括弧の表示
-set showcmd                    " 入力中のコマンドを表示
+set pumheight=10
+set showmatch
+set matchtime=1
+set showcmd
 set showfulltag
-set backspace=indent,eol,start " BSでなんでも削除
+set backspace=indent,eol,start
 set nolinebreak
 set textwidth=1000
 set formatoptions& formatoptions+=mM
-set whichwrap=b,s,h,l,<,>,[,]  " 行頭・行末間移動を可能に
+set whichwrap=b,s,h,l,<,>,[,]
 if exists('&colorcolumn') | set colorcolumn=+1 | endif
 set splitbelow                 " 横分割は下に
 set splitright                 " 縦分割は右に
@@ -1434,6 +1436,7 @@ NeoBundle 'vim-scripts/sequence'
 
 " haskell {{{4
 if get(g:vimrc_enabled_features, "haskell", 0)
+  NeoBundle 'itchyny/vim-haskell-indent'
   NeoBundleLazy 'dag/vim2hs', {'autoload':{
   \ 'filetypes': ['haskell'],
   \ }}

@@ -22,7 +22,8 @@ Host *
   Protocol 2
   GSSAPIAuthentication no
   ControlMaster auto
-  ControlPath /tmp/%r@%h:%p
+  ControlPath ~/.ssh/master-%r@%h:%p.socket
+  ControlPersist 10m
   # RemoteForward 52698 127.0.0.1:52698 # for remote edit(subl, mate2)
 
 Host github.com
@@ -58,7 +59,7 @@ Host *-ec2-
 #    StrictHostKeyChecking no
 #    UserKnownHostsFile /dev/null
 
-#Host name
+# Host name
 #  HostName xxx.xxx.xxx.xxx
 #  Port 22
 #  User hoge
@@ -95,6 +96,13 @@ Host *-ec2-
 #   Protocol 2
 #   ForwardAgent yes
 #   DynamicForward 1080
+
+# ssh -N -f -D 10080 user@example.com
+# Host example tunnel
+#   HostName example.com
+#   User user
+# Host tunnel
+#   DynamicForward 10080
 
 # Host gh-private
 #     HostName github.com

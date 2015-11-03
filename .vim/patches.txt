@@ -1,0 +1,3 @@
+# https://bitbucket.org/k_takata/vim-ktakata-mq/src/
+# https://bitbucket.org/koron/vim-kaoriya-patches/src/
+https://bitbucket.org/koron/vim-kaoriya-patches/raw/6658116d59073a4471a83fea41a0791718773a96/X010-autoload_cache.diff
