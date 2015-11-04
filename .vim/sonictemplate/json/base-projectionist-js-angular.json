@@ -1,0 +1,20 @@
+{
+  "app/scripts/controllers/*.js": {
+    "type": "controller",
+    "alternate": "test/spec/controllers/{}.js"
+  },
+  "app/scripts/directives/*.js": {
+    "type": "directive",
+    "alternate": "test/spec/directives/{}.js"
+  },
+  "app/scripts/filters/*.js": {
+    "type": "filter",
+    "alternate": "test/spec/filters/{}.js"
+  },
+  "app/scripts/services/*.js": {
+    "type": "service",
+    "alternate": "test/spec/services/{}.js"
+  },
+  "app/scripts/*.js": { "type": "script" },
+  "app/scripts/app.js": { "type": "script" }
+}

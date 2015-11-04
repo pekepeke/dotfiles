@@ -1,0 +1,23 @@
+{
+  "web/models/*.ex": {
+    "type": "model"
+  }
+  "web/controllers/*_controller.ex": {
+    "type": "controller"
+  },
+  "web/views/*_view.ex": {
+    "type": "view"
+  },
+  "web/templates/**/*.html.eex": {
+    "type": "template"
+  },
+  "web/channels/*_channel.ex": {
+    "type": "channel",
+  },
+  "web/channels/*_socket.ex": {
+    "type": "socket",
+  },
+  "web/router.ex": {
+    "type": "router"
+  }
+}

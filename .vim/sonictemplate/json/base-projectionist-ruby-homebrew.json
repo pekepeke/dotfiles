@@ -1,0 +1,20 @@
+{
+  "Library/Formula/*.rb": {
+    "command": "formula",
+    "alternate": "Library/Homebrew/formula.rb",
+    "template": ["class {capitalize|camelcase} < Formula", "end"]
+  },
+  "Library/Homebrew/cmd/*.rb": {
+    "command": "cmd"
+  },
+  "Library/Contributions/cmd/brew-*.rb": {
+    "command": "cmd"
+  },
+  "Library/Contributions/cmd/brew-*": {
+    "command": "cmd"
+  },
+  "Library/Contributions/manpages/brew.1.md": {
+    "command": "man",
+    "alternate": "share/man/man1/brew.1"
+  }
+}

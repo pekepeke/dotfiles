@@ -1186,6 +1186,7 @@ if has('python') || has('python3')
   \ 'filetypes': ['html','javascript','css','sass','scss','less','slim','stylus'],
   \ }}
 endif
+" NeoBundle 'gorodinskiy/vim-coloresque'
 
 NeoBundle 'hail2u/vim-css3-syntax'
 NeoBundle 'npacker/vim-css3complete'
