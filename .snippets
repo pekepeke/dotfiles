@@ -60,3 +60,8 @@ tail -F access.ltsv | ltsv2json | jq 'select(.status >= "500") | {req: .req, ref
 # gzip
 # ruby -e 'puts "-name " + %w[html css js ttf woff svg eot].map{ |ext| "\"*.#{ext}\"" }.join(" -o -name ")'
 find public/ -name "*.html" -o -name "*.css" -o -name "*.js" -o -name "*.ttf" -o -name "*.woff" -o -name "*.svg" -o -name "*.eot" | xargs -Ifile sh -c "gzip --best -c file > file.gz"
+
+# ctags
+ctags -R --languages=c,c++
+ctags -R --languages=-make
+
