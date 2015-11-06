@@ -216,7 +216,9 @@ function! s:exe_if_diff(s)
 endfunction
 command! -nargs=0 DiffQuit call s:exe_if_diff('diffoff')
 command! -nargs=0 DQ call s:exe_if_diff('diffoff')
-MyAutoCmd InsertLeave call s:exe_if_diff('diffupdate')
+if has('user_commands')
+  MyAutoCmd InsertLeave call s:exe_if_diff('diffupdate')
+endif
 
 " }}}
 
@@ -502,16 +504,24 @@ syntax enable
 set background=dark
 
 if exists(':NeoBundle')
-  MyAutoCmd GUIEnter * colorscheme vividchalk
-  colorscheme vividchalk
+  if has('gui_running')
+    MyAutoCmd GUIEnter * colorscheme vividchalk
+  else
+    colorscheme vividchalk
+  endif
 else
-  MyAutoCmd GUIEnter * colorscheme desert256
-  colorscheme desert256
+  if has('gui_running')
+    MyAutoCmd GUIEnter * colorscheme desert256
+  else
+    colorscheme desert256
+  endif
 endif
 
 " some autocmd {{{1
-MyAutoCmd FileType txt,rst,markdown,gitcommit setlocal spell
-if !s:is_win
+if has('user_commands')
+  MyAutoCmd FileType txt,rst,markdown,gitcommit setlocal spell
+endif
+if !s:is_win && has('user_commands')
   MyAutoCmd BufWritePost *
     \ if getline(1) =~# '^#!'
     \ | exe 'silent !chmod +x %'
@@ -523,7 +533,9 @@ function! s:auto_mkdir(dir, force) "{{{
     call mkdir(iconv(a:dir, &encoding, &termencoding), 'p')
   endif
 endfunction "}}}
-MyAutoCmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
+if has('user_commands')
+  MyAutoCmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
+endif
 
 " plugin settings {{{1
 let g:vimrc_enabled_plugins = {}

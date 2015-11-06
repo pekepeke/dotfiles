@@ -1,4 +1,10 @@
 ## よく忘れる
+### cvs2cl.pl
+```
+cvs2cl.pl -b -t --stdout [file]
+cvs2cl.pl --stdout [file]
+```
+
 ### 特定リビジョンのファイル内容の出力
 ```
 cvs update -p -r リビジョン ファイル
@@ -6,7 +12,7 @@ cvs update -p -r リビジョン ファイル
 
 ### ローカル更新を無視する
 ```
-cvs update -C filepath
+cvs update -C -l filepath
 ```
 
 ## checkout
