@@ -1,3 +1,12 @@
+## クエリ調査
+
+```
+SHOW VARIABLES LIKE 'general_%';
+SET GLOBAL general_log = 'ON';
+SET GLOBAL general_log = 'OFF';
+```
+
+
 ## テーブル、カラムの調査
 
 ```
