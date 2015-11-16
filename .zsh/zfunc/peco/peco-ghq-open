@@ -6,7 +6,7 @@
     BUFFER="$(_get_os_gui_shell) $(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
     zle accept-line
   fi
-  zle -R
+  zle redisplay
   # zle -R -c
 # }
 # zle -N peco-ghq-open

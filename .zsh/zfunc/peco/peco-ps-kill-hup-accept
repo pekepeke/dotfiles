@@ -5,7 +5,7 @@
     BUFFER="kill -HUP $pid"
     zle accept-line
   fi
-  zle -R
+  zle redisplay
   # zle -R -c
 # }
 # zle -N peco-ps-kill-hup-accept

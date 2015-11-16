@@ -6,7 +6,7 @@
       LBUFFER="cd $selected"
       CURSOR=$#LBUFFER
     fi
-    zle -R
+    zle redisplay
     # zle -R -c
   fi
 # }

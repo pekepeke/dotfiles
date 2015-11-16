@@ -6,6 +6,6 @@
     BUFFER="ssh -N -L 13306:localhost:3306 $host"
     CURSOR=$#BUFFER
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-ssh-tunnel-replace-buffer

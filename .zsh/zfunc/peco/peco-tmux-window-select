@@ -5,6 +5,6 @@
     BUFFER="tmux select-window -t ${selected}"
     zle accept-line
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-tmux-window-select

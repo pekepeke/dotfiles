@@ -3,6 +3,6 @@
   if [ -n "$selected" ]; then
     zle ${selected}
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-zsh-keybinds

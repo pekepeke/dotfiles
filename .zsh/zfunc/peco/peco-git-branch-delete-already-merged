@@ -4,6 +4,6 @@
     BUFFER="git branch -d $selected"
     zle accept-line
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-git-branch-delete-already-merged

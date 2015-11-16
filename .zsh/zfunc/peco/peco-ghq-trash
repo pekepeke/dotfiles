@@ -33,6 +33,6 @@
       zle accept-line
     fi
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-ghq-trash

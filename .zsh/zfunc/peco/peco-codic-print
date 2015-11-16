@@ -5,6 +5,6 @@
   if [ -n "$selected" ]; then
     cat $codic_dir/dict/naming-translation.csv | grep "$selected" | awk -F , '{print "parts: " $3; print "mean: " $4; print "note: " $5 "\n";}'
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-codic-print

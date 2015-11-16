@@ -7,6 +7,6 @@
     CURSOR=$#BUFFER
     # zle accept-line
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-zshfiles-insert-at-pos

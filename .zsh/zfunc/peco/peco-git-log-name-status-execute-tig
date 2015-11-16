@@ -5,6 +5,6 @@
     BUFFER="tig $(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
     zle accept-line
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-git-log-name-status-execute-tig

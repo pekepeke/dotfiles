@@ -1,15 +1,20 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # function peco-history-replace-buffer() {
-  local tac_cmd
-  which gtac &> /dev/null && tac_cmd=gtac || tac_cmd=tac
-  local selected="$($tac_cmd $HISTFILE | sed 's/^: [0-9]*:[0-9]*;//' \
-    | peco --query "$LBUFFER")"
+  # local tac_cmd
+  # which gtac &> /dev/null && tac_cmd=gtac || tac_cmd=tac
+  # local selected="$($tac_cmd $HISTFILE | sed 's/^: [0-9]*:[0-9]*;//' \
+  #   | peco --query "$LBUFFER")"
+  local sep='¶'
+  local buffer="$(
+    history -nr $'\n'=$sep 1 | \
+      peco --query "$LBUFFER" | \
+      sed s/$sep/\\$'\n'/g )"
 
-  if [ x"${selected}" != x ]; then
-    BUFFER="${selected}"
+  if [ x"${buffer}" != x ]; then
+    BUFFER="${buffer}"
     CURSOR=$#BUFFER         # move cursor
   fi
-  zle -R
+  zle redisplay
   # zle -R -c
 # }
 # zle -N peco-history-replace-buffer

@@ -8,7 +8,7 @@
     CURSOR=$#BUFFER
     # zle accept-line
   fi
-  zle -R
+  zle redisplay
   # zle -R -c
 # }
 # zle -N peco-vhost-fqdn-insert-at-pos

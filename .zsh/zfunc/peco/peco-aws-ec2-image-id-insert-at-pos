@@ -7,6 +7,6 @@
     BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
     CURSOR=$#BUFFER
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-aws-ec2-image-id-insert-at-pos

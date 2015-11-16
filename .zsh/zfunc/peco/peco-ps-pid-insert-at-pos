@@ -6,7 +6,7 @@
   if [ x"${pid}" != x ];then
     BUFFER="${BUFFER[1,$pos]}${pid}${BUFFER[$pos,-1]}"
   fi
-  zle -R
+  zle redisplay
   # zle -R -c
 # }
 # zle -N peco-ps-pid-insert-at-pos

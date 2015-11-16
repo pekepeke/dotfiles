@@ -12,7 +12,7 @@
     CURSOR=$#BUFFER
     # zle accept-line
   fi
-  zle -R
+  zle redisplay
   # zle -R -c
 # }
 # zle -N peco-logfiles-insert-at-pos

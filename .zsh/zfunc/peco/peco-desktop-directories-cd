@@ -5,6 +5,6 @@
     BUFFER="cd ${selected}"
     zle accept-line
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-desktop-directories-cd

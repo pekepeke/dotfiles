@@ -7,7 +7,7 @@
       BUFFER="git rebase -i ${commit_hash}"
       CURSOR=$#BUFFER
     fi
-    zle -R
+    zle redisplay
     # zle -R -c
   fi
 # }

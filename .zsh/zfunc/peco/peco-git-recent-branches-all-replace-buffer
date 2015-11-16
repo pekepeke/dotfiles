@@ -11,7 +11,7 @@
     BUFFER="git checkout${opt}${selected_branch}"
     CURSOR=$#BUFFER
   fi
-  zle -R
+  zle redisplay
   # zle -R -c
 # }
 # zle -N peco-git-recent-branches-all-replace-buffer

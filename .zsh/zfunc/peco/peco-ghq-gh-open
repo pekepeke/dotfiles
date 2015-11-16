@@ -4,6 +4,6 @@
     BUFFER="gh-open $(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
     zle accept-line
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-ghq-gh-open

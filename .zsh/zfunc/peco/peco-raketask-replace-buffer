@@ -12,7 +12,7 @@
     BUFFER="${bundle_exec} $(echo $task | tr "[:cntrl:]" " ")"
     CURSOR=$#BUFFER
   fi
-  zle -R
+  zle redisplay
   # zle -R -c
 # }
 # zle -N peco-raketask-replace-buffer

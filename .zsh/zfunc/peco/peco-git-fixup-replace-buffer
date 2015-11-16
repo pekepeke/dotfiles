@@ -5,7 +5,7 @@
     if [ -n "$commit_hash" ]; then
       BUFFER="git commit --fixup ${commit_hash}"
     fi
-    zle -R
+    zle redisplay
     # zle -R -c
   fi
 # }

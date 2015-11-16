@@ -35,7 +35,7 @@ osx-peco-select-gui-window() {
   if [ -n "${selected}" ]; then
     osx-activate-window $selected
   fi
-  zle -R
+  zle redisplay
 }
 
 linux-peco-select-gui-window() {
@@ -45,7 +45,7 @@ linux-peco-select-gui-window() {
       wmctrl -a -i $id
     done
   fi
-  zle -R
+  zle redisplay
 }
 
 # peco-gui-window-select() {

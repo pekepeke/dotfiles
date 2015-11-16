@@ -7,6 +7,6 @@ local selected="$(find ~ -type d -maxdepth 1 | peco --query="$LBUFFER")"
     # BUFFER="_os_gui_shell ${selected}"
     # zle accept-line
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-home-directories-open

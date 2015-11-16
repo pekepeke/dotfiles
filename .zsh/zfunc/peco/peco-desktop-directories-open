@@ -7,6 +7,6 @@
     _os_gui_shell "${selected}"
     # zle accept-line
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N peco-desktop-directories-open

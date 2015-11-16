@@ -5,7 +5,7 @@
   if [ x"${cclip}" != x ]; then
     echo "$cclip" | pbcopy-wrapper
   fi
-  zle -R
+  zle redisplay
   # zle -R -c
 # }
 # zle -N peco-clipmenu-copy

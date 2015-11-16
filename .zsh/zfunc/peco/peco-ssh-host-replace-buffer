@@ -5,7 +5,7 @@
     BUFFER="ssh $host"
     CURSOR=$#BUFFER
   fi
-  zle -R
+  zle redisplay
   # zle -R -c
 #}
 #zle -N peco-ssh-host-replace-buffer
