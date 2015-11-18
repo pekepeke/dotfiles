@@ -1,4 +1,29 @@
 ## よく忘れる
+### マークの意味
+
+
+
+M dot.cshrc            : ワークスペースで編集中 (Modified)
+U benkyo7.mgp          : 更新 (Updated)、または追加された
+P benkyo7.html         : pserver 利用での更新 (Pserver)
+A dot.emacs            : 時間 commit 時に追加される (Added)
+R ascii.log            : 次回 commit 時に削除される (Removed) 
+? verbose.log          : リポジトリに含まれていない
+
+U	最新状態(Up to date)に更新された
+P	Patchが当てられた(結果は U と同じ)
+M	修正(Modify)された
+A	追加(Add)された(必要なら commit すべき)
+R	削除(Remove)された
+C	衝突(Conflict)が起きている
+?	リポジトリにないファイル
+
+### 簡易集計
+
+```
+awk 'length($1) == 1 {sum[$1]+=1}; END { for (key in sum) { print key,  sum[key] } }' fuga.log
+```
+
 ### cvs2cl.pl
 ```
 cvs2cl.pl -b -t --stdout [file]
