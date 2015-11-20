@@ -1,0 +1,2 @@
+RUN openssl req -new -newkey rsa:2048 -sha1 -x509 -nodes -set_serial 1 -days 1825 -subj "/C=JP/ST=Osaka/L=Tokyo City/CN=*.com" -out ssl.pem  -keyout ssl.key
+
