@@ -1,5 +1,10 @@
 #!/bin/bash
 
+CWD=$(pwd)
+ROOT="$(cd "$(dirname $0)";pwd)"
+cd "$CWD"
+. $ROOT/.lib/ssh_functions.sh
+
 ssh_filter_template() {
     cat <<'EOM'
 ssh_before() {
@@ -31,7 +36,7 @@ is_executable() {
 }
 
 get_logfile() {
-  local log_dir="$HOME/.ssh/transcripts/$1"
+  local log_dir="$LOG_BASE_DIR/$1"
   # local log_file="$log_dir/$(date +'%Y-%m-%d-%H%M%S-%s').txt"
   local log_file="$log_dir/$(date +'%Y-%m-%d').txt"
   echo $log_file
@@ -54,7 +59,7 @@ ssh_with_coo-tee() {
     ssh -o PermitLocalCommand=yes -o LocalCommand="${local_command}" \
       "$@" 2>&1 | coo-tee -a -t $log_file
   else
-    echo ssh "$@"
+    # echo ssh "$@"
     ssh "$@" 2>&1 | coo-tee -a -t $log_file
   fi
 }
@@ -75,31 +80,8 @@ ssh_with_tee() {
   perl -pi -e 's/\e(\[\d*m?(;\d*m)?|\]\d*)//g' $log_file
 }
 
-archive_ssh_logfiles() {
-  local log_dir=~/.ssh/transcripts
-  local archive_log_dir=~/.ssh/archive-transcripts
 
-  [ ! -e $log_dir ] && mkdir -p $log_dir
-  [ ! -e $log_dir/.last_touch ] && touch $log_dir/.last_touch
-  [ ! -e $archive_log_dir ] && mkdir -p $archive_log_dir
-
-  if [ $(find $log_dir/.last_touch -mtime +1 2>/dev/null | wc -l) -eq 1 ]; then
-    touch $log_dir/.last_touch
-    find $log_dir -name "*.txt" -type f -mtime +7 | xargs gzip
-    local host ym
-    for f in $(find $log_dir -name "*.gz" -type f); do
-      ym=$(basename $f | perl -ne 'm/^(\d*-\d*)/; print $1;')
-      host=$(basename $(dirname $f))
-
-      [ ! -e $archive_log_dir/$ym/$host/ ] && mkdir -p $archive_log_dir/$ym/$host/
-      mv $f $archive_log_dir/$ym/$host/
-    done
-  find $log_dir -type d -empty | xargs rmdir
-  fi
-
-}
-
-archive_ssh_logfiles >/dev/null 2>&1 &
+ssh-logrotate > /dev/null 2>&1 &
 
 [ ! -e ~/.ssh_filter.sh ] && ssh_filter_template > ~/.ssh_filter.sh
 . ~/.ssh_filter.sh

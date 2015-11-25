@@ -1,0 +1,46 @@
+#!/bin/bash
+
+CWD=$(pwd)
+ROOT="$(cd "$(dirname $0)";pwd)"
+cd "$CWD"
+. $ROOT/.lib/ssh_functions.sh
+
+[ ! -e $LOG_BASE_DIR ] && mkdir -p $LOG_BASE_DIR
+[ ! -e $STAT_FILE ] && touch $STAT_FILE
+[ ! -e $ARCHIVE_LOG_DIR ] && mkdir -p $ARCHIVE_LOG_DIR
+
+execute_logrotate() {
+  touch $STAT_FILE
+  find $LOG_BASE_DIR -name "*.txt" -type f -mtime +7 | xargs gzip 2>/dev/null
+  # local host ym
+  for f in $(find $LOG_BASE_DIR -name "*.gz" -type f); do
+    ym=$(basename $f | perl -ne 'm/^(\d*-\d*)/; print $1;')
+    host=$(basename $(dirname $f))
+
+    [ ! -e $ARCHIVE_LOG_DIR/$ym/$host/ ] && mkdir -p $ARCHIVE_LOG_DIR/$ym/$host/
+    mv $f $ARCHIVE_LOG_DIR/$ym/$host/
+  done
+  find $LOG_BASE_DIR -type d -empty | xargs rmdir 2>/dev/null
+}
+
+opt_force=0
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "f" opt; do
+  case $opt in
+    f)
+      opt_force=1 ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+# if [ $OPT_ERROR ]; then
+#   usage
+# fi
+
+if [ $opt_force -eq 1 ]; then
+  execute_logrotate
+elif [ $(find $STAT_FILE -mtime +1 2>/dev/null | wc -l) -eq 1 ]; then
+  execute_logrotate
+fi
