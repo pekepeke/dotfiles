@@ -4878,7 +4878,7 @@ if s:bundle.tap('unite.vim')
     \   ["os menu"                , "Unite menu:os"] ,
     \   ["fold"                   , "Unite fold"] ,
     \   ["codic"        , "Unite codic"] ,
-    \   ["quickrun config"        , "Unite quickrun_config"] ,
+    \   ["quickrun config"        , "Unite quickrun_config -default-action=execute"] ,
     \ ])
     let g:unite_source_menu_menus["project"] = s:unite_menu_create(
       \ '', [
@@ -5218,7 +5218,7 @@ if s:bundle.tap('unite.vim')
   UniteNMap   d         directory_mru -default-action=vimfiler
   UniteNMap   zz        z -default-action=vimfiler
   UniteNMap   za        fold
-  UniteNMap   <Leader>r quickrun_config watchdogs_config
+  UniteNMap   <Leader>r quickrun_config watchdogs_config -default-action=execute
   UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR> -profile-name=files
   UniteNMap   m         file_mru -default-action=open -profile-name=files
   UniteNMap   y         sonictemplate
@@ -6614,6 +6614,133 @@ if s:bundle.is_installed('vim-quickrun')
   \ },
   \ 'markdown/markdown2pod' : {
   \   'command' : 'markdown2pod',
+  \ },
+  \ })
+  " pandoc {{{5
+  call extend(g:quickrun_config, {
+  \ 'markdown/to_textile': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t textile %o %s',
+  \ },
+  \ 'markdown/to_rst': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t rst %o %s',
+  \ },
+  \ 'markdown/to_html5': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t html5 %o %s',
+  \ },
+  \ 'markdown/to_mediawiki': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t mediawiki %o %s',
+  \ },
+  \ 'markdown/to_s5': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t s5 %o %s',
+  \ },
+  \ 'markdown/to_slidy': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t slidy %o %s',
+  \ },
+  \ 'markdown/to_slideous': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t slideous %o %s',
+  \ },
+  \ 'markdown/to_beamer': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t beamer %o %s',
+  \ },
+  \ 'markdown/to_latex': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t latex %o %s',
+  \ },
+  \ 'markdown/to_rtf': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t rtf %o %s',
+  \ },
+  \ })
+  call extend(g:quickrun_config, {
+  \ 'textile/to_markdown': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t markdown %o %s',
+  \ },
+  \ 'textile/to_rst': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t rst %o %s',
+  \ },
+  \ 'textile/to_html5': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t html5 %o %s',
+  \ },
+  \ 'textile/to_mediawiki': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t mediawiki %o %s',
+  \ },
+  \ 'textile/to_s5': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t s5 %o %s',
+  \ },
+  \ 'textile/to_slidy': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t slidy %o %s',
+  \ },
+  \ 'textile/to_slideous': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t slideous %o %s',
+  \ },
+  \ 'textile/to_beamer': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t beamer %o %s',
+  \ },
+  \ 'textile/to_latex': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t latex %o %s',
+  \ },
+  \ 'textile/to_rtf': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t rtf %o %s',
+  \ },
+  \ })
+  call extend(g:quickrun_config, {
+  \ 'rst/to_markdown': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t markdown %o %s',
+  \ },
+  \ 'rst/to_textile': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t textile %o %s',
+  \ },
+  \ 'rst/to_html5': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t html5 %o %s',
+  \ },
+  \ 'rst/to_mediawiki': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t mediawiki %o %s',
+  \ },
+  \ 'rst/to_s5': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t s5 %o %s',
+  \ },
+  \ 'rst/to_slidy': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t slidy %o %s',
+  \ },
+  \ 'rst/to_slideous': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t slideous %o %s',
+  \ },
+  \ 'rst/to_beamer': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t beamer %o %s',
+  \ },
+  \ 'rst/to_latex': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t latex %o %s',
+  \ },
+  \ 'rst/to_rtf': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t rtf %o %s',
   \ },
   \ })
 
