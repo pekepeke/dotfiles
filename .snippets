@@ -1,5 +1,8 @@
 # git log
 git log --format="%ai  %an  %h  %d %s" | peco | awk 'match($0,/[[:blank:]]{2}[a-z0-9]{7}[[:blank:]]{2}/) { print substr($0, RSTART, RLENGTH) }' | xargs echo -n | tee >(pbcopy)
+# git clone
+GIT_SSL_NO_VERIFY=1 git
+git config --local http.sslVerify false
 
 # apache
 sudo apachectl graceful
