@@ -651,18 +651,19 @@ NeoBundleLazy 'osyo-manga/vim-jplus', {'autoload':{
 NeoBundle 'Shougo/context_filetype.vim'
 NeoBundle 'Shougo/tabpagebuffer.vim'
 NeoBundle 'Shougo/vimfiler.vim', {
-\ 'depends': 'Shougo/unite.vim', 'autoload' : {
-\ 'commands' : [
-\ { 'name': 'VimFiler', 'complete': 'customlist,vimfiler#complete' },
-\ { 'name': 'VimFilerTab', 'complete': 'customlist,vimfiler#complete' },
-\ { 'name': 'VimFilerBufferDir', 'complete': 'customlist,vimfiler#complete' },
-\ { 'name': 'VimFilerExplorer', 'complete': 'customlist,vimfiler#complete' },
-\ { 'name': 'Edit', 'complete': 'customlist,vimfiler#complete' },
-\ { 'name': 'Write', 'complete': 'customlist,vimfiler#complete' },
-\ 'Read', 'Source'],
-\ 'mappings' : ['<Plug>(vimfiler'],
-\ 'explorer' : 1,
-\ }}
+\ 'depends': 'Shougo/unite.vim',}
+" 'autoload' : {
+" \ 'commands' : [
+" \ { 'name': 'VimFiler', 'complete': 'customlist,vimfiler#complete' },
+" \ { 'name': 'VimFilerTab', 'complete': 'customlist,vimfiler#complete' },
+" \ { 'name': 'VimFilerBufferDir', 'complete': 'customlist,vimfiler#complete' },
+" \ { 'name': 'VimFilerExplorer', 'complete': 'customlist,vimfiler#complete' },
+" \ { 'name': 'Edit', 'complete': 'customlist,vimfiler#complete' },
+" \ { 'name': 'Write', 'complete': 'customlist,vimfiler#complete' },
+" \ 'Read', 'Source'],
+" \ 'mappings' : ['<Plug>(vimfiler'],
+" \ 'explorer' : 1,
+" \ }}
 if s:exec_make
   NeoBundle 'Shougo/vimproc.vim', {
   \ 'build' : {
@@ -675,13 +676,14 @@ if s:exec_make
   \ }}
 endif
 NeoBundle 'Shougo/vimshell.vim', {
-\ 'depends': 'Shougo/vimproc.vim', 'autoload' : {
-\ 'commands' : [{ 'name' : 'VimShell',
-\ 'complete' : 'customlist,vimshell#complete'},
-\   'VimShellExecute', 'VimShellInteractive',
-\   'VimShellTerminal', 'VimShellPop'],
-\ 'mappings' : ['<Plug>(vimshell']
-\ }}
+\ 'depends': 'Shougo/vimproc.vim',}
+" 'autoload' : {
+" \ 'commands' : [{ 'name' : 'VimShell',
+" \ 'complete' : 'customlist,vimshell#complete'},
+" \   'VimShellExecute', 'VimShellInteractive',
+" \   'VimShellTerminal', 'VimShellPop'],
+" \ 'mappings' : ['<Plug>(vimshell']
+" \ }}
 NeoBundle "osyo-manga/unite-filters-collection"
 " NeoBundle 'osyo-manga/vim-precious'
 NeoBundle 'pekepeke/vim-gitcomplete', 'develop'
@@ -702,31 +704,38 @@ NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
 \ 'commands' : ['JunkfileOpen'],
 \ 'unite_sources' : ['junkfile', 'junkfile/new'],
 \ }}
-NeoBundle 'kana/vim-altr', {'autoload': {
-\ 'mappings': ['<Plug>(altr-',],
-\ }}
+NeoBundle 'kana/vim-altr'
+" , {'autoload': {
+" \ 'mappings': ['<Plug>(altr-',],
+" \ }}
 NeoBundle 'kana/vim-fakeclip'
-NeoBundle 'kana/vim-smartchr', {'autoload': {'insert':1}}
+NeoBundle 'kana/vim-smartchr'
+" , {'autoload': {'insert':1}}
 NeoBundle 'kana/vim-submode'
-NeoBundle 'kana/vim-niceblock', { 'autoload' : {
-\ 'mappings' : ['<Plug>(niceblock-',]
-\ }}
+NeoBundle 'kana/vim-niceblock'
+" , { 'autoload' : {
+" \ 'mappings' : ['<Plug>(niceblock-',]
+" \ }}
 NeoBundle 'tyru/vim-altercmd'
-NeoBundle 'cohama/lexima.vim', {'autoload': {'insert':1}}
+NeoBundle 'cohama/lexima.vim'
+" , {'autoload': {'insert':1}}
 " NeoBundle 'kana/vim-smartinput', {'autoload': {'insert':1}}
 NeoBundleLazy 'tyru/capture.vim', {'autoload': {
 \ 'commands': [{'name':'Capture', 'complete':'command'}],
 \ }}
-NeoBundle 'chikatoike/concealedyank.vim', { 'autoload' : {
-\ 'mappings' : [
-\ ['nx', '<Plug>(operator-concealedyank)']]
-\ }}
-NeoBundle 'pekepeke/quickfixstatus', {'autoload': {
-\ 'commands': ['QuickfixStatusEnable', 'QuickfixStatusDisable'],
-\ }}
-NeoBundle 'cohama/vim-hier', {'autoload':{
-\ 'commands': ['HierUpdate', 'HierClear', 'HierStart', 'HierStop',],
-\}}
+NeoBundle 'chikatoike/concealedyank.vim'
+" , { 'autoload' : {
+" \ 'mappings' : [
+" \ ['nx', '<Plug>(operator-concealedyank)']]
+" \ }}
+NeoBundle 'pekepeke/quickfixstatus'
+" , {'autoload': {
+" \ 'commands': ['QuickfixStatusEnable', 'QuickfixStatusDisable'],
+" \ }}
+NeoBundle 'cohama/vim-hier'
+" , {'autoload':{
+" \ 'commands': ['HierUpdate', 'HierClear', 'HierStart', 'HierStop',],
+" \}}
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 't9md/vim-surround_custom_mapping'
@@ -739,15 +748,16 @@ NeoBundle 't9md/vim-surround_custom_mapping'
 " \ ],
 " \ 'mappings': [['n', '<Plug>Coerce']]
 " \ }}
-NeoBundle 'tpope/vim-dispatch', {'autoload': {
-\ 'commands': [
-\ {'name': 'FocusDispatch', 'complete': 'custom,dispatch#command_complete'},
-\ {'name': 'Dispatch', 'complete': 'custom,dispatch#command_complete'},
-\ {'name': 'Start', 'complete': 'custom,dispatch#command_complete'},
-\ {'name': 'Make', 'complete': 'file'},
-\ {'name': 'Copen'},
-\ ],
-\ }}
+NeoBundle 'tpope/vim-dispatch'
+" , {'autoload': {
+" \ 'commands': [
+" \ {'name': 'FocusDispatch', 'complete': 'custom,dispatch#command_complete'},
+" \ {'name': 'Dispatch', 'complete': 'custom,dispatch#command_complete'},
+" \ {'name': 'Start', 'complete': 'custom,dispatch#command_complete'},
+" \ {'name': 'Make', 'complete': 'file'},
+" \ {'name': 'Copen'},
+" \ ],
+" \ }}
 " NeoBundle 'rhysd/endwize.vim', {'autoload': {'insert':1}}
 NeoBundleLazy 't9md/vim-quickhl', {'autoload': {
 \ 'commands': [
@@ -776,11 +786,12 @@ NeoBundleLazy 'h1mesuke/vim-alignta', {'autoload': {
 \ }}
 NeoBundle 'syngan/vim-clurin'
 " NeoBundle 'nishigori/increment-activator'
-NeoBundle 'tpope/vim-speeddating', {'autoload': {
-\ 'mappings' : [['nv', '<Plug>SpeedDatingUp', '<Plug>SpeedDatingDown'],
-\ ['n', '<Plug>SpeedDatingNowLocal', '<Plug>SpeedDatingNowUTC']],
-\ 'commands' : ['SpeedDatingFormat']
-\ }}
+NeoBundle 'tpope/vim-speeddating'
+" , {'autoload': {
+" \ 'mappings' : [['nv', '<Plug>SpeedDatingUp', '<Plug>SpeedDatingDown'],
+" \ ['n', '<Plug>SpeedDatingNowLocal', '<Plug>SpeedDatingNowUTC']],
+" \ 'commands' : ['SpeedDatingFormat']
+" \ }}
 NeoBundleLazy 'AndrewRadev/splitjoin.vim', {'autoload': {
 \ 'commands': ['SplitjoinJoin', 'SplitjoinSplit'],
 \ }}
@@ -789,13 +800,15 @@ NeoBundleLazy 'AndrewRadev/inline_edit.vim', {'autoload': {
 \ {'name': 'InlineEdit'},
 \ ],
 \ }}
-NeoBundle 'rhysd/clever-f.vim', {'autoload': {
-\ 'mappings': [
-\ '<Plug>(clever-f-',
-\ ]}}
-NeoBundle 't9md/vim-smalls', {'autoload': {
-\ 'mappings': [['nxo', '<Plug>(smalls']]
-\ }}
+NeoBundle 'rhysd/clever-f.vim'
+" , {'autoload': {
+" \ 'mappings': [
+" \ '<Plug>(clever-f-',
+" \ ]}}
+NeoBundle 't9md/vim-smalls'
+" , {'autoload': {
+" \ 'mappings': [['nxo', '<Plug>(smalls']]
+" \ }}
 if get(g:vimrc_enabled_features, "gitsign", 0)
   if s:is_win
     NeoBundle 'sgur/vim-lazygutter'
@@ -820,10 +833,8 @@ NeoBundle 'pekepeke/vim-trimr'
 " \ }}
 NeoBundle 'mbbill/undotree'
 " NeoBundle 'sjl/gundo.vim'
-NeoBundle 'kana/vim-smartword', { 'autoload' : {
-\ 'mappings' : [['nv',
-\ '<Plug>(smartword-',
-\ ]]}}
+NeoBundle 'kana/vim-smartword'
+" , { 'autoload' : { 'mappings' : [['nv', '<Plug>(smartword-', ]]}}
 NeoBundle 'thinca/vim-qfreplace'
 NeoBundle 'thinca/vim-localrc'
 NeoBundleLazy 'thinca/vim-prettyprint', { 'autoload': {
@@ -870,15 +881,13 @@ if s:is_mac
   NeoBundle 'tokorom/vim-quickrun-xctool'
 endif
 NeoBundle 'manicmaniac/vim-quickrun-qo'
-NeoBundle 'osyo-manga/vim-anzu', {'autoload': {
-\ 'mappings': [['n', '<Plug>(anzu-']],
-\ }}
+NeoBundle 'osyo-manga/vim-anzu'
+" \ , {'autoload': { 'mappings': [['n', '<Plug>(anzu-']], }}
 " NeoBundle 'kien/rainbow_parentheses.vim'
 " NeoBundle 'oblitum/rainbow'
 NeoBundle 'luochen1990/rainbow'
-NeoBundle 'vim-scripts/matchit.zip', {'autoload': {
-\ 'mappings' : [['nx', '%']],
-\ }}
+NeoBundle 'vim-scripts/matchit.zip'
+" \ , {'autoload': { 'mappings' : [['nx', '%']], }}
 NeoBundle 'gregsexton/MatchTag'
 NeoBundle 'tpope/vim-unimpaired'
 NeoBundleLazy 'vim-scripts/ShowMultiBase', {'autoload':{
@@ -891,24 +900,26 @@ else
   NeoBundle 'majutsushi/tagbar'
 endif
 " NeoBundle 'tomtom/tcomment_vim'
-NeoBundle 'tpope/vim-commentary', {'autoload': {
-\ 'mappings': [
-\   ['xn', '<Plug>Commentary'],
-\   ['n', '<Plug>Commentary'],
-\ ],
-\ }}
+NeoBundle 'tpope/vim-commentary'
+" , {'autoload': {
+" \ 'mappings': [
+" \   ['xn', '<Plug>Commentary'],
+" \   ['n', '<Plug>Commentary'],
+" \ ],
+" \ }}
 NeoBundle 'tpope/vim-projectionist'
 NeoBundle 'thinca/vim-template'
-NeoBundle 'mattn/sonictemplate-vim', {'autoload': {
-\ 'commands': [
-\   {'name': 'Template', 'complete': 'complete=customlist,sonictemplate#complete'},
-\   {'name': '', 'complete': 'complete=customlist,sonictemplate#complete'},
-\ ],
-\ 'mappings': [
-\   ['in', '<plug>(sonictemplate)', '<plug>(sonictemplate-intelligent)'],
-\ ],
-\ 'unite_sources': ['sonictemplate'],
-\ }}
+NeoBundle 'mattn/sonictemplate-vim'
+" \ , {'autoload': {
+" \ 'commands': [
+" \   {'name': 'Template', 'complete': 'complete=customlist,sonictemplate#complete'},
+" \   {'name': '', 'complete': 'complete=customlist,sonictemplate#complete'},
+" \ ],
+" \ 'mappings': [
+" \   ['in', '<plug>(sonictemplate)', '<plug>(sonictemplate-intelligent)'],
+" \ ],
+" \ 'unite_sources': ['sonictemplate'],
+" \ }}
 " NeoBundle 'ciaranm/detectindent', {'autoload': {
 " \ 'commands' : ['DetectIndent'],
 " \ }}
@@ -916,16 +927,18 @@ NeoBundle 'ujihisa/shadow.vim'
 NeoBundle 'mhinz/vim-hugefile'
 NeoBundle 'tpope/vim-git'
 if 1 || s:is_win
-  NeoBundle 'tpope/vim-fugitive', {'autoload':{
-  \ 'commands': [ "Git", "Gstatus", "Gcommit", "Gedit",
-  \   "Gwrite", "Ggrep", "Glog", "Gdiff"],
-  \ }}
+  NeoBundle 'tpope/vim-fugitive'
+  " , {'autoload':{
+  " \ 'commands': [ "Git", "Gstatus", "Gcommit", "Gedit",
+  " \   "Gwrite", "Ggrep", "Glog", "Gdiff"],
+  " \ }}
 else
   " XXX : heavy...
-  NeoBundle 'lambdalisue/vim-gita', {
-  \ 'autoload': {
-  \   'commands': ['Gita'],
-  \ }}
+  NeoBundle 'lambdalisue/vim-gita'
+  " , {
+  " \ 'autoload': {
+  " \   'commands': ['Gita'],
+  " \ }}
 endif
 NeoBundle 'rhysd/committia.vim'
 NeoBundle 'idanarye/vim-merginal', {'autoload':{
