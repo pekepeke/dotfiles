@@ -1,8 +1,7 @@
 ## よく忘れる
 ### マークの意味
 
-
-
+```
 M dot.cshrc            : ワークスペースで編集中 (Modified)
 U benkyo7.mgp          : 更新 (Updated)、または追加された
 P benkyo7.html         : pserver 利用での更新 (Pserver)
@@ -17,6 +16,7 @@ A	追加(Add)された(必要なら commit すべき)
 R	削除(Remove)された
 C	衝突(Conflict)が起きている
 ?	リポジトリにないファイル
+```
 
 ### 簡易集計
 

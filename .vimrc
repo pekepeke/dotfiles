@@ -630,17 +630,28 @@ if neobundle#load_cache($MYVIMRC)
 NeoBundle 'itchyny/lightline.vim'
 
 " colorscheme {{{3
-NeoBundle 'freeo/vim-kalisi', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundle 'tpope/vim-vividchalk', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundle 'tomasr/molokai', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundle 'mopp/mopkai.vim', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundle 'mrkn/mrkn256.vim', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundle 'fmoralesc/vim-vitamins', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundle 'morhetz/gruvbox', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundle 'vim-scripts/Lucius', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundle 'jaromero/vim-monokai-refined', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundle 'freeo/vim-kalisi', {'autoload': {'unite_sources':['colorscheme']}}
-NeoBundle 'w0ng/vim-hybrid', {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'freeo/vim-kalisi'
+" , {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'tpope/vim-vividchalk'
+" , {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'tomasr/molokai'
+" , {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'mopp/mopkai.vim'
+" , {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'mrkn/mrkn256.vim'
+" , {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'fmoralesc/vim-vitamins'
+" , {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'morhetz/gruvbox'
+" , {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'vim-scripts/Lucius'
+" , {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'jaromero/vim-monokai-refined'
+" , {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'freeo/vim-kalisi'
+" , {'autoload': {'unite_sources':['colorscheme']}}
+NeoBundle 'w0ng/vim-hybrid'
+" , {'autoload': {'unite_sources':['colorscheme']}}
 
 " common {{{3
 NeoBundleLazy 'osyo-manga/vim-jplus', {'autoload':{
@@ -652,7 +663,6 @@ NeoBundle 'Shougo/context_filetype.vim'
 NeoBundle 'Shougo/tabpagebuffer.vim'
 NeoBundle 'Shougo/vimfiler.vim', {
 \ 'depends': 'Shougo/unite.vim',}
-" 'autoload' : {
 " \ 'commands' : [
 " \ { 'name': 'VimFiler', 'complete': 'customlist,vimfiler#complete' },
 " \ { 'name': 'VimFilerTab', 'complete': 'customlist,vimfiler#complete' },
@@ -663,7 +673,7 @@ NeoBundle 'Shougo/vimfiler.vim', {
 " \ 'Read', 'Source'],
 " \ 'mappings' : ['<Plug>(vimfiler'],
 " \ 'explorer' : 1,
-" \ }}
+" \ }
 if s:exec_make
   NeoBundle 'Shougo/vimproc.vim', {
   \ 'build' : {
@@ -677,18 +687,17 @@ if s:exec_make
 endif
 NeoBundle 'Shougo/vimshell.vim', {
 \ 'depends': 'Shougo/vimproc.vim',}
-" 'autoload' : {
 " \ 'commands' : [{ 'name' : 'VimShell',
 " \ 'complete' : 'customlist,vimshell#complete'},
 " \   'VimShellExecute', 'VimShellInteractive',
 " \   'VimShellTerminal', 'VimShellPop'],
 " \ 'mappings' : ['<Plug>(vimshell']
-" \ }}
+" \ }
 NeoBundle "osyo-manga/unite-filters-collection"
 " NeoBundle 'osyo-manga/vim-precious'
 NeoBundle 'pekepeke/vim-gitcomplete', 'develop'
 if has('python') || has('python3')
-  NeoBundleLazy 'Shougo/vinarise', { 'autoload': {
+  NeoBundleLazy 'Shougo/vinarise', {
   \ 'commands' : [
   \ {'name' : 'Vinarise',
   \  'complete' : 'customlist,vinarise#complete'},
@@ -697,7 +706,6 @@ if has('python') || has('python3')
   \ {'name' : 'VinariseScript2Hex',
   \  'complete' : 'customlist,vinarise#complete'}],
   \ 'unite_sources' : 'vinarise/analysis'
-  \ },
   \ }
 endif
 NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
