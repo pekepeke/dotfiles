@@ -37,13 +37,17 @@ cvs update -p -r リビジョン ファイル
 
 ### ローカル更新を無視する
 ```
-cvs update -C -l filepath
+cvs update -Cl filepath
 ```
 
 ## checkout
+```
 cvs checkout 〔-d 作業用ディレクトリ名〕 プロジェクト名
 cvs co
 cvs get
+# 特定のファイルを標準出力表示
+cvs [-d:pserver:user@xxx:/path/to/file] checkout -r -p [branch] [module/path/to/file]
+```
 
 ## update
 ```
@@ -84,6 +88,14 @@ cvs add [file]
 - コミット前に追加をやめるには remove を使う
 - バイナリとして追加したい場合は `-kb` オプションを指定する
 
+## annotate
+各行がどのリビジョンで追加・更新されたかを表示する。
+
+```
+cvs annotate [file]
+cvs ann [file]
+```
+
 ## admin
 ファイルの属性を変更する
 
@@ -100,7 +112,14 @@ cvs diff -r [rev] -r [rev] file
 ```
 
 ## log
+
 ```
 cvs log [file]
 ```
 
+## export
+
+```
+cvs export -r [rev] [module]
+cvs export [module]
+```
