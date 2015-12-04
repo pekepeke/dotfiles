@@ -32,6 +32,35 @@ if [ $(id -u) = $(id -u root) ]; then
 fi
 ```
 
+
+
+## 配列・ハッシュ
+
+```bash
+declare -a array=(1 2 3)
+declare -A H
+H["key1"]="value1"
+H["key2"]="value2"
+H["key3"]="value3"
+
+H=( \
+  ["key1"]="value1" \
+  ["key2"]="value2" \
+  ["key3"]="value3"
+)
+
+for i in ${!H[@]}; do
+  echo "${i} => [${H[$i]}]"
+done
+```
+
+## 変数名で変数参照
+
+```bash
+eval echo '$'$hoge
+```
+
+
 ## 大文字・小文字変換
 
 ```
