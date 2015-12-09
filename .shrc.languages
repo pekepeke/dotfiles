@@ -9,22 +9,6 @@ else
   SHELL_NAME=bash
 fi
 
-xenv-init() {
-  local VMNAME=$1
-  if [ -e "$HOME/.${VMNAME}" ]; then
-    PATH=$HOME/.${VMNAME}/bin:$PATH
-    if [ -n "$PS1" -o -n "$PROMPT" ]; then
-      # eval "$(${VMNAME} init -)"
-      PATH=$HOME/.${VMNAME}/shims:$PATH
-      soft_source ~/.${VMNAME}/completions/${VMNAME}.$SHELL_NAME
-    else
-      PATH=$HOME/.${VMNAME}/shims:$PATH
-    fi
-    return 0
-  fi
-  return 1
-}
-
 shrc_section_title "OS settings" # {{{1
 
 PATH="$HOME/.bin:$HOME/bin:$HOME/.local/bin:$PATH"
@@ -78,28 +62,9 @@ case $OSTYPE in
     ;;
 esac
 
-shrc_section_title "languages" # {{{1
+shrc_section_title "languages" {{{1
+
 if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
-  shrc_section_title "for perl" # {{{2
-  xenv-init plenv
-
-  shrc_section_title "for Python" # {{{2
-  xenv-init pyenv
-  # export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
-  # export PYTHONPATH=~/.lib/python:$PYTHONPATH
-  export PYTHONSTARTUP=~/.pyrc
-
-  shrc_section_title "for node.js" # {{{2
-  # if [ -e ~/.nenv ];then
-  #   xenv-init nenv
-  xenv-init nodenv
-
-  PATH="node_modules/.bin:$PATH"
-  if [ -e /usr/local/googkit ]; then
-    export GOOGKIT_HOME=/usr/local/googkit
-    export PATH="$PATH:$GOOGKIT_HOME/bin"
-  fi
-
   shrc_section_title "java" # {{{2
   if ! is_mac ; then
     _JAVA_OPTIONS="$_JAVA_OPTIONS -Dawt.useSystemAAFontSettings=lcd"
@@ -122,56 +87,94 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
     # _JAVA_OPTIONS="$_JAVA_OPTIONS -Dfile.encoding=UTF-8"
     # export _JAVA_OPTIONS
   fi
+  export PYTHONSTARTUP=~/.pyrc
+  PATH="node_modules/.bin:$PATH"
 
-  shrc_section_title "php" # {{{2
-  # must be after eval $(rbenv init)
-  [ -e ~/.composer/vendor/bin ] && PATH="vendor/bin:$HOME/.composer/vendor/bin:$PATH"
-  xenv-init phpenv
-  if is_mac; then
-    # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-cgi --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql --with-pear"
-    # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-cgi --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql --with-pear"
-    # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-cgi --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-pgsql --with-pear"
-    # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-ldap-sasl --with-ldap --with-pgsql --with-pear --with-apxs2=$(which apxs) --disable-fpm"
-    export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --enable-exif --with-gd --enable-calendar --enable-gd-native-ttf --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --enable-mbregex --enable-wddx --enable-zend-multibyte --with-ldap-sasl --with-ldap --with-pgsql --with-pear --with-apxs2=$(which apxs) --disable-fpm"
+  if ! is_win ; then
+    xenv-init() {
+      local VMNAME=$1
+      if [ -e "$HOME/.${VMNAME}" ]; then
+        PATH=$HOME/.${VMNAME}/bin:$PATH
+        if [ -n "$PS1" -o -n "$PROMPT" ]; then
+          # eval "$(${VMNAME} init -)"
+          PATH=$HOME/.${VMNAME}/shims:$PATH
+          soft_source ~/.${VMNAME}/completions/${VMNAME}.$SHELL_NAME
+        else
+          PATH=$HOME/.${VMNAME}/shims:$PATH
+        fi
+        return 0
+      fi
+      return 1
+    }
+
+    shrc_section_title "for xenv-perl" # {{{2
+    xenv-init plenv
+
+    shrc_section_title "for xenv-python" # {{{2
+    xenv-init pyenv
+    # export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
+    # export PYTHONPATH=~/.lib/python:$PYTHONPATH
+
+    shrc_section_title "for xenv-node.js" # {{{2
+    # if [ -e ~/.nenv ];then
+    #   xenv-init nenv
+    xenv-init nodenv
+
+    if [ -e /usr/local/googkit ]; then
+      export GOOGKIT_HOME=/usr/local/googkit
+      export PATH="$PATH:$GOOGKIT_HOME/bin"
+    fi
+
+    shrc_section_title "xenv-php" # {{{2
+    # must be after eval $(rbenv init)
+    [ -e ~/.composer/vendor/bin ] && PATH="vendor/bin:$HOME/.composer/vendor/bin:$PATH"
+    xenv-init phpenv
+    if is_mac; then
+      # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-cgi --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql --with-pear"
+      # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-cgi --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-iodbc --with-ldap-sasl --with-ldap --with-pgsql --with-pear"
+      # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-cli --enable-cgi --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-pgsql --with-pear"
+      # export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --with-gd --enable-calendar --enable-gd-native-ttf --enable-mbregex --enable-wddx --enable-zend-multibyte --with-ldap-sasl --with-ldap --with-pgsql --with-pear --with-apxs2=$(which apxs) --disable-fpm"
+      export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --enable-exif --with-gd --enable-calendar --enable-gd-native-ttf --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --enable-mbregex --enable-wddx --enable-zend-multibyte --with-ldap-sasl --with-ldap --with-pgsql --with-pear --with-apxs2=$(which apxs) --disable-fpm"
+    fi
+
+    # scala {{{2
+    if [ -e ~/.svm ]; then
+      export SCALA_HOME=~/.svm/current/rt
+      PATH="$SCALA_HOME/bin:$HOME/.svm/:$PATH"
+    fi
+
+    # go {{{2
+    xenv-init golangenv
+    # xenv-init goenv
+    # export GOPATH=~/.gopath
+    # if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/bin/go" ]; then
+    #   export GOPATH=$(dirname $(dirname $HOMEBREW_PREFIX/bin/go/$(readlink /usr/local/bin/go)))
+    export GOPATH=$HOME/.gopath
+    PATH="$GOPATH/bin:$PATH"
+    [ -e $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh ] \
+      && source $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh
+    # fi
+
+    # lua {{{2
+    xenv-init luaenv
+
+    # direnv {{{2
+    if [ -e ~/.direnv ]; then
+      PATH="$HOME/.direnv/bin:$PATH"
+      eval "$(direnv hook $SHELL_NAME)"
+    fi
+
+    # haskell {{{2
+    PATH="${HOME}/.cabal/bin:$PATH"
+
+    shrc_section_title "for Ruby" # {{{2
+    xenv-init rbenv
+    rvm() {
+      [[ $1 == 'use' ]] && rbenv shell $2
+    }
+    # vim {{{2
+    xenv-init vimenv
   fi
-
-  # scala {{{2
-  if [ -e ~/.svm ]; then
-    export SCALA_HOME=~/.svm/current/rt
-    PATH="$SCALA_HOME/bin:$HOME/.svm/:$PATH"
-  fi
-
-  # go {{{2
-  xenv-init golangenv
-  # xenv-init goenv
-  # export GOPATH=~/.gopath
-  # if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/bin/go" ]; then
-  #   export GOPATH=$(dirname $(dirname $HOMEBREW_PREFIX/bin/go/$(readlink /usr/local/bin/go)))
-  export GOPATH=$HOME/.gopath
-  PATH="$GOPATH/bin:$PATH"
-  [ -e $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh ] \
-    && source $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh
-  # fi
-
-  # lua {{{2
-  xenv-init luaenv
-
-  # direnv {{{2
-  if [ -e ~/.direnv ]; then
-    PATH="$HOME/.direnv/bin:$PATH"
-    eval "$(direnv hook $SHELL_NAME)"
-  fi
-
-  # haskell {{{2
-  PATH="${HOME}/.cabal/bin:$PATH"
-
-  shrc_section_title "for Ruby" # {{{2
-  xenv-init rbenv
-  rvm() {
-    [[ $1 == 'use' ]] && rbenv shell $2
-  }
-  # vim {{{2
-  xenv-init vimenv
 fi
 shrc_section_title "etc" # {{{2
 # mysqlenv {{{3
