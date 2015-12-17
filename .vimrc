@@ -8330,26 +8330,18 @@ command! -nargs=0 ThisSyntax echo "hi<" . synIDattr(synID(line("."),col("."),1),
 
 " coding style {{{2
 " http://vim-users.jp/2010/05/hack149/
-let s:coding_styles = {}
-let s:coding_styles['Standard']      = 'expandtab   tabstop=4 shiftwidth=4 softtabstop&'
-let s:coding_styles['Short indent']  = 'expandtab   tabstop=2 shiftwidth=2 softtabstop&'
-let s:coding_styles['GNU']           = 'expandtab   tabstop=8 shiftwidth=2 softtabstop=2'
-let s:coding_styles['BSD']           = 'noexpandtab tabstop=8 shiftwidth=4 softtabstop&'    " XXX
-let s:coding_styles['Linux']         = 'noexpandtab tabstop=8 shiftwidth=8 softtabstop&'
+let g:vimrc_coding_styles = {
+  \ 'Standard'      : 'expandtab   tabstop=4 shiftwidth=4 softtabstop&',
+  \ 'Short indent'  : 'expandtab   tabstop=2 shiftwidth=2 softtabstop&',
+  \ 'GNU'           : 'expandtab   tabstop=8 shiftwidth=2 softtabstop=2',
+  \ 'BSD'           : 'noexpandtab tabstop=8 shiftwidth=4 softtabstop&',
+  \ 'Linux'         : 'noexpandtab tabstop=8 shiftwidth=8 softtabstop&',
+  \ }
 
 command!
-\   -bar -nargs=1 -complete=customlist,s:coding_style_complete
+\   -bar -nargs=1 -complete=customlist,my#command#coding_style_complete
 \   CodingStyle
-\   call s:set_coding_style("<bang>", get(s:coding_styles, <f-args>, ''))
-
-function! s:set_coding_style(bang, arg) "{{{
-  let expr = a:bang ? "set" : "setlocal"
-  execute expr a:arg
-endfunction " }}}
-function! s:coding_style_complete(A, L, P) "{{{
-  " return keys(s:coding_styles)
-  return filter(keys(s:coding_styles),'v:val =~? "^".a:A')
-endfunction "}}}
+\   call my#command#coding_style("<bang>", get(g:vimrc_coding_styles, <f-args>, ''))
 
 let s:q = "['\"]"
 let s:pattern_replace = {
@@ -8370,6 +8362,7 @@ command! -bar -nargs=1 -complete=customlist,s:replace_pattern_complete ReplacePa
 
 " util {{{2
 command! -nargs=0 ToScratch call my#buffer#set_scratch()
+command! -nargs=0 HtmlCommentRemove call my#command#remove_html_comment()
 
 " errorformat tester {{{2
 let g:efm_tester_fmt = '%f:%l:%c:%m'

@@ -134,5 +134,22 @@ function! my#command#toggle_option(opt) "{{{2
   let sts = eval('&'.a:opt)
   echo printf("set %s : %s", a:opt, sts ? "ON" : "OFF")
 endfunction
+
+function! my#command#coding_style_complete(A, L, P) "{{{2
+  return filter(keys(g:vimrc_coding_styles),'v:val =~? "^".a:A')
+endfunction
+
+function! my#command#coding_style(bang, arg) "{{{2
+  if empty(a:arg)
+    return
+  endif
+  let expr = a:bang ? "set" : "setlocal"
+  execute expr a:arg
+endfunction
+
+function! my#command#remove_html_comment() "{{{2
+  %s@<!--\_.\{-}-->@@g
+endfunction
+
 let &cpo = s:save_cpo
 " __END__ {{{1
