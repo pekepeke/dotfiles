@@ -1483,6 +1483,7 @@ NeoBundle 'Gasol/vim-php'
 NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
+NeoBundle 'adoy/vim-php-refactoring-toolbox'
 
 if !get(g:vimrc_enabled_features, "eclim", 0)
   if s:exec_php && get(g:vimrc_enabled_features, 'padawan', 0)
@@ -2764,6 +2765,30 @@ let g:vimrc_enabled_plugins = {
   \ 'endwize': s:bundle.is_installed('endwize.vim'),
   \ 'php_namespace': s:bundle.is_installed('vim-php-namespace'),
   \ }
+
+" vim-php-refactoring-toolbox {{{2
+if s:bundle.is_installed('vim-php-refactoring-toolbox')
+  let g:vim_php_refactoring_use_default_mapping = 0
+
+  " let g:vim_php_refactoring_auto_validate_sg = 1
+  " let g:vim_php_refactoring_auto_validate_rename = 1
+  " let g:vim_php_refactoring_auto_validate_visibility = 1
+  " let g:vim_php_refactoring_default_property_visibility = 'private'
+  " let g:vim_php_refactoring_default_method_visibility = 'private'
+  command! -nargs=0 PhpRenameLocalVariable call PhpRenameLocalVariable()
+  command! -nargs=0 PhpRenameClassVariable call PhpRenameClassVariable()
+  command! -nargs=0 PhpRenameMethod call PhpRenameMethod()
+  command! -nargs=0 PhpExtractUse call PhpExtractUse()
+  command! -nargs=0 PhpExtractConst call PhpExtractConst()
+  command! -nargs=0 PhpExtractClassProperty call PhpExtractClassProperty()
+  command! -nargs=0 PhpExtractMethod call PhpExtractMethod()
+  command! -nargs=0 PhpCreateProperty call PhpCreateProperty()
+  command! -nargs=0 PhpDetectUnusedUseStatements call PhpDetectUnusedUseStatements()
+  command! -nargs=0 PhpAlignAssigns call PhpAlignAssigns()
+  command! -nargs=0 PhpCreateSettersAndGetters call PhpCreateSettersAndGetters()
+  command! -nargs=0 PhpDocAll call PhpDocAll()
+endif
+
 
 " clurin.vim {{{2
 if s:bundle.is_installed('vim-clurin')
