@@ -22,6 +22,7 @@ C	衝突(Conflict)が起きている
 
 ```
 awk 'length($1) == 1 {sum[$1]+=1}; END { for (key in sum) { print key,  sum[key] } }' fuga.log
+awk 'BEGIN{ L["M"]="Modified"; L["U"]="Updated"; L["P"] = "PUpdated"; L["A"]="Added"; L["R"]="Removed"; L["?"] = "Unknown"; L["C"] = "Confilict"; } length($1) == 1 {sum[$1]+=1}; END { for (key in sum) { printf "%-10s:%s\n",  L[key],   sum[key] } }' fuga.log
 ```
 
 ### cvs2cl.pl

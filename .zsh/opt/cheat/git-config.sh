@@ -15,4 +15,5 @@ git config --global alias.br branch
 
 ## msg : SSL certificate problem,  verify that the CA cert is OK. Details
 got config --local http.sslVerify false
+GIT_SSL_NO_VERIFY=true git clone https://xxx.com/repo
 

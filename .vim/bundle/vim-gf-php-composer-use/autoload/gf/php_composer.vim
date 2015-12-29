@@ -17,8 +17,11 @@ function! gf#php_composer#find()
     return 0
   endif
 
-  let files = split(system(printf('%s %s %s',
-    \ s:bin, composer_path, substitute(join(fqcns, " "), '\', '\\\\', 'g'))), "\n")
+  " call s:log("fqcns:" . fqcns[0])
+  let command = printf('%s %s %s',
+    \ s:bin, composer_path, substitute(join(fqcns, " "), '\', '\\\\', 'g'))
+  call s:log(command)
+  let files = split(system(command), "\n")
   if empty(files)
     return 0
   endif
@@ -36,7 +39,7 @@ endfunction
 
 function! s:find_composer_json()
   let cdir = expand('%:p:h')
-  let f = 'composer.json'
+  let f = 'composer.lock'
   let composer = findfile(f, cdir . ';')
   if composer != ''
     let cdir = fnamemodify(composer, ':p:h:h')
@@ -45,14 +48,15 @@ function! s:find_composer_json()
       let composer = root_composer
     endif
   endif
-  return composer
+  return substitute(composer, '\.lock$', '.json', '')
 endfunction
 
 function! s:find_fqcns()
   let class = s:get_class_from_line()
+  " call s:log("d:" .class)
   if empty(class)
     return []
-  elseif matchstr('^\', class)
+  elseif class =~# '^\'
     return [class[1:]]
   endif
 
@@ -75,8 +79,10 @@ function! s:find_fqcns()
   endif
 
   let namespace = filter(ns, 'v:val.is_ns')
+  " call s:log("namespace:" . len(namespace))
+  " call s:log("namespace:" . namespace[0].class)
   if len(namespace) > 0
-    return [namespace.class . '\' . class]
+    return [namespace[0].class . '\' . class]
   endif
 
   return []
@@ -84,11 +90,14 @@ endfunction
 
 function! s:get_class_from_line()
   for re in [
-    \ '\s*\(use\|new\)\s\+\([[:alnum:]\\_]\+\)\s*;',
+    \ '\s*\(use\|new\)\s\+\([[:alnum:]\\_]\+\)\s*\(\s*as\s\+\w\+\)\?;',
     \ '\(\s*\)\?\([[:alnum:]\\_]\+\)::',
     \ ]
     let m = matchlist(getline('.'), re)
     if !empty(m)
+      if m[1] =~# 'use'
+        return '\' . m[2]
+      endif
       return m[2]
     endif
   endfor
