@@ -6,7 +6,7 @@ FILE=$HOME/.ssh/config
 [ ! -e ~/.ssh/id_rsa.pub ] && ssh-keygen -t rsa
 
 if [ -e $FILE ] ; then
-  echo "already exists: $FILE"
+  [ "$1" != "-s" ] && echo "already exists: $FILE" 1>&2
   exit 1
 fi
 

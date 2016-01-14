@@ -18,7 +18,8 @@
   name = hoge
   email = hoge+git@gmail.com
 [push]
-  default = upstream
+  default = simple
+; default = tracking ; <=2.0
 [pull]
   rebase = true
 [diff]

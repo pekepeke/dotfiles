@@ -2174,7 +2174,7 @@ nnoremap <silent> [!t]p gT
 nnoremap <silent> [!t]h gT
 nnoremap <silent> [!t]l gt
 nnoremap <silent> [!t]c :<C-u>tabnew<CR>
-nnoremap <silent> [!t]C :<C-u>tabnew %<CR>
+nnoremap <silent> [!t]C :<C-u>tabnew %<CR>:normal! <C-o><CR>
 nnoremap <silent> [!t]* :<C-u>tabedit %<CR>*
 nnoremap <silent> [!t]# :<C-u>tabedit %<CR>#
 nnoremap <silent> [!t]q :<C-u>tabclose<CR>
