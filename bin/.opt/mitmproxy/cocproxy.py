@@ -19,6 +19,10 @@ def request(context, flow):
     # pickle.dump(flow.request.pretty_host(hostheader=True), sys.stderr)
     # sys.stderr.write("-------------\n")
     host = flow.request.pretty_host(hostheader=True)
+    if hasattr(flow.request,  'pretty_host') and callable(getattr(flow.request,  'pretty_host')) :
+        host = flow.request.pretty_host(hostheader=True)
+    else:
+        host = flow.request.host
     filename = "/".join(flow.request.get_path_components())
 
     files = [

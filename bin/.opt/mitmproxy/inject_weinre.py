@@ -2,8 +2,12 @@
 
 # (this script works best with --anticache)
 import re, socket, sys
-import libmproxy.protocol.http as http
 import httplib
+try:
+    import netlib.http as http
+except:
+    import libmproxy.protocol.http as http
+
 # from libmproxy.protocol.http import decoded
 
 ips = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")][:1]
@@ -33,8 +37,15 @@ def start(context, argv):
 
 
 def response(context, flow):
+    headers = flow.response.headers
+    is_text = None
+    if hasattr(headers, "get_first"):
+        is_text = headers.get_first('content-type', "").startswith("text")
+    else:
+        is_text = len(headers.get_all("content-type")) > 0
+
     if enabled:
-        if flow.response.headers.get_first('content-type', "").startswith("text"):
+        if is_text:
             with http.decoded(flow.response):  # automatically decode gzipped responses.
                 # flow.response.content = flow.response.content.replace(context.old, context.new)
                 flow.response.content = re.sub(r'(?i)(</body[^>]*>)', '<script src="http://%s:58080/target/target-script-min.js#anonymous"></script>\\1' % context.ip, flow.response.content)
