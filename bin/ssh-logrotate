@@ -11,7 +11,8 @@ cd "$CWD"
 
 execute_logrotate() {
   touch $STAT_FILE
-  find $LOG_BASE_DIR -name "*.txt" -type f -mtime +7 | xargs gzip 2>/dev/null
+  # find $LOG_BASE_DIR -name "*.txt" -type f -mtime +7 | xargs gzip 2>/dev/null
+  find $LOG_BASE_DIR -type f -mtime +7 | xargs gzip 2>/dev/null
   # local host ym
   for f in $(find $LOG_BASE_DIR -name "*.gz" -type f); do
     ym=$(basename $f | perl -ne 'm/^(\d*-\d*)/; print $1;')
