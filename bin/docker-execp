@@ -1,10 +1,10 @@
 #!/bin/bash
 
 if !which docker >/dev/null 2>&1; then
-  echo "command not found : nsenter" >&2
+  echo "command not found : docker " >&2
 fi
 PID=$(docker ps | awk '{print $1}' | peco)
-echo $PID
+# echo $PID
 
 if [ -n "$PID" ]; then
   DOCKER_PID=$(docker inspect --format "{{.State.Pid}}" ${PID})
