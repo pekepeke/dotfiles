@@ -7948,7 +7948,7 @@ if s:bundle.is_installed('vimfiler.vim')
           " call s:log("stop : %s, pattern=%s", item, pattern)
           break
         endif
-        let file = vimfiler#get_file()
+        let file = vimfiler#get_file(b:vimfiler)
         if file.vimfiler__is_directory && !file.vimfiler__is_opened
           execute "normal \<Plug>(vimfiler_expand_tree)"
         endif
@@ -7965,7 +7965,7 @@ if s:bundle.is_installed('vimfiler.vim')
   endfunction
 
   function! s:vimfiler_smart_tree_h(...) "{{{4
-    let file = vimfiler#get_file()
+    let file = vimfiler#get_file(b:vimfiler)
     let cmd = a:0 > 0 ? a:1 : ""
     "\<Plug>(vimfiler_smart_h)"
     if !empty(file)
@@ -7975,7 +7975,7 @@ if s:bundle.is_installed('vimfiler.vim')
         let nest_level = file.vimfiler__nest_level
         while 1
           exe 'normal!' 'k'
-          let file = vimfiler#get_file()
+          let file = vimfiler#get_file(b:vimfiler)
           if empty(file) || file.vimfiler__nest_level < nest_level
             " let cmd = "\<Plug>(vimfiler_expand_tree)" | break
             normal! ^
@@ -8022,7 +8022,7 @@ if s:bundle.is_installed('vimfiler.vim')
   endfunction
 
   function! s:vimfiler_smart_tree_l(method, ...) "{{{4
-    let file = vimfiler#get_file()
+    let file = vimfiler#get_file(b:vimfiler)
     if empty(file)
       if (a:0 > 0 && a:1 == 1)
         execute 'normal' "\<Plug>(vimfiler_smart_h)"
@@ -8070,10 +8070,10 @@ if s:bundle.is_installed('vimfiler.vim')
 
   function! s:vimfiler_create_action_context(action, ...) " {{{4
     let cursor_linenr = get(a:000, 0, line('.'))
-    let vimfiler = vimfiler#get_current_vimfiler()
-    let marked_files = vimfiler#get_marked_files()
+    let vimfiler = b:vimfiler " vimfiler#get_current_vimfiler()
+    let marked_files = vimfiler#get_marked_files(b:vimfiler)
     if empty(marked_files)
-      let marked_files = [ vimfiler#get_file(cursor_linenr) ]
+      let marked_files = [ vimfiler#get_file(b:vimfiler, cursor_linenr) ]
     endif
 
     let context = s:vimfiler_context.new({
