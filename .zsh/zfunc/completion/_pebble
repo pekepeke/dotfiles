@@ -1,95 +1,211 @@
 #compdef pebble
 
-# last updated for PebbleSDK 2.7
+# last updated for PebbleSDK 3.2
 
 typeset -A opt_args
 
 local -a _1st_arguments
 _1st_arguments=(
-	'new-project:Create a new Pebble project'
-	'convert-project:Convert an existing Pebble project to the current SDK.'
-	'build:Build your Pebble project'
-	'clean:Clean your Pebble project'
-	'analyze-size:Analyze the size of your Pebble app'
-	'install:Install your Pebble project to your watch'
-	'ping:Ping your Pebble project to your watch'
-	'list:List the apps installed on your watch'
-	'rm:Remove an app from your watch'
-	'current:Get the uuid and name of the current app'
-	'uuids:List the uuids and names of installed apps'
-	'logs:Continuously displays logs from the watch'
-	'repl:Launch an interactive python shell with a `pebble` object to execute methods on.'
-	'screenshot:take a screenshot of the pebble'
-	'coredump:get most recent core dump from the pebble'
+  'build:Builds the current project.'
+  'clean'
+  'new-project:Creates a new pebble project with the given name in a new directory.'
+  'install:Installs the given app on the watch.'
+  'logs:Displays running logs from the watch.'
+  'screenshot:Takes a screenshot from the watch.'
+  'insert-pin:Inserts a pin into the timeline.'
+  'delete-pin:Deletes a pin from the timeline.'
+  'emu-accel:Emulates accelerometer events.'
+  'emu-app-config:Shows the app configuration page, if one exists.'
+  'emu-battery:Sets the emulated battery level and charging state.'
+  'emu-bt-connection:Sets the emulated Bluetooth connectivity state.'
+  'emu-compass:Sets the emulated compass heading and calibration state.'
+  'emu-tap:Emulates a tap.'
+  'ping:Pings the watch.'
+  'login:Logs you in to your Pebble account. Required to use the timeline and CloudPebble connections.'
+  'logout:Logs you out of your Pebble account.'
+  'repl:Launches a python prompt with a "pebble" object already connected.'
+  'analyze-size:Analyze the size of your pebble app.'
+  'convert-project:Structurally converts an SDK 2 project to an SDK 3 project. Code changes may still be required.'
+  'kill:Kills running emulators, if any.'
+  'wipe:Wipes data for running emulators. By default, only clears data for the current SDK version.'
 )
 
 _arguments \
-	'(-h --help)--help[show help]' \
-	'(--debug)--debug[enable debugging]' \
-	'(--version)--version[show version]' \
-	'*:: :->subcmds' && return 0
+  '(-h --help)--help[show help]' \
+  '(--version)--version[show version]' \
+  '*:: :->subcmds' && return 0
 
 if (( CURRENT == 1 )); then
-	_describe -t commands "pebble subcommand" _1st_arguments
-	return
+  _describe -t commands "pebble subcommand" _1st_arguments
+  return
 fi
 
 case "$words[1]" in
-	new-project)
-		_arguments \
-			'(-h --help)'{-h,--help}'[show this help message and exit]' \
-			'--simple[Use a minimal c file]' \
-			'--javascript[Generate javascript related files]' \
-			'--worker[Generate background worker related files]'
-	;;
-	convert-project|build|clean)
-		_arguments \
-			'(-h --help)'{-h,--help}'[show this help message and exit]' \
-			'--sdk[Path to Pebble SDK (ie: ~/pebble-dev/PebbleSDK-2.X/)]' \
-			'--debug[Enable debugging output]'
-	;;
-	analyze-size)
-		_arguments \
-			'(-h --help)'{-h,--help}'[show this help message and exit]' \
-			'--sdk[Path to Pebble SDK (ie: ~/pebble-dev/PebbleSDK-2.X/)]' \
-			'--debug[Enable debugging output]' \
-			'--summary[Display a single line per section]' \
-			'--verbose[Display a per-symbol breakdown]'
-	;;
-	install)
-		_arguments \
-			'(-h --help)'{-h,--help}'[show this help message and exit]' \
-			'--sdk[Path to Pebble SDK (ie: ~/pebble-dev/PebbleSDK-2.X/)]' \
-			'--debug[Enable debugging output]' \
-			'--phone[When using Developer Connection, the IP address or hostname of your phone.]' \
-			'--pebble_id[When using a direct BT connection, the watchs Bluetooth ID (e.g. DF38 or 01:23:45:67:DF:38).]' \
-			'--pair[When using a direct BT connection, attempt to pair the watch automatically]' \
-			'--verbose[Prints received system logs in addition to APP_LOG]' \
-			'--logs[Display logs after installing the bundle]' \
-			'--direct[Install directly on watch.]'
-		_files
-	;;
-	ping|list|rm|current|uuids|logs|repl|screenshot)
-		_arguments \
-			'(-h --help)'{-h,--help}'[show this help message and exit]' \
-			'--sdk[Path to Pebble SDK (ie: ~/pebble-dev/PebbleSDK-2.X/)]' \
-			'--debug[Enable debugging output]' \
-			'--phone[When using Developer Connection, the IP address or hostname of your phone.]' \
-			'--pebble_id[When using a direct BT connection, the watchs Bluetooth ID (e.g. DF38 or 01:23:45:67:DF:38).]' \
-			'--pair[When using a direct BT connection, attempt to pair the watch automatically]' \
-			'--verbose[Prints received system logs in addition to APP_LOG]'
-	;;
-	coredump)
-		_arguments \
-			'(-h --help)'{-h,--help}'[show this help message and exit]' \
-			'--sdk[Path to Pebble SDK (ie: ~/pebble-dev/PebbleSDK-2.X/)]' \
-			'--debug[Enable debugging output]' \
-			'--phone[When using Developer Connection, the IP address or hostname of your phone.]' \
-			'--pebble_id[When using a direct BT connection, the watchs Bluetooth ID (e.g. DF38 or 01:23:45:67:DF:38).]' \
-			'--pair[When using a direct BT connection, attempt to pair the watch automatically]' \
-			'--verbose[Prints received system logs in addition to APP_LOG]' \
-			'--generate[Generate a core dump image on the watch.]'
-	;;
-	*)
-	;;
+  build|clean|convert-project)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]'
+  ;;
+  new-project)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--simple[Create a minimal C file.]' \
+      '--javascript[Generate a JavaScript file.]' \
+      '--worker[Generate a background worker.]'
+  ;;
+  install)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--phone[When using the developer connection, your phone'"'"'s IP or hostname. Equivalent to PEBBLE_PHONE.]' \
+      '--qemu[Use this option to connect directly to a QEMU instance. Equivalent to PEBBLE_QEMU.]' \
+      '--cloudpebble[Use this option to connect to your phone via the CloudPebble connection. Equivalent to PEBBLE_CLOUDPEBBLE.]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]' \
+      '--serial[Connected directly, given a path to a serial device.]' \
+      '--logs[Enable logs]'
+    _files
+  ;;
+  logs)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--phone[When using the developer connection, your phone'"'"'s IP or hostname. Equivalent to PEBBLE_PHONE.]' \
+      '--qemu[Use this option to connect directly to a QEMU instance. Equivalent to PEBBLE_QEMU.]' \
+      '--cloudpebble[Use this option to connect to your phone via the CloudPebble connection. Equivalent to PEBBLE_CLOUDPEBBLE.]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]' \
+      '--serial[Connected directly, given a path to a serial device.]' \
+      '--color[Force colored output on]' \
+      '--no-color[Force colored output off]'
+  ;;
+  screenshot)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--phone[When using the developer connection, your phone'"'"'s IP or hostname. Equivalent to PEBBLE_PHONE.]' \
+      '--qemu[Use this option to connect directly to a QEMU instance. Equivalent to PEBBLE_QEMU.]' \
+      '--cloudpebble[Use this option to connect to your phone via the CloudPebble connection. Equivalent to PEBBLE_CLOUDPEBBLE.]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]' \
+      '--serial[Connected directly, given a path to a serial device.]' \
+      '--no-correction[Disable colour correction.]' \
+      '--no-open[Disable automatic opening of image.]'
+    _files
+  ;;
+  insert-pin)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--phone[When using the developer connection, your phone'"'"'s IP or hostname. Equivalent to PEBBLE_PHONE.]' \
+      '--cloudpebble[Use this option to connect to your phone via the CloudPebble connection. Equivalent to PEBBLE_CLOUDPEBBLE.]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]' \
+      '--id[An arbitrary string representing an ID for the pin being added]' \
+      '--app-uuid[The UUID of the pin'"'"'s parent app.]'
+    _files
+  ;;
+  delete-pin)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--phone[When using the developer connection, your phone'"'"'s IP or hostname. Equivalent to PEBBLE_PHONE.]' \
+      '--qemu[Use this option to connect directly to a QEMU instance. Equivalent to PEBBLE_QEMU.]' \
+      '--cloudpebble[Use this option to connect to your phone via the CloudPebble connection. Equivalent to PEBBLE_CLOUDPEBBLE.]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]' \
+      '--serial[Connected directly, given a path to a serial device.]' \
+      '--id[An arbitrary string representing an ID for the pin being added]'
+  ;;
+  emu-accel)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--qemu[Use this option to connect directly to a QEMU instance. Equivalent to PEBBLE_QEMU.]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]'
+  ;;
+  emu-app-config)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]' \
+      '--file[Name of local file to use for settings page in lieu of URL specified in JS]'
+  ;;
+  emu-battery)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--qemu[Use this option to connect directly to a QEMU instance. Equivalent to PEBBLE_QEMU.]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]' \
+      '--percent[Set the percentage battery remaining (0 to 100) on the emulator]' \
+      '--charging[Set the Pebble emulator to charging mode]'
+  ;;
+  emu-bt-connection)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--qemu[Use this option to connect directly to a QEMU instance. Equivalent to PEBBLE_QEMU.]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]' \
+      '--connected[Set the emulator BT connection status]'
+  ;;
+  emu-compass)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--qemu[Use this option to connect directly to a QEMU instance. Equivalent to PEBBLE_QEMU.]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]' \
+      '--heading[Set the emulator compass heading (0 to 359)]' \
+      '--uncalibrated[Set compass to uncalibrated]' \
+      '--calibrating[Set compass to calibrating mode]' \
+      '--calibrated[Set compass to calibrated]'
+  ;;
+  emu-tap)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--qemu[Use this option to connect directly to a QEMU instance. Equivalent to PEBBLE_QEMU.]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]' \
+      '--direction[Set the direction of the accel tap in the emulator]'
+  ;;
+  ping|repl)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--phone[When using the developer connection, your phone'"'"'s IP or hostname. Equivalent to PEBBLE_PHONE.]' \
+      '--qemu[Use this option to connect directly to a QEMU instance. Equivalent to PEBBLE_QEMU.]' \
+      '--cloudpebble[Use this option to connect to your phone via the CloudPebble connection. Equivalent to PEBBLE_CLOUDPEBBLE.]' \
+      '--emulator[Launch an emulator. Equivalent to PEBBLE_EMULATOR.]' \
+      '--serial[Connected directly, given a path to a serial device.]'
+  ;;
+  login)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--auth_host_name[AUTH_HOST_NAME]' \
+      '--auth_host_port[AUTH_HOST_PORT]' \
+      '--logging_level[LOGGING_LEVEL]' \
+      '--noauth_local_webserver[Try this flag if the standard authentication is not working.]'
+  ;;
+  logout)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]'
+  ;;
+  analyze-size)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--summary[Display a single line per section]' \
+      '--verbose[Display a per-symbol breakdown]'
+  ;;
+  kill)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--force[Send the processes SIGKILL]'
+  ;;
+  wipe)
+    _arguments \
+      '(-h --help)'{-h,--help}'[show this help message and exit]' \
+      '-v[Degree of verbosity (use more v for more verbosity)]' \
+      '--everything[Deletes all data from all versions. Also logs you out.]'
+  ;;
+  *)
+  ;;
 esac

@@ -11,9 +11,9 @@ EOM
 
 update_complation() {
   cd $root/completion/
-  # curl -Lo git-completion.bash https://raw.github.com/git/git/master/contrib/completion/git-completion.bash
-  curl -Lo _git "http://sourceforge.net/p/zsh/code/ci/master/tree/Completion/Unix/Command/_git?format=raw"
-  # curl -Lo _git https://raw.github.com/git/git/master/contrib/completion/git-completion.zsh
+  # curl -Lo _git "http://sourceforge.net/p/zsh/code/ci/master/tree/Completion/Unix/Command/_git?format=raw"
+  curl -Lo git-completion.bash https://raw.github.com/git/git/master/contrib/completion/git-completion.bash
+  curl -Lo _git https://raw.github.com/git/git/master/contrib/completion/git-completion.zsh
   curl -Lo _git-issue https://raw.githubusercontent.com/glidenote/git-issue-zsh-completion/master/_git-issue
   curl -Lo _padrino https://raw.github.com/matthias-guenther/padrino-zsh-completion/master/_padrino
   curl -Lo _loga https://raw.github.com/tacahiroy/loga-zsh-completion/master/_loga_zsh_completion.zsh
@@ -43,6 +43,8 @@ update_compfunc() {
 
 main() {
   local cwd=$(pwd)
+
+  update_complation
 
   cd $cwd
 }
