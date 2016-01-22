@@ -3,14 +3,11 @@
 if !which docker >/dev/null 2>&1; then
   echo "command not found : docker " >&2
 fi
-PID=$(docker ps | awk '{print $1}' | peco)
+CONTAINER=$(docker ps | peco | awk '{print $NF}')
 # echo $PID
 
-if [ -n "$PID" ]; then
-  DOCKER_PID=$(docker inspect --format "{{.State.Pid}}" ${PID})
-  if [ -n "$DOCKER_PID" ]; then
-    sudo docker exec --mount --uts --ipc --net --pid --target ${DOCKER_PID} /bin/bash
-  fi
+if [ -n "$CONTAINER" ]; then
+  sudo docker exec -t -i ${CONTAINER} /bin/bash
 fi
 
 
