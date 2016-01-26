@@ -1,0 +1,12 @@
+{
+  "composer.json": { "type" : "configs"},
+  "*.php": {"type": "actions"},
+  "*.html": {"type": "views"},
+  "*.phtml": {"type": "views"},
+  "*.ini": {"type": "inis"},
+  "*.js": {"type": "scripts"},
+  "*.css": {"type": "styles"},
+  "vendors/*.php": { "type" : "vendors"},
+  "README.md": { "type": "doc" }
+}
+
