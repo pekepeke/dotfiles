@@ -41,6 +41,11 @@ docker-compose ps
 docker-compose logs
 ```
 
+### 環境変数参照
+```
+docker-compose run [service] env
+```
+
 ### start/stop/restart
 ```
 # コンテナをサービスとして開始/停止/再起動する

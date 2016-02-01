@@ -82,6 +82,14 @@ http {
 }
 ```
 
+##  その他設定
+### `mod_rpaf`
+
+```
+real_ip_header X-Forwarded-For;
+set_real_ip_from 0.0.0.0/0;
+```
+
 ## 設定例
 ### メモ
 - [画像リサイズサーバー](http://qiita.com/zaru/items/1c21d418d69c3505a91a)
@@ -153,11 +161,33 @@ server {
 	listen       80;
 	server_name  localhost;
 	proxy_redirect                          off;
+	# proxy_redirect http:// $scheme://;
+	proxy_hide_header       Server;
+	proxy_hide_header       X-Powered-By;
+	proxy_hide_header       X-AspNet-Version;
 	proxy_set_header Host                   $host;
 	proxy_set_header X-Real-IP              $remote_addr;
 	proxy_set_header X-Forwarded-Host       $host;
 	proxy_set_header X-Forwarded-Server     $host;
 	proxy_set_header X-Forwarded-For        $proxy_add_x_forwarded_for;
+	proxy_set_header        X-Forwarded-By    $server_addr:$server_port;
+	proxy_set_header        X-Forwarded-Proto $scheme;
+	# map $scheme $msiis      { http off; https on; } # compatibility
+	# proxy_set_header        Front-End-Https   $msiis;
+
+	### proxy-timeouts ###
+	proxy_connect_timeout   6;
+	proxy_send_timeout      60;
+	proxy_read_timeout      60;
+
+	### proxy-buffers ###
+	proxy_buffering         on;
+	proxy_buffer_size       8k;
+	proxy_buffers           256 8k;
+	proxy_busy_buffers_size    64k;
+	proxy_temp_file_write_size 64k;
+	proxy_temp_path         /var/spool/nginx/temp/;
+
 	location / {
 		proxy_pass http://node-app/;
 	}
