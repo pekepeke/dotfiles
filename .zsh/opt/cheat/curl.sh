@@ -22,3 +22,5 @@ curl -Lo file http://example.com/index.html
 curl -x host:8080 http://example.com/
 # exit code 有効化
 curl -f http://example.com
+# hosts
+curl -H 'Host: new.example.com' 192.168.0.1
