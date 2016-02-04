@@ -1,0 +1,4 @@
+RUN yum install -y ssmtp && \
+    echo "mailhub=mail:1025\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf
+RUN apt-install ssmtp && \
+    echo "mailhub=mail:1025\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf
