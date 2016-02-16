@@ -378,10 +378,8 @@ if v:version > 702
     call neobundle#begin(expand('~/.vim/neobundle'))
 
     " minimum plugin
-    NeoBundle 'tpope/vim-vividchalk', {'autoload': {'unite_sources':['colorscheme']}}
-    NeoBundle 'Shougo/unite.vim', {
-      \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
-      \ }
+    NeoBundle 'tpope/vim-vividchalk'
+    NeoBundle 'Shougo/unite.vim'
     " NeoBundle 'Shougo/neomru.vim', {'autoload': {
     " \ 'unite_sources': ['file_mru', 'directory_mru',
     " \   'neomru/file', 'neomru/directory']
@@ -414,20 +412,12 @@ if v:version > 702
       \ 'mappings' : ['<Plug>(vimshell']
       \ }}
     NeoBundle 'kana/vim-operator-user'
-    NeoBundle 'kana/vim-operator-replace', {
-      \ 'depends' : 'vim-operator-user', 'autoload' : {
-      \ 'mappings' : [
-      \ ['nx', '_', '<Plug>(operator-replace)']]
-      \ }}
+    NeoBundle 'kana/vim-operator-replace'
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'rhysd/committia.vim'
-    NeoBundle 'idanarye/vim-merginal', {'autoload':{
-      \ 'commands': [ "Merginal", "MerginalToggle", "MerginalClose",],
-      \ }}
-    NeoBundle 'AndrewRadev/gapply.vim', {'autoload':{
-      \ 'commands': [ 'Gapply',],
-      \ }}
+    NeoBundle 'idanarye/vim-merginal'
+    NeoBundle 'AndrewRadev/gapply.vim'
     NeoBundle 'lambdalisue/vim-unified-diff'
     NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
       \ 'commands' : [
@@ -438,12 +428,7 @@ if v:version > 702
       \ }}
     NeoBundle 'vim-scripts/sudo.vim'
     " NeoBundle 'chrisbra/SudoEdit.vim'
-    NeoBundle 'tpope/vim-commentary', {'autoload': {
-      \ 'mappings': [
-      \   ['xn', '<Plug>Commentary'],
-      \   ['n', '<Plug>Commentary'],
-      \ ],
-      \ }}
+    NeoBundle 'tpope/vim-commentary'
     call neobundle#end()
   elseif s:standalone " plugin load {{{2
     if has('vim_starting')

@@ -949,19 +949,22 @@ else
   " \ }}
 endif
 NeoBundle 'rhysd/committia.vim'
-NeoBundle 'idanarye/vim-merginal', {'autoload':{
-\ 'commands': [ "Merginal", "MerginalToggle", "MerginalClose",],
-\ }}
-NeoBundle 'AndrewRadev/gapply.vim', {'autoload':{
-\ 'commands': [ "Gapply",],
-\ }}
+NeoBundle 'idanarye/vim-merginal'
+" , {'autoload':{
+" \ 'commands': [ "Merginal", "MerginalToggle", "MerginalClose",],
+" \ }}
+NeoBundle 'AndrewRadev/gapply.vim'
+" , {'autoload':{
+" \ 'commands': [ "Gapply",],
+" \ }}
 
 " NeoBundleLazy 'gregsexton/gitv', {'autoload': {
 " \ 'commands' : ['Gitv'],
 " \ }}
-NeoBundle 'cohama/agit.vim', {'autoload': {
-\ 'commands': ['Agit', 'AgitGit', 'AgitFile'],
-\ }}
+NeoBundle 'cohama/agit.vim'
+" , {'autoload': {
+" \ 'commands': ['Agit', 'AgitGit', 'AgitFile'],
+" \ }}
 NeoBundle 'rhysd/git-messenger.vim', {
 \ 'gui': 1,
 \ }
@@ -993,32 +996,38 @@ if has('python')
 endif
 
 " help {{{4
-NeoBundle 'thinca/vim-ref', { 'autoload' : {
-\ 'commands' : {
-\   'name' : 'Ref',
-\   'complete' : 'customlist,ref#complete',
-\ },
-\ 'unite_sources' : [
-\   'ref/erlang', 'ref/man', 'ref/perldoc',
-\   'ref/phpmanual', 'ref/pydoc', 'ref/redis', 'ref/refe', 'ref/webdict'
-\ ],
-\ 'mappings' : ['n', 'K', '<Plug>(ref-']
-\ }}
+NeoBundle 'thinca/vim-ref'
+" , { 'autoload' : {
+" \ 'commands' : {
+" \   'name' : 'Ref',
+" \   'complete' : 'customlist,ref#complete',
+" \ },
+" \ 'unite_sources' : [
+" \   'ref/erlang', 'ref/man', 'ref/perldoc',
+" \   'ref/phpmanual', 'ref/pydoc', 'ref/redis', 'ref/refe', 'ref/webdict'
+" \ ],
+" \ 'mappings' : ['n', 'K', '<Plug>(ref-']
+" \ }}
 NeoBundle 'pekepeke/ref-javadoc', {
-\ 'depends': 'thinca/vim-ref', 'autoload': {
-\ 'unite_sources': [
-\   'ref/javadoc',
-\ ], }}
+\ 'depends': 'thinca/vim-ref'
+\ }
+" , 'autoload': {
+" \ 'unite_sources': [
+" \   'ref/javadoc',
+" \ ], }}
 NeoBundle 'soh335/vim-ref-jquery', {
-\ 'depends': 'thinca/vim-ref', 'autoload': {
-\ 'unite_sources': [
-\   'ref/jquery',
-\ ], }}
+\ 'depends': 'thinca/vim-ref'
+\ }
+" , 'autoload': {
+" \ 'unite_sources': [
+" \   'ref/jquery',
+" \ ], }}
 NeoBundle 'taka84u9/vim-ref-ri', {
-\ 'depends': 'thinca/vim-ref', 'autoload': {
-\ 'unite_sources': [
-\   'ref/ri',
-\ ], }}
+\ 'depends': 'thinca/vim-ref'}
+" , 'autoload': {
+" \ 'unite_sources': [
+" \   'ref/ri',
+" \ ], }}
 NeoBundle 'mfumi/ref-dicts-en'
 " NeoBundle 'nishigori/vim-ref-phpunit'
 " NeoBundle 'eiiches/vim-ref-gtkdoc'
@@ -1060,10 +1069,11 @@ if get(g:vimrc_enabled_features, "ycm", 0) && has('python')
     \ }}
 elseif has('lua') && (v:version > 703 ||
       \ (v:version == 703 && has('patch885')))
-  NeoBundle 'Shougo/neocomplete.vim', {'autoload':{
-  \ 'insert':1,
-  \ 'unite_sources': ['neocomplete'],
-  \ }}
+  NeoBundle 'Shougo/neocomplete.vim'
+  " , {'autoload':{
+  " \ 'insert':1,
+  " \ 'unite_sources': ['neocomplete'],
+  " \ }}
   NeoBundle 'Shougo/neoinclude.vim'
   NeoBundle 'Shougo/neco-syntax'
   NeoBundle 'Shougo/neco-vim'
@@ -1071,21 +1081,23 @@ elseif has('lua') && (v:version > 703 ||
     NeoBundle 'supermomonga/neocomplete-rsense.vim'
   endif
 else
-  NeoBundle 'Shougo/neocomplcache.vim', {'autoload':{
-  \ 'insert':1,
-  \ }}
+  NeoBundle 'Shougo/neocomplcache.vim'
+  " , {'autoload':{
+  " \ 'insert':1,
+  " \ }}
   if s:bundle.is_installed('rsense')
     NeoBundle 'Shougo/neocomplcache-rsense.vim'
   endif
 endif
-NeoBundle 'Shougo/neosnippet.vim', {
-\ 'lazy' : 1,
-\ 'autoload' : {
-\ 'commands' : ['NeoSnippetEdit', 'NeoSnippetSource'],
-\ 'insert' : 1,
-\ 'filetypes' : 'snippet',
-\ 'unite_sources' : ['snippet', 'neosnippet/user', 'neosnippet/runtime'],
-\ }}
+NeoBundle 'Shougo/neosnippet.vim'
+" , {
+" \ 'lazy' : 1,
+" \ 'autoload' : {
+" \ 'commands' : ['NeoSnippetEdit', 'NeoSnippetSource'],
+" \ 'insert' : 1,
+" \ 'filetypes' : 'snippet',
+" \ 'unite_sources' : ['snippet', 'neosnippet/user', 'neosnippet/runtime'],
+" \ }}
 NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'hrsh7th/vim-neco-calc'
 NeoBundle 'rhysd/github-complete.vim'
@@ -1094,9 +1106,10 @@ NeoBundle 'rhysd/github-complete.vim'
 NeoBundle 'vim-ruby/vim-ruby'
 if s:exec_ruby
   if get(g:vimrc_enabled_features, "rails", 0)
-    NeoBundle 'tpope/vim-rails', {'autoload':{
-    \ 'filetypes': ['ruby','haml','eruby'],
-    \ }}
+    NeoBundle 'tpope/vim-rails'
+    " , {'autoload':{
+    " \ 'filetypes': ['ruby','haml','eruby'],
+    " \ }}
     if s:bundle.is_installed('neocomplete.vim')
       NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
       \ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails',
@@ -1114,9 +1127,10 @@ if s:exec_ruby
   NeoBundleLazy 'skwp/vim-rspec', {'autoload': {
   \ 'commands' : ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
   \ }}
-  NeoBundle 'tpope/vim-bundler', {'autoload':{
-  \ 'filetypes': ['ruby'],
-  \ }}
+  NeoBundle 'tpope/vim-bundler'
+  " , {'autoload':{
+  " \ 'filetypes': ['ruby'],
+  " \ }}
   if get(g:vimrc_enabled_features, "sinatra", 0)
     NeoBundle 'hallison/vim-ruby-sinatra'
   endif
@@ -1203,9 +1217,10 @@ NeoBundle 'mustache/vim-mustache-handlebars'
 
 " css {{{4
 if has('python') || has('python3')
-  NeoBundle 'Rykka/colorv.vim', {'autoload':{
-  \ 'filetypes': ['html','javascript','css','sass','scss','less','slim','stylus'],
-  \ }}
+  NeoBundle 'Rykka/colorv.vim'
+  " , {'autoload':{
+  " \ 'filetypes': ['html','javascript','css','sass','scss','less','slim','stylus'],
+  " \ }}
 endif
 " NeoBundle 'gorodinskiy/vim-coloresque'
 
@@ -1226,10 +1241,11 @@ NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'mxw/vim-jsx'
 " NeoBundle 'jsx/vim-jsx'
 " NeoBundle 'moll/vim-node'
-NeoBundle 'pekepeke/vim-node', {'autoload': {
-  \ 'filetypes': ['javascript', 'coffee'],
-  \ 'depends': ['gf-user'],
-  \ }}
+NeoBundle 'pekepeke/vim-node'
+" , {'autoload': {
+"   \ 'filetypes': ['javascript', 'coffee'],
+"   \ 'depends': ['gf-user'],
+"   \ }}
 if s:exec_npm && has('python') || has('python3')
   NeoBundle 'marijnh/tern_for_vim', {
   \ 'build' : {
@@ -1405,9 +1421,10 @@ elseif s:exec_java
   NeoBundle 'kamichidu/vim-javaclasspath', {
   \   'depends': ['kamichidu/vim-javalang'],
   \}
-  NeoBundle 'artur-shaik/vim-javacomplete2', {
-  \   'autoload' : { 'filetypes' : 'java' },
-  \ }
+  NeoBundle 'artur-shaik/vim-javacomplete2'
+  " , {
+  " \   'autoload' : { 'filetypes' : 'java' },
+  " \ }
 endif
 NeoBundleLazy 'vim-scripts/jcommenter.vim', {'autoload':{
 \ 'filetypes': ['java'],
@@ -1579,13 +1596,15 @@ NeoBundle 'glidenote/keepalived-syntax.vim'
 " NeoBundle 'Shougo/vim-nyaos'
 
 " unite.vim {{{3
-NeoBundle 'Shougo/unite.vim', {
-\   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
-\ }
-NeoBundle 'Shougo/neomru.vim', {'autoload': {
-\ 'unite_sources': ['file_mru', 'directory_mru',
-\   'neomru/file', 'neomru/directory']
-\}}
+NeoBundle 'Shougo/unite.vim'
+" , {
+" \   'autoload': { 'commands' : ['Unite', 'UniteBookmarkAdd'] },
+" \ }
+NeoBundle 'Shougo/neomru.vim'
+" , {'autoload': {
+" \ 'unite_sources': ['file_mru', 'directory_mru',
+" \   'neomru/file', 'neomru/directory']
+" \}}
 NeoBundle 'Shougo/neoyank.vim'
 NeoBundleLazy 'thinca/vim-unite-history', {'autoload':{
 \ 'unite_sources': ['history/command', 'history/search'],
@@ -1750,10 +1769,11 @@ NeoBundleLazy 'pekepeke/vim-gf-vundle', {'autoload':{
 " operator {{{3
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'kana/vim-operator-replace', {
-\ 'depends' : 'kana/vim-operator-user', 'autoload' : {
-\ 'mappings' : [
-\ ['nx', '<Plug>(operator-replace)']]
-\ }}
+\ 'depends' : 'kana/vim-operator-user',}
+" 'autoload' : {
+" \ 'mappings' : [
+" \ ['nx', '<Plug>(operator-replace)']]
+" \ }}
 NeoBundleLazy 'tyru/operator-camelize.vim', {
 \ 'depends' : 'kana/vim-operator-user', 'autoload' : {
 \ 'mappings' : [
@@ -1851,29 +1871,29 @@ NeoBundleLazy 'deris/vim-textobj-enclosedsyntax', {'autoload':{
 \ '<Plug>(textobj-enclosedsyntax-',
 \ ]]}}
 NeoBundle "osyo-manga/vim-textobj-multitextobj", {
-\ 'depends' : 'vim-textobj-user',
-\ 'autoload' : {
-\ 'mappings' : [
-\ ['nvo', '<Plug>(textobj-multitextobj-i)', '<Plug>(textobj-multitextobj-a)']]
-\ }}
+\ 'depends' : 'vim-textobj-user', }
+" \ 'autoload' : {
+" \ 'mappings' : [
+" \ ['nvo', '<Plug>(textobj-multitextobj-i)', '<Plug>(textobj-multitextobj-a)']]
+" \ }}
 NeoBundle 'osyo-manga/vim-textobj-multiblock', {
-\ 'depends' : 'vim-textobj-user',
-\ 'autoload' : {
-\ 'mappings' : [
-\ ['nvo', '<Plug>(textobj-multiblock-i)', '<Plug>(textobj-multiblock-a)']]
-\ }}
+\ 'depends' : 'vim-textobj-user', }
+" \ 'autoload' : {
+" \ 'mappings' : [
+" \ ['nvo', '<Plug>(textobj-multiblock-i)', '<Plug>(textobj-multiblock-a)']]
+" \ }}
 NeoBundle 'vim-scripts/textobj-indent', {
-\ 'depends' : 'vim-textobj-user',
-\ 'autoload' : {
-\ 'mappings' : [
-\ ['nvo', '<Plug>(textobj-indent-i)', '<Plug>(textobj-indent-a)']]
-\ }}
+\ 'depends' : 'vim-textobj-user', }
+" \ 'autoload' : {
+" \ 'mappings' : [
+" \ ['nvo', '<Plug>(textobj-indent-i)', '<Plug>(textobj-indent-a)']]
+" \ }}
 NeoBundle 'sgur/vim-textobj-parameter', {
-\ 'depends' : 'vim-textobj-user',
-\ 'autoload' : {
-\ 'mappings' : [
-\ ['nvo', '<Plug>(textobj-parameter-i)', '<Plug>(textobj-parameter-a)']]
-\ }}
+\ 'depends' : 'vim-textobj-user', }
+" \ 'autoload' : {
+" \ 'mappings' : [
+" \ ['nvo', '<Plug>(textobj-parameter-i)', '<Plug>(textobj-parameter-a)']]
+" \ }}
 " NeoBundleLazy 'h1mesuke/textobj-wiw', {
 " \ 'depends' : 'vim-textobj-user',
 " \ 'autoload' : {
@@ -1891,10 +1911,11 @@ NeoBundleLazy 'osyo-manga/vim-textobj-context', {'autoload':{
 \ '<Plug>(textobj-context-i)',
 \ ]]}}
 NeoBundle "osyo-manga/vim-textobj-blockwise"
-NeoBundle 'akiyan/vim-textobj-xml-attribute', {'autoload':{
-\ 'mappings' : [['nvo',
-\ '<Plug>(textobj-xmlattribute-', 'axa', 'ixa'
-\ ]]}}
+NeoBundle 'akiyan/vim-textobj-xml-attribute'
+" , {'autoload':{
+" \ 'mappings' : [['nvo',
+" \ '<Plug>(textobj-xmlattribute-', 'axa', 'ixa'
+" \ ]]}}
 NeoBundleLazy 'rhysd/vim-textobj-lastinserted', {'autoload':{
 \ 'mappings' : [
 \ ['nvo', '<Plug>(textobj-lastinserted-']]
@@ -1903,16 +1924,18 @@ NeoBundleLazy 'gilligan/textobj-lastpaste', {'autoload':{
 \ 'mappings': [
 \ ['nvo', '<Plug>(textobj-lastpaste-', 'aip', 'iip']]
 \ }}
-NeoBundle 'mattn/vim-textobj-url', {'autoload':{
-\ 'mappings' : [
-\ ['nvo', '<Plug>(textobj-url-']]
-\ }}
+NeoBundle 'mattn/vim-textobj-url'
+" , {'autoload':{
+" \ 'mappings' : [
+" \ ['nvo', '<Plug>(textobj-url-']]
+" \ }}
 NeoBundleLazy 'anyakichi/vim-textobj-ifdef', {'autoload':{
 \ 'mappings' : [
 \ ['nvo', '<Plug>(textobj-ifdef-i)', '<Plug>(textobj-ifdef-a)']]
 \ }}
-NeoBundle 'akiyan/vim-textobj-php', {'autoload':{
-\ 'mappings' : [['nvo', '<Plug>(textobj-php-', ]]}}
+NeoBundle 'akiyan/vim-textobj-php'
+" , {'autoload':{
+" \ 'mappings' : [['nvo', '<Plug>(textobj-php-', ]]}}
 
 " vundle end {{{2
   NeoBundleSaveCache
