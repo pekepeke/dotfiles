@@ -8,8 +8,8 @@ ID=$(docker images | peco | awk '{print $3}')
 
 if [ -n "$ID" ]; then
   for id in $ID ; do
-    echo docker rmi $id
-    sudo docker rmi $id
+    echo docker rmi "$@" $id
+    sudo docker rmi "$@" $id
   done
 fi
 

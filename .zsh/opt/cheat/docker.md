@@ -39,3 +39,19 @@ docker inspect --format "{{.State.Pid}}" [id]
 sudo nsenter --mount --uts --ipc --net --pid --target $PID
 
 ```
+
+## change detach key 
+- `~/.docker/config.json`
+
+```
+{
+    "auths": {
+        "https://hoge.docker.io/v1/": {
+            "auth": "****",
+            "email": "****"
+        }
+    },
+    "detachKey": "ctrl-a,a"
+}
+```
+

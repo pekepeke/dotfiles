@@ -1,0 +1,7 @@
+#!/bin/bash
+
+PIDS="$(docker ps -a | peco | awk '{print $1}')"
+for id in $PIDS; do
+  echo docker rm $@ $id
+  docker rm $@ $id
+done
