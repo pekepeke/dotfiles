@@ -2930,7 +2930,7 @@ endif
 
 " unified-diff {{{2
 if !get(g:vimrc_enabled_features, "git_under1.8", 0)
-  \ && s:bundle.is_installed('vim-unified-diff')
+  \ && s:bundle.is_installed('vim-unified-diff') && has('gui_running')
   set diffexpr=unified_diff#diffexpr()
 
   " configure with the followings (default values are shown below)
