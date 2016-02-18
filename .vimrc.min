@@ -380,7 +380,8 @@ if v:version > 702
     " minimum plugin
     NeoBundle 'tpope/vim-vividchalk'
     NeoBundle 'Shougo/unite.vim'
-    " NeoBundle 'Shougo/neomru.vim', {'autoload': {
+    NeoBundle 'Shougo/neomru.vim'
+    " , {'autoload': {
     " \ 'unite_sources': ['file_mru', 'directory_mru',
     " \   'neomru/file', 'neomru/directory']
     " \}}
@@ -525,7 +526,7 @@ endif
 " plugin settings {{{1
 let g:vimrc_enabled_plugins = {}
 " unified-diff {{{2
-if s:has_plugin('vim-unified-diff')
+if s:has_plugin('vim-unified-diff') && has('gui_running')
   set diffexpr=unified_diff#diffexpr()
 
   " configure with the followings (default values are shown below)
