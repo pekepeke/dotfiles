@@ -6,7 +6,11 @@
 - `character_set_database` : 現在参照しているDBの文字コード
 - `character_set_results` : クライアントへ送信する検索結果はこの文字コードになる
 - `character_set_server` : DB作成時のデフォルトの文字コード
-- `character_set_system` : システムの使用する文字セットで常に`utf8`が使用されている
+- `character_set_system` : システムの使用する文字セット
+
+`character_set_client` と `character_set_connection`, `character_set_results` で、 
+この3変数はクライアントがクエリを送信し、 クエリ結果を受信するときのキャラクタセットとなる。
+これを修正するのは SET NAMES [charset] で変更できる。
 
 ## クエリ調査
 
@@ -15,7 +19,6 @@ SHOW VARIABLES LIKE 'general_%';
 SET GLOBAL general_log = 'ON';
 SET GLOBAL general_log = 'OFF';
 ```
-
 
 ## テーブル、カラムの調査
 
