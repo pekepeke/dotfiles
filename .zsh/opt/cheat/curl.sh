@@ -24,3 +24,11 @@ curl -x host:8080 http://example.com/
 curl -f http://example.com
 # hosts
 curl -H 'Host: new.example.com' 192.168.0.1
+
+## POST
+curl http://localhost:3000/users -X POST -d "user[name]=postman" -d "user[age]=19"
+## PUT
+curl http://localhost:3000/users/4 -X PUT -d "user[name]=putman" -d "user[age]=20"
+## DELETE
+curl http://localhost:3000/users/5 -X DELETE
+

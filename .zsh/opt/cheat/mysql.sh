@@ -10,6 +10,8 @@ UPDATE table1 t1 ,table2 t2 SET t1.val1 = t2.val1 ,t1.val2 = t2.val2 ,t1.val3 = 
 GRANT ALL ON db.* TO user@'%' IDENTIFIED BY 'pass';
 FLUSH PRIVILEGES;
 
+SET SESSION old_passwords=0;
+
 SHOW GRANTS FOR ユーザ名@localhost \G;
 SHOW GRANTS FOR current_user();
 

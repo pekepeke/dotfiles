@@ -1,0 +1,15 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# function peco-git-recent-branches-insert-at-pos() {
+  local pos=$CURSOR
+  local selected=$(git for-each-ref --format='%(refname)' --sort=-committerdate refs/heads | \
+    perl -pne 's{^refs/heads/}{}' | \
+    peco --query "$LBUFFER")
+  if [ -n "$selected" ]; then
+    BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
+    CURSOR=$#BUFFER
+  fi
+  zle redisplay
+  # zle -R -c
+# }
+# zle -N peco-git-recent-branches-insert-at-pos
+

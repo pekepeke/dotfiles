@@ -394,8 +394,9 @@ if [ $isnt_mintty -eq 1 ] && type peco >/dev/null 2>&1; then
   bindkey '^Vgh' peco-zle-git-launch
   bindkey '^Vgj' peco-git-ls-files-insert-at-pos
   bindkey '^Vgg' peco-git-changed-files-insert-at-pos
-  bindkey '^Vgb' peco-git-recent-branches-replace-buffer
-  bindkey '^VgB' peco-git-recent-all-branches-replace-buffer
+  bindkey '^Vgb' peco-git-recent-branches-all-insert-at-pos
+  # bindkey '^Vgb' peco-git-recent-branches-replace-buffer
+  # bindkey '^VgB' peco-git-recent-branches-all-replace-buffer
   bindkey '^Vgl' peco-git-log-hash-insert-at-pos
   bindkey '^Vgm' peco-git-ls-files-insert-at-pos
   bindkey '^O' peco-zle-launch
