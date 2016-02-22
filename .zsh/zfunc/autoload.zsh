@@ -2,6 +2,8 @@ fpath+=$HOME/.zsh/zfunc/commands
 autoload -Uz cdd
 autoload -Uz cdgem
 fpath+=$HOME/.zsh/zfunc/peco
+autoload -Uz git-branch-all-insert-at-pos
+zle -N git-branch-all-insert-at-pos
 autoload -Uz peco-aws-auto-scaling-groups-insert-at-pos
 zle -N peco-aws-auto-scaling-groups-insert-at-pos
 autoload -Uz peco-aws-ec2-image-id-copy
@@ -76,6 +78,8 @@ autoload -Uz peco-gui-window-select
 zle -N peco-gui-window-select
 autoload -Uz peco-history-replace-buffer
 zle -N peco-history-replace-buffer
+autoload -Uz peco-home-directories-open
+zle -N peco-home-directories-open
 autoload -Uz peco-homebrew-cask-cd-appdir
 zle -N peco-homebrew-cask-cd-appdir
 autoload -Uz peco-homebrew-cask-info
@@ -94,8 +98,6 @@ autoload -Uz peco-homebrew-open
 zle -N peco-homebrew-open
 autoload -Uz peco-homebrew-plist-insert-at-pos
 zle -N peco-homebrew-plist-insert-at-pos
-autoload -Uz peco-home-directories-open
-zle -N peco-home-directories-open
 autoload -Uz peco-lang-repl-launch
 zle -N peco-lang-repl-launch
 autoload -Uz peco-locate-insert-at-pos
@@ -140,8 +142,6 @@ autoload -Uz peco-tmux-attach-session
 zle -N peco-tmux-attach-session
 autoload -Uz peco-tmux-buffer-history-replace-buffer
 zle -N peco-tmux-buffer-history-replace-buffer
-autoload -Uz peco-tmuxinator
-zle -N peco-tmuxinator
 autoload -Uz peco-tmux-kill-session
 zle -N peco-tmux-kill-session
 autoload -Uz peco-tmux-layout-exec
@@ -150,6 +150,8 @@ autoload -Uz peco-tmux-pane-select
 zle -N peco-tmux-pane-select
 autoload -Uz peco-tmux-window-select
 zle -N peco-tmux-window-select
+autoload -Uz peco-tmuxinator
+zle -N peco-tmuxinator
 autoload -Uz peco-vhost-docroot-insert-at-pos
 zle -N peco-vhost-docroot-insert-at-pos
 autoload -Uz peco-vhost-fqdn-insert-at-pos
@@ -162,9 +164,9 @@ autoload -Uz peco-zle-launch
 zle -N peco-zle-launch
 autoload -Uz peco-zload-zshfiles
 zle -N peco-zload-zshfiles
-autoload -Uz peco-zshfiles-insert-at-pos
-zle -N peco-zshfiles-insert-at-pos
 autoload -Uz peco-zsh-functions
 zle -N peco-zsh-functions
 autoload -Uz peco-zsh-keybinds
 zle -N peco-zsh-keybinds
+autoload -Uz peco-zshfiles-insert-at-pos
+zle -N peco-zshfiles-insert-at-pos

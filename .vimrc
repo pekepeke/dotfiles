@@ -1501,6 +1501,15 @@ NeoBundle 'StanAngeloff/php.vim'
 NeoBundle 'arnaud-lb/vim-php-namespace'
 NeoBundle 'pekepeke/phpfolding.vim'
 NeoBundle 'adoy/vim-php-refactoring-toolbox'
+NeoBundle 'beberlei/vim-php-refactor'
+if get(g:vimrc_enabled_features, 'cakephp', 0)
+  NeoBundleLazy 'violetyk/cake.vim', {'autoload':{
+  \ 'filetypes': ['php'],
+  \ }}
+endif
+if get(g:vimrc_enabled_features, 'laravel', 0)
+  NeoBundle 'jwalton512/vim-blade'
+endif
 
 if !get(g:vimrc_enabled_features, "eclim", 0)
   if s:exec_php && get(g:vimrc_enabled_features, 'padawan', 0)
@@ -1522,12 +1531,6 @@ if !get(g:vimrc_enabled_features, "eclim", 0)
   else
     NeoBundle 'shawncplus/phpcomplete.vim'
   endif
-endif
-NeoBundle 'beberlei/vim-php-refactor'
-if get(g:vimrc_enabled_features, 'cakephp', 0)
-  NeoBundleLazy 'violetyk/cake.vim', {'autoload':{
-  \ 'filetypes': ['php'],
-  \ }}
 endif
 
 " sql {{{4
