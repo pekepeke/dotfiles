@@ -1,4 +1,5 @@
 # init # {{{1
+[ -n "$SHRC_LANGUAGE_LOADED" -a -n "$MSYS$CYGWIN" ] && return
 # [ $SHLVL -gt 1 ] && return 0
 [ -f $HOME/.shrc.functions ] && source $HOME/.shrc.functions
 [ -f $HOME/.shrc.refe ] && source $HOME/.shrc.refe
@@ -202,7 +203,7 @@ export MANPATH
 shrc_section_title "finalize" # {{{1
 env_unique PATH
 env_unique MANPATH
-# export SHRC_LANGUAGE_LOADED=1
+export SHRC_LANGUAGE_LOADED=1
 unset SHELL_NAME
 
 # __END__ {{{1

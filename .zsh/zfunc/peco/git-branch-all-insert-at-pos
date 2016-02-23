@@ -1,0 +1,14 @@
+# vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
+# peco-git-branch-all-insert-at-pos() {
+  local pos=$CURSOR
+  local selected="$(git branch -a | sed -e 's!^\(\s*\)remotes/!\1!g' | peco | sed -e 's/^ *[^ ]* *//g')"
+  if [ -n "$selected" ]; then
+    BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
+    CURSOR=$#BUFFER
+  fi
+  zle redisplay
+  # zle -R -c
+# }
+# zle -N peco-git-branch-all-insert-at-pos
+
+

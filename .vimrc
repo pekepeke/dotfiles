@@ -222,7 +222,7 @@ call s:mkdir($VIM_CACHE)
 
 " Use vsplit mode http://qiita.com/kefir_/items/c725731d33de4d8fb096
 if has("vim_starting") && !has('gui_running') && has('vertsplit')
-  function! g:EnableVsplitMode()
+  function! s:enable_vsplit_mode()
     " enable origin mode and left/right margins
     let &t_CS = "y"
     let &t_ti = &t_ti . "\e[?6;69h"
@@ -238,7 +238,7 @@ if has("vim_starting") && !has('gui_running') && has('vertsplit')
   " map <expr> ^[[3;3R g:EnableVsplitMode()
   set t_F9=[3;3R
 
-  map <expr> <t_F9> g:EnableVsplitMode()
+  map <expr> <t_F9> <SID>enable_vsplit_mode()
   let &t_RV .= "\e[?6;69h\e[1;3s\e[3;9H\e[6n\e[0;0s\e[?6;69l"
 endif
 
@@ -1235,6 +1235,7 @@ endif
 NeoBundle 'slim-template/vim-slim'
 
 " javascript {{{4
+NeoBundle 'isRuslan/vim-es6'
 NeoBundle 'guileen/simple-javascript-indenter'
 " NeoBundle 'othree/yajs.vim'
 NeoBundle 'pangloss/vim-javascript'
@@ -1494,14 +1495,16 @@ if get(g:vimrc_enabled_features, "haskell", 0)
 endif
 
 " php {{{4
-NeoBundle 'captbaritone/better-indent-support-for-php-with-html'
+if get(g:vimrc_enabled_features, 'phphtml', 0)
+  NeoBundle 'captbaritone/better-indent-support-for-php-with-html'
+endif
 NeoBundle '2072/PHP-Indenting-for-VIm'
-NeoBundle 'Gasol/vim-php'
+" NeoBundle 'Gasol/vim-php'
 NeoBundle 'StanAngeloff/php.vim'
-NeoBundle 'arnaud-lb/vim-php-namespace'
-NeoBundle 'pekepeke/phpfolding.vim'
+" NeoBundle 'arnaud-lb/vim-php-namespace'
+" NeoBundle 'pekepeke/phpfoding.vim'
 NeoBundle 'adoy/vim-php-refactoring-toolbox'
-NeoBundle 'beberlei/vim-php-refactor'
+" NeoBundle 'beberlei/vim-php-refactor'
 if get(g:vimrc_enabled_features, 'cakephp', 0)
   NeoBundleLazy 'violetyk/cake.vim', {'autoload':{
   \ 'filetypes': ['php'],
@@ -2680,6 +2683,18 @@ let g:php_parent_error_open = 1
 "let g:php_sync_method = x
 " phpfolding.vim
 let g:DisableAutoPHPFolding = 1
+function! s:php_ftplugin_init()
+  if expand('%:p') =~? '\(/\(view\|template\)s\?/\|\.html\.\)'
+    let g:php_html_load = 1
+    let g:php_html_in_heredoc = 1
+    let g:php_sql_heredoc = 0
+  else
+    let g:php_html_load = 0
+    let g:php_html_in_heredoc = 0
+    let g:php_sql_heredoc = 1
+  endif
+endfunction
+MyAutoCmd BufEnter,BufRead *.php call s:php_ftplugin_init()
 
 " let g:PHP_autoformatcomment=0
 "" php-doc.vim
