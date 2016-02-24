@@ -1,3 +1,5 @@
+### 基本的な書き方
+
 ```ruby
 Vagrant.configure(2) do |config|
 	# 仮想環境のもとになるBoxの情報 - https://atlas.hashicorp.com/search
@@ -37,4 +39,10 @@ Vagrant.configure(2) do |config|
 	# synced folder
 	config.vm.synced_folder "src/", "/srv/website"
 end
+```
+
+### debug
+
+```
+VAGRANT_LOG=DEBUG vagrant up
 ```
