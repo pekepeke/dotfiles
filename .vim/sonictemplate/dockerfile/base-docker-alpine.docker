@@ -1,0 +1,9 @@
+FROM alpine:3.3
+MAINTAINER {{_expr_:get(g:, 'author', '')}}<{{_expr_:get(g:, 'email', '')}}>
+
+RUN apk add --no-cache ruby ruby-bundler ruby-io-console && \
+    gem install fakes3 --no-doc --no-ri
+
+EXPOSE 4567
+CMD ["/bin/bash"]
+
