@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IDS="$(docker ps -a | peco | awk '{print $2}')"
+IDS="$(docker images | peco | awk '{print $3}')"
 for id in $IDS; do
   docker run --rm -t -i $id /bin/bash || \
     docker run --rm -t -i $id /bin/sh
