@@ -705,13 +705,13 @@ if has('python') || has('python3')
   \  'complete' : 'customlist,vinarise#complete'},
   \ {'name' : 'VinariseScript2Hex',
   \  'complete' : 'customlist,vinarise#complete'}],
-  \ 'unite_sources' : 'vinarise/analysis'
   \ }
+  " \ 'unite_sources' : 'vinarise/analysis'
 endif
 NeoBundleLazy 'Shougo/junkfile.vim', { 'autoload' : {
 \ 'commands' : ['JunkfileOpen'],
-\ 'unite_sources' : ['junkfile', 'junkfile/new'],
 \ }}
+" \ 'unite_sources' : ['junkfile', 'junkfile/new'],
 NeoBundle 'kana/vim-altr'
 " , {'autoload': {
 " \ 'mappings': ['<Plug>(altr-',],
@@ -790,8 +790,8 @@ NeoBundleLazy 'h1mesuke/vim-alignta', {'autoload': {
 \ {'name': 'Align'},
 \ {'name': 'Alignta'},
 \ ],
-\ 'unite_sources': ['alignta']
 \ }}
+" \ 'unite_sources': ['alignta']
 NeoBundle 'syngan/vim-clurin'
 " NeoBundle 'nishigori/increment-activator'
 NeoBundle 'tpope/vim-speeddating'
@@ -1654,9 +1654,10 @@ NeoBundleLazy 'osyo-manga/unite-quickfix', { 'autoload' : {
 NeoBundleLazy "osyo-manga/unite-quickrun_config", { 'autoload' : {
 \ 'unite_sources' : ['quickrun_config'],
 \ }}
-NeoBundleLazy 'eiiches/unite-tselect', { 'autoload' : {
-\ 'unite_sources' : ['tselect'],
-\ }}
+NeoBundle 'eiiches/unite-tselect'
+" , { 'autoload' : {
+" \ 'unite_sources' : ['tselect'],
+" \ }}
 NeoBundleLazy 'tsukkee/unite-tag', { 'autoload' : {
 \ 'unite_sources' : ['tag', 'tag/file', 'tag/include'],
 \ }}
