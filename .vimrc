@@ -626,6 +626,37 @@ endif
 " vundles {{{2
 " vundle start
 if neobundle#load_cache($MYVIMRC)
+  if 0
+
+if get(g:vimrc_enabled_features, "gitsign", 0)
+  if s:is_win
+    NeoBundle 'sgur/vim-lazygutter'
+  else
+    " NeoBundle 'mhinz/vim-signify'
+    NeoBundle 'tomtom/quickfixsigns_vim', {
+    \ 'depends': ['tomtom/tlib_vim'],
+    \ }
+  endif
+endif
+
+if s:is_win
+  NeoBundleLazy 'mattn/startmenu-vim', {'autoload': {
+  \ 'unite_sources':['startmenu']
+  \ }}
+elseif s:is_mac
+  NeoBundleLazy 'rhysd/unite-mac-apps', {'autoload': {
+  \ 'unite_sources':['apps']
+  \ }}
+endif
+if s:is_mac
+  NeoBundle 'tokorom/vim-quickrun-xctool'
+endif
+if s:is_win
+  NeoBundleLazy 'majutsushi/tagbar'
+else
+  NeoBundle 'majutsushi/tagbar'
+endif
+  endif
 " statusline {{{3
 NeoBundle 'itchyny/lightline.vim'
 
