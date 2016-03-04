@@ -34,4 +34,7 @@
   ; ff = false
 [mergetool]
   ; prompt = false
+[core]
+  autocrlf = false
+  safecrlf = false
 

@@ -2715,18 +2715,6 @@ let g:php_parent_error_open = 1
 "let g:php_sync_method = x
 " phpfolding.vim
 let g:DisableAutoPHPFolding = 1
-function! s:php_ftplugin_init()
-  if expand('%:p') =~? '\(/\(view\|template\)s\?/\|\.html\.\)'
-    let g:php_html_load = 1
-    let g:php_html_in_heredoc = 1
-    let g:php_sql_heredoc = 0
-  else
-    let g:php_html_load = 0
-    let g:php_html_in_heredoc = 0
-    let g:php_sql_heredoc = 1
-  endif
-endfunction
-MyAutoCmd BufEnter,BufRead *.php call s:php_ftplugin_init()
 
 " let g:PHP_autoformatcomment=0
 "" php-doc.vim
