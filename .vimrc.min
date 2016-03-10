@@ -382,21 +382,21 @@ if v:version > 702
     NeoBundle 'Shougo/unite.vim'
     NeoBundle 'Shougo/neomru.vim'
     " , {'autoload': {
-    " \ 'unite_sources': ['file_mru', 'directory_mru',
+    " \ 'on_unite': ['file_mru', 'directory_mru',
     " \   'neomru/file', 'neomru/directory']
     " \}}
     NeoBundleLazy 'eiiches/unite-tselect', { 'autoload' : {
-    \ 'unite_sources' : ['tselect'],
+    \ 'on_unite' : ['tselect'],
     \ }}
     NeoBundleLazy 'Shougo/vimfiler.vim', {
       \ 'depends': 'Shougo/unite.vim', 'autoload' : {
-      \ 'commands' : [
+      \ 'on_cmd' : [
       \ { 'name' : 'VimFiler', 'complete' : 'customlist,vimfiler#complete' },
       \ { 'name' : 'VimFilerExplorer', 'complete' : 'customlist,vimfiler#complete' },
       \ { 'name' : 'Edit', 'complete' : 'customlist,vimfiler#complete' },
       \ { 'name' : 'Write', 'complete' : 'customlist,vimfiler#complete' },
       \ 'Read', 'Source'],
-      \ 'mappings' : ['<Plug>(vimfiler'],
+      \ 'on_map' : ['<Plug>(vimfiler'],
       \ 'explorer' : 1,
       \ }}
     NeoBundle 'Shougo/vimproc.vim', { 'build' : {
@@ -406,11 +406,11 @@ if v:version > 702
       \ }}
     NeoBundleLazy 'Shougo/vimshell', {
       \ 'depends': 'Shougo/vimproc.vim', 'autoload' : {
-      \ 'commands' : [{ 'name' : 'VimShell',
+      \ 'on_cmd' : [{ 'name' : 'VimShell',
       \ 'complete' : 'customlist,vimshell#complete'},
       \   'VimShellExecute', 'VimShellInteractive',
       \   'VimShellTerminal', 'VimShellPop'],
-      \ 'mappings' : ['<Plug>(vimshell']
+      \ 'on_map' : ['<Plug>(vimshell']
       \ }}
     NeoBundle 'kana/vim-operator-user'
     NeoBundle 'kana/vim-operator-replace'
@@ -421,7 +421,7 @@ if v:version > 702
     NeoBundle 'AndrewRadev/gapply.vim'
     NeoBundle 'lambdalisue/vim-unified-diff'
     NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
-      \ 'commands' : [
+      \ 'on_cmd' : [
       \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
       \   'DirDiffUpdate', 'DirDiffQuit',
       \   {'name': 'DirDiff', 'complete': 'dir'},
