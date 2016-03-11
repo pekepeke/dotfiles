@@ -1,0 +1,3 @@
+apk --no-cache add --virtual build-dependencies build-base curl cmake \
+&& apk del build-dependencies \
+
