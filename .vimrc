@@ -642,11 +642,11 @@ endif
 
 if s:is_win
   NeoBundleLazy 'mattn/startmenu-vim', {
-  \ 'on_unite':['startmenu']
+  \ 'on_source': 'unite.vim',
   \ }
 elseif s:is_mac
   NeoBundleLazy 'rhysd/unite-mac-apps', {
-  \ 'on_unite':['apps']
+  \ 'on_source': 'unite.vim',
   \ }
 endif
 if s:is_mac
@@ -662,7 +662,8 @@ endif
 NeoBundle 'itchyny/lightline.vim'
 
 " colorscheme {{{3
-NeoBundle 'freeo/vim-kalisi', {'on_unite':['colorscheme']}
+NeoBundle 'freeo/vim-kalisi'
+" , {'on_unite':['colorscheme']}
 NeoBundle 'tpope/vim-vividchalk'
 NeoBundle 'tomasr/molokai'
 " , {'on_unite':['colorscheme']}
@@ -735,12 +736,12 @@ if has('python') || has('python3')
   \  'complete' : 'customlist,vinarise#complete'},
   \ {'name' : 'VinariseScript2Hex',
   \  'complete' : 'customlist,vinarise#complete'}],
+  \ 'on_source': 'unite.vim',
   \ }
-  " \ 'on_unite' : 'vinarise/analysis'
 endif
-NeoBundleLazy 'Shougo/junkfile.vim', {
+NeoBundle 'Shougo/junkfile.vim', {
 \ 'on_cmd' : ['JunkfileOpen'],
-\ 'on_unite' : ['junkfile', 'junkfile/new'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundle 'kana/vim-altr' , {
 \ 'on_map': ['<Plug>(altr-',],
@@ -754,7 +755,6 @@ NeoBundle 'kana/vim-niceblock', {
 \ }
 NeoBundle 'tyru/vim-altercmd'
 NeoBundle 'cohama/lexima.vim'
-" ,  {'insert':1}
 " NeoBundle 'kana/vim-smartinput',  {'insert':1}
 NeoBundleLazy 'tyru/capture.vim', {
 \ 'on_cmd': [{'name':'Capture', 'complete':'command'}],
@@ -805,17 +805,17 @@ NeoBundleLazy 't9md/vim-quickhl', {
 \ 'on_map': [['nv', '<Plug>(quickhl-',
 \ '<Plug>(operator-quickhl-manual-this-motion)']],
 \ }
-NeoBundleLazy 'bkad/CamelCaseMotion', {
+NeoBundle 'bkad/CamelCaseMotion', {
 \ 'on_map' : ['<Plug>CamelCaseMotion_w',
 \ '<Plug>CamelCaseMotion_b'],
 \ }
-NeoBundleLazy 'h1mesuke/vim-alignta', {
+NeoBundle 'h1mesuke/vim-alignta', {
 \ 'on_cmd': [
 \ {'name': 'Align'},
 \ {'name': 'Alignta'},
 \ ],
+\ 'on_source': 'unite.vim',
 \ }
-" \ 'on_unite': ['alignta']
 NeoBundle 'syngan/vim-clurin'
 " NeoBundle 'nishigori/increment-activator'
 NeoBundle 'tpope/vim-speeddating', {
@@ -884,16 +884,16 @@ NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'vim-scripts/sudo.vim'
 if s:is_win
   NeoBundleLazy 'mattn/startmenu-vim', {
-  \ 'on_unite':['startmenu']
+  \ 'on_source': 'unite.vim',
   \ }
 elseif s:is_mac
   NeoBundleLazy 'rhysd/unite-mac-apps', {
-  \ 'on_unite':['apps']
+  \ 'on_source': 'unite.vim',
   \ }
 endif
 NeoBundle 'koron/codic-vim'
 NeoBundleLazy 'rhysd/unite-codic.vim', {
-\ 'on_unite': 'codic',
+\ 'on_source': 'unite.vim',
 \ }
 
 " lang {{{3
@@ -938,15 +938,15 @@ NeoBundle 'tpope/vim-commentary'
 " \ }
 NeoBundle 'tpope/vim-projectionist'
 NeoBundle 'thinca/vim-template'
-NeoBundle 'mattn/sonictemplate-vim', {
+NeoBundleLazy 'mattn/sonictemplate-vim', {
 \ 'on_cmd': [
 \   {'name': 'Template', 'complete': 'complete=customlist,sonictemplate#complete'},
-\   {'name': '', 'complete': 'complete=customlist,sonictemplate#complete'},
+\   {'name': 'TemplateLoad', 'complete': 'complete=customlist,sonictemplate#complete'},
 \ ],
 \ 'on_map': [
 \   ['in', '<plug>(sonictemplate)', '<plug>(sonictemplate-intelligent)'],
 \ ],
-\ 'on_unite': ['sonictemplate'],
+\ 'on_source': 'unite.vim',
 \ }
 " NeoBundle 'ciaranm/detectindent', {
 " \ 'on_cmd' : ['DetectIndent'],
@@ -967,17 +967,17 @@ else
   \ }
 endif
 NeoBundle 'rhysd/committia.vim'
-NeoBundle 'idanarye/vim-merginal' , {
+NeoBundleLazy 'idanarye/vim-merginal' , {
 \ 'on_cmd': [ "Merginal", "MerginalToggle", "MerginalClose",],
 \ }
-NeoBundle 'AndrewRadev/gapply.vim' , {
+NeoBundleLazy 'AndrewRadev/gapply.vim' , {
 \ 'on_cmd': [ "Gapply",],
 \ }
 
 " NeoBundleLazy 'gregsexton/gitv', {
 " \ 'on_cmd' : ['Gitv'],
 " \ }
-NeoBundle 'cohama/agit.vim' , {
+NeoBundleLazy 'cohama/agit.vim' , {
 \ 'on_cmd': ['Agit', 'AgitGit', 'AgitFile'],
 \ }
 NeoBundle 'rhysd/git-messenger.vim', {
@@ -1022,16 +1022,13 @@ NeoBundleLazy 'thinca/vim-ref', {
 \ ],
 \ 'on_map' : ['n', 'K', '<Plug>(ref-']
 \ }
-NeoBundleLazy 'pekepeke/ref-javadoc', {
+NeoBundle 'pekepeke/ref-javadoc', {
 \ 'depends': 'thinca/vim-ref',
-\ 'on_unite': [ 'ref/javadoc',],
 \ }
-NeoBundleLazy 'soh335/vim-ref-jquery', {
+NeoBundle 'soh335/vim-ref-jquery', {
 \ 'depends': 'thinca/vim-ref',
-\ 'on_unite': ['ref/jquery',],
 \ }
 NeoBundle 'taka84u9/vim-ref-ri', {
-\ 'on_unite': [ 'ref/ri', ],
 \ 'depends': 'thinca/vim-ref',
 \ }
 NeoBundle 'mfumi/ref-dicts-en'
@@ -1118,7 +1115,7 @@ if s:exec_ruby
       NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
       \ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails',
       \    'Shougo/vimproc.vim', 'Shougo/unite.vim'],
-      \ 'on_unite' : 'rails_support/locales',
+      \ 'on_source': 'unite.vim',
       \ 'on_cmd' : [
       \   'RSCreateRoutesCache', 'RSCleanCache',
       \   'RSShowLocale', 'RSCreateLocaleCache',
@@ -1153,31 +1150,23 @@ if s:exec_ruby
   \ }
 
   NeoBundleLazy 'rhysd/unite-ruby-require.vim', {
-  \ 'on_unite' : ['ruby/require'],
+  \ 'on_source': 'unite.vim',
   \ }
   NeoBundle 'rhysd/neco-ruby-keyword-args'
 
   NeoBundleLazy 'ujihisa/unite-gem', {
-  \ 'on_unite' : ['gem'],
+  \ 'on_source': 'unite.vim',
   \ }
   NeoBundleLazy 'ujihisa/unite-rake', {
-  \ 'on_unite' : ['rake'],
+  \ 'on_source': 'unite.vim',
   \ }
   if get(g:vimrc_enabled_features, "rails", 0)
     NeoBundleLazy 'basyura/unite-rails', {
-    \ 'on_unite' : [
-    \   'rails/bundle', 'rails/bundled_gem', 'rails/config',
-    \   'rails/controller', 'rails/db', 'rails/destroy', 'rails/features',
-    \   'rails/gem', 'rails/gemfile', 'rails/generate', 'rails/git',
-    \   'rails/helper', 'rails/heroku', 'rails/initializer',
-    \   'rails/javascript', 'rails/lib', 'rails/log', 'rails/mailer',
-    \   'rails/model', 'rails/rake', 'rails/route', 'rails/schema',
-    \   'rails/spec', 'rails/stylesheet', 'rails/view'
-    \ ],
+    \ 'on_source': 'unite.vim',
     \ }
   endif
   NeoBundleLazy 'moro/unite-stepdefs', {
-  \ 'on_unite': ['stepdefs'],
+  \ 'on_source': 'unite.vim',
   \ }
   if has("signs") && has("clientserver") && v:version > 700
     NeoBundleLazy 'astashov/vim-ruby-debugger', {
@@ -1308,7 +1297,7 @@ endif
 NeoBundle 'voithos/vim-python-matchit'
 NeoBundle 'heavenshell/vim-pydocstring'
 NeoBundleLazy 'hachibeeDI/unite-pythonimport', {
-\ 'on_unite' : ['pythonimport'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundle 'Glench/Vim-Jinja2-Syntax'
 
@@ -1330,13 +1319,13 @@ if executable('perl')
   NeoBundle 'motemen/xslate-vim'
 endif
 NeoBundleLazy 'y-uuki/unite-perl-module.vim', {
-\ 'on_unite' : ['perl/global', 'perl/local'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'y-uuki/perl-local-lib-path.vim', {
 \ 'on_ft': ['perl'],
 \ }
 NeoBundleLazy 'soh335/unite-perl-module', {
-\ 'on_unite' : ['perl-module/carton', 'perl-module/cpan'],
+\ 'on_source': 'unite.vim',
 \ }
 
 " C,CPP {{{4
@@ -1414,7 +1403,7 @@ if get(g:vimrc_enabled_features, "eclim", 0)
   \ }}
 elseif s:exec_java
   NeoBundleLazy 'kamichidu/unite-javaimport', {
-  \ 'on_unite': ['javaimport']
+  \ 'on_source': 'unite.vim',
   \ }
   NeoBundle 'kamichidu/vim-javaclasspath', {
   \   'depends': ['kamichidu/vim-javalang'],
@@ -1433,7 +1422,7 @@ NeoBundleLazy 'thinca/vim-logcat', {
 \ }
 NeoBundle 'lepture/vim-velocity'
 NeoBundleLazy 'ryotakato/unite-gradle', {
-\ 'on_unite': ['gradle'],
+\ 'on_source': 'unite.vim',
 \ }
 
 " scala {{{4
@@ -1465,7 +1454,7 @@ NeoBundleLazy 'moznion/hateblo.vim', {
 \ 'on_cmd': [
 \   'HatebloCreate', 'HatebloCreateDraft', 'HatebloList',
 \   'HatebloUpdate', 'HatebloDelete',
-\ ], 'on_unite': ['hateblo-list']}
+\ ], }
 NeoBundle 'moro/vim-review'
 NeoBundle 'nvie/vim-rst-tables'
 NeoBundle 'vim-scripts/sequence'
@@ -1583,7 +1572,7 @@ NeoBundleLazy 'basyura/rmine.vim', {
 \   {'name': 'Rmine', 'complete': 'custom,rmine#complete#project'},
 \   'RmineIssue', 'RmineNewIssue'
 \ ],
-\ 'on_unite': ['rmine/project', 'rmine/query', 'rmine/selector'],
+\ 'on_source': 'unite.vim',
 \ }
 
 " config {{{4
@@ -1607,79 +1596,77 @@ NeoBundle 'Shougo/neomru.vim'
 " \ }
 NeoBundle 'Shougo/neoyank.vim'
 NeoBundleLazy 'thinca/vim-unite-history', {
-\ 'on_unite': ['history/command', 'history/search'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'Shougo/unite-help', {
-\ 'on_unite' : ['help'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'tacroe/unite-mark', {
-\ 'on_unite' : ['mark'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'zhaocai/unite-scriptnames', {
-\ 'on_unite' : ['scriptnames'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'pasela/unite-webcolorname', {
-\ 'on_unite' : ['webcolorname'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'ujihisa/unite-colorscheme', {
-\ 'on_unite' : ['colorscheme'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'LeafCage/unite-gvimrgb', {
-\ 'on_unite': ['gvimrgb'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'Shougo/unite-build', {
-\ 'on_unite' : ['build'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'Shougo/unite-outline', {
-\ 'on_unite' : ['outline'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'sgur/unite-git_grep', {
-\ 'on_unite' : ['vcs_grep', 'vcs_grep/git', 'vcs_grep/hg'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'osyo-manga/unite-highlight', {
-\ 'on_unite': ['highlight'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'osyo-manga/unite-candidate_sorter', {
 \ 'on_map': [['n', '<Plug>(unite-candidate_sort)']]
 \ }
 NeoBundleLazy 'osyo-manga/unite-quickfix', {
-\ 'on_unite' : ['quickfix', 'location_list'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy "osyo-manga/unite-quickrun_config", {
-\ 'on_unite' : ['quickrun_config'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundle 'eiiches/unite-tselect', {
-\ 'on_unite' : ['tselect'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'tsukkee/unite-tag', {
-\ 'on_unite' : ['tag', 'tag/file', 'tag/include'],
+\ 'on_source': 'unite.vim',
 \ }
 " NeoBundleLazy 'hewes/unite-gtags', {
-" \ 'on_unite': [
-" \ 'gtags/context' , 'gtags/ref' , 'gtags/def' , 'gtags/grep' , 'gtags/completion',
-" \ ],
+" \ 'on_source': 'unite.vim',
 " \ }
 NeoBundleLazy 'haya14busa/unite-ghq', {
-\ 'on_unite' : ['ghq'],
+\ 'on_source': 'unite.vim',
 \ }
 if executable('watson')
   NeoBundleLazy 'alpaca-tc/vim-unite-watson.vim', {
   \ 'on_cmd' : 'Watson',
   \ 'depends' : 'Shougo/unite.vim',
-  \ 'on_unite' : ['watson', 'watson/dirty', 'watson/clean', 'watson/current_file'],
+  \ 'on_source': 'unite.vim',
   \ }
 endif
 NeoBundleLazy 'pekepeke/quicklearn', {
-\ 'on_unite' : ['quicklearn'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy "osyo-manga/unite-fold", {
-\ 'on_unite' : ['fold'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy "monochromegane/unite-yaml", {
-\ 'on_unite': ['yaml', 'yaml-list'],
+\ 'on_source': 'unite.vim',
 \ }
 " NeoBundle 'RomainEndelin/fusion.vim', {
-" \ 'on_unite' : ['projection-files', 'projection-categories'],
+" \ 'on_source': 'unite.vim',
 " \ }
 
 if executable('w3m')
@@ -1695,24 +1682,24 @@ if executable('w3m')
 endif
 
 NeoBundleLazy 'pekepeke/vim-unite-repo-files', {
-\ 'on_unite' : ['repo_files'],
+\ 'on_source': 'unite.vim',
 \ }
 NeoBundleLazy 'pekepeke/vim-unite-z', {
-\ 'on_unite' : ['z'],
+\ 'on_source': 'unite.vim',
 \ }
 
 if s:is_win
   NeoBundleLazy 'sgur/unite-everything', {
-  \ 'on_unite' : ['everything', 'everything/async'],
+  \ 'on_source': 'unite.vim',
   \ }
 else
   if s:is_mac
     NeoBundleLazy 'choplin/unite-spotlight', {
-    \ 'on_unite' : ['spotlight'],
+    \ 'on_source': 'unite.vim',
     \ }
   else
     NeoBundleLazy 'ujihisa/unite-locate', {
-    \ 'on_unite' : ['locate'],
+    \ 'on_source': 'unite.vim',
     \ }
   endif
   NeoBundle 'ujihisa/neco-look'
@@ -4220,8 +4207,16 @@ if s:bundle.tap('lexima.vim')
       \ "\<C-]><C-r>=neocomplete#smart_close_popup()\<CR>")
       call lexima#insmode#map_hook('before', '<Space>',
       \ "\<C-]>\<C-r>=neocomplete#smart_close_popup()\<CR>")
-      call lexima#insmode#map_hook('before', '<C-h>', "\<C-r>=neocomplete#smart_close_popup()\<CR>")
-      call lexima#insmode#map_hook('before', '<BS>', "\<C-r>=neocomplete#smart_close_popup()\<CR>")
+      try
+        call lexima#insmode#map_hook('before', '<BS>',
+        \ "\<C-r>=neocomplete#smart_close_popup()\<CR>")
+        " call lexima#insmode#map_hook('before', '<C-h>',
+        " \ "\<C-r>=neocomplete#smart_close_popup()\<CR>")
+      catch /.*/
+        echohl Error
+        echomsg v:exception
+        echohl None
+      endtry
     endif
 
   endfunction
@@ -7651,6 +7646,9 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   if g:vimrc_enabled_plugins.lexima
     " default cr
     imap <silent><expr> <CR> pumvisible()?neocomplete#close_popup():"\<CR>"
+    inoremap <expr> <C-h>  neocomplete#smart_close_popup()."\<C-h>"
+    inoremap <expr> <BS>   neocomplete#smart_close_popup()."\<C-h>"
+    inoremap <expr> <Space> neocomplete#smart_close_popup()."\<Space>"
   elseif g:vimrc_enabled_plugins.smartinput
     if g:vimrc_enabled_plugins.endwize
       imap <silent><expr> <CR> (pumvisible()?neocomplete#close_popup():"")
