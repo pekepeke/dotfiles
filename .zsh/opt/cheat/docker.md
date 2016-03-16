@@ -75,7 +75,9 @@ docker build --build-arg HTTP_PROXY=http://proxy.example.com:8080 .
 
 mkdir -p /tmp/cache
 http-replicator -r /tmp/cache -p 8888 --daemon /tmp/replicator.log
-docker build --build-arg HTTP_PROXY=http://172.17.0.1:8888 .
+# see docker build --help
+docker build --build-arg http_proxy=http://172.17.0.1:8888 .
+docker build --build-arg=http_proxy=http://172.17.0.1:8888 .
 ```
 
 

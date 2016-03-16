@@ -1610,30 +1610,30 @@ NeoBundle 'thinca/vim-unite-history'
 NeoBundleLazy 'Shougo/unite-help', {
 \ 'on_source': 'unite.vim',
 \ }
-NeoBundleLazy 'tacroe/unite-mark', {
+NeoBundle 'tacroe/unite-mark', {
 \ 'on_source': 'unite.vim',
 \ }
 NeoBundle 'zhaocai/unite-scriptnames'
 NeoBundleLazy 'pasela/unite-webcolorname', {
 \ 'on_source': 'unite.vim',
 \ }
-NeoBundleLazy 'ujihisa/unite-colorscheme', {
+NeoBundle 'ujihisa/unite-colorscheme', {
 \ 'on_source': 'unite.vim',
 \ }
-NeoBundleLazy 'LeafCage/unite-gvimrgb', {
+NeoBundle 'LeafCage/unite-gvimrgb', {
 \ 'on_source': 'unite.vim',
 \ }
-NeoBundleLazy 'Shougo/unite-build', {
+NeoBundle 'Shougo/unite-build', {
 \ 'on_source': 'unite.vim',
 \ }
 NeoBundle 'Shougo/unite-outline'
 NeoBundleLazy 'sgur/unite-git_grep', {
 \ 'on_source': 'unite.vim',
 \ }
-NeoBundleLazy 'osyo-manga/unite-highlight', {
+NeoBundle 'osyo-manga/unite-highlight', {
 \ 'on_source': 'unite.vim',
 \ }
-NeoBundleLazy 'osyo-manga/unite-candidate_sorter', {
+NeoBundle 'osyo-manga/unite-candidate_sorter', {
 \ 'on_map': [['n', '<Plug>(unite-candidate_sort)']]
 \ }
 NeoBundle 'osyo-manga/unite-quickfix'
@@ -1642,25 +1642,22 @@ NeoBundle 'eiiches/unite-tselect'
 NeoBundleLazy 'tsukkee/unite-tag', {
 \ 'on_source': 'unite.vim',
 \ }
-" NeoBundleLazy 'hewes/unite-gtags', {
+" NeoBundle 'hewes/unite-gtags', {
 " \ 'on_source': 'unite.vim',
 " \ }
 NeoBundle 'haya14busa/unite-ghq'
 if executable('watson')
-  NeoBundleLazy 'alpaca-tc/vim-unite-watson.vim', {
+  NeoBundle 'alpaca-tc/vim-unite-watson.vim', {
   \ 'on_cmd' : 'Watson',
   \ 'depends' : 'Shougo/unite.vim',
   \ 'on_source': 'unite.vim',
   \ }
 endif
 NeoBundle 'pekepeke/quicklearn'
-" , {
-" \ 'on_source': 'unite.vim',
-" \ }
 NeoBundleLazy "osyo-manga/unite-fold", {
 \ 'on_source': 'unite.vim',
 \ }
-NeoBundleLazy "monochromegane/unite-yaml", {
+NeoBundle "monochromegane/unite-yaml", {
 \ 'on_source': 'unite.vim',
 \ 'on_ft': ['yaml'],
 \ }
@@ -1680,24 +1677,24 @@ if executable('w3m')
   \ ]}
 endif
 
-NeoBundleLazy 'pekepeke/vim-unite-repo-files', {
+NeoBundle 'pekepeke/vim-unite-repo-files', {
 \ 'on_source': 'unite.vim',
 \ }
-NeoBundleLazy 'pekepeke/vim-unite-z', {
+NeoBundle 'pekepeke/vim-unite-z', {
 \ 'on_source': 'unite.vim',
 \ }
 
 if s:is_win
-  NeoBundleLazy 'sgur/unite-everything', {
+  NeoBundle 'sgur/unite-everything', {
   \ 'on_source': 'unite.vim',
   \ }
 else
   if s:is_mac
-    NeoBundleLazy 'choplin/unite-spotlight', {
+    NeoBundle 'choplin/unite-spotlight', {
     \ 'on_source': 'unite.vim',
     \ }
   else
-    NeoBundleLazy 'ujihisa/unite-locate', {
+    NeoBundle 'ujihisa/unite-locate', {
     \ 'on_source': 'unite.vim',
     \ }
   endif

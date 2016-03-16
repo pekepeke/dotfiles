@@ -15,6 +15,24 @@ find . -mtime +50
 find . -mtime -50
 ```
 
+## op
+
+```
+[ file1 -nt file2 ] && echo "file1 newer"
+[ file1 -ot file2 ] && echo "file1 older"
+```
+
+## touch
+
+```
+# タイムスタンプ変更
+touch -d "2003/1/1 00:00:00" hoge
+# 修正時刻のみ変更
+touch -m -t "2003/1/1 00:00:00" hoge
+# アクセス時刻のみ変更
+touch -a -t "2003/1/1 00:00:00" hoge
+```
+
 ## sed
 ### 特定行の書き換え
 
