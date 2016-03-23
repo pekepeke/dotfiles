@@ -1,3 +1,6 @@
+Docker
+======
+
 ## basic
 
 ```bash
@@ -40,6 +43,59 @@ docker ps
 docker inspect --format "{{.State.Pid}}" [id]
 sudo nsenter --mount --uts --ipc --net --pid --target $PID
 
+## ビルドを最初からやりなおす
+docker build --no-cache .
+
+## 起動中のコンテナ一覧を得る
+docker ps
+
+## 停止中のコンテナも含めすべての一覧を得る
+docker ps -a
+
+## コンテナのハッシュリストを得る
+docker ps -a -q
+
+## index.docker.ioからイメージを検索する
+docker search TERM
+
+## イメージをビルドした際のコマンドリストを得る。Dockerfileに記述したもののみ
+docker history IMAGE
+
+## イメージをファイル出力する
+docker save IMAGE > filename.tar
+
+## ファイルをイメージとして取り込む
+docker load < filename.tar
+
+## コンテナからイメージ作成
+docker commit CONTAINER REPOSITORY[:TAG]
+
+## コンテナをファイル出力
+docker export CONTAINER > filename.tar
+
+## ファイルからイメージ取込
+cat filename.tar | docker import - REPOSITORY[:TAG]
+
+## URLからイメージ取込
+docker import url REPOSITORY[:TAG]
+
+## コンテナ内のファイルをホストにコピーする
+docker cp CONTAINER:filename ./
+
+## URLのファイルをイメージ内のPATHに生成する
+docker insert IMAGE URL PATH
+
+## コンテナの実行中のプロセス一覧を見る
+docker top CONTAINER
+
+## コンテナ内のイベントを監視する（コンテナが作られた、起動した、停止したなど)
+docker events
+
+## コンテナ内でコマンドを実行する
+docker exec CONTAINER コマンド
+
+## コンテナ内でコマンドを対話式に実行する
+docker exec -it CONTAINER コマンド
 ```
 
 
@@ -75,9 +131,8 @@ docker build --build-arg HTTP_PROXY=http://proxy.example.com:8080 .
 
 mkdir -p /tmp/cache
 http-replicator -r /tmp/cache -p 8888 --daemon /tmp/replicator.log
-# see docker build --help
 docker build --build-arg http_proxy=http://172.17.0.1:8888 .
-docker build --build-arg=http_proxy=http://172.17.0.1:8888 .
+docker build --build-arg http_proxy=http://172.17.0.1:8888 .
 ```
 
 

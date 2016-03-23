@@ -13,6 +13,9 @@ tail -n +100 filename
 find . -mtime +50
 # 50日以内に修正されたもの
 find . -mtime -50
+
+# ログの一括削除
+ifind ./log -mtime +60 -name '*.log' | xargs --no-run-if-empty rm
 ```
 
 ## op

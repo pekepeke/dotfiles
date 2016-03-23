@@ -9,7 +9,7 @@
     BUFFER="multi_ssh $(echo ${selected}) --option=\"-l ec2-user -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null\""
     zle accept-line
   fi
-  zle -R
+  zle redisplay
 # }
 # zle -N {{_name_}}
 

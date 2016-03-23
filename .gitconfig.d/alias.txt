@@ -1,5 +1,8 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [alias]
+  aliases = !git config --get-regexp '^alias\\.' | sed 's/alias\\.\\([^ ]*\\) \\(.*\\)/\\1\\\t => \\2/'
+  includes = !git config --get-regexp '^include\\.path' | sed 's/include\\.path \\(.*\\)/\\1/'
+  me = !git config --get-regexp user
   a = "!f() { local res=$(git status -s | peco --prompt \"git add :\" | awk '{ print $2 }'); \
   [ -n \"$res\" ] && git add ${res} ; \
   }; f"
@@ -13,13 +16,49 @@
   }; f"
   ls = ls-files
   co = checkout
+  mb = "!f () {\
+      if [ $# -eq 0 -a `which peco` ]; then\
+          git branch -a | grep -v '\\->' | sed -e 's/remotes\\///g' | peco --prompt 'merge\\> ' | tr -d ' \\*' | xargs -n 1 git merge;\
+      elif [ $# -ge 1 ]; then\
+          git merge ${@};\
+      fi;\
+  };f"
+  db = "!f () {\
+      if [ $# -eq 0 -a `which peco` ]; then\
+          git branch | peco --prompt 'delete branch(es)\\> ' | tr -d ' \\*' | xargs git branch -d;\
+      elif [ $# -ge 1 ]; then\
+          git branch | grep ${@} | xargs git branch -d;\
+      fi;\
+  };f"
+  cp = "!f () {\
+      if [ $# -eq 0 -a `which peco` ]; then\
+          git log --branches --oneline | peco --prompt 'cherry-pick\\> ' | awk '{print $1}' | xargs git cherry-pick;\
+      elif [ $# -ge 1 ]; then\
+          git cherry-pick ${@};\
+      fi;\
+  };f"
+  drag = pull --rebase
+  refresh = fetch --prune
   cob = "!f() { \
     local b=`git branch -a | peco --prompt \"git checkout :\"`;\
     [ -n \"${b}\" ] && git checkout $b ;\
   }; f"
+  untracked = status --untracked-files=normal
   ci = commit
   ca = commit --amend
   st = status
+  logline = log --oneline --stat --branches
+  ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+  hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+  tree = log --graph --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(bold white)? %an%C(reset)%C(bold yellow)%d%C(reset)' --abbrev-commit --date=relative
+  wdiff = diff --word-diff=color --unified=1
+  dr = "!f () {\
+      echo \"diff from $1^ to $1\";\
+      git diff \"$1\"^..\"$1\";\
+  };f"
+  find = "!git ls-files | grep -i"
+  branch-root = merge-base master HEAD
+  remember = !git diff $(git branch-root)
   stt = status -uno
   ss = status -sb
   sl = shortlog -sn
@@ -34,7 +73,6 @@
   log-graph = log --graph --date=short --pretty=format:'%Cgreen%h %cd %Cblue%cn %Creset%s'
   log-all = log --graph --all --color --pretty='%x09%h %cn%x09%s %Cred%d%Creset'
   diffh = !git diff `git log --oneline --branches | peco | awk '{print $1}' | rev | tac | rev`
-  wdiff = diff --word-diff
   dh = !git diff `git log --oneline --branches | peco | awk '{print $1}' | rev | tac | rev`
   d = diff
   dm = diff master

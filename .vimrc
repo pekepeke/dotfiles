@@ -3198,7 +3198,7 @@ if s:bundle.tap('lightline.vim')
   \ 'S': 'S-LINE', "\<C-s>": 'S-BLOCK', '?': ' ',
   \ },
   \ 'active': {
-  \   'left': [ [ 'mode', 'paste' ], [ 'diff_mode', 'git', 'filename', 'cwdirname', 'xenv_version', ] ],
+  \   'left': [ [ 'mode', 'paste' ], [ 'diff_mode', 'scm', 'filename', 'cwdirname', 'xenv_version', ] ],
   \   'right': [
   \     [ 'qfcount', ],
   \     [ 'linestat' ], [ 'filetype' ],
@@ -3216,7 +3216,7 @@ if s:bundle.tap('lightline.vim')
   \ },
   \ 'component_function': {
   \   'diff_mode' : 'g:ll_helper.diff_mode',
-  \   'git' : 'g:ll_helper.git',
+  \   'scm' : 'g:ll_helper.scm',
   \   'filename' : 'g:ll_helper.filename',
   \   'cwdirname' : 'g:ll_helper.cwdirname',
   \   'absfilename' : 'g:ll_helper.get_absfilename',
@@ -3382,10 +3382,20 @@ if s:bundle.tap('lightline.vim')
     return &filetype =~ 'help\|vimfiler\|gundo'
   endfunction
 
-  function! g:ll_helper.git() "{{{3
+  function! g:ll_helper.scm() "{{{3
     if self.is_special_ft()
       return ""
     endif
+    let fdir = expand('%:p:h')
+    if isdirectory(fdir . '/CVS')
+      return 'CVS'
+    elseif isdirectory(fdir . '/.svn')
+      return 'SVN'
+    endif
+    return self.git()
+  endfunction
+
+  function! g:ll_helper.git()
     if g:vimrc_enabled_plugins.gita
       return self.shorten(gita#statusline#format('%lb'), 10)
     elseif g:vimrc_enabled_plugins.fugitive

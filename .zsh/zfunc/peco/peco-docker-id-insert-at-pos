@@ -1,12 +1,11 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
-# {{_name_}}() {
+# peco-docker-id-insert-at-pos() {
   local pos=$CURSOR
-  local selected="$({{_cursor_}} | peco)"
+  local selected="$(docker ps | peco | awk '{print $1}')"
   if [ -n "$selected" ]; then
     BUFFER="${BUFFER[1,$pos]}$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')${BUFFER[$pos,-1]}"
     CURSOR=$#BUFFER
   fi
   zle redisplay
 # }
-# zle -N {{_name_}}
-
+# zle -N peco-docker-id-insert-at-pos

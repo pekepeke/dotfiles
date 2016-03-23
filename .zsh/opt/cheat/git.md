@@ -239,6 +239,44 @@ git tag -l "A*"
 git push origin v0.9
 ```
 
+## rev-parse
+
+```
+# ハッシュ
+git rev-parse 1838ad4786...02cc4e713a
+git rev-parse v0.1.1 # tag
+git rev-parse 4b7688 # 省略ハッシュ
+
+# gitリポジトリのディレクトリを返す
+git rev-parse --git-dir
+
+# 現在のディレクトリにリポジトリがあるかどうかを確認
+git rev-parse --is-inside-work-tree
+
+# リポジトリが共有リポジトリか確認
+git rev-parse --is-bare-repository
+
+# トップレベルディレクトリを絶対パスで取得
+git rev-parse --show-toplevel
+
+# サブディレクトリにいるときにトップレベルのディレクトリからの相対パスを出力
+git rev-parse --show-cdup
+
+# 使用可能なすべてのリファレンスを出力
+
+git rev-parse --all
+
+# ブランチ
+git rev-parse --branches
+
+# タグ
+git rev-parse --tags
+
+# リモート
+git rev-parse --remotes
+
+```
+
 ## submodule
 
 ```

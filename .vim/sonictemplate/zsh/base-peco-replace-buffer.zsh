@@ -4,7 +4,7 @@
   if [ -n "$selected" ]; then
     BUFFER="$(echo $selected | sed 's/ /\\ /g' | tr '[:cntrl:]' ' ')"
   fi
-  zle -R
+  zle redisplay
   # zle -R -c
 # }
 # zle -N {{_name_}}
