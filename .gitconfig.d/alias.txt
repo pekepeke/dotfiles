@@ -3,15 +3,15 @@
   aliases = !git config --get-regexp '^alias\\.' | sed 's/alias\\.\\([^ ]*\\) \\(.*\\)/\\1\\\t => \\2/'
   includes = !git config --get-regexp '^include\\.path' | sed 's/include\\.path \\(.*\\)/\\1/'
   me = !git config --get-regexp user
-  a = "!f() { local res=$(git status -s | peco --prompt \"git add :\" | awk '{ print $2 }'); \
+  a = "!f() { local res=\"$(git status -s | peco --prompt \"git add :\" | awk '{ print $2 }')\"; \
   [ -n \"$res\" ] && git add ${res} ; \
   }; f"
-  df = "!f() { local res=$(git log --date=short --pretty=format:'%h [%ad] : %s <%an>' | peco | awk '{ print $1 }' ); \
+  df = "!f() { local res=\"$(git log --date=short --pretty=format:'%h [%ad] : %s <%an>' | peco | awk '{ print $1 }' )\"; \
     local file; \
-    [ -n \"$res\" ] && file=$(git diff --no-prefix $res | grep '^--- ' | peco | awk '{ print $2 }'); \
+    [ -n \"$res\" ] && file=\"$(git diff --no-prefix $res | grep '^--- ' | peco | awk '{ print $2 }')\"; \
     [ -n \"$file\" ] && git diff --no-prefix $res $file; \
   }; f"
-  re = "!f() { local res=$(git status -s | peco --prompt \"git reset :\" | awk '{ print $2 }' ); \
+  re = "!f() { local res=\"$(git status -s | peco --prompt \"git reset :\" | awk '{ print $2 }' )\"; \
     [ -n \"$res\" ] && git reset $res; \
   }; f"
   ls = ls-files
@@ -40,8 +40,8 @@
   drag = pull --rebase
   refresh = fetch --prune
   cob = "!f() { \
-    local b=`git branch -a | peco --prompt \"git checkout :\"`;\
-    [ -n \"${b}\" ] && git checkout $b ;\
+    local b=\"`git branch -a | peco --prompt \"git checkout :\"`\";\
+    [ -n \"${b}\" ] && git checkout ${b} ;\
   }; f"
   untracked = status --untracked-files=normal
   ci = commit

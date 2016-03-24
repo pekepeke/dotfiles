@@ -1,4 +1,7 @@
-# 秘密鍵の作成
+## 証明書作成
+
+```
+### 秘密鍵の作成
 openssl genrsa 2048 > server.org
 openssl genrsa -aes128 2048 > server.org
 
@@ -9,7 +12,11 @@ openssl req -new -sha256 -key server.key > server.csr
 
 # 署名(本来ならば認証局側で実施)
 openssl x509 -req -sha256 -days 365 -in server.csr -signkey server.key > server.crt
+```
 
+### 確認
+
+```
 ## 証明書ファイルの内容を確認
 openssl x509 -text -noout -in [file]
 
@@ -18,14 +25,19 @@ openssl rsa -text -noout -in [file]
 
 ## CSRファイルの内容を確認
 openssl req -text -noout -in [file]
+```
 
+### サーバー証明書と中間証明書等を結合(ELBなど。必要であれば)
+- 認証の仕組み上、「サーバー証明書－＞中間証明書－＞（クロスルート証明書－＞）ルート証明書」の順番で格納
 
-# サーバー証明書と中間証明書等を結合(ELBなど。必要であれば)
-## 認証の仕組み上、「サーバー証明書－＞中間証明書－＞（クロスルート証明書－＞）ルート証明書」の順番で格納
+```
 cat server.pem dvcacert.pem >> certificate.pem
+```
 
 
-# Apache 側の設定例
+### Apache 側の設定例
+
+```
 SSLCompression off
 SSLProtocol All -SSLv2 -SSLv3
 SSLCipherSuite AES128+EECDH:AES128+EDH
@@ -43,3 +55,19 @@ SSLCipherSuite AES128+EECDH:AES128+EDH
 	# サーバ証明書ファイル名
 	SSLCertificateKeyFile /etc/httpd/conf/ssl.key/server.key
 </VirtualHost>
+```
+
+## サーバー証明書チェーンの確認 (openssl s_client)
+
+```
+openssl s_client -connect www.example.com:443 -showcerts > www.example.com.crt
+```
+
+### 署名アルゴリズムの確認
+
+```
+openssl x509 -text -in server.crt | egrep '(Signature Algorithm|Subject|Issuer):'
+openssl x509 -text -in intermediate.crt | egrep '(Signature Algorithm|Subject|Issuer):'
+```
+
+

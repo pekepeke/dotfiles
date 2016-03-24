@@ -30,7 +30,7 @@ git remote -v
 git show <treeish>:<file>
 # origin の変更
 git remote set-url origin git@git.example.com:foo/bar.git
-# 派生元の変更 master -> develop
+# 派生元の変更 master -> develop (master -> fuga ==> develop -> fuga)
 git rebase --onto develop master feature/fuga
 # pull-r を取り消し
 git revert -m 1 [hash]

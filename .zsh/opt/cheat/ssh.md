@@ -37,4 +37,7 @@ chmod 600 ssl-nopass.pem
 
 # remove fingerprint
 ssh-keygen -R remote_host_name
+
+# confirm fingerprint
+ssh-keygen -lf ~/.ssh/id_rsa.pub
 ```
