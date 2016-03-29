@@ -1,4 +1,4 @@
-RUN useradd -d /home/{{_input_:username}} -m -s /bin/bash {{_input_:username}} && \
-    echo {{_input_:username}}:{{_input_:password}} | chpasswd && \
-    echo '{{_input_:username}} ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN useradd -d /home/{{_input_:username}} -m -s /bin/bash {{_input_:username}} \
+    && echo {{_input_:username}}:{{_input_:password}} | chpasswd \
+    && echo '{{_input_:username}} ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 

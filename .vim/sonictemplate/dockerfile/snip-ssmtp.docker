@@ -1,7 +1,7 @@
-RUN yum install -y ssmtp && \
-    echo "mailhub=mail:1025\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf && \
-    echo "sendmail_path = /usr/sbin/sendmail -t" > /etc/php.d/sendmail.ini
-RUN apt-install ssmtp && \
-    echo "mailhub=mail:1025\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf && \
-    echo "sendmail_path = /usr/sbin/sendmail -t" > /etc/php.d/sendmail.ini
+RUN yum install -y ssmtp \
+    && echo "mailhub=mail:1025\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf \
+    && echo "sendmail_path = /usr/sbin/sendmail -t" > /etc/php.d/sendmail.ini
+RUN apt-install ssmtp \
+    && echo "mailhub=mail:1025\nUseTLS=NO\nFromLineOverride=YES" > /etc/ssmtp/ssmtp.conf \
+    && echo "sendmail_path = /usr/sbin/sendmail -t" > /etc/php.d/sendmail.ini
 
