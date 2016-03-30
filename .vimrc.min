@@ -152,6 +152,8 @@ set updatetime=200
 if has('winaltkeys')
   set winaltkeys=no
 endif
+set pastetoggle=<F10>
+MyAutoCmd InsertLeave * if &paste | set nopaste | endif
 set modeline
 set modelines=10
 
@@ -193,6 +195,17 @@ set modeline
 set modelines=10
 function! MyStatusLine()
   let s = ''
+  if &paste
+    let s .= 'PASTE|'
+  else
+    let s .= ' '
+  endif
+  let modes = {
+    \ 'V': 'V-L', "\<C-v>": 'V-B',
+    \ 'S': 'S-L', "\<C-s>": 'S-B'
+    \ }
+  let m = mode()
+  let s .= get(modes, m, toupper(m))."|"
   let s .= '%<'
   let s .= '%f ' " filename
   let s .= '%m' " modified flag
