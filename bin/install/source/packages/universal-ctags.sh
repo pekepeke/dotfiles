@@ -15,7 +15,8 @@ main() {
   fi
   git clone https://github.com/universal-ctags/ctags.git /tmp/ctags --depth=1
   cd /tmp/ctags
-  autoreconf -vfi
+  # autoreconf -vfi
+  ./autogen.sh
   ./configure --enable-iconv
   make
   [ ! -e ~/.bin ] && mkdir -p ~/.bin
