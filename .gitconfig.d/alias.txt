@@ -96,4 +96,6 @@
     done ; \n\
     }; f"
   pr-setup = config --add remote.origin.fetch +refs/pull/*/head:refs/remotes/origin/pr/*
+  aconfig = "!f() { git config --list \"$@\" | grep -v -e '^include' | sed -e 's!\\(.*\\)=\\(.*\\)!git config \"\\1\" \"\\2\"!'; }; f"
+  rconfig = "!f() { git config --list \"$@\" | grep -v -e '^include' | sed -e 's!\\(.*\\)=\\(.*\\)!git config --unset \"\\1\"!'; }; f"
 
