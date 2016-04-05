@@ -6,12 +6,4 @@ root=$(cd $(basename $0); pwd)
 
 PACKAGE="peco/peco"
 VER=0.3.4
-EXT=zip
-
-URL=$(get_release_binary_url "$PACKAGE" "$VER" "$EXT")
-
-if [ $EXT = zip ] ; then
-  curl -L "${URL}" | unzip
-else
-  curl -L "${URL}" | tar zxv
-fi
+download_release_package $PACKAGE $VER
