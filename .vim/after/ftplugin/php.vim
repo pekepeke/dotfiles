@@ -8,7 +8,7 @@ setlocal path+=;/
 
 setlocal commentstring=//\ %s
 " setlocal formatoptions-=r,o
-setlocal formatoptions-=r,o
+setlocal formatoptions-=r formatoptions-=o
 " setlocal iskeyword-=$,\-,:
 setlocal iskeyword-=- iskeyword-=$ iskeyword-=:
 setlocal expandtab shiftwidth=4 tabstop=4
