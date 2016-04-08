@@ -1,9 +1,22 @@
+SSH
+===
+
+## port forwarding
+
+```
+ssh -L 8080:remote:80 user@example.com
+```
+
+- ローカル
+
+## reverse port fowarding
+
 ```
 ssh -R -f -N 80:example.com:9999 username@example.com
 ```
-    -R : リモートフォワードを有効 80:example.com:9999 でexample.com:9876->localhost:80転送
-    -f : バックグランドで実行
-    -N : コマンド実行をしない(ログインだけしてシェルも立ち上げない)
+- `-R` : リモートフォワードを有効 80:example.com:9999 でexample.com:9876->localhost:80転送
+- `-f` : バックグランドで実行
+- `-N` : コマンド実行をしない(ログインだけしてシェルも立ち上げない)
 
 ```
 Host example.com
@@ -11,7 +24,8 @@ Host example.com
 # うまく動作しない場合 sshd_config の GatewayPorts を確認する
 ```
 
-## socks proxy
+## socks proxy(dynamic port foward)
+
 ```
 ssh -f -N -D 1080 user@example.com
 ssh -N -D 1080 user@example.com
