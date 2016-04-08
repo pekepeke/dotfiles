@@ -150,10 +150,6 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
     # export GOPATH=~/.gopath
     # if [ -n "$HOMEBREW_PREFIX" -a -e "$HOMEBREW_PREFIX/bin/go" ]; then
     #   export GOPATH=$(dirname $(dirname $HOMEBREW_PREFIX/bin/go/$(readlink /usr/local/bin/go)))
-    export GOPATH=$HOME/.gopath
-    PATH="$GOPATH/bin:$PATH"
-    [ -e $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh ] \
-      && source $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh
     # fi
 
     # lua {{{2
@@ -177,6 +173,11 @@ if [ -z "$SHRC_LANGUAGE_LOADED" ]; then
     xenv-init vimenv
   fi
 fi
+export GOPATH=$HOME/.gopath
+PATH="$GOPATH/bin:$PATH"
+[ -e $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh ] \
+  && source $GOPATH/src/bitbucket.org/ymotongpoo/goenv/shellscripts/goenvwrapper.sh
+
 shrc_section_title "etc" # {{{2
 # mysqlenv {{{3
 [ -e ~/.mysqlenv/etc/bashrc ] && source ~/.mysqlenv/etc/bashrc
