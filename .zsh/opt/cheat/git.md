@@ -1,3 +1,13 @@
+git
+====
+
+## tips
+### 派生元ブランチを出力
+
+```
+git show-branch | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -1 | awk -F'[]~^[]' '{print $2}'
+```
+
 ## basic
 
 ```

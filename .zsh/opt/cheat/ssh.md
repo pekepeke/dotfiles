@@ -32,10 +32,23 @@ ssh -N -D 1080 user@example.com
 
 # 名前解決は自前
 proxy=socks5://127.0.0.1:8080
-HTTP_PROXY=$proxy HTTPS_PROXY=$proxy http_proxy=$proxy https_proxy=$proxy curl http://hoge
+HTTP_PROXY=$proxy HTTPS_PROXY=$proxy http_proxy=$proxy https_proxy=$proxy wget http://hoge
+ALL_PROXY=$proxy wget http://hoge
+curl --socks5 :8080
+curl --socks5 localhost:8080
+curl --socks5-hostname localhost:8080
 # 名前解決を proxy 側で実施
 proxy=socks5h://127.0.0.1:8080
-HTTP_PROXY=$proxy HTTPS_PROXY=$proxy http_proxy=$proxy https_proxy=$proxy curl http://hoge
+HTTP_PROXY=$proxy HTTPS_PROXY=$proxy http_proxy=$proxy https_proxy=$proxy wget http://hoge
+
+# git
+proxy=socks5://127.0.0.1:1080
+git clone https://hoge/piyo.git --config "http.proxy=$proxy"
+git config --global http.proxy $proxy
+git config --global https.proxy $proxy
+
+git config --global --unset http.proxy
+git config --global --unset https.proxy
 ```
 
 ## create key
@@ -55,3 +68,18 @@ ssh-keygen -R remote_host_name
 # confirm fingerprint
 ssh-keygen -lf ~/.ssh/id_rsa.pub
 ```
+
+## sshfuse
+### install
+
+```
+sudo apt-get install sshfs
+```
+
+### usage
+
+```
+sshfs [host]:[dir] [mount]
+fusermount -u [mount]
+```
+

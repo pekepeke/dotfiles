@@ -68,3 +68,4 @@ find public/ -name "*.html" -o -name "*.css" -o -name "*.js" -o -name "*.ttf" -o
 ctags -R --languages=c,c++ .
 ctags -R --languages=-make .
 
+sed -i -e 's!\.\.\.!!g' ~/.vim/neobundle/.neobundle/cache
