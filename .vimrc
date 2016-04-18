@@ -1082,7 +1082,8 @@ elseif has('lua') && (v:version > 703 ||
   NeoBundle 'Shougo/neco-syntax'
   NeoBundle 'Shougo/neco-vim'
   if s:bundle.is_installed('rsense')
-    NeoBundle 'supermomonga/neocomplete-rsense.vim'
+    NeoBundle 'pekepeke/neocomplcache-rsense.vim', 'neocompleteFeature'
+    " NeoBundle 'supermomonga/neocomplete-rsense.vim'
   endif
 else
   NeoBundle 'Shougo/neocomplcache.vim'

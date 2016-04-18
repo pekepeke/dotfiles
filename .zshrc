@@ -235,25 +235,34 @@ zstyle ':zle:*' word-style unspecified
 # enter key {{{3
 function _do-enter() {
   if [ -n "$BUFFER" ]; then
-    zle accept-line
+    builtin zle .accept-line
     return 0
   fi
-  echo
-  ls_abbrev
-
-  # if [ "$(git rev-parse --is-inside-work-tree 2> /dev/null)" = 'true' ]; then
-  #   echo
-  #   echo -e "\e[0;33m--- git status ---\e[0m"
-
-  #   local CMD="git status -sb"
-  #   if is_exec timeout; then
-  #     timeout -k 1 $CMD
-  #   else
-  #     timeout.pl -t 1 $CMD
-  #     [ $? -eq 2 ] && notify-send "Killed" "$CMD"
-  #   fi
-  # fi
-  zle reset-prompt
+  # echo "$WIDGET"  "$LASTWIDGET"
+  if [ "$WIDGET" != "$LASTWIDGET" ]; then
+    ZSHRC_ENTER_COUNT=0
+  fi
+  # echo $ZSHRC_ENTER_COUNT
+  case $[ZSHRC_ENTER_COUNT++] in
+    0)
+      # BUFFER=" ls_abbrev"
+      echo ; ls_abbrev
+      ;;
+    1)
+      if [[ -d .svn ]]; then
+        # BUFFER=" svn status"
+      elif git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        # BUFFER=" git status -sb"
+        echo ; git status -sb
+      fi
+      ;;
+    *)
+      builtin zle .accept-line
+      unset ZSHRC_ENTER_COUNT
+      ;;
+  esac
+  builtin zle .reset-prompt
+  # builtin zle .accept-line
   return 0
 }
 zle -N _do-enter
