@@ -1495,6 +1495,9 @@ endif
 if get(g:vimrc_enabled_features, 'phphtml', 0)
   NeoBundle 'captbaritone/better-indent-support-for-php-with-html'
 endif
+NeoBundle 'tobyS/pdv', {
+\ 'depends': ['tobyS/vmustache'],
+\ }
 NeoBundle '2072/PHP-Indenting-for-VIm'
 " NeoBundle 'Gasol/vim-php'
 NeoBundle 'StanAngeloff/php.vim'
@@ -2651,20 +2654,23 @@ let g:php_parent_error_open = 1
 let g:DisableAutoPHPFolding = 1
 
 " let g:PHP_autoformatcomment=0
-"" php-doc.vim
-let g:pdv_cfg_php4always = 0
-let g:pdv_cfg_Type = 'mixed'
-let g:pdv_cfg_Package = ""
-let g:pdv_cfg_Version = '$id$'
-if exists('g:author') && exists('g:email')
-  let g:pdv_cfg_Author = g:author . ' <' . g:email . '>'
-else
-  let g:pdv_cfg_Author = ''
+if s:bundle.is_installed('pdv')
+  let g:pdv_template_dir =  neobundle#get('pdv').rtp . '/templates'
 endif
-let g:pdv_cfg_Copyright = ""
-let g:pdv_cfg_License = ''
-let g:pdv_cfg_CommentEnd = "// }}}"
-let g:pdv_cfg_EnalbedFoldMarker = 0
+"" php-doc.vim
+" let g:pdv_cfg_php4always = 0
+" let g:pdv_cfg_Type = 'mixed'
+" let g:pdv_cfg_Package = ""
+" let g:pdv_cfg_Version = '$id$'
+" if exists('g:author') && exists('g:email')
+"   let g:pdv_cfg_Author = g:author . ' <' . g:email . '>'
+" else
+"   let g:pdv_cfg_Author = ''
+" endif
+" let g:pdv_cfg_Copyright = ""
+" let g:pdv_cfg_License = ''
+" let g:pdv_cfg_CommentEnd = "// }}}"
+" let g:pdv_cfg_EnalbedFoldMarker = 0
 
 " ruby {{{2
 let g:ruby_operators = 1

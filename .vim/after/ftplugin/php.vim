@@ -15,8 +15,10 @@ setlocal expandtab shiftwidth=4 tabstop=4
 
 " setlocal noexpandtab
 
-nnoremap <buffer> <silent> [!comment-doc] :call PhpDocSingle()<CR>
-vnoremap <buffer> <silent> [!comment-doc] :call PhpDocRange()<CR>
+" nnoremap <buffer> <silent> [!comment-doc] :call PhpDocSingle()<CR>
+" vnoremap <buffer> <silent> [!comment-doc] :call PhpDocRange()<CR>
+nnoremap <buffer> <silent> [!comment-doc] :call pdv#DocumentCurrentLine()<CR>
+vnoremap <buffer> <silent> [!comment-doc] :call pdv#DocumentCurrentLine()<CR>
 
 if exists(':EnableFastPHPFolds')
   function! s:folding()
