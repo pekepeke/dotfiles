@@ -8432,8 +8432,10 @@ function! s:vimrc_file_pos(l1, l2)
   endif
 endfunction
 command! -range FilePos call s:vimrc_file_pos(<line1>, <line2>)
+
 function! s:vimrc_yank_line_with_no(l1, l2)
-  let lines = map(getline(a:l1, a:l2), 'printf("%4d: %s", a:l1 + v:key, v:val)')
+  let l = strlen(a:l2)
+  let lines = map(getline(a:l1, a:l2), 'printf("%".l."d: %s", a:l1 + v:key, v:val)')
   let s = join(lines, "\n")
   if has('gui_running')
     let @+=s

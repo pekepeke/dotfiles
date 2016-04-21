@@ -58,7 +58,8 @@ git branch -m [old] [new]
 # remote branch 削除
 git push origin :topic/xxxFeature
 git push --delete origin topic/xxxFeature
-git branch -r -d topic/xxxFeature
+# local の remote branch 削除
+# git branch -r -d topic/xxxFeature
 ```
 
 ## archive
