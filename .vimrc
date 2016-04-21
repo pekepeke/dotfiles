@@ -1073,14 +1073,13 @@ if get(g:vimrc_enabled_features, "ycm", 0) && has('python')
     \ }}
 elseif has('lua') && (v:version > 703 ||
       \ (v:version == 703 && has('patch885')))
-  NeoBundle 'Shougo/neocomplete.vim'
+  NeoBundle 'Shougo/neocomplete.vim', {'depends': [
+  \ 'Shougo/neoinclude.vim', 'Shougo/neco-syntax', 'Shougo/neco-vim',
+  \ ]}
   " , {
   " \ 'insert':1,
   " \ 'on_unite': ['neocomplete'],
   " \ }
-  NeoBundle 'Shougo/neoinclude.vim'
-  NeoBundle 'Shougo/neco-syntax'
-  NeoBundle 'Shougo/neco-vim'
   if s:bundle.is_installed('rsense')
     NeoBundle 'pekepeke/neocomplcache-rsense.vim', 'neocompleteFeature'
     " NeoBundle 'supermomonga/neocomplete-rsense.vim'
@@ -8410,6 +8409,47 @@ command! -bar -nargs=1 -complete=customlist,s:replace_pattern_complete ReplacePa
 " util {{{2
 command! -nargs=0 ToScratch call my#buffer#set_scratch()
 command! -nargs=0 HtmlCommentRemove call my#command#remove_html_comment()
+function! s:vimrc_file_pos(l1, l2)
+  let line = a:l1 == a:l2 ? line('.') : a:l1 . "-" . a:l2
+  let root = substitute(system(printf('cd %s && git rev-parse --show-toplevel 2>/dev/null', expand('%:p:h'))), '[\r\n]\+', '', '')
+  let fpath = expand('%:p')
+  if !empty(root)
+    let fpath = substitute(fpath[len(root):], '^/\+', '', '')
+  endif
+
+  let s = fpath . ":" . line
+  if has('gui_running')
+    let @+=s
+  elseif exists(':FakeclipDefaultKeyMappings')
+    let sid = fakeclip#_sid_prefix()
+    if $DISPLAY || s:is_mac || s:is_win
+      call {sid}write_clipboard(s)
+    else
+      call {sid}write_pastebuffer(s)
+    endif
+  else
+    echo s . "\n"
+  endif
+endfunction
+command! -range FilePos call s:vimrc_file_pos(<line1>, <line2>)
+function! s:vimrc_yank_line_with_no(l1, l2)
+  let lines = map(getline(a:l1, a:l2), 'printf("%4d: %s", a:l1 + v:key, v:val)')
+  let s = join(lines, "\n")
+  if has('gui_running')
+    let @+=s
+  elseif exists(':FakeclipDefaultKeyMappings')
+    let sid = fakeclip#_sid_prefix()
+    if $DISPLAY || s:is_mac || s:is_win
+      call {sid}write_clipboard(s)
+    else
+      call {sid}write_pastebuffer(s)
+    endif
+  else
+    echo s . "\n"
+  endif
+endfunction
+command! -range YankLineNo call s:vimrc_yank_line_with_no(<line1>, <line2>)
+
 
 " errorformat tester {{{2
 let g:efm_tester_fmt = '%f:%l:%c:%m'
