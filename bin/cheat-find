@@ -1,0 +1,13 @@
+#!/bin/bash
+
+GREP_CMD=""
+
+for cmd in jvgrep ag pt ack grep ; do
+  if which $cmd >/dev/null 2>&1; then
+    GREP_CMD="$cmd -i -r "
+    break
+  fi
+done
+
+eval $GREP_CMD "$@" ~/.zsh/opt/cheat/
+
