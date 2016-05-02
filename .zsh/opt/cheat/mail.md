@@ -1,7 +1,49 @@
-### send mail
+## mime
+### perl
+
+```
+# iso-2022-jp
+echo テスト |perl -MEncode -pe '$_ = encode("MIME-Header-ISO_2022_JP",  decode("UTF-8", $_))'
+# utf-8
+echo テスト |perl -MEncode -pe '$_ = encode("MIME-Header",  "UTF-8")'
+```
+
+### nkf
+
+```
+nkf -w: UTF-8 に変換
+nkf -e: EUC-JP に変換
+nkf -s: Shift-JIS に変換
+nkf -j: JIS(ISO-2022-JP) に変換
+
+# mime encoding
+echo ほげほげ | nkf -M
+# mime+Base64
+echo ほげほげ | nkf -MB
+# mime + quoted-printable
+echo ほげほげ | nkf -MQ
+# decode
+echo "=?ISO-2022-JP?B?GyRCJFskMiRbJDIbKEI=?=" | nkf -w
+echo GyRCJFskMiRbJDIbKEI= | nkf -wmB
+echo "=1B=24B=24=5B=242=24=5B=242=1B=28B" | nkf -wmQ
+```
+
+## send
+### mail
 
 ```
 echo "hello" | sendmail to@example.com
+
+cat <<__EOM__ | sendmail to@example.com
+From: from@example.com
+To: to@example.com
+Subject: =?ISO-2022-JP?B?GyRCJUYlOSVIGyhC?=
+Content-Type: text/plain; charset=ISO-2022-JP
+MIME-Version: 1.0
+
+TEST MAIL
+__EOM__
+
 echo "hello" | mail to@example.com
 echo "本文" | mail -s "タイトル" -r from@example.com -c cc1@example.com -c cc2@example.com to1@example.com to2@example.com
 mail -a [attachmemnt] -A [account] to@example.com

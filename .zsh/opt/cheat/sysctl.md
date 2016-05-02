@@ -36,6 +36,18 @@ echo 5 > /proc/sys/kernel/panic
 - `kernel.panic = 0`
 	- 何秒後に再起動を行うか
 
+### cache
+- `vm.drop_caches`
+	- 1: ページキャッシュクリア
+	- 2: dentry と inode のクリア
+	- 3: 1 + 2
+
+```
+sync
+sysctl -w vm.drop_caches=1
+echo 2 > /proc/sys/vm/drop_caches
+```
+
 ### ディスク
 - fstab
 	- noatime を更新させない

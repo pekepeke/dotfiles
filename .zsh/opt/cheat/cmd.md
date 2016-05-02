@@ -15,7 +15,10 @@ find . -mtime +50
 find . -mtime -50
 
 # ログの一括削除
-ifind ./log -mtime +60 -name '*.log' | xargs --no-run-if-empty rm
+find ./log -mtime +60 -name '*.log' | xargs --no-run-if-empty rm
+
+# depth
+find . -maxdepth 1
 ```
 
 ## op
