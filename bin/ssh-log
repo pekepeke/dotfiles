@@ -54,6 +54,9 @@ ssh_with_coo-tee() {
   local log_file=$(get_logfile $host)
   local log_dir=$(dirname $log_file)
   [ ! -e $log_dir ] && mkdir -p $log_dir
+  if [ -n "$CYGWIN" ]; then
+    log_file=$(echo $log_file | sed -e '!^/cygdrive/!/!')
+  fi
 
   if [ -n "${local_command}" ]; then
     ssh -o PermitLocalCommand=yes -o LocalCommand="${local_command}" \

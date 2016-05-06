@@ -1,5 +1,3 @@
-<?php
-
 function log_write($message, $type = "debug") {
 	static $filename = null;
 	if (is_null($filename)) {

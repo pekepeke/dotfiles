@@ -225,14 +225,19 @@ snippet headerhtml
 	header("Content-Type: text/html; charset=${1:utf-8}");
 
 snippet funcgetset
-    public function set${2:$1}($$1)
-    {
-        $this->${1} = $$1;
-        return $this;
-    }
+alias   gett
+	public function set${2:$1}($$1)
+	{
+		$this->${1} = $$1;
+		return $this;
+	}
 
-    public function get$2()
-    {
-        return $this->$1;
-    }
+	public function get$2()
+	{
+		return $this->$1;
+	}
+
+snippet debug
+alias log
+	file_put_contents("/tmp/debug.log",   sprintf("%s %s[%d]: %s\n", date('Y-m-d H:i:s'), __FILE__,  __LINE__, "${1:err}"),   FILE_APPEND);
 
