@@ -55,7 +55,7 @@ ssh_with_coo-tee() {
   local log_dir=$(dirname $log_file)
   [ ! -e $log_dir ] && mkdir -p $log_dir
   if [ -n "$CYGWIN" ]; then
-    log_file=$(echo $log_file | sed -e '!^/cygdrive/!/!')
+    log_file=$(echo $log_file | sed -e 's!^/cygdrive/\([a-zA-Z]\)!\1:/!')
   fi
 
   if [ -n "${local_command}" ]; then
