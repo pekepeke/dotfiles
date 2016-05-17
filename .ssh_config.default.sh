@@ -10,7 +10,7 @@ if [ -e $FILE ] ; then
   exit 1
 fi
 
-cat <<EOM > $FILE
+cat <<'EOM' > $FILE
 # ~/.ssh/config
 # vim:sw=2 ts=2 expandtab fdm=expr foldexpr=getline(v\\:lnum)=~'^\\\\s*$'&&getline(v\\:lnum+1)=~'^Host\\\\s\\\\+\\\\S'?'<1'\\:1
 
@@ -21,9 +21,13 @@ Host *
   ServerAliveCountMax 5
   Protocol 2
   GSSAPIAuthentication no
+  # cannot use on cygwin
   ControlMaster auto
-  ControlPath ~/.ssh/master-%r@%h:%p.socket
-  ControlPersist 10m
+  ControlPath /tmp/ssh-%r@%h:%p.socket
+  # ControlPath ~/.ssh/master-%r@%h:%p.socket
+  # ControlPath /tmp/%C
+  # ControlPersist yes
+  # ControlPersist 10m
   # RemoteForward 52698 127.0.0.1:52698 # for remote edit(subl, mate2)
 
 Host github.com
@@ -113,5 +117,15 @@ Host *-ec2-
 #     HostName github.com
 #     IdentitiesOnly yes
 #     IdentityFile ~/.ssh/work_github_key
+
+# http://qiita.com/kawaz/items/a0151d3aa2b6f9c4b3b8
+# Host */*
+#   ProxyCommand ssh -W "$(basename "%h")":%p "$(dirname "%h")"
+# Host *+*
+#   ProxyCommand ssh -W "$(sed -E 's/.*\+//'<<<"%h")":%p "$(sed -E 's/\+[^\+]*//'<<<"%h")"
+Host */*
+  ProxyCommand ssh -W "$(H="%h"; echo ${H##*/})":%p "$(H="%h"; echo ${H%%%%/*})"
+Host *+*
+  ProxyCommand ssh -W "$(H="%h"; echo ${H##*+})":%p "$(H=%h; echo ${H%%%%+*})"
 
 EOM

@@ -87,6 +87,38 @@ git diff -w
 git diff -w --no-color | git apply --cached
 ```
 
+## ls-files
+
+```
+## 更新ファイル、untracking ファイル一覧の取得
+git ls-files --modified --others --exclude-per-directory=.gitignore
+```
+
+## clean
+
+```
+## remove untracked files
+git clean -f
+## dry-run
+git clean -n
+## カレントディレクトリ内の追跡対象外ファイルおよび追跡対象外ディレクトリを削除
+git clean -df
+## カレントディレクトリ内の追跡対象外ファイルおよび Git では通常無視されるファイルを削除
+git clean -xf
+# カレントディレクトリ内の追跡対象外ファイルおよび追跡対象外ディレクトリ、および Git では通常無視されるファイルを削除
+git clean -fdx
+```
+
+## stash
+
+```
+git stash -u
+git stash list
+git stash show [stash]
+git stash apply [stash] # stash は破棄されない
+git checkout stash@{0} fuga.rb
+```
+
 ## config
 
 ```

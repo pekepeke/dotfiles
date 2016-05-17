@@ -1648,6 +1648,9 @@ NeoBundleLazy 'tsukkee/unite-tag', {
 " NeoBundle 'hewes/unite-gtags', {
 " \ 'on_source': 'unite.vim',
 " \ }
+NeoBundle 'rafi/vim-unite-issue', {
+\ 'depends' : ['mattn/webapi-vim',  'tyru/open-browser.vim',  'Shougo/unite.vim'],
+\ }
 NeoBundle 'haya14busa/unite-ghq'
 if executable('watson')
   NeoBundle 'alpaca-tc/vim-unite-watson.vim', {

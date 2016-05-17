@@ -116,6 +116,44 @@ docker exec -it CONTAINER コマンド
 
 ## tips
 
+### call remote api
+- remote api - `https://docs.docker.com/engine/reference/api/docker_remote_api/`
+
+```
+# socat version
+echo -e "GET /images/json HTTP/1.1\r\n" | socat unix-connect:/var/run/docker.sock STDIO
+
+# nc version (netcat-freebsd)
+echo -e "GET /images/json HTTP/1.0\r\n" | nc -U /var/run/docker.sock
+echo -e "GET /images/json HTTP/1.0\r\n" | nc -U /var/run/docker.sock | sed 1,4d
+
+# curl version
+curl --unix-socket /var/run/docker.sock http:/containers/json
+
+# relay
+socat -d -d TCP-LISTEN:8080,fork UNIX:/var/run/docker.sock
+ncat -vlk 8080 -c 'ncat -U /var/run/docker.sock
+
+curl http://localhost:8080
+
+# php socket
+php -r '$fs = fsockopen("unix:///var/run/docker.sock"); fwrite($fs, "GET /containers/json HTTP/1.1\r\nHOST: http:/\r\n\r\n"); while (!feof($fs)) { print fread($fs, 4096); }'
+```
+
+### 参照していない data-volume のクリア
+
+```
+docker volume ls -qf dangling=true
+
+docker volume rm $(docker volume ls -qf dangling=true)
+docker volume ls -qf dangling=true | xargs -r docker volume rm
+
+# https://github.com/chadoe/docker-cleanup-volumes
+curl -LO https://raw.githubusercontent.com/chadoe/docker-cleanup-volumes/master/docker-cleanup-volumes.sh
+for id in $( sudo ./docker-cleanup-volumes.sh --dry-run | grep "deleted" | awk '{print $NF}') ; do sudo ls -al /var/lib/docker/volumes/$id/_data ; done
+for id in $( sudo ./docker-cleanup-volumes.sh --dry-run | grep "In use" | awk '{print $NF}') ; do sudo ls -al /var/lib/docker/volumes/$id/_data ; done
+```
+
 ### build
 #### build-time arguments
 - https://docs.docker.com/engine/reference/builder/#arg
