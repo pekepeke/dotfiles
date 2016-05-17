@@ -1,3 +1,41 @@
+## NIC変更
+
+```
+vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
+vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
+```
+
+## vagrant package
+
+```
+vagrant box add vm_name ./package.box
+```
+
+### mac アドレスマッピング無効化
+
+```
+# パッケージングする前のゲストOS側でMACアドレスとのマッピングを無効にしておきます
+sudo ln -s -f /dev/null /etc/udev/rules.d/70-persistent-net.rules
+
+# ※機能を再度有効にしたい場合は、該当ファイルを削除してネットワークを再起動することで再度マッピングされる
+# rm -rf /etc/udev/rules.d/70-persistent-net.rules
+```
+
+#### centos 7の場合
+
+```
+rm /etc/udev/rules.d/70-persistent-ipoib.rules
+```
+
+### box ファイル軽量化
+- https://gist.github.com/adrienbrault/3775253
+
+```
+sudo dd if=/dev/zero of=/EMPTY bs=1M
+sudo rm -f /EMPTY
+rm ~/.bash_history
+```
+
 ## disk 増設
 
 ```
