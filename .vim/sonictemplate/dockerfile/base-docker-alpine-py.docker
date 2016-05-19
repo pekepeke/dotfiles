@@ -1,0 +1,12 @@
+FROM alpine:3.3
+MAINTAINER {{_expr_:get(g:, 'author', '')}}<{{_expr_:get(g:, 'email', '')}}>
+
+RUN build_dependencies="gcc g++ python-dev py-pip" \
+    build_dependencies="$build_dependencies zlib-dev libxml2-dev" \
+    software_dependencies="python zlib libxml2" \
+    && apk add --update --no-cache $software_dependencies $build_dependencies \
+    && LDFLAGS=-L/lib pip install yaml \
+    && apk del --purge $build_dependencies \
+    && rm -rf ~/cache/.pip
+
+CMD ["/bin/sh"]

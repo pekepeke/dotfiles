@@ -1,6 +1,6 @@
 ENV TZ Asia/Tokyo
-RUN apk --update add tzdata && \
-      cp /usr/share/zoneinfo/$TZ /etc/localtime && \
-      apk del tzdata && \
-      rm -rf /var/cache/apk/* && \
+RUN apk --update add tzdata \
+    && cp /usr/share/zoneinfo/$TZ /etc/localtime \
+    && apk del tzdata \
+    && rm -rf /var/cache/apk/* \
 

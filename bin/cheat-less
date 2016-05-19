@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# selected=$(cheat-find "$@" | cut -d ':' -f1 | sort | uniq | peco)
+selected=$(cheat-find "$@" | peco | cut -d ':' -f1 | sort | uniq)
+
+if [ -n "$selected" ]; then
+  less $selected
+fi
