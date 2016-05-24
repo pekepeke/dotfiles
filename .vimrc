@@ -326,6 +326,9 @@ if !get(g:vimrc_enabled_features, "git_under1.8", 0)
     redraw!
   endfunction
 endif
+if &diff
+  set foldlevel=100
+endif
 
 " 表示周り {{{2
 set lazyredraw ttyfast
@@ -1112,6 +1115,10 @@ if s:exec_ruby
     NeoBundle 'tpope/vim-rails' , {
     \ 'on_ft': ['ruby','haml','eruby'],
     \ }
+    NeoBundleLazy 'basyura/unite-rails', {
+    \ 'on_ft': ['ruby'],
+    \ 'on_source': 'unite.vim',
+    \ }
     if s:bundle.is_installed('neocomplete.vim')
       NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
       \ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails',
@@ -1164,12 +1171,6 @@ if s:exec_ruby
   \ 'on_ft': ['ruby'],
   \ 'on_source': 'unite.vim',
   \ }
-  if get(g:vimrc_enabled_features, "rails", 0)
-    NeoBundleLazy 'basyura/unite-rails', {
-    \ 'on_ft': ['ruby'],
-    \ 'on_source': 'unite.vim',
-    \ }
-  endif
   NeoBundleLazy 'moro/unite-stepdefs', {
   \ 'on_ft': ['ruby'],
   \ 'on_source': 'unite.vim',
@@ -1193,10 +1194,7 @@ if s:exec_go
   NeoBundleLazy 'mattn/livestyle-vim', {
   \ 'on_cmd': ['LiveStyle'],
   \ 'build' : {
-  \ 'windows': 'go get golang.org/x/net/websocket && go build -o livestyled/livestyled livestyled/livestyled.go',
-  \ 'cygwin' : 'go get golang.org/x/net/websocket && go build -o livestyled/livestyled livestyled/livestyled.go',
-  \ 'mac'    : 'go get golang.org/x/net/websocket && go build -o livestyled/livestyled livestyled/livestyled.go',
-  \ 'unix'   : 'go get golang.org/x/net/websocket && go build -o livestyled/livestyled livestyled/livestyled.go',
+  \ 'others': 'go get golang.org/x/net/websocket && go build -o livestyled/livestyled livestyled/livestyled.go',
   \ }}
 endif
 NeoBundleLazy 'https://gist.github.com/6576341', {
@@ -1219,10 +1217,10 @@ endif
 
 NeoBundle 'hail2u/vim-css3-syntax'
 NeoBundle 'npacker/vim-css3complete'
-if executable('less')
+if s:exec_npm && executable('lessc')
   NeoBundle 'groenewege/vim-less'
 endif
-if executable('stylus')
+if s:exec_npm && executable('stylus')
   NeoBundle 'wavded/vim-stylus'
 endif
 NeoBundle 'slim-template/vim-slim'
@@ -1617,22 +1615,23 @@ NeoBundle 'tacroe/unite-mark', {
 \ 'on_source': 'unite.vim',
 \ }
 NeoBundle 'zhaocai/unite-scriptnames'
-NeoBundleLazy 'pasela/unite-webcolorname', {
-\ 'on_source': 'unite.vim',
-\ }
-NeoBundle 'ujihisa/unite-colorscheme', {
-\ 'on_source': 'unite.vim',
-\ }
-NeoBundle 'LeafCage/unite-gvimrgb', {
-\ 'on_source': 'unite.vim',
-\ }
-NeoBundle 'Shougo/unite-build', {
-\ 'on_source': 'unite.vim',
-\ }
+" NeoBundleLazy 'pasela/unite-webcolorname', {
+" \ 'on_source': 'unite.vim',
+" \ }
+" NeoBundle 'ujihisa/unite-colorscheme', {
+" \ 'on_source': 'unite.vim',
+" \ }
+" NeoBundle 'LeafCage/unite-gvimrgb', {
+" \ 'on_source': 'unite.vim',
+" \ }
+" NeoBundle 'Shougo/unite-build', {
+" \ 'on_source': 'unite.vim',
+" \ }
 NeoBundle 'Shougo/unite-outline'
-NeoBundleLazy 'sgur/unite-git_grep', {
-\ 'on_source': 'unite.vim',
-\ }
+" NeoBundle 'kmnk/vim-unite-giti'
+" NeoBundleLazy 'sgur/unite-git_grep', {
+" \ 'on_source': 'unite.vim',
+" \ }
 NeoBundle 'osyo-manga/unite-highlight', {
 \ 'on_source': 'unite.vim',
 \ }
@@ -1652,7 +1651,7 @@ NeoBundle 'rafi/vim-unite-issue', {
 \ 'depends' : ['mattn/webapi-vim',  'tyru/open-browser.vim',  'Shougo/unite.vim'],
 \ }
 NeoBundle 'haya14busa/unite-ghq'
-if executable('watson')
+if s:exec_ruby && executable('watson')
   NeoBundle 'alpaca-tc/vim-unite-watson.vim', {
   \ 'on_cmd' : 'Watson',
   \ 'depends' : 'Shougo/unite.vim',
@@ -5399,7 +5398,7 @@ if s:bundle.tap('unite.vim')
   endfunction
 
   " milkode http://qiita.com/items/abe5df7c5b21160532b8 "{{{3
-  if executable('gmilk')
+  if s:exec_ruby && executable('gmilk')
     " gmilk コマンドの結果をUnite qf で表示する
     command! -nargs=1 Gmilk call <SID>run_gmilk("gmilk -a -n 200", <f-args>)
 
@@ -5614,7 +5613,7 @@ else "{{{4
     \   'b:boolean',
     \   'n:number',
     \ ]}
-  if executable('phpctags')
+  if s:exec_php && executable('phpctags')
     let g:tagbar_type_php = {
       \ 'ctagsbin'  : 'phpctags',
       \ 'ctagsargs' : '--memory="128M" -f -',
@@ -5649,7 +5648,7 @@ else "{{{4
   endif
   " let g:tagbar_type_javascript = {'ctagstype': 'JavaScript',
   "       \   'kinds': ['f:functions', 'c:classes', 'm:methods', 'p:properties', 'v:global variables', 'I:inner'] }
-  if executable('coffeetags')
+  if s:exec_npm && executable('coffeetags')
     let g:tagbar_type_coffee = {
       \ 'ctagsbin' : 'coffeetags',
       \ 'ctagsargs' : '',
@@ -6507,7 +6506,7 @@ if s:bundle.is_installed('vim-quickrun')
   " go {{{4
   call extend(g:quickrun_config, {
   \ 'go' : {
-  \   'type' : executable('8g') ? 'go/8g': '',
+  \   'type' : s:exec_go && executable('8g') ? 'go/8g': '',
   \ },
   \ 'go/8g' : {
   \   'command': '8g',

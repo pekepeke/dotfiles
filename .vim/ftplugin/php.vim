@@ -17,6 +17,7 @@ let b:match_words .= '<?\(php\)\?:?>,\<switch\>:\<endswitch\>,' .
   \ '<\@<=dl\>[^>]*\%(>\|$\):<\@<=d[td]\>:<\@<=/dl>,' .
   \ '<\@<=\([^/?][^ \t>]*\)[^>]*\%(>\|$\):<\@<=/\1>,' .
   \ '<:>,(:),{:},[:]'
+setlocal cinwords=if,elseif,else,for,while,try,except,finally,function,class,switch,case
 
 if get(g:vimrc_enabled_plugins, 'php_namespace')
   imap <buffer> <C-x>u <Plug>(php-ns-inser-use)

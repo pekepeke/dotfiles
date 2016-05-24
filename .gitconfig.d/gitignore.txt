@@ -105,6 +105,9 @@ tramp
 # zed
 .zedstate
 
+# vscode
+.vscode
+
 # other files
 /,*
 

@@ -48,6 +48,8 @@ autoload -Uz peco-ghq-trash
 zle -N peco-ghq-trash
 autoload -Uz peco-gibo-replace-buffer
 zle -N peco-gibo-replace-buffer
+autoload -Uz peco-git-branch-all-insert-at-pos
+zle -N peco-git-branch-all-insert-at-pos
 autoload -Uz peco-git-branch-delete-already-merged
 zle -N peco-git-branch-delete-already-merged
 autoload -Uz peco-git-branch-insert-at-pos

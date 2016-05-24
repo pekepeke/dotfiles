@@ -432,6 +432,7 @@ if v:version > 702
     NeoBundle 'kana/vim-operator-replace'
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'tpope/vim-fugitive'
+    NeoBundle 'cohama/agit.vim'
     NeoBundle 'rhysd/committia.vim'
     NeoBundle 'idanarye/vim-merginal'
     NeoBundle 'AndrewRadev/gapply.vim'
