@@ -112,3 +112,13 @@ incrontab -t
 incrontab -t | sed -e 's/,/\n/g'
 ```
 
+## wget
+
+```
+# -l [階層数(5まで)] + -r == recursive
+wget -r -l 0 http://www.mysite.co.jp/index.html
+
+# -np = --no-parent
+wget -r -np http://www.mysite.co.jp/path/to/index.html
+```
+
