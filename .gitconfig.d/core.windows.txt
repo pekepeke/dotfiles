@@ -1,4 +1,5 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [core]
   autocrlf = false
+  safecrlf = false
   ; editor = "~/../Apps/vim/gvim.exe -N -u ~/.vimrc.min --nofork -c 'set fenc=utf-8' +1 "

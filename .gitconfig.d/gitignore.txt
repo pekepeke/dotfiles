@@ -103,10 +103,13 @@ tramp
 /.vagrant
 
 # zed
-.zedstate
+/.zedstate
 
 # vscode
-.vscode
+/.vscode
+
+# intellij
+/.idea
 
 # other files
 /,*

@@ -126,7 +126,9 @@ git checkout stash@{0} fuga.rb
 vim .git/info/exclude
 
 # minimum config
-git config --global push.default upstream
+git config --global push.default simple
+# git config --global push.default upstream
+# git config --global push.default tracking
 git config --global pull.rebase true
 git config --global alias.st status
 git config --global alias.stt status -uno

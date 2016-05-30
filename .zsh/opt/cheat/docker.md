@@ -55,6 +55,9 @@ docker ps -a
 ## コンテナのハッシュリストを得る
 docker ps -a -q
 
+# 直近で起動したコンテナIDを取得
+docker ps -l -q
+
 ## index.docker.ioからイメージを検索する
 docker search TERM
 

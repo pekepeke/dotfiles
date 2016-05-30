@@ -430,6 +430,10 @@ if v:version > 702
       \ }}
     NeoBundle 'kana/vim-operator-user'
     NeoBundle 'kana/vim-operator-replace'
+    NeoBundle 'kana/vim-fakeclip'
+    NeoBundle 'kana/vim-niceblock', {
+    \ 'on_map' : ['<Plug>(niceblock-',]
+    \ }
     NeoBundle 'tpope/vim-surround'
     NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'cohama/agit.vim'
@@ -583,6 +587,8 @@ if s:has_plugin('unite.vim')
   nmap <silent> [!unite]l       :<C-u>Unite file<CR>
   nmap <silent> [!unite]m       :<C-u>Unite file_mru directory_mru<CR>
   nmap <silent> [!unite]k       :<C-u>Unite tab<CR>
+  nmap <silent> [!unite]hk       :<C-u>Unite mapping<CR>
+  nmap <silent> [!unite]u       :<C-u>Unite<Space>
 endif
 
 if s:has_plugin('vimshell') "{{{2
@@ -593,6 +599,17 @@ if s:has_plugin('vimshell') "{{{2
   let g:vimshell_user_prompt = 'fnamemodify(getcwd(), ":~")'
 endif
 
+if s:has_plugin('vim-niceblock')
+  xmap I <Plug>(niceblock-I)
+  xmap A <Plug>(niceblock-A)
+endif
+
+if s:has_plugin('vim-fakeclip')
+  nmap ,y <Plug>(fakeclip-screen-y)
+  nmap ,p <Plug>(fakeclip-screen-p)
+  vmap ,y <Plug>(fakeclip-screen-y)
+  vmap ,p <Plug>(fakeclip-screen-p)
+endif
 if s:has_plugin('vim-operator-replace') "{{{2
   map _ <Plug>(operator-replace)
 endif

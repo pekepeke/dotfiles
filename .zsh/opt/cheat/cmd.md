@@ -122,3 +122,13 @@ wget -r -l 0 http://www.mysite.co.jp/index.html
 wget -r -np http://www.mysite.co.jp/path/to/index.html
 ```
 
+## 圧縮ファイル
+
+```
+# 中身表示
+tar tvf ./test.tar
+tar tvfz ./test.tar.gz
+tar tvfj ./test.tar.bz2
+zipinfo ./test.zip
+```
+

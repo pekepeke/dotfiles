@@ -2209,14 +2209,26 @@ let s:regexp_todo = 'TODO\|FIXME\|REVIEW\|MARK\|NOTE\|!!!\|\\?\\?\\?\|XXX'
 function! s:set_grep(...) "{{{3
   let retval = 0
   for type in copy(a:000)
-    if type == "jvgrep" && executable(type)
+    if type == "hw" && executable(type)
+      set grepprg=hw
+      set grepformat=%f:%l:%m
+      " set grepprg=jvgrep\ -n
+
+      let g:unite_source_grep_command = "hw"
+      " let g:unite_source_grep_default_opts = '-i --exclude "(\.git|\.svn|\.hg|\.bzr|tags|tmp)"'
+      let g:unite_source_grep_default_opts = '-i --no-group --no-color'
+      let g:unite_source_grep_recursive_opt = ''
+      return 1
+    elseif type == "jvgrep" && executable(type)
       set grepprg=jvgrep
       set grepformat=%f:%l:%m
       " set grepprg=jvgrep\ -n
 
-      let g:unite_source_grep_command = "jvgrep"
-      let g:unite_source_grep_default_opts = '-in --exclude "(\.git|\.svn|\.hg|\.bzr|tags|tmp)"'
-      let g:unite_source_grep_recursive_opt = ''
+      " #1159 のため動作しない
+      " let g:unite_source_grep_command = "jvgrep"
+      " " let g:unite_source_grep_default_opts = '-i --exclude "(\.git|\.svn|\.hg|\.bzr|tags|tmp)"'
+      " let g:unite_source_grep_default_opts = '-ir'
+      " let g:unite_source_grep_recursive_opt = '-R'
       return 1
     elseif type == "ag" && executable(type)
       set grepprg=ag\ -S\ --nocolor\ --nogroup\ --nopager
@@ -2227,11 +2239,11 @@ function! s:set_grep(...) "{{{3
       " \ '--ignore-case -S --noheading --nocolor --nogroup --nopager',
       let opts = [
         \ '-i --vimgrep --hidden --noheading --nocolor --nogroup --nopager',
-        \ '--ignore', '".hg"',
-        \ '--ignore', '".git"',
-        \ '--ignore', '".bzr"',
-        \ '--ignore', '".svn"',
-        \ '--ignore', '"node_modules"',
+        \ '--ignore ".hg"',
+        \ '--ignore ".git"',
+        \ '--ignore ".bzr"',
+        \ '--ignore ".svn"',
+        \ '--ignore "node_modules"',
         \ ]
       let g:unite_source_grep_default_opts = join(opts, " ")
       let g:unite_source_grep_recursive_opt = ''
@@ -2269,6 +2281,7 @@ function! s:set_grep(...) "{{{3
   return retval
 endfunction
 
+command! -nargs=0 SetHw call s:set_grep("hw")
 command! -nargs=0 SetJvgrep call s:set_grep("jvgrep")
 command! -nargs=0 SetAck call s:set_grep("ack-grep")
 command! -nargs=0 SetAg call s:set_grep("ag")
@@ -2278,9 +2291,9 @@ let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Rel
 let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
 let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
 if s:is_win || get(g:vimrc_enabled_features, 'jvgrep', 0)
-  call s:set_grep("jvgrep", "ag", "ack-grep")
+  call s:set_grep("jvgrep", "hw", "ag", "ack-grep")
 else
-  call s:set_grep("ag", "jvgrep", "ack-grep")
+  call s:set_grep("hw", "ag", "jvgrep", "ack-grep")
 endif
 
 let Grep_Default_Options = '-i'
@@ -3960,6 +3973,7 @@ if s:bundle.is_installed('vim-localrc')
   if has('vim_starting')
     " http://vim-users.jp/2009/12/hack112/ => vimrc-local
     call localrc#load('vimrc_local.vim', getcwd(), 3)
+    call localrc#load(g:localrc_filename, getcwd(), 3)
   endif
   function! s:edit_vimrc_local()
     let fpath = s:find_proj_dir() . "/" .g:localrc_filename
