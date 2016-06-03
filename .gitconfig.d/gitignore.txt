@@ -114,3 +114,4 @@ tramp
 # other files
 /,*
 
+/.hook*

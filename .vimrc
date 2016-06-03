@@ -971,6 +971,7 @@ else
   \ }
 endif
 NeoBundle 'rhysd/committia.vim'
+NeoBundle 'rhysd/conflict-marker.vim'
 NeoBundleLazy 'idanarye/vim-merginal' , {
 \ 'on_cmd': [ "Merginal", "MerginalToggle", "MerginalClose",],
 \ }
@@ -1001,9 +1002,9 @@ NeoBundle 'vim-scripts/diffchar.vim'
 NeoBundleLazy 'AndrewRadev/linediff.vim', {
 \ 'on_cmd': ['Linediff', 'LinediffReset'],
 \ }
-NeoBundle 'vim-scripts/ConflictDetection', {
-\ 'depends': 'vim-scripts/ingo-library',
-\ }
+" NeoBundle 'vim-scripts/ConflictDetection', {
+" \ 'depends': 'vim-scripts/ingo-library',
+" \ }
 if has('python')
   NeoBundleLazy 'joonty/vdebug', {
   \ 'on_cmd': [
@@ -5314,7 +5315,7 @@ if s:bundle.tap('unite.vim')
   " UniteNMap   gl        grep_launcher
   UniteNMap!  gi        git_grep -buffer-name=git_grep
   UniteNMap!  gl        line -start-insert
-  UniteNMap!  gd        signify
+  " UniteNMap!  gd        signify
   UniteNMap!  q         quickfix -buffer-name=qfix
   UniteNMap   p         history/yank
   " UniteNMap   @         quickrun_config
@@ -5361,7 +5362,7 @@ if s:bundle.tap('unite.vim')
 
   nnoremap          [!unite]rr :<C-u>UniteResume<Space>
   nnoremap <silent> [!unite]re :<C-u>UniteResume<CR>
-  nnoremap <silent> [!unite]ri :<C-u>UniteResume git<CR>
+  nnoremap <silent> [!unite]ri :<C-u>UniteResume git_grep<CR>
   nnoremap <silent> [!unite]rg :<C-u>UniteResume grep<CR>
   nnoremap <silent> [!unite]rt :<C-u>UniteResume todo<CR>
   nnoremap <silent> [!unite]rq :<C-u>UniteResume qfix<CR>

@@ -438,6 +438,7 @@ if v:version > 702
     NeoBundle 'tpope/vim-fugitive'
     NeoBundle 'cohama/agit.vim'
     NeoBundle 'rhysd/committia.vim'
+    NeoBundle 'rhysd/conflict-marker.vim'
     NeoBundle 'idanarye/vim-merginal'
     NeoBundle 'AndrewRadev/gapply.vim'
     NeoBundle 'lambdalisue/vim-unified-diff'
@@ -583,12 +584,25 @@ if s:has_plugin('unite.vim')
   let g:unite_winheight = 20
   let g:unite_source_file_ignore_pattern = '\%(^\|/\)\.$\|\~$\|\.\%(o|exe|dll|bak|sw[po]\)$\|/chalice_cache/\|/-Tmp-/'
 
-  nmap <silent> [!unite]j       :<C-u>Unite buffer_tab<CR>
-  nmap <silent> [!unite]l       :<C-u>Unite file<CR>
-  nmap <silent> [!unite]m       :<C-u>Unite file_mru directory_mru<CR>
-  nmap <silent> [!unite]k       :<C-u>Unite tab<CR>
-  nmap <silent> [!unite]hk       :<C-u>Unite mapping<CR>
-  nmap <silent> [!unite]u       :<C-u>Unite<Space>
+  nnoremap <silent> [!unite]j       :<C-u>Unite buffer_tab<CR>
+  nnoremap <silent> [!unite]l       :<C-u>Unite file<CR>
+  nnoremap <silent> [!unite]m       :<C-u>Unite file_mru directory_mru<CR>
+  nnoremap <silent> [!unite]k       :<C-u>Unite tab<CR>
+  nnoremap <silent> [!unite]a       :<C-u>Unite file_rec -start-insert<CR>
+  nnoremap <silent> [!unite]hk      :<C-u>Unite mapping<CR>
+  nnoremap <silent> [!unite]gr      :<C-u>Unite grep -buffer-name=grep -no-quit<CR>
+  nnoremap <silent> [!unite]gi      :<C-u>Unite git_grep -buffer-name=git_grep -no-quit<CR>
+  nnoremap <silent> [!unite]ri      :<C-u>UniteResume git_grep -no-quit<CR>
+  nnoremap <silent> [!unite]rg      :<C-u>UniteResume grep -no-quit<CR>
+  nnoremap <silent> [!unite]u       :<C-u>Unite<Space>
+
+  if executable('hw')
+    set grepprg=hw
+    set grepformat=%f:%l:%m
+    let g:unite_source_grep_command = "hw"
+    let g:unite_source_grep_default_opts = '-i --no-group --no-color'
+    let g:unite_source_grep_recursive_opt = ''
+  endif
 endif
 
 if s:has_plugin('vimshell') "{{{2
