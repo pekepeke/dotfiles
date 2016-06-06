@@ -1,4 +1,5 @@
 " http://ideavim.sourceforge.net/vim/
+
 set number
 set hlsearch
 set scrolloff=3
@@ -26,6 +27,8 @@ nnoremap fs :action GotoSymbol<cr>
 nnoremap fm :action GotoAction<cr>
 nnoremap f,c :action Generate<cr>
 " nnoremap fm :action GoToMenu<cr>
+
+nnoremap gcc :action CommentByLineComment<cr>
 
 " code navigation
 nnoremap te t
@@ -88,6 +91,7 @@ inoremap <C-w> <C-o>db
 vnoremap x "_x
 vnoremap < <gv
 vnoremap > >gv
+vnoremap gcc :action CommentByLineComment<cr>
 
 
 " set clipboard=unnamed,unnamedplus

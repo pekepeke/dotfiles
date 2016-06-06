@@ -8,6 +8,17 @@ git
 git show-branch | grep '*' | grep -v "$(git rev-parse --abbrev-ref HEAD)" | head -1 | awk -F'[]~^[]' '{print $2}'
 ```
 
+### マージ済・未確認
+
+```
+# マージ済
+git branch --merged
+git branch -r --list --merged
+# マージ済
+git branch --no-merged
+git branch -r --list --no-merged
+```
+
 ## basic
 
 ```

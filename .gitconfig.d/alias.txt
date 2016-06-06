@@ -62,6 +62,7 @@
   stt = status -uno
   ss = status -sb
   sl = shortlog -sn
+  sb = show-branch
   reba = rebase --abort
   rebc = rebase --continue
   br = branch
