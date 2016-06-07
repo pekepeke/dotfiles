@@ -1,5 +1,4 @@
-" http://ideavim.sourceforge.net/vim/
-
+"" http://ideavim.sourceforge.net/vim/
 set number
 set hlsearch
 set scrolloff=3
@@ -11,11 +10,11 @@ set history=1000
 
 " nmaps 
 " MEMO: :actionlist
-nnoremap x "_x
-" j, k による移動を折り返されたテキストでも自然に振る舞うように変更
+" nnoremap x "_x
 nnoremap j gj
 nnoremap k gk
 nnoremap * *N
+nnoremap # #N
 
 nnoremap ff f
 nnoremap fa :action GotoFile<cr>
@@ -23,12 +22,17 @@ nnoremap fr :action GotoRelated<cr>
 nnoremap fc :action GotoClass<cr>
 nnoremap fj :action Switcher<cr>
 nnoremap fo :action FileStructurePopup<cr>
+nnoremap fij :action Switcher<cr>
+nnoremap fio :action FileStructurePopup<cr>
 nnoremap fs :action GotoSymbol<cr>
-nnoremap fm :action GotoAction<cr>
+nnoremap fm :action RecentFiles<cr>
+nnoremap fh :action GotoAction<cr>
 nnoremap f,c :action Generate<cr>
 " nnoremap fm :action GoToMenu<cr>
 
 nnoremap gcc :action CommentByLineComment<cr>
+
+nnoremap <C-z> <Nop>
 
 " code navigation
 nnoremap te t
@@ -67,11 +71,16 @@ noremap <space>Y "*Y
 noremap <space>p "*p
 noremap <space>P "*P
 
+nnoremap _iw viwPyiw
+
 " nnoremap <space>u :action FindUsages<cr>
 " nnoremap <space>gt :action GotoTest<cr>
 
-nnoremap \r :action RunClass<cr>
-nnoremap \d :action Debug<cr>
+nnoremap <Leader>r :action RunClass<cr>
+nnoremap <Leader>d :action Debug<cr>
+nnoremap <Leader>a :action $SelectAll<cr>
+nnoremap <Leader>h :action TypeHierachy<cr>
+nnoremap <Leader>i :action ImplementMethods<cr>
 
 " imaps
 inoremap <C-[> <Esc>
@@ -88,11 +97,11 @@ inoremap <C-u> <C-o>d^
 inoremap <C-w> <C-o>db
 
 " vmaps
-vnoremap x "_x
+" vnoremap x "_x
 vnoremap < <gv
 vnoremap > >gv
 vnoremap gcc :action CommentByLineComment<cr>
-
+vnoremap _ Pgvy
 
 " set clipboard=unnamed,unnamedplus
 " set mouse=a
