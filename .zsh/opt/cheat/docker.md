@@ -11,6 +11,11 @@ docker info       # コンテナ・イメージ数、ユーザ情報など現在
 docker build .
 docker build -t REPOSITORY[:TAG] .
 
+## build に失敗した場合のコンテナ確認
+docker ps -q --filter status=exited
+docker commit -t exited $( docker ps --filter status=exited | peco | awk '{print $1}' )
+docker run --rm -it exited sh
+
 # ubuntu_hostというホスト名でubuntuを起動。
 docker run -it -h ubuntu_host ubuntu:14.04 /bin/bash 
 
