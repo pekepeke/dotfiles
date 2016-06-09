@@ -31,9 +31,22 @@ rm /etc/udev/rules.d/70-persistent-ipoib.rules
 - https://gist.github.com/adrienbrault/3775253
 
 ```
+yum clean all
+yum clean packages
+rm -rf ~/.cache/pip
+sudo rm -rf /root/.cache/pip
+sudo sh -c 'find /var/log -type f | while read f; do echo -ne "" > $f; done;'
+ls /var/tmp
+ls /tmp
+ls /var/cache/yum
+
 sudo dd if=/dev/zero of=/EMPTY bs=1M
 sudo rm -f /EMPTY
+export HISTSIZE=0
 rm ~/.bash_history
+
+exit 
+vagrant package --output centos7.box
 ```
 
 ## disk 増設

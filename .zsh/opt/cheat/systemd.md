@@ -1,3 +1,14 @@
+## TIPS
+### service 一覧
+
+```
+systemctl list-unit-files --type=service
+```
+
+### 設定の上書き
+-  /etc/systemd/system/ 配下に記載
+	- オリジナルは /lib/systemd/system/ 配下
+
 ## 基本コマンド
 ### systemctl list-units
 一覧表示
