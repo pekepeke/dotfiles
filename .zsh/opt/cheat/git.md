@@ -2,6 +2,28 @@ git
 ====
 
 ## tips
+### 派生元コミットを確認
+
+```
+git merge-base develop feature/hoge
+git show-branch --sha1-name develop feature/hoge | tail -1
+
+git merge-base develop $(git rev-parse --abbrev-ref HEAD)
+git show-branch --sha1-name develop $(git rev-parse --abbrev-ref HEAD) | tail -1
+```
+
+### 特定ディレクトリ配下の git リポジトリに対してなにかやる
+
+```
+cwd=$(pwd); for d in $(find . -name '.git' -type d -prune | sed -e 's!\.git$!!g'); do cd $d; echo "####### $(pwd)"; git st; cd $cwd ; done
+```
+
+### branch 派生をリッチ表示
+
+```
+git log --graph --branches --pretty=format:"%d [%h] \"%s\""
+```
+
 ### 派生元ブランチを出力
 
 ```
@@ -225,8 +247,9 @@ git log --topo-order                             # コミットメッセージ�
 git log --date-order
 git log --reverse
 
-# 過去の変更を検索
+# 過去の変更で特定文字列を含むものを検索
 git log -p -Squery
+git log -p -S hoge
 # regexp
 git log -p -S'query' --pickaxe-regex
 # 過去の変更を検索＆同時にコミットしたファイルも表示
