@@ -1,2 +1,3 @@
-git://github.com/CHH/php-build.git
+git://github.com/php-build/php-build.git
 git://github.com/chriseppstein/rbenv-each.git
+git://github.com/berenddeboer/pecl-build.git

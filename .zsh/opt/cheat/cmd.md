@@ -115,11 +115,22 @@ incrontab -t | sed -e 's/,/\n/g'
 ## wget
 
 ```
+# basic
+wget --http-user=fuga --http-passwd=piyo http://www.example.com
 # -l [階層数(5まで)] + -r == recursive
-wget -r -l 0 http://www.mysite.co.jp/index.html
+wget -r -l 0 http://www.example.com
 
 # -np = --no-parent
-wget -r -np http://www.mysite.co.jp/path/to/index.html
+wget -r -np http://www.example.com
+
+# jpg ファイルのみ取得
+wget -r -l 1 -Ajpg http://www.example.com
+# jpg ファイル除外
+wget -r -l 1 -Rjpg http://www.example.com
+# yimg.jp, ytimg.jp も取得対象に追加
+wget -r -l 1 -Ajpg -H -Dyimg.jp,ytimg.jp http://www.example.com
+# 1秒ウェイトをかける
+wget -r -l 1 -Ajpg -H -Dyimg.jp,ytimg.jp -w 1 http://www.example.com
 ```
 
 ## 圧縮ファイル
