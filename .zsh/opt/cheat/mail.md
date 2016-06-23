@@ -54,6 +54,9 @@ mail -v smoke
 ### send mail through smtp
 
 ```
+echo test | mail -s "test" -S "smtp=smtp://mail.example.com:25" hoge@example.com
+
+
 cat ~/.mailrc <<EOM
 set smtp=smtp://192.168.0.1:25
 account hoge {

@@ -4,4 +4,5 @@
   whitespace=fix,-indent-with-non-tab,trailing-space,cr-at-eol
   excludesfile = ~/.gitconfig.d/gitignore.txt
   attributesfile = ~/.gitattributes_global
-
+  autocrlf = false
+  safecrlf = false

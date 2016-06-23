@@ -1,6 +1,12 @@
 Docker
 ======
 
+## tools
+- wait-for-it
+	- https://github.com/vishnubob/wait-for-it
+- dockerize
+	- https://github.com/jwilder/dockerize
+
 ## basic
 
 ```bash

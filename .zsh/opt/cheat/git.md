@@ -98,7 +98,7 @@ git push --delete origin topic/xxxFeature
 ## archive
 
 ```
-# archive
+# archive          ## ※prefix には必ず最後に/ を指定する
 git archive --format=zip --prefix=dir/ HEAD -o repo.zip
 git archive --format=zip --prefix=projectname/ HEAD `git diff --name-only <commit>` -o archive.zip
 
