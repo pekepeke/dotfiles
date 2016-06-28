@@ -8,7 +8,7 @@ set history=1000
 " set selection=inclusive
 " set matchpairs=(:),{:},[:]
 
-" nmaps 
+" nmaps
 " MEMO: :actionlist
 " nnoremap x "_x
 nnoremap j gj
@@ -57,6 +57,9 @@ nnoremap ]c :action GotoNextError<cr>
 " nnoremap [m :action MethodUp<cr>
 " nnoremap ]m :action MethodDown<cr>
 
+nnoremap <C-i> :action Forward<cr>
+nnoremap <C-o> :action Back<cr>
+
 nnoremap <space>r :source ~/.ideavimrc<cr>
 nnoremap <space>/ :action Find<cr>
 nnoremap <space>b :action Back<cr>
@@ -101,7 +104,12 @@ inoremap <C-w> <C-o>db
 vnoremap < <gv
 vnoremap > >gv
 vnoremap gcc :action CommentByLineComment<cr>
-vnoremap _ Pgvy
+" vnoremap _ Pgvy
+
+vnoremap <space>y "*y
+vnoremap <space>Y "*Y
+vnoremap <space>p "*p
+vnoremap <space>P "*P
 
 " set clipboard=unnamed,unnamedplus
 " set mouse=a
