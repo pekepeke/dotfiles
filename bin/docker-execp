@@ -7,8 +7,11 @@ CONTAINER=$(docker ps | peco | awk '{print $NF}')
 # echo $PID
 
 if [ -n "$CONTAINER" ]; then
-  sudo docker exec -t -i ${CONTAINER} bash
-  [ $? -eq 255 ] && sudo docker exec -it "${CONTAINER}" sh
+  if sudo docker exec -t -i ${CONTAINER} which bash >/dev/null 2>&1; then
+    sudo docker exec -it "${CONTAINER}" bash
+  else
+    sudo docker exec -it "${CONTAINER}" sh
+  fi
   # || sudo docker exec -t -i ${CONTAINER} sh
   # "[ -e /bin/bash ] && /bin/bash || /bin/sh"
 fi
