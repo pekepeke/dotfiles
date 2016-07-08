@@ -1,3 +1,10 @@
+## xargs
+### 対象0件でもエラーをださない
+
+```
+find /hoge/fuga -ctime +30 -type f -print | xargs --no-run-if-empty rm
+```
+
 ## tail
 ### 指定した行以降の表示
 

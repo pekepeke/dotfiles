@@ -41,6 +41,7 @@ function zaw-callback-cheat-yank() {
   local copy_cmd="xsel -b"
   type pbcopy >/dev/null && copy_cmd="pbcopy"
   type xclip >/dev/null && copy_cmd="xclip -i -selection clipboard"
+  type pbcopy-wrapper >/dev/null && copy_cmd="pbcopy-wrapper"
 
   cat $ZSH_ZAW_CHEAT/$1 | eval $copy_cmd
   zle -M "`print "copy : $ZSH_ZAW_CHEAT$1"`"
@@ -50,6 +51,7 @@ function zaw-callback-cheat-peco-yank() {
   local copy_cmd="xsel -b"
   type pbcopy >/dev/null && copy_cmd="pbcopy"
   type xclip >/dev/null && copy_cmd="xclip -i -selection clipboard"
+  type pbcopy-wrapper >/dev/null && copy_cmd="pbcopy-wrapper"
 
   zle -M "`print "peco(yank) : $ZSH_ZAW_CHEAT$1"`"
   zle -M "`cat $ZSH_ZAW_CHEAT/$1 | peco | eval $copy_cmd`"
