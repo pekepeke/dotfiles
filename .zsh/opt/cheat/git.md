@@ -2,6 +2,15 @@ git
 ====
 
 ## tips
+### Special alias
+
+- `ORIG_HEAD`
+	- 最新の一つ手前のコミットに対するハッシュ値の別名
+- `FETCH_HEAD`
+	- リモートブランチの最新のコミットに対するハッシュ値の別名
+- `MERGE_HEAD`
+	- マージするブランチの最新コミットに対するハッシュ値の別名
+
 ### 派生元コミットを確認
 
 ```
@@ -39,6 +48,11 @@ git branch -r --list --merged
 # マージ済
 git branch --no-merged
 git branch -r --list --no-merged
+
+# developブランチにマージ済みのブランチをすべて表示
+git branch --merged develop
+# コミット f83jaz03 を含むブランチをすべて表示
+git branch --contains f83jaz03
 ```
 
 ## basic
