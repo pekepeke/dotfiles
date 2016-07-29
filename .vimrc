@@ -2311,11 +2311,11 @@ if s:bundle.is_installed('unite-tselect')
 else
   " nnoremap <silent> [!t]t g<C-]>
   " nnoremap <silent> <C-w>tt <C-w>sg<C-]>
-  nnoremap <silent> [!t]t :<C-u>call <SID>tselect_immediately()<CR>
-  nnoremap <silent> <C-w>tt <C-w>s:<C-u>call <SID>tselect_immediately()<CR>
+  nnoremap <silent><expr> [!t]t <SID>tselect_immediately()
+  nnoremap <silent><expr> <C-w>tt <SID>tselect_immediately("\<C-w>")
 endif
-function! s:tselect_immediately()
-  execute 'normal!' (len(taglist(expand('<cword>'))) > 1 ? "g" : "")."\<C-]>"
+function! s:tselect_immediately(...)
+  return get(a:000, 0, '') . (len(taglist(expand('<cword>'))) > 1 ? 'g' : '')."\<C-]>"
 endfunction
 nnoremap <silent> [!t]j :<C-u>tag<CR>
 nnoremap <silent> [!t]k :<C-u>pop<CR>

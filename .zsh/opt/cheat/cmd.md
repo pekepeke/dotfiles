@@ -150,3 +150,11 @@ tar tvfj ./test.tar.bz2
 zipinfo ./test.zip
 ```
 
+## iconv
+
+```
+iconv -l #  文字コード表示
+iconv -f SJIS -t UTF8
+iconv -f EUCJP -t UTF8
+iconv -f ISO2022JP -t UTF8
+```

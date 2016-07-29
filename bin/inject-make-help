@@ -1,0 +1,40 @@
+#!/usr/bin/env perl
+
+# http://gfx.hatenablog.com/entry/2016/06/13/180059
+# inject-make-help(1): To inject help hacks to the Makefile
+use 5.10.0;
+use strict;
+use warnings;
+use autodie;
+
+# FIXME: use perl(1) instead of grep(1), sort(1), and awk(1)
+my $help_task = q{
+help:
+    @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+} =~ s/^[ ]{4}/\t/xmsgr;
+
+my $makefile = shift(@ARGV) // 'Makefile';
+
+my $content = do {
+    local $/;
+    open my $fh, '<', $makefile;
+    <$fh>;
+};
+
+if ($content !~ /\Q$help_task/xms) {
+    $content .= $help_task;
+    
+    my($phony_tasks) = ($content =~ /^\.PHONY:([^\n]+)/xms);
+    if (not defined $phony_tasks) {
+        $content .= q{
+.PHONY: help
+} =~ s/^[ ]{4}/\t/xmsgr;
+    } elsif ($phony_tasks !~ /\bhelp\b/xms) {
+        $content =~ s/^(\.PHONY:[^\n]+)/$1 help/xms;
+    }
+
+    say "Inject help triks to $makefile";
+    open my $fh, '>', $makefile;
+    print $fh $content;
+    close $fh;
+}

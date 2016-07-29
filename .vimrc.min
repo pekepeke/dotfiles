@@ -8,6 +8,7 @@ let s:standalone = 0
 
 let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
+set runtimepath^=$HOME/.vim/local_bundle
 
 function! s:mkdir(path)
   if !isdirectory(a:path)
@@ -242,8 +243,9 @@ nnoremap Q q
 nnoremap / :nohl<CR>/
 nnoremap ? :nohl<CR>?
 
-function! s:tselect_immediately()
-  execute 'normal!' (len(taglist(expand('<cword>'))) > 1 ? 'g' : '')."\<C-]>"
+function! s:tselect_immediately(...)
+  return get(a:000, 0, '') . (len(taglist(expand('<cword>'))) > 1 ? 'g' : '')."\<C-]>"
+  " execute 'normal!' (len(taglist(expand('<cword>'))) > 1 ? 'g' : '')."\<C-]>"
 endfunction
 
 noremap [!t] <Nop>
@@ -257,8 +259,8 @@ nnoremap <silent> [!t]9 t)
 nnoremap <silent> [!t][ t[
 nnoremap <silent> [!t]] t]
 
-nnoremap <silent> [!t]t :<C-u>call <SID>tselect_immediately()<CR>
-nnoremap <silent> <C-w>tt <C-w>s:<C-u>call <SID>tselect_immediately()<CR>
+nnoremap <silent><expr> [!t]t <SID>tselect_immediately()
+nnoremap <silent><expr> <C-w>tt <SID>tselect_immediately("\<C-w>")
 nnoremap <silent> [!t]j :<C-u>tag<CR>
 nnoremap <silent> [!t]k :<C-u>pop<CR>
 nnoremap <silent> [!t]l :<C-u>tselect<CR>
