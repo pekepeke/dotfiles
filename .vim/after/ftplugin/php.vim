@@ -20,6 +20,24 @@ setlocal expandtab shiftwidth=4 tabstop=4
 nnoremap <buffer> <silent> [!comment-doc] :call pdv#DocumentCurrentLine()<CR>
 vnoremap <buffer> <silent> [!comment-doc] :call pdv#DocumentCurrentLine()<CR>
 
+let s:function = '\(abstract\s\+\|final\s\+\|private\s\+\|protected\s\+\|public\s\+\|static\s\+\)*function'
+let s:class = '\(abstract\s\+\|final\s\+\)*class'
+let s:interface = 'interface'
+let s:section = '\(.*\%#\)\@!\_^\s*\zs\('.s:function.'\|'.s:class.'\|'.s:interface.'\)'
+function! s:search(reverse)
+  let op = (a:reverse ? '?' : '/')
+  let saved = @/
+  execute op . escape(s:section, '|')
+  execute op
+  execute 'nohls'
+  let @/ = saved
+endfunction
+
+nnoremap <buffer><silent> [[ :<C-u>call s:search(1)<CR>
+nnoremap <buffer><silent> ]] :<C-u>call s:search(0)<CR>
+onoremap <buffer><silent> [[ :<C-u>call s:search(1)<CR>
+onoremap <buffer><silent> ]] :<C-u>call s:search(0)<CR>
+
 if exists(':EnableFastPHPFolds')
   function! s:folding()
     exe "EnableFastPHPFolds"
