@@ -32,7 +32,7 @@ nnoremap f,c :action Generate<cr>
 
 nnoremap gcc :action CommentByLineComment<cr>
 
-nnoremap <C-z> <Nop>
+nnoremap <C-Z> <Nop>
 
 " code navigation
 nnoremap te t
@@ -57,8 +57,8 @@ nnoremap ]c :action GotoNextError<cr>
 " nnoremap [m :action MethodUp<cr>
 " nnoremap ]m :action MethodDown<cr>
 
-nnoremap <C-i> :action Forward<cr>
-nnoremap <C-o> :action Back<cr>
+nnoremap <C-I> :action Forward<cr>
+nnoremap <C-O> :action Back<cr>
 
 nnoremap <space>r :source ~/.ideavimrc<cr>
 nnoremap <space>/ :action Find<cr>
@@ -87,17 +87,17 @@ nnoremap <Leader>i :action ImplementMethods<cr>
 
 " imaps
 inoremap <C-[> <Esc>
-inoremap <C-a> <C-o>^
-inoremap <C-e> <C-o>$<Right>
-inoremap <C-b> <Left>
-inoremap <C-f> <Right>
-inoremap <C-n> <Down>
-inoremap <C-p> <Up>
-inoremap <C-h> <BS>
-inoremap <C-d> <Del>
-inoremap <C-k> <C-o>D<Right>
-inoremap <C-u> <C-o>d^
-inoremap <C-w> <C-o>db
+inoremap <C-A> <C-o>^
+inoremap <C-E> <C-o>$<Right>
+inoremap <C-B> <Left>
+inoremap <C-F> <Right>
+inoremap <C-N> <Down>
+inoremap <C-P> <Up>
+inoremap <C-H> <BS>
+inoremap <C-D> <Del>
+inoremap <C-K> <C-o>D<Right>
+inoremap <C-U> <C-o>d^
+inoremap <C-W> <C-o>db
 
 " vmaps
 " vnoremap x "_x
