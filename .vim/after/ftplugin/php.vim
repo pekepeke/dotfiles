@@ -27,16 +27,17 @@ let s:section = '\(.*\%#\)\@!\_^\s*\zs\('.s:function.'\|'.s:class.'\|'.s:interfa
 function! s:search(reverse)
   let op = (a:reverse ? '?' : '/')
   let saved = @/
-  execute op . escape(s:section, '|')
-  execute op
-  execute 'nohls'
+  " silent! execute op . escape(s:section, '|')
+  " execute op.escape(s:section, '|').op
+  execute op.s:section.op
+  execute 'nohlsearch'
   let @/ = saved
 endfunction
 
-nnoremap <buffer><silent> [[ :<C-u>call s:search(1)<CR>
-nnoremap <buffer><silent> ]] :<C-u>call s:search(0)<CR>
-onoremap <buffer><silent> [[ :<C-u>call s:search(1)<CR>
-onoremap <buffer><silent> ]] :<C-u>call s:search(0)<CR>
+nnoremap <buffer><silent> [[ :<C-u>call <SID>search(1)<CR>
+nnoremap <buffer><silent> ]] :<C-u>call <SID>search(0)<CR>
+onoremap <buffer><silent> [[ :<C-u>call <SID>search(1)<CR>
+onoremap <buffer><silent> ]] :<C-u>call <SID>search(0)<CR>
 
 if exists(':EnableFastPHPFolds')
   function! s:folding()

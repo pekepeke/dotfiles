@@ -60,13 +60,18 @@ nnoremap ]c :action GotoNextError<cr>
 nnoremap <C-I> :action Forward<cr>
 nnoremap <C-O> :action Back<cr>
 
-nnoremap <space>r :source ~/.ideavimrc<cr>
+nnoremap <space>s :source ~/.ideavimrc<cr>
 nnoremap <space>/ :action Find<cr>
 nnoremap <space>b :action Back<cr>
 nnoremap <space>f :action Forward<cr>
 nnoremap <space>j :action GotoTest<cr>
 nnoremap <space>h :action QuickJavaDoc<cr>
 nnoremap <space>rr :action RenameElement<cr>
+nnoremap <space>rm :action ExtractMethod<cr>
+nnoremap <space>rv :action IntroduceVariable<cr>
+nnoremap <space>ri :action Inline<cr>
+nnoremap <space>ro :action OptimizeImports<cr>
+nnoremap <space>rg :action Generate<cr>
 nnoremap <space>w :action EditorToggleUseSoftWraps<cr>
 " nnoremap <space>l :action EditorToggleShowWhitespaces<cr>
 noremap <space>y "*y
