@@ -10,6 +10,8 @@ curl --upload somefile https://example.com/foo/
 curl -A ua http://hoge.com
 # POST
 curl -F "name1=value1" -F "name2=value" -F "profile_icon=@path/to/file.png" -F "zip_file=@path/to/zipfile.zip" http://yourdomain/execute.script
+# POST + JSON
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"user":{"first_name":"firstname", "last_name":"lastname", "email":"email@email.com"}}'  http://localhost:3000/api/1/users
 # クッキーを送信
 curl -b cookie.txt http://www.example.com/
 # クッキーを保存
