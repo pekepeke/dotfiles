@@ -41,6 +41,25 @@ cvs update -p -r リビジョン ファイル
 cvs update -Cl filepath
 ```
 
+### 古いファイルを復活させる
+
+```
+cvs update -p -r [rev] [file] > [file]
+cvs update [file]
+cvs commit [file]
+```
+
+#### part2
+
+```
+cvs update -r [rev] [file] # sticky bit がつく
+mv [file] [file]
+cvs update -A [file]       # sticky bit 解除
+mv [file] [file]
+cvs update [file]
+cvs commit [file]
+```
+
 ## checkout
 ```
 cvs checkout 〔-d 作業用ディレクトリ名〕 プロジェクト名

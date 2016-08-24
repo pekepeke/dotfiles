@@ -1,6 +1,23 @@
 nginx
 =====
 
+## X-Accel
+### X-Accel-Redirect [void|uri]
+Nginx 側でファイルを返却させる.
+
+### X-Accel-Buffering [yes|no]
+proxy バッファリングを設定する.
+
+### X-Accel-Charset [charset]
+ファイルの charset を設定する.
+
+### X-Accel-Expires [off|seconds]
+内部的な nginx キャッシュ内のファイルの有効期限を設定する.
+※ただし、Expires, Cache-Control などのheaderが返ってくるとキャッシュされない.
+
+### X-Accel-Limit-Rate [off|bytes]
+レート制限を設定する.
+
 ## コマンドライン
 
 ### 起動
