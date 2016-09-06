@@ -1,0 +1,695 @@
+" http://help.eclipse.org/help33/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/texteditor/IWorkbenchActionDefinitionIds.html
+" http://help.eclipse.org/help33/topic/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/texteditor/ITextEditorActionDefinitionIds.html
+" http://help.eclipse.org/ganymede/topic/org.eclipse.php.doc.isv/reference/api/org/eclipse/php/ui/actions/IphpEditorActionDefinitionIds.html
+" http://help.eclipse.org/helios/index.jsp?topic=/org.eclipse.platform.doc.isv/reference/api/org/eclipse/ui/actions/ActionFactory.html
+
+" vim:fdm=marker sw=2 ts=2 ft=vim expandtab:
+
+" 「検索」ダイアログを開く、ダイナミック・ヘルプ、コンテンツ・アシスト
+" bind C-h
+" bind S-C-h Open Search Dialog or 検索
+" bind C-h Delete Previous or 前を削除
+set smartindent
+set autoindent
+set globalregisters
+set ignorecase
+set smartcase
+set saney
+" set imdisable
+
+" ソース
+nnoremap ,sd :CreateDelegateMethods<CR>
+nnoremap ,sg :CreateGetterSetter<CR>
+nnoremap ,sc :GenerateConstructorUsingFields<CR>
+nnoremap ,so :OverrideMethods<CR>
+nnoremap ,sf :Format<CR>
+nnoremap ,sr :SearchRef<CR>
+nnoremap ,ss :QuickAssist<CR>
+nnoremap ,si :OrganizeImports<CR>
+nnoremap ,ac :AddPhpDocComment<CR>
+nnoremap ,ai :AddImport<CR>
+nnoremap ,ac :AddUnimplementedContructors<CR>
+
+" リファクタリング
+nnoremap ,rt :ChangeType<CR>
+nnoremap ,rv :PromoteLocalVariable<CR>
+nnoremap ,rn :RenameElement<CR>i
+
+" ナビゲーション
+nnoremap ,nc :OpenCallHierarchy<CR>
+nnoremap ,ns :OpenStructure<CR>
+nnoremap ,nt :OpenTypeHierarchy<CR>
+
+" vim like
+nnoremap <C-]> :OpenEditor<CR>
+nnoremap ]] :GotoNextMember<CR>
+nnoremap [[ :GotoPreviousMember<CR>
+nnoremap <C-f> :PageDown<CR>
+nnoremap <C-b> :PageUp<CR>
+nnoremap <C-l> :Recenter<CR>
+" nnoremap K :Help<CR>
+nnoremap K :ShowInformation<CR>
+
+nnoremap u :Undo<CR>
+nnoremap <C-r> :Redo<CR>
+
+" replace.vim like
+nnoremap _iw viwPyiw
+nnoremap _aw vawPyiw
+
+nnoremap tt :SearchDeclarationsInProjects<CR>
+" tab
+nnoremap tn gt
+nnoremap tp gT
+nnoremap th gT
+nnoremap tl gt
+nnoremap tq :q<CR>
+nnoremap tw :Next<CR>
+
+nnoremap gcc :ToggleComment<CR>
+vnoremap gcc :ToggleComment<CR>
+
+nnoremap ,c :AddPhpDocComment<CR>
+nnoremap ,mm :ToggleMaximizeWindow<CR>
+
+" quickrun like
+nnoremap \r :RunLast<CR>
+nnoremap \d :DebugLast<CR>
+
+" imaps
+inoremap <C-o> <Esc>o
+inoremap <C-h> <BS>
+inoremap <C-a> <Esc>0i
+inoremap <C-e> <Esc>:LineEnd<CR>a
+
+inoremap <C-f> <Esc><Right>a
+inoremap <C-b> <Esc>i
+
+inoremap <C-d> <Esc><Right>xi
+inoremap <C-w> <Esc>:DeletePreviousWord<CR>i
+inoremap <C-k> <Esc><Right>:DeleteLineToEnd<CR>a
+inoremap <C-u> <Esc>:DeleteLineToBeginning<CR>i
+inoremap <C-l> <Esc>:ContentAssistProposals<CR>a
+
+" vmaps
+vnoremap = :Format<CR>
+" vnoremap <C-f> :SelectPageDown<CR>
+" vnoremap <C-b> :SelectPageUp<CR>
+vnoremap <C-f> 5j
+vnoremap <C-b> 5k
+
+eclipseaction Next org.eclipse.ui.navigate.next
+eclipseaction Previous org.eclipse.ui.navigate.previous
+
+eclipseaction SearchRef org.eclipse.php.ui.edit.text.php.search.references.in.project
+
+"Action definition ID of the source -> add block comment action
+eclipseaction AddBlockComment org.eclipse.php.ui.edit.text.php.add.block.comment
+
+"Action definition ID of the source -> add import action
+eclipseaction AddImport org.eclipse.php.ui.edit.text.php.add.import
+
+"Add phpDoc " TODO 
+eclipseaction AddPhpDocComment org.eclipse.php.ui.edit.text.php.add.phpdoc.comment
+
+"definition ID of the source -> add unimplemented constructors action
+eclipseaction AddUnimplementedContructors org.eclipse.php.ui.edit.text.php.add.unimplemented.constructors
+
+"definition ID of the refactor -> change type action
+eclipseaction ChangeType org.eclipse.php.ui.edit.text.php.change.type
+
+"definition id of the code clean up action
+eclipseaction CleanUp "org.eclipse.php.ui.edit.text.php.clean.up
+
+"definition ID of the source -> comment action
+eclipseaction Comment org.eclipse.php.ui.edit.text.php.comment
+
+"definition ID of the edit -> content assist complete prefix action
+eclipseaction ContentAssistCompletePrefix org.eclipse.php.ui.edit.text.php.complete.prefix
+
+"definition ID of the refactor -> convert anonymous to nested action
+eclipseaction ConvertAnonymousToNested org.eclipse.php.ui.edit.text.php.convert.anonymous.to.nested
+
+"definition ID of the source -> generate delegates action
+eclipseaction CreateDelegateMethods org.eclipse.php.ui.edit.text.php.create.delegate.methods
+
+"definition ID of the source -> generate setter/getter action
+eclipseaction CreateGetterSetter org.eclipse.php.ui.edit.text.php.create.getter.setter
+
+"definition ID of the source -> externalize strings action
+eclipseaction ExternalizeStrings org.eclipse.php.ui.edit.text.php.externalize.strings
+
+"definition ID of the refactor -> extract class action
+eclipseaction ExtractClass org.eclipse.php.ui.edit.text.php.extract.class
+
+"definition ID of the refactor -> extract constant action
+eclipseaction ExtractConstant org.eclipse.php.ui.edit.text.php.extract.constant
+
+"definition ID of the refactor -> extract interface action
+eclipseaction ExtractInterface org.eclipse.php.ui.edit.text.php.extract.interface
+
+"definition ID of the refactor -> extract local variable action
+eclipseaction ExtractLocalVariable org.eclipse.php.ui.edit.text.php.extract.local.variable
+
+"definition ID of the refactor -> extract method action
+eclipseaction ExtractMethod org.eclipse.php.ui.edit.text.php.extract.method
+
+"definition id of the collapse comments action
+eclipseaction FoldingCollapseComments "org.eclipse.php.ui.edit.text.php.folding.collapseComments
+
+"definition id of the collapse members action
+eclipseaction FoldingCollapseMembers "org.eclipse.php.ui.edit.text.php.folding.collapseMembers
+
+"definition ID of the source -> format action
+eclipseaction Format org.eclipse.php.ui.edit.text.php.format
+
+"definition ID of the source ->generate constructor using fields action
+eclipseaction GenerateConstructorUsingFields org.eclipse.php.ui.edit.text.php.generate.constructor.using.fields
+
+"definition ID of the source ->generate hashcode() and equals() action
+eclipseaction GenerateHashcodeEquals org.eclipse.php.ui.edit.text.php.generate.hashcode.equals
+
+"definition ID of the edit -> go to matching bracket action
+eclipseaction GotoMatchingBracket org.eclipse.php.ui.edit.text.php.goto.matching.bracket
+
+"definition ID of the edit -> go to next member action
+eclipseaction GotoNextMember org.eclipse.php.ui.edit.text.php.goto.next.member
+
+"definition ID of the edit -> go to previous member action
+eclipseaction GotoPreviousMember org.eclipse.php.ui.edit.text.php.goto.previous.member
+
+"definition ID of the source -> indent action
+eclipseaction Indent org.eclipse.php.ui.edit.text.php.indent
+
+"definition ID of the refactor -> infer generic type arguments action
+eclipseaction InferTypeArgumentsAction org.eclipse.php.ui.edit.text.php.infer.type.arguments
+
+"definition ID of the refactor -> inline action
+eclipseaction Inline org.eclipse.php.ui.edit.text.php.inline
+
+"definition ID of the refactor -> introduce factory action
+eclipseaction IntroduceFactory org.eclipse.php.ui.edit.text.php.introduce.factory
+
+"definition ID of the refactor -> introduce indirection action
+eclipseaction IntroduceIndirection org.eclipse.php.ui.edit.text.php.create.indirection
+
+"definition ID of the refactor -> introduce parameter action
+eclipseaction IntroduceParameter org.eclipse.php.ui.edit.text.php.introduce.parameter
+
+"definition ID of the refactor -> introduce parameter object action
+eclipseaction IntroduceParameterObject org.eclipse.php.ui.edit.text.php.introduce.parameter.object
+
+"definition ID of the refactor -> modify method parameters action
+eclipseaction ModifyMethodParameters org.eclipse.php.ui.edit.text.php.modify.method.parameters
+
+"definition ID of the refactor -> move element action
+eclipseaction MoveElement org.eclipse.php.ui.edit.text.php.move.element
+
+"definition ID of the refactor -> move inner type to top level action
+eclipseaction MoveInnerToTop org.eclipse.php.ui.edit.text.php.move.inner.to.top.level
+
+"definition ID of the navigate -> open call hierarchy action
+eclipseaction OpenCallHierarchy org.eclipse.php.ui.edit.text.php.org.eclipse.php.ui.edit.text.php.open.call.hierarchy
+
+"definition ID of the navigate -> open action
+eclipseaction OpenEditor org.eclipse.php.ui.edit.text.php.open.editor
+
+"definition ID of the navigate -> open external phpdoc action " TODO 
+eclipseaction OpenExternalPhpdoc org.eclipse.php.ui.edit.text.php.open.external.phpdoc
+
+"definition ID of the navigate -> Show Hierarchy action
+eclipseaction OpenHierarchy org.eclipse.php.ui.edit.text.php.open.hierarchy
+
+"definition ID of the navigate -> Open Structure action
+eclipseaction OpenStructure org.eclipse.php.ui.navigate.php.open.structure
+
+"definition ID of the navigate -> open super implementation action
+eclipseaction OpenSuperImplementation org.eclipse.php.ui.edit.text.php.open.super.implementation
+
+"definition ID of the navigate -> open type hierarchy action
+eclipseaction OpenTypeHierarchy org.eclipse.php.ui.edit.text.php.org.eclipse.php.ui.edit.text.php.open.type.hierarchy
+
+"definition ID of the source -> organize imports action
+eclipseaction OrganizeImports org.eclipse.php.ui.edit.text.php.organize.imports
+
+"definition ID of the source -> override methods action
+eclipseaction OverrideMethods org.eclipse.php.ui.edit.text.php.override.methods
+
+"definition ID of the refactor -> promote local variable action
+eclipseaction PromoteLocalVariable org.eclipse.php.ui.edit.text.php.promote.local.variable
+
+"definition ID of the refactor -> pull up action
+eclipseaction PullUp org.eclipse.php.ui.edit.text.php.pull.up
+
+"definition ID of the refactor -> push down action
+eclipseaction PushDown org.eclipse.php.ui.edit.text.php.push.down
+
+"definition id of the php quick format action
+eclipseaction QuickFormat "org.eclipse.php.ui.edit.text.php.quick.format
+
+"definition ID of the source -> remove block comment action
+eclipseaction RemoveBlockComment org.eclipse.php.ui.edit.text.php.remove.block.comment
+
+"definition ID of the remove occurrence annotations action
+eclipseaction RemoveOccurrenceAnnotations org.eclipse.php.ui.edit.text.remove.occurrence.annotations
+
+"definition ID of the refactor -> rename element action
+eclipseaction RenameElement org.eclipse.php.ui.edit.text.php.rename.element
+
+"definition ID of the refactor -> replace invocations action
+eclipseaction ReplaceInvocations org.eclipse.php.ui.edit.text.php.replace.invocations
+
+"definition ID of the search -> occurrences in file > break/continue target action
+eclipseaction SearchBreakContinueTargetOccurrences org.eclipse.php.ui.edit.text.php.search.return.continue.targets
+
+"definition ID of the search -> declarations in hierarchy action
+eclipseaction SearchDeclarationsInHierarchy org.eclipse.php.ui.edit.text.php.search.declarations.in.hierarchy
+
+"definition ID of the search -> declarations in project action
+eclipseaction SearchDeclarationsInProjects org.eclipse.php.ui.edit.text.php.search.declarations.in.project
+
+"definition ID of the search -> declarations in working set action
+eclipseaction SearchDeclarationsInWorkingSet org.eclipse.php.ui.edit.text.php.search.declarations.in.working.set
+
+"definition ID of the search -> declarations in workspace action
+eclipseaction SearchDeclarationsInWorkspace org.eclipse.php.ui.edit.text.php.search.declarations.in.workspace
+
+"definition ID of the search -> occurrences in file > exceptions action
+eclipseaction SearchExceptionOccurrencesInFile org.eclipse.php.ui.edit.text.php.search.exception.occurrences
+
+"definition ID of the search -> occurrences in file > implements action
+eclipseaction SearchImplementOccurrencesInFile org.eclipse.php.ui.edit.text.php.search.implement.occurrences
+
+"definition ID of the search -> implementors in project action
+eclipseaction SearchImplementorsInProject org.eclipse.php.ui.edit.text.php.search.implementors.in.project
+
+"definition ID of the search -> implementors in working set action
+eclipseaction SearchImplementorsInWorkingSet org.eclipse.php.ui.edit.text.php.search.implementors.in.working.set
+
+"definition ID of the search -> implementors in workspace action
+eclipseaction SearchImplementorsInWorkspace org.eclipse.php.ui.edit.text.php.search.implementors.in.workspace
+
+"definition ID of the search -> occurrences in file > method exits action
+eclipseaction SearchMethodExitOccurrences org.eclipse.php.ui.edit.text.php.search.method.exits
+
+"definition ID of the search -> occurrences in file > elements action
+eclipseaction SearchOccurrencesInFile org.eclipse.php.ui.edit.text.php.search.occurrences.in.file
+
+"definition ID of the search -> occurrences in file quick menu action
+eclipseaction SearchOccurrencesInFileQuickMenu org.eclipse.php.ui.edit.text.php.search.occurrences.in.file.quickMenu
+
+"definition ID of the search -> read access in hierarchy action
+eclipseaction SearchReadAccessInHierarchy org.eclipse.php.ui.edit.text.php.search.read.access.in.hierarchy
+
+"definition ID of the search -> read access in project action
+eclipseaction SearchReadAccessInProject org.eclipse.php.ui.edit.text.php.search.read.access.in.project
+
+"definition ID of the search -> read access in working set action
+eclipseaction SearchReadAccessInWorkingSet org.eclipse.php.ui.edit.text.php.search.read.access.in.working.set
+
+"definition ID of the search -> read access in workspace action
+eclipseaction SearchReadAccessInWorkspace org.eclipse.php.ui.edit.text.php.search.read.access.in.workspace
+
+"definition ID of the search -> references in hierarchy action
+eclipseaction SearchReferencesInHierarchy org.eclipse.php.ui.edit.text.php.search.references.in.hierarchy
+
+"definition ID of the search -> references in project action
+eclipseaction SearchReferencesInProject org.eclipse.php.ui.edit.text.php.search.references.in.project
+
+"definition ID of the search -> references in working set action
+eclipseaction SearchReferencesInWorkingSet org.eclipse.php.ui.edit.text.php.search.references.in.working.set
+
+"definition ID of the search -> references in workspace action
+eclipseaction SearchReferencesInWorkspace org.eclipse.php.ui.edit.text.php.search.references.in.workspace
+
+"definition ID of the search -> write access in hierarchy action
+eclipseaction SearchWriteAccessInHierarchy org.eclipse.php.ui.edit.text.php.search.write.access.in.hierarchy
+
+"definition ID of the search -> write access in project action
+eclipseaction SearchWriteAccessInProject org.eclipse.php.ui.edit.text.php.search.write.access.in.project
+
+"definition ID of the search -> write access in working set action
+eclipseaction SearchWriteAccessInWorkingSet org.eclipse.php.ui.edit.text.php.search.write.access.in.working.set
+
+"definition ID of the search -> write access in workspace action
+eclipseaction SearchWriteAccessInWorkspace org.eclipse.php.ui.edit.text.php.search.write.access.in.workspace
+
+"definition ID of the edit -> select enclosing action
+eclipseaction SelectEnclosing org.eclipse.php.ui.edit.text.php.select.enclosing
+
+"definition ID of the edit -> select restore last action
+eclipseaction SelectLast org.eclipse.php.ui.edit.text.php.select.last
+
+"definition ID of the edit -> select next action
+eclipseaction SelectNext org.eclipse.php.ui.edit.text.php.select.next
+
+"definition ID of the edit -> select previous action
+eclipseaction SelectPrevious org.eclipse.php.ui.edit.text.php.select.previous
+
+"definition ID of the refactor -> self encapsulate field action
+eclipseaction SelfEncapsulateField org.eclipse.php.ui.edit.text.php.self.encapsulate.field
+
+"definition id of show in breadcrumb action
+eclipseaction ShowInBreadcrumb "org.eclipse.php.ui.edit.text.php.gotoBreadcrumb
+
+"definition ID of the navigate -> show in navigator action
+eclipseaction ShowInNavigatorView org.eclipse.php.ui.edit.text.php.show.in.navigator.view
+
+"definition ID of the navigate -> show in package explorer action
+eclipseaction ShowInPackageView org.eclipse.php.ui.edit.text.php.show.in.package.view
+
+"definition ID of the navigate -> Show Outline action
+eclipseaction ShowOutline org.eclipse.php.ui.edit.text.php.show.outline
+
+"definition ID of the source -> sort order action
+eclipseaction SortMembers org.eclipse.php.ui.edit.text.php.sort.members
+
+"definition ID of the source -> surround with try/catch action
+eclipseaction SurroundWithTryCatch org.eclipse.php.ui.edit.text.php.surround.with.try.catch
+
+"definition id of toggle breadcrumb action
+eclipseaction ToggleBreadcrumb "org.eclipse.php.ui.edit.text.php.toggleBreadcrumb
+
+"definition ID of the source -> toggle comment action
+eclipseaction ToggleComment org.eclipse.php.ui.edit.text.php.toggle.comment
+
+"definition id of toggle mark occurrences action
+eclipseaction ToggleMarkOccurrences "org.eclipse.php.ui.edit.text.php.toggleMarkOccurrences
+
+"definition ID of the edit -> smart typing action
+eclipseaction ToglleSmartTyping org.eclipse.php.smarttyping.toggle
+
+"definition ID of the toggle text hover tool bar button action
+eclipseaction ToggleTextHover org.eclipse.php.ui.edit.text.php.toggle.text.hover
+
+"definition ID of the source -> uncomment action
+eclipseaction Uncomment org.eclipse.php.ui.edit.text.php.uncomment
+
+"definition ID of the refactor -> use supertype action
+eclipseaction UseSupertype org.eclipse.php.ui.edit.text.php.use.supertype
+
+"Action definition id of the edit delete line action.
+eclipseaction DeleteLine org.eclipse.ui.edit.text.delete.line
+
+"Action definition id of the edit join lines action.
+eclipseaction JoinLines org.eclipse.ui.edit.text.join.line
+
+"Action definition id of the edit cut line action.
+eclipseaction CutLine org.eclipse.ui.edit.text.cut.line
+
+"Action definition id of the edit delete line to beginning action.
+eclipseaction DeleteLineToBeginning org.eclipse.ui.edit.text.delete.line.to.beginning
+
+"Action definition id of the edit cut line to beginning action.
+eclipseaction CutLineToBeginning org.eclipse.ui.edit.text.cut.line.to.beginning
+
+"Action definition id of the edit delete line to end action.
+eclipseaction DeleteLineToEnd org.eclipse.ui.edit.text.delete.line.to.end
+
+"Action definition id of the edit cut line to end action.
+eclipseaction CutLineToEnd org.eclipse.ui.edit.text.cut.line.to.end
+
+"Action definition id of the edit set mark action.
+eclipseaction SetMark org.eclipse.ui.edit.text.set.mark
+
+"Action definition id of the edit clear mark action.
+eclipseaction ClearMark org.eclipse.ui.edit.text.clear.mark
+
+"Action definition id of the edit swap mark action.
+eclipseaction SwapMark org.eclipse.ui.edit.text.swap.mark
+
+"Action definition id of the smart enter action.
+eclipseaction SmartEnter org.eclipse.ui.edit.text.smartEnter
+
+"Action definition id of the smart enter (inverse) action.
+eclipseaction SmartEnterInverse org.eclipse.ui.edit.text.smartEnterInverse
+
+"Action definition id of the move lines upwards action.
+eclipseaction MoveLinesUp org.eclipse.ui.edit.text.moveLineUp
+
+"Action definition id of the move lines downwards action.
+eclipseaction MoveLinesDown org.eclipse.ui.edit.text.moveLineDown
+
+"Action definition id of the copy lines upwards action.
+eclipseaction CopyLinesUp org.eclipse.ui.edit.text.copyLineUp
+
+"Action definition id of the copy lines downwards action.
+eclipseaction CopyLinesDown org.eclipse.ui.edit.text.copyLineDown
+
+"Action definition id of the upper case action.
+eclipseaction UpperCase org.eclipse.ui.edit.text.upperCase
+
+"Action definition id of the lower case action.
+eclipseaction LowerCase org.eclipse.ui.edit.text.lowerCase
+
+"Action definition id of the navigate goto previous line action.
+eclipseaction LineUp org.eclipse.ui.edit.text.goto.lineUp
+
+"Action definition id of the navigate goto next line action.
+eclipseaction LineDown org.eclipse.ui.edit.text.goto.lineDown
+
+"Action definition id of the navigate goto line start action.
+eclipseaction LineStart org.eclipse.ui.edit.text.goto.lineStart
+
+"Action definition id of the navigate goto line end action.
+eclipseaction LineEnd org.eclipse.ui.edit.text.goto.lineEnd
+
+"Action definition id of the navigate goto line action.
+eclipseaction LineGoto org.eclipse.ui.edit.text.goto.line
+
+"Action definition id of the navigate goto previous column action.
+eclipseaction ColumnPrevious org.eclipse.ui.edit.text.goto.columnPrevious
+
+"Action definition id of the navigate goto next column action.
+eclipseaction ColumnNext org.eclipse.ui.edit.text.goto.columnNext
+
+"Action definition id of the navigate goto previous page action.
+eclipseaction PageUp org.eclipse.ui.edit.text.goto.pageUp
+
+"Action definition id of the navigate goto next page action.
+eclipseaction PageDown org.eclipse.ui.edit.text.goto.pageDown
+
+"Action definition id of the navigate goto previous word action.
+eclipseaction WordPrevious org.eclipse.ui.edit.text.goto.wordPrevious
+
+"Action definition id of the navigate goto next word action.
+eclipseaction WordNext org.eclipse.ui.edit.text.goto.wordNext
+
+"Action definition id of the navigate goto text start action.
+eclipseaction TextStart org.eclipse.ui.edit.text.goto.textStart
+
+"Action definition id of the navigate goto text end action.
+eclipseaction TextEnd org.eclipse.ui.edit.text.goto.textEnd
+
+"Action definition id of the navigate goto start of window action.
+eclipseaction WindowStart org.eclipse.ui.edit.text.goto.windowStart
+
+"Action definition id of the navigate goto end of window action.
+eclipseaction WindowEnd org.eclipse.ui.edit.text.goto.windowEnd
+
+"Action definition id of the navigate scroll line up action.
+eclipseaction ScrollLineUp org.eclipse.ui.edit.text.scroll.lineUp
+
+"Action definition id of the navigate scroll line down action.
+eclipseaction ScrollLineDown org.eclipse.ui.edit.text.scroll.lineDown
+
+"Action definition id of the select line up action.
+eclipseaction SelectLineUp org.eclipse.ui.edit.text.select.lineUp
+
+"Action definition id of the select line down action.
+eclipseaction SelectLineDown org.eclipse.ui.edit.text.select.lineDown
+
+"Action definition id of the select line start action.
+eclipseaction SelectLineStart org.eclipse.ui.edit.text.select.lineStart
+
+"Action definition id of the select line end action.
+eclipseaction SelectLineEnd org.eclipse.ui.edit.text.select.lineEnd
+
+"Action definition id of the select previous column action.
+eclipseaction SelectColumnPrevious org.eclipse.ui.edit.text.select.columnPrevious
+
+"Action definition id of the select next column action.
+eclipseaction SelectColumnNext org.eclipse.ui.edit.text.select.columnNext
+
+"Action definition id of the select page up action.
+eclipseaction SelectPageUp org.eclipse.ui.edit.text.select.pageUp
+
+"Action definition id of the select page down action.
+eclipseaction SelectPageDown org.eclipse.ui.edit.text.select.pageDown
+
+"Action definition id of the select previous word action.
+eclipseaction SelectWordPrevious org.eclipse.ui.edit.text.select.wordPrevious
+
+"Action definition id of the select next word action.
+eclipseaction SelectWordNext org.eclipse.ui.edit.text.select.wordNext
+
+"Action definition id of the select text start action.
+eclipseaction SelectTextStart org.eclipse.ui.edit.text.select.textStart
+
+"Action definition id of the select text end action.
+eclipseaction SelectTextEnd org.eclipse.ui.edit.text.select.textEnd
+
+"Action definition id of the select window start action.
+eclipseaction SelectWindowStart org.eclipse.ui.edit.text.select.windowStart
+
+"Action definition id of the select window end action.
+eclipseaction SelectWindowEnd org.eclipse.ui.edit.text.select.windowEnd
+
+"Action definition id of the edit delete previous character action.
+eclipseaction DeletePrevious org.eclipse.ui.edit.text.deletePrevious
+
+"Action definition id of the edit delete next character action.
+eclipseaction DeleteNext org.eclipse.ui.edit.text.deleteNext
+
+"Action definition id of the edit delete previous word action.
+eclipseaction DeletePreviousWord org.eclipse.ui.edit.text.deletePreviousWord
+
+"Action definition id of the edit delete next word action.
+eclipseaction DeleteNextWord org.eclipse.ui.edit.text.deleteNextWord
+
+"Action definition id of the edit shift right action.
+eclipseaction ShiftRight org.eclipse.ui.edit.text.shiftRight
+
+"Action definition id of the edit shift left action.
+eclipseaction ShiftLeft org.eclipse.ui.edit.text.shiftLeft
+
+"Action definition id of the toggle input mode action.
+eclipseaction ToggleOverwrite org.eclipse.ui.edit.text.toggleOverwrite
+
+"Action definition id of toggle show selected element only action.
+eclipseaction ToggleShowSelectedElementOnly org.eclipse.ui.edit.text.toggleShowSelectedElementOnly
+
+"Action definition id of the show ruler context menu action.
+eclipseaction ShowRulerContextMenu org.eclipse.ui.edit.text.showRulerContextMenu
+
+"Action definition id of go to last edit position action.
+eclipseaction GotoLastEditPosition org.eclipse.ui.edit.text.gotoLastEditPosition
+
+"Action definition id of go to next annotation action.
+eclipseaction GotoNextAnnotation org.eclipse.ui.edit.text.gotoNextAnnotation
+
+"Action definition id of go to previous annotation action.
+eclipseaction GotoPreviousAnnotation org.eclipse.ui.edit.text.gotoPreviousAnnotation
+
+"Action definition ID of the edit -> content assist proposal action
+eclipseaction ContentAssistProposals org.eclipse.ui.edit.text.contentAssist.proposals
+
+"Action definition ID of the edit -> content assist context information action
+eclipseaction ContentAssistContextInformation org.eclipse.ui.edit.text.contentAssist.contextInformation
+
+"Action definition ID of the edit -> quick assist proposal action
+eclipseaction QuickAssist org.eclipse.php.ui.edit.text.php.correction.assist.proposals
+
+"Action definition ID of the edit -> smart insert mode action
+eclipseaction ToggleInsertMode org.eclipse.ui.edit.text.toggleInsertMode
+
+eclipseaction ChangeEncoding org.eclipse.ui.edit.text.changeEncoding
+
+"Command ID of the revert line action
+eclipseaction QuickdiffRevertline org.eclipse.ui.editors.quickdiff.revertLine
+
+"Command ID of the revert selection/block action
+eclipseaction QuickdiffRevert org.eclipse.ui.editors.quickdiff.revert
+
+"Command ID of the toggle quick diff action. The name has no proper prefix for historical reasons.
+eclipseaction QuickdiffToggle org.eclipse.quickdiff.toggle
+
+"Command ID of the toggle display of line numbers
+eclipseaction LinenumberToggle org.eclipse.ui.editors.lineNumberToggle
+
+"Action definition ID of the edit -> text complete action
+eclipseaction HippieCompletion org.eclipse.ui.edit.text.hippieCompletion
+
+"Command ID of the command to cycle the revision rendering mode.
+eclipseaction RevisionRenderingCycle org.eclipse.ui.editors.revisions.rendering.cycle
+
+"Command ID of the command to toggle the revision author display.
+eclipseaction RevisionAuthorToggle org.eclipse.ui.editors.revisions.author.toggle
+
+"Command ID of the command to toggle the revision ID display.
+eclipseaction RevisionIdToggle org.eclipse.ui.editors.revisions.id.toggle
+
+"Command ID of the recenter command.
+eclipseaction Recenter org.eclipse.ui.edit.text.recenter
+
+"Command ID of the command to toggle the display of whitespace characters.
+eclipseaction ShowWhitespaceCharacters org.eclipse.ui.edit.text.toggleShowWhitespaceCharacters
+
+"Command ID of the command to display information for the current caret location in a sticky hover.
+eclipseaction ShowInformation org.eclipse.ui.edit.text.showInformation
+
+"Action definition id of the file print action. Value:
+eclipseaction Print org.eclipse.ui.file.print
+
+"Action definition id of the file save action.
+eclipseaction Save org.eclipse.ui.file.save
+
+"Action definition id of the file revert action.
+eclipseaction RevertToSaved org.eclipse.ui.edit.revertToSaved
+
+"Action definition id of the edit cut action.
+eclipseaction Cut org.eclipse.ui.edit.cut
+
+"Action definition id of the edit copy action.
+eclipseaction Copy org.eclipse.ui.edit.copy
+
+"Aaction definition id of the edit past action.
+eclipseaction Paste org.eclipse.ui.edit.paste
+
+"Action definition id of the edit undo action.
+eclipseaction Undo org.eclipse.ui.edit.undo
+
+"Action definition id of the file properties action.
+eclipseaction Properties org.eclipse.ui.file.properties
+
+"Action definition id of the edit redo action.
+eclipseaction Redo org.eclipse.ui.edit.redo
+
+"Action definition id of the edit delete action.
+eclipseaction Delete org.eclipse.ui.edit.delete
+
+"Action definition id of the edit select all action.
+eclipseaction SelectAll org.eclipse.ui.edit.selectAll
+
+"Action definition id of the edit find/replace action.
+eclipseaction FindReplace org.eclipse.ui.edit.findReplace
+
+"Action definition id of the edit add bookmark action.
+eclipseaction AddBookmark org.eclipse.ui.edit.addBookmark
+
+"Action definition id of the edit add task action.
+eclipseaction AddTask org.eclipse.ui.edit.addTask
+
+"Action definition id of the edit find next action.
+eclipseaction FindNext org.eclipse.ui.edit.findNext
+
+"Action definition id of the edit find previous action.
+eclipseaction FindPrevious org.eclipse.ui.edit.findPrevious
+
+"Action definition id of the edit incremental find action.
+eclipseaction FindIncremental org.eclipse.ui.edit.findIncremental
+
+"Action definition id of the edit incremental find reverse action.
+eclipseaction FindIncrementalReverse org.eclipse.ui.edit.findIncrementalReverse
+
+"The command identifier for the "move" action that typically appears in the file menu.
+eclipseaction Move org.eclipse.ui.edit.move
+
+"The command identifier for the "rename" action that typically appears in the file menu.
+eclipseaction Rename org.eclipse.ui.edit.rename
+
+
+eclipseaction Help org.eclipse.ui.help.dynamicHelp
+eclipseaction RunLast org.eclipse.debug.ui.commands.RunLast
+eclipseaction DebugLast org.eclipse.debug.ui.commands.DebugLast
+eclipseaction ToggleMaximizeWindow org.eclipse.ui.window.maximizePart
+eclipseaction New org.eclipse.ui.newEditor
+eclipseaction NewWizard org.eclipse.ui.newWizard
+eclipseaction Next org.eclipse.ui.window.nextEditor
+eclipseaction Prev org.eclipse.ui.window.previousEditor
+
+" eclipseaction Window org.eclipse.ui.contexts.window
+" eclipseaction DialogWindow org.eclipse.ui.contexts.dialogAndWindow
+" eclipseaction LinkWithEditor org.eclipse.ui.navigate.linkWithEditor
+" eclipseaction Fold org.eclipse.mylyn.php.ui.editor.folding.auto
+
