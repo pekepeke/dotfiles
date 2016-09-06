@@ -44,10 +44,11 @@ nnoremap ,nt :OpenTypeHierarchy<CR>
 nnoremap <C-]> :OpenEditor<CR>
 nnoremap ]] :GotoNextMember<CR>
 nnoremap [[ :GotoPreviousMember<CR>
-"nnoremap <C-f> :PageDown<CR>
-"nnoremap <C-b> :PageUp<CR>
+nnoremap <C-f> :PageDown<CR>
+nnoremap <C-b> :PageUp<CR>
 nnoremap <C-l> :Recenter<CR>
-nnoremap K :Help<CR>
+" nnoremap K :Help<CR>
+nnoremap K :ShowInformation<CR>
 
 nnoremap u :Undo<CR>
 nnoremap <C-r> :Redo<CR>
@@ -60,8 +61,8 @@ nnoremap tt :SearchDeclarationsInProjects<CR>
 " tab
 nnoremap tn gt
 nnoremap tp gT
-nnoremap th gt
-nnoremap tl gT
+nnoremap th gT
+nnoremap tl gt
 nnoremap tq :q<CR>
 nnoremap tw :Next<CR>
 
@@ -96,6 +97,9 @@ vnoremap = :Format<CR>
 " vnoremap <C-b> :SelectPageUp<CR>
 vnoremap <C-f> 5j
 vnoremap <C-b> 5k
+
+eclipseaction Next org.eclipse.ui.navigate.next
+eclipseaction Previous org.eclipse.ui.navigate.previous
 
 eclipseaction SearchRef org.eclipse.jdt.ui.edit.text.java.search.references.in.project
 
