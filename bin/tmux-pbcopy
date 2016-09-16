@@ -8,11 +8,12 @@ copy_cmd=pbcopy-wrapper
 TF="/tmp/tmux_to_pbcopy-$USER"
 tmux save-buffer "$TF"
 tmux save-buffer - | $copy_cmd
+RET=$?
 
 # bind-key < if-shell 'xsel -o -b > ~/tmp/tmux-buffer' 'load-buffer ~/tmp/tmux-buffer ; paste-buffer'
 
 # 以下はメッセージを表示するだけ。無くてもOK。
 HEAD=`head -1 "$TF"`
 TAIL=`tail -1 "$TF"`
-tmux display-message "Copy:  $HEAD ... $TAIL"
+tmux display-message "Copy [$RET]:  $HEAD ... $TAIL"
 
