@@ -1,14 +1,15 @@
 github.com/nsf/gocode
 github.com/golang/lint/golint
 github.com/jstemmer/gotags
-code.google.com/p/rog-go/exp/cmd/godef
+# code.google.com/p/rog-go/exp/cmd/godef
+github.com/rogpeppe/godef
 
 # peco
 github.com/peco/peco/cmd/peco
 github.com/peco/migemogrep
 
 # github
-github.com/jingweno/gh
+# github.com/jingweno/gh
 github.com/motemen/ghq
 github.com/typester/gh-open
 

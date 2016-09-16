@@ -18,3 +18,24 @@ sysv-rc-conf apache2 off
 sysv-rc-conf --list apache2
 ```
 
+
+### locale
+- aptでlanguage-packを追加する
+
+```
+apt-get install language-pack-ja
+```
+
+- locale-genする
+
+```
+locale-gen ja_JP.UTF-8
+update-locale LANG=ja_JP.UTF-8
+```
+
+### timezone
+
+```
+cp -p /etc/localtime /etc/localtime.org
+ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+```
