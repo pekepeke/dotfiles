@@ -52,6 +52,20 @@ mysqlslap \
   --user=root
 ```
 
+### diff
+
+```
+sudo aptitude install libsql-translator-perl -y
+sudo yum install perl-SQL-Translator.noarch -y
+
+
+mysqldump --no-data --compact -h[NEW_DB] -uUSER DB_NAME -d -p | sed -e 's/AUTO_INCREMENT=[0-9]\+//' > NEW_DB_schema.sql
+mysqldump --no-data --compact -h[OLD_DB] -uUSER DB_NAME -d -p | sed -e 's/AUTO_INCREMENT=[0-9]\+//' > OLD_DB_schema.sql
+
+
+sqlt-diff OLD_DB_schema.sql=MySQL NEW_DB_schema.sql=MySQL > diff.sql
+```
+
 ## charcode
 
 - `show variables like 'character_set%';

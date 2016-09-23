@@ -1502,6 +1502,7 @@ NeoBundle 'StanAngeloff/php.vim'
 " NeoBundle 'arnaud-lb/vim-php-namespace'
 " NeoBundle 'pekepeke/phpfoding.vim'
 NeoBundle 'adoy/vim-php-refactoring-toolbox'
+NeoBundle 'noahfrederick/vim-composer'
 " NeoBundle 'beberlei/vim-php-refactor'
 if get(g:vimrc_enabled_features, 'cakephp', 0)
   NeoBundleLazy 'violetyk/cake.vim', {
@@ -1509,6 +1510,7 @@ if get(g:vimrc_enabled_features, 'cakephp', 0)
   \ }
 endif
 if get(g:vimrc_enabled_features, 'laravel', 0)
+  NeoBundle 'noahfrederick/vim-laravel'
   NeoBundle 'jwalton512/vim-blade'
 endif
 
@@ -6936,6 +6938,12 @@ if s:bundle.is_installed('vim-quickrun')
     \   'outputter/quickfix/open_cmd' : '',
     \ },
     \ })
+  if has('job')
+    call extend(g:quickrun_config['watchdogs_checker/_'], {
+    \ 'runner': 'job',
+    \ 'runner/job/interval': 100,
+    \ })
+  endif
   call extend(g:quickrun_config, {
     \ 'perl/watchdogs_checker' : {
     \   'type' : 'watchdogs_checker/perl-projectlibs',
