@@ -1,0 +1,43 @@
+#!/bin/bash
+#
+# Copyright (C) 2005-2006,
+#   Stefano Zacchiroli	<zack@cs.unibo.it>
+#   Enrico Tassi	<tassi@cs.unibo.it>
+#
+# This is free software, you can redistribute it and/or modify it under the
+# terms of the GNU General Public License version 2 as published by the Free
+# Software Foundation.
+#
+
+vimdiff="vimdiff"
+suffix="vimcvsdiff"
+rev="HEAD"
+
+if [ "$1" == "-g" ] ; then
+  vimdiff="gvimdiff -f"
+  shift 1
+fi
+if [ "$1" == "-r" ]; then
+  rev="$2"
+  shift 2
+fi
+
+files="$1"
+if [ -z "$files" ]; then
+  files=$(cvs -n update -r HEAD 2> /dev/null | grep -e "^[MU]" | cut -c 3-)
+fi
+for f in $files; do
+  if ! [ -f $f ]; then break; fi
+  patch=`mktemp $prefix.XXXXXX`
+  orig=`mktemp $prefix.XXXXXX`
+  trap "rm -f $patch $orig" EXIT
+  cp "$f" $orig
+  cut -d '/' -f 2 < $(dirname $f)/CVS/Entries | grep "^$(basename $f)\$" > /dev/null || break
+  cvs diff -r $rev -u "$f" > $patch
+  if ! [ $? -eq 1 ]; then break; fi
+  cp "$f" $orig
+  patch -R -p0 $orig $patch
+  $vimdiff $orig $f
+done
+
+

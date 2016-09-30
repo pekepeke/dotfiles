@@ -1,6 +1,8 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [alias]
   aliases = !git config --get-regexp '^alias\\.' | sed 's/alias\\.\\([^ ]*\\) \\(.*\\)/\\1\\\t => \\2/'
+  root = rev-parse --show-toplevel
+  pwd  = rev-parse --show-cdup
   includes = !git config --get-regexp '^include\\.path' | sed 's/include\\.path \\(.*\\)/\\1/'
   me = !git config --get-regexp user
   a = "!f() { local res=\"$(git status -s | peco --prompt \"git add :\" | awk '{ print $2 }')\"; \
