@@ -75,14 +75,14 @@ echo 2 > /proc/sys/vm/drop_caches
 	- スワップさせない設定
 
 ### ネットワーク
-- `net.ipv4.ip_local_port_range = 32768 61000`
-	- サーバ内部で使用するポート番号の範囲。リバースプロキシなどで使用している場合には、1024から65535とする。
 - `net.ipv4.tcp_tw_reuse=1`
 	- TCPの`TIME_WAIT`を再利用する。`TIME_WAIT`はソケットオープン状態であるため、多数残存するとパフォーマンスに大きな影響がでる。
-- `net.ipv4.tcp_fin_timeout = 30`
-	- TCPの`FIN`を送信してからのタイムアウト時間
 - `net.ipv4.tcp_tw_recycle = 1`
 	- TCPの`TIME_WAIT`の再利用を高速化する
+- `net.ipv4.tcp_fin_timeout = 30`
+	- TCPの`FIN`を送信してからのタイムアウト時間
+- `net.ipv4.ip_local_port_range = 32768 61000`
+	- サーバ内部で使用するポート番号の範囲。リバースプロキシなどで使用している場合には、1024から65535とする。
 - `net.ipv4.tcp_window_scaling`
 	- RFC 1323のTCPウィンドウスケーリングを有効にします．この機能を用いると，（接続先が対応していれば） TCP接続で64 KByte以上のウィンドウが使えるようになります．送受信バッファサイズを64 KByte以上に設定した場合は， そのバッファを有効に利用できるようにこのオプションを有効にしておきます．
 - `net.ipv4.tcp_rmem`
