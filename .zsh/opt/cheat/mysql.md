@@ -91,9 +91,20 @@ SET GLOBAL general_log = 'OFF';
 ## テーブル、カラムの調査
 
 ```
-select table_schema,  table_name from information_schema.tables WHERE table_name like '%%';
-select table_schema,  table_name,  column_name from information_schema.columns WHERE table_name like '%%';
-select table_schema,  table_name from information_schema.tables WHERE table_schema = '' AND table_name = '';
+SELECT table_schema,  table_name FROM information_schema.tables WHERE table_name like '%%';
+SELECT table_schema,  table_name FROM information_schema.tables WHERE table_schema = '' AND table_name = '';
+SELECT * FROM information_schema.tables WHERE table_schema NOT IN ('information_schema', 'test') AND table_name like '%';
+
+SELECT table_schema,  table_name,  column_name FROM information_schema.columns WHERE table_name like '%%';
+SELECT * FROM information_schema.columns WHERE table_schema NOT IN ('information_schema', 'test') AND column_name like '%';
+SELECT * FROM information_schema.columns WHERE table_schema NOT IN ('information_schema', 'test') AND table_name like '%' AND column_name like '%';
+```
+
+## grant 調査
+
+```
+SELECT CONCAT('GRANT ',  GROUP_CONCAT(DISTINCT privilege_type),  ' ON ',  table_schema,  '.* TO ',  grantee,  ';') AS grant_sql FROM information_schema.schema_privileges GROUP BY grantee,  table_schema
+SELECT CONCAT('GRANT ',  GROUP_CONCAT(DISTINCT privilege_type),  ' ON *.* TO ',  grantee,  ';') AS grant_sql FROM information_schema.user_privileges GROUP BY grantee
 ```
 
 ## sql

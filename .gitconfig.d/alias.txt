@@ -1,6 +1,7 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [alias]
   aliases = !git config --get-regexp '^alias\\.' | sed 's/alias\\.\\([^ ]*\\) \\(.*\\)/\\1\\\t => \\2/'
+  merged = !git branch --merged | grep -ve '^\\*'
   root = rev-parse --show-toplevel
   pwd  = rev-parse --show-cdup
   includes = !git config --get-regexp '^include\\.path' | sed 's/include\\.path \\(.*\\)/\\1/'

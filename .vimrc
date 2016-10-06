@@ -3009,6 +3009,8 @@ if s:bundle.is_installed('phpcomplete.vim')
   \ ['mongo', 'imagemagick', 'libxml', 'memcache', 'memcached', 'pdo']
   let g:phpcomplete_add_function_extensions =
   \ ['mongo', 'json', 'gd', 'sqlite', 'memcache', 'http']
+  let g:phpcomplete_search_tags_for_variables = 1
+  let g:phpcomplete_parse_docblock_comments = 1
 endif
 
 " translategoole.vim {{{2
