@@ -6940,7 +6940,7 @@ if s:bundle.is_installed('vim-quickrun')
     \   'outputter/quickfix/open_cmd' : '',
     \ },
     \ })
-  if has('job')
+  if has('job') && exists('*ch_close_in')
     call extend(g:quickrun_config['watchdogs_checker/_'], {
     \ 'runner': 'job',
     \ 'runner/job/interval': 100,
