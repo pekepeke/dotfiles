@@ -1207,6 +1207,7 @@ NeoBundleLazy 'https://gist.github.com/6576341', {
 NeoBundle 'tpope/vim-haml'
 NeoBundle 'digitaltoad/vim-jade'
 NeoBundle 'mustache/vim-mustache-handlebars'
+NeoBundle 'chrisgillis/vim-bootstrap3-snippets'
 
 " css {{{4
 if has('python') || has('python3')
