@@ -1,5 +1,6 @@
 # vim:ft=conf
 # @see https://github.com/github/gitignore
+
 # Archives
 # *.7z
 *.dmg
@@ -92,6 +93,17 @@ tramp
 # Org-mode
 .org-id-locations
 *_archive
+
+# eclipse
+/.buildpath
+/.project
+/.settings
+
+# netbeans
+/nbproject
+
+# komodo
+/*.komodoproject
 
 # sublime
 *.sublime-project
