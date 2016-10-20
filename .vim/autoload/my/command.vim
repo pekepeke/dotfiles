@@ -2,6 +2,7 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " functions {{{1
+let s:ctags_job = 0
 function! my#command#rename(path) "{{{2
   let path = empty(a:path) ? input("dest : ", expand("%:p"), "file") : a:path
   if !empty(path)
@@ -84,23 +85,53 @@ function! my#command#system_with_lcd(cmd, ...) "{{{2
   execute 'lcd' cwd
 endfunction
 
-function! my#command#exec_ctags(path) "{{{2
+function! my#command#exec_ctags(langmap, ...) "{{{2
+  if !filereadable("tags")
+    return
+  endif
+  if !empty(s:ctags_job)
+    echomsg 'ctags running...'
+    return 0
+  endif
+
+  let ctags_cmds = ["ctags"]
+  call extend(ctags_cmds, a:000)
+  let langmap = type([]) == a:langmap ? join(a:langmap, ',') : a:langmap
+  call add(ctags_cmds, "--languages=".langmap)
+
+  if has('job')
+    let s:ctags_job = job_start(join(ctags_cmds, ' '), {'callback': 's:ctags_callback'})
+  elseif bundle.is_installed('vimproc.vim')
+    call vimproc#system_bg(join(ctags_cmds, " "))
+  else
+    execute "!" join(ctags_cmds, " ")
+    call s:ctags_callback(1, 1)
+  endif
+endfunction
+
+function! my#command#ctags_with_path(path) "{{{2
   let path = a:path
   let ctags_cmds = ["ctags", "-R"]
+
+  if !empty(s:ctags_job)
+    echomsg 'ctags running...'
+    return 0
+  endif
   if &filetype
     call add(ctags_cmds, "--input-encoding-" . split(&filetype, '\.')[0] . "=" . &encoding)
+    call add (ctags_cmds, '--languages=' . &filetype)
   endif
-  call add(ctags_cmds, '--exclude=".git"')
-  if &filetype != 'javascript'
-    call add(ctags_cmds, '--exclude="*.js"')
-  endif
-  if &filetype != 'coffee'
-    call add(ctags_cmds, '--exclude="*.coffee"')
-  endif
-  if &filetype != 'html'
-    call add(ctags_cmds, '--exclude="*.html"')
-  endif
-  call add(ctags_cmds, '--exclude="*.json"')
+  " call add(ctags_cmds, '--exclude=".git"')
+  " if &filetype != 'javascript'
+  "   call add(ctags_cmds, '--exclude="*.js"')
+  " endif
+  " if &filetype != 'coffee'
+  "   call add(ctags_cmds, '--exclude="*.coffee"')
+  " endif
+  " if &filetype != 'html'
+  "   call add(ctags_cmds, '--exclude="*.html"')
+  " endif
+  " call add(ctags_cmds, '--exclude="*.json"')
   if empty(path)
     " let path = input("input base dir : ", expand('%:p:h'))
     let path = input("cd : ", getcwd(), "dir")
@@ -114,15 +145,13 @@ function! my#command#exec_ctags(path) "{{{2
   endif
 
   let bundle = VimrcScope().bundle
-  if bundle.is_installed('vimproc.vim')
+  if has('job')
+    let s:ctags_job = job_start(join(ctags_cmds, ' '), {'callback': 's:ctags_callback'})
+  elseif bundle.is_installed('vimproc.vim')
     call vimproc#system_bg(join(ctags_cmds, " "))
   else
     execute "!" join(ctags_cmds, " ")
-    if bundle.is_installed('neocomplcache.vim')
-      NeoComplCacheCachingTags
-    elseif bundle.is_installed('neocomplete.vim')
-      NeoCompleteTagMakeCache
-    endif
+    call s:ctags_callback(1, 1)
   endif
   if !empty(a:path) && isdirectory(a:path)
     execute 'lcd' cwd
@@ -149,6 +178,16 @@ endfunction
 
 function! my#command#remove_html_comment() "{{{2
   %s@<!--\_.\{-}-->@@g
+endfunction
+
+function! s:ctags_callback(ch, msg)
+  let s:ctags_job = 0
+  let bundle = VimrcScope().bundle
+  if bundle.is_installed('neocomplcache.vim')
+    NeoComplCacheCachingTags
+  elseif bundle.is_installed('neocomplete.vim')
+    NeoCompleteTagMakeCache
+  endif
 endfunction
 
 let &cpo = s:save_cpo
