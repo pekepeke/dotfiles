@@ -1,8 +1,22 @@
-## NIC変更
+## vb.customize
+### NIC変更
 
-```
+```ruby
 vb.customize ["modifyvm", :id, "--nictype1", "virtio"]
 vb.customize ["modifyvm", :id, "--nictype2", "virtio"]
+```
+
+### 時刻同期させない
+
+```ruby
+vb.customize ["setextradata", :id, "VBoxInternal/Devices/VMMDev/0/Config/GetHostTimeDisabled", 1]
+```
+
+### cpu, kvm
+
+```
+vb.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
+vb.customize ["modifyvm", :id, "--cpus", "2", "--ioapic", "on"]
 ```
 
 ## vagrant package

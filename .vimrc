@@ -1057,16 +1057,17 @@ NeoBundle 'mattn/learn-vimscript'
 if get(g:vimrc_enabled_features, "eclim", 0)
   " do nothing
 elseif s:exec_ruby
-  NeoBundleLazy 'm2ym/rsense', {
-  \ 'rtp' : 'etc',
-  \ 'build' : {
-  \    'mac': 'ruby etc/config.rb > ~/.rsense',
-  \    'unix': 'ruby etc/config.rb > ~/.rsense',
-  \ } }
+  if executable('rct-complete')
+    NeoBundle "osyo-manga/vim-monster"
+  else
+    NeoBundleLazy 'm2ym/rsense', {
+    \ 'rtp' : 'etc',
+    \ 'build' : {
+    \    'mac': 'ruby etc/config.rb > ~/.rsense',
+    \    'unix': 'ruby etc/config.rb > ~/.rsense',
+    \ } }
+  endif
 endif
-" if !s:bundle.is_installed('rsense')
-"   NeoBundle "osyo-manga/vim-monster"
-" endif
 if get(g:vimrc_enabled_features, "ycm", 0) && has('python')
   NeoBundle 'Valloric/YouCompleteMe', {
     \ 'build': {
@@ -2786,6 +2787,11 @@ let g:vimrc_enabled_plugins = {
   \ 'endwize': s:bundle.is_installed('endwize.vim'),
   \ 'php_namespace': s:bundle.is_installed('vim-php-namespace'),
   \ }
+
+" vim-monster
+if s:bundle.is_installed('vim-monster')
+  let g:monster#completion#rcodetools#backend = "async_rct_complete"
+endif
 
 " vim-php-refactoring-toolbox {{{2
 if s:bundle.is_installed('vim-php-refactoring-toolbox')

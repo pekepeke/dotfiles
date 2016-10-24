@@ -39,3 +39,34 @@ update-locale LANG=ja_JP.UTF-8
 cp -p /etc/localtime /etc/localtime.org
 ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 ```
+
+### apt-get
+- `apt-get install [package]`
+	- パッケージのインストール/更新
+- `apt-get update`
+	- パッケージリストの更新
+- `apt-get upgrade`
+	- インストールされてるパッケージの更新
+- `apt-get dist-upgrade`
+	- インストールされてるカーネルの更新(Ubuntu)/ディストリビューションの更新(Debian)
+- `dpkg -l [package]`
+	- インストールされてるパッケージの一覧
+- `dpkg -L`
+	- インストールした時のファイルの一覧
+- `apt-cache search [query]`
+	- パッケージの検索
+- `apt-cache policy [query]`
+	- パッケージの検索 (インストール可能なバージョンの表示）
+- `apt-cache madison [query]`
+	- パッケージの検索 (インストール可能なバージョンの一覧）
+- `apt-get remove [package]`
+	- パッケージの削除
+- `apt-get autoremove`
+	- 使ってないパッケージの削除
+- `apt-get purge [package]`
+	- パッケージの削除（設定ファイルも）
+- `apt-get clean`
+	- アーカイブファイルの削除
+- `apt-get autoclean`
+	- 使ってないパッケージのアーカイブファイルの削除
+
