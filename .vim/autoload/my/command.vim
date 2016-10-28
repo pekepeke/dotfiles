@@ -85,7 +85,7 @@ function! my#command#system_with_lcd(cmd, ...) "{{{2
   execute 'lcd' cwd
 endfunction
 
-function! my#command#exec_ctags(langmap, ...) "{{{2
+function! my#command#exec_ctags(...) "{{{2
   if !filereadable("tags")
     return
   endif
@@ -93,7 +93,18 @@ function! my#command#exec_ctags(langmap, ...) "{{{2
     echomsg 'ctags running...'
     return 0
   endif
+  call s:purge_ctags()
 
+  if a:0 > 0
+    if type([]) == a:000[0])
+      let langmap = join(remove(a:000, 0), ',')
+    elseif a:000[0] !~ '^-'
+      let langmap = remove(a:000, 0)
+    endif
+  endif
+  if (empty(langmap))
+    let langmap=&filetype
+  endif
   let ctags_cmds = ["ctags"]
   call extend(ctags_cmds, a:000)
   let langmap = type([]) == a:langmap ? join(a:langmap, ',') : a:langmap
@@ -117,6 +128,8 @@ function! my#command#ctags_with_path(path) "{{{2
     echomsg 'ctags running...'
     return 0
   endif
+  call s:purge_ctags()
+
   if &filetype
     call add(ctags_cmds, "--input-encoding-" . split(&filetype, '\.')[0] . "=" . &encoding)
     call add (ctags_cmds, '--languages=' . &filetype)
@@ -188,6 +201,22 @@ function! s:ctags_callback(ch, msg)
   elseif bundle.is_installed('neocomplete.vim')
     NeoCompleteTagMakeCache
   endif
+endfunction
+
+function! s:purge_ctags() "{{{2
+  if !s:is_avairable_ctags()
+    let tags = filter(tagfiles(), 'v:val !~ "^/"')
+    call map(tags, 'delete(v:val)')
+  endif
+endfunction
+
+function! s:is_avairable_ctags() "{{{2
+  try
+    call taglist('dummy')
+  catch /^Vim\%(\a\+)\)\=:E431/
+    return 0
+  endtry
+  return 1
 endfunction
 
 let &cpo = s:save_cpo

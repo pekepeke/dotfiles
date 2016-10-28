@@ -2076,8 +2076,8 @@ augroup END
 " some commands & altercmd {{{1
 " some commands {{{2
 command! -narg=0 SynReload syntax off <Bar> syntax enable
-command! -nargs=1 -complete=filetype Ctags call my#command#exec_ctags(<q-args>, '-R')
-command! -nargs=1 -complete=filetype CtagsUpdate call my#command#exec_ctags(<q-args>, '-R', '-a')
+command! -nargs=? -complete=filetype Ctags call my#command#exec_ctags(<q-args>, '-R')
+command! -nargs=? -complete=filetype CtagsUpdate call my#command#exec_ctags(<q-args>, '-R', '-a')
 command! -nargs=? -complete=dir CtagsWithPath call my#command#ctags_with_path(<q-args>)
 command! -nargs=? -complete=dir Gtags call my#command#system_with_lcd("gtags", <q-args>)
 command! -nargs=0 -bang MyQ
