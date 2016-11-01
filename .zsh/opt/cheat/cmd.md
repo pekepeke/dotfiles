@@ -5,6 +5,13 @@
 find /hoge/fuga -ctime +30 -type f -print | xargs --no-run-if-empty rm
 ```
 
+## grep
+
+```
+## 文字エンコーディング無視して grep
+grep -UR fuga ./
+```
+
 ## tail
 ### 指定した行以降の表示
 
@@ -16,6 +23,9 @@ tail -n +100 filename
 ## find 
 
 ```
+# マルチバイトファイル名の検出
+LANG=C find ./ | LANG=C grep -v '^[[:cntrl:][:print:]]*$'
+
 # 50日以前に修正されたもの
 find . -mtime +50
 # 50日以内に修正されたもの

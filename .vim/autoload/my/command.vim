@@ -95,19 +95,22 @@ function! my#command#exec_ctags(...) "{{{2
   endif
   call s:purge_ctags()
 
+  let args = copy(a:000)
+
+  let langmap = &filetype
   if a:0 > 0
-    if type([]) == a:000[0])
-      let langmap = join(remove(a:000, 0), ',')
+    if type([]) == type(args[0])
+      let langmap = join(remove(args, 0), ',')
     elseif a:000[0] !~ '^-'
-      let langmap = remove(a:000, 0)
+      let langmap = remove(args, 0)
     endif
   endif
-  if (empty(langmap))
+  if empty(langmap)
     let langmap=&filetype
   endif
   let ctags_cmds = ["ctags"]
-  call extend(ctags_cmds, a:000)
-  let langmap = type([]) == a:langmap ? join(a:langmap, ',') : a:langmap
+  call extend(ctags_cmds, args)
+
   call add(ctags_cmds, "--languages=".langmap)
 
   if has('job')
@@ -213,7 +216,8 @@ endfunction
 function! s:is_avairable_ctags() "{{{2
   try
     call taglist('dummy')
-  catch /^Vim\%(\a\+)\)\=:E431/
+  " catch /^Vim\%(\a\+)\)\=:E431/
+  catch /^.*/
     return 0
   endtry
   return 1

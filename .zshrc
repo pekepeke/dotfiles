@@ -31,6 +31,7 @@ case $OSTYPE in
     ;;
 esac
 
+typeset -U path cdpath fpath manpath sudo_path
 typeset -xT RUBYLIB ruby_path
 typeset -U ruby_path
 ruby_path=(./lib)
@@ -650,10 +651,14 @@ fi
 shrc_section_title "complete" #{{{1
 
 if [ -z "$ZSH_DISABLES[zsh-heavy-completions]" ]; then
-  [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
-  [ -e ~/.zsh/plugins/zsh-perl-completions ] && fpath=(~/.zsh/plugins/zsh-perl-completions $fpath)
+  #  applied to later defined.
+  # [ -e ~/.zsh/plugins/zsh-completions ] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
+  # [ -e ~/.zsh/plugins/zsh-perl-completions ] && fpath=(~/.zsh/plugins/zsh-perl-completions $fpath)
+  [ -e ~/.zsh/plugins/zsh-completions ] && fpath+=~/.zsh/plugins/zsh-completions/src
+  [ -e ~/.zsh/plugins/zsh-perl-completions ] && fpath+=~/.zsh/plugins/zsh-perl-completions
 fi
-[ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
+# [ -e ~/.zsh/zfunc/completion ] && fpath=($HOME/.zsh/zfunc/completion $fpath)
+[ -e ~/.zsh/zfunc/completion ] && fpath+=$HOME/.zsh/zfunc/completion
 source_all ~/.zsh/zfunc/commands/*
 
 (( $+functions[___main] )) || ___main() {} # for git

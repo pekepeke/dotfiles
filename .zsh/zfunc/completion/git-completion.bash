@@ -338,7 +338,7 @@ __git_tags ()
 __git_refs ()
 {
 	local i hash dir="$(__gitdir "${1-}")" track="${2-}"
-	local format refs
+	local format refs pfx
 	if [ -d "$dir" ]; then
 		case "$cur" in
 		refs|refs/*)
@@ -347,14 +347,15 @@ __git_refs ()
 			track=""
 			;;
 		*)
+			[[ "$cur" == ^* ]] && pfx="^"
 			for i in HEAD FETCH_HEAD ORIG_HEAD MERGE_HEAD; do
-				if [ -e "$dir/$i" ]; then echo $i; fi
+				if [ -e "$dir/$i" ]; then echo $pfx$i; fi
 			done
 			format="refname:short"
 			refs="refs/tags refs/heads refs/remotes"
 			;;
 		esac
-		git --git-dir="$dir" for-each-ref --format="%($format)" \
+		git --git-dir="$dir" for-each-ref --format="$pfx%($format)" \
 			$refs
 		if [ -n "$track" ]; then
 			# employ the heuristic used by git checkout
@@ -803,6 +804,50 @@ __git_find_on_cmdline ()
 	done
 }
 
+# Echo the value of an option set on the command line or config
+#
+# $1: short option name
+# $2: long option name including =
+# $3: list of possible values
+# $4: config string (optional)
+#
+# example:
+# result="$(__git_get_option_value "-d" "--do-something=" \
+#     "yes no" "core.doSomething")"
+#
+# result is then either empty (no option set) or "yes" or "no"
+#
+# __git_get_option_value requires 3 arguments
+__git_get_option_value ()
+{
+	local c short_opt long_opt val
+	local result= values config_key word
+
+	short_opt="$1"
+	long_opt="$2"
+	values="$3"
+	config_key="$4"
+
+	((c = $cword - 1))
+	while [ $c -ge 0 ]; do
+		word="${words[c]}"
+		for val in $values; do
+			if [ "$short_opt$val" = "$word" ] ||
+			   [ "$long_opt$val"  = "$word" ]; then
+				result="$val"
+				break 2
+			fi
+		done
+		((c--))
+	done
+
+	if [ -n "$config_key" ] && [ -z "$result" ]; then
+		result="$(git --git-dir="$(__gitdir)" config "$config_key")"
+	fi
+
+	echo "$result"
+}
+
 __git_has_doubledash ()
 {
 	local c=1
@@ -964,8 +1009,8 @@ _git_branch ()
 	while [ $c -lt $cword ]; do
 		i="${words[c]}"
 		case "$i" in
-		-d|-m)	only_local_ref="y" ;;
-		-r)	has_r="y" ;;
+		-d|--delete|-m|--move)	only_local_ref="y" ;;
+		-r|--remotes)		has_r="y" ;;
 		esac
 		((c++))
 	done
@@ -979,7 +1024,7 @@ _git_branch ()
 			--color --no-color --verbose --abbrev= --no-abbrev
 			--track --no-track --contains --merged --no-merged
 			--set-upstream-to= --edit-description --list
-			--unset-upstream
+			--unset-upstream --delete --move --remotes
 			"
 		;;
 	*)
@@ -1092,11 +1137,14 @@ _git_clone ()
 			--depth
 			--single-branch
 			--branch
+			--recurse-submodules
 			"
 		return
 		;;
 	esac
 }
+
+__git_untracked_file_modes="all no normal"
 
 _git_commit ()
 {
@@ -1119,7 +1167,7 @@ _git_commit ()
 		return
 		;;
 	--untracked-files=*)
-		__gitcomp "all no normal" "" "${cur##--untracked-files=}"
+		__gitcomp "$__git_untracked_file_modes" "" "${cur##--untracked-files=}"
 		return
 		;;
 	--*)
@@ -1158,6 +1206,8 @@ _git_describe ()
 
 __git_diff_algorithms="myers minimal patience histogram"
 
+__git_diff_submodule_formats="log short"
+
 __git_diff_common_options="--stat --numstat --shortstat --summary
 			--patch-with-stat --name-only --name-status --color
 			--no-color --color-words --no-renames --check
@@ -1169,10 +1219,11 @@ __git_diff_common_options="--stat --numstat --shortstat --summary
 			--no-prefix --src-prefix= --dst-prefix=
 			--inter-hunk-context=
 			--patience --histogram --minimal
-			--raw --word-diff
+			--raw --word-diff --word-diff-regex=
 			--dirstat --dirstat= --dirstat-by-file
 			--dirstat-by-file= --cumulative
 			--diff-algorithm=
+			--submodule --submodule=
 "
 
 _git_diff ()
@@ -1182,6 +1233,10 @@ _git_diff ()
 	case "$cur" in
 	--diff-algorithm=*)
 		__gitcomp "$__git_diff_algorithms" "" "${cur##--diff-algorithm=}"
+		return
+		;;
+	--submodule=*)
+		__gitcomp "$__git_diff_submodule_formats" "" "${cur##--submodule=}"
 		return
 		;;
 	--*)
@@ -1339,15 +1394,15 @@ _git_help ()
 {
 	case "$cur" in
 	--*)
-		__gitcomp "--all --info --man --web"
+		__gitcomp "--all --guides --info --man --web"
 		return
 		;;
 	esac
 	__git_compute_all_commands
 	__gitcomp "$__git_all_commands $(__git_aliases)
 		attributes cli core-tutorial cvs-migration
-		diffcore gitk glossary hooks ignore modules
-		namespaces repository-layout tutorial tutorial-2
+		diffcore everyday gitk glossary hooks ignore modules
+		namespaces repository-layout revisions tutorial tutorial-2
 		workflows
 		"
 }
@@ -1447,6 +1502,14 @@ _git_log ()
 		__gitcomp "full short no" "" "${cur##--decorate=}"
 		return
 		;;
+	--diff-algorithm=*)
+		__gitcomp "$__git_diff_algorithms" "" "${cur##--diff-algorithm=}"
+		return
+		;;
+	--submodule=*)
+		__gitcomp "$__git_diff_submodule_formats" "" "${cur##--submodule=}"
+		return
+		;;
 	--*)
 		__gitcomp "
 			$__git_log_common_options
@@ -1458,6 +1521,7 @@ _git_log ()
 			--relative-date --date=
 			--pretty= --format= --oneline
 			--show-signature
+			--cherry-mark
 			--cherry-pick
 			--graph
 			--decorate --decorate=
@@ -1688,8 +1752,12 @@ _git_rebase ()
 			--preserve-merges --stat --no-stat
 			--committer-date-is-author-date --ignore-date
 			--ignore-whitespace --whitespace=
-			--autosquash --fork-point --no-fork-point
-			--autostash
+			--autosquash --no-autosquash
+			--fork-point --no-fork-point
+			--autostash --no-autostash
+			--verify --no-verify
+			--keep-empty --root --force-rebase --no-ff
+			--exec
 			"
 
 		return
@@ -1775,6 +1843,56 @@ _git_stage ()
 	_git_add
 }
 
+_git_status ()
+{
+	local complete_opt
+	local untracked_state
+
+	case "$cur" in
+	--ignore-submodules=*)
+		__gitcomp "none untracked dirty all" "" "${cur##--ignore-submodules=}"
+		return
+		;;
+	--untracked-files=*)
+		__gitcomp "$__git_untracked_file_modes" "" "${cur##--untracked-files=}"
+		return
+		;;
+	--column=*)
+		__gitcomp "
+			always never auto column row plain dense nodense
+			" "" "${cur##--column=}"
+		return
+		;;
+	--*)
+		__gitcomp "
+			--short --branch --porcelain --long --verbose
+			--untracked-files= --ignore-submodules= --ignored
+			--column= --no-column
+			"
+		return
+		;;
+	esac
+
+	untracked_state="$(__git_get_option_value "-u" "--untracked-files=" \
+		"$__git_untracked_file_modes" "status.showUntrackedFiles")"
+
+	case "$untracked_state" in
+	no)
+		# --ignored option does not matter
+		complete_opt=
+		;;
+	all|normal|*)
+		complete_opt="--cached --directory --no-empty-directory --others"
+
+		if [ -n "$(__git_find_on_cmdline "--ignored")" ]; then
+			complete_opt="$complete_opt --ignored --exclude=*"
+		fi
+		;;
+	esac
+
+	__git_complete_index_file "$complete_opt"
+}
+
 __git_config_get_set_variables ()
 {
 	local prevword word config_file= c=$cword
@@ -1809,7 +1927,7 @@ _git_config ()
 		return
 		;;
 	branch.*.rebase)
-		__gitcomp "false true"
+		__gitcomp "false true preserve interactive"
 		return
 		;;
 	remote.pushdefault)
@@ -2056,6 +2174,7 @@ _git_config ()
 		core.sparseCheckout
 		core.symlinks
 		core.trustctime
+		core.untrackedCache
 		core.warnAmbiguousRefs
 		core.whitespace
 		core.worktree
@@ -2079,6 +2198,7 @@ _git_config ()
 		format.attach
 		format.cc
 		format.coverLetter
+		format.from
 		format.headers
 		format.numbered
 		format.pretty
@@ -2353,6 +2473,10 @@ _git_show ()
 		__gitcomp "$__git_diff_algorithms" "" "${cur##--diff-algorithm=}"
 		return
 		;;
+	--submodule=*)
+		__gitcomp "$__git_diff_submodule_formats" "" "${cur##--submodule=}"
+		return
+		;;
 	--*)
 		__gitcomp "--pretty= --format= --abbrev-commit --oneline
 			--show-signature
@@ -2369,7 +2493,7 @@ _git_show_branch ()
 	case "$cur" in
 	--*)
 		__gitcomp "
-			--all --remotes --topo-order --current --more=
+			--all --remotes --topo-order --date-order --current --more=
 			--list --independent --merge-base --no-name
 			--color --no-color
 			--sha1-name --sparse --topics --reflog
@@ -2382,7 +2506,7 @@ _git_show_branch ()
 
 _git_stash ()
 {
-	local save_opts='--keep-index --no-keep-index --quiet --patch'
+	local save_opts='--all --keep-index --no-keep-index --quiet --patch --include-untracked'
 	local subcommands='save list show apply clear drop pop create branch'
 	local subcommand="$(__git_find_on_cmdline "$subcommands")"
 	if [ -z "$subcommand" ]; then
@@ -2404,9 +2528,20 @@ _git_stash ()
 		apply,--*|pop,--*)
 			__gitcomp "--index --quiet"
 			;;
-		show,--*|drop,--*|branch,--*)
+		drop,--*)
+			__gitcomp "--quiet"
 			;;
-		show,*|apply,*|drop,*|pop,*|branch,*)
+		show,--*|branch,--*)
+			;;
+		branch,*)
+			if [ $cword -eq 3 ]; then
+				__gitcomp_nl "$(__git_refs)";
+			else
+				__gitcomp_nl "$(git --git-dir="$(__gitdir)" stash list \
+						| sed -n -e 's/:.*//p')"
+			fi
+			;;
+		show,*|apply,*|drop,*|pop,*)
 			__gitcomp_nl "$(git --git-dir="$(__gitdir)" stash list \
 					| sed -n -e 's/:.*//p')"
 			;;
@@ -2576,6 +2711,32 @@ _git_tag ()
 _git_whatchanged ()
 {
 	_git_log
+}
+
+_git_worktree ()
+{
+	local subcommands="add list lock prune unlock"
+	local subcommand="$(__git_find_on_cmdline "$subcommands")"
+	if [ -z "$subcommand" ]; then
+		__gitcomp "$subcommands"
+	else
+		case "$subcommand,$cur" in
+		add,--*)
+			__gitcomp "--detach"
+			;;
+		list,--*)
+			__gitcomp "--porcelain"
+			;;
+		lock,--*)
+			__gitcomp "--reason"
+			;;
+		prune,--*)
+			__gitcomp "--dry-run --expire --verbose"
+			;;
+		*)
+			;;
+		esac
+	fi
 }
 
 __git_main ()
