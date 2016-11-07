@@ -7507,7 +7507,7 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   let g:neocomplete#enable_smart_case                   = 1
   let g:neocomplete#enable_camel_case_completion        = 0 " camel case off
   let g:neocomplete#enable_underbar_completion          = 1
-  " let g:neocomplete#enable_auto_delimiter               = 1
+  let g:neocomplete#enable_auto_delimiter               = 1
   let g:neocomplete#disable_caching_file_path_pattern   =
   \ "\.log$\|_history$\|\.howm$\|\.jax$\|\.snippets$"
   let g:neocomplete#lock_buffer_name_pattern            =
@@ -7621,16 +7621,9 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
     let g:neocomplete#sources#omni#input_patterns.java = '\k\.\k*'
     let g:neocomplete#sources#omni#input_patterns.scala = '\k\.\k*'
   endif
-  if 0 && s:bundle.is_installed('padawan.vim')
-    let g:neocomplete#force_omni_input_patterns.php =
-    \ '\h\w*\|[^- \t]->\w*'
-    " let g:neocomplete#sources#omni#input_patterns.php =
-    " \ '[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
-    " \ 'php': '\h\w*\|[^. \t]->\%(\h\w*\)\?\|\h\w*::\%(\h\w*\)\?',
-  else
-    let g:neocomplete#sources#omni#input_patterns.php =
-    \ '\h\w*\|[^- \t]->\w*'
-  endif
+
+  " ruby
+  let g:neocomplete#delimiter_patterns.ruby = ['::']
 
   " scala
   let g:neocomplete#sources#include#patterns.scala = '^import'
@@ -7643,10 +7636,13 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   elseif s:bundle.is_installed('vim-nodejs-complete')
     let g:neocomplete#sources#omni#functions.javascript = 'nodejscomplete#CompleteJS'
   endif
+  let g:neocomplete#delimiter_patterns.javascript = ['.']
   " let g:neocomplete#sources#omni#functions.javascript = 'jscomplete#CompleteJS'
 
   " php
   " let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+  let g:neocomplete#sources#omni#input_patterns.php =
+  \ '\h\w*\|[^- \t]->\w*'
   let g:neocomplete#delimiter_patterns.php = ['->', '::', '\']
   let g:neocomplete#sources#member#prefix_patterns.php = '->\|::'
   call my#config#bulk_dict_variables([{
