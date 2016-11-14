@@ -27,7 +27,7 @@ if [ $# -eq 0 ]; then
 fi
 
 ## Output sample .vimrc
-if [ X"$1" == X"--vimrc" ]; then
+if [ x"$1" = x"--vimrc" ]; then
   sed -n "/<<'VIMRC_EOF'$/,/^VIMRC_EOF$/p" "$0" |sed '1d;$d'
   exit 0
 fi

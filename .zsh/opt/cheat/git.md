@@ -228,6 +228,11 @@ git log --numstat --pretty="%H"  | awk 'NF==3 {plus+=$1; minus+=$2} END {printf(
 git log --author="hogehoge"
 git log --since=2013-01-01 --until=2013-06-30
 
+git log -S [keyword]                    # keyword を含むコミットを検索
+git log -S [keyword] -p                 # diff も表示
+git log --pickaxe-regex [keyword]       # keyword を含むコミットを検索(regexp)
+git log -G [keyword]                    # keyword を含むコミットを検索(出現回数の差分も考慮する[リファクタ時などは除外される])
+
 git log -p                              # パッチ形式のコミットログを表示する
 
 git log --stat                          # コミットログとファイルの変更の状態を表示する
@@ -331,6 +336,10 @@ git tag -l "A*"
 # remote push
 git push origin v0.9
 ```
+
+## name-rev
+
+git name-rev [hash]
 
 ## rev-parse
 
