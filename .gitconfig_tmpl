@@ -7,6 +7,7 @@
   path = ~/.gitconfig.d/color.txt
   path = ~/.gitconfig.d/pager.txt
   path = ~/.gitconfig.d/diff.txt
+  path = ~/.gitconfig.d/diff.encoding.txt
   ; path = ~/.gitconfig.d/diff.osx.txt
   path = ~/.gitconfig.d/diff.local.txt
   path = ~/.gitconfig.d/ghq.txt

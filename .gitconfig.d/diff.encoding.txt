@@ -1,0 +1,9 @@
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+[diff]
+[diff "sjis"]
+	textconv = iconv -f sjis
+[diff "euc"]
+	textconv = iconv -f eucjp-win
+[diff "utf16"]
+	textconv = iconv -f utf16
+
