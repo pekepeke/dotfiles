@@ -1,0 +1,11 @@
+identity_file :private, '~/.ssh/id_rsa'
+
+server_port = 22
+
+host 'host', 'desc' do
+  hostname 'alice.example.com'
+  user 'ec2-user'
+  port server_port
+  use_identify_file :private
+end
+

@@ -925,6 +925,7 @@ NeoBundle 'tpope/vim-unimpaired'
 NeoBundleLazy 'vim-scripts/ShowMultiBase', {
 \ 'on_cmd': ['ShowMultiBase'],
 \ }
+NeoBundle 'tommcdo/vim-exchange'
 " NeoBundle 'tyru/current-func-info.vim'
 if s:is_win
   NeoBundleLazy 'majutsushi/tagbar'
@@ -1461,6 +1462,7 @@ NeoBundle 'timcharper/textile.vim'
 NeoBundle 'aklt/plantuml-syntax'
 " NeoBundle 'maxmeyer/vim-taskjuggler'
 NeoBundle 'hara/vim-opf'
+NeoBundle 'mozamimy/nymphia.vim'
 
 NeoBundleLazy 'moznion/hateblo.vim', {
 \ 'on_cmd': [
