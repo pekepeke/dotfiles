@@ -5157,8 +5157,9 @@ if s:bundle.tap('unite.vim')
     if g:vimrc_enabled_plugins.agit
       " \ ['gbrowse', "execute 'Gbrowse' eval('agit#extract_hash(getline(\".\"))')"],
       let g:unite_source_menu_menus["ft_agit"] = s:unite_menu_create(
-      \ 'Gitv', [
-      \ ['checkout', "normal \:<Plug>(agit-git-checkout)"],
+      \ 'Agit', [
+      \ ['yank', "normal \<Plug>(agit-yank-hash)"],
+      \ ['checkout', "normal \<Plug>(agit-git-checkout)"],
       \ ['rebase', "normal \<Plug>(agit-git-rebase)"],
       \ ['rebase-i', "normal \<Plug>(agit-git-rebase-i)"],
       \ ['revert', "normal \<Plug>(agit-git-revert)"],
