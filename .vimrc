@@ -1505,9 +1505,16 @@ NeoBundle '2072/PHP-Indenting-for-VIm'
 NeoBundle 'StanAngeloff/php.vim'
 " NeoBundle 'arnaud-lb/vim-php-namespace'
 " NeoBundle 'pekepeke/phpfoding.vim'
-NeoBundle 'adoy/vim-php-refactoring-toolbox'
 NeoBundle 'noahfrederick/vim-composer'
+" if executable('refactor.phar')
+"   NeoBundle 'vim-php/vim-php-refactoring'
+" else
+" endif
+NeoBundle 'adoy/vim-php-refactoring-toolbox'
 " NeoBundle 'beberlei/vim-php-refactor'
+if executable('phpqa')
+  NeoBundle 'joonty/vim-phpqa'
+endif
 if get(g:vimrc_enabled_features, 'cakephp', 0)
   NeoBundleLazy 'violetyk/cake.vim', {
   \ 'on_ft': ['php'],
@@ -1535,6 +1542,8 @@ if !get(g:vimrc_enabled_features, "eclim", 0)
     if get(g:vimrc_enabled_features, 'symfony', 0)
       NeoBundle 'm2mdas/phpcomplete-extended-symfony'
     endif
+  " elseif v:version >= 704
+  "   NeoBundle 'php-vim/phpcd.vim'
   else
     NeoBundle 'shawncplus/phpcomplete.vim'
   endif
@@ -2793,6 +2802,23 @@ let g:vimrc_enabled_plugins = {
 " vim-monster
 if s:bundle.is_installed('vim-monster')
   let g:monster#completion#rcodetools#backend = "async_rct_complete"
+endif
+
+" vim-phpqa {{{2
+let g:phpqa_messdetector_autorun = 0
+let g:phpqa_codesniffer_autorun = 0
+let g:phpqa_codecoverage_autorun = 0
+let g:phpqa_open_loc = 0
+" let g:phpqa_codecoverage_file = "/path/to/clover.xml"
+let g:phpqa_codecoverage_showcovered = 0
+
+" vim-php/vim-php-refactoring {{{2
+if s:bundle.is_installed('vim-php/vim-php-refactoring')
+  command! -nargs=0 -range PhpRefactorShowMenu call PhpRefactorShowMenu()
+  command! -nargs=0 -range PhpRefactorExtractMethod call PhpRefactorExtractMethod(<line1>, <line2>)
+  command! -nargs=0 PhpRefactorLocalVariableToInstanceVariable call PhpRefactorLocalVariableToInstanceVariable()
+  command! -nargs=0 PhpRefactorRenameLocalVariable call PhpRefactorRenameLocalVariable()
+  command! -nargs=0 PhpRefactorOptimizeUse call PhpRefactorOptimizeUse()
 endif
 
 " vim-php-refactoring-toolbox {{{2

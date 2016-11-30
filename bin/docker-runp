@@ -2,10 +2,12 @@
 
 IDS="$(docker images | peco | awk '{print $3}')"
 for id in $IDS; do
-  if sudo docker exec -t -i ${CONTAINER} which bash >/dev/null 2>&1; then
-    sudo docker run --rm -t -i $id /bin/bash
+  if sudo docker exec --rm -t -i ${CONTAINER} which bash >/dev/null 2>&1; then
+    echo sudo docker run --rm -t "$@" -i $id/bin/bash
+    sudo docker run --rm -t "$@" -i $id/bin/bash
   else
-    sudo docker run --rm -t -i $id /bin/sh
+    echo sudo docker run --rm -t "$@" -i $id /bin/sh
+    sudo docker run --rm -t "$@" -i $id /bin/sh
   fi
 done
 

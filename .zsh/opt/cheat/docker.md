@@ -66,8 +66,14 @@ docker ps -a
 ## コンテナのハッシュリストを得る
 docker ps -a -q
 
-# 直近で起動したコンテナIDを取得
+## 直近で起動したコンテナIDを取得
 docker ps -l -q
+
+## ステータスで絞込
+docker ps -a -f "exited=127"
+docker ps -a -f "exited=137" # sigkill
+docker ps -a -f "status=running" # created/restarting/running/paused/exited
+docker ps -a -f "status=exited"
 
 ## index.docker.ioからイメージを検索する
 docker search TERM

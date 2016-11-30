@@ -1,0 +1,10 @@
+        "phpunit/phpunit": "4.0.*",
+        "theseer/phpdox": "*",
+        "squizlabs/php_codesniffer": "*",
+        "phpmd/phpmd": "*",
+        "h4cc/phpqatools": "*",
+        "phploc/phploc": "*",
+        "sebastian/phpcpd": "*",
+        "phpdocumentor/phpdocumentor": "*",
+        "mayflower/php-codebrowser": "*",
+        "phing/phing": "*"
