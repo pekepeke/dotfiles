@@ -2559,6 +2559,15 @@ else
   cnoremap <C-d> <Delete>
   cnoremap <C-x> <C-r>=substitute(expand('%:p:h'), ' ', '\\v:val', 'e')<CR>/
   cnoremap <C-z> <C-r>=expand('%:p:r')<CR>
+  cnoremap <C-t> <C-\>e<SID>expand_filename()<CR>
+  function! s:expand_filename()
+    let c = getcmdline()
+    let files = split(glob(c), "\n")
+    if empty(files)
+      return c
+    endif
+    return join(files, " ")
+  endfunction
 endif
 
 cnoremap <Up> <C-p>
