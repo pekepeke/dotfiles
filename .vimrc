@@ -984,6 +984,7 @@ NeoBundleLazy 'AndrewRadev/gapply.vim' , {
 " \ 'on_cmd' : ['Gitv'],
 " \ }
 NeoBundleLazy 'cohama/agit.vim' , {
+\ 'branch': 'agitfile-fenc',
 \ 'on_cmd': ['Agit', 'AgitGit', 'AgitFile'],
 \ }
 NeoBundle 'rhysd/git-messenger.vim', {
@@ -1512,9 +1513,9 @@ NeoBundle 'noahfrederick/vim-composer'
 " endif
 NeoBundle 'adoy/vim-php-refactoring-toolbox'
 " NeoBundle 'beberlei/vim-php-refactor'
-if executable('phpqa')
-  NeoBundle 'joonty/vim-phpqa'
-endif
+" if s:exec_php && has('python') && has('signs') && executable('phpqa')
+"   NeoBundle 'joonty/vim-phpqa'
+" endif
 if get(g:vimrc_enabled_features, 'cakephp', 0)
   NeoBundleLazy 'violetyk/cake.vim', {
   \ 'on_ft': ['php'],
@@ -7034,19 +7035,32 @@ if s:bundle.is_installed('vim-quickrun')
   call extend(g:quickrun_config, {
   \ 'watchdogs_checker/phpcs': {
   \    'command': 'phpcs',
-  \    'cmdopt' : '--report=csv %{PhpcsStandardDetect()}',
-  \    'exec': '%c %o %s:p',
-  \    'quickfix/errorformat': "\"%f\"\\,%l\\,%c\\,%t%*[a-zA-Z]\\,\"%m\"\\,%*[a-zA-Z0-9_.-\\,]",
+  \    'cmdopt' : '--report=emacs %{PhpcsStandardDetect()}',
+  \    'exec': '%c %o -l %s:p',
+  \    "errorformat" : '%f:%l:%c:\ %m',
   \ }
   \ })
   call extend(g:quickrun_config, {
   \ 'watchdogs_checker/phpmd': {
   \    'command': 'phpmd',
-  \    'cmdopt' : 'text codesize,design,unusedcode,naming',
-  \    'exec': '%c %o %s:p',
-  \    'quickfix/errorformat': '%E%f:%l%\s%#%m',
+  \    'cmdopt' : 'cleancode,codesize,design,unusedcode,naming',
+  \    'exec': '%c %s:p %o text',
+  \    'quickfix/errorformat': '%f:%l%\s%m, %-G%.%#',
   \ }
   \ })
+  call extend(g:quickrun_config, {
+  \ 'watchdogs_checker/phpcheck': {
+  \    'command': $HOME . '/.vim/bin/phpcheck.php',
+  \    'cmdopt' : '--phpcs="%{PhpcsStandardDetect()}"',
+  \    'exec': '%c %o %s:p',
+  \    'quickfix/errorformat': '%f:%l:%c:%m',
+  \ }
+  \ })
+  call extend(g:quickrun_config, {
+    \ 'php/watchdogs_checker' : {
+    \   'type' : 'watchdogs_checker/phpcheck',
+    \ },
+    \ })
   if executable('tidy')
     call extend(g:quickrun_config, {
     \ 'html/watchdogs_checker' : {
