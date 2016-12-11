@@ -12,6 +12,8 @@ class Phpcheck
 
     protected $cmdOpts = array();
 
+    protected $enabledSmartmode = true;
+
     protected $aviarables = array(
         "php", "phpcs", "phpmd",
     );
@@ -21,10 +23,12 @@ class Phpcheck
         "phpcs" => "phpcs #opt --report=emacs #file",
         "phpmd" => "phpmd #file text #opt",
     );
-    protected $options = array(
+    protected $defaultOptions = array(
         "php" => "-d error_reporting=E_ALL",
         "phpcs" => "",
         "phpmd" => "cleancode,codesize,design,unusedcode,naming",
+    );
+    protected $options = array(
     );
 
     protected $parsers = array(
@@ -73,12 +77,19 @@ class Phpcheck
         }
 
         foreach ($this->files as $filename) {
+            $repoRoot = $this->findRepoRoot($filename);
+
             foreach ($this->aviarables as $checker) {
                 if (!$this->isAvailable($checker)) {
                     continue;
                 }
                 $fmt = $this->formats[$checker];
-                $opt = $this->options[$checker];
+
+                if ($this->enabledSmartmode || !isset($this->options[$checker])) {
+                    $this->options[$checker] = $this->getSmartOptions($checker, $repoRoot, $filename);
+                }
+
+                $opt = isset($this->options[$checker]) ? $this->options[$checker] : $this->defaultOptions[$checker];
                 $parseMethod = $this->parsers[$checker];
                 $cmd = strtr($fmt, array(
                     "#opt" => $opt,
@@ -92,6 +103,46 @@ class Phpcheck
                 }
             }
         }
+    }
+
+    protected function findRepoRoot($filename)
+    {
+        $candidates = array('.git', '.hg', '.bzr', '.svn', 'CVS');
+        $dir = $filename;
+        if (!is_dir($filename)) {
+            $dir = $fiename . DIRECTORY_SEPARATOR . "dummy.txt";
+        }
+        $prevLen = 0;
+        while (strlen($dir = dirname($dir)) != $prevLen) {
+            foreach ($candidates as $d) {
+                if (file_exists($dir . PATH_SEPARATOR . $d)) {
+                    return $dir;
+                }
+            }
+            $prevLen = strlen($dir);
+        }
+        return null;
+    }
+
+    protected function getSmartOptions($checker, $repoRoot, $filename)
+    {
+        switch($checker) {
+        case "php":
+            break;
+        case "phpcs":
+            if (file_exists($repoRoot . PATH_SEPARATOR . "phpcs.xml")) {
+                return sprintf("--standard=%s", $repoRoot . PATH_SEPARATOR . "phpcs.xml");
+            }
+            break;
+        case "phpmd":
+            foreach (array("phpmd.xml", "ruleset.xml") as $xml) {
+                if (file_exists($repoRoot . PATH_SEPARATOR . $xml)) {
+                    return $repoRoot . PATH_SEPARATOR . $xml;
+                }
+            }
+            break;
+        }
+        return $this->defaultOptions[$checker];
     }
 
     protected function getShellCmdResultText($cmd)
@@ -129,6 +180,9 @@ class Phpcheck
             case "-h":
             case "--help":
                 $this->cmdOpts["help"] = true;
+                break;
+            case "--no-smart":
+                $this->enabledSmartmode = false;
                 break;
             case "-p":
             case "--php":
