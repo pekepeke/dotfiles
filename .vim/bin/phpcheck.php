@@ -110,7 +110,7 @@ class Phpcheck
         $candidates = array('.git', '.hg', '.bzr', '.svn', 'CVS');
         $dir = $filename;
         if (!is_dir($filename)) {
-            $dir = $fiename . DIRECTORY_SEPARATOR . "dummy.txt";
+            $dir = $filename . DIRECTORY_SEPARATOR . "dummy.txt";
         }
         $prevLen = 0;
         while (strlen($dir = dirname($dir)) != $prevLen) {

@@ -1,3 +1,11 @@
+## TIPS
+### clear logs
+
+```
+truncate -s 0 /var/lib/docker/containers/*/*-json.log
+sudo sh -c "truncate -s 0 /var/lib/docker/containers/*/*-json.log"
+```
+
 ## 設定
 ### COMPOSE_PROJECT_NAME
 - プロジェクト名の設定。デフォルトでは YAML ファイルのあるディレクトリの basename になる。

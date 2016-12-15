@@ -158,6 +158,14 @@ tar tvf ./test.tar
 tar tvfz ./test.tar.gz
 tar tvfj ./test.tar.bz2
 zipinfo ./test.zip
+
+# 特定ファイルの展開
+##   --strip=1 で展開時のディレクトリ作成を抑止
+##   docker/docker 抽出したいファイル
+##  -C [dir] 展開先
+ curl -fsSL path/to/file.tgz \
+  | tar -xzC /usr/local/bin --strip=1 bin/fuga
+
 ```
 
 ## iconv

@@ -1,6 +1,57 @@
 PHPUnit
 =======
 
+## Tips
+### running server
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./tests/bootstrap.php">
+  <testsuites>
+    <testsuite name="Name of the test suite">
+      <directory>./tests</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <const name="WEB_SERVER_HOST" value="localhost" />
+    <const name="WEB_SERVER_PORT" value="1349" />
+    <const name="WEB_SERVER_DOCROOT" value="./public" />
+  </php>
+</phpunit>
+```
+
+```
+<?php
+// Command that starts the built-in web server
+$command = sprintf(
+    'php -S %s:%d -t %s >/dev/null 2>&1 & echo $!',
+    WEB_SERVER_HOST,
+    WEB_SERVER_PORT,
+    WEB_SERVER_DOCROOT
+);
+
+// Execute the command and store the process ID
+$output = array(); 
+exec($command, $output);
+$pid = (int) $output[0];
+
+echo sprintf(
+    '%s - Web server started on %s:%d with PID %d', 
+    date('r'),
+    WEB_SERVER_HOST, 
+    WEB_SERVER_PORT, 
+    $pid
+) . PHP_EOL;
+
+// Kill the web server when the process ends
+register_shutdown_function(function() use ($pid) {
+    echo sprintf('%s - Killing process with ID %d', date('r'), $pid) . PHP_EOL;
+    exec('kill ' . $pid);
+});
+
+// More bootstrap code
+```
+
 ## annotation
 - @covers Class::method
 - @expectedException \RuntimeException
