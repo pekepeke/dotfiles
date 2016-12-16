@@ -306,6 +306,32 @@ inoremap <C-]><C-d> <Delete>
 inoremap <C-w> <C-g>u<C-w>
 inoremap <C-u> <C-g>u<C-u>
 
+onoremap aa a>
+vnoremap aa a>
+onoremap ia i>
+vnoremap ia i>
+onoremap ar a]
+vnoremap ar a]
+onoremap ir i]
+vnoremap ir i]
+onoremap ak a)
+vnoremap ak a)
+onoremap ik i)
+vnoremap ik i)
+vnoremap ( t(
+vnoremap ) t)
+vnoremap ] t]
+vnoremap [ t[
+vnoremap "" t"
+vnoremap ' t'
+onoremap ( t(
+onoremap ) t)
+onoremap ] t]
+onoremap [ t[
+onoremap "" t"
+onoremap ' t'
+
+
 cnoremap <C-a> <Home>
 cnoremap <C-e> <End>
 cnoremap <C-f> <Right>
@@ -326,19 +352,6 @@ cnoremap <C-]><C-f> <S-Right>
 cnoremap <C-]><C-b> <S-Left>
 cnoremap <C-]><C-d> <Delete>
 cnoremap <C-]><C-i> <C-d>
-
-onoremap aa a>
-vnoremap aa a>
-onoremap ia i>
-vnoremap ia i>
-onoremap ar a]
-vnoremap ar a]
-onoremap ir i]
-vnoremap ir i]
-onoremap ak a)
-vnoremap ak a)
-onoremap ik i)
-vnoremap ik i)
 
 " }}}
 " commands {{{1

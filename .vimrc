@@ -2624,10 +2624,14 @@ vnoremap ( t(
 vnoremap ) t)
 vnoremap ] t]
 vnoremap [ t[
+vnoremap "" t"
+vnoremap ' t'
 onoremap ( t(
 onoremap ) t)
 onoremap ] t]
 onoremap [ t[
+onoremap " t"
+onoremap ' t'
 
 " mouse {{{2
 if s:is_mac
