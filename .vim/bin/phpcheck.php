@@ -6,9 +6,9 @@ class Phpcheck
     protected $argv;
     protected $files;
 
-    const FMT_PHP = "php %s -l %s";
-
     protected $breakOnError = true;
+
+    protected $libDir = "";
 
     protected $cmdOpts = array();
 
@@ -16,18 +16,27 @@ class Phpcheck
 
     protected $aviarables = array(
         "php", "phpcs", "phpmd",
+        // "phpcpd",
     );
 
     protected $formats = array(
         "php" => "php #opt -l #file",
         "phpcs" => "phpcs #opt --report=emacs #file",
         "phpmd" => "phpmd #file text #opt",
+        "phpcpd" => "phpcpd #opt #file",
     );
+
     protected $defaultOptions = array(
         "php" => "-d error_reporting=E_ALL",
         "phpcs" => "",
         "phpmd" => "cleancode,codesize,design,unusedcode,naming",
+        "phpcpd" => "",
     );
+    protected $smartOptionFormats = array(
+        "phpcs" => "--standard=%s",
+        "phpmd" => "%s",
+    );
+
     protected $options = array(
     );
 
@@ -35,10 +44,11 @@ class Phpcheck
         "php" => "parsePhpLint",
         "phpcs" => "parsePhpCs",
         "phpmd" => "parsePhpMd",
+        "phpcpd" => "parsePhpcpd",
         // "php" => "",
     );
 
-    static public function run($argv)
+    public static function run($argv)
     {
         $cmd = new static($argv);
         exit($cmd->exec());
@@ -52,6 +62,7 @@ class Phpcheck
 
     public function exec()
     {
+        $this->init();
         $this->files = array();
         $this->parseOptions();
         $this->main();
@@ -60,6 +71,13 @@ class Phpcheck
 
     public function init()
     {
+        $this->libDir = implode(DIRECTORY_SEPARATOR, array(dirname(__FILE__), '..', 'lib', 'phpcheck'));
+        // override defaults
+        foreach (array("phpcs" => "phpcs.xml", "phpmd" => "phpmd.xml") as $c => $f) {
+            if (file_exists($this->libDir . DIRECTORY_SEPARATOR . $f)) {
+                $this->defaultOptions[$c] = sprintf($this->smartOptionFormats[$c], $this->libDir . DIRECTORY_SEPARATOR . $f);
+            }
+        }
     }
 
     public function help()
@@ -126,21 +144,21 @@ class Phpcheck
 
     protected function getSmartOptions($checker, $repoRoot, $filename)
     {
-        switch($checker) {
-        case "php":
-            break;
-        case "phpcs":
-            if (file_exists($repoRoot . PATH_SEPARATOR . "phpcs.xml")) {
-                return sprintf("--standard=%s", $repoRoot . PATH_SEPARATOR . "phpcs.xml");
-            }
-            break;
-        case "phpmd":
-            foreach (array("phpmd.xml", "ruleset.xml") as $xml) {
-                if (file_exists($repoRoot . PATH_SEPARATOR . $xml)) {
-                    return $repoRoot . PATH_SEPARATOR . $xml;
+        switch ($checker) {
+            case "php":
+                break;
+            case "phpcs":
+                if (file_exists($repoRoot . PATH_SEPARATOR . "phpcs.xml")) {
+                    return sprintf($this->smartOptionFormats[$checker], $repoRoot . PATH_SEPARATOR . "phpcs.xml");
                 }
-            }
-            break;
+                break;
+            case "phpmd":
+                foreach (array("phpmd.xml", "ruleset.xml") as $xml) {
+                    if (file_exists($repoRoot . PATH_SEPARATOR . $xml)) {
+                        return sprintf($this->smartOptionFormats[$checker], $repoRoot . PATH_SEPARATOR . $xml);
+                    }
+                }
+                break;
         }
         return $this->defaultOptions[$checker];
     }
@@ -177,34 +195,32 @@ class Phpcheck
                 continue;
             }
             switch ($opt) {
-            case "-h":
-            case "--help":
-                $this->cmdOpts["help"] = true;
-                break;
-            case "--no-smart":
-                $this->enabledSmartmode = false;
-                break;
-            case "-p":
-            case "--php":
-                $this->options["php"] = $isLongOpt ? $val : array_shift($argv);
-                break;
-            case "-c":
-            case "--phpcs":
-                $this->options["phpcs"] = $isLongOpt ? $val : array_shift($argv);
-                break;
-            case "-m":
-            case "--phpmd":
-                $this->options["phpmd"] = $isLongOpt ? $val : array_shift($argv);
-                break;
-            case "-n":
-            case "--no-break-on-error":
-                $this->breakOnError = false;
-                break;
-            default:
-                $this->err("unrecognized option: {$opt}");
-                $this->cmdOpts["help"] = true;
-                return;
-                break;
+                case "-h":
+                case "--help":
+                    $this->cmdOpts["help"] = true;
+                    break;
+                case "--no-smart":
+                    $this->enabledSmartmode = false;
+                    break;
+                case "-p":
+                case "--php":
+                    $this->options["php"] = $isLongOpt ? $val : array_shift($argv);
+                    break;
+                case "-c":
+                case "--phpcs":
+                    $this->options["phpcs"] = $isLongOpt ? $val : array_shift($argv);
+                    break;
+                case "-m":
+                case "--phpmd":
+                    $this->options["phpmd"] = $isLongOpt ? $val : array_shift($argv);
+                    break;
+                case "-n":
+                case "--no-break-on-error":
+                    $this->breakOnError = false;
+                    break;
+                default:
+                    $this->err("unrecognized option: {$opt}");
+                    $this->cmdOpts["help"] = true;
             }
         }
     }
@@ -213,7 +229,7 @@ class Phpcheck
     {
         if (preg_match_all('!^(.*) in (.*) on line (\d+)\s*$!m', $text, $matches)) {
             foreach ($this->collectMatches($matches) as $m) {
-                $this->output($m[2], $m[1], $m[3]);
+                $this->output("php", $m[2], $m[1], $m[3]);
             }
             return true;
         }
@@ -224,7 +240,7 @@ class Phpcheck
     {
         if (preg_match_all('!^(.*):(\d+):(\d+):\s*(.*)$!m', $text, $matches)) {
             foreach ($this->collectMatches($matches) as $m) {
-                $this->output($m[1], $m[4], $m[2], $m[3]);
+                $this->output("phpcs", $m[1], $m[4], $m[2], $m[3]);
             }
             return true;
         }
@@ -235,7 +251,7 @@ class Phpcheck
     {
         if (preg_match_all('!^(.*):(\d*)\s*(.*)$!m', $text, $matches)) {
             foreach ($this->collectMatches($matches) as $m) {
-                $this->output($m[1], $m[3], $m[2]);
+                $this->output("phpmd", $m[1], $m[3], $m[2]);
             }
             return true;
         }
@@ -253,9 +269,9 @@ class Phpcheck
     //     return false;
     // }
 
-    protected function output($filename, $desc, $line, $col = 1)
+    protected function output($checker, $filename, $desc, $line, $col = 1)
     {
-        echo sprintf("%s:%d:%s:%s\n", $filename, $line, $col, $desc);
+        echo sprintf("%s:%d:%s:%s - %s\n", $filename, $line, $col, $checker, $desc);
     }
 
     protected function err($m)
@@ -280,7 +296,6 @@ class Phpcheck
         exec("which {$cmd}", $out, $ret);
         return $ret === 0;
     }
-
 }
 
 Phpcheck::run($argv);
