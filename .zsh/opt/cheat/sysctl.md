@@ -10,6 +10,8 @@ sysctl
 
 ```
 echo 5 > /proc/sys/kernel/panic
+sysctl -w kernel.panic=5
+sysctl kernel.panic
 ```
 
 ## sysctl option

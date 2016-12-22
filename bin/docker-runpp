@@ -1,0 +1,12 @@
+#!/bin/bash
+
+IDS="$(docker images | peco | awk '{print $3}')"
+for id in $IDS; do
+  if sudo docker exec --rm -t -i ${CONTAINER} sh -c "builtin type bash" >/dev/null 2>&1; then
+    echo sudo docker run --rm -t "$@" -i $id/bin/bash
+  else
+    echo sudo docker run --rm -t "$@" -i $id /bin/sh
+  fi
+done
+
+

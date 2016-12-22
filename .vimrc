@@ -2696,10 +2696,13 @@ let g:php_noShortTags = 1
 let g:php_parent_error_close = 1
 let g:php_parent_error_open = 1
 "let g:php_sync_method = x
+
+" PHP-Indenting-for-VIm
+let PHP_vintage_case_default_indent = 1
+let PHP_autoformatcomment = 0
 " phpfolding.vim
 let g:DisableAutoPHPFolding = 1
 
-" let g:PHP_autoformatcomment=0
 if s:bundle.is_installed('pdv')
   let g:pdv_template_dir =  neobundle#get('pdv').rtp . '/templates'
 endif

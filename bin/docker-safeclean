@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo "docker volume ls -qf dangling=true | xargs --no-run-if-empty -r docker volume rm"
+docker volume ls -qf dangling=true | xargs --no-run-if-empty -r docker volume rm
+
+echo "docker images | awk '/^<none>/ { print $3 }' | xargs --no-run-if-empty docker rmi"
+docker images | awk '/^<none>/ { print $3 }' | xargs --no-run-if-empty docker rmi
+
+# remove killed container
+echo "docker ps -a -q --filter 'exited=137' | xargs --no-run-if-empty docker rmi"
+docker ps -a -q --filter 'exited=137' | xargs --no-run-if-empty docker rmi
+
+

@@ -3,14 +3,12 @@
 if !which docker >/dev/null 2>&1; then
   echo "command not found : docker " >&2
 fi
-ID=$(docker images | peco | awk '{print $3}')
+PIDS=$(docker images | peco | awk '{print $3}')
 # echo $ID
 
-if [ -n "$ID" ]; then
-  for id in $ID ; do
-    echo docker rmi "$@" $id
-    sudo docker rmi "$@" $id
-  done
+if [ -n "$PIDS" ]; then
+  echo docker rmi $@ $PIDS
+  echo "$PIDS" | xargs docker rmi "$@"
 fi
 
 

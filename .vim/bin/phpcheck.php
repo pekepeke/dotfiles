@@ -127,13 +127,13 @@ class Phpcheck
     {
         $candidates = array('.git', '.hg', '.bzr', '.svn', 'CVS');
         $dir = $filename;
-        if (!is_dir($filename)) {
+        if (is_dir($filename)) {
             $dir = $filename . DIRECTORY_SEPARATOR . "dummy.txt";
         }
         $prevLen = 0;
         while (strlen($dir = dirname($dir)) != $prevLen) {
             foreach ($candidates as $d) {
-                if (file_exists($dir . PATH_SEPARATOR . $d)) {
+                if (file_exists($dir . DIRECTORY_SEPARATOR . $d)) {
                     return $dir;
                 }
             }
@@ -148,14 +148,14 @@ class Phpcheck
             case "php":
                 break;
             case "phpcs":
-                if (file_exists($repoRoot . PATH_SEPARATOR . "phpcs.xml")) {
-                    return sprintf($this->smartOptionFormats[$checker], $repoRoot . PATH_SEPARATOR . "phpcs.xml");
+                if (file_exists($repoRoot . DIRECTORY_SEPARATOR . "phpcs.xml")) {
+                    return sprintf($this->smartOptionFormats[$checker], $repoRoot . DIRECTORY_SEPARATOR . "phpcs.xml");
                 }
                 break;
             case "phpmd":
                 foreach (array("phpmd.xml", "ruleset.xml") as $xml) {
-                    if (file_exists($repoRoot . PATH_SEPARATOR . $xml)) {
-                        return sprintf($this->smartOptionFormats[$checker], $repoRoot . PATH_SEPARATOR . $xml);
+                    if (file_exists($repoRoot . DIRECTORY_SEPARATOR . $xml)) {
+                        return sprintf($this->smartOptionFormats[$checker], $repoRoot . DIRECTORY_SEPARATOR . $xml);
                     }
                 }
                 break;
@@ -233,6 +233,14 @@ class Phpcheck
             }
             return true;
         }
+        if (preg_match_all('!^(.*) (.*)$!m', $text, $matches)) {
+            foreach ($this->collectMatches($matches) as $m) {
+                if (strpos($m[1], "Error") !== false) {
+                    $this->output("php", $m[2], $m[1], 1);
+                }
+            }
+            return false;
+        }
         return false;
     }
 
@@ -249,6 +257,12 @@ class Phpcheck
 
     protected function parsePhpMd($text)
     {
+        if (preg_match_all('!(.*)\s+-\s*(.*), line: (\d+), col: (\d+), file: (.*)$!m', $text, $matches)) {
+            foreach ($this->collectMatches($matches) as $m) {
+                $this->output("phpmd", $m[1], $m[2], $m[3], $m[4]);
+            }
+            return true;
+        }
         if (preg_match_all('!^(.*):(\d*)\s*(.*)$!m', $text, $matches)) {
             foreach ($this->collectMatches($matches) as $m) {
                 $this->output("phpmd", $m[1], $m[3], $m[2]);

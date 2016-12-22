@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PIDS="$(docker ps -a | peco | awk '{print $1}')"
+PIDS="$(docker ps -a --filter 'status=exited' | peco | awk '{print $1}')"
 if [ -n "$PIDS" ]; then
   echo docker rm $@ $PIDS
   echo "$PIDS" | xargs docker rm "$@"
