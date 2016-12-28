@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if type nkf >/dev/null 2>&1 ; then
+  shift; shift
+  nkf -w "$@"
+else
+  iconv "$@"
+fi

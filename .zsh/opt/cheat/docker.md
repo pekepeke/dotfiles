@@ -136,6 +136,21 @@ docker exec -it CONTAINER コマンド
 
 ## tips
 
+### sudo
+- 環境変数引き継ぎでコマンド実行
+
+```
+sudo http_proxy=${http_proxy} https_proxy=${https_proxy} add-apt-repository ppa:git-core/ppa
+sudo -E apt-get install fuga
+```
+
+#### /etc/sudoers
+
+```
+Defaults env_keep="http_proxy"
+Defaults env_keep+="https_proxy"
+```
+
 ### call remote api
 - remote api - `https://docs.docker.com/engine/reference/api/docker_remote_api/`
 
