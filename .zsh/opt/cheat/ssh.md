@@ -55,7 +55,11 @@ git config --global --unset https.proxy
 
 ```
 # 鍵の登録
-ssh-keygen -t rsa
+ssh-keygen -t rsa -b 4096
+# ssh-keygen -t rsa -b 4096 -C "email@example.com"
+# ssh-keygen -t rsa -b 4096
+
+# 公開鍵コピー
 ssh-copy-id -i .ssh/id_dsa.pub user@192.168.1.16
 
 # PEMパスフレーズ解除
@@ -67,6 +71,13 @@ ssh-keygen -R remote_host_name
 
 # confirm fingerprint
 ssh-keygen -lf ~/.ssh/id_rsa.pub
+```
+
+### ssh 鍵の強度確認
+
+```
+# 2048 以上+ RSA(or ECDSA, ED25519)
+ssh-keygen -l -f ~/.ssh/id_rsa.pub
 ```
 
 ## sshfuse

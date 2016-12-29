@@ -44,6 +44,19 @@ tar xjvf $PHP_VER.tar.bz2
 ```
 
 ## composer
+### plugin
+
+```
+composer global require "hirak/prestissimo:^0.3"
+composer global remove hirak/prestissimo
+```
+
+### remove cache
+
+```
+rm -rf ~/.cache/composer
+```
+
 ### composer.json に package 追加
 
 ```
@@ -61,6 +74,8 @@ composer remove jenssegers/mongodb --update-with-dependencies
 ### self-upgrade
 ```
 composer self-upgrade
+# https://github.com/composer/composer/tags
+composer self-update 1.0.0-alpha8
 ```
 
 ## xdebug
