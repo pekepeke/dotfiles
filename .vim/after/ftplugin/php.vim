@@ -15,15 +15,21 @@ setlocal iskeyword-=- iskeyword-=$ iskeyword-=:
 setlocal expandtab shiftwidth=4 tabstop=4
 
 let b:vimrc_php_auto_setoption = 0
-function! VimrcPhpAutoSetoption()
-  if b:vimrc_php_auto_setoption == 0 && synIDattr(synID(line("."), col("."), 1), "name") =~ '^php\(Doc\|Comment.\)'
-    setlocal formatoptions+=r formatoptions+=o
-    let b:vimrc_php_auto_setoption = 1
-  elseif b:vimrc_php_auto_setoption == 1
-    setlocal formatoptions-=r formatoptions-=o
-    let b:vimrc_php_auto_setoption = 0
-  endif
-endfunction
+if !exists('*VimrcPhpAutoSetoption')
+  function! VimrcPhpAutoSetoption()
+    if synIDattr(synID(line("."), col(".") - 1, 1), "name") =~ '^php\(Doc\|Comment.\)'
+      if b:vimrc_php_auto_setoption == 0
+        setlocal formatoptions+=r formatoptions+=o
+        let b:vimrc_php_auto_setoption = 1
+      endif
+    else
+      if b:vimrc_php_auto_setoption == 1
+        setlocal formatoptions-=r formatoptions-=o
+        let b:vimrc_php_auto_setoption = 0
+      endif
+    endif
+  endfunction
+endif
 MyAutoCmd CursorMoved,CursorMovedI <buffer> call VimrcPhpAutoSetoption()
 
 " setlocal formatoptions-=r formatoptions-=o

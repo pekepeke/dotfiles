@@ -1018,6 +1018,7 @@ if has('python')
 endif
 
 " help {{{4
+NeoBundle 'rhysd/devdocs.vim'
 NeoBundleLazy 'thinca/vim-ref', {
 \ 'on_cmd' : {
 \   'name' : 'Ref',
@@ -1543,8 +1544,8 @@ if !get(g:vimrc_enabled_features, "eclim", 0)
     if get(g:vimrc_enabled_features, 'symfony', 0)
       NeoBundle 'm2mdas/phpcomplete-extended-symfony'
     endif
-  " elseif v:version >= 704
-  "   NeoBundle 'php-vim/phpcd.vim'
+  elseif v:version >= 704
+    NeoBundle 'php-vim/phpcd.vim'
   else
     NeoBundle 'shawncplus/phpcomplete.vim'
   endif
@@ -6189,6 +6190,21 @@ endif
 if s:bundle.is_installed('vim-niceblock')
   xmap I <Plug>(niceblock-I)
   xmap A <Plug>(niceblock-A)
+endif
+
+" devdocs
+if s:bundle.is_installed('devdocs.vim')
+  " let g:devdocs_host = 'localhost:9292'
+  let g:devdocs_filetype_map = {
+    \   'typescript': 'javascript',
+    \   'javascript.jsx': 'react',
+    \ }
+  command! -nargs=* DevDocsDocker call devdocs#open_doc(<q-args>, 'docker')
+  command! -nargs=* DevDocsRuby call devdocs#open_doc(<q-args>, 'ruby')
+  command! -nargs=* DevDocsRails call devdocs#open_doc(<q-args>, 'rails')
+  command! -nargs=* DevDocsBootstrap call devdocs#open_doc(<q-args>, 'bootstrap')
+  command! -nargs=* DevDocsReact call devdocs#open_doc(<q-args>, 'react')
+  command! -nargs=* DevDocsLaravel call devdocs#open_doc(<q-args>, 'laravel')
 endif
 
 " ref.vim {{{2
