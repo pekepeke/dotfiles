@@ -1,0 +1,7 @@
+{
+    "directories": ["src", "vendor"],
+    "main": "main.php",
+    "output": "{{_expr_:expand('%:p:h:t')}}.phar",
+    "chmod": "0755",
+    "stub": true
+}

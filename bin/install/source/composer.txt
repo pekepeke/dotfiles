@@ -1,9 +1,9 @@
 # vim:fdm=marker sw=2 ts=2 ft=conf noexpandtab:
 hirak/prestissimo
-edgedesign/phpqa
-'phpunit/phpunit:*'
-'phpunit/phpunit-skeleton-generator:*'
-'squizlabs/php_codesniffer=*'
+# edgedesign/phpqa
+# 'phpunit/phpunit:*'
+# 'phpunit/phpunit-skeleton-generator:*'
+# 'squizlabs/php_codesniffer=*'
 # 'fabpot/php-cs-fixer:dev-master'
 # phing/phing
 # squizlabs/php_codesniffer

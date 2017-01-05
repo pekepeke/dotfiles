@@ -17,20 +17,24 @@ class Phpcheck
     protected $aviarables = array(
         "php", "phpcs", "phpmd",
         // "phpcpd",
+        // "phpdpd"
+        // "phpcf" // wapmorgan/php-code-fixer
     );
 
     protected $formats = array(
-        "php" => "php #opt -l #file",
+        "php" => "php #opt -l -n #file",
         "phpcs" => "phpcs #opt --report=emacs #file",
         "phpmd" => "phpmd #file text #opt",
         "phpcpd" => "phpcpd #opt #file",
+        // "phpcf" => "phpcf #opt #file",
     );
 
     protected $defaultOptions = array(
-        "php" => "-d error_reporting=E_ALL",
+        "php" => "-d error_reporting=E_ALL -d html_errors=off",
         "phpcs" => "",
         "phpmd" => "cleancode,codesize,design,unusedcode,naming",
         "phpcpd" => "",
+        // "phpcf" => "",
     );
     protected $smartOptionFormats = array(
         "phpcs" => "--standard=%s",
@@ -214,6 +218,10 @@ class Phpcheck
                 case "--phpmd":
                     $this->options["phpmd"] = $isLongOpt ? $val : array_shift($argv);
                     break;
+                // case "--phpcf":
+                // case "--phpcodefixer":
+                //     $this->options["phpcf"] = $isLongOpt ? $val : array_shift($argv);
+                //     break;
                 case "-n":
                 case "--no-break-on-error":
                     $this->breakOnError = false;
