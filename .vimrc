@@ -68,6 +68,10 @@ let g:vimrc_enabled_features = {} "{{{3
 function! s:set_features_flag(feature)
   let g:vimrc_enabled_features[a:feature] = 1
 endfunction
+function! s:feature(feature)
+  return get(g:vimrc_enabled_features, a:feature, 0)
+endfunction
+
 call map(split($VIMRC_ENABLES), 's:set_features_flag(v:val)')
 
 " reset settings & restore runtimepath {{{2
@@ -313,7 +317,7 @@ endfunction
 
 " diff {{{2
 set diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
-if !get(g:vimrc_enabled_features, "git_under1.8", 0)
+if !s:feature('git_under1.8')
   set diffexpr=GitDiffNormal()
   function! GitDiffNormal()
     let args=["git-diff-normal", '--diff-algorithm=histogram']
@@ -623,7 +627,7 @@ endif
 call neobundle#begin(expand("~/.vim/neobundle"))
 NeoBundleLocal ~/.vim/bundle
 NeoBundleLocal ~/.vim/local_bundle
-if get(g:vimrc_enabled_features, "eclim", 0)
+if s:feature('eclim')
   NeoBundleLocal ~/.vim/eclim_bundle
 endif
 
@@ -632,7 +636,7 @@ endif
 if neobundle#load_cache($MYVIMRC)
   if 0
 
-if get(g:vimrc_enabled_features, "gitsign", 0)
+if s:feature('gitsign')
   if s:is_win
     NeoBundle 'sgur/vim-lazygutter'
   else
@@ -841,7 +845,7 @@ NeoBundle 'rhysd/clever-f.vim', {
 NeoBundle 't9md/vim-smalls', {
 \ 'on_map': [['nxo', '<Plug>(smalls']]
 \ }
-if get(g:vimrc_enabled_features, "gitsign", 0)
+if s:feature('gitsign')
   if s:is_win
     NeoBundle 'sgur/vim-lazygutter'
   else
@@ -990,7 +994,7 @@ NeoBundleLazy 'cohama/agit.vim' , {
 NeoBundle 'rhysd/git-messenger.vim', {
 \ 'gui': 1,
 \ }
-if !get(g:vimrc_enabled_features, "git_under1.8", 0)
+if !s:feature('git_under1.8')
   NeoBundle 'lambdalisue/vim-unified-diff'
 endif
 NeoBundleLazy 'vim-scripts/DirDiff.vim', {
@@ -1057,7 +1061,7 @@ NeoBundleLazy 'vim-jp/vital.vim', {
 NeoBundle 'mattn/learn-vimscript'
 
 " completion {{{4
-if get(g:vimrc_enabled_features, "eclim", 0)
+if s:feature('eclim')
   " do nothing
 elseif s:exec_ruby
   if executable('rct-complete')
@@ -1071,7 +1075,7 @@ elseif s:exec_ruby
     \ } }
   endif
 endif
-if get(g:vimrc_enabled_features, "ycm", 0) && has('python')
+if s:feature('ycm') && has('python')
   NeoBundle 'Valloric/YouCompleteMe', {
     \ 'build': {
     \   'windows': "~/.vim/lib/ycm_build_win64.sh",
@@ -1544,8 +1548,8 @@ if !get(g:vimrc_enabled_features, "eclim", 0)
     if get(g:vimrc_enabled_features, 'symfony', 0)
       NeoBundle 'm2mdas/phpcomplete-extended-symfony'
     endif
-  elseif v:version >= 704
-    NeoBundle 'php-vim/phpcd.vim'
+  elseif v:version >= 704 && get(g:vimrc_enabled_features, 'phpcd', 0)
+    NeoBundle 'php-vim/phpcd.vim', {'build': {'others': 'composer install'}}
   else
     NeoBundle 'shawncplus/phpcomplete.vim'
   endif

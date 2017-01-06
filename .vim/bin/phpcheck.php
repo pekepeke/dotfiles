@@ -16,6 +16,7 @@ class Phpcheck
 
     protected $aviarables = array(
         "php", "phpcs", "phpmd",
+        "phpmig",
         // "phpcpd",
         // "phpdpd"
         // "phpcf" // wapmorgan/php-code-fixer
@@ -26,6 +27,7 @@ class Phpcheck
         "phpcs" => "phpcs #opt --report=emacs #file",
         "phpmd" => "phpmd #file text #opt",
         "phpcpd" => "phpcpd #opt #file",
+        "phpmig" => "phpmig #opt #file",
         // "phpcf" => "phpcf #opt #file",
     );
 
@@ -34,6 +36,7 @@ class Phpcheck
         "phpcs" => "",
         "phpmd" => "cleancode,codesize,design,unusedcode,naming",
         "phpcpd" => "",
+        "phpmig" => "",
         // "phpcf" => "",
     );
     protected $smartOptionFormats = array(
@@ -49,6 +52,7 @@ class Phpcheck
         "phpcs" => "parsePhpCs",
         "phpmd" => "parsePhpMd",
         "phpcpd" => "parsePhpcpd",
+        "phpmig" => "parsePhpmig",
         // "php" => "",
     );
 
@@ -172,7 +176,7 @@ class Phpcheck
         if (strncasecmp(PHP_OS, "Win", 3) !== 0) {
             $cmd .= ' 2>&1';
         }
-        $result = exec($cmd);
+        $result = shell_exec($cmd);
 
         return $result;
     }
@@ -278,6 +282,20 @@ class Phpcheck
             return true;
         }
         return false;
+    }
+
+    protected function parsePhpmig($text)
+    {
+        $filename = null;
+        foreach (explode("\n", $text) as $line) {
+            if (preg_match('!^File:\s*(.*)!', $line, $m)) {
+                $filename = $m[1];
+            }
+            if ($filename && preg_match('!^\s*(\d*)\s*\|\s*(.*)\s*\|\s*(.*)\s*\|\s*(.*)\s*\|\s*(.*)$!', $line, $m)) {
+                $this->output("phpmig", $filename, sprintf("%s - %s - %s", $m[2], $m[4], $m[5]), $m[1]);
+            }
+        }
+        return !!$filename;
     }
 
     // protected function parseXXX($text)
