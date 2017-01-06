@@ -69,3 +69,7 @@ ctags -R --languages=c,c++ .
 ctags -R --languages=-make .
 
 sed -i -e 's!\.\.\.!!g' ~/.vim/neobundle/.neobundle/cache
+
+# 日付
+ntpdate -b ntp.nict.jp
+date --set='2017/01/05 10:00:00'
