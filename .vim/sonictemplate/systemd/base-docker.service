@@ -1,0 +1,13 @@
+# /etc/systemd/system/webserver1.service; systemctl daemon-reload
+[Unit]
+Description={{_name_}} container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker start -a {{_name_}}_server
+ExecStop=/usr/bin/docker stop -t 2 {{_name_}}_server
+
+[Install]
+WantedBy=default.target

@@ -202,6 +202,28 @@ _copy-buffer() {
 zle -N _copy-buffer
 bindkey -v "^Xy" _copy-buffer
 
+_substitute-buffer() {
+  emulate -LR zsh
+  zle -R "Substitute:"
+  local SEDARG="s"
+  local key=""
+  read -k key
+  local -r start=$key
+  while (( (#key)!=(##\n) && (#key)!=(##\r) )) ; do
+    if (( (#key)==(##^?) || (#key)==(##^h) )) ; then
+      SEDARG=${SEDARG[1,-2]}
+    else
+      SEDARG="${SEDARG}$key"
+    fi
+    zle -R "Substitution: $SEDARG"
+    read -k key || return 1
+  done
+  BUFFER="$(echo $BUFFER | sed -r -e "$SEDARG")"
+  zle redisplay
+}
+zle -N _substitute-buffer
+zle -N substitute-buffer _substitute-buffer
+
 # surround.vimみたいにクォートで囲む <<< # {{{3
 # http://d.hatena.ne.jp/mollifier/20091220/p1
 autoload -U modify-current-argument
