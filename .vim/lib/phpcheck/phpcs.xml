@@ -7,7 +7,7 @@
     <!-- 除外したい項目を列挙 -->
     <exclude name="Generic.Files.LineLength.TooLong"/>
     <exclude name="Generic.Commenting.DocComment.ParamGroup"/>
-    <exclude name="Generic.FunctionComment.MissingParamComment"/>
+    <!-- <exclude name="Generic.FunctionComment.MissingParamComment"/> -->
     <!-- <exclude name="Squiz.Commenting.DocComment.ParamGroup"/> -->
     <!-- <exclude name="Squiz.FunctionComment.MissingParamComment"/> -->
     <exclude name="PSR1.Classes.ClassDeclaration.MissingNamespace"/>

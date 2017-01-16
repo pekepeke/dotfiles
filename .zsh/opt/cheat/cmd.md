@@ -176,3 +176,13 @@ iconv -f SJIS -t UTF8
 iconv -f EUCJP -t UTF8
 iconv -f ISO2022JP -t UTF8
 ```
+
+## openssl
+
+```
+# 暗号化
+echo "This is AES TEST" | openssl enc -aes-256-cbc -e -base64 -pass pass:testpass
+# 復号化
+echo "U2FsdGVkX19qGJqg81dkwjjYecx6F5KCFiKhRDOsSbqCIjP/XJ+fKPbLLtQpUqU0" | openssl enc -aes-256-cbc -d -base64 -pass pass:testpass
+```
+

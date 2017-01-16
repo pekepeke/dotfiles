@@ -14,6 +14,8 @@ class Phpcheck
 
     protected $enabledSmartmode = true;
 
+    protected $debug = false;
+
     protected $aviarables = array(
         "php", "phpcs", "phpmd",
         "phpmig",
@@ -176,7 +178,9 @@ class Phpcheck
         if (strncasecmp(PHP_OS, "Win", 3) !== 0) {
             $cmd .= ' 2>&1';
         }
+        $this->debug($cmd);
         $result = shell_exec($cmd);
+        $this->debug($result);
 
         return $result;
     }
@@ -196,7 +200,7 @@ class Phpcheck
                 $opt = $m[1];
                 $val = $m[2];
                 $isLongOpt = true;
-            } elseif (preg_match('!^(-\*.*)$!', $str, $m)) {
+            } elseif (preg_match('!^(-+.*)$!', $str, $m)) {
                 $opt = $m[1];
             } else {
                 $this->files[] = $str;
@@ -229,6 +233,10 @@ class Phpcheck
                 case "-n":
                 case "--no-break-on-error":
                     $this->breakOnError = false;
+                    break;
+                case "-d":
+                case "--debug":
+                    $this->debug = true;
                     break;
                 default:
                     $this->err("unrecognized option: {$opt}");
@@ -317,6 +325,13 @@ class Phpcheck
     protected function err($m)
     {
         fputs(STDERR, $m . "\n");
+    }
+
+    protected function debug($m)
+    {
+        if ($this->debug) {
+            fputs(STDERR, $m . "\n");
+        }
     }
 
     protected function collectMatches($arr)
