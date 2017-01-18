@@ -136,6 +136,12 @@ docker exec -it CONTAINER コマンド
 
 ## tips
 
+### clear docker logs
+```
+truncate -s 0 /var/lib/docker/containers/*/*-json.log
+sudo sh -c 'truncate -s 0 /var/lib/docker/containers/*/*-json.log'
+```
+
 ### sudo
 - 環境変数引き継ぎでコマンド実行
 

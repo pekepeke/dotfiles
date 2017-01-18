@@ -1,11 +1,18 @@
+<?php
+
+class CurlException extends RuntimeException
+{
+}
+
 class CurlClient
 {
-
     public $clientType = "html";
-    public $useragent = 'TestUI';
+    public $userAgent = 'DevBot/1.0'; // "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML,  like Gecko) Chrome/28.0.1500.63 Safari/537.36"
     public $timeout = 30;
-    public $connecttimeout = 30;
+    public $connectTimeout = 30;
     public $sslVerifypeer = false;
+    public $raiseException = false;
+
     public $httpInfo;
     public $httpCode;
     public $url;
@@ -13,14 +20,13 @@ class CurlClient
     public $curlErrno;
     public $httpHeader;
     public $defaultOptions = array();
-    public $defaultHeaders = array(
-    );
+    public $defaultHeaders = array();
 
-    function __construct()
+    public function __construct()
     {
         $this->defaultOptions = array(
-            CURLOPT_USERAGENT => $this->useragent,
-            CURLOPT_CONNECTTIMEOUT => $this->connecttimeout,
+            CURLOPT_USERAGENT => $this->userAgent,
+            CURLOPT_CONNECTTIMEOUT => $this->connectTimeout,
             CURLOPT_TIMEOUT => $this->timeout,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => $this->sslVerifypeer,
@@ -37,10 +43,9 @@ class CurlClient
      * @access public
      * @return string
      */
-    function get($url, $parameters = array())
+    public function get($url, $parameters = array(), $headers = array())
     {
-        $response = $this->doRequest($url, 'GET', $parameters);
-        return $response;
+        return $this->request($url, strtoupper(__FUNCTION__), $parameters, $headers);
     }
 
     /**
@@ -51,10 +56,9 @@ class CurlClient
      * @access public
      * @return string
      */
-    function post($url, $parameters = array())
+    public function post($url, $parameters = array(), $headers = array())
     {
-        $response = $this->doRequest($url, 'POST', $parameters);
-        return $response;
+        return $this->request($url, strtoupper(__FUNCTION__), $parameters, $headers);
     }
 
     /**
@@ -65,10 +69,21 @@ class CurlClient
      * @access public
      * @return string
      */
-    function delete($url, $parameters = array())
+    public function delete($url, $parameters = array(), $headers = array())
     {
-        $response = $this->doRequest($url, 'DELETE', $parameters);
-        return $response;
+        return $this->request($url, strtoupper(__FUNCTION__), $parameters, $headers);
+    }
+
+    /**
+     * PUT method wrapper
+     *
+     * @param mixed $url
+     * @param array $parameters
+     * @return string
+     */
+    public function put($url, $parameters = array(), $headers = array())
+    {
+        return $this->request($url, strtoupper(__FUNCTION__), $parameters, $headers);
     }
 
     /**
@@ -80,7 +95,7 @@ class CurlClient
      * @access public
      * @return string
      */
-    function doRequest($url, $method, $parameters)
+    public function request($url, $method, $parameters, $headers = array())
     {
         switch ($method) {
             case 'GET':
@@ -88,9 +103,9 @@ class CurlClient
                 if ($data) {
                     $url .= (strpos($url, "?") === false ? "?" : "&") . $data;
                 }
-                return $this->http($url, 'GET', null);
+                return $this->execute($url, 'GET', null, $headers);
             default:
-                return $this->http($url, $method, $parameters);
+                return $this->execute($url, $method, $parameters, $headers);
         }
     }
 
@@ -102,18 +117,19 @@ class CurlClient
      * @access public
      * @return string
      */
-    function httpBuildQueryRfc3986($query_data, $arg_separator = '&') {
+    protected function httpBuildQueryRfc3986($data, $sep = '&')
+    {
         $r = '';
-        $query_data = (array) $query_data;
-        if(!empty($query_data)) {
-            foreach($query_data as $k=>$query_var) {
-                $r .= $arg_separator;
+        $data = (array) $data;
+        if (!empty($data)) {
+            foreach ($data as $k => $val) {
+                $r .= $sep;
                 $r .= $k;
                 $r .= '=';
-                $r .= rawurlencode($query_var);
+                $r .= rawurlencode($val);
             }
         }
-        return trim($r,$arg_separator);
+        return trim($r, $sep);
     }
 
     /**
@@ -126,7 +142,8 @@ class CurlClient
      * @access public
      * @return string
      */
-    function http($url, $method, $postfields = NULL, $headers = array()) {
+    protected function execute($url, $method, $postfields = null, $headers = array())
+    {
         $this->httpHeader = array();
         $this->httpInfo = array();
 
@@ -142,7 +159,7 @@ class CurlClient
             $headers[] = 'Content-Type: application/x-www-form-urlencoded';
         }
 
-        curl_setopt(CURLOPT_HTTPHEADER, array_merge($this->defaultHeaders, $headers));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array_merge($this->defaultHeaders, $headers));
 
         switch ($method) {
             case 'POST':
@@ -166,14 +183,25 @@ class CurlClient
 
         curl_setopt($ch, CURLOPT_URL, $url);
         $response = curl_exec($ch);
-        $this->httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $this->httpInfo = curl_getinfo($ch);
+        $this->httpCode = $this->httpInfo["http_code"];
+        // $this->httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $this->url = $url;
+
         if ($response === false) {
             $this->curlError = curl_error($ch);
             $this->curlErrno = curl_errno($ch);
         }
-        curl_close ($ch);
+        curl_close($ch);
+        if ($this->raiseException) {
+            if ($this->curlErrno != 0) {
+                throw new CurlException($this->curlError, $this->curlErrno);
+            }
+            if ($this->httpCode < 200 || $this->httpCode >= 400) {
+                throw new CurlException("Unexpected http code - " . $this->httpCode, $this->httpCode);
+            }
+        }
+
         return $response;
     }
 
@@ -185,7 +213,8 @@ class CurlClient
      * @access public
      * @return void
      */
-    function getHeader($ch, $header) {
+    protected function getHeader($ch, $header)
+    {
         $i = strpos($header, ':');
         if (!empty($i)) {
             $key = str_replace('-', '_', strtolower(substr($header, 0, $i)));
@@ -195,5 +224,3 @@ class CurlClient
         return strlen($header);
     }
 }
-
-
