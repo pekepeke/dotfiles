@@ -41,32 +41,42 @@ ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 ```
 
 ### apt-get
-- `apt-get install [package]`
-	- パッケージのインストール/更新
-- `apt-get update`
-	- パッケージリストの更新
-- `apt-get upgrade`
-	- インストールされてるパッケージの更新
-- `apt-get dist-upgrade`
-	- インストールされてるカーネルの更新(Ubuntu)/ディストリビューションの更新(Debian)
+- パッケージのインストール/更新
+	- `apt-get install [package]`
+	- `aptitude install [package]`
+- パッケージリストの更新
+	- `apt-get update`
+	- `aptitude update`
+- インストールされてるパッケージの更新
+	- `apt-get upgrade`
+	- `aptitude safe-upgrade`
+- インストールされてるカーネルの更新(Ubuntu)/ディストリビューションの更新(Debian)
+	- `apt-get dist-upgrade`
+	- `aptitude full-upgrade`
+- パッケージの削除(設定ファイルは残したまま)
+	- `apt-get remove [package]`
+	- `aptitude remove [package]`
+- 使ってないパッケージの削除
+	- `apt-get autoremove`
+- パッケージの削除（設定ファイルも）
+	- `apt-get purge [package]`
+- アーカイブファイルの削除
+	- `apt-get clean`
+	- `aptitude clean`
+- 使ってないパッケージのアーカイブファイルの削除
+	- `apt-get autoclean`
+
+- パッケージの検索
+	- `apt-cache search [query]`
+- パッケージの検索 (インストール可能なバージョンの表示）
+	- `apt-cache policy [query]`
+- パッケージの検索 (インストール可能なバージョンの一覧）
+	- `apt-cache madison [query]`
+- パッケージ情報表示
+	- `apt-cache show [package]`
+	- `aptitude show [package]`
+
 - `dpkg -l [package]`
 	- インストールされてるパッケージの一覧
 - `dpkg -L`
 	- インストールした時のファイルの一覧
-- `apt-cache search [query]`
-	- パッケージの検索
-- `apt-cache policy [query]`
-	- パッケージの検索 (インストール可能なバージョンの表示）
-- `apt-cache madison [query]`
-	- パッケージの検索 (インストール可能なバージョンの一覧）
-- `apt-get remove [package]`
-	- パッケージの削除
-- `apt-get autoremove`
-	- 使ってないパッケージの削除
-- `apt-get purge [package]`
-	- パッケージの削除（設定ファイルも）
-- `apt-get clean`
-	- アーカイブファイルの削除
-- `apt-get autoclean`
-	- 使ってないパッケージのアーカイブファイルの削除
-
