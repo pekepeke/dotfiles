@@ -1,0 +1,70 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use Carp;
+use Data::Dumper;
+use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
+use Pod::Usage;
+
+sub usage {
+    pod2usage(-verbose => 2);
+    exit 1;
+}
+
+my $opt_help;
+Getopt::Long::Configure("bundling");
+GetOptions(
+    'h|help' => \$opt_help,
+) or usage;
+usage if $opt_help;
+
+my @args = split(" ", join(" ", @ARGV));
+
+my %vars = (
+    "h" => "remote_host",
+    "l" => "fi",
+    "u" => "remote_user",
+    "t" => "date_time",
+    "r" => "request",
+    ">s" => "http_response",
+    "b" => "bytes",
+);
+my %re = (
+    "_" => '(.*)',
+    "t" => '\[(.*)\]',
+    ">s" => '"(.*)"',
+);
+
+my @variables = ();
+my @patterns = ();
+sub fmt2re {
+    my $m = shift;
+    $m =~ s!^{|}i?$!!g;
+    push @variables, $vars{$m} || lc(join("_", split("-", $m)));
+    $re{$m} || $re{_};
+}
+for my $arg (@args) {
+    $arg =~ s/\\"/"/g;
+    $arg =~ s/%([^"\\]*)/fmt2re($1)/e;
+    push @patterns, $arg;
+}
+printf("perl -nle '(%s) = m!%s!;' \n", join(',', map { '$'.$_ } @variables), join('\s', @patterns));
+
+__END__
+
+=head1 NAME
+
+    apache2perlcode.pl - desc
+
+=head1 SYNOPSIS
+
+
+=head1 OPTIONS
+
+
+=head1 AUTHOR
+
+ <>
