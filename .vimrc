@@ -632,7 +632,7 @@ if s:feature('eclim')
 endif
 
 " vundles {{{2
-" vundle start
+" vundle start {{{3
 if neobundle#load_cache($MYVIMRC)
   if 0
 
@@ -1518,9 +1518,6 @@ NeoBundle 'noahfrederick/vim-composer'
 " endif
 NeoBundle 'adoy/vim-php-refactoring-toolbox'
 " NeoBundle 'beberlei/vim-php-refactor'
-" if s:exec_php && has('python') && has('signs') && executable('phpqa')
-"   NeoBundle 'joonty/vim-phpqa'
-" endif
 if get(g:vimrc_enabled_features, 'cakephp', 0)
   NeoBundleLazy 'violetyk/cake.vim', {
   \ 'on_ft': ['php'],
@@ -1533,12 +1530,7 @@ endif
 
 if !get(g:vimrc_enabled_features, "eclim", 0)
   if s:exec_php && get(g:vimrc_enabled_features, 'padawan', 0)
-    NeoBundle 'mkusher/padawan.vim', {
-    \ 'cygwin': 'bash install.sh',
-    \ 'windows': 'bash install.sh',
-    \ 'mac': 'bash install.sh',
-    \ 'unix': 'bash install.sh',
-    \ }
+    NeoBundle 'padawan-php/padawan.vim'
   elseif get(g:vimrc_enabled_features, 'phpcomplete-extended', 0)
     " NeoBundle 'm2mdas/phpcomplete-extended'
     NeoBundle 'pekepeke/phpcomplete-extended'
@@ -3020,6 +3012,7 @@ endif
 
 " padawan {{{2
 if s:bundle.is_installed('padawan.vim')
+  let g:padawan#composer_command = 'composer'
   command! -nargs=0 PadawanIndex call padawan#GenerateIndex()
   command! -nargs=0 PadawanSave call padawan#SaveIndex()
   command! -nargs=0 PadawanStart call padawan#StartServer()
@@ -5125,15 +5118,38 @@ if s:bundle.tap('unite.vim')
     \   ["carton install", s:dispatch("carton install")] ,
     \ ])
     " php {{{5
-    let g:unite_source_menu_menus["ft_php"] = s:unite_menu_create(
-    \ 'PHP Menu', [
+    let s:menus = []
+    if s:bundle.is_installed('vim-php-refactoring-toolbox')
+      call extend(s:menus, [
+      \ ["PhpRenameLocalVariable", "PhpRenameLocalVariable"],
+      \ ["PhpRenameClassVariable", "PhpRenameClassVariable"],
+      \ ["PhpRenameMethod", "PhpRenameMethod"],
+      \ ["PhpExtractUse", "PhpExtractUse"],
+      \ ["PhpExtractConst", "PhpExtractConst"],
+      \ ["PhpExtractClassProperty", "PhpExtractClassProperty"],
+      \ ["PhpExtractMethod", "PhpExtractMethod"],
+      \ ["PhpCreateProperty", "PhpCreateProperty"],
+      \ ["PhpDetectUnusedUseStatements", "PhpDetectUnusedUseStatements"],
+      \ ["PhpAlignAssigns", "PhpAlignAssigns"],
+      \ ["PhpCreateSettersAndGetters", "PhpCreateSettersAndGetters"],
+      \ ["PhpDocAll", "PhpDocAll"],
+      \ ])
+    endif
+    if s:bundle.is_installed('vim-php-namespace')
+      call extend(s:menus, [
+      \   ["Insert use", 'PHPInsertUse'],
+      \   ["Expand class", 'PHPExpandClass'],
+      \ ])
+    endif
+    call extend(s:menus, [
     \   ["Man php"  , s:gui_manual("php")]  ,
-    \   ["Insert use", 'PHPInsertUse'],
-    \   ["Expand class", 'PHPExpandClass'],
     \   ["Composer install"  , s:dispatch('composer install')]  ,
     \   ["Composer update"  , s:dispatch('composer update')]  ,
     \   ["Server", s:dispatch("php -S localhost:8111")] ,
     \ ])
+    let g:unite_source_menu_menus["ft_php"] = s:unite_menu_create(
+    \ 'PHP Menu', s:menus)
+    unlet s:menus
 
     if get(g:vimrc_enabled_features, 'cakephp', 0)
     let g:unite_source_menu_menus["ft_php_cakephp"] = s:unite_menu_create(

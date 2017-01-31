@@ -1,7 +1,51 @@
-<?php
 
 class CurlException extends RuntimeException
 {
+}
+
+class CurlResponse
+{
+    public $url;
+    public $code;
+    public $body;
+    public $errorNo;
+    public $errorMessage;
+
+    public static function make()
+    {
+        return new static();
+    }
+
+    public function __construct()
+    {
+    }
+
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
+    public function setCode($code)
+    {
+        $this->code = $code;
+    }
+
+    public function setBody($body)
+    {
+        $this->body = $body;
+    }
+
+    public function setError($errno, $message)
+    {
+        $this->errorNo = $errno;
+        $this->errorMessage = $message;
+    }
+
+    public function raise()
+    {
+        if ($this->errorNo !== 0) {
+            throw new CurlException($this->errorMessage, $this->errorNo);
+        }
+    }
 }
 
 class CurlClient
@@ -13,11 +57,6 @@ class CurlClient
     public $sslVerifypeer = false;
     public $raiseException = false;
 
-    public $httpInfo;
-    public $httpCode;
-    public $url;
-    public $curlError;
-    public $curlErrno;
     public $httpHeader;
     public $defaultOptions = array();
     public $defaultHeaders = array();
@@ -30,7 +69,7 @@ class CurlClient
             CURLOPT_TIMEOUT => $this->timeout,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => $this->sslVerifypeer,
-            CURLOPT_HEADERFUNCTION => array($this, 'getHeader'),
+            CURLOPT_HEADERFUNCTION => array($this, 'storeHeader'),
             CURLOPT_HEADER => false,
         );
     }
@@ -145,7 +184,6 @@ class CurlClient
     protected function execute($url, $method, $postfields = null, $headers = array())
     {
         $this->httpHeader = array();
-        $this->httpInfo = array();
 
         $ch = curl_init();
         // Curl settings
@@ -182,23 +220,31 @@ class CurlClient
         }
 
         curl_setopt($ch, CURLOPT_URL, $url);
-        $response = curl_exec($ch);
-        $this->httpInfo = curl_getinfo($ch);
-        $this->httpCode = $this->httpInfo["http_code"];
-        // $this->httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $this->url = $url;
+        $body = curl_exec($ch);
+        $info = curl_getinfo($ch);
 
-        if ($response === false) {
-            $this->curlError = curl_error($ch);
-            $this->curlErrno = curl_errno($ch);
+        $response = CurlResponse::make()
+            ->setUrl($url)
+            ->setCode($info["http_code"])
+            ->setBody($body);
+        // $this->httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if ($body === false) {
+            $response->setError(curl_errno($ch), curl_error($ch));
         }
         curl_close($ch);
+
         if ($this->raiseException) {
-            if ($this->curlErrno != 0) {
-                throw new CurlException($this->curlError, $this->curlErrno);
+            $response->raise();
+
+            if ($response->code < 200 || $response->code >= 400) {
+                throw new CurlException("Unexpected http code - " . $response->code, $response->code);
             }
-            if ($this->httpCode < 200 || $this->httpCode >= 400) {
-                throw new CurlException("Unexpected http code - " . $this->httpCode, $this->httpCode);
+        }
+        if ($this->clientType == "json") {
+            $json = json_decode($body, true);
+            if ($json !== null || $json !== false) {
+                $response->setBody($json);
             }
         }
 
@@ -213,7 +259,7 @@ class CurlClient
      * @access public
      * @return void
      */
-    protected function getHeader($ch, $header)
+    protected function storeHeader($ch, $header)
     {
         $i = strpos($header, ':');
         if (!empty($i)) {

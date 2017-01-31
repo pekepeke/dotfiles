@@ -3,7 +3,9 @@
 
 class Phpcheck
 {
+
     protected $argv;
+
     protected $files;
 
     protected $breakOnError = true;
@@ -31,6 +33,9 @@ class Phpcheck
         "phpcpd" => "phpcpd #opt #file",
         "phpmig" => "phpmig #opt #file",
         // "phpcf" => "phpcf #opt #file",
+    );
+    protected $debugFormats = array(
+        "phpcs" => "phpcs #opt --report=csv #file",
     );
 
     protected $defaultOptions = array(
@@ -119,11 +124,13 @@ class Phpcheck
 
                 $opt = isset($this->options[$checker]) ? $this->options[$checker] : $this->defaultOptions[$checker];
                 $parseMethod = $this->parsers[$checker];
-                $cmd = strtr($fmt, array(
-                    "#opt" => $opt,
-                    "#file" => $filename,
-                ));
+                $cmd = $this->renderCommandLine($fmt, $opt, $filename);
                 $result = $this->getShellCmdResultText($cmd);
+
+                if ($this->debug && isset($this->debugFormats[$checker])) {
+                    $cmd = $this->renderCommandLine($this->debugFormats[$checker], $opt, $filename);
+                    $this->getShellCmdResultText($cmd);
+                }
                 if (method_exists($this, $parseMethod)) {
                     if ($this->{$parseMethod}($result) && $this->breakOnError) {
                         break;
@@ -178,11 +185,20 @@ class Phpcheck
         if (strncasecmp(PHP_OS, "Win", 3) !== 0) {
             $cmd .= ' 2>&1';
         }
-        $this->debug($cmd);
+        $this->debug("---------- " . $cmd);
         $result = shell_exec($cmd);
         $this->debug($result);
+        $this->debug("--------------------------------------------------------------");
 
         return $result;
+    }
+
+    protected function renderCommandLine($fmt, $opt, $filename)
+    {
+        return strtr($fmt, array(
+            "#opt" => $opt,
+            "#file" => $filename,
+        ));
     }
 
     protected function parseOptions()
@@ -338,6 +354,7 @@ class Phpcheck
     {
         $m = array();
         for ($i = 0, $len = count($arr[0]); $i < $len; $i++) {
+            $line = array();
             for ($j = 0, $jlen = count($arr); $j < $jlen; $j++) {
                 $line[] = $arr[$j][$i];
             }
