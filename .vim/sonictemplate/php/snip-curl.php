@@ -8,6 +8,7 @@ class CurlResponse
     public $url;
     public $code;
     public $body;
+    public $info;
     public $errorNo;
     public $errorMessage;
 
@@ -34,6 +35,11 @@ class CurlResponse
         $this->body = $body;
     }
 
+    public function setInfo($info)
+    {
+        $this->info = $info;
+    }
+
     public function setError($errno, $message)
     {
         $this->errorNo = $errno;
@@ -44,6 +50,9 @@ class CurlResponse
     {
         if ($this->errorNo !== 0) {
             throw new CurlException($this->errorMessage, $this->errorNo);
+        }
+        if ($this->code < 200 || $this->code >= 400) {
+            throw new CurlException("Unexpected http code - " . $this->code, $this->code);
         }
     }
 }
@@ -226,7 +235,8 @@ class CurlClient
         $response = CurlResponse::make()
             ->setUrl($url)
             ->setCode($info["http_code"])
-            ->setBody($body);
+            ->setBody($body)
+            ->setInfo($info);
         // $this->httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if ($body === false) {
@@ -236,10 +246,6 @@ class CurlClient
 
         if ($this->raiseException) {
             $response->raise();
-
-            if ($response->code < 200 || $response->code >= 400) {
-                throw new CurlException("Unexpected http code - " . $response->code, $response->code);
-            }
         }
         if ($this->clientType == "json") {
             $json = json_decode($body, true);
