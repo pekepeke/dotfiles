@@ -1,0 +1,64 @@
+#!/bin/sh
+
+OPT_L=""
+OPT_A=""
+FIND_OPTS=""
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+show_tree() {
+  # echo find . $FIND_OPTS
+  pwd ; find . $FIND_OPTS | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'
+}
+
+main() {
+  if [ -n "$1" ]; then
+    CWD=$(pwd)
+    for d in "$@"; do
+      cd "$CWD"
+      cd "$d"
+      show_tree
+    done
+  else
+    show_tree
+  fi
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hdaL:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    d)
+      FIND_OPTS="$FIND_OPTS -type d"
+      ;;
+    # a)
+    #   ;;
+    L)
+      OPT_L=$OPTARG
+      ;;
+  esac
+done
+
+# if [ -z "$OPT_A" ]; then
+#   [ -n "$FIND_OPTS" ] && FIND_OPTS="$FIND_OPTS -or "
+#   FIND_OPTS="$FIND_OPTS ( -type d -name '.git' -prune ) -or ( -name '*' -print0 )"
+# fi
+if [ -n "$OPT_L" ]; then
+  FIND_OPTS="-maxdepth $OPT_L $FIND_OPTS"
+fi
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+SSH_HOST=$(cat ~/.ssh/config | awk '$1 == "Host" { print $2 }' | peco)
+
+if [ -n "$SSH_HOST" ]; then
+  PASSWD="$(getjsonval.py ~/.ssh/password.json $SSH_HOST)"
+  if [ -n "$PASSWD" ]; then
+    sshexp $PASSWD ssh $SSH_HOST
+  else
+    ssh $SSH_HOST
+  fi
+fi
