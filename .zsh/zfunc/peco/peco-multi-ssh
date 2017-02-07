@@ -1,6 +1,6 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # peco-multi-ssh() {
-  local hosts="$(grep -iE '^host[[:space:]]+[^*]' ~/.ssh/config | awk '{print $2}' | peco)"
+  local hosts="$(grep -iE '^host[[:space:]]+[^*]' ~/.ssh/config | grep -v '*' | awk '{print $2}' | peco)"
   if [ -n "$hosts" ]; then
     BUFFER="multi_ssh ${=hosts}"
 	zle accept-line

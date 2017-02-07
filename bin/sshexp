@@ -6,7 +6,19 @@ set cmd [lrange $argv 1 end]
 set password [lindex $argv 0]
 
 eval spawn $cmd
-expect "*?assword:" {
-	send "$password\r";
+expect {
+	"(yes/no)?" {
+		send "yes\r"
+		exp_continue
+	}
+	"*?assword:" {
+		send "$password\r";
+	}
 }
+# expect {
+# 	"\$" {
+# 		interact
+# 		exit 0
+# 	}
+# }
 interact

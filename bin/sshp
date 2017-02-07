@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SSH_HOST=$(cat ~/.ssh/config | awk '$1 == "Host" { print $2 }' | peco)
+SSH_HOST=$(cat ~/.ssh/config | awk '$1 == "Host" { print $2 }' | grep -v '*' | peco)
 
 if [ -n "$SSH_HOST" ]; then
   PASSWD="$(getjsonval.py ~/.ssh/password.json $SSH_HOST)"

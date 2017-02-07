@@ -1,6 +1,6 @@
 # vim:fdm=marker sw=2 ts=2 ft=zsh expandtab:
 # peco-csshx() {
-  local hosts="$(grep -iE '^host[[:space:]]+[^*]' ~/.ssh/config | awk '{print $2}' | peco)"
+  local hosts="$(grep -iE '^host[[:space:]]+[^*]' ~/.ssh/config | grep -v '*' | awk '{print $2}' | peco)"
   if [ -n "$hosts" ]; then
     BUFFER="csshx ${=hosts}"
     zle accept-line
