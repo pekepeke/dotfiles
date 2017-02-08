@@ -1,0 +1,21 @@
+#!/bin/sh
+
+scriptname=$(basename $0)
+TMP_FILE=/tmp/${scriptname}.json
+
+# target: 1 day before
+if [ ! -e ${TMP_FILE} ] || find  $TMP_FILE -mtime +0 >/dev/null ; then
+  curl https://api.github.com/users/boxcutter/repos 2>/dev/null > $TMP_FILE
+fi
+
+URLS="$(cat ${TMP_FILE} | jq -r '.[] | "\(.name),\(.clone_url)"' | peco | cut -d, -f2)"
+
+if [ -n "$URLS" ]; then
+  echo -n "clone repositories ? >"
+  read YESNO
+  if [ "$YESNO" = "y" ]; then
+    echo git clone $URLS
+  else
+    echo "$URLS"
+  fi
+fi

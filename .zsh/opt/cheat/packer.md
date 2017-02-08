@@ -1,6 +1,10 @@
 ## boxcutter
 
 ```bash
+# search
+curl https://api.github.com/users/boxcutter/repos | jq '. | map({name: .name, url: .clone_url})'
+curl https://api.github.com/users/boxcutter/repos | jq '.[] | [.name, .clone_url] | @csv'
+curl https://api.github.com/users/boxcutter/repos | jq -r '.[] | "\(.name),\(.clone_url)"'
 # https://github.com/boxcutter
 git clone https://github.com/boxcutter/centos.git
 
