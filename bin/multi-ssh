@@ -18,6 +18,9 @@ option-parse() {
       --option=*)
         ssh_option="${arg##--option=}"
         ;;
+      -*)
+        ssh_option="$ssh_option $arg"
+        ;;
       *)
         hosts="$hosts $arg"
         shift
@@ -26,6 +29,15 @@ option-parse() {
 }
 
 exec-multi-ssh() {
+  if [ -n "$TMUX" ]; then
+    echo "please detach tmux!!" 1>&2
+    # WINNO=$(echo $TMUX | cut -d, -f3)
+    # tmux detach
+    # echo "## detached target:0"
+    # echo "tmux attach -t 0"
+    exit 1
+  fi
+
   ### tmuxのセッションを作成
   tmux new-session -d -n $window -s $session
 
@@ -53,3 +65,4 @@ exec-multi-ssh() {
 
 option-parse "$@"
 exec-multi-ssh $hosts
+

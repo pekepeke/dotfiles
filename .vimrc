@@ -253,12 +253,18 @@ MyAutoCmd BufEnter,BufRead * call <SID>autochdir()
 if !exists('g:my_lcd_autochdir')
   let g:my_lcd_autochdir = 1
 endif
+if !exists('s:my_autochdir_projects')
+  let s:my_autochdir_projects = {}
+endif
 
 function! s:find_proj_dir() "{{{3
   if isdirectory(expand('%:p')) | return '' | endif
   let cdir = expand('%:p:h')
   let pjdir = ''
   if cdir == '' || !isdirectory(cdir) | return '' | endif
+  if exists('s:my_autochdir_projects[cdir]')
+    return s:my_autochdir_projects[cdir]
+  endif
   "if stridx(cdir, '/.vim/') > 0 | return cdir | endif
   for d in ['.git', '.bzr', '.hg']
     let d = finddir(d, cdir . ';')
@@ -297,6 +303,7 @@ function! s:find_proj_dir() "{{{3
   endif
 
   if pjdir != '' && pjdir != '/' && isdirectory(pjdir)
+    let s:my_autochdir_projects[cdir] = pjdir
     return pjdir
   endif
   return cdir
@@ -306,11 +313,9 @@ function! s:autochdir() "{{{3
   if expand('%') == '' && &buftype =~ 'nofile'
     return
   elseif g:my_lcd_autochdir
-    if !exists('b:my_lcd_current_or_prj_dir')
-      let b:my_lcd_current_or_prj_dir = s:find_proj_dir()
-      if b:my_lcd_current_or_prj_dir != '' && isdirectory(b:my_lcd_current_or_prj_dir)
-        execute 'lcd' fnameescape(b:my_lcd_current_or_prj_dir)
-      endif
+    let pjdir = s:find_proj_dir()
+    if pjdir != '' && isdirectory(pjdir)
+      execute 'lcd' fnameescape(pjdir)
     endif
   endif
 endfunction
