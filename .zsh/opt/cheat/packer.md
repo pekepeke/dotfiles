@@ -2,24 +2,25 @@
 
 ```bash
 # search
-curl https://api.github.com/users/boxcutter/repos | jq '. | map({name: .name, url: .clone_url})'
-curl https://api.github.com/users/boxcutter/repos | jq '.[] | [.name, .clone_url] | @csv'
+# curl https://api.github.com/users/boxcutter/repos | jq '. | map({name: .name, url: .clone_url})'
+# curl https://api.github.com/users/boxcutter/repos | jq '.[] | [.name, .clone_url] | @csv'
 curl https://api.github.com/users/boxcutter/repos | jq -r '.[] | "\(.name),\(.clone_url)"'
 # https://github.com/boxcutter
 git clone https://github.com/boxcutter/centos.git
 
-cd centos-vm
-vim centos65.json
-
-vim http/ks6.cfg
-----
-lang ja_JP.UTF-8
-timezone Asia/Tokyo
-----
-
 make list
 
 make virtualbox/centos65
+```
+
+### vim centos65.json
+ISO URL を変更する
+
+### vim http/ks6.cfg
+```
+lang ja_JP.UTF-8
+keyboard jp106
+timezone Asia/Tokyo
 ```
 
 ## xxx.json

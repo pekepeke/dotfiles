@@ -11,10 +11,11 @@ fi
 URLS="$(cat ${TMP_FILE} | jq -r '.[] | "\(.name),\(.clone_url)"' | peco | cut -d, -f2)"
 
 if [ -n "$URLS" ]; then
-  echo -n "clone repositories ? >"
+  echo "SELECTED: $URLS"
+  echo -n "clone repositories? [y/n] "
   read YESNO
   if [ "$YESNO" = "y" ]; then
-    echo git clone $URLS
+    git clone $URLS
   else
     echo "$URLS"
   fi

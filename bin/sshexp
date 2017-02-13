@@ -4,8 +4,9 @@ set timeout 20
 
 set cmd [lrange $argv 1 end]
 set password [lindex $argv 0]
+set Prompt "\[#$%>\]"
 
-eval spawn $cmd
+eval spawn env LANG=C $cmd
 expect {
 	"(yes/no)?" {
 		send "yes\r"
@@ -14,11 +15,9 @@ expect {
 	"*?assword:" {
 		send "$password\r";
 	}
+	-glob "${Prompt}" {
+		interact
+		exit 0
+	}
 }
-# expect {
-# 	"\$" {
-# 		interact
-# 		exit 0
-# 	}
-# }
 interact
