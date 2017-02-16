@@ -1,7 +1,7 @@
 debian memo
 ===========
 
-### サービス管理
+## サービス管理
 
 ```
 update-rc.d <service> defaults
@@ -18,8 +18,13 @@ sysv-rc-conf apache2 off
 sysv-rc-conf --list apache2
 ```
 
+### サービスメモ
+- avahi-daemon
+	- Apple方式の自動デバイス検出機能
+- apparmor
+	- アプリ単位で行動ルールを制限するための仕組み
 
-### locale
+## locale
 - aptでlanguage-packを追加する
 
 ```
@@ -33,14 +38,14 @@ locale-gen ja_JP.UTF-8
 update-locale LANG=ja_JP.UTF-8
 ```
 
-### timezone
+## timezone
 
 ```
 cp -p /etc/localtime /etc/localtime.org
 ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 ```
 
-### apt-get
+## apt-get
 - パッケージのインストール/更新
 	- `apt-get install [package]`
 	- `aptitude install [package]`
@@ -80,3 +85,21 @@ ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 	- インストールされてるパッケージの一覧
 - `dpkg -L`
 	- インストールした時のファイルの一覧
+
+## apparmor
+
+### profile の作成
+```
+sudo apt-get install apparmor-profiles apparmor-utils
+sudo apparmor_status
+# profile 作成
+sudo aa-genprof /usr/bin/polipo
+# 学習モード
+sudo aa-complain /usr/bin/polipo
+# 学習開始
+sudo service polipo restart
+# 学習結果の反映
+sudo aa-logprof
+# enforce モードにきりかえ
+sudo aa-enforce polipo
+```
