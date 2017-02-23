@@ -1066,6 +1066,7 @@ NeoBundleLazy 'vim-jp/vital.vim', {
 NeoBundle 'mattn/learn-vimscript'
 
 " completion {{{4
+NeoBundle 'tjdevries/nvim-langserver-shim'
 if s:feature('eclim')
   " do nothing
 elseif s:exec_ruby

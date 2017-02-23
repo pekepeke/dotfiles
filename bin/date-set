@@ -1,0 +1,83 @@
+#!/bin/sh
+
+STAT_FILE=/tmp/data-set.tmp
+OPT_BASETIME=""
+
+usage() {
+  prog=`basename $0`
+  read_basetime
+  cat <<EOM
+  Usage: $prog [-h] -s [datestring] [-abtn]
+
+  -n              : set date ntp
+  -s [datestring] : specify basetime(CURRENT: $OPT_BASETIME)
+  -a              : set date(basetime + 1 hour)
+  -b              : set date(basetime - 1 hour)
+  -t              : set date(basetime)
+EOM
+  exit 1
+}
+
+read_basetime() {
+  if [ -z "$OPT_BASETIME" ]; then
+    OPT_BASETIME=$(cat $STAT_FILE)
+  fi
+}
+
+CMD="sudo"
+if [ `id -u` = 0 ]; then
+  CMD=""
+fi
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+# while getopts "hvs:" opt; do
+while getopts "hs:batn" opt; do
+  case $opt in
+    h)
+      usage ;;
+    # v) ;;
+    n)
+      set --
+      OPT_BASETIME=""
+      ;;
+    t)
+      read_basetime
+      set -- "$OPT_BASETIME"
+      ;;
+    a)
+      read_basetime
+      set -- "$OPT_BASETIME 1 hours"
+      ;;
+    b)
+      read_basetime
+      set -- "$OPT_BASETIME 1 hours ago"
+      ;;
+    s)
+      OPT_BASETIME=`date --date="$OPTARG" +'%Y-%m-%d %H:%M:%S'`
+      if [ -n "$OPT_BASETIME" ] ; then
+        echo $OPT_BASETIME > $STAT_FILE
+      fi
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+RET=0
+if [ -z "$1" ]; then
+  if [ -n "$OPT_BASETIME" ]; then
+    echo "basetime: $OPT_BASETIME"
+    exit 0
+  fi
+  $CMD ntpdate -b ntp.nict.jp
+  RET=$?
+else
+  $CMD date --set="$@"
+  RET=$?
+fi
+LANG=C date
+exit $RET

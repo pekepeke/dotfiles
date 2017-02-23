@@ -1,0 +1,12 @@
+#!/bin/sh
+
+env - `cat <<EOM
+SHELL=/bin/sh
+USER=$USER
+PATH=/usr/bin:/bin
+PWD=$HOME
+SHLVL=1
+HOME=$HOME
+LOGNAME=$USER
+_=/usr/bin/env
+EOM` "$@"
