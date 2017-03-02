@@ -1,4 +1,19 @@
 ## Basic Usage
+### ObjectID生成規則
+- 4バイトの，Unixエポックからの経過秒数(Unix時間)
+- 3バイトのマシンID
+- 2バイトのプロセスID
+- 3バイトのカウンタ(開始番号はランダム)
+
+```
+52fcf106   0af12b     af9e         8d5bba
+unix時間   マシンID   プロセスID   カウンタ
+
+52fcf106(hex) -> 1418621566000(10) -> 2014/2/14 1:21:26
+dt = new Date(); dt.setTime(parseInt("52fcf106",  16) * 1000); dt.toLocaleString()
+// "2014/2/14 1:21:26"
+```
+
 ### 基本コマンド
 
 ```
