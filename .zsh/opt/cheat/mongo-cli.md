@@ -208,6 +208,7 @@ db.addUser({user:"fuga", pwd:"piyo", roles:["readWrite"]})
 - top
 
 ## チューニング
+
 ### explain
 ```
 ```
@@ -289,8 +290,11 @@ db.find().explain()
 db.currentOp()
 // クエリを kill
 db.killOp(id)
+// 60秒以上かかっているクエリを kill
+db.currentOp().inprog.forEach(function(op) { if (op.secs_running > 60) { db.killOp(op.opid); }});
 ```
 
+#### trouble shooting
 
 障害                              |優先度|ツール                                   |監視内容
 ----------------------------------|------|-----------------------------------------|----------------------------------------------------------------
@@ -305,7 +309,7 @@ sync が多発                       |中    |mongostat の flushes             
 ネットワークIO待ちが多い          |低    |mongostatの netIn, netOut                |ネットワーク流量が回線の通信容量に迫っていないか
 設定ミス、バグによるハング        |低    |mongodbのログ<br>コマンド(psなど)        |ログにエラーは出ていないか<br>プロセスは起動しているか
 
-##### slow query
+#### slow query memo
 
 - locks(micros) rNNN: ロックがかかった時間(microseconds)
 	- R - Global read lock
