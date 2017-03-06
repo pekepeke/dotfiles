@@ -207,6 +207,27 @@ db.addUser({user:"fuga", pwd:"piyo", roles:["readWrite"]})
 - validate
 - top
 
+### シャード
+
+```
+// shard 追加
+db.runCommand( { addshard : "localhost:10001" } );
+db.runCommand( { addshard : "localhost:10002" } );
+db.runCommand( { addshard : "localhost:10003" } );
+
+// 追加したshardが正しく追加されているか確認
+db.runCommand( { listshards : 1 } );
+db.printShardingStatus();
+
+// shard 有効化
+db.runCommand( { enablesharding : "logdb" });
+
+// shard 追加
+db.logs.createIndex( { month : 1 , uid : 1 } );
+db.runCommand( { shardcollection : "logdb.logs" , key : { month : 1 , uid : 1 } } );
+
+```
+
 ## チューニング
 
 ### explain
