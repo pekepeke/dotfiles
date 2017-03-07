@@ -210,6 +210,7 @@ db.addUser({user:"fuga", pwd:"piyo", roles:["readWrite"]})
 ### シャード
 
 ```
+use admin
 // shard 追加
 db.runCommand( { addshard : "localhost:10001" } );
 db.runCommand( { addshard : "localhost:10002" } );
@@ -223,8 +224,14 @@ db.printShardingStatus();
 db.runCommand( { enablesharding : "logdb" });
 
 // shard 追加
+use logdb
 db.logs.createIndex( { month : 1 , uid : 1 } );
+
+use admin
 db.runCommand( { shardcollection : "logdb.logs" , key : { month : 1 , uid : 1 } } );
+
+// 状態確認
+sh.status(true);
 
 ```
 
