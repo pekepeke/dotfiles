@@ -1,6 +1,3 @@
-#
-# Author:  konno <konno@coosy.co.jp>
-#
 NAME=vim-jsdoc
 	VERSION = 0.0.1
 

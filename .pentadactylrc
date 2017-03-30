@@ -158,7 +158,7 @@ let g:ldrc_intelligence_bind = "true"
 let g:ldrc_skip = "0.05"
 
 " == livedoor Reader UnRead Count == "
-let g:livedoor_id = "konno110"
+let g:livedoor_id = ""
 
 " == feedSomeKeys.js == "
 autocmd LocationChange .* :fmapc
