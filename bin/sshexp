@@ -6,7 +6,7 @@ set cmd [lrange $argv 1 end]
 set password [lindex $argv 0]
 set Prompt "\[#$%>\]"
 
-eval spawn env LANG=C $cmd
+eval spawn env $cmd
 expect {
 	"(yes/no)?" {
 		send "yes\r"

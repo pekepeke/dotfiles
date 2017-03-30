@@ -302,6 +302,19 @@ xdebugctl() {
 }
 # xdebugctl >/dev/null
 
+sshp() {
+  SSH_HOST=$(cat ~/.ssh/config | awk '$1 == "Host" { print $2 }' | grep -v '*' | peco)
+
+  if [ -n "$SSH_HOST" ]; then
+    PASS="$(getjsonval.py ~/.ssh/password.json $SSH_HOST)"
+    if [ -n "$PASS" ]; then
+      sshexp $PASS ssh $SSH_HOST
+    else
+      ssh $SSH_HOST
+    fi
+  fi
+}
+
 shrc_section_title "GNU screen setting" #{{{1
 if is_exec tscreen; then
   alias screen=tscreen

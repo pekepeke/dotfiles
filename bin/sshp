@@ -1,11 +1,21 @@
-#!/bin/sh
+#!/bin/bash
+
+if [ -n "$PASSWORD" ]; then
+  echo "$PASSWORD"
+  # cat <<< "$PASSWORD"
+  exit 0
+fi
 
 SSH_HOST=$(cat ~/.ssh/config | awk '$1 == "Host" { print $2 }' | grep -v '*' | peco)
 
 if [ -n "$SSH_HOST" ]; then
-  PASSWD="$(getjsonval.py ~/.ssh/password.json $SSH_HOST)"
-  if [ -n "$PASSWD" ]; then
-    exec sshexp $PASSWD ssh $SSH_HOST
+  # export
+  PASSWORD="$(getjsonval.py ~/.ssh/password.json $SSH_HOST)"
+  # export SSH_ASKPASS=$0
+  # export DISPLAY=dummy:0
+  # exec setsid ssh $SSH_HOST
+  if [ -n "$PASSWORD" ]; then
+    exec sshexp $PASSWORD ssh $SSH_HOST
   else
     exec ssh $SSH_HOST
   fi
