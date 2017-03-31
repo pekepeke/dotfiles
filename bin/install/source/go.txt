@@ -23,3 +23,7 @@ github.com/mizoR/coo/cmd/coo-tee
 github.com/ericchiang/pup
 github.com/andlabs/qo
 github.com/yudai/gotty
+
+# ps-top/ps-stats
+github.com/sjmudd/ps-top/cmd/ps-top
+github.com/sjmudd/ps-top/cmd/ps-stats

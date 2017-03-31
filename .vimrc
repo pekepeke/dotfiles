@@ -1439,8 +1439,10 @@ endif
 NeoBundleLazy 'vim-scripts/jcommenter.vim', {
 \ 'on_ft': ['java'],
 \ }
-NeoBundle 'vim-scripts/groovyindent'
+NeoBundle 'vim-scripts/groovyindent-unix'
 NeoBundle 'vim-scripts/groovy.vim'
+NeoBundle 'tfnico/vim-gradle'
+NeoBundle 'martinda/Jenkinsfile-vim-syntax'
 NeoBundleLazy 'thinca/vim-logcat', {
 \ 'on_cmd': ['Logcat', 'LogcatClear'],
 \ }
