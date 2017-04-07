@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# http://blog.kazuhooku.com/2017/03/peco.html
+GREP_CMD='ag --vimgrep'
+exec $GREP_CMD "$@" . | peco --exec 'awk -F : '"'"'{print "+" $2 " " $1}'"'"' | xargs less '
+

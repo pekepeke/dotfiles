@@ -1,0 +1,17 @@
+#!/bin/bash
+
+pwd=$(pwd)
+root=$(cd $(dirname $0); pwd)
+. $root/.lib/github_go.sh
+
+if [ -z "$1" ]; then
+  echo "invalid arguments" 1>&2
+fi
+
+PACKAGE="$1"
+shift
+
+VER=$(get_latest_version $PACKAGE)
+
+download_release_package $PACKAGE $VER "$@"
+

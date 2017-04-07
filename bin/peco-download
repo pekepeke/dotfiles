@@ -1,9 +1,10 @@
 #!/bin/bash
 
 pwd=$(pwd)
-root=$(cd $(basename $0); pwd)
+root=$(cd $(dirname $0); pwd)
 . $root/.lib/github_go.sh
 
 PACKAGE="peco/peco"
-VER=0.3.4
+# https://api.github.com/repos/peco/peco/releases/latest | jq '.name'
+VER=$(get_latest_version $PACKAGE)
 download_release_package $PACKAGE $VER

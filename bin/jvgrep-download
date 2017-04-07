@@ -5,7 +5,8 @@ root=$(cd $(dirname $0); pwd)
 . $root/.lib/github_go.sh
 
 PACKAGE="mattn/jvgrep"
-VER=4.4
+# VER=v4.4
+VER=$(get_latest_version $PACKAGE)
 
 download_release_package $PACKAGE $VER
 
