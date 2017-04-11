@@ -27,6 +27,52 @@ echo "=?ISO-2022-JP?B?GyRCJFskMiRbJDIbKEI=?=" | nkf -w
 echo GyRCJFskMiRbJDIbKEI= | nkf -wmB
 echo "=1B=24B=24=5B=242=24=5B=242=1B=28B" | nkf -wmQ
 ```
+## 実際の文字列
+### Subject
+- ISO-2022-JP + quoted-printable
+
+```
+Subject: =?ISO-2022-JP?Q?iTunes_Movie_=1B$B%K%e!<%j%j!<%9$HCmL\:nIJ=1B(B?=
+```
+
+- ISO-2022-JP + base64
+
+```
+Subject: =?ISO-2022-JP?B?GyRCJUElMSVDJUg5WEZ+JE4bKEI=?=
+ =?ISO-2022-JP?B?GyRCJCpDTiRpJDshSiVmJUolJCVGJUMlSSEmJTclTSVeGyhCIA==?=
+ =?ISO-2022-JP?B?GyRCJTAlayE8JVchSxsoQg==?=
+```
+
+- utf-8 + quoted-printable
+
+```
+Subject: =?utf-8?Q?Distributed=20TensorFlow=E3=81=AE=E8=A9=B1?=
+```
+
+- utf-8 + base64
+```
+Subject: =?UTF-8?B?44CQ44OX44Op44Kk44Og5Lya5ZOh44Gu5pa5?=
+ =?UTF-8?B?44G444GK55+l44KJ44Gb44CRUHJp?=
+ =?UTF-8?B?bWUgTm93IOOCqOODquOCouaLoeWkpyjmnbHkuqzjg7vljYPokYkp?=
+```
+
+### 本文
+- content-type の charset, content-transfer-encoding を参照する
+
+
+### nkf
+- encoding = base64, charset=utf8
+	-  | nkf -mB
+- encoding = base64, charset=utf8
+	-  | nkf -mQ
+- encoding = 7bit, charset=iso2022jp
+	-  | nkf -mB
+- encoding = base64, charset=iso2022jp
+	-  | nkf -mB
+- encoding = 8bit, charset=shift_jis
+	- ?
+- subject や mailto 部分→大体は自動判別してくれる
+	- | nkf -m
 
 ## send
 ### mail

@@ -62,6 +62,9 @@ git branch --contains f83jaz03
 git push origin <branch>:<remote branch>
 # リモートのブランチをとってくる
 git checkout -b <local branch> origin/<remote branch>
+# tag をチェックアウト
+git checkout refs/tags/v1.6.0
+git checkout -b hotfix/v1.6.0 refs/tags/v1.6.0
 # git rmからの復活
 git reset HEAD hoge/hoge.c; git checkout hoge/hoge.c
 # 更新ファイルを無視
