@@ -193,7 +193,7 @@ git config --global help.autocorrect 1 # git comitとかタイポしたときも
 git config --global rerere.enabled 1   # 大規模merge時の作業を覚えてくれるらしい
 
 ## msg : SSL certificate problem,  verify that the CA cert is OK. Details
-got config --local http.sslVerify false
+git config --local http.sslVerify false
 GIT_SSL_NO_VERIFY=true git clone https://xxx.com/repo
 ```
 
