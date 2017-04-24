@@ -2,6 +2,7 @@ git
 ====
 
 ## tips
+
 ### Special alias
 
 - `ORIG_HEAD`
@@ -10,6 +11,13 @@ git
 	- リモートブランチの最新のコミットに対するハッシュ値の別名
 - `MERGE_HEAD`
 	- マージするブランチの最新コミットに対するハッシュ値の別名
+
+### push branch/tag
+
+```
+git push origin HEAD
+git push origin --follow-tags
+```
 
 ### 派生元コミットを確認
 
@@ -53,6 +61,43 @@ git branch -r --list --no-merged
 git branch --merged develop
 # コミット f83jaz03 を含むブランチをすべて表示
 git branch --contains f83jaz03
+```
+
+### repository 破損
+#### bad signature
+
+```
+$ git status
+error: bad signature
+fatal: index file corrupt
+```
+
+```
+# 下記を実行
+rm .git/index
+git reset
+git status # 確認
+# 直っていない場合は正常なコミットハッシュの状態に戻す
+git reflog
+git reset --hard [head@{}]
+```
+
+### その他破損時
+
+```
+# リポジトリ検証
+git fsck
+# 完全な検証
+git fsck --full
+
+# 破損ファイル確認
+git cat-file -p [blob|tree|commit]
+git ls-tree [tree]
+# objectid の確認
+git hash-object [path]
+# .git/objects に格納する
+git hash-object -w [path]
+
 ```
 
 ## basic
