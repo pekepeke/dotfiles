@@ -2,6 +2,7 @@
 
 STAT_FILE=/tmp/data-set.tmp
 OPT_BASETIME=""
+SET_TIME=""
 
 usage() {
   prog=`basename $0`
@@ -9,18 +10,20 @@ usage() {
   cat <<EOM
   Usage: $prog [-h] -s [datestring] [-abtn]
 
-  -n              : set date ntp
+  -j              : set date ntp
   -s [datestring] : specify basetime(CURRENT: $OPT_BASETIME)
   -a              : set date(basetime + 1 hour)
   -b              : set date(basetime - 1 hour)
   -t              : set date(basetime)
+
+## current time: `date +'%Y-%m-%d %H:%M:%S'`
 EOM
   exit 1
 }
 
 read_basetime() {
   if [ -z "$OPT_BASETIME" ]; then
-    OPT_BASETIME=$(cat $STAT_FILE)
+    OPT_BASETIME=$(cat $STAT_FILE 2>/dev/null)
   fi
 }
 
@@ -32,14 +35,15 @@ fi
 OPTIND_OLD=$OPTIND
 OPTIND=1
 # while getopts "hvs:" opt; do
-while getopts "hs:batn" opt; do
+while getopts "hs:batj" opt; do
   case $opt in
     h)
       usage ;;
     # v) ;;
-    n)
-      set --
+    j)
+      # set --
       OPT_BASETIME=""
+      SET_TIME="1"
       ;;
     t)
       read_basetime
@@ -68,13 +72,15 @@ if [ $OPT_ERROR ]; then
 fi
 
 RET=0
-if [ -z "$1" ]; then
+if [ -n "$SET_TIME" ] ; then
   if [ -n "$OPT_BASETIME" ]; then
     echo "basetime: $OPT_BASETIME"
     exit 0
   fi
   $CMD ntpdate -b ntp.nict.jp
   RET=$?
+elif [ -z "$1" ]; then
+  usage
 else
   $CMD date --set="$@"
   RET=$?
