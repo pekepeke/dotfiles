@@ -1,0 +1,14 @@
+#!/bin/bash
+
+main() {
+  setopt ksharrays  # 0 base array index for zsh
+  # HASHES=($(git log --pretty="format:%ad %h (%an): %s" --date=iso --graph "$@" | peco | awk '{print $4}'))
+  HASHES=($(git log --pretty="format:%ad %h (%an): %s" --date=iso --graph "$@" | peco | sed -e 's!^[\*|\/_ ]\+!!g' | awk '{print $4}'))
+  if [ ${#HASHES[@]} -eq 2 ]; then
+    git difftool -t vimdiff ${HASHES[1]}..${HASHES[0]} "$@"
+  else
+    echo "selected commit count must be 2, but ${#HASHES[@]}" 1>&2
+  fi
+}
+
+main "$@"

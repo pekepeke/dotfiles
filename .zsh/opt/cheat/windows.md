@@ -10,6 +10,46 @@ netsh int set int "ワイヤレス ネットワーク 接続" disable
 netsh int set int "ワイヤレス ネットワーク 接続" enable
 ```
 
+## bash on windows
+### apt source 書き換え
+
+```
+sudo sed -i.bak -e "s%http://us.archive.ubuntu.com/ubuntu/%http://ftp.iij.ad.jp/pub/linux/ubuntu/archive/%g" /etc/apt/sources.list
+sudo sed -i.bak -e "s%http://us.archive.ubuntu.com/ubuntu/%http://ftp.jaist.ac.jp/pub/Linux/ubuntu/%g" /etc/apt/sources.list
+```
+
+### wsl-terminal
+- https://github.com/goreliu/wsl-terminal
+
+```
+use_cbwin=1
+shell="zsh -c 'cd; zsh -l'"
+;shell="bash -c 'cd; bash -l'"
+```
+
+
+### etc
+
+#### 初期状態にもどす
+
+```
+lxrun /?
+
+# ↓が削除されない
+# C:\Users\user01\AppData\Local\lxss\home
+# C:\Users\user01\AppData\Local\lxss
+lxrun /uninstall
+
+# 全削除
+lxrun /uninstall /full
+
+# インストール
+lxrun /install
+
+lxrun /install /y
+lxrun /setdefaultuser
+```
+
 ## msys2
 
 ```

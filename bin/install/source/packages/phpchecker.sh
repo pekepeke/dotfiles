@@ -13,6 +13,8 @@ EOM
 main() {
   declare -A bins
   bzip2_installed=`php -i | grep -e 'bzip2' | grep enabled | wc -l`
+  php -r 'exit( (int)!function_exists("bzcompress") );' && phpbzip2_installed=1
+  php -r 'exit( (int)!class_exists("ast\\Node") );' && phpast_installed=1
   bins["phpunit"]=https://phar.phpunit.de/phpunit.phar
   bins["phpunit-skelgen"]=https://phar.phpunit.de/phpunit-skelgen.phar
   bins["php-cs-fixer"]=https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.0.0/php-cs-fixer.phar
@@ -23,9 +25,13 @@ main() {
   bins["phpsa"]=https://github.com/ovr/phpsa/releases/download/0.6.2/phpsa.phar
   bins["php-nag"]=https://github.com/algo13/php-nag/releases/download/0.0.1-bata2/phpnag.phar
   bins["phpmig"]=https://github.com/monque/PHP-Migration/releases/download/v0.2.2/phpmig.phar
+
   # bins[""]=
-  if [ $bzip2_installed -eq 0 ]; then
+  if [ $phpbzip2_installed -eq 1 ]; then
     bins["phpmd"]=http://static.phpmd.org/php/latest/phpmd.phar
+  fi
+  if [ $phpast_installed -eq 1 ]; then
+    bins["phan"]=https://github.com/etsy/phan/releases/download/0.9.1/phan.phar
   fi
   [ ! -e ~/.bin/ ] && mkdir -p ~/.bin/
   for bin in "${!bins[@]}"; do

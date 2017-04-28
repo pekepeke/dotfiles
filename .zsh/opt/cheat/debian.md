@@ -58,6 +58,8 @@ ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 - インストールされてるカーネルの更新(Ubuntu)/ディストリビューションの更新(Debian)
 	- `apt-get dist-upgrade`
 	- `aptitude full-upgrade`
+- 依存パッケージのインストール
+	- `apt-get build-dep [package]`
 - パッケージの削除(設定ファイルは残したまま)
 	- `apt-get remove [package]`
 	- `aptitude remove [package]`
