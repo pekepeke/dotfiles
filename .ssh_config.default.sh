@@ -3,7 +3,8 @@
 FILE=$HOME/.ssh/config
 
 [ ! -e ~/.ssh ] && mkdir ~/.ssh && chmod 700 ~/.ssh
-[ ! -e ~/.ssh/id_rsa.pub ] && ssh-keygen -t rsa
+[ ! -e ~/.ssh/id_rsa.pub ] && ssh-keygen -t rsa -b 4096
+[ ! -d ~/.ssh/certs ] && mkdir -p ~/.ssh/certs
 
 if [ -e $FILE ] ; then
   [ "$1" != "-s" ] && echo "already exists: $FILE" 1>&2

@@ -18,6 +18,11 @@ is_win() { # {{{1
   return 1
 }
 
+is_bashonwin() { # {{{1
+  [[ `uname -r` =~ Microsoft ]] && return 0
+  return 1
+}
+
 is_mac() { # {{{1
   [[ $OSTYPE == darwin* ]] && return 0
   return 1

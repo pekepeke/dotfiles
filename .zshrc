@@ -2,8 +2,8 @@
 [ -e ~/.shrc.boot ] && source ~/.shrc.boot
 _is_win=$(is_win; echo $?)
 
-shrc_section_title "init" #{{{1
 
+shrc_section_title "init" #{{{1
 local _f
 for _f in ~/.shrc.*[^zwc] ~/.zshenv ; do
   [ -f $_f ] && [ ! -e $_f.zwc -o $_f -nt $_f.zwc ] && zcompile $_f
@@ -93,6 +93,9 @@ generate-autoload() {
 }
 
 shrc_section_title "setopt" #{{{1
+if is_bashonwin ; then
+  unsetopt BG_NICE
+fi
 setopt auto_cd                  # ディレクトリ直入力で cd
 setopt auto_pushd               # cd で pushd
 setopt pushd_ignore_dups        # 同じ dir をスタックに入れない
