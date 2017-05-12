@@ -116,6 +116,9 @@ docker exec CONTAINER コマンド
 
 ## コンテナ内でコマンドを対話式に実行する
 docker exec -it CONTAINER コマンド
+
+## volume のマウント状況を調べる(Mounts セクション)
+docker inspect [id]
 ```
 
 
@@ -135,6 +138,20 @@ docker exec -it CONTAINER コマンド
 ```
 
 ## tips
+
+### commands
+
+```
+# 空コンテナ削除
+find /var/lib/docker/containers -maxdepth 1 -empty | xargs --no-run-if-empty rmdir
+sudo sh -c "find /var/lib/docker/containers -maxdepth 1 -empty | xargs --no-run-if-empty rmdir"
+
+# tmp 内お掃除
+docker exec container "find /tmp/ -mtime +7 -type f"
+docker exec container "find /tmp/ -type f -mtime +10 -not -name '.*' -a -not -name 'hsperfdata*'"
+docker exec container "find /tmp/ -type f -mtime +10 -not -name '.*' -a -not -name 'hsperfdata*' -exec rm -f {}\\;"
+
+```
 
 ### ネットワーク
 
@@ -233,3 +250,7 @@ docker build --build-arg http_proxy=http://172.17.0.1:8888 .
 docker ps -q | xargs -n1 docker top
 ```
 
+### other
+#### Convoy
+- https://thinkit.co.jp/article/9542
+	- コンテナバックアップツール

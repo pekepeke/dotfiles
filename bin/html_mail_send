@@ -6,30 +6,44 @@
 import smtplib
 import sys
 
+import argparse
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from pit import Pit
+# from pit import Pit
 
 def main():
-    config = Pit.get('html_mail_send', {
-        'require': {
-            'to': '',
-            'from': 'root@localhost.com',
-            'subject': 'HTML Mail',
-            'smtp_host': 'localhost',
-            'smtp_port': 25,
-            # 'smtp_user': '',
-            # 'smtp_password': '',
-        }
-    })
+    parser = argparse.ArgumentParser(description="html mail sender")
+    parser.add_argument('-t', '--to', default="root@localhost")
+    parser.add_argument('-f', '--from', default="root@localhost")
+    parser.add_argument('-s', '--subject', default="test mail")
+    parser.add_argument('-H', '--smtp_host', default="localhost")
+    parser.add_argument('-P', '--smtp_port', default="25")
+    parser.add_argument('-u', '--smtp_user', default="")
+    parser.add_argument('-p', '--smtp_password', default="")
+    parser.add_argument('-T', '--text', default=None)
+    parser.add_argument('infile', nargs='*', type=argparse.FileType('r'), default=[sys.stdin])
 
-    args = sys.argv[1:]
+    options = parser.parse_args()
+    config = vars(options)
+    # config = Pit.get('html_mail_send', {
+    #     'require': {
+    #         'to': '',
+    #         'from': 'root@localhost.com',
+    #         'subject': 'HTML Mail',
+    #         'smtp_host': 'localhost',
+    #         'smtp_port': 25,
+    #         # 'smtp_user': '',
+    #         # 'smtp_password': '',
+    #     }
+    # })
+
+    args = options.infile
     if len(args) <= 0:
         print("required arguments.")
         exit(1)
 
     text = None
-    for fpath in args:
+    for fp in args:
 
         from_addr = config['from']
         to_addr = config["to"]
@@ -41,9 +55,12 @@ def main():
         msg['From'] = from_addr
         msg['To'] = to_addr
 
+        if config["text"]:
+            text = config["text"]
         # Create the body of the message (a plain-text and an HTML version).
         # text = "Hi!\nHow are you?\nHere is the link you wanted:\nhttp://www.python.org"
-        html = open(fpath).read()
+        # html = open(fpath).read()
+        html = fp.read()
 
         # Record the MIME types of both parts - text/plain and text/html.
         if text:
