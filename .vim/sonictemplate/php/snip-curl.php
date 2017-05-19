@@ -24,36 +24,42 @@ class CurlResponse
     public function setUrl($url)
     {
         $this->url = $url;
+        return $this;
     }
     public function setCode($code)
     {
         $this->code = $code;
+        return $this;
     }
 
     public function setBody($body)
     {
         $this->body = $body;
+        return $this;
     }
 
     public function setInfo($info)
     {
         $this->info = $info;
+        return $this;
     }
 
     public function setError($errno, $message)
     {
         $this->errorNo = $errno;
         $this->errorMessage = $message;
+        return $this;
     }
 
     public function raise()
     {
-        if ($this->errorNo !== 0) {
+        if ($this->errorNo !== 0 && $this->errorNo !== null) {
             throw new CurlException($this->errorMessage, $this->errorNo);
         }
         if ($this->code < 200 || $this->code >= 400) {
             throw new CurlException("Unexpected http code - " . $this->code, $this->code);
         }
+        return $this;
     }
 }
 
@@ -69,6 +75,9 @@ class CurlClient
     public $httpHeader;
     public $defaultOptions = array();
     public $defaultHeaders = array();
+
+    public $useCookie = false;
+    public $cookieName;
 
     public function __construct()
     {
@@ -201,12 +210,18 @@ class CurlClient
         if ($this->clientType == "json") {
             $postfields = json_encode($postfields);
             $headers[] = 'Content-Type: application/json';
+            $headers[] = 'Accept: application/json';
         } else {
             $postfields = $this->httpBuildQueryRfc3986($postfields);
             $headers[] = 'Content-Type: application/x-www-form-urlencoded';
         }
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, array_merge($this->defaultHeaders, $headers));
+
+        if ($this->useCookie) {
+            curl_setopt($ch, CURLOPT_COOKIEJAR, $this->cookieName);
+            curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookieName);
+        }
 
         switch ($method) {
             case 'POST':
@@ -255,6 +270,26 @@ class CurlClient
         }
 
         return $response;
+    }
+
+    public function setDefaultCurlOptions($options = array())
+    {
+        $this->defaultOptions = array_merge($this->defaultOptions, $options);
+        return $this;
+    }
+
+    public function useCookie($filename = null)
+    {
+        is_null($filename) && $filename = __DIR__ . DIRECTORY_SEPARATOR . 'cookie.txt';
+        $this->useCookie = true;
+        $this->cookieName = $filename;
+        return $this;
+    }
+
+    public function disableCookie()
+    {
+        $this->useCookie = false;
+        return $this;
     }
 
     /**

@@ -74,6 +74,21 @@ pacman -Suu
 - 20932
 
 ## Fiddler
+### Plugins
+- http://www.telerik.com/fiddler/add-ons
+- watcher
+	- https://websecuritytool.codeplex.com/
+	- 脆弱性チェックツール
+		- http://news.mynavi.jp/articles/2010/04/21/fiddler/
+- Compressibility
+	- gzip した時どれくらいのサイズになるかを調べられるツール
+- Traffic Differ
+	- 差分チェックツール
+- x5s
+	- XSS用チェックツール
+- intruder21
+	- XSS用チェックツール
+
 ### HSTS対応(動かない?)
 ```
     public static RulesOption("HSTS")
