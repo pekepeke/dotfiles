@@ -5,7 +5,8 @@ LOCAL_DIR="$HOME/.github-dotfiles"
 OS_DIFFER_FILES=".xinitrc"
 BACKUP_FILES=".bash_profile .bashrc .screenrc .vimrc"
 SKIP_FILES=". .. .git setup.sh .projections.json"
-TEMPLATE_FILES=".gitconfig_tmpl .gitattributes_global_tmpl"
+TEMPLATE_FILES=".gitattributes_global_tmpl"
+INITIALIZE_FILES=""
 COPY_FILES=""
 
 opt_uninstall=0
@@ -55,6 +56,7 @@ purge_files() {
       rm "$f"
     fi
   done
+  for f in ~/.* ; do [ -L $f -a ! -e $f ] && echo -e ${RED}rm "$f"${DEFAULT} && rm $f ; done
 }
 
 exec_install() {
@@ -127,7 +129,7 @@ exec_install() {
   done
   [ x"$skipfiles" != x"" ] && echo -e $skipfiles
   [ x"$execfiles" != x"" ] && echo -e $execfiles
-  for f in $TEMPLATES_FILES; do
+  for f in $TEMPLATE_FILES; do
     real_f=${f%%_tmpl}
     if [ ! -e "$HOME/$real_f" ] ; then
       cp $CDIR/$f $HOME/$real_f \
@@ -138,6 +140,7 @@ exec_install() {
   if [ ! -e ~/.ssh/config ]; then
     ~/.ssh_config.default.sh -s
   fi
+  ~/.gitconfig.init.sh
 
   if [ -e "$CDIR/.gitmodules" ]; then
     git submodule init
