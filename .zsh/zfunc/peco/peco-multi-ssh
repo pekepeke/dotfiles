@@ -2,7 +2,7 @@
 # peco-multi-ssh() {
   local hosts="$(grep -iE '^host[[:space:]]+[^*]' ~/.ssh/config | grep -v '*' | awk '{print $2}' | peco)"
   if [ -n "$hosts" ]; then
-    BUFFER="multi_ssh ${=hosts}"
+    BUFFER="multi-ssh ${=hosts}"
 	zle accept-line
   fi
   zle clear-screen

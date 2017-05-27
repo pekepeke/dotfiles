@@ -13,13 +13,13 @@ set ignore-space = all
 set ignore-case = yes
 set wrap-lines = yes
 
-set blame-view = date:local author:full id line-number:true,interval=1 text
-# set main-view = line-number:true,interval=10 date:local author:full id commit-title:true,graph=true,refs=true
+set blame-view = date:default author:full id line-number:true,interval=1 text
+# set main-view = line-number:true,interval=10 date:default author:full id commit-title:true,graph=true,refs=true
 # set main-view = id date author commit-title:graph=yes,refs=yes
-set main-view = line-number:true,interval=10 id date:local author commit-title:graph=yes,refs=yes
-set refs-view = date:local author:full id ref:true commit-title:true
+set main-view = line-number:true,interval=10 id date:default author commit-title:graph=yes,refs=yes
+set refs-view = date:default author:full id ref:true commit-title:true
 set status-view = file-name status:long
-set tree-view = date:local author:full id file-size:unit mode file-name
+set tree-view = date:default author:full id file-size mode file-name
 set pager-view = line-number:yes,interval=10 text
 
 # # Enable both ID and line numbers in the blame view
