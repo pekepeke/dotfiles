@@ -11,6 +11,13 @@ iptables -L --line-numbers -n -v
 
 iptables -D チェイン ルール番号
 iptables -I INPUT {行番号} -s {IP/サブネットマスク} -p tcp -m tcp --dport {ポート番号} -j ACCEPT
+
+# example
+iptables -I DOCKER -i eth0 -j DROP
+iptables -I DOCKER -i eth0 -p tcp -s 172.16.0.0/22 -m state --state NEW -j ACCEPT
+iptables -I DOCKER -i eth0 -p tcp -s 192.168.0.0/16 -m state --state NEW -j ACCEPT
+iptables -I DOCKER -i eth0 -p tcp -s 127.0.0.1/32 -m state --state NEW -j ACCEPT
+iptables -D DOCKER 2
 ```
 
 ### ルールの追加のされ方
