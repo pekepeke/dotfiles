@@ -277,9 +277,9 @@ function _do-enter() {
     1)
       if [[ -d .svn ]]; then
         # BUFFER=" svn status"
-      elif git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+      elif command git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         # BUFFER=" git status -sb"
-        echo ; git status -sb
+        echo ; command git status -sb
       fi
       ;;
     *)

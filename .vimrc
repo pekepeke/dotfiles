@@ -1122,6 +1122,7 @@ NeoBundle 'Shougo/neosnippet.vim'
 NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'hrsh7th/vim-neco-calc'
 NeoBundle 'rhysd/github-complete.vim'
+NeoBundle 'wellle/tmux-complete.vim'
 
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
@@ -1310,6 +1311,7 @@ endif
 " python {{{4
 " http://rope.sourceforge.net/
 NeoBundle 'klen/python-mode'
+NeoBundle 'Vimjas/vim-python-pep8-indent'
 NeoBundle 'lambdalisue/vim-python-virtualenv'
 if get(g:vimrc_enabled_features, "django", 0)
   NeoBundle 'gerardo/vim-django-support'
@@ -2723,8 +2725,11 @@ endif
 " endif
 " let g:pdv_cfg_Copyright = ""
 " let g:pdv_cfg_License = ''
-" let g:pdv_cfg_CommentEnd = "// }}}"
 " let g:pdv_cfg_EnalbedFoldMarker = 0
+" let g:pdv_cfg_CommentEnd = "// }}}"
+
+" python {{{2
+let g:pymode_indent = 0
 
 " ruby {{{2
 let g:ruby_operators = 1
