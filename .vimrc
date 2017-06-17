@@ -6453,6 +6453,14 @@ call extend(g:quicklearn, {
   \   'command': 'pandoc',
   \   'exec' : '%c -f markdown -t s5 %o %s',
   \ },
+  \ 'markdown/revealjs/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t revealjs %o %s',
+  \ },
+  \ 'markdown/dzslides/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t dzslides %o %s',
+  \ },
   \ 'markdown/slidy/intermediate': {
   \   'command': 'pandoc',
   \   'exec' : '%c -f markdown -t slidy %o %s',
