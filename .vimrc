@@ -6419,6 +6419,10 @@ endif
 " quicklearn {{{2
 let g:quicklearn = get(g:, 'quicklearn', {})
 call extend(g:quicklearn, {
+  \ 'markdown/md2remark/intermediate' : {
+  \   'command' : 'md2remark',
+  \   'exec' : '%c %o %s',
+  \ },
   \ 'markdown/md2backlog/intermediate' : {
   \   'command' : 'md2backlog',
   \   'exec' : '%c %o %s',
