@@ -1,3 +1,4 @@
+# screen -c path/to/file
 # cat <<EOM > screen-256color.terminfo
 # screen-256color|GNU Screen with 256 colors,
 #       use=xterm-256color,
