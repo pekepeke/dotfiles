@@ -5,6 +5,7 @@ import requests
 from BaseHTTPServer import HTTPServer
 from BaseHTTPServer import BaseHTTPRequestHandler
 import urlparse
+import os
 from optparse import OptionParser
 
 class CallbackServer(BaseHTTPRequestHandler):
@@ -17,6 +18,12 @@ class CallbackServer(BaseHTTPRequestHandler):
         query = parsed_path.query
         self.send_response(200)
         self.end_headers()
+        req_path = "." + parsed_path.path
+        if os.path.isfile(req_path):
+            print parsed_path.path
+            self.wfile.write(open(req_path, 'rb').read())
+            return
+
         result = self.callback.callback(query)
         message = '\r\n'.join(result)
         self.wfile.write(message)
@@ -48,8 +55,6 @@ class RevealResponse:
         <!-- For syntax highlighting -->
         <link rel="stylesheet" href="{base}/lib/css/zenburn.css">
 
-        <link rel="stylesheet" href="{menu_base}/menu.css">
-
         <!-- If the query includes 'print-pdf', include the PDF print sheet -->
         <script>
             if( window.location.search.match( /print-pdf/gi ) ) {
@@ -57,6 +62,12 @@ class RevealResponse:
                 link.rel = 'stylesheet';
                 link.type = 'text/css';
                 link.href = '{base}/css/print/pdf.css';
+                document.getElementsByTagName( 'head' )[0].appendChild( link );
+            } else {
+                var link = document.createElement( 'link' );
+                link.rel = 'stylesheet';
+                link.type = 'text/css';
+                link.href = '{menu_base}/menu.css';
                 document.getElementsByTagName( 'head' )[0].appendChild( link );
             }
         </script>
@@ -89,6 +100,49 @@ class RevealResponse:
         <script src="{base}/js/reveal.js"></script>
 
         <script>
+            var dependencies = [
+                { src: '{base}/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                { src: '{base}/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: '{base}/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: '{base}/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                { src: '{base}/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                { src: '{base}/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+            ];
+            var menuConfig = {
+                markers: true,
+                openSlideNumber: true,
+                themes: [
+                    { name: 'Black', theme: 'reveal.js/css/theme/black.css' },
+                    { name: 'White', theme: 'reveal.js/css/theme/white.css' },
+                    { name: 'League', theme: 'reveal.js/css/theme/league.css' },
+                    { name: 'Sky', theme: 'reveal.js/css/theme/sky.css' },
+                    { name: 'Beige', theme: 'reveal.js/css/theme/beige.css' },
+                    { name: 'Simple', theme: 'reveal.js/css/theme/simple.css' },
+                    { name: 'Serif', theme: 'reveal.js/css/theme/serif.css' },
+                    { name: 'Blood', theme: 'reveal.js/css/theme/blood.css' },
+                    { name: 'Night', theme: 'reveal.js/css/theme/night.css' },
+                    { name: 'Moon', theme: 'reveal.js/css/theme/moon.css' },
+                    { name: 'Solarized', theme: 'reveal.js/css/theme/solarized.css' }
+                ],
+                custom: [
+                    // { title: 'Print PDF', icon: '<i class="fa fa-bookmark">', src: '/?print-pdf' },
+                    { title: 'Links', icon: '<i class="fa fa-bookmark">', content: [
+                        '<ul class="slide-menu-items">',
+                        '<li class="slide-menu-item"><a href="/?print-pdf">Print PDF</a></li>',
+                        '<li class="slide-menu-item"><a href="/?print-pdf&theme=white">Print PDF(Theme:White)</a></li>',
+                        '</ul>'
+                    ].join("") },
+                ]
+            };
+
+            if ( !window.location.search.match( /print-pdf/gi ) ) {
+                dependencies.push({ src: '{menu_base}/menu.js', async: true})
+            }
+            if (window.location.search.match(/[\?&]theme=([^&#\/]*)/)) {
+                var cssUrl = "{base}/css/theme/" + RegExp.$1 + ".css";
+                document.querySelector('#theme').href = cssUrl;
+
+            }
 
             // Full list of configuration options available here:
             // https://github.com/hakimel/reveal.js#configuration
@@ -103,36 +157,9 @@ class RevealResponse:
                 fragments: true,
                 transition: 'slide',// none/fade/slide/convex/concave/zoom
                 theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
-                menu: {
-                    markers: true,
-                    openSlideNumber: true,
-                    themes: [
-                        { name: 'Black', theme: 'reveal.js/css/theme/black.css' },
-                        { name: 'White', theme: 'reveal.js/css/theme/white.css' },
-                        { name: 'League', theme: 'reveal.js/css/theme/league.css' },
-                        { name: 'Sky', theme: 'reveal.js/css/theme/sky.css' },
-                        { name: 'Beige', theme: 'reveal.js/css/theme/beige.css' },
-                        { name: 'Simple', theme: 'reveal.js/css/theme/simple.css' },
-                        { name: 'Serif', theme: 'reveal.js/css/theme/serif.css' },
-                        { name: 'Blood', theme: 'reveal.js/css/theme/blood.css' },
-                        { name: 'Night', theme: 'reveal.js/css/theme/night.css' },
-                        { name: 'Moon', theme: 'reveal.js/css/theme/moon.css' },
-                        { name: 'Solarized', theme: 'reveal.js/css/theme/solarized.css' }
-                ],
-                custom: [
-                    { title: 'Custom', icon: '<i class="fa fa-bookmark">', src: 'links.html' },
-                ]
-                },
                 // Optional libraries used to extend on reveal.js
-                dependencies: [
-                    { src: '{base}/lib/js/classList.js', condition: function() { return !document.body.classList; } },
-                    { src: '{base}/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-                    { src: '{base}/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-                    { src: '{base}/plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-                    { src: '{base}/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-                    { src: '{base}/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
-                    { src: '{menu_base}/menu.js', async: true}
-                ]
+                dependencies: dependencies,
+                menu: menuConfig
             });
 
         </script>
@@ -162,6 +189,8 @@ if __name__ == '__main__':
     p = OptionParser(version="ver:%s" % __version__)
     p.add_option("-t", "--theme", dest="theme",
             default="black", help="theme")
+    # p.add_option("-m", "--menu", dest="menu", default=False,
+    #         action="store_True", help="menu")
     p.add_option("-p", "--port", dest="port",
             default=8082, help="port")
 
