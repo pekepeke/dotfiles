@@ -7280,17 +7280,9 @@ if s:bundle.is_installed('vim-quickrun')
   endif
   call extend(g:quickrun_config, {
     \ 'watchdogs_checker/python' : {
-    \   'command' : 'python',
-    \   'exec'    : "%c %o -c \"compile(open('%s:p').read(), '%s:p', 'exec')\"",
-    \   'quickfix/errorformat' :
-    \      '%A  File "%f"\, line %l\,%m,' .
-    \      '%C    %.%#,' .
-    \      '%+Z%.%#Error: %.%#,' .
-    \      '%A  File "%f"\, line %l,' .
-    \      '%+C  %.%#,' .
-    \      '%-C%p^,' .
-    \      '%Z%m,' .
-    \      '%-G%.%#'
+    \   'command' : $HOME . '/.vim/lib/python/compile.py',
+    \   'exec'    : "%c %o %s:p",
+    \   'quickfix/errorformat' : '%E%f:%l:%c: %m',
     \ },
     \ })
   call extend(g:quickrun_config, {

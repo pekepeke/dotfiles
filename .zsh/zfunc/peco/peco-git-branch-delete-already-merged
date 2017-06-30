@@ -1,5 +1,5 @@
 # peco-git-branch-delete-already-merged() {
-  local selected=$(git branch --merged | awk '/^[^*]/' | peco --query "$LBUFFER")
+  local selected=$(git branch --merged | awk '/^[^*]/' | peco --query "$LBUFFER" | tr '\r\n' '  ')
   if [ -n "$selected" ]; then
     BUFFER="git branch -d $selected"
     zle accept-line

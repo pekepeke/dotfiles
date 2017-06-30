@@ -13,6 +13,12 @@ sudo apt-get update
 sudo apt-get install golang-go
 ```
 
+## visudo editor
+
+```
+sudo update-alternatives --config editor
+```
+
 ## サービス管理
 
 ```
@@ -28,6 +34,16 @@ sysv-rc-conf --list
 sysv-rc-conf apache2 on
 sysv-rc-conf apache2 off
 sysv-rc-conf --list apache2
+```
+
+### wheel group
+
+```
+addgroup --gid 11 wheel
+visudo
+# %wheel  ALL=(ALL) ALL
+gpasswd -a hoge wheel
+
 ```
 
 ### サービスメモ
