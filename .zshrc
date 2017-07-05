@@ -650,22 +650,28 @@ add-zsh-hook preexec preexec_multiterm
 add-zsh-hook chpwd chpwd_multiterm
 
 local __user='%{$bg[black]%}%{$fg[white]%} %n@%m %{$reset_color%}$ '
+[ -n "$MY_PROMPT" ] && __user="$MY_PROMPT"
 
-local vi_n="%{$bg[magenta]%}%{$fg_bold[white]%} N %{$reset_color%}"
+local vi_n="%{$bg[red]%}%{$fg_bold[white]%} N %{$reset_color%}"
 local vi_i="%{$bg[blue]%}%{$fg_bold[white]%} I %{$reset_color%}"
-function _zle-line-init _zle-keymap-select {
+local vi_v="%{$bg[yellow]%}%{$fg_bold[white]%} V %{$reset_color%}"
+function zle-line-init zle-keymap-select zle-line-finish {
   case $KEYMAP in
     vicmd)
       PROMPT="${vi_n}${__user}"
     ;;
     main|viins)
       PROMPT="${vi_i}${__user}"
+      ;;
+    vivis|vivli)
+      PROMPT="${vi_v}${__user}"
     ;;
   esac
   zle reset-prompt
 }
-zle -N _zle-line-init
-zle -N _zle-keymap-select
+zle -N zle-line-init
+zle -N zle-keymap-select
+zle -N zle-line-finish
 
 PROMPT="${vi_i}${__user}"
 RPROMPT=""
