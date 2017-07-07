@@ -13,6 +13,8 @@ ssh -L 8080:remote:80 user@example.com
 
 ```
 ssh -R -f -N 80:example.com:9999 username@example.com
+# sshd_config に GatewayPorts clientspecified の設定が必要(yes でも可能)
+ssh -R -f -N 0.0.0.0:80:example.com:9999 username@example.com
 ```
 - `-R` : リモートフォワードを有効 80:example.com:9999 でexample.com:9876->localhost:80転送
 - `-f` : バックグランドで実行
@@ -37,6 +39,7 @@ ALL_PROXY=$proxy wget http://hoge
 curl --socks5 :8080
 curl --socks5 localhost:8080
 curl --socks5-hostname localhost:8080
+
 # 名前解決を proxy 側で実施
 proxy=socks5h://127.0.0.1:8080
 HTTP_PROXY=$proxy HTTPS_PROXY=$proxy http_proxy=$proxy https_proxy=$proxy wget http://hoge

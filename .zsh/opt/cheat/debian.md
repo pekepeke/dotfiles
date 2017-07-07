@@ -133,3 +133,44 @@ sudo aa-logprof
 # enforce モードにきりかえ
 sudo aa-enforce polipo
 ```
+
+## ufw
+
+```
+# 設定確認
+sudo ufw status
+
+# port
+sudo ufw allow 80/tcp
+sudo ufw allow 80/tcp
+
+# ip range
+sudo ufw allow from 192.168.254.0/24
+# ip + port
+sudo ufw allow from 192.168.254.20 to any port ssh
+
+sudo ufw allow from 192.168.254.10 to any port ssh
+# ssh に制限をいれる
+sudo ufw limit ssh
+# limit にかかっている状態だと設定追加できないのでdelete してから実行する
+sudo ufw delete limit ssh
+sudo ufw allow from 192.168.254.10 to any port ssh
+sudo ufw limit ssh
+
+sudo ufw status numbered
+# 特定の位置にルールを追加
+sudo ufw insert 1 limit from 192.168.254.20 to any port ssh
+
+sudo ufw allow in on docker0
+
+sudo ufw reload
+
+# 有効化, 無効化
+sudo ufw disable
+sudo ufw enable
+
+# デフォの通信設定
+sudo ufw default allow
+sudo ufw default deny
+```
+
