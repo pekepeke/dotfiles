@@ -1,0 +1,1682 @@
+#!/usr/bin/perl
+# watson - inline issue manager
+# nhmood @ [goosecode labs] | 2012
+# Copyright (c) 2012-2013 goosecode labs
+# This content is licensed under the MIT License
+# See the file LICENSE for copying permission
+
+
+# [todo] - add priority listing for tags and todo
+# [todo] - generate .html file with report
+# [todo] - add text editor/jump to code for each item in .html report
+# [todo] - if x is placed in todo [!] then move it to separate file
+# [todo] - store in separate file or parse every time? (thinking parse)
+# [todo] - tell when directory changes with some header
+# [todo] - change @IGNOREDIR to hash instead of array for efficiency
+# [todo] - only allow user to check executing users files (setuid exploit)
+# [todo] - wrap printed lines around 80 characters
+# [todo] - command line option to remove remote repos
+# [todo] - replace json parser with just grep? need to get status if failed
+# [todo] - add ability to update issue if same title but different md5
+# [todo] - implement local only reporting (make it default?)
+# [todo] - progress bar for obtaining github/bitbucket issue list
+# [todo] - local should be default, must use -r or remote flag to post and check?
+#		 - maybe have it check against background unless -local is passed
+#		 - but dont post unless --post is used (make it faster?)
+# [todo] - add status indicator for remote requests
+#		 - we know # of requests and which we are on, can do it that way
+# [todo] - change github issue checks to -d instead of issue?key=val
+# [todo] - add remote / local options and necessary logic
+# [todo] - replace open/closed issue var with just all and closed?
+
+###########################################################
+# Global parameters
+###########################################################
+
+use strict;
+no strict 'refs';
+use feature qw/say/;  # implies dependency on perl 5.10
+use autodie; # in Core since 5.10
+use warnings;
+
+# For color print outs
+use Term::ANSIColor qw(:constants);
+
+# Route Ctrl-C to cExit to clean up results
+$SIG{'INT'} = \&cExit;
+
+# For debugging (print data structures)
+use Data::Dumper;
+
+# For MD5 Sum (issue posting check)
+use Digest::MD5 qw(md5_hex);
+
+# For proper JSON parsing
+use JSON::PP;
+
+use File::Copy (); # in Core since 5.002
+
+# App Config
+my $DEBUG = $ENV{WATSON_DEBUG};
+my $RCNAME = ".watsonrc";		# Change config file name
+my $TMPOUT = ".watsonresults";	# Change tmp file name
+
+# Global variables
+my @DIRS;
+my @FILES;
+my @TAGS;
+my @IGNORE;
+my @STRUCTURE;
+my $REMOTESETUP = 0;
+my $GITHUB_VALID = 0;
+my $GITHUB_API;
+my $GITHUB_REPO;
+my $GITHUB_OPEN_ISSUES;
+my $GITHUB_CLOSED_ISSUES;
+my $BITBUCKET_VALID = 0;
+my $BITBUCKET_API;
+my $BITBUCKET_PW;
+my $BITBUCKET_REPO;
+my $BITBUCKET_OPEN_ISSUES;
+my $BITBUCKET_CLOSED_ISSUES;
+my $MAX_DEPTH = 0;
+my $IGNORE_RC_DIRS = 0;
+my $IGNORE_RC_FILES = 0;
+my $IGNORE_RC_TAGS = 0;
+my $IGNORE_RC_IGNORE = 0;
+my $HASLESS = 0;
+my $HASCURL = 0;
+my $LESSOUT;
+
+
+use constant GITHUB => 0;
+use constant BITBUCKET => 1;
+
+
+#----------------------------------------------------------
+###########################################################
+# Main Program
+###########################################################
+#----------------------------------------------------------
+
+checkLess();
+checkcURL();
+printHeader();
+parseCommandLine();
+checkConfig();
+parseConfig();
+startScan();
+createReport();
+
+
+#----------------------------------------------------------
+###########################################################
+# Functions
+###########################################################
+#----------------------------------------------------------
+
+
+###########################################################
+# Header Print
+###########################################################
+
+# Print watson header
+sub printHeader {
+	wprint(BOLD "------------------------------\n");
+	wprint(BOLD "watson", RESET);
+	wprint(" - ");
+	wprint(BOLD YELLOW "inline issue manager\n\n", RESET);
+	my $pwd = `pwd`;
+	wprint("Run in: $pwd");
+	my $time = localtime;
+	wprint("Run @ $time\n");
+	wprint(BOLD "------------------------------\n\n");
+	return 1;
+}
+
+
+###########################################################
+# Help Print
+###########################################################
+
+# Print watson help
+sub printHelp {
+	print BOLD, <<'END_HELP', RESET;
+Usage: watson [OPTION]...
+Running watson with no arguments will parse with settings in RC file
+If no RC file exists, default RC file will be created
+
+   -d, --dirs			list of directories to search in
+   -f, --files			list of files to search in
+   -h, --help			say help
+   -i, --ignore			list of files, directories, or types to ignore
+   -p, --parse-depth		depth to recursively parse directories
+   -r, --remote			list / create tokens for Bitbucket/Github
+   -t, --tags			list of tags to search for
+   -v, --version		say watson version and info
+
+Any number of files, tags, dirs, and ignores can be listed after flag
+Ignored files should be space separated
+To use *.filetype identifier, encapsulate in \"\" to avoid shell substitutions
+
+
+Report bugs to: watson\@goosecode.com
+watson home page: <http://goosecode.com/projects/watson>
+[goosecode] labs | 2012-2013";
+END_HELP
+
+	return 1;
+}
+
+
+###########################################################
+# Help Print
+###########################################################
+
+# Print watson help
+sub printVersion {
+	print <<'END_VERSION';
+watson v1.3
+Copyright (c) 2012-2013 goosecode labs
+Licensed under MIT, see LICENSE for details
+
+Written by nhmood, see <http://goosecode.com/projects/watson>
+END_VERSION
+
+	return 1;
+}
+
+
+###########################################################
+# Clean Exit
+###########################################################
+
+# Clean exit function that removes temp files
+sub cExit {
+	my ($exit_status) = @_;
+
+	unlink $TMPOUT or warn "Could not remove $TMPOUT: $!" if (-e $TMPOUT);
+
+	# If exit status is INT(terupt), set to 1 and print newline
+	if ($exit_status eq "INT"){
+		$exit_status = 1;
+		print "\n";
+	}
+	exit $exit_status;
+}
+
+
+###########################################################
+# Debug Print
+###########################################################
+
+# Debug print statements that are only enabled
+# when debug flag is set (top of file)
+sub debugPrint {
+	print @_ if $DEBUG;
+}
+
+
+###########################################################
+# Output Print
+###########################################################
+
+# If system has less, dump all output to .tmp file and use less
+# If no less, just print straight to stdout
+sub wprint {
+	if ($HASLESS){
+		print $LESSOUT @_;
+		return 1;
+	}
+	else {
+		print @_;
+		return 0;
+	}
+}
+
+
+###########################################################
+# Unix less Checker
+###########################################################
+
+# Check to see if system has less
+# If so, set flag and open tmp file
+sub checkLess {
+	$HASLESS |= !system("which less > /dev/null 2>&1") or return 0;
+	open $LESSOUT, "+>", $TMPOUT;
+	return 1;
+}
+
+
+###########################################################
+# cURL Checker
+###########################################################
+
+# Check to see if system has cURL
+# If so, set flag
+sub checkcURL {
+  return $HASCURL |= !system("which curl > /dev/null 2>&1");
+}
+
+
+###########################################################
+# Directory checker
+###########################################################
+
+# checkDir - checks if directory can be opened
+# Different from just using -d, checks if able to OPEN
+sub checkDir {
+	my ($dir) = @_;
+
+	# Error check for input
+	unless (length $dir) {
+		wprint("No directories specified.\n");
+		return 0;
+	}
+
+	# Check if directory can be opened
+	opendir my $tDIR, $dir or do {
+		wprint(qq{Cannot open dir "$dir": $!\n});
+		return 0;
+	};
+
+	closedir $tDIR;
+	debugPrint(qq{"$dir" exists and opened successfully.\n});
+	return 1;
+}
+
+
+###########################################################
+# File checker
+###########################################################
+
+# checkFile - checks if file can be opened
+# Different from just using -f, checks if able to OPEN
+sub checkFile {
+	my ($file) = @_;
+
+	# Error check for input
+	unless (length $file) {
+		wprint("No file specified.\n");
+		return 0;
+	}
+
+	# Check if file can be opened
+	open my $tFILE, $file or do {
+		wprint(qq{Could not open "$file": $!\n});
+		return 0;
+	};
+
+	close $tFILE;
+	debugPrint(qq{"$file"" exists and opened successfully.\n});
+	return 1;
+}
+
+
+###########################################################
+# Config file check
+###########################################################
+
+# Check for config file in same dir as watson
+# If it doesn't exist, create the default one
+sub checkConfig {
+	# Should have individual .rc for each dir that watson is in
+	# This allows you to keep different preferences for different projects
+
+	# Check for rc
+	debugPrint("[Checking for $RCNAME]\n");
+	if (-e $RCNAME) {
+		debugPrint("$RCNAME found\n\n");
+		return 1;
+	}
+	else {
+		debugPrint("$RCNAME not found!\n");
+		debugPrint("Creating default $RCNAME\n");
+
+		# Create default rc
+		createRC($RCNAME);
+		return 0;
+	}
+}
+
+
+###########################################################
+# Default config file writer
+###########################################################
+
+# Create default RC file with some generic settings
+sub createRC {
+	my ($file_name) = @_;
+	open my $file, "+>>", $file_name;
+
+# [fixme] - Figure out a way to indent this?
+my $rcdefault = <<'EOF';
+# watson rc
+# watson - inline issue manager
+# [goosecode] labs / 2012
+
+
+# Directories
+[dirs]
+./
+
+
+# Tags
+[tags]
+fix
+review
+todo
+
+
+# Ignores
+[ignore]
+.git
+.swp
+EOF
+
+	debugPrint($rcdefault);
+	# Print default rc above to specified file
+	my $success = print $file $rcdefault;
+	close($file);
+	return $success;
+}
+
+
+###########################################################
+# Command line parser
+###########################################################
+
+# Parse command line arguments
+sub parseCommandLine {
+	debugPrint("[Checking CL args]\n");
+	debugPrint("Total args: ", $#ARGV + 1, "\n");
+
+	my %long_opts = (
+		"-d" => "--dirs",
+		"-f" => "--files",
+		"-h" => "--help",
+		"-v" => "--version",
+		"-t" => "--tags",
+		"-p" => "--parse-depth",
+		"-i" => "--ignore",
+		"-r" => "--remote",
+		"-u" => "--update"
+	);
+	my %opts;
+	@opts{%long_opts} = ();
+
+	my $slurp_items = sub {
+		my ($cb) = @_;
+		my $count = 0;
+
+		# Keep checking following options until another flag or end
+		while (@ARGV) {
+			if (exists $opts{$ARGV[0]}) {
+				debugPrint("Found a flag: $ARGV[0]\n");
+				last;
+			}
+
+			my $item = shift @ARGV;
+			$cb->($item);
+		}
+	};
+
+	my %flag_actions = (
+		'--help' => sub {
+			debugPrint("Help flag passed\n");
+			printHelp();
+			cExit(0);
+		},
+		'--version' => sub {
+			debugPrint("Version flag passed\n");
+			printVersion();
+			cExit(0);
+		},
+		'--parse-depth' => sub {
+			debugPrint("Parse Depth flag passed\n");
+			# Check to make sure next param is a valid number (non-negative)
+
+			unless (@ARGV) {
+				wprint(box(BOLD RED "x"), "--parse-depth requires a numeric argument\n");
+			}
+
+			my $depth = shift @ARGV;
+
+			if ($depth =~ /[^0-9]/) {
+				wprint(box(BOLD MAGENTA "!"));
+				wprint("--> ", RESET);
+				wprint("Invalid parse depth passed\n");
+				return;
+			}
+
+			$MAX_DEPTH = $depth + 1;
+			debugPrint("Valid parse depth: $MAX_DEPTH\n");
+		},
+		'--remote' => sub {
+			debugPrint("Remote Flag passed\n");
+
+			# When generating OAuth Token for github/bitbucket
+			# no other params should be passed
+			if (@ARGV > 1){
+				debugPrint("Not the only flag, exiting\n");
+				print box(BOLD RED "x");
+				print "Please run remote flag alone to generate GitHub/Bitbucket OAuth token\n";
+				print "      See help for more details\n";
+				cExit(1);
+			}
+
+			# Can only do this if we have cURL on the system
+			unless ($HASCURL) {
+				print box(BOLD RED "x");
+				print "It looks like you don't have cURL\n";
+				print "      We currently only support remote issues if you have cURL\n";
+				print "      Make sure cURL is installed and in your PATH\n";
+				cExit(1);
+			}
+
+			my $service = lc shift @ARGV;
+
+			if ($service eq "bitbucket") {
+				bitbucketSetup();
+			}
+			elsif ($service eq "github") {
+				githubSetup();
+			}
+			elsif ($service eq "") {
+				parseConfig() if checkConfig();
+
+				if ($BITBUCKET_API eq "" && $GITHUB_API eq "") {
+					print box(BOLD RED "x");
+					print BOLD "No remotes currently exist\n", RESET;
+					print BOLD "      Pass github or bitbucket to watson -r to add\n", RESET;
+					print "      That's all we support right now :(\n";
+					print "      See help for more details\n";
+					cExit(1);
+				}
+
+				if ($BITBUCKET_API ne "") {
+					print box(BOLD GREEN "Bitbucket"), "\n";
+					print BOLD "   Bitbucket User :", RESET, " $BITBUCKET_API\n";
+					print BOLD "   Bitbucket Repo :", RESET, " $BITBUCKET_REPO\n";
+					print "\n";
+				}
+
+				if ($GITHUB_API ne "") {
+					print BOLD "[ ", RESET;
+					print BOLD GREEN "GitHub ", RESET;
+					print BOLD "]\n", RESET;
+					print BOLD "   GitHub Key  :", RESET, " $GITHUB_API\n";
+					print BOLD "   GitHub Repo :", RESET, " $GITHUB_REPO\n";
+					print "\n";
+				}
+
+				cExit(1);
+			}
+			else {
+				print box(BOLD RED "x");
+				print BOLD "Incorrect argument\n", RESET;
+				print "      Please specify either github or bitbucket to setup remote\n";
+				print "      Or pass without argument to see current remotes\n";
+				print "      See help for more details\n";
+				cExit(1);
+			}
+		},
+		'--dirs' => sub {
+			debugPrint("Dir flag passed\n");
+			$slurp_items->(sub {
+				my ($dir) = @_;
+				debugPrint("Dir Index: $dir\n");
+
+				if (checkDir($dir)) {
+					debugPrint("dirflag: {$dir} valid directory, added from CL.\n");
+
+					# If we ever get into this, means CL passed
+					# Set RC ignore so we don't look at rc
+					debugPrint("Ignoring RC Files/Dirs\n\n");
+					$IGNORE_RC_DIRS = 1;
+
+					# Remove trailing slashes
+					$dir =~ s{/+\z}{};
+					push @DIRS, $dir;
+				}
+			});
+		},
+		'--files' => sub {
+			debugPrint("File flag passed\n");
+			$slurp_items->(sub {
+				my ($file) = @_;
+				debugPrint("File Index: $file\n");
+
+				if (checkFile($file)) {
+					debugPrint("fileflag: {$file} valid file, added from CL.\n");
+
+					# If we ever get into this, means CL passed
+					# Set RC ignore so we don't look at rc
+					debugPrint("Ignoring RC Files/Dirs\n\n");
+					$IGNORE_RC_FILES = 1;
+
+					push @FILES, $file;
+					}
+			});
+		},
+		'--tags' => sub {
+			debugPrint("Tag flag passed\n");
+			$slurp_items->(sub {
+				my ($tag) = @_;
+				debugPrint("Tag Index: $tag\n");
+				debugPrint("tagflag: {$tag} added from CL.\n");
+
+				# If we ever get into this, means CL passed
+				# Set RC ignore so we don't look at rc
+				debugPrint("Ignoring RC tags\n\n");
+				$IGNORE_RC_TAGS = 1;
+
+				push @TAGS, $tag;
+			});
+		},
+		'--ignore' => sub {
+			debugPrint("Tag flag passed\n");
+			$slurp_items->(sub {
+				my ($ignoreflag) = @_;
+				debugPrint("Ignore Index: $ignoreflag\n");
+				debugPrint("ignoreflag: {$ignoreflag} added from CL.\n");
+
+				# If we ever get into this, means CL passed
+				# Set RC ignore so we don't look at rc
+				debugPrint("Ignoring RC ignore\n\n");
+				$IGNORE_RC_IGNORE = 1;
+
+				push @IGNORE, $ignoreflag;
+			});
+		},
+	);
+	for my $key (keys %long_opts) {
+		$flag_actions{$key} = $flag_actions{$long_opts{$key}};
+		exists $flag_actions{$key}
+			or warn "The option $long_opts{$key} is not implemented";
+	}
+
+	unless (@ARGV) {
+		debugPrint("No command line arguments passed.\n\n");
+		return;
+	}
+
+	while (@ARGV) {
+		my $item = shift @ARGV;
+		debugPrint("Main Item: $item\n");
+
+		if (my $action = $flag_actions{$item}) {
+			$action->();
+		}
+		else {
+			die qq{Can't understand command line argument "$item"};
+		}
+	}
+	return 1;
+}
+
+
+###########################################################
+# Config file parser
+###########################################################
+
+# Go through config file and determine dirs, tags, and ignores to use
+sub parseConfig {
+	# Parse rc
+	debugPrint("Parsing $RCNAME\n");
+
+	open my $rc, "<", $RCNAME;
+
+	# Add . and .. and .git to ignorelist
+	push @IGNORE, ".", "..", "*.swp", ".watsonrc", $TMPOUT;
+
+
+	my %sections = (
+		# If @DIRS or @FILES wasn't populated by CL args, populate from rc
+		dirs => sub {
+			my ($line) = @_;
+			if ($IGNORE_RC_DIRS || $IGNORE_RC_FILES) {
+				debugPrint("Directories set from command line, ignoring rc [dirs]!\n");
+				return;
+			}
+			# Regex for dirs, then push to @DIRS
+			$line =~ m{\A\s* ((?:\.?/?\w?+/?)+) \s*\z}x
+				or die qq{The line "$line" in a "dirs" section did not contain a valid path};
+			($line = $1) =~ s{/+\z}{};
+			debugPrint("dirs: $line added from rc. \n");
+			push @DIRS, $line;
+		},
+		# If @TAGS wasn't populated by CL args, populate from rc
+		tags => sub {
+			my ($line) = @_;
+			if ($IGNORE_RC_TAGS) {
+				debugPrint("Directories set from command line, ignoring rc [dirs]!\n");
+				return;
+			}
+			# Regex for tags, then push to @TAGS
+			$line =~ /^\A\s* (\w+(?: \| [0-9])?) \s*\z/x
+				or die qq{The line "$line" in a "tags" section did not contain a valid tag};
+			my $tag = $1;
+			debugPrint("tags: $tag added from rc.\n");
+			push @TAGS, $tag;
+		},
+		# If @IGNORE wasn't populated by CL args, populate from rc
+		ignore => sub {
+			my ($line) = @_;
+			if ($IGNORE_RC_IGNORE) {
+				debugPrint("Directories set from command line, ignoring rc [dirs]!\n");
+				return;
+			}
+			# Regex for dirs to ignore, then push to @IGNOREDIR
+
+			$line =~ m{\A\s* (.+) \s*\z}x
+				or die qq{The line "$line" in a "ignore" section did not contain a valid path};
+			(my $path = $1) =~ s{(/)+\z}{};
+			debugPrint("ignore: $path added from rc.\n");
+			push @IGNORE, $path;
+		},
+		github => sub {
+			my ($line) = @_;
+			# No need for regex on API key
+			debugPrint("GitHub API: $line\n");
+			$GITHUB_API = $line;
+		},
+		bitbucket => sub {
+			my ($line) = @_;
+			# No need for regex on API key
+			debugPrint("Bitbucket API: $line\n");
+			$BITBUCKET_API = $line;
+		},
+		githubrepo => sub {
+			my ($line) = @_;
+			# No need for regex on repo
+			debugPrint("GitHub Repo: $line\n");
+			$GITHUB_REPO = $line;
+
+			# If setting up remote, don't ask for password / do any remote stuff
+			# Won't need this when OAuth implemented but it does optimize the code...
+
+			# Get list of issues, also checks if API key is valid
+			getGithubIssues() unless $REMOTESETUP
+		},
+		bitbucketrepo => sub {
+			my ($line) = @_;
+			# No need for regex on repo
+			debugPrint("Bitbucket Repo: $line\n");
+			$BITBUCKET_REPO = $line;
+
+			# If setting up remote, don't ask for password / do any remote stuff
+			# Won't need this when OAuth implemented but it does optimize the code...
+			# Get list of issues, also checks if API key is valid
+			getBitbucketIssues() unless $REMOTESETUP;
+		},
+	);
+
+	# Read rc line by line
+	my $section = "";
+	while (my $line = <$rc>){
+	    debugPrint($line);
+		chomp $line;
+
+		# Ignore full line comments
+		next if $line =~ /^#/ or $line !~ /\S/;
+
+		# Regex to find [section], store into $section and continue to the
+		# next line until a new section
+		if ($line =~ /^\[(\w+)\]/){
+			$section = $1;
+			next;
+		}
+
+		my $action = $sections{$section}
+			or die qq{Unknown section "$section"};
+		$action->($line);
+	}
+
+	debugPrint("\n\n\n");
+	close $rc;
+	return 1;
+}
+
+
+###########################################################
+# File/Folder Parser Wrapper
+###########################################################
+
+# Start going through all files and subdirs of specified folder
+sub startScan{
+
+	# If files passed to command line, push those to structure
+	# Have to populate structure this way to print properly
+	if ($IGNORE_RC_FILES){
+		# For each file obtained from CL (if any) parse file
+		# Create proper structure for files so we can push to @STRUCTURE
+		push @STRUCTURE, {
+			files => [ map { parseFile($_) } @FILES ],
+		};
+	}
+
+	# For each directory obtained from rc or CL, look for files in them
+	# This will always be valid, not condition like files above
+	for my $dir (@DIRS){
+		push @STRUCTURE, parseDirs($dir);
+	}
+
+	wprint("\n");
+	return 1;
+}
+
+
+###########################################################
+# Directory Parser
+###########################################################
+
+# Look through directory for files to parse
+sub parseDirs {
+	my ($dir, $depth) = @_;
+	$depth //= 1;
+	return if $MAX_DEPTH and $depth > $MAX_DEPTH;
+	debugPrint("parseDirs: |$dir| at depth $depth/$MAX_DEPTH\n");
+	return unless checkDir($dir); # Error check for input
+
+	my @pdirs;		# subdirectories found
+	my @pfiles;		# files found
+
+	# Loop through all entries in directory
+	debugPrint(qq{Looping through all files/folders in "$dir"\n});
+
+	# Open dir and get list of all files
+	opendir(my $wd, $dir);
+	ENTRY: for my $entry (sort grep !/\A\.\.?\z/, readdir $wd) {
+		# Combine dir and entry to make full path
+		my $path = "$dir/$entry";
+
+		debugPrint("path: |$path|\n");
+
+		# Make sure it isn't part of ignored list
+		# If it is, set to "", won't pass dir/file check
+		# [reviewme] - Should we warn users when file is ignored on stdout?
+		for my $ignore (@IGNORE){
+			# Check for any *.type in ignore list (list .swp)
+			# Regex to see if extension is .type, ignore if so
+			($ignore) = map qr/\A$_\z/, join '.*', map quotemeta, split /[*]/, $ignore
+				unless ref $ignore;
+			if ($entry =~ /$ignore/) {
+				debugPrint("|$path| is on the ignore list, skipping\n");
+				next ENTRY;
+			}
+		}
+
+		# Check if entry is a file, if so parse
+		if (-f $path) {
+			debugPrint("|$path| is a file!\n");
+			push @pfiles, parseFile($path);
+		}
+		# Check if entry is dir, if so parse
+		elsif (-d $path) {
+			debugPrint("|$path| is a dir!\n");
+			push @pdirs, parseDirs($path, $depth + 1);
+		}
+
+		# Add directory to ignore list so it isn't repeated again
+		push @IGNORE, $path;
+	}
+
+	closedir $wd;
+	# Create has to hold all parsed files and folders
+	return {
+		files => \@pfiles,
+		dirs => \@pdirs,
+	};
+}
+
+
+###########################################################
+# File Parser
+###########################################################
+
+sub parseFile {
+	# [fixme] - need a better check for valid files (when using @_)
+	my ($file) = @_;
+	debugPrint("parseFile: |$file|\n");
+
+	# Error check for input
+	return unless checkFile($file);
+
+	# Get filetype and set corresponding comment type
+	my $comment = getComment($file);
+
+	# Open file and seek to beginning
+	open my $wf, "<", $file;
+	seek $wf, 0, 0;
+
+	my %issueList = (
+		filename => $file,
+		(map { $_ => [] } @TAGS),
+	);
+
+	# Read source file line by line
+	while (my $line = <$wf>){
+	    # Find any comment line with [tag] - text (any comb of space and #)
+	    if ($line =~ /\s*(?:$comment)+\s*\[(\S+)\]\s*-\s*(.+)/) {
+			my ($ftag, $fissue) = ($1, $2);
+			debugPrint("Issue found!\n");
+			debugPrint("Tag: $ftag\n");
+			debugPrint("Issue: $fissue\n");
+
+			next unless exists $issueList{$ftag};
+
+			# Create hash for each issue found (for each tag)
+			my %issue = (
+				linenumber => $.,
+				comment => $fissue,
+				tag => $ftag,
+				file => $file,
+			);
+
+			# Create hash for specific issue
+			my $digest = md5_hex(@issue{qw/tag file comment/});
+			debugPrint("$digest\n");
+			$issue{md5} = $digest;
+
+			push @{$issueList{$ftag}}, \%issue;
+
+			# If Github valid, pass $issue to poster function
+			postGithub(\%issue) if $GITHUB_VALID;
+
+			# If Bitbucket valid, pass $issue to poster function
+			postBitbucket(\%issue) if $BITBUCKET_VALID;
+	    }
+	}
+
+	return \%issueList;
+}
+
+
+###########################################################
+# Comment setter
+###########################################################
+
+# Determine comment type from file extension
+sub getComment {
+	my ($file) = @_;
+	debugPrint("Getting comment type\n");
+
+	# Grab the ending extension (.something)
+	# Check to see whether it is recognized and set comment type
+	# If unrecognized, try to grab next .something extension
+	# This is to account for file.cpp.1 or file.cpp.bak, ect
+
+	my %exts;
+	$exts{$_} = qr{//} for qw/cpp cc c h c++ m mm java class cs js php go scala/; # [todo] - add /* style comment
+	$exts{$_} = qr{#}  for qw/sh rb pl pm py coffee zsh sh t/;
+	$exts{$_} = qr{--}  for qw/hs/;
+	$exts{$_} = qr{%}  for qw/erl/;
+	$exts{$_} = qr{;;}  for qw/clj/;
+	$exts{$_} = qr{<!--}  for qw/html htm css/;
+
+	my (undef, @extensions) = grep !/\s/, split /\./, $file;
+	for my $ext (reverse @extensions) {
+		# Regex for last extension
+		debugPrint("Extension: $ext\n");
+		return $exts{$ext} // next;
+	}
+
+	print box(BOLD MAGENTA "!");
+	print("--> ", RESET);
+	print("Couldn't determine filetype for $file, using # as comment\n", RESET);
+
+	# Didn't find any match, return error (and just use #)
+	return qr{#};
+}
+
+
+###########################################################
+# Result Printer Wrapper
+###########################################################
+
+# Format the parsed file data and output it nicely
+sub createReport {
+	# Display output for each file parsed
+	for my $entry (@STRUCTURE){
+		printResults($entry);
+	}
+
+	if ($HASLESS){
+		system("less -R $TMPOUT");
+		close($LESSOUT);
+		system("rm $TMPOUT > /dev/null 2>&1");
+	}
+	return 1;
+}
+
+
+###########################################################
+# Individual Result Printer
+###########################################################
+
+# Print results from parsing all pretty and stuff
+sub printResults {
+	my ($entry) = @_;
+	# Go through and print info for all files first
+	for my $file_report (@{$entry->{files}}) {
+
+		# [fixme] - Same foreach performed below, combine somehow?
+
+		# Go through and see if there are any issues with given file
+		# Sets print color and whether to continue to print
+		my $issueflag = grep { 0+@{$file_report->{$_}} } @TAGS;
+
+		if ($issueflag){
+			wprint("\n");
+			wprint(box(BOLD RED "x"));
+			wprint(UNDERLINE BOLD RED $file_report->{filename}, RESET);
+		}
+		else {
+			wprint(box(BOLD GREEN "o"));
+			wprint(UNDERLINE BOLD GREEN $file_report->{filename}, RESET);
+		}
+
+		wprint("\n");
+
+		# If there are no issues, don't print anything (go to next file)
+		# Else, continue on and print the issues
+		next unless $issueflag;
+
+		# Cycle through all tags and print issues for each
+		for my $tag (@TAGS){
+			my @issues = @{$file_report->{$tag}} or next;
+
+			# Print tag, line #, and issue
+			wprint(box(BOLD BLUE $tag), "\n");
+
+			for my $issue (@issues) {
+				wprint(WHITE "  line $issue->{linenumber} - ", RESET);
+				wprint(BOLD "$issue->{comment} ", RESET);
+
+				# If valid API key
+				# Check if issue has been closed on Github or Bitbucket, set to resolved
+				wprint(box(BOLD GREEN "Resolved on GitHub"))
+					if	$GITHUB_VALID
+					and	$GITHUB_CLOSED_ISSUES =~ m/$issue->{md5}/;
+
+				wprint(box(BOLD GREEN "Resolved on Bitbucket"))
+					if 	$BITBUCKET_VALID
+					and	$BITBUCKET_CLOSED_ISSUES =~ m/$issue->{md5}/;
+
+				wprint("\n");
+			}
+			wprint("\n");
+		}
+	}
+
+	printResults($_) for @{$entry->{dirs}};
+
+	return 1;
+}
+
+
+###########################################################
+# GitHub Setup
+###########################################################
+
+# Obtain API key for either Github
+sub githubSetup {
+	# JSON Response var
+	my $js;
+
+	# Set remote setup to one so password isn't asked for in Bitbucket parseConfig section
+	# Crappy fix, won't need this when OAuth is implemented for Bitbucket
+	$REMOTESETUP = 1;
+
+	# [fixme] - Same code as header just without wprint, make modular
+	print(BOLD "------------------------------\n");
+	print(BOLD "watson", RESET);
+	print(" - ");
+	print(BOLD YELLOW "inline issue manager\n", RESET);
+	print(BOLD "------------------------------\n\n");
+
+	# [fixme] - Make modular status printer?
+	print box(BOLD GREEN "+");
+	print BOLD "Obtaining OAuth Token for GitHub...\n", RESET;
+
+	# Parse config to make sure no previous API exists
+	parseConfig() if checkConfig();
+
+	if (defined $GITHUB_API or defined $GITHUB_REPO) {
+		my $overwrite = uc prompt(
+			{ default => "N" },
+			box(BOLD RED "!"),
+			BOLD "Previous GitHub API + Repo is in RC, are you sure you want to overwrite?\n", RESET,
+			"      (Y)es/(N)o: ",
+		);
+		print "\n";
+
+		if ($overwrite =~ /\A(?:NO?)?\z/){
+			print box(BOLD RED "x");
+			print BOLD "Not overwriting current GitHub API + repo info\n", RESET;
+			cExit(1);
+		}
+	}
+
+	print box(BOLD YELLOW "!");
+	print BOLD "Access to your GitHub account required to make/update issues\n", RESET;
+	print "      See help or README for more details on GitHub/Bitbucket access\n\n";
+
+	# Get username, clear newlines surrounding text
+	# If blank, give error
+	my $username = lc prompt(BOLD "Username: ", RESET);
+	if ($username eq ""){
+		print box(BOLD RED "x");
+		print BOLD "Input blank. Please enter your username!\n", RESET;
+		cExit(1);
+	}
+
+	# cURL to get OAuth Token, returns JSON
+	$js = do {
+		my $call = "curl -s -i " .
+				"https://api.github.com/authorizations " .
+				"-u $username " .
+				"-d '{\"scopes\": [\"repo\"], " .
+					"\"note\": \"watson\", " .
+					"\"note_url\" : \"http://goosecode.com/watson\"}' ";
+
+		my $response = `$call`;
+
+    # We use headers for determining HTTP call status
+    if ($response =~ m{201 Created}){
+      print box(BOLD GREEN "o");
+      print BOLD "Obtained OAuth Token\n";
+    }
+    else {
+      print box(BOLD RED "x");
+      print BOLD "Unable to obtain OAuth Token\n", RESET;
+      cExit(1);
+    }
+   
+    my @splits = split /X-GitHub-Request-Id:.+/, $response;
+		decode_json($splits[1]);
+	};
+
+
+	print "\n", RESET;
+	
+  # Set API key for use later so we don't have to parse config
+	# [reviewme] - Maybe we should just parse config?
+	$GITHUB_API = $js->{token};
+	
+  # Get repo information
+	# If blank, give error
+	print box(BOLD YELLOW "!");
+	print BOLD "Repo information required\n", RESET;
+	print "      Please provide owner that repo is under followed by repo name\n";
+	print "      e.g. owner: nhmood, repo: watson (case sensitive)\n";
+	print "      See help or README for more details on GitHub access\n\n";
+
+	my $owner = lc prompt(BOLD "Owner: ", RESET);
+	if ($owner eq ""){
+		print box(BOLD RED "x");
+		print BOLD "Input blank. Please enter the owner the repo is under!\n", RESET;
+		cExit(1);
+	}
+	my $repo = lc prompt(BOLD "Repo: ", RESET);
+	if ($repo eq ""){
+		print box(BOLD RED "x");
+		print BOLD "Input blank. Please enter the repo name!\n", RESET;
+		cExit(1);
+	}
+
+
+  # Check if user has access to specified repo
+	$js = do {
+		my $call = "curl -s -i " .
+				"-H 'Authorization: token $GITHUB_API' " .
+				"https://api.github.com/repos/$owner/$repo/issues";
+
+		my $response = `$call`;
+
+    # We use headers for determining HTTP call status
+    if ($response =~ m{200 OK}){
+      print box(BOLD GREEN "o");
+		  print BOLD "Repo successfully accessed\n";
+    }
+    else {
+      print box(BOLD RED "x");
+		  print BOLD "Unable to access /repo/$owner/$repo\n", RESET;
+      cExit(1);
+    }
+
+    my @splits = split /Vary: Accept-Encoding/, $response;
+		decode_json($splits[1]);
+	};
+
+	print "\n";
+
+  # Create label for watson	
+  print box(BOLD GREEN "+");
+	print BOLD "Creating label for watson on GitHub...\n", RESET;
+
+	# Create label for watson
+	$js = do {
+	my $call = "curl -s -i " .
+		       "-H 'Authorization: token $GITHUB_API' " .
+		       "https://api.github.com/repos/$owner/$repo/labels " .
+		       "-d '{" .
+		       		"\"name\" : \"watson\"," .
+		       		"\"color\" : \"00AEEF\" }'";
+
+		my $response = `$call`;
+
+    # We use headers for determining HTTP call status
+    if ($response =~ m{201 Created}){
+      print box(BOLD GREEN "o");
+		  print BOLD "Label successfully created\n";
+    }
+	  elsif ($response =~ m{already_exists}){
+		  print box(BOLD YELLOW "!");
+		  print BOLD "Label already exists\n";
+      cExit(1);
+    }
+    else {
+		  print box(BOLD RED "x");
+		  print BOLD "Unable to access /repo/$owner/$repo\n", RESET;
+      print "      Check that credentials are correct and repository exists under user\n";
+		  cExit(1);
+    }
+    print $response;
+    cExit(1);
+
+    my @splits = split /Vary: Accept-Encoding/, $response;
+		decode_json($splits[1]);
+	};
+
+	print "\n";
+
+	# Check if RC exists
+	# If it exists, basically replicate it and remove [github/bitbucket tag]
+	my $nlc = 0;
+
+	if (checkConfig()){
+		debugPrint("Config exists, copying\n");
+		open my $in,  "<", $RCNAME;
+		open my $out, ">", "$RCNAME.new";
+		my $section = "";
+		while (my $line = <$in>){
+			debugPrint("$line\n");
+			# Regex for section
+			if ($line =~ /^\[(\w+)\]/){
+			    $section = $1;
+			}
+
+
+			# Check for newlines
+			# If we already have 2 newlines before any actual content, skip
+			# This is just to make the RC file output nicer looking
+			if ($line eq "\n"){
+				debugPrint("Newline found\n");
+				if (++$nlc < 3){
+					debugPrint("Less than 3 newlines so far, let it print\n");
+					print $out $line;
+				}
+			}
+			# If not in Github section, safe to copy
+			# make $remotestr lowercase and check that + repo
+			elsif ($section ne (lc("github")) &&
+				   $section ne (lc("githubrepo"))){
+
+				debugPrint("Not in git section, copying to new rc\n");
+				print $out $line;
+				# Reset newline count
+				$nlc = 0;
+			}
+
+			debugPrint("line: $line");
+			debugPrint("nlc: $nlc\n");
+
+
+		}
+
+		# Remove old RC file and replace with new one
+		system("rm $RCNAME > /dev/null 2>&1");
+		system("cp $RCNAME.new $RCNAME > /dev/null 2>&1");
+		system("rm $RCNAME.new > /dev/null 2>&1");
+	}
+
+	# Append API token to end of file (old or new, doesn't matter now)
+	open(my $file, "+>>", "$RCNAME");
+
+	# Make sure there are only 2 newlines between items in RC
+	print $file "\n" for $nlc .. 1;
+
+	print $file "[github]\n";
+	print $file ($GITHUB_API);
+	print $file "\n\n\n";
+	print $file "[githubrepo]\n";
+	print $file "$owner/$repo";
+	print $file "\n";
+	close($file);
+
+
+	print box(BOLD GREEN "o");
+	print BOLD "GitHub successfully setup\n", RESET;
+	print "      Issues will now automatically be updated on GitHub by default\n";
+	#print "      Use -l, --local to not update against GitHub\n";
+	print "      See help or README for more details on GitHub/Bitbucket access\n";
+	print "\n";
+	cExit(0);
+}
+
+
+###########################################################
+# Github Issue Getter
+###########################################################
+
+# Post issues to github/bitbucket
+sub getGithubIssues {
+	# Only attempt if API is specified
+	if (length($GITHUB_API) != 0){
+		debugPrint("Getting GitHub Issues\n");
+		# Get open tickets
+		my $call = "curl -s -i " .
+				   "-H 'Authorization: token $GITHUB_API' " .
+				   "https://api.github.com/repos/$GITHUB_REPO/issues?labels\\=watson\\&state\\=open";
+		$GITHUB_OPEN_ISSUES = `$call`;
+		debugPrint($GITHUB_OPEN_ISSUES);
+
+		# Check or a Status 200 OK, if not, API key might be invalid, warn user
+		# Set GITHUB_VALID to 0 so that no remote related calls will be made
+		if ($GITHUB_OPEN_ISSUES !~ m/200 OK/){
+			$GITHUB_VALID = 0;
+			print box(BOLD RED "x");
+			wprint("--> ", RESET);
+			wprint(BOLD "Unable to access remote, GitHub API may be invalid\n");
+			wprint(BOLD "          Consider running --remote (-r) option to regenerate key\n\n", RESET);
+		}
+		# Else get the closed tickets also and set GITHUB_VALID to 1
+		else {
+			$GITHUB_VALID = 1;
+			$call = "curl -s -i " .
+					"-H 'Authorization: token $GITHUB_API' " .
+					"https://api.github.com/repos/$GITHUB_REPO/issues?labels\\=watson\\&state\\=closed";
+			$GITHUB_CLOSED_ISSUES = `$call`;
+			debugPrint($GITHUB_CLOSED_ISSUES);
+		}
+	}
+	else {
+		debugPrint("No GitHub API, ignoring issue list\n");
+	}
+
+}
+
+
+###########################################################
+# Github Issue Poster
+###########################################################
+
+# Post issues to github/bitbucket
+sub postGithub {
+	my ($issue) = @_;
+	# Github API has been registered, post on Github
+	if (length($GITHUB_API) != 0){
+
+		# Check if md5 of issue has already been posted
+		# [fixme] - if issue with same name in same file is made, won't ever get posted again :-/
+		if ($GITHUB_OPEN_ISSUES !~ m/$issue->{md5}/ && $GITHUB_CLOSED_ISSUES !~ m/$issue->{md5}/){
+			# Format title and body for creating issue
+			# Title format: comment [basename of file], escape any '
+			my $title = $issue->{file};
+			$title =~ s/^(.+)\///;
+			$title = "$issue->{comment} [" . $title . "]";
+			# [fixme] - Figure out how to escape ' character on JSON post
+			$title =~ s/\'//;
+
+
+			debugPrint("Formatted title for GitHub Post : $title\n");
+
+			# Format comment to escape any ' so JSON will be formatted properly
+			my $body = "__filename__ : $issue->{file}\\n" .
+					   "__line #__ : $issue->{linenumber}\\n" .
+					   "__tag__ : $issue->{tag}\\n" .
+					   "__md5__ : $issue->{md5}\\n";
+			debugPrint("Formatted body for GitHub Post : $body\n");
+
+			my $call = "curl -s -i " .
+					   "-H 'Authorization: token $GITHUB_API' " .
+					   "https://api.github.com/repos/$GITHUB_REPO/issues " .
+					   "-d '{\"title\" : \"$title\", " .
+					   "\"body\" : \"$body\", " .
+					   "\"labels\" : [ \"watson\", \"$issue->{tag}\"]}'";
+			debugPrint("Formatted call for GitHub Post : $call\n");
+			my $response = `$call`;
+			debugPrint($response);
+		}
+	}
+
+
+}
+
+
+###########################################################
+# Bitbucket Setup
+###########################################################
+
+# Set up Bitbucket access
+# [todo] - Only basic http auth, get OAuth for Bitbucket
+# Bitbucket OAuth needs to redirect to some grant access page
+# Not sure how to do that with a CLI, basic HTTP auth for now
+sub bitbucketSetup {
+	# JSON Response var
+	my $js;
+
+	# Set remote setup to one so password isn't asked for in Bitbucket parseConfig section
+	# Crappy fix, won't need this when OAuth is implemented for Bitbucket
+	$REMOTESETUP = 1;
+
+	# [fixme] - Same code as header just without wprint, make modular
+	print(BOLD "------------------------------\n");
+	print(BOLD "watson", RESET);
+	print(" - ");
+	print(BOLD YELLOW "inline issue manager\n", RESET);
+	print(BOLD "------------------------------\n\n");
+
+	# [fixme] - Make modular status printer?
+	print box(BOLD GREEN "+");
+	print BOLD "Attempting to access Bitbucket...\n", RESET;;
+
+	# Parse config to make sure no previous API exists
+	parseConfig() if checkConfig();
+
+	if ( defined $BITBUCKET_API || defined $BITBUCKET_REPO ){
+		my $overwrite = uc prompt(
+			{ default => 'N' },
+			box(BOLD RED "!"),
+			BOLD "Previous Bitbucket Repo is in RC, are you sure you want to overwrite?\n", RESET,
+			"      (Y)es/(N)o: "
+		);
+		print "\n";
+
+		if ($overwrite =~ /\A(?:NO?)?\z/) {
+			print box(BOLD RED "x");
+			print BOLD "Not overwriting current Bitbucket repo info\n", RESET;
+			cExit(1);
+		}
+	}
+
+	print box(BOLD YELLOW "!");
+	print BOLD "Access to your Bitbucket account required to make/update issues\n", RESET;
+
+	print "      See help or README for more details on GitHub/Bitbucket access\n\n";
+
+	print box(BOLD RED "!");
+	print BOLD " Bitbucket OAuth not implemented yet.\n", RESET;
+	print "      Basic HTTP Auth in use, will request PW entry every time.\n\n";
+
+
+	# Get username, clear newlines surrounding text
+	# If blank, give error
+	my $username = lc prompt(BOLD "Username: ", RESET);
+	if ($username eq "") {
+		print box(BOLD RED "x");
+		print BOLD "Input blank. Please enter your username!\n", RESET;
+		cExit(1);
+	}
+
+	print "\n";
+
+	# Get repo information
+	# If blank, give error
+	print box(BOLD YELLOW "!");
+	print BOLD "Repo information required\n", RESET;
+	print "      Please provide owner that repo is under followed by repo name\n";
+	print "      e.g. owner: nhmood, repo: watson (case sensitive)\n";
+	print "      See help or README for more details on GitHub access\n\n";
+
+
+	my $owner = lc prompt(BOLD "Owner: ", RESET);
+	if ($owner eq "") {
+		print box(BOLD RED "x");
+		print BOLD "Input blank. Please enter the owner the repo is under!\n", RESET;
+		cExit(1);
+	}
+	my $repo = lc prompt(BOLD "Repo: ", RESET);
+	if ($repo eq "") {
+		print box(BOLD RED "x");
+		print BOLD "Input blank. Please enter the repo name!\n", RESET;
+		cExit(1);
+	}
+
+	print "\n";
+
+	# cURL to get OAuth Token, returns JSON
+	$js = do {
+	  my $call = "curl -s -i " .
+			"https://bitbucket.org/api/1.0/repositories/$owner/$repo " .
+			"-u $username";
+
+		my $response = `$call`;
+
+    # We use headers for determining HTTP call status
+    if ($response =~ m{HTTP/1.1 200 OK}){
+      print box(BOLD GREEN "o");
+		  print BOLD "Successfully accessed remote repo with given credentials\n";
+    }
+    else {
+      print box(BOLD RED "x");
+		  print BOLD "      Unable to access remote repo with given credentials\n", RESET;
+		  print BOLD "      Check that credentials are correct and repository exists under owner\n", RESET;
+      cExit(1);
+    }
+ 
+    my @splits = split /X-Content-Type-Options:.+/, $response;
+		decode_json($splits[1]);
+	};
+
+  print "\n", RESET;
+
+	# Check if RC exists
+	# If it exists, basically replicate it and remove [github/bitbucket tag]
+	my $nlc = 0;
+
+	if (checkConfig()){
+		debugPrint("Config exists, copying\n");
+		open my $in, "<", "$RCNAME";
+		open my $out, ">", "$RCNAME.new";
+		my $section = "";
+		while (my $line = <$in>){
+			chomp;
+			debugPrint("$line\n");
+			$section = lc $1 if $line =~ /^\[(\w+)\]/;
+
+
+			# Check for newlines
+			# If we already have 2 newlines before any actual content, skip
+			# This is just to make the RC file output nicer looking
+			if (not length $line){
+				debugPrint("Newline found\n");
+				if (++$nlc < 3){
+					debugPrint("Less than 3 newlines so far, let it print\n");
+					print $out $line;
+				}
+			}
+			# If not in bitbucket or github section, safe to copy
+			# make $remotestr lowercase and check that + repo
+			elsif ($section ne "bitbucket"  and $section ne "bitbucketrepo"){
+				debugPrint("Not in bitbucket section, copying to new rc\n");
+				print $out $line;
+				# Reset newline count
+				$nlc = 0;
+			}
+
+			debugPrint("line: $line");
+			debugPrint("nlc: $nlc\n");
+		}
+
+		# Remove old RC file and replace with new one
+		File::Copy::move("$RCNAME.new" => $RCNAME) or warn qq{Could not update the RC file "$RCNAME": $!};
+	}
+
+	# Append API token to end of file (old or new, doesn't matter now)
+	open my $file, "+>>", $RCNAME;
+
+	# Make sure there are only 2 newlines between items in RC
+	print $file "\n" for $nlc .. 1;
+
+	# Store username in bitbucket api section since we don't OAuth yet
+	say $file $_ for
+		"[bitbucket]",
+		$username,
+		"",
+		"",
+		"[bitbucketrepo]",
+		"$owner/$repo",
+		"";
+	close $file;
+
+	print box(BOLD GREEN "o");
+	print BOLD "Bitbucket successfully setup\n", RESET;
+	print "      Issues will now automatically be updated on Bitbucket by default\n";
+	print "      Use -l, --local to not update against GitHub\n";
+	print "      See help or README for more details on GitHub/Bitbucket access\n";
+	print "\n";
+	cExit(0);
+}
+
+
+###########################################################
+# Bitbucket Issue Getter
+###########################################################
+
+# Post issues to github/bitbucket
+sub getBitbucketIssues {
+	# Only attempt if repo is specified
+	if (length $BITBUCKET_REPO){
+		debugPrint("Getting Bitbucket Issues\n");
+
+		my $pw = prompt(
+			{ echo => 0 },
+			BOLD "Bitbucket password required for remote checking/posting: ", RESET,
+		);
+		print "\n";
+		if (length $pw) {
+			$BITBUCKET_PW = $pw;
+		}
+		else {
+			print box(BOLD RED "x");
+			print BOLD "Input blank. Will not check/update against Bitbucket\n", RESET;
+			$BITBUCKET_PW = "";
+			$BITBUCKET_VALID = 0;
+			return 1;
+		}
+
+		# Get all issues, Bitbucket differentiates between open/new so we can just look for all
+		# The open issue var is used only for preventing posting again anyways
+		# Only need closed ones to update final output, might change in Github too?
+		my $call = "curl -s -i " .
+				   "https://bitbucket.org/api/1.0/repositories/$BITBUCKET_REPO/issues " .
+				   "-u $BITBUCKET_API:$pw";
+		$BITBUCKET_OPEN_ISSUES = `$call`;
+		debugPrint($BITBUCKET_OPEN_ISSUES);
+
+		# Check for a Status
+		if ($BITBUCKET_OPEN_ISSUES !~ m/HTTP\/1.1 200 OK/){
+			$BITBUCKET_VALID = 0;
+			print box(BOLD RED "x");
+			wprint("--> ", RESET);
+			wprint(BOLD "Unable to access remote, Bitbucket settings may be invalid\n");
+			wprint(BOLD "          Consider running --remote (-r) option to regenerate settings\n\n", RESET);
+		}
+		# Else get the closed tickets also and set BITBUCKET_VALID to 1
+		else {
+			$BITBUCKET_VALID = 1;
+			$call = "curl -s -i " .
+					"https://bitbucket.org/api/1.0/repositories/$BITBUCKET_REPO/issues?status\\=resolved " .
+					"-u $BITBUCKET_API:$pw";
+
+			$BITBUCKET_CLOSED_ISSUES = `$call`;
+			debugPrint($BITBUCKET_CLOSED_ISSUES);
+		}
+	}
+	else {
+		debugPrint("No Bitbucket Repo, ignoring issue list\n");
+	}
+}
+
+
+###########################################################
+# Bitbucket Issue Poster
+###########################################################
+
+# Post issues to github/bitbucket
+sub postBitbucket {
+	my ($issue) = @_;
+	# Bitbucket API has been registered, post on Github
+	if (length $BITBUCKET_API) {
+		# Check if md5 of issue has already been posted
+		# [fixme] - if issue with same name in same file is made, won't ever get posted again :-/
+		if ($BITBUCKET_OPEN_ISSUES !~ m/$issue->{md5}/ and $BITBUCKET_CLOSED_ISSUES !~ m/$issue->{md5}/) {
+			# Format title and body for creating issue
+			# Title format: comment [basename of file], escape any '
+			(my $filename = $issue->{file}) =~ s{\A.+/}{};
+			my $title = "$issue->{comment} [$filename]";
+			# [fixme] - Figure out how to escape ' character on JSON post
+			# Remove ' for now
+			$title =~ s/\'//;
+			# Since not JSON, need to replace spaces with +
+			$title =~ s/\s/\+/g;
+
+			debugPrint("Formatted title for Bitbucket Post : $title\n");
+
+			# %0D%0A at end so newlines will show up properly on Bitbucket
+			my $body = "__filename__ : $issue->{file}%0D%0A%0D%0A  " .
+					   "__line #__ : $issue->{linenumber}%0D%0A%0D%0A  " .
+					   "__tag__ : $issue->{tag}%0D%0A%0D%0A  " .
+					   "__md5__ : $issue->{md5}%0D%0A%0D%0A  ";
+			debugPrint("Formatted body for Bitbucket Post : $body\n");
+			# Replace spaces with + like above
+			$body =~ s/\s/\+/g;
+
+			# Format call, pass all params as -d to avoid \= \&
+			my $call = "curl -s -i " .
+					   "https://bitbucket.org/api/1.0/repositories/$BITBUCKET_REPO/issues " .
+					   "-d 'title=$title&" .
+					   "content=$body' " .
+					   "-u $BITBUCKET_API:$BITBUCKET_PW";
+			# If you allow this to print below pw will show up as plain text!
+			debugPrint("Formatted call for Bitbucket Post : $call\n");
+			my $response = `$call`;
+			debugPrint($response);
+		}
+	}
+}
+
+
+##########################
+# Box glyph, e.g [!], [x]
+##########################
+
+sub box {
+	my $content = join '', @_;
+	return BOLD, "[ ", RESET, $content, RESET, BOLD, " ] ", RESET;
+}
+
+#########
+# prompt
+#########
+
+sub prompt {
+	my %config = (
+		out => select(),
+		in	=> \*STDIN,
+		echo => 1,
+		('HASH' eq ref $_[0])  ? %{ shift @_ } :
+		('HASH' eq ref $_[-1]) ? %{ pop   @_ } :
+		(),
+	);
+	print {$config{out}} @_;
+	system 'stty', '-echo' unless $config{echo};
+	chomp(my $answer = readline $config{in});
+	system 'stty', 'echo'  unless $config{echo};
+	return $config{default} if exists $config{default} and not length $answer;
+	return $answer;
+}
+
