@@ -4,14 +4,32 @@ pwd=$(pwd)
 root=$(cd $(dirname $0); pwd)
 . $root/.lib/github_go.sh
 
+usage() {
+  local progname=$(basename $0)
+  cat <<EOM
+  $progname [package]
+
+$progname peco/peco
+$progname mattn/jvgrep
+$progname mattn/files
+$progname motemen/ghq
+$progname ericchiang/pup
+$progname yudai/gotty
+EOM
+  exit 1
+}
+
 if [ -z "$1" ]; then
   echo "invalid arguments" 1>&2
+  usage
 fi
 
-PACKAGE="$1"
-shift
+# PACKAGE="$1"
+# shift
 
-VER=$(get_latest_version $PACKAGE)
+for PACKAGE in "$@" ; do
+  VER=$(get_latest_version $PACKAGE)
 
-download_release_package $PACKAGE $VER "$@"
+  download_release_package $PACKAGE $VER "$@"
+done
 
