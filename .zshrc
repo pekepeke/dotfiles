@@ -419,7 +419,19 @@ zload() {
 
 shrc_section_title "peco" #{{{2
 local isnt_mintty=$([[ "${MSYSCON} ${CYGWIN}" =~ mintty ]]; echo $?)
+if ! type peco >/dev/null 2>&1; then
+  if type fzf >/dev/null 2>&1 ; then
+    peco() {
+      fzf "$@"
+    }
+  elif type percol >/dev/null 2>&1 ;then
+    peco() {
+      percol "$@"
+    }
+  fi
+fi
 if [ $isnt_mintty -eq 1 ] && type peco >/dev/null 2>&1; then
+
   # source_all ~/.zsh/zfunc/peco/*.zsh
   bindkey -v '^Vp' peco-clipmenu-copy
   bindkey -v '^Vs' peco-snippets-copy

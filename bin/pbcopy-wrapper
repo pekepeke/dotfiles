@@ -4,11 +4,11 @@ clipboard() {
   local copy_cmd
   if [ -n "$PBCOPY_SERVER" ]; then
     local body="" buffer
-    body=$(cat)
+    # body=$(cat)
     # while IFS= read -r buffer; do
     #   body="$body$buffer\n";
     # done
-    curl $PBCOPY_SERVER --data-urlencode body="$body" >/dev/null 2>&1
+    curl -s -X POST $PBCOPY_SERVER -d body="$(</dev/stdin)" >/dev/null 2>&1
     return $?
   fi
   if type putclip >/dev/null 2>&1; then
