@@ -53,6 +53,9 @@ case $OSTYPE in
       MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
       export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
     fi
+    if [[ `uname -r` =~ Microsoft ]]; then
+      PATH="`perl -e 'print join ":", grep { !m/\/\.windows/ } split(/:/,$ENV{PATH})'`"
+    fi
     soft_source $HOME/.shrc.linux
     ;;
   solaris*)

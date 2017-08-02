@@ -1,0 +1,3 @@
+RUN iadduser -S -h /home/{{_input_:username}} -h /bin/bash {{_input_:username}} \
+    && echo {{_input_:username}}:{{_input_:password}} | chpasswd \
+    && echo '{{_input_:username}} ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers

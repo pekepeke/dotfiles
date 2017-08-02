@@ -43,5 +43,12 @@
     "C-j": "peco.Finish",
 
     "C-g": "peco.SelectNone"
+  },
+  "Style": {
+    "Basic": ["on_default", "default"],
+    "SavedSelection": ["bold", "on_yellow", "black"],
+    "Selected": ["underline", "on_cyan", "black"],
+    "Query": ["yellow", "bold"],
+    "Matched": ["red", "on_blue"]
   }
 }
