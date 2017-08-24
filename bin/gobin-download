@@ -30,6 +30,6 @@ fi
 for PACKAGE in "$@" ; do
   VER=$(get_latest_version $PACKAGE)
 
-  download_release_package $PACKAGE $VER "$@"
+  download_release_package $PACKAGE $VER
 done
 

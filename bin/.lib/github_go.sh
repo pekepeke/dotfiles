@@ -22,6 +22,7 @@ download_release_package() {
 
   [ -z "$PACKAGE_BASENAME" ] && PACKAGE_BASENAME=$(basename $PACKAGE)
   [ -z "$EXT" ] && EXT=$(detect_ext zip)
+  echo "$PACKAGE" "$VER" $PACKAGE_BASENAME "$EXT"
   URL=$(get_release_binary_url "$PACKAGE" "$VER" $PACKAGE_BASENAME "$EXT")
 
   cd /tmp/

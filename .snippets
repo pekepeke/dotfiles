@@ -4,6 +4,9 @@ git log --format="%ai  %an  %h  %d %s" | peco | awk 'match($0,/[[:blank:]]{2}[a-
 GIT_SSL_NO_VERIFY=1 git
 git config --local http.sslVerify false
 
+# crontab
+sudo sh -c 'for user in $(cut -f1 -d: /etc/passwd); do echo "## $user" ; crontab -u $user -l 2>/dev/null; done'
+
 # apache
 sudo apachectl graceful
 tail -n 5000 /usr/local/apache2/logs/access_log | awk '{print $1}'  | sort | uniq -c | sort -gr | head -n 4
