@@ -55,8 +55,10 @@ case $OSTYPE in
     fi
     if [[ `uname -r` =~ Microsoft ]]; then
       PATH="`perl -e 'print join ":", grep { !m/\/\.windows/ } split(/:/,$ENV{PATH})'`"
+      soft_source $HOME/.shrc.winlinux
+    else
+      soft_source $HOME/.shrc.linux
     fi
-    soft_source $HOME/.shrc.linux
     ;;
   solaris*)
     PATH=$HOME/bin/solaris:$PATH
