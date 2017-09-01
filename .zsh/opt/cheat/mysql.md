@@ -148,6 +148,11 @@ mysqldumpslow -s t /tmp/test.log
 mysqlsla --flat --slow ~mysql/var/mysql-slow.log --sort at
 
 # pt-query-digest
+
+# qtime, cnt で集計
+pt-query-digest --limit 50 --order-by Query_time:sum --since YYYY-MM-DD 00:00:00 --until YYYY-MM-DD 23:59:59 slow.log > YYYY-MM-DD_by_qtime.txt
+pt-query-digest --limit 50 --order-by Query_time:cnt --since YYYY-MM-DD 00:00:00 --until YYYY-MM-DD 23:59:59 slow.log > YYYY-MM-DD_by_count.txt
+
 pt-query-digest /var/log/mysql/mysql-slow.log
 ## pt-query-digest with processlist
 pt-query-digest --processlist h=host,user=user,password=pass --output=slow.log
@@ -157,19 +162,44 @@ pt-query-digest --type=tcpdump --group-by=tables --order-by=Query_time:cnt --lim
 # git://github.com/box/Anemometer.git
 
 ## テーブルごとのアクセス集計
-mk-query-digest --type=tcpdump --group-by=tables --order-by Query_time:cnt --limit 100 tcpdump.out
+pt-query-digest --type=tcpdump --group-by=tables --order-by Query_time:cnt --limit 100 tcpdump.out
 
 ## 特定のクエリのみ
-mk-query-digest --type=tcpdump --filter '$event->{fingerprint} =~ m/^select/'  --order-by Query_time:cnt --limit 100 tcpdump.out > tcpdump.log
+pt-query-digest --type=tcpdump --filter '$event->{fingerprint} =~ m/^select/'  --order-by Query_time:cnt --limit 100 tcpdump.out > tcpdump.log
 
 ## commit/ping/connect を除いて集計
-mk-query-digest --type=tcpdump --filter '$event->{fingerprint} !~ m/^(commit|admin|set)/' --limit 100 tcpdump.out > tcpdump.log
+pt-query-digest --type=tcpdump --filter '$event->{fingerprint} !~ m/^(commit|admin|set)/' --limit 100 tcpdump.out > tcpdump.log
 
 ## 接続にかかった時間だけを抽出
-mk-query-digest --type tcpdump --no-report --filter '$event->{fingerprint} =~ /Connect/ && printf "%.9f %s %s@%s\n", @{$event}{qw(Query_time host user db)}'
+pt-query-digest --type tcpdump --no-report --filter '$event->{fingerprint} =~ /Connect/ && printf "%.9f %s %s@%s\n", @{$event}{qw(Query_time host user db)}'
 
 ## 特定のテーブルだけをテーブルごとに
-mk-query-digest --type=tcpdump --group-by=tables --order-by Query_time:cnt --limit 100  --filter 'grep /XXX/, @{$event->{tables}}' tcpdump.out
+pt-query-digest --type=tcpdump --group-by=tables --order-by Query_time:cnt --limit 100  --filter 'grep /XXX/, @{$event->{tables}}' tcpdump.out
+
+## show processlistから読み込む
+pt-query-digest --processlist h=localhost,u=root,p=password --run-time 60
+
+## バイナリログから読み込む
+mysqlbinlog mysql-bin.000203 > /tmp/binlog.log
+
+## generalログ
+
+pt-query-digest --type genlog general.log
+
+## スロークエリログ
+pt-query-digest --type slowlog slow.log
+
+## tcpdump
+tcpdump -s 65535 -x -nn -q -tttt -i any -c 1000 port 3306 mysql.tcpdump
+pt-query-digest --type tcpdump mysql.tcpdump
+
+## 解析時のオプションでEXPLAINを実行
+pt-query-digest --type slowlog --explain h=localhost,u=root XXXX-slow.log
+
+## --reviewオプション
+### --reviewオプション付きでクエリを解析にかけると、DSNで指定したMySQLにデータが保存され、レビュー済に更新した場合、レポートの対象外クエリとなる
+### update query_review set reviewed_by="user",reviewed_on = now() where checksum=8858001711021306865;
+pt-query-digest --review h=localhost,u=root --no-report slow.log
 
 ## pt-query-digest の見方
 - Response：処理時間の合計

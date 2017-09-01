@@ -82,3 +82,7 @@ date --date "@1491304151"
 # json
  | python -mjson.tool
  | python -c 'import sys,  json; print json.load(sys.stdin)["data"]'
+
+# pt-query-digest
+pt-query-digest --limit 50 --order-by Query_time:sum --since YYYY-MM-DD 00:00:00 --until YYYY-MM-DD 23:59:59 slow.log > YYYY-MM-DD_by_qtime.txt
+pt-query-digest --limit 50 --order-by Query_time:cnt --since YYYY-MM-DD 00:00:00 --until YYYY-MM-DD 23:59:59 slow.log > YYYY-MM-DD_by_count.txt

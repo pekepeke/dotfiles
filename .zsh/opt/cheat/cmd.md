@@ -10,6 +10,15 @@ find /hoge/fuga -ctime +30 -type f -print | xargs --no-run-if-empty rm
 ```
 ## 文字エンコーディング無視して grep
 grep -UR fuga ./
+
+## マッチ部分のみ抽出
+grep -o "<script[^>]*>"
+
+## perl正規表現
+grep -P "\d{3}"
+
+## 「」で囲まれている中身だけ表示
+grep -oP '(?<=「).+(?=」)'
 ```
 
 ## tail
@@ -82,6 +91,8 @@ sed 1,5d
 sed -n -e 1p
 # 末行表示
 sed -n -e \$p
+# 3行目～末行表示
+sed -n -e 3,$p
 ```
 
 ### 拡張正規表現(-E)

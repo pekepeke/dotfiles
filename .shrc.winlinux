@@ -1,0 +1,3 @@
+PATH="`perl -e 'print join ":", grep { !m@^/mnt/@ } split(/:/,$ENV{PATH})'`"
+
+# vim: fdm=marker sw=2 ts=2 ft=sh et:

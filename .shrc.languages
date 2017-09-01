@@ -54,7 +54,6 @@ case $OSTYPE in
       export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
     fi
     if [[ `uname -r` =~ Microsoft ]]; then
-      PATH="`perl -e 'print join ":", grep { !m/\/\.windows/ } split(/:/,$ENV{PATH})'`"
       soft_source $HOME/.shrc.winlinux
     else
       soft_source $HOME/.shrc.linux
