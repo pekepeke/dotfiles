@@ -114,4 +114,5 @@ echo 2 > /proc/sys/vm/drop_caches
 	- プロセッサが一度に処理するパケット量
 - `net.ipv4.tcp_max_tw_buckets = 131072`
 	- tcp の `TIME_WAIT` を保持できる上限
-
+-  `net.ipv4.ip_forward`
+	- 1の場合、IP転送を有効とする

@@ -1,0 +1,18 @@
+#!/bin/bash
+
+[ -z "$HTTP_PROXY_PORT" ] && HTTP_PROXY_PORT=8880
+[ -z "$SSL_PROXY_PORT" ] && SSL_PROXY_PORT=8843
+DOCKER_IP=$(ip addr show docker0 | grep -Po 'inet \K[\d.]+')
+DOCKER_OPTS="-e http_proxy=http://$DOCKER_IP:$HTTP_PROXY_PORT -e https_proxy=http://$DOCKER_IP:$SSL_PROXY_PORT -e no_proxy='localhost,127.0.0.1'  -e NO_PROXY='localhost,127.0.0.1'"
+IDS="$(docker images | peco | awk '{print $3}')"
+for id in $IDS; do
+  if sudo docker exec $DOCKER_OPTS --rm -t -i ${CONTAINER} sh -c "builtin type bash" >/dev/null 2>&1; then
+    echo sudo docker run --rm -t "$@" -i $id /bin/bash
+    sudo docker run $DOCKER_OPTS --rm -t "$@" -i $id /bin/bash
+  else
+    echo sudo docker run $DOCKER_OPTS --rm -t "$@" -i $id /bin/sh
+    sudo docker run $DOCKER_OPTS --rm -t "$@" -i $id /bin/sh
+  fi
+done
+
+
