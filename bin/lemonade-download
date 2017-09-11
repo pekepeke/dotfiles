@@ -1,0 +1,9 @@
+#!/bin/sh
+
+cd `dirname $0`
+./gobin-download pocke/lemonade
+
+echo ls /tmp
+ls /tmp
+
+
