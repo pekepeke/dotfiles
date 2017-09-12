@@ -4,6 +4,7 @@ clipboard() {
   local copy_cmd
   if [ -n "$LEMONADE_SERVER" ]; then
     cat | lemonade --host $LEMONADE_SERVER copy
+    return $?
   elif [ -n "$PBCOPY_SERVER" ]; then
     local body="" buffer
     body="$(cat)"
