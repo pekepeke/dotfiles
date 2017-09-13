@@ -86,3 +86,8 @@ date --date "@1491304151"
 # pt-query-digest
 pt-query-digest --limit 50 --order-by Query_time:sum --since YYYY-MM-DD 00:00:00 --until YYYY-MM-DD 23:59:59 slow.log > YYYY-MM-DD_by_qtime.txt
 pt-query-digest --limit 50 --order-by Query_time:cnt --since YYYY-MM-DD 00:00:00 --until YYYY-MM-DD 23:59:59 slow.log > YYYY-MM-DD_by_count.txt
+
+# iptables
+iptables -L --line-numbers -n -v
+iptables -t mangle -L --line-numbers -n -v
+iptables -t nat -L --line-numbers -n -v

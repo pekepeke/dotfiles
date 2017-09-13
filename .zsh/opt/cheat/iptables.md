@@ -55,7 +55,7 @@ REJECT     all  --  anywhere             anywhere            reject-with icmp-po
 
 table  | description
 -------|-------------------------------------------------------------
-filter | パケットフィルタリングを参照するテーブルを指定する。
+filter | パケットフィルタリングを参照するテーブルを指定する。(デフォルトのテーブル)
 nat    | 新しいセッションを開くパケットが参照するテーブルを指定する。
 mangle | 特別なパケットが参照するテーブルを指定する。(TOS など)
 raw    | 追跡除外マークをつけるためのテーブル。
@@ -87,6 +87,15 @@ OUTPUT      | 出力（送信）パケット                    | filter, nat, m
 FORWARD     | フォワードするパケット                  | filter
 PREROUTING  | 受信時を宛先アドレスを変換するチェイン  | nat, mangle, raw
 POSTROUTING | 送信時に送信元アドレスを変換するチェイン| nat
+
+#### テーブルとチェインの関係
+
+ テーブル名         | filter      | nat         | mangle
+--------------------|-------------|-------------|------------
+ 利用できるチェイン | FORWARD     | PREROUTING  | PREROUTING
+                    | INPUT       | POSTROUTING | OUTPUT
+                    | OUTPUT      | OUTPUT      |
+
 
 #### ユーザー定義チェイン
 - `-N [chain]` で定義できる
@@ -121,17 +130,18 @@ graph TB
 
 ### target
 
-target    |description
+target    | description
 ----------|---------------------------------------------------------------------------------------
-ACCEPT    |パケットの通過を許可
-DROP      |パケットを破棄
-RETRUN    |チェーン内のルール評価を終了する
-MASQUERADE|「-ｔ nat」と「-A POSTROUTING」と同時に用いて送信元IPとポート番号を書き換える
-REJECT    |パケットを拒否し、ICMPメッセージを返信
-PREROUTING|特定ポートにリダイレクト
-LOG       |Logを採取する
-SNAT      |パケットの送信元アドレスを修正する。natテーブルでpostroutingチェーンでのみ利用できる。
-DNAT      |パケットの送信先アドレスを修正する。natテーブルでpostroutingチェーンでのみ利用できる。
+ACCEPT    | パケットの通過を許可
+DROP      | パケットを破棄
+RETRUN    | チェーン内のルール評価を終了する
+REJECT    | パケットを拒否し、ICMPメッセージを返信
+LOG       | Logを採取する
+SNAT      | パケットの送信元アドレスを修正する。natテーブルでpostroutingチェーンでのみ利用できる。
+DNAT      | パケットの送信先アドレスを修正する。natテーブルでpostroutingチェーンでのみ利用できる。
+MASQUERADE| 「-ｔ nat」と「-A POSTROUTING」と同時に用いて送信元IPとポート番号を書き換える
+REDIRECT  | 特定ポートにリダイレクト
+MARK      | カーネルのなkでのみ維持管理できる特別なフィールド。unsigned int = 4294967296 まで設定可能。
 
 ### rule
 
