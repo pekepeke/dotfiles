@@ -174,3 +174,13 @@ sudo ufw default allow
 sudo ufw default deny
 ```
 
+## iptabls の永続化
+
+```
+apt install iptables-persistent
+
+# /etc/iptables/rules.v4 , /etc/iptables/rules.v6 に保存
+/etc/init.d/iptables-persistent save
+/etc/init.d/iptables-persistent reload
+# /etc/init.d/netfilter-persistent
+```
