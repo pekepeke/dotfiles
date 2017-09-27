@@ -229,6 +229,7 @@ db.logs.createIndex( { month : 1 , uid : 1 } );
 
 use admin
 db.runCommand( { shardcollection : "logdb.logs" , key : { month : 1 , uid : 1 } } );
+db.runCommand( { shardcollection : "logdb.hogelogs" , key : { _id:"hashed"} } );
 
 // 状態確認
 sh.status(true);
