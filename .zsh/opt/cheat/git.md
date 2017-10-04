@@ -455,6 +455,53 @@ git push origin master
 git push origin someFeature
 ```
 
+## bisect
+
+```
+# プログラムで実施する
+git bisect [good commit] [bad commit]
+git bisect run /path/to/script.sh
+
+# 手動で実施
+git bisect [good commit] [bad commit]
+## 手動でテスト
+git bisect bad
+## 手動でテストして問題ない場合
+git bisect good
+
+## 現在チェックアウトしているコミットを確認
+git bisect view
+## 二分探索の家庭を確認
+git bisect log
+## 元の状態に戻す
+git bisect reset
+```
+
+## subtree
+
+```
+# remote に追加
+git remote add hogelib xxx.git
+# 追加
+git subtree add --prefix=lib/hoge hogelib master
+# pull
+git subtree pull --prefix=lib/hoge hogelib master
+# push
+git subtree push --prefix=lib/hoge hogelib master
+# 削除
+rm -rf lib/hoge
+git commit -m "delete hogelib"
+
+# プロジェクトの一部をライブラリとして切り出す
+git subtree split --prefix=lib -b cool-feature
+## lib ディレクトリ以下の変更だけ cool-feature ブランチに分離したので別のリポジトリにいれる
+git co cool-feature
+git push hogelib HEAD
+
+# 切り出しするが、マージも行う場合
+git subtree split --prefix=lib -b cool-feature --rejoin
+```
+
 ## new-workdir
 
 ```

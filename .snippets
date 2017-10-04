@@ -40,7 +40,12 @@ dstat --top-cpu --top-cputime
 dstat --top-io --top-bio
 dstat --top-io-adv --top-bio-adv
 
-# openssl
+# mem,la
+free -t | grep -i "^total" | awk '{ print int(($3/$2) * 100) }'
+less /proc/loadavg | cut -d ' ' -f 1 | awk '{print int($1 * 100); }'
+
+
+#e$MEM -le 40 -a openssl
 openssl x509 -noout -modulus -in *.crt | openssl md5
 openssl rsa  -noout -modulus -in *.key | openssl md5
 openssl req  -noout -modulus -in *.csr | openssl md5

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+if !which docker >/dev/null 2>&1; then
+  echo "command not found : docker " >&2
+fi
+
+(
+  IFS=$'\n';
+  INFOS="$(docker images  | grep '<none>' | peco | awk '{print $1 " " $3 "\n"}')"
+  if [ -n "$INFOS" ]; then
+    for info in $INFOS ; do
+      repo=`echo $info | cut -d' ' -f1`
+      hash=`echo $info | cut -d' ' -f2`
+      echo docker tag $hash $repo:deleting
+      docker tag $hash $repo:deleting
+      echo docker rmi $repo:deleting
+      docker rmi $repo:deleting
+    done
+  fi
+)

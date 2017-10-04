@@ -1,3 +1,7 @@
+## よく使うパス
+- Windows ユーザー設定: %APPDATA%\Microsoft\Windows
+- Google Chrome - %APPDATA%\Google\Chrome
+- Firefox - %APPDATA%\Mozilla\Firefox\Profiles
 
 ## Network
 
