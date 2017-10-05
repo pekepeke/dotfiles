@@ -11,6 +11,7 @@ usage() {
 
 $progname peco/peco
 $progname mattn/jvgrep
+$progname pocke/lemonade
 $progname mattn/files
 $progname motemen/ghq
 $progname ericchiang/pup

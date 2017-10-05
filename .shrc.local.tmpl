@@ -11,7 +11,10 @@
 
 ## pbcopy
 # export PBCOPY_SERVER="http://$(echo $SSH_CLIENT | awk '{print $1}'):10051"
-# export LEMONADE_SERVER=192.168.33.1
+# export LEMONADE_SERVER=$(echo $SSH_CLIENT | awk '{print $1}')
+# if [ -z "$DISPLAY" ]; then
+#   export DISPLAY=localhost:10.0
+# fi
 
 # BING_CLIENTID=""
 # BING_CLIENTSECRET=""

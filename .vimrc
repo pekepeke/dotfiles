@@ -147,6 +147,9 @@ if s:is_win
     call s:cmd_init()
   endif
 else
+  if empty($SHELL)
+    set shell=sh shellredir=>%s\ 2>&1
+  endif
   let $PAGER='less'
   if s:is_mac
     function! s:python_path(ver)

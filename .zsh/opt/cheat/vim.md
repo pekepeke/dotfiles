@@ -4,10 +4,7 @@
 
 ```
 sudo apt-get build-dep vim
-sudo apt-get install gettext libncurses5-dev libacl1-dev libgpm-dev
-sudo apt-get install libperl-dev python-dev python3-dev ruby-dev
-sudo apt-get install lua5.2 liblua5.2-dev
-sudo apt-get install luajit libluajit-5.1
+sudo apt-get install -y gettext libncurses5-dev libacl1-dev libgpm-dev libperl-dev python-dev python3-dev ruby-dev lua5.2 liblua5.2-dev luajit libluajit-5.1
 # gvim
 sudo apt-get install libxmu-dev libgnomeui-dev libxpm-dev
 # gui-unity
