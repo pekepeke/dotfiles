@@ -1,0 +1,9 @@
+#!/bin/sh
+
+TEMP_FILE="$(mktemp -t php.XXXXXX.ini)"
+
+# Using awk to ensure that files ending without newlines do not lead to configuration error
+php -i | grep "\.ini" | grep -o -e '\(/[a-z0-9._-]\+\)\+\.ini' | grep -v xdebug | xargs awk 'FNR==1{print ""}1' > "$TEMP_FILE"
+
+php -n -c "$TEMP_FILE" "$@"
+rm -f "$TEMP_FILE"

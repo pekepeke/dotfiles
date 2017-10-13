@@ -150,7 +150,7 @@ ls_abbrev() {
   esac
 
   local ls_result
-  ls_result=$(CLICOLOR_FORCE=1 COLUMNS=$COLUMNS command $cmd_ls ${opt_ls[@]} | sed $'/^\e\[[0-9;]*m$/d')
+  ls_result=$(CLICOLOR_FORCE=1 COLUMNS=$COLUMNS command timeout -sKILL 2 $cmd_ls ${opt_ls[@]} | sed $'/^\e\[[0-9;]*m$/d')
 
   local ls_lines=$(echo "$ls_result" | wc -l | tr -d ' ')
 
@@ -158,7 +158,7 @@ ls_abbrev() {
     echo "$ls_result" | head -n 5
     echo '...'
     echo "$ls_result" | tail -n 5
-    echo "$(command ls -1 -A | wc -l | tr -d ' ') files exist"
+    echo "$(command timeout -sKILL 2  ls -1 -A | wc -l | tr -d ' ') files exist"
   else
     echo "$ls_result"
   fi
@@ -277,9 +277,9 @@ function _do-enter() {
     1)
       if [[ -d .svn ]]; then
         # BUFFER=" svn status"
-      elif command git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+      elif command timeout -sKILL 2 git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
         # BUFFER=" git status -sb"
-        echo ; command git status -sb
+        echo ; command timeout -sKILL 2 git status -sb
       fi
       ;;
     *)

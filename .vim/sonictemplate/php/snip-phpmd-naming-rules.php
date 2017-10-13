@@ -1,0 +1,6 @@
+@SuppressWarnings(ShortVariable)
+@SuppressWarnings(LongVariable)
+@SuppressWarnings(ShortMethodName)
+@SuppressWarnings(ConstructorWithNameAsEnclosingClass)
+@SuppressWarnings(ConstantNamingConventions)
+@SuppressWarnings(BooleanGetMethodName)
