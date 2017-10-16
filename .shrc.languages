@@ -141,6 +141,13 @@ if ! is_win ; then
     export PHP_BUILD_CONFIGURE_OPTS="--enable-fileinfo --enable-hash --enable-json --enable-bcmath --with-bz2 --enable-ctype --with-iconv --with-gettext --with-pcre-regex --enable-phar --enable-simplexml --enable-dom --with-libxml-dir=/usr --enable-tokenizer --with-mhash=yes --enable-exif --with-gd --enable-calendar --enable-gd-native-ttf --with-jpeg-dir=/usr/local --with-png-dir=/usr/local --enable-mbregex --enable-wddx --enable-zend-multibyte --with-ldap-sasl --with-ldap --with-pgsql --with-pear --with-apxs2=$(which apxs) --disable-fpm"
   fi
 
+  if is_exec php-no-xdebug ; then
+    composer() {
+      php-no-xdebug `builtin command which composer` "$@"
+    }
+  fi
+
+
   # scala {{{2
   if [ -e ~/.svm ]; then
     export SCALA_HOME=~/.svm/current/rt

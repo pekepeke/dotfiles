@@ -26,28 +26,43 @@
     <!-- <exclude name="Squiz.WhiteSpace.ControlStructureSpacing.SpacingAfterOpen"/> -->
   </rule>
   <!-- DocComment -->
-  <!-- <rule ref="Squiz"> -->
-  <!--   <exclude name="Generic.Commenting.DocComment.NonParamGroup" comment="@return 前に改行"/> -->
-  <!--   <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/> -->
-  <!--   <exclude name="Squiz.Commenting.FunctionComment.TypeHintMissing" comment="よくわからない"/> -->
-  <!--   <exclude name="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing" comment="よくわからない"/> -->
-  <!--   <exclude name="Generic.Commenting.DocComment.TagValueIndent"/> -->
-  <!--   <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose"/> -->
-  <!--   <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing"/> -->
-  <!--   <exclude name="Squiz.Commenting.FileComment.Missing"/> -->
-  <!--   <exclude name="Squiz.Operators.ComparisonOperatorUsage.NotAllowed"/> -->
-  <!--   <exclude name="Squiz.Functions.GlobalFunction.Found"/> -->
-  <!--   <exclude name="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/> -->
-  <!--   <exclude name="Squiz.PHP.Heredoc.NotAllowed"/> -->
-  <!--   <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/> -->
-  <!--   <exclude name="Squiz.WhiteSpace.FunctionSpacing.Before"/> -->
-  <!--   <exclude name="Squiz.WhiteSpace.FunctionSpacing.After"/> -->
-  <!--   <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue"/> -->
-  <!--   <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments"/> -->
-  <!--   <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine"/> -->
-  <!--   <exclude name="PEAR.Files.IncludingFile.BracketsNotRequired"/> -->
-  <!--   <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket"/> -->
-  <!--   <1!-- <exclude name=""/> --1> -->
-  <!-- </rule> -->
+  <rule ref="Squiz">
+    <exclude name="Generic.Commenting.DocComment.NonParamGroup" comment="@return 前に改行"/>
+    <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment" comment="パラメータのコメント"/>
+    <exclude name="Squiz.Commenting.FunctionComment.TypeHintMissing" comment="よくわからない"/>
+    <exclude name="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing" comment="よくわからない"/>
+    <exclude name="Squiz.Files.FileExtension.ClassFound" comment=".inc"/>
+    <exclude name="Squiz.Commenting.ClassComment.Missing" comment="class comment"/>
+    <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame" comment="= などの位置合わせ"/>
+    <exclude name="Squiz.Classes.ClassFileName.NoMatch" comment="名前ズレ"/>
+    <exclude name="Squiz.Commenting.FunctionComment.EmptyThrows" comment="throws に対するコメント"/>
+    <exclude name="Squiz.Commenting.InlineComment.NotCapital" comment="最初大文字必須ルール"/>
+    <exclude name="Generic.Commenting.DocComment.ShortNotCapital" comment="最初大文字必須ルール"/>
+    <exclude name="Squiz.PHP.CommentedOutCode.Found" comment="実装コードのコメントアウト"/>
+    <exclude name="Squiz.Arrays.ArrayDeclaration.KeyNotAligned" comment="align関連"/>
+    <exclude name="Squiz.Arrays.ArrayDeclaration.CloseBraceNotAligned" comment="array閉じタグ位置"/>
+    <exclude name="Squiz.Arrays.ArrayDeclaration.SingleLineNotAllowed" comment="１行内の array 値定義"/>
+    <!-- <exclude name="Squiz.WhiteSpace.MemberVarSpacing.Incorrect" comment="メンバ変数前の空行必須"/> -->
+    <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNotAligned" comment="複数行 array のインデント8"/>
+    <exclude name="Generic.Commenting.DocComment.MissingShort" comment="メンバ変数のdescription"/>
+    <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar" comment="\"\"内の変数使用"/>
+    <exclude name="Generic.Commenting.DocComment.TagValueIndent"/>
+    <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose"/>
+    <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing"/>
+    <exclude name="Squiz.Commenting.FileComment.Missing"/>
+    <exclude name="Squiz.Operators.ComparisonOperatorUsage.NotAllowed"/>
+    <exclude name="Squiz.Functions.GlobalFunction.Found"/>
+    <exclude name="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/>
+    <exclude name="Squiz.PHP.Heredoc.NotAllowed"/>
+    <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
+    <exclude name="Squiz.WhiteSpace.FunctionSpacing.Before"/>
+    <exclude name="Squiz.WhiteSpace.FunctionSpacing.After"/>
+    <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue"/>
+    <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments"/>
+    <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine"/>
+    <exclude name="PEAR.Files.IncludingFile.BracketsNotRequired"/>
+    <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket"/>
+    <!-- <exclude name=""/> -->
+  </rule>
 
 </ruleset>

@@ -1,0 +1,7 @@
+{
+    "directories": ["src", "vendor"],
+    "main": "main.php",
+    "output": "example.phar",
+    "chmod": "0755",
+    "stub": true
+}

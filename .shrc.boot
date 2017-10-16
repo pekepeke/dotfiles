@@ -167,7 +167,10 @@ alias vimnone='vim -u NONE'
 alias vimmin="$EDITOR_VIM_MIN"
 alias vi="$EDITOR_VIM_MIN"
 alias view='view -N -u ~/.vimrc.min'
-alias ctags-rb='ctags --langmap=RUBY:.rb --exclude="*.js"  --exclude=".git*"'
+alias ctags-php='ctags --append --langmap=PHP:+.inc -R --php-kinds=cfd --exclude="*.js"  --exclude=".git*"'
+alias ctags-pl='ctags --append --langmap=perl:+.pm --exclude="*.js"  --exclude=".git*"'
+alias ctags-py='ctags --append --langmap=python:+.pm --exclude="*.js"  --exclude=".git*"'
+alias ctags-rb='ctags --append --langmap=RUBY:.rb --exclude="*.js"  --exclude=".git*"'
 gvi () {
   if is_mac ;then
     command mvim --remote-silent "$@" || mvim "$@"
