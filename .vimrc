@@ -2237,6 +2237,14 @@ for i in range(10)
 endfor
 unlet i
 
+if exists(':tmap')
+  " tmaps
+  tnoremap <C-w><C-n> <C-w>:tabnext<CR>
+  tnoremap <C-w><C-p> <C-w>:tabnext<CR>
+  tnoremap <C-\><C-\> <C-\><C-n>
+  tnoremap <Esc> <C-\><C-n>
+endif
+
 " grep
 let s:regexp_todo = 'TODO\|FIXME\|REVIEW\|MARK\|NOTE\|!!!\|\\?\\?\\?\|XXX'
 function! s:set_grep(...) "{{{3

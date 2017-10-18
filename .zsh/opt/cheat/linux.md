@@ -76,3 +76,13 @@ nc -z -w 5 -v www.example.com 80-81
 ## UDP 68
 nc -u -z -w 5 -v www.example.com 68
 ```
+
+## ファイルの復旧(ext3,4限定)
+
+```
+# 実行するとRECOVERED_FILES ディレクトリに復元ファイルができる
+extundelete --after [unitxtime] --restore-all /dev/sda1
+sudo extundelete /dev/sdc2 --after `date --date='2012-01-01 00:00' '+%s'`
+```
+
+
