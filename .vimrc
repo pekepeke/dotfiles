@@ -148,7 +148,9 @@ if s:is_win
   endif
 else
   if empty($SHELL)
-    set shell=sh shellredir=>%s\ 2>&1
+    set shell=sh shellredir=>%s\ 1>&1
+  elseif stridx($SHELL, " ") != -1
+    execute 'set shell='.strpart($SHELL, 0, stridx($SHELL, " "))
   endif
   let $PAGER='less'
   if s:is_mac
