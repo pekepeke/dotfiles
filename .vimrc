@@ -8376,7 +8376,7 @@ elseif s:is_win "{{{3
     command! This silent execute '!start cmd /c "%"'
     command! In silent execute '!start cmd /k cd "'.substitute(expand('%:p:h'), '/', '\\', 'g').'"'
   endif
-  if has(':tmap')
+  if exists(':tmap')
     command! PowerShell terminal ++close ++curwin powershell
     command! Bash terminal ++close ++curwin C:/Windows/System32/bash.exe -c "cd; bash -l"
   endif
