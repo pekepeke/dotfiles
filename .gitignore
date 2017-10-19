@@ -49,6 +49,7 @@ doc/tags-ja
 # vim
 /.vim/vundle
 /.vim/neobundle
+/.vim/neobundle-min
 /.vim/spell
 /.vim/doc/xml-plugin.txt
 /.vim/local_bundle

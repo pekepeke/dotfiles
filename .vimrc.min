@@ -412,6 +412,13 @@ if s:standalone
     au BufWriteCmd	sudo:*,sudo:*/* SudoWrite <afile>
     au FileWriteCmd	sudo:*,sudo:*/* SudoWrite <afile>
   augroup END
+
+  if s:is_win
+    if has(':tmap')
+      command! PowerShell terminal ++close ++curwin powershell
+      command! Bash terminal ++close ++curwin C:/Windows/System32/bash.exe -c "cd; bash -l"
+    endif
+  endif
 endif
 " }}}
 " plugin {{{1
@@ -420,7 +427,7 @@ if v:version > 702
     if has('vim_starting')
       set runtimepath+=~/.vim/neobundle.vim
     endif
-    call neobundle#begin(expand('~/.vim/neobundle'))
+    call neobundle#begin(expand('~/.vim/neobundle-min'))
 
     " minimum plugin
     NeoBundle 'tpope/vim-vividchalk'
