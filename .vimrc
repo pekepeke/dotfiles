@@ -2238,11 +2238,15 @@ endfor
 unlet i
 
 if exists(':tmap')
+  nnoremap <C-w><C-n> :tabnext<CR>
+  nnoremap <C-w><C-p> :tabprev<CR>
+  nnoremap <C-w><C-c> :tabnew<CR>
   " tmaps
   tnoremap <C-w><C-n> <C-w>:tabnext<CR>
-  tnoremap <C-w><C-p> <C-w>:tabnext<CR>
+  tnoremap <C-w><C-p> <C-w>:tabprev<CR>
+  tnoremap <C-w><C-c> <C-w>:tabnew<CR>
   tnoremap <C-\><C-\> <C-\><C-n>
-  tnoremap <Esc> <C-\><C-n>
+  " tnoremap <Esc> <C-\><C-n>
 endif
 
 " grep
