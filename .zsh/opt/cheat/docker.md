@@ -139,10 +139,32 @@ docker inspect [id]
 
 ## tips
 
+### docker-compose でexit code 取得
+
+```
+docker inspect -f '{{ .State.ExitCode }}' $(docker-compose ps -q fugafuga)
+```
+
+### cache dirs
+
+```
+~/.cache/pip
+
+apt-get clean
+/var/cache/apt/*
+
+yum clean all
+/var/cache/yum/*
+
+
+/var/cache/apk/*
+```
+
 ### alpine 関連
 #### バージョン確認
 
 ```
+cat /etc/alpine-release
 ```
 
 #### apk 関連

@@ -1,5 +1,5 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [pager]
-  log = diff-highlight | less
-  show = diff-highlight | less
-  diff = diff-highlight | less
+  log = (diff-highlight 2>/dev/null || cat) | ${PAGER:-less}
+  show = (diff-highlight 2>/dev/null || cat) | ${PAGER:-less}
+  diff = (diff-highlight 2>/dev/null || cat) | ${PAGER:-less}

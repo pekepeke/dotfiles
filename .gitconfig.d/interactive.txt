@@ -1,0 +1,3 @@
+[interactive]
+  diffFilter = (diff-highlight 2>/dev/null || cat)
+

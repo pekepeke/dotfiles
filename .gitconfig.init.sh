@@ -31,6 +31,7 @@ _print_config() {
   ${IF_OSX}path = ~/.gitconfig.d/difftool.osx.txt
   ${IF_WIN}path = ~/.gitconfig.d/difftool.windows.txt
   path = ~/.gitconfig.d/difftool.local.txt
+  path = ~/.gitconfig.d/interactive.txt
 [user]
   name = hoge
   email = hoge+git@gmail.com
@@ -52,9 +53,6 @@ _print_config() {
   ; ff = false
 [mergetool]
   ; prompt = false
-[core]
-  autocrlf = false
-  safecrlf = false
 EOM
 }
 

@@ -22,6 +22,34 @@ sudo apt-get install libgnomeui-dev
 %s@<!--\_.\{-}-->@@g
 ```
 
+### global
+
+```
+" ヒットした行削除
+:g/[word]/d
+" ヒットする行の前後を確認する場合
+:g//z#.5|echo '----'
+" ファイル末尾に移動
+:g/[word]/m$
+" ヒットした行を結合
+:g/[word]/,/<C-r>//j 
+" yyp
+:g/[word]/norm!yyp
+```
+
+### \zs, \zero
+
+```
+%s/\zsBar\zeSecond/Foo/g
+```
+
+### very magic
+
+```
+/\v^a
+%s!\v^aa!fuga!
+```
+
 ### expand
 
 ```
