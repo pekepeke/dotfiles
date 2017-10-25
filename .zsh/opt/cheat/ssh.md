@@ -26,7 +26,7 @@ Host example.com
 # うまく動作しない場合 sshd_config の GatewayPorts を確認する
 ```
 
-## socks proxy(dynamic port foward)
+## socks proxy(dynamic port forward)
 
 ```
 ssh -f -N -D 1080 user@example.com
@@ -97,6 +97,30 @@ _ssh()
     return 0
 }
 complete -F _ssh ssh
+```
+
+### sshd error: could not load host key
+
+#### debian
+
+```
+sudo rm -r /etc/ssh/ssh*key
+sudo dpkg-reconfigure openssh-server
+```
+
+#### centos
+
+```
+sudo rm -r /etc/ssh/ssh*key
+sudo systemctl restart sshd
+```
+
+#### manual
+
+```
+sudo ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -P ""
+sudo ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key -P ""
+sudo ssh-keygen -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key -P ""
 ```
 
 ## sshfuse

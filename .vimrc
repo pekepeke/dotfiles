@@ -1488,6 +1488,7 @@ NeoBundle 'aklt/plantuml-syntax'
 " NeoBundle 'maxmeyer/vim-taskjuggler'
 NeoBundle 'hara/vim-opf'
 NeoBundle 'mozamimy/nymphia.vim'
+NeoBundle 'heavenshell/vim-misspell'
 
 NeoBundleLazy 'moznion/hateblo.vim', {
 \ 'on_cmd': [
@@ -2244,6 +2245,7 @@ if exists(':tmap')
   nnoremap <C-w><C-p> :tabprev<CR>
   nnoremap <C-w><C-c> :tabnew<CR>
   " tmaps
+  tnoremap <C-w><C-w> <C-\><C-w>
   tnoremap <C-w><C-n> <C-w>:tabnext<CR>
   tnoremap <C-w><C-p> <C-w>:tabprev<CR>
   tnoremap <C-w><C-c> <C-w>:tabnew<CR>
@@ -2846,6 +2848,19 @@ let g:vimrc_enabled_plugins = {
   \ 'endwize': s:bundle.is_installed('endwize.vim'),
   \ 'php_namespace': s:bundle.is_installed('vim-php-namespace'),
   \ }
+
+" misspell.vim
+if s:bundle.is_installed('vim-misspell') && executable('misspell')
+  " autocmd BufWritePost * call misspell#run()
+  function! s:misspell_after(...)
+    execute ':QuickfixStatusEnable'
+    execute ':HierUpdate'
+  endfunction
+
+  let g:misspell_callbacks = {
+    \ 'after_run': function('s:misspell_after')
+    \ }
+endif
 
 " vim-monster
 if s:bundle.is_installed('vim-monster')

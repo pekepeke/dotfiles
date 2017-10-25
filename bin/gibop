@@ -3,5 +3,5 @@
 LANGS="$(gibo -l | peco)"
 
 if [ -n "$LANGS" ] ; then
-  gibo $LANGS
+  echo gibo $LANGS
 fi
