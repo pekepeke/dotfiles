@@ -3,6 +3,14 @@ git
 
 ## tips
 
+### 無視ファイルを確認する
+
+```
+git status --ignored
+# add 前のものも表示される
+git ls-files --other --ignored --exclude-standard
+```
+
 ### Special alias
 
 - `ORIG_HEAD`
