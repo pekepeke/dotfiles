@@ -1,21 +1,26 @@
-web:
-  build: .
-  command: bash -l -c 'bundle exec rails server --port=3000 --binding=0.0.0.0'
-  ports:
-    - "43000:3000"
-  volumes:
-    - ./app_src:/app
-  links:
-    - mysql
-mysql:
-  image: mysql:5.6
-  ports:
-    - '43306:3306'
-  volumes:
-    - ./mysql:/var/lib/mysql
-  environment:
-    MYSQL_ROOT_PASSWORD: root
-  # password: <%= ENV['MYSQL_ENV_MYSQL_ROOT_PASSWORD'] %>
-  # host: <%= ENV['MYSQL_PORT_3306_TCP_ADDR'] %>
-  # port: <%= ENV['MYSQL_PORT_3306_TCP_PORT'] %>
+version: '3'
+services:
+  web:
+    build: .
+    command: bash -l -c 'bundle exec rails server --port=3000 --binding=0.0.0.0'
+    ports:
+      - "43000:3000"
+    volumes:
+      - ./app_src:/app
+    links:
+      - mysql
+  mysql:
+    image: mysql:5.7
+    ports:
+      - '43306:3306'
+    volumes:
+      - mysql-storage:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    # password: <%= ENV['MYSQL_ENV_MYSQL_ROOT_PASSWORD'] %>
+    # host: <%= ENV['MYSQL_PORT_3306_TCP_ADDR'] %>
+    # port: <%= ENV['MYSQL_PORT_3306_TCP_PORT'] %>
 
+volumes:
+  mysql-storage:
+    driver: local
