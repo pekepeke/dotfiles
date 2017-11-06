@@ -3,5 +3,8 @@
 LANGS="$(gibo -l | peco)"
 
 if [ -n "$LANGS" ] ; then
+  echo $LANGS | grep Windows >/dev/null 2>&1 || LANGS="$LANGS Windows"
+  echo $LANGS | grep macOS >/dev/null 2>&1 || LANGS="$LANGS macOS"
+  echo $LANGS | grep Linux >/dev/null 2>&1 || LANGS="$LANGS Linux"
   echo gibo $LANGS
 fi

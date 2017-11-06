@@ -148,8 +148,6 @@ docker inspect -f '{{ .State.ExitCode }}' $(docker-compose ps -q fugafuga)
 ### cache dirs
 
 ```
-~/.cache/pip
-
 apt-get clean
 /var/cache/apt/*
 
@@ -158,6 +156,13 @@ yum clean all
 
 
 /var/cache/apk/*
+
+# ruby
+~/.gem/*/*
+# python
+~/.cache/pip
+# php
+/tmp/pear/*/*
 ```
 
 ### alpine 関連

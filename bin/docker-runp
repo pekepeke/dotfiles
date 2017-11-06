@@ -1,11 +1,15 @@
 #!/bin/bash
 
 ENTRYPOINT=""
-CMD=/bin/sh
+CMD=/bin/bash
+FALLBACK_CMD=/bin/sh
 if [ "$1" = "-e" ]; then
   ENTRYPOINT="--entrypoint /bin/sh"
   CMD=""
   shift
+elif [ "$1" = "--" ]; then
+  shift
+  CMD="$@"
 fi
 
 IDS="$(docker images | peco | awk '{print $3}')"
@@ -16,6 +20,7 @@ for id in $IDS; do
   # else
   # fi
   echo sudo docker run $ENTRYPOINT --rm -t "$@" -i $id $CMD
-  sudo docker run $ENTRYPOINT --rm -t "$@" -i $id $CMD
+  sudo docker run $ENTRYPOINT --rm -t "$@" -i $id $CMD \
+  || sudo docker run $ENTRYPOINT --rm -t "$@" -i $id $FALLBACK_CMD
 done
 

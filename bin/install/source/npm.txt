@@ -10,12 +10,14 @@ jshint
 jsonlint
 csslint
 mdr
-electron-prebuilt
-shiba
+@fand/kao
+# electron-prebuilt
+# shiba
 # recess
 # uglify-js
 
 yo
+yarn
 # grunt-cli
 # grunt-init
 bower

@@ -3,6 +3,14 @@ git
 
 ## tips
 
+### 特定のブランチ、タグで clone
+
+```
+git clone --depth=1 -b develop git://github.com/sferik/twitter/
+# refs/tags/の指定は不要
+git clone --depth=1 -b v0.9.7 git://github.com/sferik/twitter/
+```
+
 ### 無視ファイルを確認する
 
 ```

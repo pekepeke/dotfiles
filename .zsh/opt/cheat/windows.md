@@ -1,5 +1,6 @@
 ## よく使うパス
 - Windows ユーザー設定: %APPDATA%\Microsoft\Windows
+- スタートメニュー: "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
 - Google Chrome - %APPDATA%\Google\Chrome
 - Firefox - %APPDATA%\Mozilla\Firefox\Profiles
 
