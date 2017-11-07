@@ -7,7 +7,8 @@ CONTAINER=$(docker ps | peco | awk '{print $NF}')
 # echo $PID
 
 if [ -n "$CONTAINER" ]; then
-  if sudo docker exec -t -i ${CONTAINER} sh -c "builtin type bash" >/dev/null 2>&1; then
+  # if sudo docker exec -t -i ${CONTAINER} sh -c "builtin type bash" >/dev/null 2>&1; then
+  if sudo docker exec -t -i ${CONTAINER} sh -c "type bash" >/dev/null 2>&1; then
     sudo docker exec -it "${CONTAINER}" bash
   else
     sudo docker exec -it "${CONTAINER}" sh

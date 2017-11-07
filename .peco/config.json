@@ -11,7 +11,7 @@
     "Migemo": {
       "Cmd": "migemogrep",
       "Args": ["$QUERY"],
-      "BufferThreshold": 100
+      "BufferThreshold": 20
     }
   },
   "Keymap": {

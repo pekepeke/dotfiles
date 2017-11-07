@@ -5,7 +5,9 @@ epub 作成ツール
 npm -g i gitbook-cli
 
 gitbook init   # プロジェクト作成
-echo '{"plugins": ["mermaid-gb3", "plantuml"]}' > book.json
+echo '{"plugins": ["mermaid-gb3", "uml"]}' > book.json
+echo '{"plugins": ["mermaid-gb3", "uml", "include", "klipse", "swagger"]}' > book.json
+
 gitbook install
 gitbook server # サーバー起動
 # html 出力
