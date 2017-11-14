@@ -1946,6 +1946,7 @@ NeoBundleLazy 'anyakichi/vim-textobj-ifdef', {
 NeoBundle 'akiyan/vim-textobj-php'
 " , {
 " \ 'on_map' : [['nvo', '<Plug>(textobj-php-', ]]}
+NeoBundle 'deris/vim-textobj-ipmac'
 
 " vundle end {{{2
   NeoBundleSaveCache
