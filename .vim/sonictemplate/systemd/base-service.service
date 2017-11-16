@@ -1,0 +1,16 @@
+[Unit]
+Description= #Your service description
+After=network.target
+
+[Service]
+Type=simple
+User=root
+EnvironmentFile= # path to environment file or comment out this line
+WorkingDirectory= # path to current directory or comment out this line
+ExecStart= #path or command
+ExecStop=/bin/kill -WINCH ${MAINPID}
+KillSignal=SIGCONT
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
