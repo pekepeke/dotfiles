@@ -2,6 +2,15 @@ debian memo
 ===========
 
 ## ubuntu
+### apt-file
+
+```
+sudo apt install apt-file
+# どのパッケージに含まれているかを調査できるやつ
+apt-file update
+apt-file search apt-add-repository
+```
+
 ### golang 1.8
 
 ```
