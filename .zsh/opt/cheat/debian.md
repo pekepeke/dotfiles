@@ -15,7 +15,7 @@ apt-file search apt-add-repository
 
 ```
 # add-apt-repository がない場合
-sudo apt-get install software-properties-common python-software-properties
+sudo apt-get install software-properties-common python-software-properties  apt-transport-https ca-certificates curl
 # install golang 1.8
 sudo add-apt-repository ppa:longsleep/golang-backports
 sudo apt-get update

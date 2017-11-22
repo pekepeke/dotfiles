@@ -58,6 +58,10 @@ sudo dd if=/dev/zero of=/EMPTY bs=1M
 sudo rm -f /EMPTY
 export HISTSIZE=0
 rm ~/.bash_history
+rm ~/.viminfo
+sudo rm /root/.viminfo
+sudo rm -rf /root/.cache/pip
+
 
 exit 
 vagrant package --output centos7.box

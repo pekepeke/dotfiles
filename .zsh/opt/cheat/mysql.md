@@ -88,6 +88,12 @@ SET GLOBAL general_log = 'ON';
 SET GLOBAL general_log = 'OFF';
 ```
 
+## 一括削除
+
+```
+select CONCAT('TRUNCATE TABLE ', table_schema, '.', table_name, ';') from information_schema.tables where table_schema IN ('hogedb');
+```
+
 ## テーブル、カラムの調査
 
 ```

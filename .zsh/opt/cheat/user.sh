@@ -1,5 +1,7 @@
 useradd www
 passwd hogehoge
+# デフォ確認
+useradd -D
 # グループ変更
 usermod -G wheel www
 sudo usermod -G sudo,docker $(whoami)

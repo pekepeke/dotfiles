@@ -7,6 +7,26 @@ Docker
 - dockerize
 	- https://github.com/jwilder/dockerize
 
+## install
+
+```
+sudo apt-get update
+
+sudo apt-get install \
+  linux-image-extra-$(uname -r) \
+  linux-image-extra-virtual
+sudo apt-get install \
+  apt-file \
+  apt-transport-https \
+  ca-certificates \
+  curl \
+  software-properties-common
+curl -fsSL get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+sudo gpasswd -a hoge docker
+```
+
 ## basic
 
 ```bash
