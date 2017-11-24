@@ -479,7 +479,7 @@ git push origin someFeature
 
 ```
 # プログラムで実施する
-git bisect [good commit] [bad commit]
+git bisect [bad commit] [good commit]
 git bisect run /path/to/script.sh
 
 # 手動で実施
