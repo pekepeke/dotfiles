@@ -75,7 +75,10 @@
   edit-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; vim `f`"
   add-unmerged = "!f() { git ls-files --unmerged | cut -f2 | sort -u ; }; git add `f`"
   log-graph = log --graph --date=short --pretty=format:'%Cgreen%h %cd %Cblue%cn %Creset%s'
+  graph = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %Cgreen%d%Creset %s\" --all --date=short
   log-all = log --graph --all --color --pretty='%x09%h %cn%x09%s %Cred%d%Creset'
+  logall = log-all
+  loga = log-all
   diffh = !git diff `git log --oneline --branches | peco | awk '{print $1}' | rev | tac | rev`
   dh = !git diff `git log --oneline --branches | peco | awk '{print $1}' | rev | tac | rev`
   d = diff

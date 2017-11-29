@@ -2,6 +2,8 @@
 [diff]
 [diff "sjis"]
 	textconv = tconv -f sjis
+[diff "cp932"]
+	textconv = tconv -f cp932
 [diff "euc"]
 	textconv = tconv -f eucjp-win
 [diff "utf16"]
