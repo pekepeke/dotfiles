@@ -1,8 +1,20 @@
 ## よく使うパス
 - Windows ユーザー設定: %APPDATA%\Microsoft\Windows
 - スタートメニュー: "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup"
+- プログラム(All): %ProgramData%\Microsoft\Windows\Start Menu\Programs
 - Google Chrome - %APPDATA%\Google\Chrome
 - Firefox - %APPDATA%\Mozilla\Firefox\Profiles
+
+## Tips
+### which
+
+```
+where xcopy
+# PSの場合
+gcm notepad
+Get-Command notepad
+gcm notepad | fl
+```
 
 ## Network
 

@@ -1,0 +1,67 @@
+#!/bin/bash
+
+print_command() {
+  # https://qiita.com/inouet/items/3f1f1557b09f9ad2358b
+  # https://gist.github.com/robatron/01b9a1061e1e8b35d270
+  cat <<'EOM'
+# !/bin/sh
+#
+# .git/hooks/commit-msg
+#
+
+
+COMMIT_FILE=$1
+COMMIT_MSG=$(cat $1)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+JIRA_ID=$(echo "$CURRENT_BRANCH" | grep -Eo "[A-Z0-9]{1,10}-?[A-Z0-9]+-\d+")
+MSG_WITHOUT_COMMENT=$(grep -v '^\s*#' $COMMIT_FILE |grep -v '^\s*$')
+
+if [ -n "$JIRA_ID" -a -n "$MSG_WITHOUT_COMMENT" ]; then
+    echo "[$JIRA_ID] $COMMIT_MSG" > $COMMIT_FILE
+    echo "JIRA ID '$JIRA_ID', matched in current branch name, prepended to commit message. (Use --no-verify to skip)"
+fi
+EOM
+}
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+put_err() {
+  echo "$@" 1>&2
+}
+
+main() {
+  if [ ! -d .git/hooks ]; then
+    err_put "directory not found: .git/hooks"
+  fi
+  if [ -e .git/hooks/commit-msg ]; then
+    err_put "already exists: .git/hooks/commit-msg"
+  fi
+  print_command > .git/hooks/commit-msg
+  chmod +x .git/hooks/commit-msg
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

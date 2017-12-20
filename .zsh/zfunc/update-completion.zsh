@@ -36,6 +36,8 @@ update_complation() {
   for f in "" -doc -galaxy -playbook -pull -vault; do
     curl -Lo _ansible${f} https://raw.githubusercontent.com/jdottdot/ansible-zsh-completion/master/_ansible${f}
   done
+  curl -LO https://raw.githubusercontent.com/pocke/ptmux/master/zsh_completions/_ptmux
+  curl -Lo _tmass https://raw.githubusercontent.com/fzerorubigd/tmass/master/tools/zsh_tmass
 }
 
 update_compfunc() {

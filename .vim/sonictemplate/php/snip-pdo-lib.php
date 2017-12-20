@@ -9,18 +9,21 @@
 //     )
 // ));
 
-class DBFactory {
+class DBFactory
+{
     static $options = array();
     static $defaultValues = array(
         "attr" => array(),
     );
 
-    static function set($options) {
-        self::$options = $options;
+    public static function set($options, $name = "default")
+    {
+        self::$options[$name] = $options;
     }
 
-    static function connect() {
-        $options = self::$options;
+    public static function connect($name = "default")
+    {
+        $options = self::$options[$name];
         return new DBHandler(
             self::get("dsn"),
             self::get("user"),
@@ -29,12 +32,13 @@ class DBFactory {
         );
     }
 
-    static function get($key = null) {
+    public static function get($key = null, $name = "default")
+    {
         if (is_null($key)) {
-            return self::$options;
+            return self::$options[$name];
         }
-        if (isset(self::$options[$key])) {
-            return self::$options[$key];
+        if (isset(self::$options[$name][$key])) {
+            return self::$options[$name][$key];
         }
         if (isset(self::$defaultValues[$key])) {
             return self::$defaultValues[$key];
@@ -43,10 +47,12 @@ class DBFactory {
     }
 }
 
-class DBHandler_RuntimeException extends RuntimeException {
-    var $lastQuery = null;
-    var $lastQueryParams = null;
-    public function setLastQuery($sql, $params) {
+class DBHandler_RuntimeException extends RuntimeException
+{
+    public $lastQuery = null;
+    public $lastQueryParams = null;
+    public function setLastQuery($sql, $params)
+    {
         $this->lastQuery = $sql;
         $this->lastQueryParams = $params;
         if (!is_null($this->lastQuery)) {
@@ -56,7 +62,8 @@ class DBHandler_RuntimeException extends RuntimeException {
         }
     }
 
-    static function handle($e, $sql = null, $params = array()) {
+    static function handle($e, $sql = null, $params = array())
+    {
         // $ex = new DBHandler_RuntimeException($e->getMessage(), (int)$e->getCode(), $e);
         $ex = new DBHandler_RuntimeException($e->getMessage(), (int)$e->getCode());
         if (!is_null($sql)) {
@@ -66,10 +73,12 @@ class DBHandler_RuntimeException extends RuntimeException {
     }
 }
 
-class DBHandler {
-    var $dbh;
+class DBHandler
+{
+    public $dbh;
 
-    function __construct($dsn, $user = null, $password = null, $attr = array()) {
+    public function __construct($dsn, $user = null, $password = null, $attr = array())
+    {
         try {
             $this->dbh = new PDO($dsn, $user, $password, $attr);
             $this->dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -78,7 +87,8 @@ class DBHandler {
         }
     }
 
-    function find($sql, $params = array()) {
+    public function find($sql, $params = array())
+    {
         try {
             $stmt = $this->dbh->prepare($sql);
             if ($stmt->execute($params) === false) {
@@ -96,11 +106,13 @@ class DBHandler {
         return $rows;
     }
 
-    function findAll($sql, $params = array()) {
+    public function all($sql, $params = array())
+    {
         return $this->find($sql, $params);
     }
 
-    function findFirst($sql, $params = array()) {
+    public function first($sql, $params = array())
+    {
         try {
             $stmt = $this->dbh->prepare($sql);
             if ($stmt->execute($params) === false) {
@@ -115,7 +127,8 @@ class DBHandler {
         return $r;
     }
 
-    function exec($sql, $params = array()) {
+    public function exec($sql, $params = array())
+    {
         try {
             $stmt = $this->dbh->prepare($sql);
             if ($stmt->execute($params) === false) {
