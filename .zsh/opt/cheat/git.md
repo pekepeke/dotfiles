@@ -19,6 +19,14 @@ git status --ignored
 git ls-files --other --ignored --exclude-standard
 ```
 
+### worktree
+
+```
+git worktree add ../hogehoge develop
+git worktree list
+git worktree prune
+```
+
 ### Special alias
 
 - `ORIG_HEAD`
