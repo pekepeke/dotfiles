@@ -8,6 +8,7 @@ mysqldump -u root -p fuga --compact --opt --default-character-set=binary | gzip 
 mysqldump -u root --all-databases --compact --opt --default-character-set=binary > dump.sql
 mysqldump --single-transaction --skip-lock-tables --opt --flush-logs -u root -p > dump_$(date +'%Y%m%d').sql
 mysqldump -uroot -pxxxxxxxx --flush-logs  --master-data=2 --opt --single-transaction --default-character-set=utf8 --hex-blob [db] > dump.sql
+mysqldump -uroot -pxxxxxxxx --flush-logs  --master-data=2 --opt --single-transaction --default-character-set=utf8 --hex-blob [db] [tbl1] [tbl2] > dump.sql
 
 # create
 mysqldump --no-data --compact --skip-lock-tables --default-character-set=binary schema > db_new.sql

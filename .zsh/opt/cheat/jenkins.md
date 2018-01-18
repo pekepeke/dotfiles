@@ -24,7 +24,7 @@ void system(String command){
   def err = new StringBuilder()
   
   println "> $command"
-  def proc = command.execute()
+  def proc = commandcute()
   proc.waitForProcessOutput(out, err)
   if (out) println "out:\n$out"
   if (err) println "err:\n$err"
@@ -42,6 +42,69 @@ java -jar jenkins-cli.jar --username [user] --password [pass]
 java -jar jenkins-cli.jar -noCertificateCheck -s [JENKINS_URL] build [JOB]
 java -jar jenkins-cli.jar -s http://localhost:8080 copy-job [src] [dst]
 java -jar jenkins-cli.jar -s http://localhost:8080 delete-builds myproject '1-7499'
+
+# ジョブ一覧
+java -jar jenkins-cli.jar -s http://localhost:8080 list-jobs
+# ジョブの無効化
+java -jar jenkins-cli.jar -s http://localhost:8080 disable-job "ジョブ名"
+# ジョブの有効化
+java -jar jenkins-cli.jar -s http://localhost:8080 enable-job "ジョブ名"
+
 ```
 
+| JenkinsCLIで利用可能なコマンド |                                                                                                                  |
+|--------------------------------|------------------------------------------------------------------------------------------------------------------|
+| build                          | ジョブをビルドします。オプションで完了するまで待ちます。                                                         |
+| cancel-quiet-down              | quite-downコマンドの処理をキャンセルします。                                                                     |
+| clear-queue                    | ビルドキューをクリアします。                                                                                     |
+| connect-node                   | ノードと再接続します。                                                                                           |
+| console                        | ビルドのコンソール出力を取得します。                                                                             |
+| copy-job                       | ジョブをコピーします。                                                                                           |
+| create-job                     | 標準入力をConfig XMLとして読み込み、ジョブを新規に作成します。                                                   |
+| create-node                    | 標準入力をConfig XMLとして読み込み、ノードを新規に作成します。                                                   |
+| create-view                    | Creates a new view by reading stdin as a XML configuration.                                                      |
+| delete-builds                  | ビルドを削除します。                                                                                             |
+| delete-job                     | ジョブを削除します。                                                                                             |
+| delete-node                    | ノードを削除します。                                                                                             |
+| delete-view                    | Deletes view.                                                                                                    |
+| disable-job                    | ジョブを無効化します。                                                                                           |
+| disconnect-node                | ノードとの接続を切断します。                                                                                     |
+| enable-job                     | ジョブを有効化します。                                                                                           |
+| get-job                        | ジョブ定義XMLを標準出力に出力します。                                                                            |
+| get-node                       | ノード定義XMLを標準出力に出力します。                                                                            |
+| get-view                       | Dumps the view definition XML to stdout.                                                                         |
+| groovy                         | 指定したGroovyスクリプトを実行します。                                                                           |
+| groovysh                       | 対話式のGroovyシェルを起動します。                                                                               |
+| help                           | 利用可能なコマンドの一覧を表示します。                                                                           |
+| install-plugin                 | ファイル、URLおよびアップデートセンターからプラグインをインストールします。                                      |
+| install-tool                   | ツールの自動インストールを実行し、インストール先を表示します。                                                   |
+| keep-build                     | ビルドを保存するようにマークします。                                                                             |
+| list-changes                   | 指定したビルドの変更履歴を表示します。                                                                           |
+| list-jobs                      | 指定したビューかItem Groupのすべてのジョブを一覧表示します。                                                     |
+| list-plugins                   | インストール済みのプラグインを一覧表示します。                                                                   |
+| login                          | 認証情報を保存して、認証情報なしにコマンドを実行できるようにします。                                             |
+| logout                         | loginコマンドで保存した認証情報を削除します。                                                                    |
+| mail                           | 標準入力の内容をメールとして送信します。                                                                         |
+| offline-node                   | online-nodeコマンドが実行されるまで、ビルドを実行するノードの使用を一時的に停止します。                          |
+| online-node                    | 直前に実行した"online-node"コマンドを取り消し、ビルドを実行するノードの使用を再開します。                        |
+| quiet-down                     | Jenkinsは再起動に向けて終了処理を実施中です。ビルドを開始しないでください。                                      |
+| reload-configuration           | メモリにあるすべてのデータを破棄して、ファイルから再ロードします。設定ファイルを直接修正した場合に役に立ちます。 |
+| reload-job                     | Reloads this job from disk.                                                                                      |
+| restart                        | Jenkinsを再起動します。                                                                                          |
+| safe-restart                   | Jenkinsを安全に再起動します。                                                                                    |
+| safe-shutdown                  | Jenkinsを終了モードに変更しビルドが完了後に、シャットダウンします。                                              |
+| session-id                     | Jenkinsの再起動ごとに変化するセッションIDを出力します。                                                          |
+| set-build-description          | ビルドの説明を設定します。                                                                                       |
+| set-build-display-name         | ビルドの名称を設定します。                                                                                       |
+| set-build-parameter            | 現在実行中のビルドのビルドパラメータを設定、更新します。                                                         |
+| set-build-result               | 現在のビルドの結果を設定します。ビルド中に呼び出された場合のみ動作します。                                       |
+| set-external-build-result      | Set external monitor job result.                                                                                 |
+| shutdown                       | Jenkinsサーバーを直ちにシャットダウンします。                                                                    |
+| update-job                     | 標準入力からの情報でジョブ定義XMLを更新します。get-jobコマンドの正反対のことを行います。                         |
+| update-node                    | 標準入力からの情報でノード定義XMLを更新します。get-nodeコマンドの正反対のことを行います。                        |
+| update-view                    | Updates the view definition XML from stdin. The opposite of the get-view command.                                |
+| version                        | バージョンを表示します。                                                                                         |
+| wait-node-offline              | ノードがオフラインになるのを待ちます。                                                                           |
+| wait-node-online               | ノードがオンラインになるのを待ちます。                                                                           |
+| who-am-i                       | 認証情報を表示します。                                                                                           |
 
