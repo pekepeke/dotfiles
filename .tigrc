@@ -46,11 +46,13 @@ bind diff <Ctrl-w> view-next
 bind diff ; view-next
 bind diff l scroll-right
 bind diff h scroll-left
+bind diff R !git rebase -i %(commit)
 
 bind main Y !@git pbcopy %(commit)
 bind main H view-refs
 bind main <Ctrl-g> view-grep
 bind main ! !?git revert %(commit)
+bind main R !git rebase -i %(commit)
 # bind main C !?git checkout %(commit)
 bind branch n !git checkout -b %(prompt) %(branch)
 

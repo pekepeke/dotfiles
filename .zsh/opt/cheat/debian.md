@@ -125,6 +125,13 @@ ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 - `dpkg -L`
 	- インストールした時のファイルの一覧
 
+### GPGエラー対処
+
+```
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys [NO_PUBKEY]
+sudo apt-get update
+```
+
 ## apparmor
 
 ### profile の作成

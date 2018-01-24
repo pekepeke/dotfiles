@@ -1,4 +1,5 @@
 # vim:fdm=marker sw=2 ts=2 ft=sh noexpandtab:
+commitizen
 babel
 coffee-script
 js2coffee
