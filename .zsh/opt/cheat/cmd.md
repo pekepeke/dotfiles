@@ -5,6 +5,13 @@
 find /hoge/fuga -ctime +30 -type f -print | xargs --no-run-if-empty rm
 ```
 
+## ファイルの空き容量確認
+
+```
+du -x -s ./* | sort -n
+du -h --max-depth=1 /
+```
+
 ## grep
 
 ```
@@ -21,12 +28,35 @@ grep -P "\d{3}"
 grep -oP '(?<=「).+(?=」)'
 ```
 
+## camerlize/underscore
+
+```
+# camelize
+echo $str | sed -re "s/(^|_)(.)/\U\2/g"
+echo $str | perl -pe 's/(|)./uc($&)/ge;s///g'
+
+# underscore
+echo $Str | sed -r -e 's/^([A-Z])/\L\1\E/' -e 's/([A-Z])/_\L\1\E/g'
+echo $Str | perl -pe 's/(^[A-Z])/lc($&)/ge;s/([A-Z])/_$&/g;s/([A-Z])/lc($&)/ge'
+```
+
 ## tmux
 ### 全部の画面に同じコマンドを送る
 
 
 ```
 Ctrl+b :set-window-option synchronize-panes on
+```
+
+## netcat
+
+```
+## 単体ポート（80番HTTPの通信確認）
+nc -zv <ip address> 80
+## 複数ポート（22、80、8080の通信確認）
+nc -zv <ip address> 22 80 8080
+## ポートレンジ指定
+nc -zv <ip address> 20-30
 ```
 
 ## tail

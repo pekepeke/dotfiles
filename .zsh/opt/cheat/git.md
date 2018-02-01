@@ -167,6 +167,33 @@ t rebase -i --root
 git rebase --onto develop master feature/fuga
 # pull-r を取り消し
 git revert -m 1 [hash]
+
+# BRANCH1とBRANCH2に共通するベースコミットを表示する
+git merge-base BRANCH1 BRANCH2 
+
+# HEADのすべてのファイルを表示する
+git ls-tree HEAD 
+
+# masterブランチをチェックアウトする。現在のブランチに変更があれば、それらは破棄される。
+git checkout -f master
+
+# 現在のリポジトリにあるリモートの名前を表示する
+git remote
+
+# リモートの名前を、対応するリモートURLとともに表示する
+git remote -v show
+
+# BOBという名前のリモートを追加する。そのリモートは、ローカルリポジトリ../math.bobを指し示す。
+git remote add BOB ../math.bob
+
+# リモートリポジトリREMOTEのリファレンスを表示する（現在のローカルリポジトリを指定するには、REMOTEとして . を使う）
+git ls-remote REMOTE
+
+# リモートとのネットワーク通信の内容を表示する
+GIT_TRACE_PACKET=1 git ls-remote REMOTE 
+
+# 名前にBRANCHという言葉が含まれているGit構成設定のリストを表示する
+git config --get-regexp BRANCH 
 ```
 
 ## ブランチ操作

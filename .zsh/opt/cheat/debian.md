@@ -2,6 +2,19 @@ debian memo
 ===========
 
 ## ubuntu
+### swap 追加
+
+```
+dd if=/dev/zero of=/swap.extended bs=1M count=2048
+mkswap /swap.extended
+swapon /swap.extended
+```
+
+- /etc/fstab に記載
+```
+/swap.extended          swap                    swap    defaults        0 0
+```
+
 ### apt-file
 
 ```
