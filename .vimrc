@@ -2050,6 +2050,7 @@ if s:is_mac
     endif
   endfunction
 endif
+MyAutoCmd FileType gitcommit let &comments=":;" | let &commentstring="; %s"
 
 MyAutoCmd BufReadPost *
 \   if &modifiable && !search('[^\x00-\x7F]', 'cnw')

@@ -290,3 +290,24 @@ PARTITION pmax VALUES LESS THAN MAXVALUE);
 ALTER TABLE test_log_1000000 REMOVE PARTITIONING;
 ```
 
+## OS側のチューニング
+
+```
+http://www.jonathanlevin.co.uk/2018/02/my-mysql-linux-tuning-checklist.html
+ Things I look for when optimising or debugging a Linux OS:
+
+    IOschedular (noop or deadline)
+    Linux Kernel > 3.18 (multi queuing)
+    IRQbalance > 1.0.8
+    File System: noatime, nobarrier
+        ext4: data=ordered
+        xfs: 64k
+        logfiles in different partition (if possible)
+    Swapiness
+    Jemalloc (if needed)
+    Transparent hugepages
+    Ulimit (open files)
+    Security
+        IPtables
+        PAM security
+```

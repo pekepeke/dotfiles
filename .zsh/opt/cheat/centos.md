@@ -62,6 +62,13 @@ sudo yum-config-manager --enable docker-ce-edge
 sudo yum install docker-ce
 ```
 
+## centos7
+
+```
+timedatectl set-timezone Asia/Tokyo
+localectl set-locale LANG=ja_JP.utf8
+```
+
 ## memotitle
 ### 参考記事など
 - https://www.sssg.org/blogs/naoya/archives/1144

@@ -16,6 +16,12 @@
 
 JENKINS_URL, JOB_URL, BUILD_URL
 
+### CSP
+
+```
+System.setProperty("hudson.model.DirectoryBrowserSupport.CSP", "sandbox allow-scripts allow-same-origin; default-src 'self' * data:; img-src 'self' data: *; style-src 'self' 'unsafe-inline' *; font-src 'self' data: *; child-src 'self' *; frame-src 'self' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; frame-ancestors 'self' *;")
+```
+
 ### Scripting
 
 ```

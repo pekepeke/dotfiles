@@ -590,6 +590,7 @@ endfunction "}}}
 if has('user_commands')
   MyAutoCmd BufWritePre * call s:auto_mkdir(expand('<afile>:p:h'), v:cmdbang)
 endif
+MyAutoCmd FileType gitcommit let &comments=":;" | let &commentstring="; %s"
 
 " plugin settings {{{1
 let g:vimrc_enabled_plugins = {}

@@ -6,3 +6,4 @@
   attributesfile = ~/.gitattributes_global
   autocrlf = false
   safecrlf = false
+	commentchar = ";"

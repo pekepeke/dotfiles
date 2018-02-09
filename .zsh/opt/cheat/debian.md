@@ -2,6 +2,9 @@ debian memo
 ===========
 
 ## ubuntu
+### パッケージ検索
+- https://packages.ubuntu.com/
+
 ### swap 追加
 
 ```
