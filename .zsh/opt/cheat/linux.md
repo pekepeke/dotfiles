@@ -85,4 +85,80 @@ extundelete --after [unitxtime] --restore-all /dev/sda1
 sudo extundelete /dev/sdc2 --after `date --date='2012-01-01 00:00' '+%s'`
 ```
 
+## ネットワーク
+### 静的ルーティング設定
 
+```
+# ルーティングテーブル表示
+netstat -nr
+```
+
+#### routeコマンド
+
+```
+# network の追加
+sudo route add -net 172.31.0.0 gw 10.13.0.145 netmask 255.255.0.0 eth0
+# host の追加(eth0 の指定がなければ任意でルーティングが設定できるethで設定される)
+sudo route add -host 172.31.0.10 gw 10.13.0.145 eth0
+
+# network の削除
+sudo route add -net 172.31.0.0 gw 10.13.0.145 netmask 255.255.0.0 eth0
+# host の削除
+sudo route add -host 172.31.0.10 gw 10.13.0.145 eth0
+```
+
+#### ipコマンド
+
+```
+# network の追加
+sudo ip route add 172.31.0.0/16 via 10.13.0.145 dev eth0
+# host の追加(/32で指定する)
+sudo ip route add 172.31.0.10/32 via 10.13.0.145 dev eth0
+
+# network の削除
+sudo ip route del 172.31.0.0/16
+# host の削除
+sudo ip route del 172.31.0.10/32
+```
+
+#### 永続的な追加(Ubuntu)
+
+##### /etc/network/if-up.d/static-routesで設定する方法
+```
+cat <<EOM > /etc/network/if-up.d/static-routes
+#!/bin/sh
+/sbin/route add -net 172.31.0.0 gw 10.13.0.145 netmask 255.255.0.0 dev eth0 // networkの場合
+/sbin/route add -host 172.31.0.10 gw 10.13.0.145 eth0 // hostの場合
+EOM
+sudo chmod +x /etc/network/if-up.d/static-routes
+```
+
+##### /etc/network/interfacesに設定する方法
+
+cat /etc/network/interfaces
+
+```
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto eth0
+iface eth0 inet dhcp
+    post-up route add -net 172.31.0.0/16 gw 10.13.0.145  // networkの場合
+    post-up route add -host 172.31.0.10/32 gw 10.13.0.145  // hostの場合
+```
+
+#### 永続的な追加(CentOS)
+
+```
+cat /etc/sysconfig/network-scripts/route-eth0 
+# Static route for metadata service
+172.31.0.0/16 via 10.13.0.145 dev eth0 // networkの場合
+172.31.0.10/32 via 10.13.0.145 dev eth0 // hostの場合
+
+sudo service network restart
+```

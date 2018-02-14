@@ -3,6 +3,16 @@ git
 
 ## tips
 
+### インスコ
+
+```bash
+## https://qiita.com/djeeno/items/be57ab7167efc4528c6e
+# UbuntuなどDebian系の場合
+sudo su -c '(apt update ; apt -y install lib{curl4-gnutls,expat1,ssl,z}-dev gcc gettext make wget ; cd /usr/local/src ; BASEURL="https://www.kernel.org/pub/software/scm/git/" ; wget -cSv "${BASEURL}$(wget -qO- ${BASEURL} | sed "s/.*<a href=\"\(.*\)\">.*/\1/g" | egrep "^git-[0-9\.]+.tar.gz" | sort -V | tail -n 1)" ; tar vxzf $(basename $_) ; cd $(basename -s .tar.gz $_) ; make prefix=/usr/local all ; make prefix=/usr/local install)'
+# CentOSなどRedHat系の場合
+sudo su -c '(yum makecache fast ; yum -y install {curl,expat,gettext,openssl,zlib}-devel gcc make perl-ExtUtils-MakeMaker wget ; cd /usr/local/src ; BASEURL="https://www.kernel.org/pub/software/scm/git/" ; wget -cSv "${BASEURL}$(wget -qO- ${BASEURL} | sed "s/.*<a href=\"\(.*\)\">.*/\1/g" | egrep "^git-[0-9\.]+.tar.gz" | sort -V | tail -n 1)" ; tar vxzf $(basename $_) ; cd $(basename -s .tar.gz $_) ; make prefix=/usr/local all ; make prefix=/usr/local install)'
+```
+
 ### 特定のブランチ、タグで clone
 
 ```

@@ -45,6 +45,9 @@ docker run --rm -it exited sh
 # ubuntu_hostというホスト名でubuntuを起動。
 docker run -it -h ubuntu_host ubuntu:14.04 /bin/bash 
 
+# /etc/hosts 追加
+docker run -it --add-host=test.example.co.jp:127.0.0.1 ubuntu:14.04 /bin/bash 
+
 # 最大メモリ使用量を256MBに制限して起動。終了したらコンテナ自動削除
 docker run -it -m 512m --rm ubuntu:14.04 /bin/bash
 
