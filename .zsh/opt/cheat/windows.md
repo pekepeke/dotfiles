@@ -6,6 +6,24 @@
 - Firefox - %APPDATA%\Mozilla\Firefox\Profiles
 
 ## Tips
+### 不要そうなサービス
+
+```
+| 名前                                    | 説明                                                                   |
+|-----------------------------------------|------------------------------------------------------------------------|
+| Diagnostic Policy Service               | Windows の診断を使わないなら無効                                       |
+| Diagnostic Service Host                 | Windows の診断を使わないなら無効                                       |
+| Diagnostic System Host                  | Windows の診断を使わないなら無効                                       |
+| Distributed Link Tracking Client        | ドメインを使わないなら無効、ドメインを設定しないかぎり使用していません |
+| Offline Files                           | LAN 間のファイルのキャッシュを使わないのなら無効                       |
+| Print Spooler                           | プリンタを使わないなら無効                                             |
+| Program Compatibility Assistant Service | プログラム互換性アシスタントを使わないなら無効                         |
+| Server                                  | LAN を使用して他の機器と接続しないのであれば無効                       |
+| TCP/IP NetBIOS Helper                   | ドメインや NetBIOS を使わないなら無効                                  |
+| Windows Defender                        | セキュリティソフトでスパイウェア対策がされているなら無効               |
+| Windows Search                          | Windows の高速検索を使わない、インデックス作成を止めたいなら無効       |
+```
+
 ### which
 
 ```
