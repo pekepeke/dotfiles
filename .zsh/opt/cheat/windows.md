@@ -6,9 +6,30 @@
 - Firefox - %APPDATA%\Mozilla\Firefox\Profiles
 
 ## Tips
+### 直起動
+
+| 起動プログラム             | コマンド         |
+|----------------------------|------------------|
+| ネットワーク接続           | ncpa.cpl         |
+| サービス                   | services.msc     |
+| イベントビューア           | eventvwr.msc     |
+| タスクスケジューラ         | taskschd.msc     |
+| デバイスマネージャー       | devmgmt.msc      |
+| 共有フォルダ               | fsmgmt.msc       |
+| グループポリシー           | gpedit.msc       |
+| コンピュータの管理         | compmgmt.msc     |
+| ディスクの管理             | diskmgmt.msc     |
+| デバイスマネージャ         | devmgmt.msc      |
+| ディスクデフラグツール     | dfrg.msc         |
+| パフォーマンス             | perfmon.msc      |
+| ポリシーの結果セット       | rsop.msc         |
+| ローカルセキュリティ設定   | secpol.msc       |
+| ローカルユーザーとグループ | lusrmgr.msc      |
+| リソースモニター           | perfmon.exe /res |
+| システム情報               | msinfo32.exe     |
+
 ### 不要そうなサービス
 
-```
 | 名前                                    | 説明                                                                   |
 |-----------------------------------------|------------------------------------------------------------------------|
 | Diagnostic Policy Service               | Windows の診断を使わないなら無効                                       |
@@ -22,7 +43,6 @@
 | TCP/IP NetBIOS Helper                   | ドメインや NetBIOS を使わないなら無効                                  |
 | Windows Defender                        | セキュリティソフトでスパイウェア対策がされているなら無効               |
 | Windows Search                          | Windows の高速検索を使わない、インデックス作成を止めたいなら無効       |
-```
 
 ### which
 

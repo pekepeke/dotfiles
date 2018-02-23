@@ -59,6 +59,14 @@ nc -zv <ip address> 22 80 8080
 nc -zv <ip address> 20-30
 ```
 
+## diff
+### 差分がないところだけ出力する
+
+```
+# http://www.kabegiwablog.com/entry/2018/02/20/090000
+diff --old-line-format='' --unchanged-line-format='%L' --new-line-format='' foo.txt bar.txt
+```
+
 ## tail
 ### 指定した行以降の表示
 

@@ -97,6 +97,19 @@ git branch --merged develop
 git branch --contains f83jaz03
 ```
 
+### コミットをまとめる
+
+```
+# https://qiita.com/nr81/items/62c5e2f9ae45cf0d7e60
+git branch -m feature/example_999 tmp # -m ブランチ名を変える
+git checkout development # 作業ブランチのマージ先ブランチに切り替える
+git checkout -b feature/example_999 # 作業ブランチと同じ名前のブランチを作成
+git merge --squash tmp # 1つにまとめる
+git commit -m "squash" # commit
+git push origin feature/example_999 -f # push
+git branch -D tmp # tmpブランチを削除
+```
+
 ### repository 破損
 #### bad signature
 

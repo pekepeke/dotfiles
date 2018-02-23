@@ -62,18 +62,35 @@ pdbedit -x user
 
 ```
 [global]
+     # セキュリティ周り
+     security = user
+     passdb backend = tdbsam
+
+     # guest 設定(設定なしでOK)
+     guest account = nobody
+     map to guest = Bad User
+     # 文字コード
      unix charset = UTF-8
      dos charset = CP932
-     hosts allow = 192.168.
-     # hosts allow = 192.168.100.0/24 127.0.0.1/32
+     # 接続インタフェースの制限
+     interfaces =  127.0.0.0/8 eth0
+     bind interfaces only = yes
+     # 許可IP設定
+     hosts allow = 10.0.0.0/8 172.16.0.0/12 192.168.100.0/24 127.0.0.1/32
+     # プリンタ関連 - https://inataya.wordpress.com/2015/11/10/samba-のプリンタ共有を正しく無効化する/
+     # 有効化する場合は http://web.mit.edu/rhel-doc/4/RH-DOCS/rhel-rg-ja-4/s1-samba-cups.html
      load printers = no
-     disable spools = no
+     printing = bsd
+     printcap name = /dev/null
+     # disable spools = no
      follow symlinks = yes
      wide links = yes
      unix extensions = no
      map archive = no
-     max protocol = SMB2 # 速度系のため
-     socket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=14140000 SO_SNDBUF=14140000 # 必要あれば。パフォーマンス系のパラメータ
+     # 速度系のため
+     max protocol = SMB2
+     # 必要あれば。パフォーマンス系のパラメータ
+     # socket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=14140000 SO_SNDBUF=14140000
 
 ```
 
@@ -83,9 +100,28 @@ pdbedit -x user
    [public]
    comment = Public Stuff
    path = /srv/samba
+   # guestアクセスを許可する場合は、共有フォルダのパーミッションを666に変更しておく。
    guest ok = yes
    public = yes
    writable = yes
    printable = no
+
+```
+
+## user フォルダ
+
+```
+[homes]
+    comment = Home Directories
+    # writable = yes
+    # valid users = %S
+    # valid users = MYDOMAIN\%S
+
+    path = %H/samba
+    browseable = no
+    # writable = yes
+    create mask = 0755
+    # directory mask = 0755
+    # users = %S
 ```
 

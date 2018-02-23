@@ -6,6 +6,14 @@
 set bell-style none
 ```
 
+## python 関連
+### pip の導入
+
+```
+wget https://bootstrap.pypa.io/get-pip.py
+python get-pip.py
+```
+
 ## yum エラー
 
 ### centos のサポート切れ
