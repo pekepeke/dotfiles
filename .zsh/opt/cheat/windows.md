@@ -54,6 +54,12 @@ Get-Command notepad
 gcm notepad | fl
 ```
 
+### でかいファイル作成
+
+```
+fsutil file createnew C:\5gb_karafile.txt 5368709120
+```
+
 ## Network
 
 ```
@@ -275,4 +281,35 @@ pacman -Suu
 - Re-check the Decrypt HTTPS traffic checkbox
 - Accept all of the prompts that appear (e.g. Do you want to trust this root certificate)
 
+## WSL
+
+### mount
+- https://blogs.msdn.microsoft.com/wsl/2017/04/18/file-system-improvements-to-the-windows-subsystem-for-linux/
+
+```
+# Mounting DrvFs
+# In order to mount a Windows drive using DrvFs, you can use the regular Linux mount command. For example, to mount a removable drive D: as /mnt/d directory, run the following commands:
+
+sudo mkdir /mnt/d
+sudo mount -t drvfs D: /mnt/d
+
+# Now, you will be able to access the files of your D: drive under /mnt/d. When you wish to unmount the drive, for example so you can safely remove it, run the following command:
+
+sudo umount /mnt/d
+
+# Mounting network locations
+# When you wish to mount a network location, you can of course create a mapped network drive in Windows and mount that as indicated above. However, it's also possible to mount them directly using a UNC path:
+
+sudo mount -t drvfs '\\server\share' /mnt/share
+
+# WSL does not have any way to specify which credentials to use to connect to a network share. If you need to use different credentials to connect to the server, specify them in Windows by navigating to the share in File Explorer, using the Windows Credential Manager, or the net use command. The net use command can be invoked from inside WSL (using net.exe use) via interop. Type net.exe help use for more information on how to use this command.
+
+# Volumes mounted on empty NTFS folders
+# If your system has any volumes that do not have drive letters but are instead mounted on an empty NTFS folder, you are now able to mount those as well. WSL only automounts volumes with drive letters, so up to this change volumes mounted on a directory could not be accessed.
+
+# To now mount such a volume in WSL, simply use the path to its mount point:
+
+sudo mount -t drvfs 'C:\mountpoint' /mnt/myvolume
+
+```
 
