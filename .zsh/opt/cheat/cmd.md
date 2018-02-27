@@ -1,3 +1,10 @@
+## ln
+### 相対パスでsymlink
+
+```
+ln -sr /path/to/file /path/to/link
+```
+
 ## xargs
 ### 対象0件でもエラーをださない
 
