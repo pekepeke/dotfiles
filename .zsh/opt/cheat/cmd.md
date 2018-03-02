@@ -5,6 +5,13 @@
 ln -sr /path/to/file /path/to/link
 ```
 
+## curl
+### curlで異なるFQDNにhttpsアクセスする方法
+
+```
+curl -H 'Host:www.example.com' --resolve 'www.excample.com:443:10.0.0.2' https://www.example.com/
+```
+
 ## xargs
 ### 対象0件でもエラーをださない
 
