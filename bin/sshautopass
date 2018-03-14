@@ -1,0 +1,18 @@
+#!/bin/bash
+
+SSH_PASS=$1
+shift
+
+if [ -n "$PASSWORD" ]; then
+  cat <<< "$PASSWORD"
+  exit 0
+fi
+
+export PASSWORD=$SSH_PASS
+export SSH_ASKPASS=$0
+export DISPLAY=dummy:0
+
+# SSH接続 & リモートコマンド実行
+echo ssh "$@"
+exec setsid ssh "$@"
+

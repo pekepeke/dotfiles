@@ -94,7 +94,9 @@ Host *-ec2-
 #   HostName host2
 #   User user2
 #   ProxyCommand connect-proxy -H proxy:3128 %h %p
-#   ProxyCommand nc -X connect proxy:3128 %h %p
+#   ProxyCommand nc -X connect -x proxy:3128 %h %p
+#   ProxyCommand socat - PROXY:10.131.0.205:%h:%p,proxyport=3128
+#   ProxyCommand socat - PROXY:10.131.0.205:%h:%p,proxyport=3128,proxyauth=user:pass
 
 ## socks proxy - http://blog.wktk.co.jp/ja/entry/2014/03/11/ssh-socks-proxy-mac-chrome
 # ssh -f -N -D 1080 user@example.com

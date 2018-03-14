@@ -301,5 +301,27 @@ openssl aes-256-cbc -d -in encrypted.txt -out decrypted.txt -pass file:./passwor
 # 直接入力から暗号化/復号化
 openssl aes-256-cbc -e -in rawtext.txt -out encrypted.txt
 openssl aes-256-cbc -d -in encrypted.txt -out decrypted.txt
+
+# 接続確認
+openssl s_client -connect imap.softbank.jp:993 -msg
+
+# ssl2/3確認
+openssl s_client -ssl2 -connect imap.softbank.jp:993
+openssl s_client -ssl3 -connect imap.softbank.jp:993
+# tlsの確認
+openssl s_client -tls1 -connect imap.softbank.jp:993
+# cipherの確認
+openssl cipher -v
+openssl s_client -tls1 -connect 接続先:ポート -ciper サイファ
+```
+
+## sudo
+### visudo -f /etc/sudoers.d/wheel
+
+```
+# %wheel ALL=(ALL) NOPASSWD: ALL
+%wheel ALL=(ALL) ALL
+Defaults:%wheel !requiretty
+Defaults:%wheel env_keep += SSH_AUTH_SOCK
 ```
 

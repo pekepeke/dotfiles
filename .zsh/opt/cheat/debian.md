@@ -2,6 +2,14 @@ debian memo
 ===========
 
 ## ubuntu
+### visudo のエディタ変更
+
+```
+sudo update-alternatives --set editor
+sudo update-alternatives --set editor /usr/bin/vim.basic
+```
+- http://graziegrazie.hatenablog.com/entry/2015/11/14/101050
+
 ### パッケージ検索
 - https://packages.ubuntu.com/
 
@@ -102,6 +110,7 @@ ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 - パッケージのインストール/更新
 	- `apt-get install [package]`
 	- `aptitude install [package]`
+	- `apt-get install --no-install-recommends`
 - パッケージリストの更新
 	- `apt-get update`
 	- `aptitude update`
@@ -120,6 +129,7 @@ ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 	- `apt-get autoremove`
 - パッケージの削除（設定ファイルも）
 	- `apt-get purge [package]`
+	- `apt-get --purge remove [package]`
 - アーカイブファイルの削除
 	- `apt-get clean`
 	- `aptitude clean`

@@ -16,6 +16,9 @@ systemctl list-unit-files --type=service
 ### systemctl list-unit-files
 インストールされているUnitファイルの一覧表示
 
+### systemctl daemon-reload
+サービス再読込
+
 ### systemctl enable httpd
 Unit の有効化
 
