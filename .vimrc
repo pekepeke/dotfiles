@@ -2210,11 +2210,14 @@ nnoremap <silent> [!t]n gt
 nnoremap <silent> [!t]p gT
 nnoremap <silent> [!t]h gT
 nnoremap <silent> [!t]l gt
+nnoremap <silent> [!t]H :<C-u>-tabmove<CR>
+nnoremap <silent> [!t]L :<C-u>+tabmove<CR>
 nnoremap <silent> [!t]c :<C-u>tabnew<CR>
 nnoremap <silent> [!t]C :<C-u>tabnew %<CR>:normal! <C-o><CR>
 nnoremap <silent> [!t]* :<C-u>tabedit %<CR>*
 nnoremap <silent> [!t]# :<C-u>tabedit %<CR>#
 nnoremap <silent> [!t]q :<C-u>tabclose<CR>
+nnoremap <silent> [!t]gf :<C-u>tabnew %<CR>:normal! <C-o>gf<CR>
 
 " redraw map
 nmap <silent> sr :redraw!<CR>

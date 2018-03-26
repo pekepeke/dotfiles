@@ -1,3 +1,9 @@
+## BOM
+
+```
+echo -en '\xef\xbb\xbf'
+```
+
 ## ln
 ### 相対パスでsymlink
 
@@ -40,6 +46,12 @@ grep -P "\d{3}"
 
 ## 「」で囲まれている中身だけ表示
 grep -oP '(?<=「).+(?=」)'
+```
+
+## json encode
+
+```
+perl -pe 's/(\\(\\\\)*)/$1$1/g; s/(?!\\)(["\x00-\x1f])/sprintf("\\u%04x",ord($1))/eg;'
 ```
 
 ## camerlize/underscore
