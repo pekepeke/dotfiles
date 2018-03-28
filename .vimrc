@@ -1132,6 +1132,7 @@ NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'hrsh7th/vim-neco-calc'
 NeoBundle 'rhysd/github-complete.vim'
 NeoBundle 'wellle/tmux-complete.vim'
+NeoBundle 'juliosueiras/vim-terraform-completion'
 
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
@@ -1601,6 +1602,7 @@ NeoBundle 'vim-scripts/httplog'
 NeoBundle 'vim-scripts/syslog-syntax-file'
 NeoBundle 'uarun/vim-protobuf'
 NeoBundle 'sophacles/vim-processing'
+NeoBundle 'hashivim/vim-terraform'
 NeoBundleLazy 'pekepeke/ref-processing-vim', {
 \ 'on_ft': ['processing'],
 \ }
@@ -2021,6 +2023,26 @@ function! VimrcStatusLine()
   return s:status_generator.get_line()
 endfunction
 set statusline=%!VimrcStatusLine()
+" tabline {{{2
+function! VimrcTabLine()
+  let s = ''
+  for i in range(1, tabpagenr('$'))
+    let bufnrs = tabpagebuflist(i)
+    let bufnr = bufnrs[tabpagewinnr(i) - 1]  " first window, first appears
+    let no = i  " display 0-origin tabpagenr.
+    let mod = getbufvar(bufnr, '&modified') ? '!' : ' '
+    let title = fnamemodify(bufname(bufnr), ':t')
+    let title = '[' . title . ']'
+    let s .= '%'.i.'T'
+    let s .= '%#' . (i == tabpagenr() ? 'TabLineSel' : 'TabLine') . '#'
+    let s .= no . ':' . title
+    let s .= mod
+    let s .= '%#TabLineFill# '
+  endfor
+  let s .= '%#TabLineFill#%T%=%#TabLine#'
+  return s
+endfunction
+let showtabline=2
 
 " for filetypes {{{1
 " shebang {{{2
@@ -2218,6 +2240,10 @@ nnoremap <silent> [!t]* :<C-u>tabedit %<CR>*
 nnoremap <silent> [!t]# :<C-u>tabedit %<CR>#
 nnoremap <silent> [!t]q :<C-u>tabclose<CR>
 nnoremap <silent> [!t]gf :<C-u>tabnew %<CR>:normal! <C-o>gf<CR>
+for i in range(1, 9)
+  execute 'nnoremap <silent> [!t]'.i ':tabnext'.i.'<CR>'
+endfor
+unlet i
 
 " redraw map
 nmap <silent> sr :redraw!<CR>
@@ -2240,8 +2266,8 @@ nnoremap <silent> <S-Up>    :10wincmd -<CR>
 nnoremap <silent> <S-Down>  :10wincmd +<CR>
 
 " win switch
-for i in range(10)
-  execute 'nnoremap <silent> <C-w>'.i '<C-w>t'.repeat('<C-w>w', (i+9)%10)
+for i in range(1, 9)
+  execute 'nnoremap <silent> <C-w>'.i '<C-w>t'.repeat('<C-w>w', i)
 endfor
 unlet i
 
@@ -2255,6 +2281,7 @@ if exists(':tmap')
   tnoremap <C-w><C-p> <C-w>:tabprev<CR>
   tnoremap <C-w><C-c> <C-w>:tabnew<CR>
   tnoremap <C-\><C-\> <C-\><C-n>
+  tnoremap <C-\>p <C-w>"
   " tnoremap <Esc> <C-\><C-n>
 endif
 
@@ -2853,6 +2880,11 @@ let g:vimrc_enabled_plugins = {
   \ 'endwize': s:bundle.is_installed('endwize.vim'),
   \ 'php_namespace': s:bundle.is_installed('vim-php-namespace'),
   \ }
+
+if s:bundle.is_installed('vim-terraform-completion')
+  let g:terraform_completion_keys = 1
+  let g:terraform_registry_module_completion = 1
+endif
 
 " misspell.vim
 if s:bundle.is_installed('vim-misspell') && executable('misspell')
@@ -7792,6 +7824,7 @@ if s:bundle.is_installed('neocomplete.vim') "{{{3
   \ 'r': '[[:alnum:].\\]\+',
   \ 'xquery': '\k\|:\|\-\|&',
   \ 'go': '\h\w\.\w',
+  \ 'terraform': '[^ *\t"{=$]\w*}"]',
   \ })
 
   if s:bundle.is_installed('eclim')
@@ -8374,6 +8407,15 @@ command! ToMacBuffer set fileformat=mac fileencoding=utf8
 command! ConvChilder %s/〜/～/g
 
 " シェル起動系 {{{2
+if has(':tmap')
+  if !s:is_win "{{{3
+    command! PowerShell terminal ++close powershell
+    command! Bash terminal ++close C:/Windows/System32/bash.exe -c "cd; bash -l"
+  else
+    command! Zsh terminal ++close zsh
+    command! Bash terminal ++close bash
+  endif
+endif
 if s:is_mac "{{{3
   " Utility command for Mac
   command! Here silent execute '!open' shellescape(expand('%:p:h'))
@@ -8397,10 +8439,6 @@ elseif s:is_win "{{{3
     command! Here silent execute '!explorer' substitute(expand('%:p:h'), '/', '\\', 'g') '&'
     command! This silent execute '!start cmd /c "%"'
     command! In silent execute '!start cmd /k cd "'.substitute(expand('%:p:h'), '/', '\\', 'g').'"'
-  endif
-  if exists(':tmap')
-    command! PowerShell terminal ++close ++curwin powershell
-    command! Bash terminal ++close ++curwin C:/Windows/System32/bash.exe -c "cd; bash -l"
   endif
   command! -nargs=1 -complete=file That silent execute '!explorer' shellescape(expand(<f-args>), 1)
 else "{{{3

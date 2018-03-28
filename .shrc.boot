@@ -306,14 +306,16 @@ xdebugctl() {
 # xdebugctl >/dev/null
 
 sshp() {
-  SSH_HOST=$(cat ~/.ssh/config | awk '$1 == "Host" { print $2 }' | grep -v '*' | peco)
+  local SSH_HOST=$(cat ~/.ssh/config | awk '$1 == "Host" { print $2 }' | grep -v '*' | peco)
+  local NEW_TERM=$TERM
 
+  [ "$TERM" = "screen-256color" ] && NEW_TERM=xterm
   if [ -n "$SSH_HOST" ]; then
     PASS="$(getjsonval.py ~/.ssh/password.json $SSH_HOST)"
     if [ -n "$PASS" ]; then
-      sshexp $PASS ssh $SSH_HOST
+      TERM=$NEW_TERM sshexp $PASS ssh $SSH_HOST
     else
-      ssh $SSH_HOST
+      TERM=$NEW_TERM ssh $SSH_HOST
     fi
   fi
 }
