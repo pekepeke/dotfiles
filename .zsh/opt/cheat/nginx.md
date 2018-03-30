@@ -1,6 +1,34 @@
 nginx
 =====
 
+## TCP Load Balancer
+
+```
+yum -y install pcre-devel zlib-devel
+wget http://nginx.org/download/nginx-1.9.6.tar.gz
+tar -xzf nginx-1.9.6.tar.gz
+./configure --with-stream
+make
+make install
+```
+
+```
+stream {
+      upstream stream_backend {
+        zone tcp_servers 64k;
+        server 192.168.55.201:3308;
+        server 192.168.55.202:3308;
+        server 192.168.55.203:3308;
+    }
+
+    server {
+        listen 3307;
+        proxy_pass stream_backend;
+        proxy_connect_timeout 1s;
+    }
+}
+```
+
 ## X-Accel
 ### X-Accel-Redirect [void|uri]
 Nginx 側でファイルを返却させる.
