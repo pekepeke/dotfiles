@@ -110,6 +110,15 @@ git push origin feature/example_999 -f # push
 git branch -D tmp # tmpブランチを削除
 ```
 
+### github + patch + git am
+
+```
+git co -b topic/hogehoge
+# git am で他人のコミットをパッチとして当てる # am = Apply a series of patches from a mailboxの略
+curl -s -L https://github.com/mruby/mruby/pull/605.patch | git am -
+curl -s -L https://github.com/masuidrive/mruby/commit/70b422a6f240a201993e75935b55a8dd497eb098.patch | git am -
+```
+
 ### repository 破損
 #### bad signature
 

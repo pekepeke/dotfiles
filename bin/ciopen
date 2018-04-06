@@ -1,0 +1,13 @@
+#!/bin/sh
+
+// https://qiita.com/kyanny/items/0797d37cab6327fba2c4
+
+commit=$1
+[ -z "$commit" ] && commit=HEAD
+
+result="$(hub ci-status -v $commit)"
+if [ $? == 3 ]; then
+  echo "$result"
+else
+  open $(echo $result | awk '{print $2}')
+fi
