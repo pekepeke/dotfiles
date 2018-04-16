@@ -3,6 +3,37 @@ http://oxynotes.com/?p=6361
 http://sawara.me/linux/828/
 https://forums.docker.com/t/restricting-external-container-access-with-iptables/2225/4
 
+### TIPS
+#### Linux NAT Router の作成
+
+```
+sudo sh -c 'echo "net.ipv4.ip_forward = 1" >> /etc/sysctl.conf'
+sudo sysctl -p
+cat /proc/sys/net/ipv4/ip_forward
+
+global_eth=ens160
+local_eth=ens192
+internal_ip=10.0.0.0/8
+
+iptables -A FORWARD -i $local_eth -o $global_eth -s $internal_ip -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -t nat -A POSTROUTING -o $global_eth -s $internal_ip -j MASQUERADE
+# -t nat　natテーブルを使用
+# -A POSTROUTING　POSTROUTINGチェインを使用し、内部ネットから外部ネットへ出ていくパケットのソースIPを書き換える
+# -o eth0　パケットが出ていくインターフェイスをeth0と指定
+# -s $internal_ip　ソース側ネットワークアドレスは$internal_ip（192.168.0.0/24）
+# -j MASQUERADE　IPマスカレードを行う
+iptables -A OUTPUT -o $global_eth -d 10.0.0.0/8 -j DROP
+iptables -A OUTPUT -o $global_eth -d 176.16.0.0/12 -j DROP
+iptables -A OUTPUT -o $global_eth -d 192.168.0.0/16 -j DROP
+iptables -A OUTPUT -o $global_eth -d 127.0.0.0/8 -j DROP
+iptables -N LOGGING
+iptables -A LOGGING -j LOG --log-level warning --log-prefix "DROP:" -m limit
+# iptables -A LOGGING -j DROP
+iptables -A INPUT -j LOGGING
+iptables -A FORWARD -j LOGGING
+```
+
 ### memo
 
 ```

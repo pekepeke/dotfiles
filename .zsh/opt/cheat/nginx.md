@@ -14,7 +14,7 @@ make install
 
 ```
 stream {
-      upstream stream_backend {
+    upstream stream_backend {
         zone tcp_servers 64k;
         server 192.168.55.201:3308;
         server 192.168.55.202:3308;
@@ -25,6 +25,21 @@ stream {
         listen 3307;
         proxy_pass stream_backend;
         proxy_connect_timeout 1s;
+    }
+
+    upstream dns_udp_upstreams {
+        # server ${DNS1_PORT_53_UDP_ADDR}:53;
+        # server ${DNS2_PORT_53_UDP_ADDR}:53;
+        server 192.168.55.201:53;
+        server 192.168.55.202:53;
+
+    }
+
+    server {
+        listen 53 udp;
+        proxy_pass dns_udp_upstreams;
+        proxy_timeout 1s;
+        proxy_responses 1;
     }
 }
 ```

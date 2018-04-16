@@ -48,6 +48,7 @@ Host github.com
 Host *-ec2-
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
+    # LogLevel QUIET # warning がうざいときに
 
 # Host localhost
 #    User docker
@@ -55,14 +56,17 @@ Host *-ec2-
 #    UserKnownHostsFile /dev/null
 #    IdentityFile ~/.ssh/id_rsa_boot2docker_vm
 #    HostName 127.0.0.1
+#    LogLevel QUIET
 
 # Host 192.168.1.*
 #    StrictHostKeyChecking no
 #    UserKnownHostsFile /dev/null
+#    LogLevel QUIET
 
 # Host 192.168.33.*
 #    StrictHostKeyChecking no
 #    UserKnownHostsFile /dev/null
+#    LogLevel QUIET
 
 # Host name
 #  HostName xxx.xxx.xxx.xxx
@@ -93,10 +97,10 @@ Host *-ec2-
 # Host host2.host
 #   HostName host2
 #   User user2
-#   ProxyCommand connect-proxy -H proxy:3128 %h %p
-#   ProxyCommand nc -X connect -x proxy:3128 %h %p
-#   ProxyCommand socat - PROXY:10.131.0.205:%h:%p,proxyport=3128
-#   ProxyCommand socat - PROXY:10.131.0.205:%h:%p,proxyport=3128,proxyauth=user:pass
+#   ProxyCommand connect-proxy -H proxy_host:3128 %h %p
+#   ProxyCommand nc -X connect -x proxy_host:3128 %h %p
+#   ProxyCommand socat - PROXY:proxy_host:%h:%p,proxyport=3128
+#   ProxyCommand socat - PROXY:proxy_host:%h:%p,proxyport=3128,proxyauth=user:pass
 
 ## socks proxy - http://blog.wktk.co.jp/ja/entry/2014/03/11/ssh-socks-proxy-mac-chrome
 # ssh -f -N -D 1080 user@example.com

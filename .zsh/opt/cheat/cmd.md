@@ -194,10 +194,25 @@ sed -n -e 3,$p
 ### その他便利系
 
 ```
+# https://qiita.com/hirohiro77/items/7fe2f68781c41777e507
 # '#START'から'#END'く括られた範囲で置換をする
 sed -e '/#START/,/#END/ s/YYYYMM/201603/g' source.txt
 # '#SKIP'が出たら次の行(N;)は読み飛ばす、数行読み飛ばす場合はN;N;みたいにする
 sed '/#SKIP/{N; s/YYYY/2016/g}' source.txt
+
+# タブをスペースに変換
+sed -e 's/<tab>/<space>/g'
+# 複数のスペースを1つのスペースに変換
+sed -e 's/<space><space>*/<space>/g' 
+# ホワイトスペースを1つのスペースに変換
+sed -e 's/[<space><tab>][<space><tab>]*/<space>/g'　
+# 行頭のホワイトスペースを削除
+sed -e 's/^[<space><tab>]*//'
+# 行末のホワイトスペースを削除
+sed -e 's/[<space><tab>]*$//'
+# textを含んだ行を削除
+sed -e "/text/d"
+
 # 空白行を削除
 sed -e '/^$/d'
 # 45行毎に改行を入れる
