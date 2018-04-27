@@ -1602,7 +1602,7 @@ NeoBundle 'vim-scripts/httplog'
 NeoBundle 'vim-scripts/syslog-syntax-file'
 NeoBundle 'uarun/vim-protobuf'
 NeoBundle 'sophacles/vim-processing'
-NeoBundle 'hashivim/vim-terraform'
+NeoBundle 'hashivim/vim-hashicorp-tools'
 NeoBundleLazy 'pekepeke/ref-processing-vim', {
 \ 'on_ft': ['processing'],
 \ }
