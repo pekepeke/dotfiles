@@ -3375,6 +3375,8 @@ if s:bundle.tap('lightline.vim')
 
   let g:lightline = {
   \ 'colorscheme': 'vimrc',
+  \ 'separator': { 'left': ">", 'right': "<" },
+  \ 'subseparator': { 'left': "✪", 'right': "✪" },
   \ 'mode_map': {'n': 'N', 'i': 'I', 'R': 'R', 'v': 'V',
   \ 'V': 'V-LINE', 'c': 'C', "\<C-v>": 'V-BLOCK', 's': 'S',
   \ 'S': 'S-LINE', "\<C-s>": 'S-BLOCK', '?': ' ',
