@@ -6,6 +6,7 @@
   pwd  = rev-parse --show-cdup
   includes = !git config --get-regexp '^include\\.path' | sed 's/include\\.path \\(.*\\)/\\1/'
   me = !git config --get-regexp user
+  statmail = "!f () { git shortlog --summary --email | awk '{arry[$NF] += $1;} END {for(i in arry) {print arry[i] \" \" i} }' | sort -n ; }; f"
   a = "!f() { local res=\"$(git status -s | peco --prompt \"git add :\" | awk '{ print $2 }')\"; \
   [ -n \"$res\" ] && git add ${res} ; \
   }; f"

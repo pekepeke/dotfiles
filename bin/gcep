@@ -1,0 +1,45 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  local MACHINES="$(gcloud compute instances list | peco | awk '{ print $1 }')"
+  [ -z "$MACHINES" ] && return 0
+
+  local ACTION=$(echo -e "start\nstop\nssh" | peco)
+  case $ACTION in
+    start|stop)
+      gcloud compute instances $ACTION $MACHINES
+      ;;
+    ssh)
+      gcloud compute ssh $MACHINES
+      ;;
+  esac
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+
