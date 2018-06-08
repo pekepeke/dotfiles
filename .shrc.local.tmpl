@@ -99,6 +99,13 @@ export VIMRC_ENABLES
 # }
 # alias sshec2xxx="ec2ssh profile -l user -i ~/.ssh/keys/id_rsa.pem -o StrictHostKeyChecking=no"
 
+# if [ -f '/opt/google-cloud-sdk/path.zsh.inc' ]; then source '/opt/google-cloud-sdk/path.zsh.inc'; fi
+# if [ -f '/opt/google-cloud-sdk/completion.zsh.inc' ]; then source '/opt/google-cloud-sdk/completion.zsh.inc'; fi
+# source <(kubectl completion zsh)
+
+# export SDKMAN_DIR="$HOME/.sdkman"
+# [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
 # [ -n "$ZSH_VERSION" ] && eval "$(direnv hook zsh)"
 # [ -n "$BASH" ] && eval "$(direnv hook bash)"
 

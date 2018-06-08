@@ -21,6 +21,7 @@ _print_config() {
   ${IF_WIN}path = ~/.gitconfig.d/core.windows.txt
   path = ~/.gitconfig.d/alias.txt
   path = ~/.gitconfig.d/color.txt
+  path = ~/.gitconfig.d/commit.txt
   path = ~/.gitconfig.d/pager.txt
   path = ~/.gitconfig.d/diff.txt
   path = ~/.gitconfig.d/diff.encoding.txt

@@ -9,18 +9,7 @@ EOM
 }
 
 main() {
-  local MACHINES="$(gcloud compute instances list | peco | awk '{ print $1 }')"
-  [ -z "$MACHINES" ] && return 0
-
-  local ACTION=$(echo -e "ssh\nstart\nstop" | peco)
-  case $ACTION in
-    start|stop)
-      gcloud compute instances $ACTION $MACHINES
-      ;;
-    ssh)
-      gcloud compute ssh $MACHINES
-      ;;
-  esac
+  curl -s get.sdkman.io | bash
 }
 
 OPTIND_OLD=$OPTIND
@@ -42,4 +31,5 @@ if [ $OPT_ERROR ]; then
 fi
 
 main "$@"
+
 
