@@ -74,6 +74,10 @@ ssh-keygen -R remote_host_name
 
 # confirm fingerprint
 ssh-keygen -lf ~/.ssh/id_rsa.pub
+
+# SSHの秘密鍵から公開鍵を復元
+ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub 
+ssh-keygen -y -t dsa -f ~/.ssh/id_dsa > ~/.ssh/id_dsa.pub 
 ```
 
 ### ssh 鍵の強度確認

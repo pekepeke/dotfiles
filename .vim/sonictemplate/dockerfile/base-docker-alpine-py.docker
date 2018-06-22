@@ -1,5 +1,5 @@
 FROM alpine:3.3
-MAINTAINER {{_expr_:get(g:, 'author', '')}}<{{_expr_:get(g:, 'email', '')}}>
+LABEL MAINTAINER {{_expr_:get(g:, 'author', '')}}<{{_expr_:get(g:, 'email', '')}}>
 
 RUN build_dependencies="gcc g++ python-dev py-pip" \
     build_dependencies="$build_dependencies zlib-dev libxml2-dev" \

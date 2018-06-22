@@ -62,7 +62,7 @@ cvs commit [file]
 
 ## checkout
 ```
-cvs checkout 〔-d 作業用ディレクトリ名〕 プロジェクト名
+cvs 〔-d 作業用ディレクトリ名〕 checkout プロジェクト名
 cvs co
 cvs get
 # 特定のファイルを標準出力表示
