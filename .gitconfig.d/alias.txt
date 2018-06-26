@@ -108,4 +108,5 @@
   rconfig = "!f() { git config --list \"$@\" | grep -v -e '^include' | sed -e 's!\\(.*\\)=\\(.*\\)!git config --unset \"\\1\"!'; }; f"
   set-upstream = !"f() { if [ -n \"$1\" ]; then git remote add upstream $1; else echo 'usage: git set-upstream <url>' && exit 1; fi; }; f"
   sync-fork = !"git fetch upstream && git checkout master && git merge upstream/master"
+  vimdiff = difftool --tool=vimdiff --no-prompt
 
