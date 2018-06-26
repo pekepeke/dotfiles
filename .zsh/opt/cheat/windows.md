@@ -60,6 +60,17 @@ gcm notepad | fl
 fsutil file createnew C:\5gb_karafile.txt 5368709120
 ```
 
+### Base64
+
+```
+# base64
+certutil -f -encode "入力ファイル" "出力ファイル"
+certutil -f -decode "入力ファイル" "出力ファイル"
+
+# md5
+certUtil -hashfile "ファイルパス" MD5
+```
+
 ## Network
 
 ```
