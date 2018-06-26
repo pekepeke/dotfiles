@@ -141,6 +141,7 @@ exec_install() {
     ~/.ssh_config.default.sh -s
   fi
   ~/.gitconfig.init.sh
+  [ -x ~/.docker/config.json.template.sh ] && ~/.docker/config.json.template.sh
 
   if [ -e "$CDIR/.gitmodules" ]; then
     git submodule init
