@@ -1591,6 +1591,7 @@ NeoBundleLazy 'vim-scripts/dbext.vim', {
 
 " etc {{{4
 NeoBundle 'honza/dockerfile.vim'
+NeoBundle 'stephpy/vim-yaml'
 NeoBundle 'chase/vim-ansible-yaml'
 NeoBundle 'MicahElliott/Rocannon'
 NeoBundle 'cespare/vim-toml'
