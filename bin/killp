@@ -1,4 +1,15 @@
 #/bin/bash
 
-kill $* $(ps aux | percol | awk '{print $2}')
+pick_pid() {
+  if type percol >/dev/null 2>&1 ;then
+    percol
+  elif type peco >/dev/null 2>&1 ;then
+    peco
+  elif type fzf >/dev/null 2>&1 ;then
+    fzf
+  fi
+}
+
+PIDS="$(ps aux | pick_pid | awk '{print $2}')"
+[ -n "$PIDS" ] && kill "$@" $PIDS
 

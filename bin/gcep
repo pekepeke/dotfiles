@@ -15,13 +15,13 @@ main() {
   local ACTION=$(echo -e "ssh\nssh[halyard]\nstart\nstop" | peco)
   case $ACTION in
     start|stop)
-      gcloud compute instances $ACTION $MACHINES
+      exec gcloud compute instances $ACTION $MACHINES
       ;;
     ssh)
-      gcloud compute ssh $MACHINES
+      exec gcloud compute ssh $MACHINES
       ;;
     ssh\[halyard\])
-      gcloud compute ssh $MACHINES --ssh-flag="-L 9000:localhost:9000" --ssh-flag="-L 8084:localhost:8084"
+      exec gcloud compute ssh $MACHINES --ssh-flag="-L 9000:localhost:9000" --ssh-flag="-L 8084:localhost:8084"
       ;;
   esac
 }

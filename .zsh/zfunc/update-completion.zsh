@@ -38,6 +38,8 @@ update_complation() {
   done
   curl -LO https://raw.githubusercontent.com/pocke/ptmux/master/zsh_completions/_ptmux
   curl -Lo _tmass https://raw.githubusercontent.com/fzerorubigd/tmass/master/tools/zsh_tmass
+  curl -Lo _kubectx https://raw.githubusercontent.com/ahmetb/kubectx/master/completion/kubectx.zsh
+  curl -Lo _kubens https://raw.githubusercontent.com/ahmetb/kubectx/master/completion/kubens.zsh
 }
 
 update_compfunc() {
