@@ -117,6 +117,8 @@ docker commit CONTAINER REPOSITORY[:TAG]
 docker export CONTAINER > filename.tar
 
 ## ファイルからイメージ取込
+### DockerでimportしたイメージをrunするときはCMDがなくなっているので注意
+### また、VOLUME や WORKDIR を Dockerfile で指定している場合は run のオプションとして渡して上げる必要がある
 cat filename.tar | docker import - REPOSITORY[:TAG]
 
 ## URLからイメージ取込

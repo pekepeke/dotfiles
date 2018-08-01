@@ -355,3 +355,13 @@ Defaults:%wheel !requiretty
 Defaults:%wheel env_keep += SSH_AUTH_SOCK
 ```
 
+## df/du
+
+```
+# 全体のディスク容量を確認
+df -h
+# ディスク容量の内訳を確認
+du -sh /path/to/dir/*
+du -h --max-depth 2 /*
+du -s ./* | sort -n
+```
