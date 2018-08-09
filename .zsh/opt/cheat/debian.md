@@ -2,6 +2,19 @@ debian memo
 ===========
 
 ## ubuntu
+### /boot が100%でカーネルを入れられない
+
+```
+# カーネルバージョン確認
+uname -a
+# インスコされたカーネルを確認
+dpkg --get-selections | grep linux-image
+# 削除
+sudo apt-get remove linux-image-4.4.0-97-generic
+# apt-get install -f しろと怒られて消せない場合
+sudo dpkg --force-all -P linux-image-4.4.0-93-generic
+```
+
 ### visudo のエディタ変更
 
 ```

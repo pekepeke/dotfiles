@@ -51,13 +51,14 @@ grep -P "\d{3}"
 grep -oP '(?<=「).+(?=」)'
 ```
 
-## json encode
+## perl
+### json encode
 
 ```
 perl -pe 's/(\\(\\\\)*)/$1$1/g; s/(?!\\)(["\x00-\x1f])/sprintf("\\u%04x",ord($1))/eg;'
 ```
 
-## camerlize/underscore
+### camerlize/underscore
 
 ```
 # camelize
@@ -67,6 +68,44 @@ echo $str | perl -pe 's/(|)./uc($&)/ge;s///g'
 # underscore
 echo $Str | sed -r -e 's/^([A-Z])/\L\1\E/' -e 's/([A-Z])/_\L\1\E/g'
 echo $Str | perl -pe 's/(^[A-Z])/lc($&)/ge;s/([A-Z])/_$&/g;s/([A-Z])/lc($&)/ge'
+```
+
+### quotemeta
+
+```
+echo "hoge\np#iyo" | perl -ne 'print quotemeta;'
+```
+
+### 置換
+
+```
+perl -pe 's/hoge/fuga/g' path/to/file
+perl -pi -e 's/hoge/fuga/g' path/to/file
+perl -pi.bak -e 's/hoge/fuga/g' path/to/file
+perl -0pi -e 's/ho\nge/fuga/g' path/to/file
+```
+
+### etc
+
+```
+# N行目を表示する
+perl -ne 'print if $.==10'
+# 最後の行を表示する
+perl -ne '$x=$_; END{print $x}'
+# 単語数をカウントする
+perl -anE '$n+=@F; END{say $n}'
+# 行数をカウントする
+perl -nE 'END{say $.}'
+# 逆順出力をする
+perl -ne 'unshift @a,$_; END{print @a}'
+# タブ区切りの2列目で uniq
+perl -F'\t' -ane 'print if !$a{$F[1]}++'
+# 行番号を付ける
+perl -pe 's/^/$. /'
+# コメント行を削除する
+perl -ne 'print if !/^#/'
+# 複数行コメントの場合
+perl -ne 'print if !(/\/\*/../\*\//)'
 ```
 
 ## tmux
