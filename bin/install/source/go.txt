@@ -15,6 +15,7 @@ github.com/rogpeppe/godef
 
 # util
 github.com/laurent22/massren
+github.com/simeji/jid/cmd/jid
 # github.com/mattn/jvgrep
 # github.com/mattn/files
 github.com/tokuhirom/git-xlsx-textconv

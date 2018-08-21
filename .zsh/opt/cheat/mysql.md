@@ -1,5 +1,25 @@
 ## mysqldump
 
+| オプション | 説明 |
+| ---------- | ---- |
+| --opt | `--add-drop-table --add-locks --create-options --disable-keys --extended-insert --lock-tables --quick --set-charset`と同じ。デフォルトでこのオプションは有効。 |
+| --add-drop-table | DROP TABLE文を含める |
+| --add-locks | 各テーブルへのINSERT文の前後にLOCK_TABLES文とUNLOCK TABLES文を含める。インポートの速度が向上する。 |
+| --create-options | CREATE TABLE文にMySQL特有のオプションを含める |
+| --disable-keys | 各テーブルについて、全てのレコードのインポートが完了するまでインデックスを作らないようにする。インポートの速度向上が期待できるが、MyISAMテーブルの(UNIQUEではない)通常のインデックスにしか効果が無い。 |
+| --extended_insert | INSERT文をコンパクトな書式でダンプする。ダンプファイルのサイズが小さくなる。インポートの時間も短縮する。 |
+| --lock-tables | ダンプの前にDBの全テーブルをロックする。ただし、ロックはDBごとに行われるのでDB間でのデータ整合性は保証されない。InnoDBでは`--single-transaction`を使った方が速い。 |
+| --skip-lock-tables | --lock-tablesオプションを無効にする。--optが--lock-tablesを有効にするので、それを打ち消す為に使用する。 |
+| --quick | ダンプ時にテーブルの全レコードをメモリに一旦バッファする代わりに、1行ずつ読み込んでダンプする。データ量の大きなテーブルのダンプ時にメモリを圧迫しなくて済む。 |
+| --set-charset | SET NAMES文を出力する。 |
+| --quote-names | DB名、テーブル名、カラム名などの識別子をバックティック文字で囲む。これらの識別子にMySQLの予約後が含まれていても問題なく動作するようになる |
+| --single-transaction | ダンプ処理をトランザクションで囲む。データの整合性を保つのに有効だが、MyISAMテーブルが含まれるDBでは意味が無いので、代わりに--lock-tablesか--lock-all-tablesを使う。 |
+| --flush-logs | バイナリログをフラッシュして、新しいファイルを作る。フラッシュ |
+| --lock-all-tables | ダンプの開始から完了まで、全データベースの全テーブルをロックする。これを使うと自動的に`--single-transaction`と`--lock-tables`オプションはオフになる。 |
+| --master-data[=2] | `CHANGE MASTER TO`句を含める。これによってレプリケーションのスレーブサーバがマスターサーバのバイナリログの読み取り開始ポイントを知ることが出来る。このオプションは`--lock-all-tables`を オンにする。ただし、`--single-transaction`がオンの場合はそうはならず、代わりにダンプ開始時に一瞬だけグローバルリードロックされる。`=2`を付けた場合はバイナリログの読み出し開始位置をコメントとして出力する。これは人間が参考のために見たいときに使う。 |
+| --password | MySQLサーバに接続する時のパスワード |
+
+
 ```
 # dump
 mysqldump --opt --skip-lock-tables --default-character-set=binary --hex-blob
@@ -16,6 +36,8 @@ mysqldump --no-data --compact --skip-lock-tables --default-character-set=binary 
 mysqldump --no-data --compact --skip-lock-tables --default-character-set=binary --all-databases > ddl.sql
 # data only
 mysqldump --skip-extended-insert --add-drop-table=false -t --where '1 = 1'
+mysqldump --complete-insert --skip-extended-insert --add-drop-table=false -t --where '1 = 1'
+mysqldump --quote-names --skip-lock-tables --complete-insert --skip-extended-insert --no-create-info --no-create-db --add-drop-table=false
 
 ```
 
