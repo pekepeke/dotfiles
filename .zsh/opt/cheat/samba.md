@@ -20,6 +20,10 @@ nmblookup -M WORKGROUP
 
 # マウント
 mount.cifs //<Windowsのホスト名>/test /home/hoge/test -o user=<Windows共有フォルダのユーザー名>
+
+# ユーザー追加
+smbpasswd -a user01
+pdbedit -a user01
 ```
 
 ### Windows
