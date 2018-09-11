@@ -1,0 +1,2 @@
+    && yum install -y epel-release \
+    && rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-${REDHAT_VERSION}.rpm
