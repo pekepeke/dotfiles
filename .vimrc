@@ -1593,7 +1593,7 @@ NeoBundleLazy 'vim-scripts/dbext.vim', {
 NeoBundle 'honza/dockerfile.vim'
 NeoBundle 'stephpy/vim-yaml'
 NeoBundle 'chase/vim-ansible-yaml'
-NeoBundle 'MicahElliott/Rocannon'
+" NeoBundle 'MicahElliott/Rocannon'
 NeoBundle 'cespare/vim-toml'
 NeoBundleLazy 'xolox/vim-lua-ftplugin', {
 \ 'on_ft': ['lua'],
@@ -2277,7 +2277,8 @@ if exists(':tmap')
   nnoremap <C-w><C-p> :tabprev<CR>
   nnoremap <C-w><C-c> :tabnew<CR>
   " tmaps
-  tnoremap <C-w><C-w> <C-\><C-w>
+  " tnoremap <C-w><C-w> <C-\><C-w>
+  tnoremap <C-w><C-w> <C-w>
   tnoremap <C-w><C-n> <C-w>:tabnext<CR>
   tnoremap <C-w><C-p> <C-w>:tabprev<CR>
   tnoremap <C-w><C-c> <C-w>:tabnew<CR>
