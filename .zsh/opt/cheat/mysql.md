@@ -178,6 +178,11 @@ mysqlsla --flat --slow ~mysql/var/mysql-slow.log --sort at
 
 # pt-query-digest
 
+# スロークエリ集計
+pt-query-digest --group-by fingerprint --order-by Query_time:sum mysql-slowquery.log.2018-09-03.09
+# -–attribute-value-limit を使って大きすぎる実行時間のクエリを無視する
+pt-query-digest --group-by fingerprint --order-by Query_time:sum --attribute-value-limit=4294967296 mysql-slowquery.log.2018-09-03.09
+
 # qtime, cnt で集計
 pt-query-digest --limit 50 --order-by Query_time:sum --since YYYY-MM-DD 00:00:00 --until YYYY-MM-DD 23:59:59 slow.log > YYYY-MM-DD_by_qtime.txt
 pt-query-digest --limit 50 --order-by Query_time:cnt --since YYYY-MM-DD 00:00:00 --until YYYY-MM-DD 23:59:59 slow.log > YYYY-MM-DD_by_count.txt

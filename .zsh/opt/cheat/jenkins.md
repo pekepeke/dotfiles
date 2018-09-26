@@ -1,4 +1,29 @@
 
+### 設定一括変更
+
+#### シェルスクリプトで
+設定の再読込が必要.
+
+```
+find ./*/config.xml | xargs grep "notifySuccess"
+find ./*/config.xml | xargs -i cp -p {} {}.$(date +'%Y%m%d')
+find ./*/config.xml | xargs sed -i -e "s%<notifySuccess>true</notifySuccess>%<notifySuccess>false</notifySuccess>%g"
+```
+
+#### スクリプトコンソールで編集
+
+```
+jenkins.model.Jenkins.instance.items.each {
+  println "Job : ${it.name}"
+  def mailer = it.publisherList.get(hudson.tasks.Mailer.class)
+  mailer?.recipients += ' foo@example.com'
+}
+```
+
+#### Configuration Slicing Plugin
+標準的な項目をGUI上で一括編集できる
+
+
 ### 環境変数
 
 | 環境変数        | 説明 |
