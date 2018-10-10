@@ -1,6 +1,8 @@
 GCP
 =====
 
+# gsutil
+
 ```
 # ヘルプ表示
 gsutil help cp
@@ -51,4 +53,68 @@ gsutil du -c gs://bucket
 gsutil hash [path]
 ```
 
+# Container Builder
+
+```
+gcloud builds submit --tag gcr.io/[PROJECT_ID]/[IMAGE_NAME] .
+gcloud builds submit --config cloudbuild.yaml \
+  gs://cloud-build-examples/node-docker-example.tar.gz \
+  --substitutions=_NODE_VERSION_1=v6.9.4, _NODE_VERSION_2=v9.5.0
+gcloud builds submit --config [BUILD_CONFIG] --no-source
+```
+
+```
+$PROJECT_ID: build.ProjectId
+$BUILD_ID: build.BuildId
+$COMMIT_SHA: build.SourceProvenance.ResolvedRepoSource.Revision.CommitSha
+$SHORT_SHA: COMMIT_SHA の先頭 7 文字
+$REPO_NAME: build.Source.RepoSource.RepoName（トリガーされたビルドでのみ使用可能）
+$BRANCH_NAME: build.Source.RepoSource.Revision.BranchName（トリガーされたビルドでのみ使用可能）
+$TAG_NAME: build.Source.RepoSource.Revision.TagName（トリガーされたビルドでのみ使用可能）
+$REVISION_ID: build.SourceProvenance.ResolvedRepoSource.Revision.CommitSha（トリガーされたビルドでのみ使用可能）
+```
+
+
+```
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/my-project/my-image', '.']
+  timeout: 500s
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/my-project/my-image']
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['set', 'image', 'deployment/my-deployment', 'my-container=gcr.io/my-project/my-image']
+  id: 'kubectl'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-east4-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=my-cluster'
+- name: 'ubuntu'
+  args: ['--version']
+  env: 
+  - 'CLOUDSDK_COMPUTE_ZONE=us-east1-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=node-example-cluster'
+  dir: 'examples/hello_world'
+  id: 'nodeversion'
+  waitFor: 'kubectl'
+  entrypoint: 'node'
+  secretEnv: ['MY_SECRET']
+  volumes:
+  - name: 'vol1'
+    path: '/persistent_volume'
+  timeout: 500s
+logsBucket: 'gs://my-bucket'
+options:
+  machineType: 'N1_HIGHCPU_8'
+  sourceProvenanceHash: ['SHA256']
+  diskSizeGb: 200
+  substitutionOption: 'ALLOW_LOOSE'
+  logStreamingOption: STREAM_ON
+substitutions:
+  _NODE_VERSION_1: v6.9.5
+secrets: object(Secret)
+
+timeout: 660s
+tags: ['mytag1', 'mytag2']
+images: ['gcr.io/my-project/myimage']
+```
 
