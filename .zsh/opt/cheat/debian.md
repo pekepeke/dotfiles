@@ -7,12 +7,16 @@ debian memo
 ```
 # カーネルバージョン確認
 uname -a
+uname -r
 # インスコされたカーネルを確認
 dpkg --get-selections | grep linux-image
 # 削除
 sudo apt-get remove linux-image-4.4.0-97-generic
 # apt-get install -f しろと怒られて消せない場合
 sudo dpkg --force-all -P linux-image-4.4.0-93-generic
+# 使ってないものは手動で削除もできるがあくまで最終手段として…
+cd /boot
+sudo mv vmlinuz-4.4.0-21-generic /tmp
 ```
 
 ### visudo のエディタ変更
