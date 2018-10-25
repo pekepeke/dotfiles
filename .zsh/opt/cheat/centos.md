@@ -14,6 +14,25 @@ wget https://bootstrap.pypa.io/get-pip.py
 python get-pip.py
 ```
 
+## DNF
+
+```
+https://dnf.readthedocs.io/en/latest/cli_vs_yum.html
+
+/etc/dnf/dnf.conf
+/etc/yum.repos.d/
+
+DNF本体に同梱
+yum-fastestmirror
+初期状態では有効化されておらず、 /etc/dnf/dnf.conf の[main]セクションにfastestmirror=trueを追加することによって有効化される。
+
+yum-priorities
+リポジトリ設定でpriorityを設定すれば利用できる。
+
+yum-downloadonly
+DNFではdnf-plugins-coreに収録されるプラグインとなった。
+```
+
 ## yum エラー
 
 ### centos のサポート切れ
