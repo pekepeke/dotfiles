@@ -162,3 +162,19 @@ cat /etc/sysconfig/network-scripts/route-eth0
 
 sudo service network restart
 ```
+
+#### Gatewayの場合
+
+```
+cat /etc/sysconfig/network-scripts/route-eth1
+default via 10.131.2.1 dev eth1
+
+cat /etc/sysconfig/network-scripts/ifcfg-eth1
+DEVICE=eth1
+BOOTPROTO=static
+ONBOOT=yes
+NETWORKING=yes
+GATEWAY=10.131.2.1
+IPADDR=10.131.2.200
+PREFIX=18
+```

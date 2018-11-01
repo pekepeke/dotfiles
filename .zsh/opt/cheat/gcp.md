@@ -118,3 +118,29 @@ tags: ['mytag1', 'mytag2']
 images: ['gcr.io/my-project/myimage']
 ```
 
+## GKEで固定IP
+
+```
+gcloud compute addresses create access-static-ip --global
+gcloud compute addresses list --global
+
+kubectl create -f ingress.yaml
+```
+
+```
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: static-ip
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "access-static-ip"
+spec:
+  tls:
+  # This assumes tls-secret exists.
+  - secretName: tls-secret
+  backend:
+    # This assumes http-svc exists and routes to healthy endpoints.
+    serviceName: http-svc
+    servicePort: 80
+```
+

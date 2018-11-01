@@ -6,6 +6,36 @@
 set bell-style none
 ```
 
+## network, ifcfg-ethX
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/ch-The_sysconfig_Directory#s2-sysconfig-network
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/6/html/deployment_guide/s1-networkscripts-interfaces
+
+【項目の意味】
+- DEVICE="eth0" ←対象のNIC
+- BOOTPROTO="static" ←自動で取得したいときは、"dhcp"とする。固定させたい時は、"static"か"none"とする。
+
+以下の４つは、BOOTPROTO="static"にした時だけ記述。(自動で取得する際は不要。DHCPで取得される。)
+- BROADCAST=192.168.0.255 ←ブロードキャストアドレス。
+- IPADDR=192.168.0.254 ←自分のIPアドレス
+- NETMASK=255.255.255.0 ←自分が所属しているネットワークのサブネットマスク。
+- NETWORK=192.168.0.0 ←自分が所属しているネットワーク
+- NM_CONTROLLED="yes" ←GUIでネットワーク設定を行うかどうかの設定。(yesならGUIでネットワーク設定ができる。)※GUIでネットワーク設定を行うツール：NetworkManager
+- ONBOOT=yes ←OS起動時にNICを起動させるかどうか。(yesなら起動させる。)
+- TYPE="Ethernet" ←通信の規格。他には、"Tokenling"もある。
+- UUID="ca822639-5e60-4583-a26b-d35013736438" ←CentOSが付与する、NICの識別名。(CentOSはこれを見るらしい)
+- HWADDR=08:00:27:3C:94:EF ←MACアドレス
+- DEFROUTE=yes ←デフォルトのNIC(複数のNICが接続されている時に意味を持つ。)
+- PEERDNS=no ←DHCPサーバからDNSの情報を取得し、/etc/resolv.confの内容を書き換える。自分が用意したDNSを使う等DNSサーバのアドレスを固定したいときはnoにすると、/etc/resolv.confは書き換わらない。
+- PEERROUTES=no ←DHCPサーバからルーターの情報を取得し、/etc/sysconfig/networkの内容を書き換える。noにすれば、自分で設定した/etc/sysconfig/networkの内容は変わらない。(嘘だったらごめん・・・。)
+- IPV4_FAILURE_FATAL=yes ←IPv4の設定がうまくいかなかった時、IPv6が使えるのなら使うか？それとも使用できても使わないか？(yesなら使わない。noなら使う)
+- IPV6INIT=no ←IPv6を使用するかどうか。(yesなら使う。)
+- NAME="System eth0" ←GUIでネットワーク設定を行う際に表示されるNICの名前。
+- NETWORKING=yes ←ネットワーク機能を使用するかどうか。
+- HOSTNAME=tomcat ←ホスト名(これはインストール時に設定される。)
+- GATEWAY=192.168.0.1 ←ルーターのアドレス。
+- FORWARD_IPV4=no ←パケットを転送するかどうか。(自分をルーターにするときは、yesにする。)
+
+
 ## python 関連
 ### pip の導入
 
