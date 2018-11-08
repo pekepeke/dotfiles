@@ -144,6 +144,9 @@ docker exec -it CONTAINER コマンド
 
 ## volume のマウント状況を調べる(Mounts セクション)
 docker inspect [id]
+
+# どのコンテナでPIDが動いているか見るコマンド
+docker ps | tail  -n +2 | awk '{print $1}' | xargs docker inspect -f '{{ .State.Pid }} {{ .Config.Hostname }}'
 ```
 
 

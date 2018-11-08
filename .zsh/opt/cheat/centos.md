@@ -126,6 +126,85 @@ timedatectl set-timezone Asia/Tokyo
 localectl set-locale LANG=ja_JP.utf8
 ```
 
+### chrony
+https://qiita.com/yunano/items/7883cf295f91f4ef716b
+
+```
+server ntp.nict.jp iburst
+server 0.jp.pool.ntp.org iburst
+server 1.jp.pool.ntp.org iburst
+
+stratumweight 0
+
+driftfile /var/lib/chrony/drift
+rtcsync
+makestep 10 3
+
+allow 10.0.2.0/24 # すべてのコンピュータが所属するサブネット
+bindcmdaddress 127.0.0.1
+bindcmdaddress ::1
+
+keyfile /etc/chrony.keys
+commandkey 1
+generatecommandkey
+
+noclientlog
+logchange 0.5
+logdir /var/log/chrony
+```
+
+- 書式： server <NTPサーバ> [<オプション1> <オプション2> ...]
+	- デフォルト： 指定なし
+	- NTPクライアントとしてどのNTPサーバに時刻問い合わせに行くかを指定する。
+	- オプションの中でiburstオプションは付けておく方がメリットのあるものである。chronydはiburstオプションの付いたNTPサーバに対して、起動直後に短い間隔で4回問い合わせをする（ntpdのiburstは8回）。
+
+
+
+- 書式： rtcsync
+	- デフォルト： 指定なし
+	- chronyでは設定ファイルにrtcsyncと書いておけばシステムクロックを11分置きにハードウェアクロックに書き出してくれる。
+
+- 書式： makestep <何秒以上> <何回目まで>
+	- デフォルト： 指定なし
+	- システムクロックの調整には、NTPサーバから取得した時刻にすぐに修正するstep調整と、他アプリへの影響が少ないようにシステムクロックのずれを徐々に修正するslew調整という2つの方式がある。
+	- chronydは基本的にはslew調整を行うが、起動直後だけstep調整を行うようにすることができる。それがこのmakestepであり、続く1つ目の数字で何秒以上のずれがあればstep調整を行うか、2つ目の数字で起動から何回目の同期までstep調整を行うかを設定する。
+	- 2つの数字両方の条件に一致している時はstep調整、そうでなければslew調整となる。
+	- なお、chronydがslew調整中に強制的にstep調整させたい場合はchronyc -a makestepを実行する（ntpdateがインストールされているならntpdate <NTPサーバ>でも良いだろう）。
+
+- 書式： maxslewrate <slewレート>
+	- デフォルト： maxslewrate 83333.333
+	- slew調整を最大どれだけの速さで行うかを決定する設定項目である。
+
+- 書式： port <NTPリクエストの待ち受けポート番号>
+	- デフォルト： port 123
+	- chronydはntpdとは違い、設定によりNTPリクエストの待ち受けUDPポート番号を変更することができる。ただし、SELinuxが有効な場合はsemanage port -a -t ntp_port_t -p udp <ポート番号>を実行する必要がある（実行するにはpolicycoreutils-pythonをインストールすること）。
+	- ここでport 0を指定するとNTPサーバとして待ち受けを行わず、NTPクライアントとしてだけ働くことになる。
+
+allow / deny
+書式：
+- allow [all] <IPアドレスかサブネット>
+- deny [all] <IPアドレスかサブネット>
+	- デフォルト： 指定なし（全IPアドレスからのアクセスを禁止）
+	- ntpdではrestrictで書いていた、NTPサーバとしてどのコンピュータにアクセスさせるか、の設定である。
+	- allowに設定されたIPアドレスやサブネットはアクセスが許可され、denyに設定されたIPアドレスやサブネットはアクセスが許可されない。どちらも複数書くことができ、上にあるものが優先順位が高い。ただし、allを付けると上にあるものを上書きして指定されたIPアドレスやサブネットを許可/禁止する。
+
+- 書式： bindaddress <IPアドレス>
+	- デフォルト： 指定なし（*と::で待ち受け）
+	- IPv4とIPv6で1つずつ指定可能
+	- 特定のIPアドレスをバインドするための設定項目である。
+- cmdport / cmdallow / cmddeny / bindcmdaddress
+	- ntpdにおけるntpqやntpdcに当たる、chronydの状態閲覧や操作用のクライアントがchronycである。
+	- cmd付きのこれらの設定項目では、chronycからの待ち受けもNTPリクエストの待ち受けと同様に設定することができる。
+	- cmdportのデフォルト値は323である。こちらもUDP。SELinuxが有効な場合に変更するならsemanage port -a -t chronyd_port_t -p udp <ポート番号>を実行。
+
+##### `ntpq -p`的なの
+
+```
+# 状態確認
+chronyc sources
+```
+
+
 ## memotitle
 ### 参考記事など
 - https://www.sssg.org/blogs/naoya/archives/1144
