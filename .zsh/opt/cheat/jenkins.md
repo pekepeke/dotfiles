@@ -139,3 +139,32 @@ java -jar jenkins-cli.jar -s http://localhost:8080 enable-job "ジョブ名"
 | wait-node-online               | ノードがオンラインになるのを待ちます。                                                                           |
 | who-am-i                       | 認証情報を表示します。                                                                                           |
 
+### シェル芸
+#### Job をコピーして新規作成
+```
+JOB_NAME=
+TEMPLATE=
+curl -X POST -d "name=${JOB_NAME}&mode=copy&from=${TEMPLATE}" http://jenkins:8080/createItem
+```
+
+#### Job の最新のビルド結果を取得
+```
+curl http://jenkins:8080/job/${JOB_NAME}/lastBuild/api/json?pretty=true
+```
+
+#### Jenkins に cron ジョブの結果を飛ばす場合
+```
+LOG=/tmp/xxx.log
+JENKINS_URL="http://your_jenkins/jenkins"
+JOB_NAME="your_job_name"
+notify_jenkins(){
+  RESULT=$?
+  TEMP=$(mktemp -t notify_jenkins.XXXXXXXX)
+  echo "<run><log encoding=\"hexBinary\">$(hexdump -v -e '1/1 "%02x"' $LOG)</log><result>${RESULT}</result><duration>${ELAPSED_MS}</duration></run>" > ${TEMP}
+  wget -O /dev/null --quiet --post-file=${TEMP} \
+  ${JENKINS_URL}/job/${JOB_NAME}/postBuildResult
+  rm $TEMP
+}
+```
+
+
