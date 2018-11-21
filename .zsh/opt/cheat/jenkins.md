@@ -65,6 +65,19 @@ system "whoami"
 
 ```
 
+#### Hudson
+- https://wiki.jenkins.io/display/JENKINS/Jenkins+Script+Console
+- https://javadoc.jenkins.io/hudson/model/Hudson.html
+```
+def sourceJob = Hudson.instance.getJob("prototyping")
+
+for (jobName in ["hoge", "fuga"]) {
+  def job = Hudson.instance.copy(sourceJob, jobName)
+  job.disabled = true
+  job.save()
+}
+```
+
 ### cli
 - $JENKINS_HOME/war/WEB-INF/jenkins-cli.jar
 	- war/WEB-INF/jenkins-cli.jar

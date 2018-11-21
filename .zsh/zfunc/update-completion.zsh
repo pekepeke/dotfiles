@@ -31,6 +31,7 @@ update_complation() {
   curl -Lo _appcfg.py https://raw.githubusercontent.com/littleq0903/gcloud-zsh-completion/master/src/_appcfg.py
   curl -Lo _docker-compose https://raw.githubusercontent.com/sdurrheimer/docker-compose-zsh-completion/master/_docker-compose
 
+  curl -Lo _docker https://raw.githubusercontent.com/docker/cli/master/contrib/completion/zsh/_docker
   curl -Lo tig-completion.bash https://raw.githubusercontent.com/jonas/tig/master/contrib/tig-completion.bash
   curl -Lo _tig https://raw.githubusercontent.com/jonas/tig/master/contrib/tig-completion.zsh
   for f in "" -doc -galaxy -playbook -pull -vault; do
