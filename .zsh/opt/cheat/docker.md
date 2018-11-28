@@ -147,6 +147,14 @@ docker inspect [id]
 
 # どのコンテナでPIDが動いているか見るコマンド
 docker ps | tail  -n +2 | awk '{print $1}' | xargs docker inspect -f '{{ .State.Pid }} {{ .Config.Hostname }}'
+
+# sha付きで pull
+docker pull centos@sha256:b358c4a16ef77db3a07eaaaf62c707f51aa15bca820489392cc9d97046bc483a
+# centos:<none>となっているはずなのでタグ付けする
+docker tag b5e5ffb5cdea centos:centos6
+# sha256 の確認方法
+docker image inspect --format='{{index .RepoDigests 0}}' <image>
+
 ```
 
 
