@@ -129,6 +129,14 @@ SELECT * FROM information_schema.columns WHERE table_schema NOT IN ('information
 SELECT * FROM information_schema.columns WHERE table_schema NOT IN ('information_schema', 'test') AND table_name like '%' AND column_name like '%';
 ```
 
+## 全DBを個別でDUMP
+
+```
+SELECT CONCAT('mysqldump --host=127.0.0.1 --port=3306 -uroot -p --opt --skip-lock-tables --default-character-set=binary --hex-blob -B ', schema_name, ' > ', schema_name, '.sql') FROM information_schema.schemata
+WHERE schema_name NOT IN ('information_schema', 'mysql', 'sys', 'performance_schema', 'test');
+
+```
+
 ## grant 調査
 
 ```

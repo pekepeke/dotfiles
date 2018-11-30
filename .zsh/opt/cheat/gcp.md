@@ -1,7 +1,10 @@
 GCP
 =====
 
-# gsutil
+## IAM
+https://cloud.google.com/iam/docs/understanding-roles?hl=JA
+
+## gsutil
 
 ```
 # ヘルプ表示
