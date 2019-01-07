@@ -10,6 +10,12 @@ for _f in ~/.shrc.*[^zwc] ~/.zshenv ; do
 done
 [ -e ~/.zshrc.zwc ] && rm -f ~/.zshrc.zwc
 
+if is_mac ; then
+  remove_path /usr/local/bin /usr/bin /bin /usr/sbin /sbin /opt/X11/bin
+  PATH=$PATH:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin
+  export PATH
+fi
+
 shrc_section_title "env vars" #{{{1
 REPORTTIME=3                    # 3秒以上かかった処理は詳細表示
 if [ $OSTYPE != "cygwin" -a -z $LANG ]; then
@@ -124,7 +130,7 @@ setopt no_flow_control     # 出力停止・開始(C-s/C-q)をOFF
 setopt notify              # バックグラウンドジョブの状態変化を即時報告
 setopt long_list_jobs      # jobs でプロセスIDも出力
 watch="all"                # 全ユーザのログイン・ログアウトを監視
-log                        # ログインはすぐに出力
+# log                        # ログインはすぐに出力
 setopt ignore_eof          # ^D でログアウトしない
 
 shrc_section_title "functions" #{{{1

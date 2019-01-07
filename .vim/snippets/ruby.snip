@@ -190,8 +190,6 @@ snippet filer File.read()
 	File.read(${1:"path/to/file"})${2}
 snippet Dir Dir.global() { |file| .. }
 	Dir.glob(${1:"dir/glob/*"}) { |${2:file}| ${3} }
-snippet Dir Dir[".."]
-	Dir[${1:"glob/**/*.rb"}]${2}
 snippet dirn
 	Filename.dirname(__FILE__)
 snippet deli
@@ -218,9 +216,9 @@ snippet ea
 	each { |${1:e}| ${2} }
 snippet eab
 	each_byte { |${1:byte}| ${2} }
-snippet eac- each_char { |chr| .. }
+snippet eacc- each_char { |chr| .. }
 	each_char { |${1:chr}| ${2} }
-snippet eac- each_cons(..) { |group| .. }
+snippet eaco- each_cons(..) { |group| .. }
 	each_cons(${1:2}) { |${2:group}| ${3} }
 snippet eai
 	each_index { |${1:i}| ${2} }
@@ -356,9 +354,9 @@ snippet asnr
 	assert_nothing_raised(${1:Exception}) { ${2} }
 snippet asrt
 	assert_respond_to(${1:object}, :${2:method})${3}
-snippet ass assert_same(..)
+snippet assa assert_same(..)
 	assert_same(${1:expected}, ${2:actual})${3}
-snippet ass assert_send(..)
+snippet asse assert_send(..)
 	assert_send([${1:object}, :${2:message}, ${3:args}])${4}
 snippet asns
 	assert_not_same(${1:unexpected}, ${2:actual})${3}

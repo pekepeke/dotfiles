@@ -1,0 +1,18 @@
+disabled_rules:
+  - trailing_whitespace
+  - vertical_whitespace
+
+opt_in_rules:
+  - conditional_returns_on_newline
+  - empty_count
+  - missing_docs
+  - operator_usage_whitespace
+
+excluded:
+  - Pods/
+  - Carthage/
+
+line_length: 300
+
+identifier_name:
+  min_length: 1

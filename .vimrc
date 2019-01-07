@@ -679,49 +679,22 @@ endif
 NeoBundle 'itchyny/lightline.vim'
 
 " colorscheme {{{3
-NeoBundle 'freeo/vim-kalisi'
-" , {'on_unite':['colorscheme']}
+" NeoBundle 'freeo/vim-kalisi'
 NeoBundle 'tpope/vim-vividchalk'
 NeoBundle 'tomasr/molokai'
-" , {'on_unite':['colorscheme']}
-NeoBundle 'mopp/mopkai.vim'
-" , {'on_unite':['colorscheme']}
+" NeoBundle 'mopp/mopkai.vim'
 NeoBundle 'mrkn/mrkn256.vim'
-" , {'on_unite':['colorscheme']}
-NeoBundle 'fmoralesc/vim-vitamins'
-" , {'on_unite':['colorscheme']}
-NeoBundle 'morhetz/gruvbox'
-" , {'on_unite':['colorscheme']}
-NeoBundle 'vim-scripts/Lucius'
-" , {'on_unite':['colorscheme']}
+" NeoBundle 'fmoralesc/vim-vitamins'
+" NeoBundle 'morhetz/gruvbox'
+" NeoBundle 'vim-scripts/Lucius'
 NeoBundle 'jaromero/vim-monokai-refined'
-" , {'on_unite':['colorscheme']}
-NeoBundle 'freeo/vim-kalisi'
-" , {'on_unite':['colorscheme']}
 NeoBundle 'w0ng/vim-hybrid'
-" , {'on_unite':['colorscheme']}
 
 " common {{{3
-NeoBundleLazy 'osyo-manga/vim-jplus', {
-\ 'on_map' : [['nv',
-\   '<Plug>(jplus-getchar)', '<Plug>(jplus-getchar-with-space)',
-\   '<Plug>(jplus-input)', '<Plug>(jplus-input-with-space)',
-\ ]]}
 NeoBundle 'Shougo/context_filetype.vim'
 NeoBundle 'Shougo/tabpagebuffer.vim'
 NeoBundle 'Shougo/vimfiler.vim', {
 \ 'depends': 'Shougo/unite.vim',}
-" \ 'on_cmd' : [
-" \ { 'name': 'VimFiler', 'complete': 'customlist,vimfiler#complete' },
-" \ { 'name': 'VimFilerTab', 'complete': 'customlist,vimfiler#complete' },
-" \ { 'name': 'VimFilerBufferDir', 'complete': 'customlist,vimfiler#complete' },
-" \ { 'name': 'VimFilerExplorer', 'complete': 'customlist,vimfiler#complete' },
-" \ { 'name': 'Edit', 'complete': 'customlist,vimfiler#complete' },
-" \ { 'name': 'Write', 'complete': 'customlist,vimfiler#complete' },
-" \ 'Read', 'Source'],
-" \ 'on_map' : ['<Plug>(vimfiler'],
-" \ 'explorer' : 1,
-" \ }
 if s:exec_make
   NeoBundle 'Shougo/vimproc.vim', {
   \ 'build' : {
@@ -735,12 +708,6 @@ if s:exec_make
 endif
 NeoBundle 'Shougo/vimshell.vim', {
 \ 'depends': 'Shougo/vimproc.vim',}
-" \ 'on_cmd' : [{ 'name' : 'VimShell',
-" \ 'complete' : 'customlist,vimshell#complete'},
-" \   'VimShellExecute', 'VimShellInteractive',
-" \   'VimShellTerminal', 'VimShellPop'],
-" \ 'on_map' : ['<Plug>(vimshell']
-" \ }
 NeoBundle "osyo-manga/unite-filters-collection"
 " NeoBundle 'osyo-manga/vim-precious'
 NeoBundle 'pekepeke/vim-gitcomplete', 'develop'
@@ -756,10 +723,6 @@ if has('python') || has('python3')
   \ 'on_source': 'unite.vim',
   \ }
 endif
-NeoBundle 'Shougo/junkfile.vim', {
-\ 'on_cmd' : ['JunkfileOpen'],
-\ 'on_source': 'unite.vim',
-\ }
 NeoBundle 'kana/vim-altr' , {
 \ 'on_map': ['<Plug>(altr-',],
 \ }
@@ -921,7 +884,7 @@ NeoBundleLazy 'mattn/emoji-vim', {
 \ 'on_cmd': ['Emoji'],
 \ 'on_map': [['in', '<plug>(emoji-selector']],
 \ }
-if 0 && has('job') && has('channel') && has('timers')
+if has('job') && has('channel') && has('timers')
   NeoBundle 'w0rp/ale'
 else
   NeoBundle 'osyo-manga/shabadou.vim'
@@ -1098,6 +1061,29 @@ if s:feature('ycm') && has('python')
     \   'mac': './install.sh --clang-completer --omnisharp-completer',
     \   'unix': './install.sh --clang-completer --system-libclang --system-boost --omnisharp-completer',
     \ }}
+elseif s:feature('asyncomplete')
+  NeoBundle 'prabirshrestha/async.vim'
+  NeoBundle 'prabirshrestha/vim-lsp'
+  NeoBundle 'prabirshrestha/asyncomplete.vim'
+  NeoBundle 'prabirshrestha/asyncomplete-lsp.vim'
+  NeoBundle 'natebosch/vim-lsc'
+  NeoBundle "prabirshrestha/asyncomplete-buffer.vim"
+  NeoBundle "prabirshrestha/asyncomplete-emoji.vim"
+  NeoBundle "prabirshrestha/asyncomplete-file.vim"
+  NeoBundle "kyouryuukunn/asyncomplete-neoinclude.vim", {'depends': [
+  \ 'Shougo/neoinclude.vim',
+  \ ]}
+  NeoBundle "prabirshrestha/asyncomplete-neosnippet.vim"
+  NeoBundle "yami-beta/asyncomplete-omni.vim"
+  NeoBundle "wellle/tmux-complete.vim"
+  " NeoBundle "prabirshrestha/asyncomplete-tscompletejob.vim"
+  NeoBundle "prabirshrestha/asyncomplete-necosyntax.vim", {'depends': [
+  \ 'Shougo/neco-syntax',
+  \ ]}
+  NeoBundle "prabirshrestha/asyncomplete-tags.vim"
+  NeoBundle "prabirshrestha/asyncomplete-necovim.vim", {'depends': [
+  \ 'Shougo/neco-vim',
+  \ ]}
 elseif has('lua') && (v:version > 703 ||
       \ (v:version == 703 && has('patch885')))
   NeoBundle 'Shougo/neocomplete.vim', {'depends': [
@@ -1212,7 +1198,7 @@ endif
 
 " html {{{4
 NeoBundle 'othree/html5.vim'
-NeoBundle 'amirh/HTML-AutoCloseTag'
+NeoBundle 'heracek/HTML-AutoCloseTag'
 NeoBundleLazy 'mattn/emmet-vim', {
 \ 'on_ft': ['html','xhtml','eruby','php','css','scss'],
 \ }
@@ -1257,6 +1243,7 @@ NeoBundle 'isRuslan/vim-es6'
 NeoBundle 'guileen/simple-javascript-indenter'
 " NeoBundle 'othree/yajs.vim'
 NeoBundle 'pangloss/vim-javascript'
+NeoBundle 'posva/vim-vue'
 NeoBundle 'mxw/vim-jsx'
 " NeoBundle 'jsx/vim-jsx'
 " NeoBundle 'moll/vim-node'
@@ -1334,7 +1321,7 @@ NeoBundleLazy 'hachibeeDI/unite-pythonimport', {
 \ }
 NeoBundle 'Glench/Vim-Jinja2-Syntax'
 
-if !s:bundle.is_installed('YouCompleteMe')
+if !s:bundle.is_installed('asyncomplete-lsp.vim') && !s:bundle.is_installed('YouCompleteMe')
   if (has('python') || has('python3'))
     NeoBundleLazy 'davidhalter/jedi-vim', {
     \   'on_ft' : ['python', 'python3'],
@@ -1370,16 +1357,16 @@ NeoBundleLazy 'vim-scripts/DoxygenToolkit.vim', {
 " NeoBundleLazy 'osyo-manga/vim-snowdrop', {
 " \ 'on_ft': ['c', 'cpp', 'objc', 'objcpp'],
 " \ }
-if !s:bundle.is_installed('YouCompleteMe')
-  NeoBundleLazy 'Rip-Rip/clang_complete', {
-  \ 'on_ft': ['c', 'cpp', 'objc', 'objcpp'],
-  \ }
-  if s:is_mac
-    NeoBundleLazy 'tokorom/clang_complete-getopts-ios', {
-    \ 'on_ft': ['objc', 'objcpp'],
-    \ }
-  endif
-endif
+" if !s:bundle.is_installed('YouCompleteMe')
+"   NeoBundleLazy 'Rip-Rip/clang_complete', {
+"   \ 'on_ft': ['c', 'cpp', 'objc', 'objcpp'],
+"   \ }
+"   if s:is_mac
+"     NeoBundleLazy 'tokorom/clang_complete-getopts-ios', {
+"     \ 'on_ft': ['objc', 'objcpp'],
+"     \ }
+"   endif
+" endif
 NeoBundle 'peterhoeg/vim-qml'
 
 " C# {{{4
@@ -1387,16 +1374,10 @@ NeoBundle 'peterhoeg/vim-qml'
 " \ 'on_ft': ['cs'],
 " \ }
 
-if !s:bundle.is_installed('YouCompleteMe')
-  if s:exec_xbuild
-    NeoBundleLazy 'OmniSharp/omnisharp-vim', {
-    \ 'on_ft': ['cs'],
-    \ 'build': {
-    \   'windows': 'MSBuild.exe server/OmniSharp.sln /p:Platform="Any CPU"',
-    \   'mac': 'xbuild server/OmniSharp.sln',
-    \   'unix': 'xbuild server/OmniSharp.sln',
-    \ }
-  endif
+if !s:bundle.is_installed('asyncomplete-lsp.vim') && !s:bundle.is_installed('YouCompleteMe')
+  NeoBundleLazy 'OmniSharp/omnisharp-vim', {
+  \ 'on_ft': ['cs'],
+  \ }
 endif
 
 " OSX {{{4
@@ -1409,6 +1390,8 @@ if s:is_mac
     \ }
   endif
   NeoBundle 'vim-scripts/applescript.vim'
+  NeoBundle 'keith/swift.vim'
+  NeoBundle 'cfdrake/vim-carthage'
 endif
 
 " windows {{{4
@@ -1473,16 +1456,16 @@ NeoBundleLazy 'derekwyatt/vim-scala', {
 NeoBundleLazy 'fatih/vim-go', {
 \ 'on_ft': ['go'],
 \ }
-if s:exec_go
-  NeoBundle 'undx/vim-gocode'
-else
-  NeoBundleLazy 'undx/vim-gocode'
-endif
+" if s:exec_go
+"   NeoBundle 'undx/vim-gocode'
+" else
+"   NeoBundleLazy 'undx/vim-gocode'
+" endif
 
 " texts {{{4
 NeoBundle 'tpope/vim-markdown'
 NeoBundle 'nelstrom/vim-markdown-folding'
-NeoBundle 'kannokanno/previm'
+NeoBundle 'previm/previm'
 " NeoBundle 'beckorz/previm'
 NeoBundle 'timcharper/textile.vim'
 NeoBundle 'aklt/plantuml-syntax'
@@ -1490,13 +1473,7 @@ NeoBundle 'aklt/plantuml-syntax'
 NeoBundle 'hara/vim-opf'
 NeoBundle 'mozamimy/nymphia.vim'
 NeoBundle 'heavenshell/vim-misspell'
-
-NeoBundleLazy 'moznion/hateblo.vim', {
-\ 'on_cmd': [
-\   'HatebloCreate', 'HatebloCreateDraft', 'HatebloList',
-\   'HatebloUpdate', 'HatebloDelete',
-\ ], }
-NeoBundle 'moro/vim-review'
+NeoBundle 'tokorom/vim-review'
 NeoBundle 'nvie/vim-rst-tables'
 NeoBundle 'vim-scripts/sequence'
 
@@ -1563,7 +1540,7 @@ if !get(g:vimrc_enabled_features, "eclim", 0)
     endif
   elseif v:version >= 704 && get(g:vimrc_enabled_features, 'phpcd', 0)
     NeoBundle 'php-vim/phpcd.vim', {'build': {'others': 'composer install'}}
-  else
+  elseif !s:bundle.is_installed('asyncomplete-lsp.vim')
     NeoBundle 'shawncplus/phpcomplete.vim'
   endif
 endif
@@ -2907,7 +2884,7 @@ if s:bundle.is_installed('vim-monster')
 endif
 
 "
-if s:bundle.is_installed('w0rp/ale')
+if s:bundle.is_installed('ale')
   let g:ale_sign_column_always = 1
   let g:ale_sign_error = '>>'
   let g:ale_sign_warning = '--'
@@ -2922,6 +2899,95 @@ if s:bundle.is_installed('w0rp/ale')
   let g:ale_set_quickfix = 1
   " let g:ale_open_list = 1
   " let g:ale_keep_list_window_open = 1
+endif
+
+" vim-vue
+if s:bundle.is_installed('vim-vue')
+  MyAutoCmd FileType vue syntax sync fromstart
+endif
+
+" asyncomplete.vim {{{2
+if s:bundle.is_installed('asyncomplete-lsp.vim')
+  function! AsyncompleteClose()
+    return pumvisible() ? "\<C-y>" : ''
+  endfunction
+  let g:asyncomplete_enable_for_all = 1
+  " let g:asyncomplete_log_file = $HOME.'/.cache/asyncomplete.log'
+  let g:asyncomplete_smart_completion = 1
+  let g:asyncomplete_auto_popup = 1
+  let g:lsp_async_completion = 1
+  " MyAutoCmd CompleteDone * if pumvisible() == 0 | pclose | endif
+  " MyAutocmd FileType autohotkey,autoit,cfg,git,go,groovy,java,javascript,python,snippet,toml,vim,vb,xsl call asyncomplete#enable_for_buffer()
+  MyAutoCmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+      \ 'name': 'buffer',
+      \ 'priority': 5,
+      \ 'whitelist': ['*'],
+      \ 'completor': function('asyncomplete#sources#buffer#completor'),
+      \ }))
+  MyAutoCmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+      \ 'name': 'emoji',
+      \ 'priority': 1,
+      \ 'whitelist': ['*'],
+      \ 'completor': function('asyncomplete#sources#emoji#completor'),
+      \ }))
+  MyAutoCmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+      \ 'name': 'file',
+      \ 'priority': 3,
+      \ 'whitelist': ['*'],
+      \ 'completor': function('asyncomplete#sources#file#completor'),
+      \ }))
+  MyAutoCmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+      \ 'name': 'neoinclude',
+      \ 'priority': 3,
+      \ 'whitelist': ['*'],
+      \ 'completor': function('asyncomplete#sources#neoinclude#completor'),
+      \ }))
+  MyAutoCmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
+      \ 'name': 'neosnippet',
+      \ 'whitelist': ['*'],
+      \ 'priority': 9,
+      \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
+      \ }))
+  MyAutoCmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
+      \ 'name': 'omni',
+      \ 'priority': 7,
+      \ 'whitelist': ['*'],
+      \ 'completor': function('asyncomplete#sources#omni#completor'),
+      \ }))
+  MyAutoCmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
+      \ 'name': 'necosyntax',
+      \ 'priority': 7,
+      \ 'whitelist': ['*'],
+      \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
+      \ }))
+  MyAutoCmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
+      \ 'name': 'tags',
+      \ 'priority': 7,
+      \ 'whitelist': ['*'],
+      \ 'completor': function('asyncomplete#sources#tags#completor'),
+      \ }))
+  MyAutoCmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necovim#get_source_options({
+      \ 'name': 'necovim',
+      \ 'whitelist': ['vim'],
+      \ 'priority': 10,
+      \ 'completor': function('asyncomplete#sources#necovim#completor'),
+      \ }))
+  if executable('golsp')
+    MyAutoCmd User lsp_setup call lsp#register_server({
+          \ 'name': 'go-lang',
+          \ 'cmd': {server_info->['golsp', '-mode', 'stdio']},
+          \ 'whitelist': ['go'],
+          \ })
+    MyAutoCmd FileType go setlocal omnifunc=lsp#complete
+  endif
+  if executable('pyls')
+    " pip install python-language-server
+    MyAutoCmd User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'whitelist': ['python'],
+        \ })
+  endif
 endif
 
 " vim-phpqa {{{2
@@ -4403,7 +4469,15 @@ if s:bundle.tap('lexima.vim')
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-CR)', '<CR>')
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-SPACE)', '<Space>')
 
-    if s:bundle.is_installed('neocomplete.vim')
+    if s:bundle.is_installed('asyncomplete-lsp.vim')
+      " TODO
+      call lexima#insmode#map_hook('before', '<CR>',
+      \ "\<C-]><C-r>=AsyncompleteClose()\<CR>")
+      call lexima#insmode#map_hook('before', '<Space>',
+      \ "\<C-]>\<C-r>=AsyncompleteClose()\<CR>")
+      call lexima#insmode#map_hook('before', '<BS>',
+      \ "\<C-r>=AsyncompleteClose()\<CR>")
+    elseif s:bundle.is_installed('neocomplete.vim')
       call lexima#insmode#map_hook('before', '<CR>',
       \ "\<C-]><C-r>=neocomplete#smart_close_popup()\<CR>")
       call lexima#insmode#map_hook('before', '<Space>',
@@ -7139,7 +7213,6 @@ if s:bundle.is_installed('vim-quickrun')
       augroup END
     endfunction
   endif
-
   " quickrun init {{{3
   function! s:vimrc_quickrun_init() "{{{4
     nmap <buffer> q :quit<CR>
@@ -7148,391 +7221,7 @@ if s:bundle.is_installed('vim-quickrun')
 
   " watchdogs config {{{3
   if s:bundle.is_installed('vim-watchdogs')
-    call extend(g:quickrun_config, {
-      \ 'watchdogs_checker/_' : {
-      \   'hook/close_quickfix/enable_failure' : 1,
-      \   'hook/close_quickfix/enable_success' : 1,
-      \   'hook/hier_update/enable' : 1,
-      \   'hook/quickfix_status_enable/enable' : 1,
-      \   "hook/quickfixsigns_update/enable_exit" : 1,
-      \   "hook/quickfixsigns_update/priority_exit" : 3,
-      \   'hook/back_window/enable' : 1,
-      \   'outputter/quickfix/open_cmd' : '',
-      \ },
-      \ })
-    if has('job') && exists('*ch_close_in')
-      call extend(g:quickrun_config['watchdogs_checker/_'], {
-      \ 'runner': 'job',
-      \ 'runner/job/interval': 100,
-      \ })
-    endif
-    call extend(g:quickrun_config, {
-      \ 'perl/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/perl-projectlibs',
-      \ },
-      \ 'cpanfile/watchdogs_checker': {
-      \   'type' : 'watchdogs_checker/cpanfile',
-      \ },
-      \ "watchdogs_checker/perl-locallib" : {
-      \   "command" : "perl",
-      \   "exec"    : "%c %o -Mlib=local/lib/perl5/ -Mlib=lib -Mlib=. -cw %s:p",
-      \   "quickfix/errorformat" : '%m\ at\ %f\ line\ %l%.%#',
-      \ },
-      \ 'watchdogs_checker/perl-projectlibs': {
-      \   'command' : 'perl',
-      \   'exec' : '%c %o -cw -MProject::Libs %s:p',
-      \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
-      \ },
-      \ 'watchdogs_checker/cpanfile': {
-      \   'command' : 'perl',
-      \   'exec' : '%c %o -w -MModule::CPANfile -e "Module::CPANfile->load(q|%S:p|)"',
-      \   'quickfix/errorformat' : '%m\ at\ %f\ line\ %l%.%#',
-      \ },
-      \ })
-
-    function! PhpcsStandardDetect() "{{{
-      let standard = get(b:, 'watchdogs_checker_phpcs_standard',
-        \ (filereadable('phpcs.xml') ? 'phpcs.xml': 'PSR2'))
-      let extra_opt = get(b:, 'watchdogs_checker_phpcs_options', '')
-      return printf('--standard=%s %s', standard, extra_opt)
-    endfunction "}}}
-
-    if !exists('g:quickrun_config["watchdogs_checker/php"]')
-      call extend(g:quickrun_config, {
-      \ 'watchdogs_checker/php': {
-      \   'cmdopt': '-d error_reporting=E_ALL',
-      \ },
-      \ })
-    endif
-    call extend(g:quickrun_config, {
-    \ 'watchdogs_checker/phpcs': {
-    \    'command': 'phpcs',
-    \    'cmdopt' : '--report=emacs %{PhpcsStandardDetect()}',
-    \    'exec': '%c %o -l %s:p',
-    \    "errorformat" : '%f:%l:%c:\ %m',
-    \ }
-    \ })
-    call extend(g:quickrun_config, {
-    \ 'watchdogs_checker/phpmd': {
-    \    'command': 'phpmd',
-    \    'cmdopt' : 'cleancode,codesize,design,unusedcode,naming',
-    \    'exec': '%c %s:p %o text',
-    \    'quickfix/errorformat': '%f:%l%\s%m, %-G%.%#',
-    \ }
-    \ })
-    call extend(g:quickrun_config, {
-    \ 'watchdogs_checker/phpcheck': {
-    \    'command': $HOME . '/.vim/bin/phpcheck.php',
-    \    'cmdopt' : '--phpcs="%{PhpcsStandardDetect()}"',
-    \    'exec': '%c %o %s:p',
-    \    'quickfix/errorformat': '%f:%l:%c:%m',
-    \ }
-    \ })
-    call extend(g:quickrun_config, {
-      \ 'php/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/phpcheck',
-      \ },
-      \ })
-    if executable('tidy')
-      call extend(g:quickrun_config, {
-      \ 'html/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/tidy',
-      \ },
-      \ 'xhtml/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/tidy',
-      \ },
-      \ })
-    endif
-    call extend(g:quickrun_config, {
-      \ 'watchdogs_checker/tidy' : {
-      \   'command' : 'tidy',
-      \    'exec'    : '%c -raw -quiet -errors --gnu-emacs yes %o %s:p',
-      \    'quickfix/errorformat' : '%f:%l:%c: %m',
-      \ },
-      \ 'haml/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/haml',
-      \ },
-      \ 'watchdogs_checker/haml' : {
-      \   'command' : 'haml',
-      \    'exec'    : '%c -c %o %s:p',
-      \    'quickfix/errorformat' : 'Haml error on line %l: %m,'
-      \                           . 'Syntax error on line %l: %m,%-G%.%#',
-      \ },
-      \ 'watchdogs_checker/slimrb' : {
-      \   'command' : 'slimrb',
-      \    'exec'    : '%c -c %o %s:p',
-      \    'quickfix/errorformat' : '%C\ %#%f\, Line %l\, Column %c,'.
-      \                             '%-G\ %.%#,'.
-      \                             '%ESlim::Parser::SyntaxError: %m,'.
-      \                             '%+C%.%#'
-      \ },
-      \ })
-    call extend(g:quickrun_config, {
-      \ 'json/watchdogs_checker' : {
-      \   'type' : executable('jsonlint') ? 'watchdogs_checker/jsonlint' :
-      \            executable('jsonval') ? 'watchdogs_checker/jsonval' : '',
-      \ },
-      \ 'watchdogs_checker/jsonlint' : {
-      \   'command' : 'jsonlint',
-      \    'exec'    : '%c %s:p %o --compact',
-      \    'quickfix/errorformat' : '%ELine %l:%c,%Z\\s%#Reason: %m,'
-      \                           . '%C%.%#,%f: line %l\, col %c\, %m,%-G%.%#',
-      \ },
-      \ 'watchdogs_checker/jsonval' : {
-      \   'command' : 'jsonval',
-      \    'exec'    : '%c %o %s:p',
-      \    'quickfix/errorformat' : '%E%f: %m at line %l,%-G%.%#',
-      \ },
-      \ })
-    if executable('jsxhint')
-      let g:quickrun_config['javascript/watchdogs_checker'] = 'watchdogs_checker/jsxhint'
-    endif
-    call extend(g:quickrun_config, {
-      \ 'watchdogs_checker/nodejs' : {
-      \   'command' : 'node',
-      \    'exec'    : '%c %o %s:p',
-      \    'quickfix/errorformat' : '%AError: %m,%AEvalError: %m,'
-      \                           . '%ARangeError: %m,%AReferenceError: %m,'
-      \                           . '%ASyntaxError: %m,%ATypeError: %m,'
-      \                           .  '%Z%*[\ ]at\ %f:%l:%c,%Z%*[\ ]%m (%f:%l:%c),'
-      \                           .  '%*[\ ]%m (%f:%l:%c),%*[\ ]at\ %f:%l:%c,%Z%p^,'
-      \                           .  '%A%f:%l,%C%m,%-G%.%#'
-      \ },
-      \ 'watchdogs_checker/jsxhint' : {
-      \   'command' : 'jsxhint',
-      \    'exec'    : '%c --verbose %o %s:p',
-      \    'quickfix/errorformat' : '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
-      \ },
-      \ 'watchdogs_checker/eslint': {
-      \   'command' : 'eslint',
-      \    'exec'    : '%c -f compact %o %s:p',
-      \    'quickfix/errorformat' : '%E%f: line %l\, col %c\, Error - %m,' .
-      \       '%W%f: line %l\, col %c\, Warning - %m'
-      \ },
-      \ })
-    call extend(g:quickrun_config, {
-      \ 'coffee/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/coffee',
-      \ },
-      \ 'watchdogs_checker/coffee' : {
-      \   'command' : 'coffee',
-      \   'exec'    : '%c -c -p %o %s:p',
-      \   'quickfix/errorformat' : '%E%f:%l:%c: %trror: %m,' .
-      \                            'Syntax%trror: In %f\, %m on line %l,' .
-      \                            '%EError: In %f\, Parse error on line %l: %m,' .
-      \                            '%EError: In %f\, %m on line %l,' .
-      \                            '%W%f(%l): lint warning: %m,' .
-      \                            '%W%f(%l): warning: %m,' .
-      \                            '%E%f(%l): SyntaxError: %m,' .
-      \                            '%-Z%p^,' .
-      \                            '%-G%.%#'
-      \ },
-      \ 'watchdogs_checker/coffeelint' : {
-      \   'command' : 'coffeelint',
-      \   'exec'    : '%c -csv %o %s:p',
-      \   'quickfix/errorformat' : '%f\,%l\,%\d%#\,%trror\,%m,' .
-      \                            '%f\,%l\,%trror\,%m,' .
-      \                            '%f\,%l\,%\d%#\,%tarn\,%m,' .
-      \                            '%f\,%l\,%tarn\,%m'
-      \ },
-      \ })
-    call extend(g:quickrun_config, {
-      \ 'typescript/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/tsc',
-      \ },
-      \ 'watchdogs_checker/tsc' : {
-      \   'command' : 'tsc',
-      \    'exec'    : '%c %o %s:p',
-      \    'quickfix/errorformat' : '%+A %#%f %#(%l\,%c): %m,%C%m',
-      \ },
-      \ 'watchdogs_checker/jsxhint' : {
-      \   'command' : 'jsxhint',
-      \    'exec'    : '%c --verbose %o %s:p',
-      \    'quickfix/errorformat' : '%A%f: line %l\, col %v\, %m \(%t%*\d\)',
-      \ },
-      \ })
-    call extend(g:quickrun_config, {
-      \ 'css/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/csslint',
-      \ },
-      \ 'watchdogs_checker/csslint' : {
-      \   'command' : 'csslint',
-      \    'exec'    : '%c %o --format=compact %s:p',
-      \    'quickfix/errorformat' : '%-G,%-G%f: lint free!'.
-      \       ',%f: line %l\, col %c\, %trror - %m,%f: '.
-      \       'line %l\, col %c\, %tarning - %m,%f: line %l\, col %c\, %m,',
-      \ },
-      \ })
-    if executable('scss-lint')
-      call extend(g:quickrun_config, {
-        \ 'scss/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/scsslint',
-        \ },
-        \ 'watchdogs_checker/scsslint' : {
-        \   'command' : 'scss-lint',
-        \    'exec'    : '%c %o --format=compact %s:p',
-        \    'quickfix/errorformat' : '%A%f:\ line\ %l\\,\ col\ %c\\,\ %m'
-        \ },
-        \ })
-    endif
-    if !executable('pyflakes')
-      call extend(g:quickrun_config, {
-        \  'python/watchdogs_checker' : {
-        \    'type' : 'watchdogs_checker/python',
-        \  },
-        \ })
-    endif
-    call extend(g:quickrun_config, {
-      \ 'watchdogs_checker/python' : {
-      \   'command' : $HOME . '/.vim/lib/python/compile.py',
-      \   'exec'    : "%c %o %s:p",
-      \   'quickfix/errorformat' : '%E%f:%l:%c: %m',
-      \ },
-      \ })
-    call extend(g:quickrun_config, {
-      \ 'csharp/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/mcs',
-      \ },
-      \ 'watchdogs_checker/mcs' : {
-      \   'command' : 'mcs',
-      \    'exec'    : '%c %o %s:p',
-      \    'cmdopt'  : '--parse',
-      \    'quickfix/errorformat' : '%f(%l\\\,%c):\ error\ CS%n:\ %m',
-      \ },
-      \ })
-    call extend(g:quickrun_config, {
-      \ 'objc/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/gcc_objc',
-      \ },
-      \ 'watchdogs_checker/gcc_objc' : {
-      \   'command' : 'gcc',
-      \    'exec'    : '%c -fsyntax-only -lobjc %o %s:p',
-      \    'quickfix/errorformat' : '%-G%f:%s:,'
-      \                           . '%f:%l:%c: %trror: %m,'
-      \                           . '%f:%l:%c: %tarning: %m,'
-      \                           . '%f:%l:%c: %m,'
-      \                           . '%f:%l: %trror: %m,'
-      \                           . '%f:%l: %tarning: %m,'
-      \                           . '%f:%l: %m',
-      \ },
-      \ })
-    call extend(g:quickrun_config, {
-      \ 'eruby/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/ruby_erb',
-      \ },
-      \ 'Gemfile/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/ruby',
-      \ },
-      \ 'watchdogs_checker/erubis' : {
-      \   'command' : 'erubis',
-      \   'exec'    : '%c -z %o %s:p',
-      \   'quickfix/errorformat' : '%f:%l:%m',
-      \ },
-      \ 'watchdogs_checker/ruby_erb' : {
-      \   'command' : 'ruby',
-      \   'exec'    : '%c -rerb -e "puts ERB.new('
-      \           . 'File.read(''%s:p'').gsub(''<\%='', ''<\%'')'
-      \           . ', nil, ''-'').src" | %c -c %o',
-      \   'quickfix/errorformat' : '%-GSyntax OK,%E-:%l: syntax error, %m,%Z%p^,%W-:%l: warning: %m,%Z%p^,%-C%.%#',
-      \ },
-      \ 'cucumber/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/cucumber',
-      \ },
-      \ 'watchdogs_checker/cucumber' : {
-      \   'command': 'cucumber',
-      \   'exec'  : '%c --dry-run --quiet --strict --format pretty %o %s:p',
-      \   'quickfix/errorformat' : '%f:%l:%c:%m,%W      %.%# (%m),%-Z%f:%l:%.%#,%-G%.%#',
-      \ },
-      \ 'watchdogs_checker/foodcritic': {
-      \   'command': 'foodcritic',
-      \   'exec'   : '%c %o %s:p',
-      \   'quickfix/errorformat': 'FC%n: %m: %f:%l',
-      \ },
-      \ })
-    call extend(g:quickrun_config, {
-      \ 'applescript/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/osacompile',
-      \ },
-      \ 'watchdogs_checker/osacompile' : {
-      \   'command' : 'osacompile',
-      \   'exec'    : '%c -o %o %s:p',
-      \   'quickfix/errorformat' : '%f:%l:%m',
-      \ },
-      \ })
-    if executable('luac')
-      call extend(g:quickrun_config, {
-        \ 'lua/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/luac',
-        \ },
-        \ })
-    endif
-    call extend(g:quickrun_config, {
-      \ 'watchdogs_checker/luac' : {
-      \   'command' : 'luac',
-      \   'exec'    : '%c -p %o %s:p',
-      \   'quickfix/errorformat' : 'luac: %#%f:%l: %m',
-      \ },
-      \ 'qml/watchdogs_checker' : {
-      \   'type' : 'watchdogs_checker/qmlscene',
-      \ },
-      \ 'watchdogs_checker/qmlscene' : {
-      \   'command' : 'qmlscene',
-      \   'exec'    : '%c -c %o %s:p',
-      \   'cmdopt' : '--quit',
-      \   'quickfix/errorformat' : 'file:\/\/%f:%l %m',
-      \ },
-      \ })
-    call extend(g:quickrun_config, {
-      \ 'watchdogs_checker/sqlplus' : {
-      \   'command' : 'sqlplus',
-      \   'cmdopt'  : '-S %{OracleCommandOptions()}',
-      \   'exec'    : '%c %o \@%s:p',
-      \   'quickfix/errorformat' : '%Eerror\ at\ line\ %l:,%Z%m',
-      \ },
-      \ })
-    call extend(g:quickrun_config, {
-      \ 'watchdogs_checker/twig-lint' : {
-      \   'command' : 'twig-lint',
-      \   'exec'    : '%c lint --format=csv %o %s:p',
-      \   'quickfix/errorformat' : '"%f"\,%l\,%m',
-      \ },
-      \ })
-    if executable('golint')
-      call extend(g:quickrun_config, {
-        \ 'go/watchdogs_checker' : {
-        \   'type' : 'watchdogs_checker/golint',
-        \ },
-        \ })
-    endif
-    call extend(g:quickrun_config, {
-      \ 'watchdogs_checker/go' : {
-      \   'command' : 'gofmt',
-      \   'exec'    : '%c -l %o %s:p',
-      \   'quickfix/errorformat' : '%f:%l:%c: %m,%-G%.%#',
-      \ },
-      \ 'watchdogs_checker/golint' : {
-      \   'command' : 'golint',
-      \   'exec'    : '%c %o %s:p',
-      \   'quickfix/errorformat' : '%f:%l:%c: %m,%-G%.%#',
-      \ },
-      \ })
-    " call extend(g:quickrun_config, {
-    "   \ '/watchdogs_checker' : {
-    "   \   'type' : 'watchdogs_checker/',
-    "   \ },
-    "   \ 'watchdogs_checker/' : {
-    "   \   'command' : '',
-    "   \   'exec'    : '%c -c %o %s:p',
-    "   \   'quickfix/errorformat' : '',
-    "   \ },
-    "   \ })
-    " watchdogs setup {{{4
-    call watchdogs#setup(g:quickrun_config)
-    let g:watchdogs_check_BufWritePost_enable = 1
-    " watchdogs helper command {{{4
-    command! -nargs=0 WatchdogsOff let g:watchdogs_check_BufWritePost_enable=0
-    command! -nargs=0 WatchdogsOn let g:watchdogs_check_BufWritePost_enable=1
-    command! -nargs=? WatchdogsConfig call my#watchdogs#show_config(<f-args>)
+    source ~/.vim/watchdogs.vim
   endif " }}}3
 endif
 
@@ -7643,12 +7332,16 @@ if s:bundle.is_installed('neosnippet.vim')
     " len(matchstr(line[pos-1:pos+1], '[<>"'']')) <= 0
     if g:vimrc_enabled_plugins.neosnippet
       if neosnippet#expandable()
-        if g:vimrc_enabled_plugins.neocomplete
+        if s:bundle.is_installed('asyncomplete-lsp.vim')
+          " TODO
+        elseif g:vimrc_enabled_plugins.neocomplete
           call neocomplete#smart_close_popup()
         endif
         return "\<Plug>(neosnippet_expand)"
       elseif neosnippet#jumpable()
-        if g:vimrc_enabled_plugins.neocomplete
+        if s:bundle.is_installed('asyncomplete-lsp.vim')
+          " TODO
+        elseif g:vimrc_enabled_plugins.neocomplete
           call neocomplete#smart_close_popup()
         endif
         return "\<Plug>(neosnippet_jump)"
@@ -7681,6 +7374,7 @@ if s:bundle.is_installed('neosnippet.vim')
       \ && len(matchstr(&filetype, 'x\?html\|s\?css\|php\|eruby')) > 0
       \ && emmet#isExpandable()
       \ && len(matchstr(getline('.'), '^\(\w*\%'.col('.').'c\)')) > 0
+      " TODO
       if g:vimrc_enabled_plugins.neocomplete
         call neocomplete#smart_close_popup()
       endif
@@ -8124,10 +7818,12 @@ if s:bundle.tap('vimshell.vim')
     nmap <buffer><nowait> q <Plug>(vimshell_exit)
     nmap <buffer> I G<Plug>(vimshell_append_enter)
     imap <silent> <buffer> <C-a> <C-o>:call cursor(line('.'), strlen(g:vimshell_prompt)+1)<CR>
-    if g:vimrc_enabled_plugins.neocomplcache
-      inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
+    if s:bundle.is_installed('asyncomplete-lsp.vim')
+      inoremap <expr><buffer> <C-j> pumvisible() ? AsyncompleteClose() : ""
     elseif g:vimrc_enabled_plugins.neocomplete
       inoremap <expr><buffer> <C-j> pumvisible() ? neocomplete#close_popup() : ""
+    elseif g:vimrc_enabled_plugins.neocomplcache
+      inoremap <expr><buffer> <C-j> pumvisible() ? neocomplcache#close_popup() : ""
     endif
   endfunction "}}}
 

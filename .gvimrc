@@ -91,7 +91,11 @@ elseif s:is_mac "{{{2
     command! -nargs=0 RictyBig set antialias guifont=Ricty:h20 guifontwide=Ricty:h20
     " Monaco
     " OsakaMonaco
-    Ricty
+    if filereadable('/Library/Fonts/Ricty.ttc')
+      Ricty
+    else
+      Monaco
+    endif
 
     " etc settings {{{3
     if has('printer')
