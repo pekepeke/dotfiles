@@ -47,3 +47,124 @@ NSLocalizedString("NetworkError", comment: "NetworkError")
 ### change Info.plist path
 - Project -> Build Settings -> Packageing -> Info.plist File
 
+## Memo
+
+### Library
+```
+# Resource
+https://github.com/mac-cain13/R.swift
+https://github.com/SwiftGen/SwiftGen
+https://github.com/ReactiveX/RxSwift
+# Networking
+https://github.com/Moya/Moya
+https://github.com/Alamofire/Alamofire
+https://github.com/ishkawa/APIKit
+https://github.com/ashleymills/Reachability.swift
+# Routing
+https://github.com/hyperoslo/Compass
+# Image
+https://github.com/kean/Nuke
+# Database
+https://realm.io/
+https://firebase.google.com/docs/firestore/
+# Keychain
+https://github.com/kishikawakatsumi/KeychainAccess
+# file
+https://github.com/saoudrizwan/Disk
+# License
+https://github.com/mono0926/LicensePlist
+# Logger
+https://github.com/DaveWoodCom/XCGLogger
+https://github.com/SwiftyBeaver/SwiftyBeaver
+# Test
+https://github.com/Quick/Quick
+https://github.com/kishikawakatsumi/SwiftPowerAssert
+```
+
+
+
+## fastlane
+
+https://docs.fastlane.tools/actions/
+
+```
+bundle exec fastlane actionsでアクション一覧
+bundle exec fastlane listで現在のレーンの一覧
+bundle exec fastlane init
+```
+
+### iOS
+
+| アクション     | 説明                                     | 
+|-----------|----------------------------------------| 
+| deliver   | スクリーンショット、メタデータ、アプリをApp Storeにアップロードする | 
+| snapshot  | 全デバイスを対象にアプリのスクリーンショット撮影を自動化する         | 
+| frameit   | スクリーンショットを各デバイス画像にはめ込む                 | 
+| pem       | プッシュ通知用のプロファイルを自動生成したり更新する             | 
+| sigh      | プロビジョニングプロファイルの生成、更新、修復する              | 
+| produce   | 新しいアプリをiTunes ConnectやDev Portalで作成する  | 
+| cert      | 証明書の作成と管理をする                           | 
+| spaceship | Apple Dev CenterやiTunes Connectにアクセスする | 
+| pilot     | TestFlightのテスターを管理する                   | 
+| boarding  | TestFlightのbetaテスターを招待する               | 
+| gym       | アプリをビルドする                              | 
+| match     | Gitを使って証明書とプロファイルを管理する                 | 
+| scan      | iOSアプリ、Macアプリのテストを実行する                 | 
+
+### Android
+
+| アクション      | 説明                             | 
+|------------|--------------------------------| 
+| supply     | アプリ、メタデータをGoogle Playにアップロードする | 
+| screengrab | 全デバイスを対象にアプリのスクリーンショット撮影を自動化する | 
+
+## swiftlint
+- https://qiita.com/nerd0geek1/items/9edad9a8b1d4c4051ab6
+*```bash
+if which swiftlint >/dev/null; then
+  swiftlint
+else
+  echo "warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint"
+fi
+```
+
+.swiftlint.yml
+
+```
+# 無効にするルール
+disabled_rules:
+  - trailing_whitespace
+
+# デフォルト無効で有効にするルール
+opt_in_rules:
+  - conditional_returns_on_newline
+  - force_unwrapping
+  - empty_count
+#  - missing_docs
+  - operator_usage_whitespace
+
+# 対象のファイル・フォルダ
+# デフォルトからフォルダ名を変更していない場合、プロジェクト名と同名のフォルダを指定すればいい
+included:
+  - {プロジェクト名}
+
+# 対象外のファイル・フォルダ
+# CocoaPodsでインストールしたライブラリは対象外とする
+excluded:
+  - Pods
+  - vendor
+  - Carthage
+```
+
+## Package Manager
+
+| 操作            | CocoaPods       | Carthage           | Swift Package Manager           | 
+|---------------|-----------------|--------------------|---------------------------------| 
+| 基本コマンド        | pod             | carthage           | swift package                   | 
+| インストール        | pod install     | carthage bootstrap | swift package resolve           | 
+| アップデート確認      | pod outdated    | carthage outdated  | -                               | 
+| アップデート        | pod update      | carthage update    | swift package update            | 
+| パッケージの表示      | -               | -                  | swift package show-dependencies | 
+| パッケージの検索      | pod search      | -                  | -                               | 
+| 利用可能なパッケージの表示 | pod list        | -                  | -                               | 
+| リセット          | pod deintegrate | -                  | swift package reset             | 

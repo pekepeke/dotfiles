@@ -181,6 +181,8 @@ if ! is_win ; then
   }
   # vim {{{2
   xenv-init vimenv
+  # terraform {{{2
+  xenv-init tfenv
 fi
 
 export GOPATH=$HOME/.gopath

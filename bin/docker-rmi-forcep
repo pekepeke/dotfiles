@@ -1,5 +1,6 @@
 #!/bin/bash
 
+[ -z "$SUDO" ] && $SUDO=""
 if !which docker >/dev/null 2>&1; then
   echo "command not found : docker " >&2
 fi
@@ -9,7 +10,7 @@ ID=$(docker images | peco | awk '{print $3}')
 if [ -n "$ID" ]; then
   for id in $ID ; do
     echo docker rmi -f $id
-    sudo docker rmi -f $id
+    $SUDO docker rmi -f $id
   done
 fi
 

@@ -96,3 +96,7 @@ pt-query-digest --limit 50 --order-by Query_time:cnt --since YYYY-MM-DD 00:00:00
 iptables -L --line-numbers -n -v
 iptables -t mangle -L --line-numbers -n -v
 iptables -t nat -L --line-numbers -n -v
+
+# pipenv
+OSX_ONLY="" CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install 3.x.x
+OSX_ONLY="" CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl)" pyenv install 3.x.x

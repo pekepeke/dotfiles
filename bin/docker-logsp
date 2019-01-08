@@ -1,5 +1,6 @@
 #/bin/bash
 
+[ -z "$SUDO" ] && $SUDO=""
 if !which docker >/dev/null 2>&1; then
   echo "command not found : docker " >&2
 fi
@@ -7,7 +8,7 @@ IDS="$(docker ps | peco | awk '{print $1}')"
 
 if [ -n "$IDS" ]; then
   for id in $IDS; do
-    sudo docker logs $id
+    $SUDO docker logs $id
   done
 fi
 
