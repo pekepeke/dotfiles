@@ -86,4 +86,5 @@ doc/tags-ja
 /.rlwrap/*_history
 
 /.bundle/cache
-/.docker/config.json
+/.docker/*
+!/.docker/config.json.template.sh
