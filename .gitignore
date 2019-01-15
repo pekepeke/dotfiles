@@ -87,4 +87,5 @@ doc/tags-ja
 
 /.bundle/cache
 /.docker/*
+
 !/.docker/config.json.template.sh

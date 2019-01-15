@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+
+import sys, csv, codecs
+import json
+
+import argparse
+
+def detect_encoding3(fpath):
+    lookup = ('utf-8', 'euc_jp', 'euc_jis_2004', 'euc_jisx0213',
+              'shift_jis', 'shift_jis_2004','shift_jisx0213',
+              'iso2022jp', 'iso2022_jp_1', 'iso2022_jp_2', 'iso2022_jp_3',
+              'iso2022_jp_ext','latin_1', 'ascii')
+    for encoding in lookup:
+        fp = None
+        try:
+            fp = open(fpath, 'r', encoding=encoding)
+            s = fp.read()
+            return encoding
+        except:
+            pass
+        finally:
+            if fp:
+                fp.close()
+
+    return None
+
+def detect_encoding(fpath):
+    fp = open(fpath, 'r')
+    s, encoding = None, None
+    try:
+        s, encoding = detect_and_convert(fp.read())
+    finally:
+        fp.close()
+
+    return encoding
+
+def detect_and_convert(data):
+    lookup = ('utf_8', 'euc_jp', 'euc_jis_2004', 'euc_jisx0213',
+              'shift_jis', 'shift_jis_2004','shift_jisx0213',
+              'iso2022jp', 'iso2022_jp_1', 'iso2022_jp_2', 'iso2022_jp_3',
+              'iso2022_jp_ext','latin_1', 'ascii')
+    encode = None
+    for encoding in lookup:
+        try:
+            data = data.decode(encoding)
+            encode = encoding
+            break
+        except:
+            pass
+    if isinstance(data, unicode):
+        return data,encode
+    else:
+        raise LookupError
+
+def main():
+    parser = argparse.ArgumentParser(description = 'Convert csv/tsv file to ltsv')
+    parser.add_argument('--delimiter', help="delimiter", default=",")
+    parser.add_argument('csvfile', nargs="*")
+    args = parser.parse_args()
+    for fpath in args.csvfile:
+        encoding = detect_encoding3(fpath)
+        if not encoding:
+            pass
+        with open(fpath, 'r', encoding=encoding) as f:
+            reader = csv.reader(f, delimiter = args.delimiter)
+            header = next(reader)
+
+            for row in reader:
+                new_row = []
+                for r in row:
+                    if str.isdigit(r):
+                        if r.find(".") != -1:
+                            new_row.append(float(r))
+                        else:
+                            new_row.append(int(r))
+                    elif r == "true" or r == "false":
+                        new_row.append(r == "true")
+                    else:
+                        new_row.append(r)
+                print(json.dumps( dict(zip(header, new_row)) ))
+
+main()
+

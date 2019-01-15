@@ -711,7 +711,7 @@ NeoBundle 'Shougo/vimshell.vim', {
 NeoBundle "osyo-manga/unite-filters-collection"
 " NeoBundle 'osyo-manga/vim-precious'
 NeoBundle 'pekepeke/vim-gitcomplete', 'develop'
-if has('python') || has('python3')
+if has('python3') || has('python')
   NeoBundleLazy 'Shougo/vinarise', {
   \ 'on_cmd' : [
   \ {'name' : 'Vinarise',

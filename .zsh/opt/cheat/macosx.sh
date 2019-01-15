@@ -1,3 +1,7 @@
+## Lock
+
+Cmd+Ctl+q
+
 ## Finderのツールバーに追加
 ⌘キーを押下しながらDrag & Drop
 
