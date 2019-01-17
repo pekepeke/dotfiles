@@ -116,6 +116,8 @@ if ! is_win ; then
 
   shrc_section_title "for xenv-python" # {{{2
   xenv-init pyenv
+  [ -e "$HOME/Library/Python/3.7/bin/" ] && PATH=$HOME/Library/Python/3.7/bin/:$PATH
+
   # export PYTHONPATH=/usr/local/lib/python2.5/site-packages:$ROOTSYS/lib
   # export PYTHONPATH=~/.lib/python:$PYTHONPATH
 

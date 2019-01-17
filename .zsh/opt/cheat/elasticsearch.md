@@ -1,3 +1,138 @@
+## ElasticSearchについて
+
+### Analyzer(分析の流れ)
+テキスト -> char filter -> tokenizer -> token filter -> トークン化されたテキスト
+#### char filter
+テキストになにかしらの処理をする。例、HTMLタグを削除する。
+
+#### tokenizer
+char filterで処理されたテキストをトークン化する。例、形態素解析、N-gram
+
+#### token filter
+tokenizerでトークン化された単語(トークン)になにかしらの処理をする。
+
+
+### Char filter
+#### icu_normalizer
+文字の正規化、大文字を小文字に統一したり、①を1にしたりする。設定はデフォルのまま。
+ICU Analysis Pluginを入れる必要があります。
+また、char filterで正規化をするため、filterでcjk_width、lowercaseを使用しません。
+
+#### html_strip
+HTMLタグを削除する。
+
+#### kuromoji_iteration_mark (Type : CharFilter)
+日本語の々、ヽ、ゝ などの踊り字をノーマライズ
+
+```
+        analyzer:
+            kanji_iteration_mark:
+                type: kuromoji_iteration_mark
+                normalize_kanji: true
+                normalize_kana: false
+            kana_iteration_mark:
+                type: kuromoji_iteration_mark
+                normalize_kanji: false
+                normalize_kana: true
+```
+
+### Analyzer
+kuromoji (Type : Analyzer)
+各種 tokenizer、fokenfilter を組合せるための analyzer
+
+### Tokenizer
+#### kuromoji_tokenizer
+日本語形態素解析器
+
+##### mode について
+- mode : normal
+このモードは、単語は分割されません。
+“関西国際空港” ⇒ “関西国際空港”
+“アブラカタブラ” ⇒ “アブラカタブラ”
+- mode : search
+このモードは、最小単位の単語の分割された単語と同義語として長い単語の両方を含みます。
+“関西国際空港” ⇒ “関西” “関西国際空港” “国際” “空港”
+“アブラカタブラ” ⇒ “アブラカタブラ”
+- mode : extended
+このモードは、未知の単語をユニグラム（1文字単位）に分割します。
+“関西国際空港” ⇒ “関西” “国際” “空港”
+“アブラカタブラ” ⇒ “ア” “ブ” “ラ” “カ” “タ” “ブ” “ラ”
+
+### Token filter
+#### cjk_width
+全角記号を半角に統一したり、全角英数字を半角に統一したり、半角カタカナを全角に統一する為のフィルター
+```
+        analyzer:
+            normalize:
+                tokenizer: whitespace
+                filter: [cjk_width]
+```
+
+#### lowercase
+英字の大文字を小文字に変換する為のフィルター
+
+```
+        analyzer:
+            lowercase:
+                tokenizer: whitespace
+                filter: [lowercase]
+```
+
+#### synonym
+同義語を展開する為のフィルター
+※Synonym Token Filter を日本語と一緒に使用する場合は、辞書の内容もトークナイザーの仕様にあわせて単語を分割して登録しておく必要がある
+○：tokyo, 首都␣圏, 東京␣都 ※ ␣は半角スペース
+×：tokyo, 首都圏, 東京都
+
+```
+        filter:
+            synonym_dict:
+                type: synonym
+                synonyms_path: analysis/synonym.txt
+        analyzer:
+            synonym:
+                tokenizer: standard
+                filter: [synonym_dict]
+```
+
+#### stopword_dict
+任意の単語を除外する為のフィルター
+
+```
+    analysis:
+        stopword_dict:
+            type: stop
+            stopwords_path: analysis/stopword.txt
+    analyzer:
+        stopword:
+            tokenizer: standard
+            filter: [lowercase, stopword_dict]
+```
+
+#### kuromoji_baseform
+動詞、形容詞を原型に戻す。インデックス、クエリともに適応される。
+”飲み放題” と言う単語を”飲む”でもマッチさせたい場合に使用する。
+例、「美しく」を「美しい」に変換する。
+
+#### kuromoji_part_of_speech
+特定の品詞を削除する。インデックス、クエリともに適応される。設定はデフォルトのまま。
+
+#### kuromoji_readingform (Type : TokenFilter)
+カタカナまたは、ローマ字読みに変換
+
+```
+        filter:
+            romaji:
+                type: kuromoji_readingform
+                use_romaji: true
+            katakana:
+                type: kuromoji_readingform
+                use_romaji: false
+```
+
+#### kuromoji_stemmer
+カタカナの末尾の伸ばし棒を削除する。インデックスからもクエリされる。例、「コンピューター」を「コンピュータ」に変換する。
+
 
 ### from http://code46.hatenablog.com/entry/2014/01/21/115620
 - /_plugin/head/
@@ -119,385 +254,15 @@ curl -XPOST localhost:9200/ldgourmet -d @mapping.json
 }
 ```
 
-### query
+### reindex
+
 ```
-curl -XGET 'http://localhost:9200/ldgourmet/restaurant/_search?pretty=true' -d '
-{
-  "query" : {
-    "simple_query_string" : {
-      "query": "目黒 とんき",
-      "fields": ["_all"],
-      "default_operator": "and"
-    }
-  }
-}
-'
- curl -XGET 'http://localhost:9200/ldgourmet/restaurant/_search?pretty=true' -d '
-{
-  "query" : {
-    "simple_query_string" : {
-      "query": "東京 ラーメン",
-      "fields": ["name", "name_kana", "address"],
-      "default_operator": "and"
-    }
+curl -XPOST localhost:9200/_reindex?pretty -d'{
+  "source": {
+    "index": "src"
   },
-  "sort" : [{ "access_count" : {"order" : "desc", "missing" : "_last"}}]
-}
-'
-```
-
-#### create index
-```
-curl -XPUT 'http://localhost:9200/twitter/' -d '
-index :
-    number_of_shards : 3 
-    number_of_replicas : 2 
-'
-curl -XPUT 'http://localhost:9200/twitter/' -d '{
-    "settings" : {
-        "index" : {
-            "number_of_shards" : 3,
-            "number_of_replicas" : 2
-        }
-    }
-}'
-```
-
-#### put mapping
-
-```
-curl -XPUT 'http://localhost:9200/twitter/_mapping/tweet' -d '
-{
-    "tweet" : {
-        "properties" : {
-            "message" : {"type" : "string", "store" : true }
-        }
-    }
-}
-'
-```
-
-### query - qiita.com/kieaiaarh/items/5ea4e8a188bd9814000d
-
-#### カラム指定検索みたいな
-
-```code:elasticsearch
- 
-{
-  "query": { "match_all": {} },
-  "_source": ["account_number", "balance"]
-}'
-
-```
-
-`The match_all query is simply a search for all documents in the specified index.`
-とあるが、実際には上記の通り先頭10件のみ出力される
-
-#### SQLで言うところのLIMIT句的な
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "query": { "match_all": {} },
-  "from": 10, # 11番目から
-  "size": 10  # 20番目まで（件数指定）
-}
-```
-
-`The from parameter (0-based)` デフォルトはZEROスタート
-
-* 検索結果件数だけを見たい場合は、`size:0`にする
-
-`size=0 to not show search hits because we only want to see the aggregation results in the response.`
-
-#### ソート
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "query": { "match_all": {} },
-  "sort": { "balance": { "order": "desc" } }
-}'
-```
-
-account balanceで降順ソート
-
-#### SQLで言うところのSELECT
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "query": { "match_all": {} },
-  "_source": ["account_number", "balance"]
-}'
-```
-
-`_source field in the search hits`
-ということ。
-
-#### SQLで言うところのWHERE的な
-#####`match query`
-* 単一条件指定
-
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "query": { "match": { "account_number": 20 } }
-}'
-```
-
-* LIKE的な
-
-` returns all accounts containing the term "mill" in the address:`
-
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "query": { "match": { "address": "mill" } }
-}'
-```
-
-* 複数LIKE的な
-
-`returns all accounts containing the term "mill" or "lane" in the address:`
-
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "query": { "match": { "address": "mill lane" } } # mill or laneを含むもの 
-}'
-```
-
-* 特定のフレーズを含む検索
-
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "query": { "match_phrase": { "address": "mill lane" } }
-}'
-```
-
-* boo(lean) query
-` returns all accounts containing "mill" and "lane" in the address:`
-
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "query": {
-    "bool": {
-      "must": [
-        { "match": { "address": "mill" } },
-        { "match": { "address": "lane" } }
-      ]
-    }
+  "dest": {
+    "index": "dest"
   }
 }'
-```
-※and条件みたいなもの` "mill" and "lane" `
-※反対が`must_not`
-
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "query": {
-    "bool": {
-      "should": [
-        { "match": { "address": "mill" } },
-        { "match": { "address": "lane" } }
-      ]
-    }
-  }
-}'
-```
-※or条件みたいなもの ` "mill" or "lane" `
-
-* `bool`句での複合条件指定
-
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "query": {
-    "bool": {
-      "must": [
-        { "match": { "age": "40" } }
-      ],
-      "must_not": [
-        { "match": { "state": "ID" } }
-      ]
-    }
-  }
-}'
-```
-
-` returns all accounts of anybody who is 40 years old but don’t live in ID(aho):`
-
-#### score field
-というものが、responseにあります。
-
-`a numeric value that is a relative measure of how well the document matches the search query that we specified`
-
-デフォルトのクエリでは検索クエリとのマッチ度を計算して、score フィールドに返している
-
-#### Filters
-` In cases where we do not need the relevance scores, Elasticsearch provides another query capability in the form of filters.`
-
-##### メリット
-1. スコアリング（検索クエリとのマッチ度計算）しないため、高速
-2. キャッシュが効く
-
-* `Filters do not score so they are faster to execute than queries` 
-* `Filters can be cached in memory allowing repeated search executions to be significantly faster than queries`
-
-##### 複合条件指定ができる
-` the filtered query allows you to combine a query (like match_all, match, bool, etc.) together with a filter`
-
-
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "query": {
-    "filtered": {
-      "query": { "match_all": {} },
-      "filter": {
-        "range": {
-          "balance": {
-            "gte": 20000,
-            "lte": 30000
-          }
-        }
-      }
-    }
-  }
-}'
-```
-
-* query -> SELECT
-* filter -> where
-
-みたいなとこ。
-
-#### aggregations(集約)
-##### 合計
-
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "size": 0,
-  "aggs": {
-    "group_by_state": {
-      "terms": {
-        "field": "state"
-      }
-    }
-  }
-}'
-```
-
-
-`sorted by count descending (also default):` デフォルトは降順
-
-SQLだと、
-`SELECT state, COUNT(*) FROM bank GROUP BY state ORDER BY COUNT(*) DESC`
-
-みたいな感じとのこと。
-
-##### 平均
-```
-curl -XPOST 'localhost:9200/bank/_search?pretty' -d '
-{
-  "size": 0,
-  "aggs": {
-    "group_by_state": {
-      "terms": {
-        "field": "state"
-      },
-      "aggs": {
-        "average_balance": {
-          "avg": {
-            "field": "balance"
-          }
-        }
-      }
-    }
-  }
-}'
-```
-
-#### Common option
-REST APIで下記が使用可能
-
-* `?pretty=true` # jsonでretrunされる（が、基本デバっグでのみ使うべし！）
-* `?format=yaml` # yamlでreturnされる
-* `?human=false` # 人間でもわかりやすいreturnをoffる（デフォルトはfalse)
-
-##### response filtering
-```
-curl -XGET 'localhost:9200/_search?pretty&filter_path=took,hits.hits._id,hits.hits._score' # 返り値を絞りこむ
-{
-  "took" : 3,
-  "hits" : {
-    "hits" : [
-      {
-        "_id" : "3640",
-        "_score" : 1.0
-      },
-      {
-        "_id" : "3642",
-        "_score" : 1.0
-      }
-    ]
-  }
-}
-```
-もちろん、ワイルドカードもあり
-```
-curl 'localhost:9200/_segments?pretty&filter_path=indices.**.version'
-{
-  "indices" : {
-    "movies" : {
-      "shards" : {
-        "0" : [ {
-          "segments" : {
-            "_0" : {
-              "version" : "5.2.0"
-            }
-          }
-        } ],
-        "2" : [ {
-          "segments" : {
-            "_0" : {
-              "version" : "5.2.0"
-            }
-          }
-        } ]
-      }
-    },
-    "books" : {
-      "shards" : {
-        "0" : [ {
-          "segments" : {
-            "_0" : {
-              "version" : "5.2.0"
-            }
-          }
-        } ]
-      }
-    }
-  }
-}
-```
-
-##### _source
-elasricsearchはrawデータを返す場合もありのことで、下記のようにして、必要最低限のソースのみに絞り込むとよい
-
-```
-curl -XGET 'localhost:9200/_search?pretty&filter_path=hits.hits._source&_source=title'
-{
-  "hits" : {
-    "hits" : [ {
-      "_source":{"title":"Book #2"}
-    }, {
-      "_source":{"title":"Book #1"}
-    }, {
-      "_source":{"title":"Book #3"}
-    } ]
-  }
-}
 ```

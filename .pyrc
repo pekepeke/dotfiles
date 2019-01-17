@@ -1,17 +1,18 @@
-try:
-    import rlcompleter2
-    print
-    rlcompleter2.setup()
-    del rlcompleter2
-except ImportError:
-    try:
-        import rlcompleter, readline
-        readline.parse_and_bind('tab: complete')
-        print
-        print "rlcompleter2 not found..."
-        del rlcompleter
-        del readline
-    except ImportError:
-        print
-        print "can't find readline..."
+# vim:fdm=expr sw=2 ts=2 ft=python expandtab:
+# try:
+#     import rlcompleter2
+#     print
+#     rlcompleter2.setup()
+#     del rlcompleter2
+# except ImportError:
+#     try:
+#         import rlcompleter, readline
+#         readline.parse_and_bind('tab: complete')
+#         print
+#         print "rlcompleter2 not found..."
+#         del rlcompleter
+#         del readline
+#     except ImportError:
+#         print
+#         print "can't find readline..."
 

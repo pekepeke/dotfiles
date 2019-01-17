@@ -154,16 +154,34 @@ else
   endif
   let $PAGER='less'
   if s:is_mac
-    function! s:python_path(ver)
-      let ver = a:ver == 2 ? "" : a:ver
-      let paths = split(glob("/usr/local/Cellar/python".ver."/*/Frameworks/Python.framework/Versions/*/Python"), "\n")
+    function! s:python_home(ver)
+      let paths = split(glob("/usr/local/Cellar/python/".a:ver."*/Frameworks/Python.framework/Versions/*"), "\n")
       if len(paths) > 0
         return paths[-1]
       endif
+      if (a:ver == "2")
+        return "/System/Library/Frameworks/Python.framework/Versions/Current/"
+      endif
+      return ""
     endfunction
-    " ycm
-    " let $PYTHON_DLL = s:python_path(2)
-    let $PYTHON3_DLL = s:python_path(3)
+    function! s:python_dylib(home)
+      let paths = split(glob(a:home."/lib/libpython*m.dylib"), "\n")
+      if len(paths) > 0
+        return paths[-1]
+      endif
+      return ""
+    endfunction
+    let &pythonhome = s:python_home(2)
+    let &pythondll = s:python_dylib(&pythonhome)
+    " let $PYTHONHOME =
+    let &pythonthreehome = s:python_home(3)
+    let &pythonthreedll = s:python_dylib(&pythonthreehome)
+    let g:python3_host_prog = &pythonthreehome."/bin/python3"
+    try
+      " TODO : deprecated error(3.7)
+      pythonx "import imp"
+    catch
+    endtry
   endif
 endif
 
@@ -988,15 +1006,15 @@ NeoBundleLazy 'AndrewRadev/linediff.vim', {
 " NeoBundle 'vim-scripts/ConflictDetection', {
 " \ 'depends': 'vim-scripts/ingo-library',
 " \ }
-if has('python')
-  NeoBundleLazy 'joonty/vdebug', {
-  \ 'on_cmd': [
-  \ "VdebugStart", "Breakpoint",
-  \ "BreakpointRemove", "BreakpointWindow",
-  \ "VdebugEval", "VdebugOpt",
-  \ ],
-  \ }
-endif
+" if has('python')
+"   NeoBundleLazy 'joonty/vdebug', {
+"   \ 'on_cmd': [
+"   \ "VdebugStart", "Breakpoint",
+"   \ "BreakpointRemove", "BreakpointWindow",
+"   \ "VdebugEval", "VdebugOpt",
+"   \ ],
+"   \ }
+" endif
 
 " help {{{4
 NeoBundle 'rhysd/devdocs.vim'
@@ -1061,6 +1079,26 @@ if s:feature('ycm') && has('python')
     \   'mac': './install.sh --clang-completer --omnisharp-completer',
     \   'unix': './install.sh --clang-completer --system-libclang --system-boost --omnisharp-completer',
     \ }}
+elseif s:feature('deoplete') && has('python3')
+  " pip3 install --user pynvim
+  if has('nvim')
+    NeoBundle 'Shougo/deoplete.nvim'
+  else
+    NeoBundle 'Shougo/deoplete.nvim'
+    NeoBundle 'roxma/nvim-yarp'
+    NeoBundle 'roxma/vim-hug-neovim-rpc'
+  endif
+  NeoBundle 'Shougo/neco-syntax'
+  NeoBundle 'Shougo/neoinclude'
+  NeoBundle 'autozimu/LanguageClient-neovim', {
+    \ 'branch':'next',
+    \ 'build': 'bash install.sh'
+    \ }
+  NeoBundle 'zchee/deoplete-jedi'
+  NeoBundle 'zchee/deoplete-zsh'
+  if executable('sourcekitten')
+    NeoBundle 'landaire/deoplete-swift'
+  endif
 elseif s:feature('asyncomplete')
   NeoBundle 'prabirshrestha/async.vim'
   NeoBundle 'prabirshrestha/vim-lsp'
@@ -1221,7 +1259,7 @@ NeoBundle 'mustache/vim-mustache-handlebars'
 NeoBundle 'chrisgillis/vim-bootstrap3-snippets'
 
 " css {{{4
-if has('python') || has('python3')
+if has('python3') || has('python')
   NeoBundle 'Rykka/colorv.vim' , {
   \ 'on_ft': ['html','javascript','css','sass','scss','less','slim','stylus'],
   \ }
@@ -1251,7 +1289,7 @@ NeoBundle 'pekepeke/vim-node', {
   \ 'on_ft': ['javascript', 'coffee'],
   \ 'depends': ['gf-user'],
   \ }
-if s:exec_npm && has('python') || has('python3')
+if s:exec_npm && (has('python3') || has('python'))
   NeoBundle 'marijnh/tern_for_vim', {
   \ 'build' : {
   \   'cygwin': 'npm install',
@@ -1322,7 +1360,7 @@ NeoBundleLazy 'hachibeeDI/unite-pythonimport', {
 NeoBundle 'Glench/Vim-Jinja2-Syntax'
 
 if !s:bundle.is_installed('asyncomplete-lsp.vim') && !s:bundle.is_installed('YouCompleteMe')
-  if (has('python') || has('python3'))
+  if (has('python3') || has('python'))
     NeoBundleLazy 'davidhalter/jedi-vim', {
     \   'on_ft' : ['python', 'python3'],
     \ }
@@ -2848,6 +2886,7 @@ let g:vimrc_enabled_plugins = {
   \ 'memolist': s:bundle.is_installed('memolist.vim'),
   \ 'vimproc': s:bundle.is_installed('vimproc.vim'),
   \ 'neosnippet': s:bundle.is_installed('neosnippet.vim'),
+  \ 'deoplete': s:bundle.is_installed('deoplete.nvim'),
   \ 'neocomplete': s:bundle.is_installed('neocomplete.vim'),
   \ 'neocomplcache': s:bundle.is_installed('neocomplcache.vim'),
   \ 'youcompleteme': s:bundle.is_installed('YouCompleteMe'),
@@ -4478,6 +4517,14 @@ if s:bundle.tap('lexima.vim')
       \ "\<C-]>\<C-r>=AsyncompleteClose()\<CR>")
       call lexima#insmode#map_hook('before', '<BS>',
       \ "\<C-r>=AsyncompleteClose()\<CR>")
+    elseif s:bundle.is_installed('deopolete.nvim')
+      " TODO
+      call lexima#insmode#map_hook('before', '<CR>',
+      \ "\<C-]><C-r>=deoplete#smart_close_popup()\<CR>")
+      call lexima#insmode#map_hook('before', '<Space>',
+      \ "\<C-]>\<C-r>=deoplete#smart_close_popup()\<CR>")
+      call lexima#insmode#map_hook('before', '<BS>',
+      \ "\<C-]>\<C-r>=deoplete#smart_close_popup()\<CR>")
     elseif s:bundle.is_installed('neocomplete.vim')
       call lexima#insmode#map_hook('before', '<CR>',
       \ "\<C-]><C-r>=neocomplete#smart_close_popup()\<CR>")
@@ -7335,6 +7382,8 @@ if s:bundle.is_installed('neosnippet.vim')
       if neosnippet#expandable()
         if s:bundle.is_installed('asyncomplete-lsp.vim')
           " TODO
+        elseif g:vimrc_enabled_plugins.deoplete
+          call deoplete#smart_close_popup()
         elseif g:vimrc_enabled_plugins.neocomplete
           call neocomplete#smart_close_popup()
         endif
@@ -7342,6 +7391,8 @@ if s:bundle.is_installed('neosnippet.vim')
       elseif neosnippet#jumpable()
         if s:bundle.is_installed('asyncomplete-lsp.vim')
           " TODO
+        elseif g:vimrc_enabled_plugins.deoplete
+          call deoplete#smart_close_popup()
         elseif g:vimrc_enabled_plugins.neocomplete
           call neocomplete#smart_close_popup()
         endif
@@ -7378,6 +7429,8 @@ if s:bundle.is_installed('neosnippet.vim')
       " TODO
       if g:vimrc_enabled_plugins.neocomplete
         call neocomplete#smart_close_popup()
+      elseif g:vimrc_enabled_plugins.deoplete
+        call deoplete#smart_close_popup()
       endif
       " return "\<Plug>(EmmetExpandAbbr)"
       return "\<Plug>(emmet-expand-abbr)"
@@ -7405,6 +7458,109 @@ if s:bundle.is_installed('YouCompleteMe')
   " inoremap <expr> <C-j> pumvisible() ? neocomplete#close_popup() : "\<CR>"
   " imap <C-s> <Plug>(neocomplete_start_unite_complete)
 endif
+
+if s:bundle.is_installed('deoplete.nvim')
+  let g:deoplete#enable_at_startup = 1
+  call deoplete#custom#option({
+    \  'auto_complete_delay' : 0,
+    \  'camel_case' : 0,
+    \  'ignore_case': 0,
+    \  'refresh_always': 0,
+    \  'smart_case': 1,
+    \  'enable_buffer_path': 1,
+    \  'max_list': 1000,
+    \ })
+  " let g:deoplete#auto_complete_delay = 0
+  let g:deoplete#auto_complete_start_length = 1
+  " let g:deoplete#enable_camel_case = 0
+  " let g:deoplete#enable_ignore_case = 0
+  " let g:deoplete#enable_refresh_always = 0
+  " let g:deoplete#enable_smart_case = 1
+  " let g:deoplete#file#enable_buffer_path = 1
+  " let g:deoplete#max_list = 10000
+  " \ '_': '[a-zA-Z_]\k*',
+  call deoplete#custom#option('keyword_patterns', {
+		\ '_': '\h\w*',
+		\ 'tex': '\\?[a-zA-Z_]\w*',
+		\ 'ruby': '[a-zA-Z_]\w*[!?]?',
+    \ })
+  " \  'java': '[^. *\t]\.\w*',
+  call deoplete#custom#option('omni_patterns', {
+    \  'java': '\%(\h\w*\|)\)\.\w*',
+    \  'scala': '\%(\h\w*\|)\)\.\w*',
+    \  'html': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
+    \  'xhtml': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
+    \  'xml': ['<', '</', '<[^>]*\s[[:alnum:]-]*'],
+    \  'c':  '[^.[:digit:] *\t]\%(\.\|->\)',
+    \  'cpp': '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::',
+    \  'cs':  '[^.]\.\%(\u\{2,}\)\?',
+    \  'objc':  '[^.[:digit:] *\t]\%(\.\|->\)',
+    \  'objcpp':  '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::',
+    \  'swift': '\%(\h\w*\|)\)\.\w*',
+    \  'python': '\%([^. \t]\.\|^\s*@\|^\s*from\s.\+import \|^\s*from \|^\s*import \)\w*',
+    \  'perl':  '\h\w*->\h\w*\|\h\w*::',
+    \  'ruby':  '[^. *\t]\.\w*\|\h\w*::',
+    \  'eruby':  '[^. *\t]\.\w*\|\h\w*::',
+    \  'javascript':  '\h\w*\|[^. \t]\.\w*',
+    \  'coffee':  '\h\w*\|[^. \t]\.\w*',
+    \  'typescript': '\h\w*\|[^. \t]\.\%(\h\w*\)\?',
+    \  'haxe': '\v([\]''"]|\w)(\.|\()\w*',
+    \  'php': '[^. \t]->\h\w*\|\h\w*::\|\h\w*\\',
+    \  'r': '[[:alnum:].\\]\+',
+    \  'xquery': '\k\|:\|\-\|&',
+    \  'go': '\h\w\.\w',
+    \  'terraform': '[^ *\t"{=$]\w*}"]',
+    \})
+
+  let g:LanguageClient_serverCommands = {
+    \ }
+    " \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+    " \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+    " \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+    " \ 'python': ['/usr/local/bin/pyls'],
+    " \ }
+
+  if g:vimrc_enabled_plugins.lexima
+    " default cr
+    imap <silent><expr> <CR> pumvisible()?deoplete#close_popup():"\<CR>"
+    inoremap <expr> <C-h>  deoplete#smart_close_popup()."\<C-h>"
+    inoremap <expr> <BS>   deoplete#smart_close_popup()."\<C-h>"
+    inoremap <expr> <Space> deoplete#smart_close_popup()."\<Space>"
+  elseif g:vimrc_enabled_plugins.smartinput
+    if g:vimrc_enabled_plugins.endwize
+      imap <silent><expr> <CR> (pumvisible()?deoplete#close_popup():"")
+        \ ."\<Plug>(smartinput_CR)\<C-r>=endwize#crend()\<CR>"
+    else
+      imap <silent><expr> <CR> (pumvisible()?deoplete#close_popup():"")
+        \ ."\<Plug>(smartinput_CR)"
+    endif
+
+    imap <expr> <C-h>  pumvisible()?deoplete#smart_close_popup()."\<C-h>":
+    \ deoplete#smart_close_popup()."\<Plug>(smartinput_BS)"
+    imap <expr> <BS>   pumvisible()?deoplete#smart_close_popup()."\<C-h>":
+    \ deoplete#smart_close_popup()."\<Plug>(smartinput_C-h)"
+    imap <expr> <Space>   pumvisible()?deoplete#smart_close_popup()."\<C-h>":
+    \ deoplete#smart_close_popup()."\<Plug>(smartinput_SPACE)"
+  else
+    inoremap <expr><C-h>  deoplete#smart_close_popup()."\<C-h>"
+    inoremap <expr><BS>   deoplete#smart_close_popup()."\<C-h>"
+    inoremap <expr><Space> deoplete#smart_close_popup()."\<Space>"
+  endif
+
+  " inoremap <expr> <C-y>  deoplete#close_popup()
+  inoremap <expr> <C-e> pumvisible() ? deoplete#cancel_popup() : "\<End>"
+  inoremap <expr> <C-j> pumvisible() ? deoplete#close_popup() : "\<CR>"
+
+  nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+  " Or map each action separately
+  nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+  nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+  nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+
+  autocmd FileType swift imap <buffer> <C-j> <Plug>(deoplete_swift_jump_to_placeholder)
+  " let g:deoplete#sources#swift#source_kitten_binary = ''
+endif
+
 
 " neocomplete, neocomplcache {{{2
 if s:bundle.is_installed('neocomplete.vim') "{{{3
