@@ -1,0 +1,18 @@
+{
+  "name": "swagger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "resolve.js",
+  "dependencies": {
+    "commander": "^2.19.0",
+    "js-yaml": "^3.12.1",
+    "json-refs": "^3.0.12",
+    "multi-file-swagger": "^2.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -237,6 +237,7 @@ fi
 
 shrc_section_title "etc" #{{{2
 alias dm='docker-machine'
+alias fig='docker-compose'
 alias rsync='rsync -avzu'
 alias adbchrome='adb forward tcp:92222 localabstract:chrome_devtools_remote'
 

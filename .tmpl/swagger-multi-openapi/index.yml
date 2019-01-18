@@ -1,0 +1,9 @@
+openapi: "3.0.0"
+info:
+  $ref: ./info/index.yml
+servers:
+  - url: http://petstore.swagger.io/v1
+paths:
+  $ref: ./paths/index.yml
+components:
+  $ref: ./components/index.yml
