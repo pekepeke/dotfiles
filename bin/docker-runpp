@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[ -z "$SUDO" ] && $SUDO=""
+[ -z "$SUDO" ] && SUDO=""
 IDS="$(docker images | peco | awk '{print $3}')"
 for id in $IDS; do
   if $SUDO docker exec --rm -t -i ${CONTAINER} sh -c "builtin type bash" >/dev/null 2>&1; then

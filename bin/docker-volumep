@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[ -z "$SUDO" ] && $SUDO=""
+[ -z "$SUDO" ] && SUDO=""
 VOLUME_NAMES="$(docker volume ls | peco | awk '{ print $2}')"
 DIRS="/var/lib/docker/volumes /var/lib/docker/vfs/dir"
 for v in $VOLUME_NAMES; do

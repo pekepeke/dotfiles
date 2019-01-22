@@ -159,6 +159,11 @@ find ./log -mtime +60 -name '*.log' | xargs --no-run-if-empty rm
 
 # depth
 find . -maxdepth 1
+
+# 特定のディレクトリ(lib)を除外したファイルの一覧を取得
+find . -type d -name lib -prune -o -type f -print
+# 特定のディレクトリ(lib)を除外して、ファイル名が"*.rb "のものの一覧を取得
+find . -type d -name lib -prune -o -type f -name '*.rb' -print
 ```
 
 ## op

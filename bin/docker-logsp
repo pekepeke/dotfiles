@@ -1,6 +1,6 @@
 #/bin/bash
 
-[ -z "$SUDO" ] && $SUDO=""
+[ -z "$SUDO" ] && SUDO=""
 if !which docker >/dev/null 2>&1; then
   echo "command not found : docker " >&2
 fi

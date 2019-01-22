@@ -2939,6 +2939,8 @@ if s:bundle.is_installed('ale')
   let g:ale_set_quickfix = 1
   " let g:ale_open_list = 1
   " let g:ale_keep_list_window_open = 1
+  let g:ale_php_phpcs_standard = $HOME."/.vim/lib/phpcheck/phpcs.xml"
+  let g:ale_php_phpmd_ruleset = $HOME."/.vim/lib/phpcheck/phpmd.xml"
 endif
 
 " vim-vue
@@ -7513,6 +7515,7 @@ if s:bundle.is_installed('deoplete.nvim')
     \})
 
   let g:LanguageClient_serverCommands = {
+    \ 'php': ['tcp://127.0.0.1:62413']
     \ }
     " \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
     " \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],

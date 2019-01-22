@@ -44,6 +44,24 @@ tar xjvf $PHP_VER.tar.bz2
 ```
 
 ## composer
+
+### install
+
+```
+curl -sS https://getcomposer.org/installer | php
+curl -sS https://getcomposer.org/installer | php -- --version=1.4.2
+```
+
+### create project
+
+```
+composer create-project --prefer-dist laravel/laravel appname
+composer create-project --prefer-dist laravel/laravel blog "5.5.*"
+
+composer create-project --prefer-dist cakephp/app cakeapp
+composer create-project slim/slim-skeleton slimapp
+```
+
 ### plugin
 
 ```

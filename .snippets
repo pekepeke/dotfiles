@@ -100,3 +100,6 @@ iptables -t nat -L --line-numbers -n -v
 # pipenv
 OSX_ONLY="" CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install 3.x.x
 OSX_ONLY="" CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl)" pyenv install 3.x.x
+
+docker run --rm -v "$PWD/schema:/output" --net="xxx_default" schemaspy/schemaspy:snapshot -t mysql -host mysql:3306 -u root -p root -s schema
+

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[ -z "$SUDO" ] && $SUDO=""
+[ -z "$SUDO" ] && SUDO=""
 ENTRYPOINT=""
 CMD=/bin/bash
 FALLBACK_CMD=/bin/sh
