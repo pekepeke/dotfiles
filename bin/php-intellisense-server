@@ -1,0 +1,40 @@
+#!/bin/sh
+
+[ -z "$PHP_TCP_SERVER" ] && PHP_TCP_SERVER=127.0.0.1:60000
+kill_server() {
+  cd ~/.local/php-intellisense-server
+  [ -e pid.lock ] && kill `cat pid.lock` && rm pid.lock
+}
+if [ ! -e ~/.local/php-intellisense-server ]; then
+  git clone --depth=1 https://github.com/felixfbecker/php-language-server.git ~/.local/php-intellisense-server
+  cd ~/.local/php-intellisense-server
+  composer install --no-dev --prefer-dist
+elif [ "$1" == "pull" ]; then
+  cd ~/.local/php-intellisense-server
+  git pull
+  composer install --no-dev --prefer-dist
+elif [ "$1" == "kill" ]; then
+  kill_server
+  exit 0
+fi
+case "$1" in
+  # stdin)
+  #   php bin/php-language-server.php
+  #   ;;
+  client)
+    cd ~/.local/php-intellisense-server
+    php bin/php-language-server.php --tcp=$PHP_TCP_SERVER
+    ;;
+  server)
+    kill_server
+    cd ~/.local/php-intellisense-server
+    php bin/php-language-server.php --tcp-server=$PHP_TCP_SERVER --memory-limit=4095M &
+    PID=$!
+    echo $PID > pid.lock
+    ;;
+  pull)
+    ;;
+  kill)
+    ;;
+esac
+

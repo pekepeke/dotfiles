@@ -1,3 +1,16 @@
+## 便利DNS周り
+
+### IP指定系
+hoge.127.0.0.1.nip.io
+hoge.127.0.0.1.xip.io
+
+### ループバック系
+lvh.me
+localtest.me
+loopback.jp
+www.loopback.jp
+sub.domain.loopback.jp
+
 ## SOA レコード
 
 ```

@@ -7515,8 +7515,16 @@ if s:bundle.is_installed('deoplete.nvim')
     \})
 
   let g:LanguageClient_serverCommands = {
-    \ 'php': ['tcp://127.0.0.1:62413']
     \ }
+  " let g:LanguageClient_serverCommands['php'] = ['tcp://127.0.0.1:60000']
+
+  if filereadable($HOME.'/.local/php-intellisense-server/bin/php-language-server.php')
+    let g:LanguageClient_serverCommands['php'] = ['php', $HOME.'/.local/php-intellisense-server/bin/php-language-server.php']
+  endif
+
+  if executable('go-langserver')
+    let g:LanguageClient_serverCommands['go'] = ['go-langserver','-format-tool','gofmt','-lint-tool','golint']
+  endif
     " \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
     " \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
     " \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
