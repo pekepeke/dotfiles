@@ -174,14 +174,23 @@ else
     let &pythonhome = s:python_home(2)
     let &pythondll = s:python_dylib(&pythonhome)
     " let $PYTHONHOME =
-    let &pythonthreehome = s:python_home(3)
-    let &pythonthreedll = s:python_dylib(&pythonthreehome)
-    let g:python3_host_prog = &pythonthreehome."/bin/python3"
-    try
-      " TODO : deprecated error(3.7)
-      pythonx "import imp"
-    catch
-    endtry
+    " if filereadable($HOME.'/.pyenv')
+    let pyenv_home = $HOME.'/.pyenv/versions/3.6.7/Python.framework/Versions/3.6/'
+    if isdirectory(pyenv_home)
+      let &pythonthreehome = pyenv_home
+      let &pythonthreedll = s:python_dylib(&pythonthreehome)
+      let g:python3_host_prog = &pythonthreehome."/bin/python3"
+    else
+      let &pythonthreehome = s:python_home(3)
+      let &pythonthreedll = s:python_dylib(&pythonthreehome)
+      let g:python3_host_prog = &pythonthreehome."/bin/python3"
+      try
+        " TODO : deprecated error(3.7)
+        pythonx "import imp"
+      catch
+      endtry
+    endif
+    unlet pyenv_home
   endif
 endif
 
@@ -1089,9 +1098,9 @@ elseif s:feature('deoplete') && has('python3')
     NeoBundle 'roxma/vim-hug-neovim-rpc'
   endif
   NeoBundle 'Shougo/neco-syntax'
-  NeoBundle 'Shougo/neoinclude'
+  NeoBundle 'Shougo/neoinclude.vim'
   NeoBundle 'autozimu/LanguageClient-neovim', {
-    \ 'branch':'next',
+    \ 'rev':'next',
     \ 'build': 'bash install.sh'
     \ }
   NeoBundle 'zchee/deoplete-jedi'
