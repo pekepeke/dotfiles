@@ -1,0 +1,2 @@
+  "app/Admin/*.php": { "type" : "config"},
+  "app/Admin/Controllers/*.php": { "type" : "controllers", "alternate": "tests/Admin/Controllers/{}Test.php"},

@@ -1,4 +1,15 @@
 
+### cat indices
+
+```
+curl http://localhost:9200/_cat/indices
+
+# index でソートして出力
+curl http://localhost:9200/_cat/indices?v&s=index
+# help
+curl http://localhost:9200/_cat/indices?help
+```
+
 ### query
 ```
 curl -XGET 'http://localhost:9200/ldgourmet/restaurant/_search?pretty=true' -d '

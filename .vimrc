@@ -2230,6 +2230,10 @@ nnoremap q/ q/
 nnoremap q? q?
 nnoremap Q q
 
+if get(g:vimrc_enabled_features, "us-keyboard", 0)
+  nnoremap ; :
+  nnoremap : ;
+endif
 " 行単位で移動 {{{2
 nnoremap <expr> j v:count == 0 ? 'gj' : 'j'
 xnoremap <expr> j (v:count == 0 && mode() !=# 'V') ? 'gj' : 'j'
@@ -2298,15 +2302,17 @@ endfor
 unlet i
 
 if exists(':tmap')
-  nnoremap <C-w><C-n> :tabnext<CR>
-  nnoremap <C-w><C-p> :tabprev<CR>
-  nnoremap <C-w><C-c> :tabnew<CR>
   " tmaps
   " tnoremap <C-w><C-w> <C-\><C-w>
-  tnoremap <C-w><C-w> <C-w>
-  tnoremap <C-w><C-n> <C-w>:tabnext<CR>
-  tnoremap <C-w><C-p> <C-w>:tabprev<CR>
-  tnoremap <C-w><C-c> <C-w>:tabnew<CR>
+  " tnoremap <C-w><C-w> <C-w>.
+  " tnoremap <C-w><C-n> <C-w>:tabnext<CR>
+  " tnoremap <C-w><C-p> <C-w>:tabprev<CR>
+  " tnoremap <C-w><C-c> <C-w>:tabnew<CR>
+  tnoremap <C-w>tl <C-w>:tabnext<CR>
+  tnoremap <C-w>th <C-w>:tabprev<CR>
+  tnoremap <C-w>tc <C-w>:tabnew<CR>
+  tnoremap <C-w>p <C-w>"
+  tnoremap <C-\>n <C-\><C-n>
   tnoremap <C-\><C-\> <C-\><C-n>
   tnoremap <C-\>p <C-w>"
   " tnoremap <Esc> <C-\><C-n>
@@ -4323,10 +4329,10 @@ endif
 if s:bundle.is_installed('DirDiff.vim')
   let g:DirDiffExcludes = "CVS,*.class,*.o,*.exe,.*.swp,*.log,.git,.svn,.hg"
   let g:DirDiffIgnore = "Id:,Revision:,Date:"
-  map ;dg <Plug>DirDiffGet
-  map ;dp <Plug>DirDiffPut
-  map ;dj <Plug>DirDiffNext
-  map ;dk <Plug>DirDiffPrev
+  map <Leader>;dg <Plug>DirDiffGet
+  map <Leader>;dp <Plug>DirDiffPut
+  map <Leader>;dj <Plug>DirDiffNext
+  map <Leader>;dk <Plug>DirDiffPrev
 endif
 
 " splitjoin.vim {{{2
@@ -6306,23 +6312,23 @@ if s:bundle.tap('vim-operator-user')
 
   map H <Plug>(operator-furround-append-reg)
   map _ <Plug>(operator-replace)
-  map ;e <Plug>(operator-excelize)
-  map ;h <Plug>(operator-html-escape)
-  map ;H <Plug>(operator-html-unescape)
-  map ;c <Plug>(operator-camelize)
-  map ;C <Plug>(operator-decamelize)
-  map ;<C-i> <Plug>(operator-retab)
-  map ;j <Plug>(operator-join)
-  map ;u <Plug>(operator-uniq)
-  map ;k <Plug>(operator-trimright)
+  map <Leader>;e <Plug>(operator-excelize)
+  map <Leader>;h <Plug>(operator-html-escape)
+  map <Leader>;H <Plug>(operator-html-unescape)
+  map <Leader>;c <Plug>(operator-camelize)
+  map <Leader>;C <Plug>(operator-decamelize)
+  map <Leader>;<C-i> <Plug>(operator-retab)
+  map <Leader>;j <Plug>(operator-join)
+  map <Leader>;u <Plug>(operator-uniq)
+  map <Leader>;k <Plug>(operator-trimright)
 
-  map ;q <Plug>(operator-quickhl-manual-this-motion)
-  map ;u <Plug>(operator-openbrowser)
+  map <Leader>;q <Plug>(operator-quickhl-manual-this-motion)
+  map <Leader>;u <Plug>(operator-openbrowser)
 
   map <Leader>tm <Plug>(operator-tabular-tsv2md))
   map <Leader>Tm <Plug>(operator-tabular-md2tsv)
   map <Leader>nm <Plug>(operator-normalize_utf8mac)
-  map ;s <Plug>(operator-shuffle)
+  map <Leader>;s <Plug>(operator-shuffle)
 
   if s:bundle.is_installed('vim-operator-surround')
     map <silent>sa <Plug>(operator-surround-append)
@@ -7527,7 +7533,9 @@ if s:bundle.is_installed('deoplete.nvim')
     \ }
   " let g:LanguageClient_serverCommands['php'] = ['tcp://127.0.0.1:60000']
 
-  if filereadable($HOME.'/.local/php-intellisense-server/bin/php-language-server.php')
+  if s:exec_npm && filereadable($HOME.'/.local/php-intelephense-server/lib/server.js')
+    let g:LanguageClient_serverCommands['php'] = ['node', $HOME.'/.local/php-intelephense-server/lib/server.js', '--stdio']
+  elseif filereadable($HOME.'/.local/php-intellisense-server/bin/php-language-server.php')
     let g:LanguageClient_serverCommands['php'] = ['php', $HOME.'/.local/php-intellisense-server/bin/php-language-server.php']
   endif
 

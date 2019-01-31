@@ -1,3 +1,10 @@
+## よく忘れる系
+
+```
+SET FOREIGN_KEY_CHECKS=0;
+SET FOREIGN_KEY_CHECKS=1;
+```
+
 ## mysqldump
 
 | オプション | 説明 |
