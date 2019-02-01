@@ -175,7 +175,7 @@ else
     let &pythondll = s:python_dylib(&pythonhome)
     " let $PYTHONHOME =
     " if filereadable($HOME.'/.pyenv')
-    let pyenv_home = $HOME.'/.pyenv/versions/3.6.7/Python.framework/Versions/3.6/'
+    let pyenv_home = $HOME.'/.pyenv/versions/3.5.6/Python.framework/Versions/3.5/'
     if isdirectory(pyenv_home)
       let &pythonthreehome = pyenv_home
       let &pythonthreedll = s:python_dylib(&pythonthreehome)
