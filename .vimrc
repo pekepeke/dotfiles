@@ -967,18 +967,11 @@ NeoBundle 'mattn/sonictemplate-vim'
 NeoBundle 'ujihisa/shadow.vim'
 NeoBundle 'mhinz/vim-hugefile'
 NeoBundle 'tpope/vim-git'
-if 1 || s:is_win
-  NeoBundle 'tpope/vim-fugitive'
-  " , {
-  " \ 'on_cmd': [ "Git", "Gstatus", "Gcommit", "Gedit",
-  " \   "Gwrite", "Ggrep", "Glog", "Gdiff"],
-  " \ }
-else
-  " XXX : heavy...
-  NeoBundle 'lambdalisue/vim-gita' , {
-  \   'on_cmd': ['Gita'],
-  \ }
-endif
+NeoBundle 'tpope/vim-fugitive'
+" , {
+" \ 'on_cmd': [ "Git", "Gstatus", "Gcommit", "Gedit",
+" \   "Gwrite", "Ggrep", "Glog", "Gdiff"],
+" \ }
 NeoBundle 'rhysd/committia.vim'
 NeoBundle 'rhysd/conflict-marker.vim'
 NeoBundleLazy 'idanarye/vim-merginal' , {
@@ -1099,12 +1092,16 @@ elseif s:feature('deoplete') && has('python3')
   endif
   NeoBundle 'Shougo/neco-syntax'
   NeoBundle 'Shougo/neoinclude.vim'
+  NeoBundle 'Shougo/neco-vim',
   NeoBundle 'autozimu/LanguageClient-neovim', {
     \ 'rev':'next',
     \ 'build': 'bash install.sh'
     \ }
   NeoBundle 'zchee/deoplete-jedi'
   NeoBundle 'zchee/deoplete-zsh'
+  NeoBundle 'fszymanski/deoplete-emoji'
+  " NeoBundle 'carlitux/deoplete-ternjs'
+
   if executable('sourcekitten')
     NeoBundle 'landaire/deoplete-swift'
   endif
@@ -7542,6 +7539,15 @@ if s:bundle.is_installed('deoplete.nvim')
   if executable('go-langserver')
     let g:LanguageClient_serverCommands['go'] = ['go-langserver','-format-tool','gofmt','-lint-tool','golint']
   endif
+  function! LC_maps()
+    if has_key(g:LanguageClient_serverCommands, &filetype)
+      nnoremap <buffer> <F5> :call LanguageClient_contextMenu()<CR>
+      nnoremap <buffer><silent> K :call LanguageClient#textDocument_hover()<CR>
+      nnoremap <buffer><silent> gd :call LanguageClient#textDocument_definition()<CR>
+      nnoremap <buffer><silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+    endif
+  endfunction
+  MyAutoCmd FileType * call LC_maps()
     " \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
     " \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
     " \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
@@ -7578,12 +7584,6 @@ if s:bundle.is_installed('deoplete.nvim')
   " inoremap <expr> <C-y>  deoplete#close_popup()
   inoremap <expr> <C-e> pumvisible() ? deoplete#cancel_popup() : "\<End>"
   inoremap <expr> <C-j> pumvisible() ? deoplete#close_popup() : "\<CR>"
-
-  nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-  " Or map each action separately
-  nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-  nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-  nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
 
   autocmd FileType swift imap <buffer> <C-j> <Plug>(deoplete_swift_jump_to_placeholder)
   " let g:deoplete#sources#swift#source_kitten_binary = ''

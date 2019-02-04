@@ -1,5 +1,5 @@
 {
-  "composer.json": { "type" : "configs"},
+  "composer.json": { "type" : "config"},
   "bootstrap/*.php": { "type" : "bootstrap"},
   "config/*.php": { "type" : "config"},
   "app/Http/Controllers/*.php": { "type" : "controllers", "alternate": "tests/App/Http/Controllers/{}Test.php"},
@@ -10,7 +10,7 @@
   "app/Scopes/*.php": { "type" : "scopes", "alternate": "tests/App/Scopes/{}Test.php"},
   "database/factories/*.php": { "type" : "factories"},
   "database/migrations/*.php": { "type" : "migrations"},
-  "database/seeds/*.php": { "type" : "seeder"},
+  "database/seeds/*.php": { "type" : "seeds"},
   "tests/TestCase.php": { "type" : "tests"},
   "tests/*Test.php": { "type" : "tests", "alternate": "app/App/{}.php"},
   "resources/views/*.php": { "type" : "views"},
