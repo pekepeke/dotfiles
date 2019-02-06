@@ -2,7 +2,7 @@
 # function peco-snippets-copy() {
     local selected="$(cat ~/.snippets ~/.snippets.local 2>/dev/null | grep -v "^#" | peco --query "$LBUFFER")"
     if [ -n "${selected}" ]; then
-      echo "${selected}" | pbcopy-wrapper
+      echo "${selected}" | tr -d '\r' | tr -d '\n' | pbcopy-wrapper
     fi
     zle clear-screen
 #}

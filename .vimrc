@@ -153,14 +153,19 @@ else
     execute 'set shell='.strpart($SHELL, 0, stridx($SHELL, " "))
   endif
   let $PAGER='less'
+
+
   if s:is_mac
+    function s:pyenv_home(ver)
+      return $HOME.'/.pyenv/versions/'.a:ver.'/Python.framework/Versions/Current'
+    endfunction
     function! s:python_home(ver)
       let paths = split(glob("/usr/local/Cellar/python/".a:ver."*/Frameworks/Python.framework/Versions/*"), "\n")
       if len(paths) > 0
         return paths[-1]
       endif
       if (a:ver == "2")
-        return "/System/Library/Frameworks/Python.framework/Versions/Current/"
+        return "/System/Library/Frameworks/Python.framework/Versions/Current"
       endif
       return ""
     endfunction
@@ -169,21 +174,25 @@ else
       if len(paths) > 0
         return paths[-1]
       endif
+      let paths = split(glob(a:home."/lib/libpython*.dylib"), "\n")
+      if len(paths) > 0
+        return paths[-1]
+      endif
       return ""
     endfunction
     let &pythonhome = s:python_home(2)
     let &pythondll = s:python_dylib(&pythonhome)
-    " let $PYTHONHOME =
-    " if filereadable($HOME.'/.pyenv')
-    let pyenv_home = $HOME.'/.pyenv/versions/3.5.6/Python.framework/Versions/3.5/'
+    " let g:python_host_prog = &pythonhome.'/bin/python'
+    let pyenv_home = s:pyenv_home('3.5.6')
     if isdirectory(pyenv_home)
       let &pythonthreehome = pyenv_home
       let &pythonthreedll = s:python_dylib(&pythonthreehome)
-      let g:python3_host_prog = &pythonthreehome."/bin/python3"
+      " let g:python3_host_prog = &pythonthreehome."/bin/python3"
+      " let &pyxversion=3
     else
       let &pythonthreehome = s:python_home(3)
       let &pythonthreedll = s:python_dylib(&pythonthreehome)
-      let g:python3_host_prog = &pythonthreehome."/bin/python3"
+      " let g:python3_host_prog = &pythonthreehome."/bin/python3"
       try
         " TODO : deprecated error(3.7)
         pythonx "import imp"
@@ -928,7 +937,8 @@ NeoBundle 'osyo-manga/vim-anzu'
 NeoBundle 'luochen1990/rainbow'
 NeoBundle 'vim-scripts/matchit.zip'
 " \ ,  { 'on_map' : [['nx', '%']], }
-NeoBundle 'gregsexton/MatchTag'
+" NeoBundle 'gregsexton/MatchTag'
+NeoBundle 'Valloric/MatchTagAlways'
 NeoBundle 'tpope/vim-unimpaired'
 NeoBundleLazy 'vim-scripts/ShowMultiBase', {
 \ 'on_cmd': ['ShowMultiBase'],
@@ -5631,7 +5641,6 @@ if s:bundle.tap('unite.vim')
   UniteNMap   d         directory_mru -default-action=vimfiler
   UniteNMap   zz        z -default-action=vimfiler
   UniteNMap   za        fold
-  UniteNMap   <Leader>r quickrun_config watchdogs_config -default-action=execute
   UniteNMap   ;         file:<C-r>=expand('%:p:h')<CR> -profile-name=files
   UniteNMap   m         file_mru -default-action=open -profile-name=files
   UniteNMap   y         sonictemplate
@@ -6815,6 +6824,16 @@ call extend(g:quicklearn, {
   \   'exec': '%c %o %s',
   \ },
   \ })
+  call extend(g:quicklearn, {
+  \ 'json/yaml/intermediate': {
+  \   'command': 'json2yaml',
+  \   'exec': '%c %o %s',
+  \ },
+  \ 'yaml/json/intermediate': {
+  \   'command': 'yaml2json',
+  \   'exec': '%c %o %s',
+  \ },
+  \ })
 
 " quickrun & watchdogs {{{2
 if s:bundle.is_installed('vim-quickrun')
@@ -7538,6 +7557,9 @@ if s:bundle.is_installed('deoplete.nvim')
 
   if executable('go-langserver')
     let g:LanguageClient_serverCommands['go'] = ['go-langserver','-format-tool','gofmt','-lint-tool','golint']
+  endif
+  if executable('solargraph')
+    let g:LanguageClient_serverCommands['ruby'] = ['solargraph','stdio']
   endif
   function! LC_maps()
     if has_key(g:LanguageClient_serverCommands, &filetype)

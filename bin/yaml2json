@@ -9,4 +9,4 @@ else
   content = File.open(ARGV[0]).read
 end
 
-puts YAML.dump(JSON.load(content))
+puts JSON.pretty_generate(YAML.load(content))

@@ -6,12 +6,13 @@ if [ ! -e "$PROJ" ]; then
   git clone --depth=1 https://github.com/bmewburn/intelephense-server.git "$PROJ"
   cd "$PROJ"
   npm install
-  npm build
+  npm r build
 elif [ "$1" == "pull" ]; then
   cd "$PROJ"
+  git checkout package-lock.json
   git pull
   npm install
-  npm build
+  npm r build
 fi
 case "$1" in
   server)
