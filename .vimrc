@@ -188,7 +188,7 @@ else
       let &pythonthreehome = pyenv_home
       let &pythonthreedll = s:python_dylib(&pythonthreehome)
       " let g:python3_host_prog = &pythonthreehome."/bin/python3"
-      " let &pyxversion=3
+      let &pyxversion=3
     else
       let &pythonthreehome = s:python_home(3)
       let &pythonthreedll = s:python_dylib(&pythonthreehome)
