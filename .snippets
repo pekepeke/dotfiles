@@ -101,6 +101,8 @@ iptables -t nat -L --line-numbers -n -v
 OSX_ONLY="" CFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" pyenv install 3.x.x
 OSX_ONLY="" CONFIGURE_OPTS="--with-openssl=$(brew --prefix openssl)" pyenv install 3.x.x
 env PYTHON_CONFIGURE_OPTS="--enable-framework" pyenv install 3.5.0
+env PYTHON_CONFIGURE_OPTS="--enable-shared" LDSHARED="clang -bundle" LDCXXSHARED="clang++ -bundle" BLDSHARED="clang -bundle -lpython2.7" pyenv install 2.7.15
+env PYTHON_CONFIGURE_OPTS="--enable-shared" LDSHARED="clang -bundle" LDCXXSHARED="clang++ -bundle" BLDSHARED="clang -bundle -lpython3.5m" pyenv install 3.5.6
 
 docker run --rm -v "$PWD/schema:/output" --net="xxx_default" schemaspy/schemaspy:snapshot -t mysql -host mysql:3306 -u root -p root -s schema -rails
 

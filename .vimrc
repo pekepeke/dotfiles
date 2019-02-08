@@ -157,10 +157,11 @@ else
 
   if s:is_mac
     function s:pyenv_home(ver)
-      return $HOME.'/.pyenv/versions/'.a:ver.'/Python.framework/Versions/Current'
+      " return $HOME.'/.pyenv/versions/'.a:ver.'/Python.framework/Versions/Current'
+      return $HOME.'/.pyenv/versions/'.a:ver
     endfunction
     function! s:python_home(ver)
-      let paths = split(glob("/usr/local/Cellar/python/".a:ver."*/Frameworks/Python.framework/Versions/*"), "\n")
+      let paths = split(glob("/usr/local/Cellar/python/".a:ver."*"), "\n")
       if len(paths) > 0
         return paths[-1]
       endif
@@ -180,15 +181,14 @@ else
       endif
       return ""
     endfunction
-    let &pythonhome = s:python_home(2)
-    let &pythondll = s:python_dylib(&pythonhome)
-    " let g:python_host_prog = &pythonhome.'/bin/python'
+
     let pyenv_home = s:pyenv_home('3.5.6')
     if isdirectory(pyenv_home)
       let &pythonthreehome = pyenv_home
       let &pythonthreedll = s:python_dylib(&pythonthreehome)
       " let g:python3_host_prog = &pythonthreehome."/bin/python3"
       let &pyxversion=3
+      py3 print("")
     else
       let &pythonthreehome = s:python_home(3)
       let &pythonthreedll = s:python_dylib(&pythonthreehome)
@@ -199,6 +199,10 @@ else
       catch
       endtry
     endif
+
+    let &pythonhome = s:python_home(2)
+    let &pythondll = s:python_dylib(&pythonhome)
+    " let g:python_host_prog = &pythonhome.'/bin/python'
     unlet pyenv_home
   endif
 endif
@@ -1151,6 +1155,11 @@ elseif has('lua') && (v:version > 703 ||
     NeoBundle 'pekepeke/neocomplcache-rsense.vim', 'neocompleteFeature'
     " NeoBundle 'supermomonga/neocomplete-rsense.vim'
   endif
+  if (has('python3') || has('python'))
+    NeoBundleLazy 'davidhalter/jedi-vim', {
+    \   'on_ft' : ['python', 'python3'],
+    \ }
+  endif
 else
   NeoBundle 'Shougo/neocomplcache.vim'
   " , {
@@ -1369,21 +1378,13 @@ if get(g:vimrc_enabled_features, "django", 0)
 endif
 NeoBundle 'voithos/vim-python-matchit'
 NeoBundle 'heavenshell/vim-pydocstring'
-NeoBundleLazy 'hachibeeDI/unite-pythonimport', {
-\ 'on_source': 'unite.vim',
-\ 'on_ft': ['python'],
-\ }
-NeoBundle 'Glench/Vim-Jinja2-Syntax'
-
-if !s:bundle.is_installed('asyncomplete-lsp.vim') && !s:bundle.is_installed('YouCompleteMe')
-  if (has('python3') || has('python'))
-    NeoBundleLazy 'davidhalter/jedi-vim', {
-    \   'on_ft' : ['python', 'python3'],
-    \ }
-  else
-    NeoBundleLazy 'davidhalter/jedi-vim'
-  endif
+if has('python')
+  NeoBundleLazy 'hachibeeDI/unite-pythonimport', {
+  \ 'on_source': 'unite.vim',
+  \ 'on_ft': ['python'],
+  \ }
 endif
+NeoBundle 'Glench/Vim-Jinja2-Syntax'
 
 " perl {{{4
 NeoBundle 'vim-perl/vim-perl'
@@ -2824,6 +2825,7 @@ endif
 " let g:pdv_cfg_CommentEnd = "// }}}"
 
 " python {{{2
+let g:pymode_python = 'python3'
 let g:pymode_indent = 0
 
 " ruby {{{2
