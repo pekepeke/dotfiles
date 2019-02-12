@@ -7505,14 +7505,7 @@ if s:bundle.is_installed('deoplete.nvim')
     \  'enable_buffer_path': 1,
     \  'max_list': 1000,
     \ })
-  " let g:deoplete#auto_complete_delay = 0
   let g:deoplete#auto_complete_start_length = 1
-  " let g:deoplete#enable_camel_case = 0
-  " let g:deoplete#enable_ignore_case = 0
-  " let g:deoplete#enable_refresh_always = 0
-  " let g:deoplete#enable_smart_case = 1
-  " let g:deoplete#file#enable_buffer_path = 1
-  " let g:deoplete#max_list = 10000
   " \ '_': '[a-zA-Z_]\k*',
   call deoplete#custom#option('keyword_patterns', {
 		\ '_': '\h\w*',
@@ -7559,6 +7552,9 @@ if s:bundle.is_installed('deoplete.nvim')
 
   if executable('go-langserver')
     let g:LanguageClient_serverCommands['go'] = ['go-langserver','-format-tool','gofmt','-lint-tool','golint']
+  endif
+  if executable('pyls')
+    let g:LanguageClient_serverCommands['python'] = ['pyls']
   endif
   if executable('solargraph')
     let g:LanguageClient_serverCommands['ruby'] = ['solargraph','stdio']

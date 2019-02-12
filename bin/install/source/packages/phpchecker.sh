@@ -26,6 +26,7 @@ main() {
   bins["phpdcd"]=https://phar.phpunit.de/phpdcd.phar
   bins["phpcpd"]=https://phar.phpunit.de/phpcpd.phar
   bins["phpsa"]=https://github.com/ovr/phpsa/releases/download/0.6.2/phpsa.phar
+  bins["phpstan"]=https://github.com/phpstan/phpstan/releases/download/0.11.1/phpstan.phar
 
   # bins["php-nag"]=https://github.com/algo13/php-nag/releases/download/0.0.1-bata2/phpnag.phar
   # bins["phpmig"]=https://github.com/monque/PHP-Migration/releases/download/v0.2.2/phpmig.phar
@@ -46,6 +47,11 @@ main() {
       && echo "installed $bin"
   done
 
+  if ! which composer >/dev/null 2>&1; then
+    curl -sS https://getcomposer.org/installer | php
+    chmod +x composer.phar
+    mv composer.phar ~/.bin/composer
+  fi
   if [ $bzip2_installed -eq 0 ]; then
     echo "not found : bz2 extension..."
   fi
