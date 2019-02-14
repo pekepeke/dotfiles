@@ -786,9 +786,9 @@ NeoBundle 'chikatoike/concealedyank.vim' , {
 NeoBundle 'pekepeke/quickfixstatus', {
 \ 'on_cmd': ['QuickfixStatusEnable', 'QuickfixStatusDisable'],
 \ }
-NeoBundle 'cohama/vim-hier' , {
-\ 'on_cmd': ['HierUpdate', 'HierClear', 'HierStart', 'HierStop',],
-\ }
+" NeoBundle 'cohama/vim-hier' , {
+" \ 'on_cmd': ['HierUpdate', 'HierClear', 'HierStart', 'HierStop',],
+" \ }
 NeoBundle 'tpope/vim-repeat'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 't9md/vim-surround_custom_mapping'
@@ -1531,6 +1531,7 @@ NeoBundle 'heavenshell/vim-misspell'
 NeoBundle 'tokorom/vim-review'
 NeoBundle 'nvie/vim-rst-tables'
 NeoBundle 'vim-scripts/sequence'
+NeoBundle 'delphinus/vim-firestore'
 
 " haskell {{{4
 if get(g:vimrc_enabled_features, "haskell", 0)
@@ -7542,7 +7543,6 @@ if s:bundle.is_installed('deoplete.nvim')
 
   let g:LanguageClient_serverCommands = {
     \ }
-  " let g:LanguageClient_serverCommands['php'] = ['tcp://127.0.0.1:60000']
 
   if s:exec_npm && filereadable($HOME.'/.local/php-intelephense-server/lib/server.js')
     let g:LanguageClient_serverCommands['php'] = ['node', $HOME.'/.local/php-intelephense-server/lib/server.js', '--stdio']
