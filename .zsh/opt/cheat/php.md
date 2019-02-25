@@ -62,6 +62,17 @@ composer create-project --prefer-dist cakephp/app cakeapp
 composer create-project slim/slim-skeleton slimapp
 ```
 
+### version
+
+| 指定   | 対象となるバージョン |
+|--------|----------------------|
+| ~1.1   | 1.1.0以上、2.0.0未満 |
+| ^1.1   | 同上                 |
+| ~1.1.5 | 1.1.5以上、1.2.0未満 |
+| ^1.1.5 | 1.1.5以上、2.0.0未満 |
+| ~0.3   | 0.3.0以上、1.0.0未満 |
+| ^0.3   | 0.3.0以上、0.4.0未満 |
+
 ### plugin
 
 ```
