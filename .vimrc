@@ -1302,8 +1302,10 @@ endif
 NeoBundle 'slim-template/vim-slim'
 
 " javascript {{{4
+NeoBundle 'jason0x43/vim-js-indent'
+NeoBundle 'Quramy/vim-js-pretty-template'
 NeoBundle 'isRuslan/vim-es6'
-NeoBundle 'guileen/simple-javascript-indenter'
+" NeoBundle 'guileen/simple-javascript-indenter'
 " NeoBundle 'othree/yajs.vim'
 NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'posva/vim-vue'
@@ -1353,6 +1355,7 @@ if get(g:vimrc_enabled_features, "haxe", 0)
 endif
 NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'leafgarland/typescript-vim'
+NeoBundle 'mhartington/vim-typings'
 if s:exec_npm
   NeoBundleLazy 'clausreinke/typescript-tools', {
   \ 'on_ft' : 'typescript',
@@ -7544,11 +7547,13 @@ if s:bundle.is_installed('deoplete.nvim')
   let g:LanguageClient_serverCommands = {
     \ }
 
-  if s:exec_npm && filereadable($HOME.'/.local/php-intelephense-server/lib/server.js')
+  let intelephense_bin = s:exec_npm ? system('npm config get prefix').'/lib/node_modules/intelephense-server/lib/server.js' : ''
+  if filereadable(intelephense_bin)
     let g:LanguageClient_serverCommands['php'] = ['node', $HOME.'/.local/php-intelephense-server/lib/server.js', '--stdio']
   elseif filereadable($HOME.'/.local/php-intellisense-server/bin/php-language-server.php')
     let g:LanguageClient_serverCommands['php'] = ['php', $HOME.'/.local/php-intellisense-server/bin/php-language-server.php']
   endif
+  unlet intelephense_bin
 
   if executable('go-langserver')
     let g:LanguageClient_serverCommands['go'] = ['go-langserver','-format-tool','gofmt','-lint-tool','golint']

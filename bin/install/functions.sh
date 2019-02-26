@@ -271,7 +271,7 @@ install_env() {
   else
     if [ x"$install_cmd" != x ]; then
       echo "run : $install_cmd"
-      eval $install_cmd
+      eval "$install_cmd"
     else
       git clone $repo_url $root_dir
     fi

@@ -1,27 +1,28 @@
 #!/bin/sh
 
-PROJ=~/.local/php-intelephense-server
+npm i -g intelephense-server
+# PROJ=~/.local/php-intelephense-server
 
-if [ ! -e "$PROJ" ]; then
-  git clone --depth=1 https://github.com/bmewburn/intelephense-server.git "$PROJ"
-  cd "$PROJ"
-  npm install
-  npm r build
-elif [ "$1" == "pull" ]; then
-  cd "$PROJ"
-  git checkout package-lock.json
-  git pull
-  npm install
-  npm r build
-fi
-case "$1" in
-  server)
-    cd $PROJ
-    php lib/server.js --stdio
-    ;;
-  pull)
-    ;;
-  kill)
-    ;;
-esac
+# if [ ! -e "$PROJ" ]; then
+#   git clone --depth=1 https://github.com/bmewburn/intelephense-server.git "$PROJ"
+#   cd "$PROJ"
+#   npm install
+#   npm r build
+# elif [ "$1" == "pull" ]; then
+#   cd "$PROJ"
+#   git checkout package-lock.json
+#   git pull
+#   npm install
+#   npm r build
+# fi
+# case "$1" in
+#   server)
+#     cd $PROJ
+#     php lib/server.js --stdio
+#     ;;
+#   pull)
+#     ;;
+#   kill)
+#     ;;
+# esac
 
