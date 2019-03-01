@@ -2335,15 +2335,18 @@ let s:regexp_todo = 'TODO\|FIXME\|REVIEW\|MARK\|NOTE\|!!!\|\\?\\?\\?\|XXX'
 function! s:set_grep(...) "{{{3
   let retval = 0
   for type in copy(a:000)
-    if type == "hw" && executable(type)
+    if type == 'rg' && executable(type)
+      set grepprg=rg\ --vimgrep\ --no-heading
+      set grepformat=%f:%l:%c:%m, %f:%l:%m
+    elseif type == "hw" && executable(type)
       set grepprg=hw
       set grepformat=%f:%l:%m
       " set grepprg=jvgrep\ -n
 
-      let g:unite_source_grep_command = "hw"
-      " let g:unite_source_grep_default_opts = '-i --exclude "(\.git|\.svn|\.hg|\.bzr|tags|tmp)"'
-      let g:unite_source_grep_default_opts = '-i --no-group --no-color'
+      let g:unite_source_grep_command = 'rg'
+      let g:unite_source_grep_default_opts = '-n --no-heading --color never'
       let g:unite_source_grep_recursive_opt = ''
+      " let g:unite_source_grep_encoding='utf-8'
       return 1
     elseif type == "jvgrep" && executable(type)
       set grepprg=jvgrep
@@ -2407,6 +2410,7 @@ function! s:set_grep(...) "{{{3
   return retval
 endfunction
 
+command! -nargs=0 SetRipgrep call s:set_grep("rg")
 command! -nargs=0 SetHw call s:set_grep("hw")
 command! -nargs=0 SetJvgrep call s:set_grep("jvgrep")
 command! -nargs=0 SetAck call s:set_grep("ack-grep")
@@ -2417,9 +2421,9 @@ let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Rel
 let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
 let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
 if s:is_win || get(g:vimrc_enabled_features, 'jvgrep', 0)
-  call s:set_grep("jvgrep", "hw", "ag", "ack-grep")
+  call s:set_grep("jvgrep", "rg", "hw", "ag", "ack-grep")
 else
-  call s:set_grep("hw", "ag", "jvgrep", "ack-grep")
+  call s:set_grep("rg", "hw", "ag", "jvgrep", "ack-grep")
 endif
 
 let Grep_Default_Options = '-i'
