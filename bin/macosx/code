@@ -1,13 +1,17 @@
 #!/bin/bash
 
-APP_BINARY="Visual Studio Code.app/Contents/MacOS/Atom"
+CONTENT="Visual Studio Code.app/Contents/MacOS"
+BIN_NAMES="Electron Atom"
 BIN=""
 
 for dir in ~/Applications /Applications ; do
-  if [ -e "$dir/$APP_BINARY" ]; then
-    BIN="$dir/$APP_BINARY"
-    break
-  fi
+  for b in $BIN_NAMES; do
+    if [ -e "$dir/$CONTENT/$b" ]; then
+      BIN="$dir/$CONTENT/$b"
+      break
+    fi
+  done
+  [ -n "$BIN" ] && break
 done
 
 if [ -z "$BIN" ]; then
