@@ -39,6 +39,8 @@ sudo apt-get install libgnomeui-dev
 ```
 " ヒットした行削除
 :g/[word]/d
+" ヒットしない行削除
+:v/[word]/d
 " ヒットする行の前後を確認する場合
 :g//z#.5|echo '----'
 " ファイル末尾に移動
