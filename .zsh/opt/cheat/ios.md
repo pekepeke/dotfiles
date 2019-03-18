@@ -168,3 +168,44 @@ excluded:
 | パッケージの検索      | pod search      | -                  | -                               | 
 | 利用可能なパッケージの表示 | pod list        | -                  | -                               | 
 | リセット          | pod deintegrate | -                  | swift package reset             | 
+
+
+## make project
+
+```
+cat <<EOM >> .gitignore
+# CocoaPods
+Pods/
+vendor/bundle
+
+# Carthage
+Carthage/Checkouts
+Carthage/Build
+EOM
+
+cat <<EOM > Gemfile
+source "https://rubygems.org"
+# https://github.com/CocoaPods/CocoaPods/releases
+gem 'cocoapods' , '1.6.0'
+# 
+gem 'fastlane'
+EOM
+bundle install --path vendor/bundle
+
+bundle exec fastlane init
+
+# https://qiita.com/tkow/items/492c48b7ba787302b8cf
+
+bundle exec pod setup
+bundle exec pod init
+
+touch Cartfile
+cat <<EOM >> Cartfile
+github "ReactiveX/RxSwift" ~> 4.0
+EOM
+charthage bootstrap --platform iOS
+# 手動で project に追加
+```
+
+
+
