@@ -182,8 +182,11 @@ else
       return ""
     endfunction
 
-    let pyenv_home = s:pyenv_home('3.5.6')
+    " let pyenv_home = s:pyenv_home('3.5.6')
+    let pyenv_home = s:pyenv_home('3.6.7')
     if isdirectory(pyenv_home)
+      let g:python3_host_prog = pyenv_home.'/bin/python3'
+      let g:python3 = pyenv_home.'/bin/python3'
       let &pythonthreehome = pyenv_home
       let &pythonthreedll = s:python_dylib(&pythonthreehome)
       " let g:python3_host_prog = &pythonthreehome."/bin/python3"
@@ -1307,10 +1310,10 @@ NeoBundle 'Quramy/vim-js-pretty-template'
 NeoBundle 'isRuslan/vim-es6'
 " NeoBundle 'guileen/simple-javascript-indenter'
 " NeoBundle 'othree/yajs.vim'
-NeoBundle 'pangloss/vim-javascript'
-NeoBundle 'posva/vim-vue'
 NeoBundle 'mxw/vim-jsx'
 " NeoBundle 'jsx/vim-jsx'
+NeoBundle 'pangloss/vim-javascript'
+NeoBundle 'posva/vim-vue'
 " NeoBundle 'moll/vim-node'
 NeoBundle 'pekepeke/vim-node', {
   \ 'on_ft': ['javascript', 'coffee'],
@@ -1354,8 +1357,10 @@ if get(g:vimrc_enabled_features, "haxe", 0)
   \ }
 endif
 NeoBundle 'kchmck/vim-coffee-script'
+NeoBundle 'HerringtonDarkholme/yats.vim'
 NeoBundle 'leafgarland/typescript-vim'
 NeoBundle 'mhartington/vim-typings'
+NeoBundle 'jparise/vim-graphql'
 if s:exec_npm
   NeoBundleLazy 'clausreinke/typescript-tools', {
   \ 'on_ft' : 'typescript',
@@ -2962,6 +2967,7 @@ if s:bundle.is_installed('ale')
   let g:ale_sign_warning = '--'
   let g:ale_linters = {
     \ }
+  let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '']
   let g:ale_echo_msg_error_str = 'E'
   let g:ale_echo_msg_warning_str = 'W'
   let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
@@ -7558,6 +7564,12 @@ if s:bundle.is_installed('deoplete.nvim')
     let g:LanguageClient_serverCommands['php'] = ['php', $HOME.'/.local/php-intellisense-server/bin/php-language-server.php']
   endif
   unlet intelephense_bin
+  let js_server_bin = $HOME.'/.local/javascript-typescript-langserver/lib/language-server-stdio.js'
+  if filereadable(js_server_bin)
+    let g:LanguageClient_serverCommands['javascript'] = ['node', js_server_bin]
+    let g:LanguageClient_serverCommands['typescript'] = ['node', js_server_bin]
+  endif
+  unlet js_server_bin
 
   if executable('go-langserver')
     let g:LanguageClient_serverCommands['go'] = ['go-langserver','-format-tool','gofmt','-lint-tool','golint']

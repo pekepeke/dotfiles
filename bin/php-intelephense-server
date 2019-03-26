@@ -7,13 +7,13 @@ npm i -g intelephense-server
 #   git clone --depth=1 https://github.com/bmewburn/intelephense-server.git "$PROJ"
 #   cd "$PROJ"
 #   npm install
-#   npm r build
+#   npm run build
 # elif [ "$1" == "pull" ]; then
 #   cd "$PROJ"
 #   git checkout package-lock.json
 #   git pull
 #   npm install
-#   npm r build
+#   npm run build
 # fi
 # case "$1" in
 #   server)
