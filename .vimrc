@@ -2731,6 +2731,11 @@ vnoremap . :normal .<CR>
 vnoremap <Leader>tg    :Ginger<CR>
 vnoremap <Leader>te    :Gte<CR>
 vnoremap <Leader>tj    :Gtj<CR>
+" URL encode/decode selection
+" vnoremap <leader>en :!python -c 'import sys,urllib;print(urllib.quote(sys.stdin.read().strip()))'<CR>
+" vnoremap <leader>de :!python -c 'import sys,urllib;print(urllib.unquote(sys.stdin.read().strip()))'<CR>
+vnoremap <leader>en :!ruby -rCGI -e 'puts CGI.escape($stdin.read.chomp)'<CR>
+vnoremap <leader>de :!ruby -rCGI -e 'puts CGI.unescape($stdin.read.chomp)'<CR>
 vnoremap <Tab>   >gv
 vnoremap <S-Tab> <gv
 "nnoremap : q:
@@ -7511,9 +7516,10 @@ endif
 if s:bundle.is_installed('deoplete.nvim')
   let g:deoplete#enable_at_startup = 1
   call deoplete#custom#option({
-    \  'auto_complete_delay' : 0,
-    \  'camel_case' : 0,
-    \  'ignore_case': 0,
+    \  'auto_complete': 1,
+    \  'auto_complete_delay' : 100,
+    \  'camel_case' : 1,
+    \  'ignore_case': 1,
     \  'refresh_always': 0,
     \  'smart_case': 1,
     \  'enable_buffer_path': 1,
@@ -7565,7 +7571,7 @@ if s:bundle.is_installed('deoplete.nvim')
   endif
   unlet intelephense_bin
   let js_server_bin = $HOME.'/.local/javascript-typescript-langserver/lib/language-server-stdio.js'
-  if filereadable(js_server_bin)
+  if s:exec_npm && filereadable(js_server_bin)
     let g:LanguageClient_serverCommands['javascript'] = ['node', js_server_bin]
     let g:LanguageClient_serverCommands['typescript'] = ['node', js_server_bin]
   endif
