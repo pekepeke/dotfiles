@@ -20,6 +20,12 @@ CocoaControls
 CocoaPodUI
 ```
 
+## Tips
+### `which may not be supported by this version of Xcode.`
+
+不足しているデバイスサポートファイルをDLして、`~/Library/Developer/Xcode/iOS\ DeviceSupport/`配下に入れる(ディレクトリはなければ作成する)
+- https://github.com/filsv/iPhoneOSDeviceSupport
+
 ## Localize
 ### Code
 
@@ -92,6 +98,7 @@ bundle exec fastlane actionsでアクション一覧
 bundle exec fastlane listで現在のレーンの一覧
 bundle exec fastlane init
 ```
+
 
 ### iOS
 
