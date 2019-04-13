@@ -1,0 +1,6 @@
+RUN yum install -y tzdata \
+    && echo 'ZONE="Asia/Tokyo"' > /etc/sysconfig/clock \
+    && echo 'UTC=false' >> /etc/sysconfig/clock \
+    && ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
+    && RUN echo 'LANG="ja_JP.UTF-8"' >> /etc/sysconfig/i18n
+    && rm -rf /var/cache/yum/*
