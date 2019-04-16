@@ -7526,13 +7526,14 @@ if s:bundle.is_installed('deoplete.nvim')
     \  'max_list': 1000,
     \ })
   let g:deoplete#auto_complete_start_length = 1
-  " \ '_': '[a-zA-Z_]\k*',
+  " python regexp
   call deoplete#custom#option('keyword_patterns', {
-		\ '_': '\h\w*',
+		\ '_': '[a-zA-Z_]\k*',
 		\ 'tex': '\\?[a-zA-Z_]\w*',
 		\ 'ruby': '[a-zA-Z_]\w*[!?]?',
     \ })
   " \  'java': '[^. *\t]\.\w*',
+  " vimgrep regexp
   call deoplete#custom#option('omni_patterns', {
     \  'java': '\%(\h\w*\|)\)\.\w*',
     \  'scala': '\%(\h\w*\|)\)\.\w*',

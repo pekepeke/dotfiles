@@ -197,7 +197,7 @@ gem 'cocoapods' , '1.6.0'
 # 
 gem 'fastlane'
 EOM
-bundle install --path vendor/bundle
+bundle install --path vendor/bundle --binstubs vendor/bin
 
 bundle exec fastlane init
 
