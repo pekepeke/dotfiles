@@ -1075,7 +1075,6 @@ NeoBundleLazy 'vim-jp/vital.vim', {
 NeoBundle 'mattn/learn-vimscript'
 
 " completion {{{4
-NeoBundle 'tjdevries/nvim-langserver-shim'
 if s:feature('eclim')
   " do nothing
 elseif s:exec_ruby
@@ -1172,6 +1171,7 @@ else
     NeoBundle 'Shougo/neocomplcache-rsense.vim'
   endif
 endif
+" NeoBundle 'tjdevries/nvim-langserver-shim'
 NeoBundle 'Shougo/neosnippet.vim'
 " , {
 " \ 'lazy' : 1,
@@ -1186,6 +1186,9 @@ NeoBundle 'rhysd/github-complete.vim'
 NeoBundle 'wellle/tmux-complete.vim'
 NeoBundle 'juliosueiras/vim-terraform-completion'
 
+" langpack
+NeoBundle 'sheerun/vim-polyglot'
+
 " ruby {{{4
 NeoBundle 'vim-ruby/vim-ruby'
 if s:exec_ruby
@@ -1197,17 +1200,6 @@ if s:exec_ruby
     \ 'on_ft': ['ruby'],
     \ 'on_source': 'unite.vim',
     \ }
-    if s:bundle.is_installed('neocomplete.vim')
-      NeoBundleLazy 'alpaca-tc/alpaca_rails_support', {
-      \ 'depends' : ['Shougo/neocomplete.vim', 'tpope/vim-rails',
-      \    'Shougo/vimproc.vim', 'Shougo/unite.vim'],
-      \ 'on_source': 'unite.vim',
-      \ 'on_cmd' : [
-      \   'RSCreateRoutesCache', 'RSCleanCache',
-      \   'RSShowLocale', 'RSCreateLocaleCache',
-      \ ]
-      \ }
-    endif
   endif
   " NeoBundle 'taq/vim-rspec'
   NeoBundleLazy 'skwp/vim-rspec', {
@@ -1220,10 +1212,6 @@ if s:exec_ruby
   NeoBundleLazy 'ecomba/vim-ruby-refactoring', {
   \ 'on_ft': ['ruby'],
   \ }
-
-  NeoBundle 'tpope/vim-cucumber'
-  NeoBundle 'yaymukund/vim-rabl'
-  NeoBundle 'vim-scripts/eruby.vim'
 
   " NeoBundle 'vim-vagrant'
   NeoBundleLazy 't9md/vim-chef', {
@@ -1281,9 +1269,9 @@ NeoBundleLazy 'https://gist.github.com/6576341', {
 \ 'on_map': [['n', '<Plug>(endtagcomment)']]
 \ }
 "  templates
-NeoBundle 'tpope/vim-haml'
-NeoBundle 'digitaltoad/vim-jade'
-NeoBundle 'mustache/vim-mustache-handlebars'
+" NeoBundle 'tpope/vim-haml' "polyglot
+" NeoBundle 'digitaltoad/vim-jade' "polyglot
+" NeoBundle 'mustache/vim-mustache-handlebars' "polyglot
 NeoBundle 'chrisgillis/vim-bootstrap3-snippets'
 
 " css {{{4
@@ -1296,13 +1284,13 @@ endif
 
 NeoBundle 'hail2u/vim-css3-syntax'
 NeoBundle 'npacker/vim-css3complete'
-if s:exec_npm && executable('lessc')
-  NeoBundle 'groenewege/vim-less'
-endif
-if s:exec_npm && executable('stylus')
-  NeoBundle 'wavded/vim-stylus'
-endif
-NeoBundle 'slim-template/vim-slim'
+" if s:exec_npm && executable('lessc')
+"   NeoBundle 'groenewege/vim-less' "polyglot
+" endif
+" if s:exec_npm && executable('stylus')
+"   NeoBundle 'wavded/vim-stylus' "polyglot
+" endif
+" NeoBundle 'slim-template/vim-slim' "polyglot
 
 " javascript {{{4
 NeoBundle 'jason0x43/vim-js-indent'
@@ -1310,10 +1298,10 @@ NeoBundle 'Quramy/vim-js-pretty-template'
 NeoBundle 'isRuslan/vim-es6'
 " NeoBundle 'guileen/simple-javascript-indenter'
 " NeoBundle 'othree/yajs.vim'
-NeoBundle 'mxw/vim-jsx'
+" NeoBundle 'mxw/vim-jsx' "polyglot
 " NeoBundle 'jsx/vim-jsx'
-NeoBundle 'pangloss/vim-javascript'
-NeoBundle 'posva/vim-vue'
+" NeoBundle 'pangloss/vim-javascript' "polyglot
+" NeoBundle 'posva/vim-vue' "polyglot
 " NeoBundle 'moll/vim-node'
 NeoBundle 'pekepeke/vim-node', {
   \ 'on_ft': ['javascript', 'coffee'],
@@ -1346,21 +1334,21 @@ NeoBundleLazy 'chikatoike/sourcemap.vim', {
 \   'SourceMapConvertLocListToOriginal', 'SourceMapAddOriginalToQuickfix',
 \   'SourceMapAddOriginalToLocList',]
 \ }
-NeoBundle 'briancollins/vim-jst'
+" NeoBundle 'briancollins/vim-jst' "polyglot
 
-if get(g:vimrc_enabled_features, "dart", 0)
-  NeoBundle 'vim-scripts/Dart'
-endif
-if get(g:vimrc_enabled_features, "haxe", 0)
-  NeoBundleLazy 'jdonaldson/vaxe', {
-  \ 'on_ft': ['haxe','hxml','nmml'],
-  \ }
-endif
-NeoBundle 'kchmck/vim-coffee-script'
+" if get(g:vimrc_enabled_features, "dart", 0)
+"   NeoBundle 'vim-scripts/Dart' "polyglot
+" endif
+" if get(g:vimrc_enabled_features, "haxe", 0)
+"   NeoBundleLazy 'jdonaldson/vaxe', { "polyglot
+"   \ 'on_ft': ['haxe','hxml','nmml'],
+"   \ }
+" endif
+" NeoBundle 'kchmck/vim-coffee-script' "polyglot
 NeoBundle 'HerringtonDarkholme/yats.vim'
 NeoBundle 'leafgarland/typescript-vim'
 NeoBundle 'mhartington/vim-typings'
-NeoBundle 'jparise/vim-graphql'
+" NeoBundle 'jparise/vim-graphql' "polyglot
 if s:exec_npm
   NeoBundleLazy 'clausreinke/typescript-tools', {
   \ 'on_ft' : 'typescript',
@@ -1392,7 +1380,7 @@ if has('python')
   \ 'on_ft': ['python'],
   \ }
 endif
-NeoBundle 'Glench/Vim-Jinja2-Syntax'
+" NeoBundle 'Glench/Vim-Jinja2-Syntax' "polyglot
 
 " perl {{{4
 NeoBundle 'vim-perl/vim-perl'
@@ -1430,7 +1418,7 @@ NeoBundleLazy 'vim-scripts/DoxygenToolkit.vim', {
 "     \ }
 "   endif
 " endif
-NeoBundle 'peterhoeg/vim-qml'
+" NeoBundle 'peterhoeg/vim-qml' "polyglot
 
 " C# {{{4
 " NeoBundleLazy 'OrangeT/vim-csharp', {
@@ -1445,28 +1433,28 @@ endif
 
 " OSX {{{4
 if s:is_mac
-  NeoBundle 'b4winckler/vim-objc'
+  " NeoBundle 'b4winckler/vim-objc' "polyglot
   NeoBundle 'pekepeke/cocoa.vim'
   if has('ruby')
     NeoBundleLazy 'eraserhd/vim-ios', {
     \ 'on_ft': ['objc'],
     \ }
   endif
-  NeoBundle 'vim-scripts/applescript.vim'
-  NeoBundle 'keith/swift.vim'
+  " NeoBundle 'vim-scripts/applescript.vim' "polyglot
+  " NeoBundle 'keith/swift.vim' "polyglot
   NeoBundle 'cfdrake/vim-carthage'
 endif
 
 " windows {{{4
-NeoBundle 'PProvost/vim-ps1'
+" NeoBundle 'PProvost/vim-ps1' "polyglot
 if s:is_win
   NeoBundle 'cd01/poshcomplete-vim'
 endif
-if get(g:vimrc_enabled_features, "vbnet", 0)
-  NeoBundleLazy 'hachibeeDI/vim-vbnet', {
-  \ 'on_ft': ['vbnet'],
-  \ }
-endif
+" if get(g:vimrc_enabled_features, "vbnet", 0)
+"   NeoBundleLazy 'hachibeeDI/vim-vbnet', { "polyglot
+"   \ 'on_ft': ['vbnet'],
+"   \ }
+" endif
 
 " java, android {{{4
 NeoBundleLazy 'mikelue/vim-maven-plugin', {
@@ -1497,23 +1485,23 @@ endif
 NeoBundleLazy 'vim-scripts/jcommenter.vim', {
 \ 'on_ft': ['java'],
 \ }
-NeoBundle 'vim-scripts/groovyindent-unix'
-NeoBundle 'vim-scripts/groovy.vim'
-NeoBundle 'tfnico/vim-gradle'
-NeoBundle 'martinda/Jenkinsfile-vim-syntax'
+" NeoBundle 'vim-scripts/groovyindent-unix' "polyglot
+" NeoBundle 'vim-scripts/groovy.vim' "polyglot
+" NeoBundle 'tfnico/vim-gradle' "polyglot
+" NeoBundle 'martinda/Jenkinsfile-vim-syntax' "polyglot
 NeoBundleLazy 'thinca/vim-logcat', {
 \ 'on_cmd': ['Logcat', 'LogcatClear'],
 \ }
-NeoBundle 'lepture/vim-velocity'
+" NeoBundle 'lepture/vim-velocity' "polyglot
 NeoBundleLazy 'ryotakato/unite-gradle', {
 \ 'on_source': 'unite.vim',
 \ 'on_ft': ['groovy'],
 \ }
 
 " scala {{{4
-NeoBundleLazy 'derekwyatt/vim-scala', {
-\ 'on_ft': ['scala'],
-\ }
+" NeoBundleLazy 'derekwyatt/vim-scala', { "polyglot
+" \ 'on_ft': ['scala'],
+" \ }
 
 " go {{{4
 NeoBundleLazy 'fatih/vim-go', {
@@ -1530,8 +1518,8 @@ NeoBundle 'tpope/vim-markdown'
 NeoBundle 'nelstrom/vim-markdown-folding'
 NeoBundle 'previm/previm'
 " NeoBundle 'beckorz/previm'
-NeoBundle 'timcharper/textile.vim'
-NeoBundle 'aklt/plantuml-syntax'
+" NeoBundle 'timcharper/textile.vim' "polyglot
+" NeoBundle 'aklt/plantuml-syntax' "polyglot
 " NeoBundle 'maxmeyer/vim-taskjuggler'
 NeoBundle 'hara/vim-opf'
 NeoBundle 'mozamimy/nymphia.vim'
@@ -1543,7 +1531,7 @@ NeoBundle 'delphinus/vim-firestore'
 
 " haskell {{{4
 if get(g:vimrc_enabled_features, "haskell", 0)
-  NeoBundle 'itchyny/vim-haskell-indent'
+  " NeoBundle 'itchyny/vim-haskell-indent' "polyglot
   NeoBundleLazy 'dag/vim2hs', {
   \ 'on_ft': ['haskell'],
   \ }
@@ -1558,7 +1546,7 @@ if get(g:vimrc_enabled_features, "haskell", 0)
   NeoBundleLazy 'eagletmt/unite-haddock', {
   \ 'on_ft': ['haskell'],
   \ }
-  NeoBundle 'elixir-lang/vim-elixir'
+  " NeoBundle 'elixir-lang/vim-elixir' "polyglot
 endif
 
 " php {{{4
@@ -1631,26 +1619,26 @@ NeoBundleLazy 'vim-scripts/dbext.vim', {
 \ ] }
 
 " etc {{{4
-NeoBundle 'hashivim/vim-terraform'
-NeoBundle 'honza/dockerfile.vim'
-NeoBundle 'stephpy/vim-yaml'
-NeoBundle 'chase/vim-ansible-yaml'
+" NeoBundle 'hashivim/vim-terraform' "polyglot
+" NeoBundle 'honza/dockerfile.vim' "polyglot
+" NeoBundle 'stephpy/vim-yaml' "polyglot
+" NeoBundle 'chase/vim-ansible-yaml' "polyglot
 " NeoBundle 'MicahElliott/Rocannon'
-NeoBundle 'cespare/vim-toml'
+" NeoBundle 'cespare/vim-toml' "polyglot
 NeoBundleLazy 'xolox/vim-lua-ftplugin', {
 \ 'on_ft': ['lua'],
 \ 'depends': ['xolox/vim-misc'],
 \ }
 NeoBundle 'vim-scripts/httplog'
 NeoBundle 'vim-scripts/syslog-syntax-file'
-NeoBundle 'uarun/vim-protobuf'
+" NeoBundle 'uarun/vim-protobuf' "polyglot
 NeoBundle 'sophacles/vim-processing'
 NeoBundle 'hashivim/vim-hashicorp-tools'
 NeoBundleLazy 'pekepeke/ref-processing-vim', {
 \ 'on_ft': ['processing'],
 \ }
 NeoBundle 'sjl/strftimedammit.vim'
-NeoBundle 'tangledhelix/vim-octopress'
+" NeoBundle 'tangledhelix/vim-octopress'
 NeoBundle 'jcfaria/Vim-R-plugin'
 NeoBundleLazy 'rbtnn/vimconsole.vim', {
 \ 'on_cmd': [
@@ -1667,10 +1655,10 @@ NeoBundleLazy 'basyura/rmine.vim', {
 \ }
 
 " config {{{4
-NeoBundle 'qqshfox/vim-tmux'
-NeoBundle 'vim-scripts/nginx.vim'
-NeoBundle 'smerrill/vcl-vim-plugin'
-NeoBundle 'ksauzz/haproxy.vim'
+" NeoBundle 'qqshfox/vim-tmux' "polyglot
+" NeoBundle 'vim-scripts/nginx.vim' "polyglot
+" NeoBundle 'smerrill/vcl-vim-plugin' "polyglot
+" NeoBundle 'ksauzz/haproxy.vim' "polyglot
 " NeoBundle 'empanda/vim-varnish.vim'
 NeoBundle 'glidenote/keepalived-syntax.vim'
 " NeoBundle 'Shougo/vim-nyaos'
