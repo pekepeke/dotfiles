@@ -7552,9 +7552,9 @@ if s:bundle.is_installed('deoplete.nvim')
   let g:LanguageClient_serverCommands = {
     \ }
 
-  let intelephense_bin = s:exec_npm ? system('npm config get prefix').'/lib/node_modules/intelephense-server/lib/server.js' : ''
+  let intelephense_bin = s:exec_npm ? trim(system('npm config get prefix')).'/lib/node_modules/intelephense-server/lib/server.js' : ''
   if filereadable(intelephense_bin)
-    let g:LanguageClient_serverCommands['php'] = ['node', $HOME.'/.local/php-intelephense-server/lib/server.js', '--stdio']
+    let g:LanguageClient_serverCommands['php'] = ['node', intelephense_bin, '--stdio']
   elseif filereadable($HOME.'/.local/php-intellisense-server/bin/php-language-server.php')
     let g:LanguageClient_serverCommands['php'] = ['php', $HOME.'/.local/php-intellisense-server/bin/php-language-server.php']
   endif
