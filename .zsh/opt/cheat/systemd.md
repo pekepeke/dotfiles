@@ -3,6 +3,7 @@
 
 ```
 systemctl list-unit-files --type=service
+systemctl list-unit-files --type=service | grep -P 'nginx|postfix'
 ```
 
 ### 設定の上書き

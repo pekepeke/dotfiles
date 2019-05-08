@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# IP="$(aws ec2 describe-instances | jq -r '.Reservations[].Instances[] | [.InstanceId, .PublicIpAddress, .LaunchTime, .InstanceType, .KeyName] | @tsv' | peco | awk '{ print $1 }')"
+IDS="$(aws ec2 describe-instances | jq -r '.Reservations[].Instances[] | [.InstanceId, .PublicDnsName, .LaunchTime, .InstanceType, .KeyName] | @tsv' | peco | awk '{ print $1 }')"
+
+ACTION="$(cat <<EOM | peco
+describe
+stop
+start
+reboot
+terminate
+EOM
+)"
+SUBCOMMAND=""
+
+case $ACTION in
+  describe)
+    SUBCOMMAND="describe-instances"
+    ;;
+  start)
+    SUBCOMMAND="start-instances"
+    ;;
+  stop)
+    SUBCOMMAND="stop-instances"
+    ;;
+  reboot)
+    SUBCOMMAND="reboot-instances"
+    ;;
+  terminate)
+    SUBCOMMAND="terminate-instances"
+    ;;
+esac
+
+[ -n "$SUBCOMMAND" ] && aws ec2 $SUBCOMMAND --instance-ids $IDS

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# IP="$(aws ec2 describe-instances | jq -r '.Reservations[].Instances[] | [.PublicIpAddress, .InstanceId, .LaunchTime, .InstanceType, .KeyName] | @tsv' | peco | awk '{ print $1 }')"
+IP="$(aws ec2 describe-instances | jq -r '.Reservations[].Instances[] | [.PublicDnsName, .InstanceId, .LaunchTime, .InstanceType, .KeyName] | @tsv' | peco | awk '{ print $1 }')"
+
+if [ -n "$IP" ]; then
+	ssh $IP
+fi

@@ -87,6 +87,20 @@ https://github.com/Quick/Quick
 https://github.com/kishikawakatsumi/SwiftPowerAssert
 ```
 
+### Swift
+#### pragma mark
+
+```
+// MARK: *****
+// TODO: *****
+// FIXME: *****
+
+// 区切り線
+// MARK: - *****
+// TODO: ***** -
+// FIXME: ***** -
+```
+
 
 
 ## fastlane
@@ -127,7 +141,7 @@ bundle exec fastlane init
 
 ## swiftlint
 - https://qiita.com/nerd0geek1/items/9edad9a8b1d4c4051ab6
-*```bash
+```bash
 if which swiftlint >/dev/null; then
   swiftlint
 else
@@ -135,7 +149,7 @@ else
 fi
 ```
 
-.swiftlint.yml
+### .swiftlint.yml
 
 ```
 # 無効にするルール
