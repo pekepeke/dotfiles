@@ -1,0 +1,25 @@
+# https://docker-sync.readthedocs.io/en/latest/getting-started/configuration.html
+options:
+  compose-file-path: 'docker-compose.yml'
+  compose-dev-file-path: 'docker-compose-override.yml'
+  cli_mode: 'auto'
+  max_attempt: 5
+  project_root: 'pwd'
+
+syncs:
+  sync-volume:
+    sync_strategy: 'native_osx' # rsync/unison
+    host_disk_mount_mode: 'cached' # see https://docs.docker.com/docker-for-mac/osxfs-caching/#cached
+    src: './src/'
+    sync_excludes: ['.git', '.idea', '.vagrant', '.gitignore']
+    watch_excludes: ['.git', '.idea', '.vagrant', '.gitignore']
+    # sync_host_ip: 'auto'
+    sync_host_port: 20871
+    # sync_excludes_type: 'Name'
+    # sync_args: '-v'
+    # sync_userid: '5000'
+    # sync_prefer: 'default'
+    # monit_enable: false
+    # monit_interval: 5
+    # monit_high_cpu_cycles: 2
+

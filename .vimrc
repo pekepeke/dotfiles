@@ -2317,6 +2317,7 @@ if exists(':tmap')
   tnoremap <C-w>th <C-w>:tabprev<CR>
   tnoremap <C-w>tc <C-w>:tabnew<CR>
   tnoremap <C-w>p <C-w>"
+  tnoremap <C-w><C-[> <C-\><C-n>
   tnoremap <C-\>n <C-\><C-n>
   tnoremap <C-\><C-\> <C-\><C-n>
   tnoremap <C-\>p <C-w>"

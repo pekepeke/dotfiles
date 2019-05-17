@@ -91,9 +91,10 @@ if ! is_mac ; then
   # _JAVA_OPTIONS="$_JAVA_OPTIONS -Dfile.encoding=UTF-8"
   # export _JAVA_OPTIONS
 fi
+
+export PIPENV_VENV_IN_PROJECT=true
 export PYTHONSTARTUP=~/.pyrc
 PATH="node_modules/.bin:$PATH"
-
 if ! is_win ; then
   xenv-init() {
     local VMNAME=$1
