@@ -38,12 +38,19 @@ Cmd+Ctl+q
 「Command」＋「Z」	グラブ.appでデスクトップ全体を撮影
 「Command」＋「Shift」＋「Z」	グラブ.appでタイマー撮影
 
-## Finderのツールバーに追加
+## finder
+### Finderのツールバーに追加
 ⌘キーを押下しながらDrag & Drop
 
-# exclude resource fork
+### 隠しファイル表示
+
+Cmd+Shift+.
+
+## exclude resource fork
+```
 COPYFILE_DISABLE=1 tar cf folder.tar --exclude ".DS_Store" folder
 COPYFILE_DISABLE=1 zip -r folder folder/ -x .DS_Store
+```
 
 ## caffeinate でスリープを防ぐ
 caffeinate brew update &
