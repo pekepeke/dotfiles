@@ -1097,6 +1097,13 @@ if s:feature('ycm') && has('python')
     \   'mac': './install.sh --clang-completer --omnisharp-completer',
     \   'unix': './install.sh --clang-completer --system-libclang --system-boost --omnisharp-completer',
     \ }}
+elseif s:feature('coc') && s:exec_npm
+  NeoBundle 'neoclide/coc.nvim', { 'build': {
+    \ 'windows': 'install.cmd'
+    \ 'cygwin': './install.sh'
+    \ 'mac': './install.sh'
+    \ 'unix': './install.sh'
+    \ }}
 elseif s:feature('deoplete') && has('python3')
   " pip3 install --user pynvim
   if has('nvim')
@@ -2918,6 +2925,7 @@ let g:vimrc_enabled_plugins = {
   \ 'vimproc': s:bundle.is_installed('vimproc.vim'),
   \ 'neosnippet': s:bundle.is_installed('neosnippet.vim'),
   \ 'deoplete': s:bundle.is_installed('deoplete.nvim'),
+  \ 'coc': s:bundle.is_installed('coc.nvim'),
   \ 'neocomplete': s:bundle.is_installed('neocomplete.vim'),
   \ 'neocomplcache': s:bundle.is_installed('neocomplcache.vim'),
   \ 'youcompleteme': s:bundle.is_installed('YouCompleteMe'),
@@ -4551,6 +4559,8 @@ if s:bundle.tap('lexima.vim')
       \ "\<C-]>\<C-r>=AsyncompleteClose()\<CR>")
       call lexima#insmode#map_hook('before', '<BS>',
       \ "\<C-r>=AsyncompleteClose()\<CR>")
+    elseif s:bundle.is_installed('coc.nvim')
+      " TODO
     elseif s:bundle.is_installed('deopolete.nvim')
       " TODO
       call lexima#insmode#map_hook('before', '<CR>',
@@ -7425,6 +7435,8 @@ if s:bundle.is_installed('neosnippet.vim')
       if neosnippet#expandable()
         if s:bundle.is_installed('asyncomplete-lsp.vim')
           " TODO
+        elseif g:vimrc_enabled_plugins.coc
+          " TODO
         elseif g:vimrc_enabled_plugins.deoplete
           call deoplete#smart_close_popup()
         elseif g:vimrc_enabled_plugins.neocomplete
@@ -7433,6 +7445,8 @@ if s:bundle.is_installed('neosnippet.vim')
         return "\<Plug>(neosnippet_expand)"
       elseif neosnippet#jumpable()
         if s:bundle.is_installed('asyncomplete-lsp.vim')
+          " TODO
+        elseif g:vimrc_enabled_plugins.coc
           " TODO
         elseif g:vimrc_enabled_plugins.deoplete
           call deoplete#smart_close_popup()
@@ -7493,6 +7507,41 @@ if s:bundle.is_installed('neosnippet.vim')
   smap <C-l> <Plug>(neosnippet_jump_or_expand)
 endif
 
+" coc.vim {{{2
+if s:bundle.is_installed('coc.nvim')
+
+  if g:vimrc_enabled_plugins.lexima
+    " default cr
+    imap <silent><expr> <CR> pumvisible()?coc#_hide():"\<CR>"
+    inoremap <expr> <C-h>  coc#_hide()."\<C-h>"
+    inoremap <expr> <BS>   coc#_hide()."\<C-h>"
+    inoremap <expr> <Space> coc#_hide()."\<Space>"
+  elseif g:vimrc_enabled_plugins.smartinput
+    if g:vimrc_enabled_plugins.endwize
+      imap <silent><expr> <CR> (pumvisible()?coc#_cancel():"")
+        \ ."\<Plug>(smartinput_CR)\<C-r>=endwize#crend()\<CR>"
+    else
+      imap <silent><expr> <CR> (pumvisible()?coc#_cancel():"")
+        \ ."\<Plug>(smartinput_CR)"
+    endif
+
+    imap <expr> <C-h>  pumvisible()?coc#_hide()."\<C-h>":
+    \ deoplete#smart_close_popup()."\<Plug>(smartinput_BS)"
+    imap <expr> <BS>   pumvisible()?coc#_hide()."\<C-h>":
+    \ deoplete#smart_close_popup()."\<Plug>(smartinput_C-h)"
+    imap <expr> <Space>   pumvisible()?coc#_hide()."\<C-h>":
+    \ deoplete#smart_close_popup()."\<Plug>(smartinput_SPACE)"
+  else
+    inoremap <expr><C-h>  coc#_hide()."\<C-h>"
+    inoremap <expr><BS>   coc#_hide()."\<C-h>"
+    inoremap <expr><Space> coc#_hide()."\<Space>"
+  endif
+
+  " inoremap <expr> <C-y>  coc#_hide()
+  inoremap <expr> <C-e> pumvisible() ? coc#_cancel() : "\<End>"
+  inoremap <expr> <C-j> pumvisible() ? coc#_hide() : "\<CR>"
+endif
+
 " youcompleteme {{{2
 if s:bundle.is_installed('YouCompleteMe')
   let g:ycm_min_num_of_chars_for_completion = 1
@@ -7502,6 +7551,7 @@ if s:bundle.is_installed('YouCompleteMe')
   " imap <C-s> <Plug>(neocomplete_start_unite_complete)
 endif
 
+" deoplete.vim {{{2
 if s:bundle.is_installed('deoplete.nvim')
   let g:deoplete#enable_at_startup = 1
   call deoplete#custom#option({
