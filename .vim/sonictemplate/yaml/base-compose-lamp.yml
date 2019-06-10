@@ -19,6 +19,9 @@ services:
     #   - ./mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
+      # MYSQL_DATABASE: app
+      # MYSQL_USER: app
+      # MYSQL_PASSWORD: app
     # password: <%= ENV['MYSQL_ENV_MYSQL_ROOT_PASSWORD'] %>
     # host: <%= ENV['MYSQL_PORT_3306_TCP_ADDR'] %>
     # port: <%= ENV['MYSQL_PORT_3306_TCP_PORT'] %>
