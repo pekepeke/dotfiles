@@ -332,6 +332,20 @@ PARTITION pmax VALUES LESS THAN MAXVALUE);
 ALTER TABLE test_log_1000000 REMOVE PARTITIONING;
 ```
 
+## sequence table
+
+```
+CREATE TABLE `sequences` (
+  `table_name` char(100) NOT NULL ,
+  `id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`table`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+UPDATE sequences SET id = LAST_INSERT_ID(id+1) WHERE `table_name` = 'users';
+SELECT LAST_INSERT_ID();
+
+```
+
 ## OS側のチューニング
 
 ```

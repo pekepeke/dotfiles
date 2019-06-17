@@ -1,0 +1,5 @@
+#!/bin/sh
+
+MITM_CONF=~/.cache/dot-mitmproxy
+[ ! -e $MITM_CONF ] && mkdir -p $MITM_CONF
+docker run --rm -it -v $MITM_CONF:/home/mitmproxy/.mitmproxy -p 8080:8080 mitmproxy/mitmproxy
