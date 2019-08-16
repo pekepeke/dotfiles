@@ -51,6 +51,7 @@ export VIMRC_ENABLES
 
 ## github
 # ghrize() {
+#   git config --local remote.origin.url "$(git config remote.origin.url | sed -e 's!@github.com:!@xxxx.github.com:!')"
 #   git config --local user.name 'xxx'
 #   git config --local user.email 'xxx@xxx.xx'
 #   git config --local --list
