@@ -4552,17 +4552,21 @@ if s:bundle.tap('lexima.vim')
     " call lexima#insmode#define_altanative_key('<Plug>(lexima-SPACE)', '<Space>')
 
     if s:bundle.is_installed('asyncomplete-lsp.vim')
-      " TODO
       call lexima#insmode#map_hook('before', '<CR>',
       \ "\<C-]><C-r>=AsyncompleteClose()\<CR>")
       call lexima#insmode#map_hook('before', '<Space>',
       \ "\<C-]>\<C-r>=AsyncompleteClose()\<CR>")
       call lexima#insmode#map_hook('before', '<BS>',
-      \ "\<C-r>=AsyncompleteClose()\<CR>")
+      \ "\<C-]>\<C-r>=AsyncompleteClose()\<CR>")
     elseif s:bundle.is_installed('coc.nvim')
       " TODO
+      call lexima#insmode#map_hook('before', '<CR>',
+      \ "\<C-g>u\<CR>")
+      call lexima#insmode#map_hook('before', '<Space>',
+      \ "\<C-g>u\<CR>")
+      call lexima#insmode#map_hook('before', '<BS>',
+      \ "\<C-g>u\<CR>")
     elseif s:bundle.is_installed('deopolete.nvim')
-      " TODO
       call lexima#insmode#map_hook('before', '<CR>',
       \ "\<C-]><C-r>=deoplete#smart_close_popup()\<CR>")
       call lexima#insmode#map_hook('before', '<Space>',

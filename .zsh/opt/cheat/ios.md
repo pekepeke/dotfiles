@@ -21,6 +21,20 @@ CocoaPodUI
 ```
 
 ## Tips
+### Shortcut
+
+- Ctrl+6 ： 表示中のクラスのメソッド一覧
+- Cmd+Shift+O ： 全ファイルを対象にクラスやメソッドを検索
+- Cmd+Shift+F ： 全ファイルを対象にファイル検索
+- Cmd+Shift+[] ： タブ移動。[ で左に、] で右に移動
+- Cmd+Ctrl+←→ ： 戻る / 進む
+- Cmd+Ctrl+↑↓ ： .h / .m の切り替え
+- Cmd+Ctrl+j ： カーソルのクラスやメソッドをドキュメント検索
+- Cmd+クリックと同様の効果
+- Cmd+0 ： Navigator（左ペイン）を開閉
+- Cmd+Opt+0 ： Utilities（右ペイン）を開閉
+
+
 ### `which may not be supported by this version of Xcode.`
 
 不足しているデバイスサポートファイルをDLして、`~/Library/Developer/Xcode/iOS\ DeviceSupport/`配下に入れる(ディレクトリはなければ作成する)
