@@ -1097,12 +1097,14 @@ if s:feature('ycm') && has('python')
     \   'mac': './install.sh --clang-completer --omnisharp-completer',
     \   'unix': './install.sh --clang-completer --system-libclang --system-boost --omnisharp-completer',
     \ }}
-elseif s:feature('coc') && s:exec_npm
-  NeoBundle 'neoclide/coc.nvim', { 'build': {
-    \ 'windows': 'install.cmd'
-    \ 'cygwin': './install.sh'
-    \ 'mac': './install.sh'
-    \ 'unix': './install.sh'
+elseif s:feature('coc') && s:exec_npm && executable('yarn')
+  NeoBundle 'neoclide/coc.nvim', {
+    \ 'branch': 'release',
+    \ 'build': {
+    \ 'windows': 'yarn install --frozen-lockfile',
+    \ 'cygwin': 'yarn install --frozen-lockfile',
+    \ 'mac': 'yarn install --frozen-lockfile',
+    \ 'unix': 'yarn install --frozen-lockfile',
     \ }}
 elseif s:feature('deoplete') && has('python3')
   " pip3 install --user pynvim
@@ -4561,11 +4563,13 @@ if s:bundle.tap('lexima.vim')
     elseif s:bundle.is_installed('coc.nvim')
       " TODO
       call lexima#insmode#map_hook('before', '<CR>',
-      \ "\<C-g>u\<CR>")
+      \ "\<C-]><C-r>=coc#_cancel()\<CR>")
+      " \ "\<C-g>u")
       call lexima#insmode#map_hook('before', '<Space>',
-      \ "\<C-g>u\<CR>")
+      \ "\<C-]><C-r>=coc#_cancel()\<CR>")
+      " \ "\<C-g>u")
       call lexima#insmode#map_hook('before', '<BS>',
-      \ "\<C-g>u\<CR>")
+      \ "\<C-]><C-r>=coc#_cancel()\<CR>")
     elseif s:bundle.is_installed('deopolete.nvim')
       call lexima#insmode#map_hook('before', '<CR>',
       \ "\<C-]><C-r>=deoplete#smart_close_popup()\<CR>")
@@ -7513,37 +7517,41 @@ endif
 
 " coc.vim {{{2
 if s:bundle.is_installed('coc.nvim')
+  function! CocHide()
+    call coc#_hide()
+    return ""
+  endfunction
 
   if g:vimrc_enabled_plugins.lexima
     " default cr
-    imap <silent><expr> <CR> pumvisible()?coc#_hide():"\<CR>"
-    inoremap <expr> <C-h>  coc#_hide()."\<C-h>"
-    inoremap <expr> <BS>   coc#_hide()."\<C-h>"
-    inoremap <expr> <Space> coc#_hide()."\<Space>"
+    imap <silent><expr> <CR> pumvisible()?"\<C-y>":"\<CR>"
+    inoremap <expr> <C-h>  CocHide()."\<C-h>"
+    inoremap <expr> <BS>   CocHide()."\<C-h>"
+    inoremap <expr> <Space> CocHide()."\<Space>"
   elseif g:vimrc_enabled_plugins.smartinput
     if g:vimrc_enabled_plugins.endwize
-      imap <silent><expr> <CR> (pumvisible()?coc#_cancel():"")
+      imap <silent><expr> <CR> (pumvisible()?CocHide():"")
         \ ."\<Plug>(smartinput_CR)\<C-r>=endwize#crend()\<CR>"
     else
       imap <silent><expr> <CR> (pumvisible()?coc#_cancel():"")
         \ ."\<Plug>(smartinput_CR)"
     endif
 
-    imap <expr> <C-h>  pumvisible()?coc#_hide()."\<C-h>":
-    \ deoplete#smart_close_popup()."\<Plug>(smartinput_BS)"
-    imap <expr> <BS>   pumvisible()?coc#_hide()."\<C-h>":
-    \ deoplete#smart_close_popup()."\<Plug>(smartinput_C-h)"
-    imap <expr> <Space>   pumvisible()?coc#_hide()."\<C-h>":
-    \ deoplete#smart_close_popup()."\<Plug>(smartinput_SPACE)"
+    imap <expr> <C-h>  pumvisible()?CocHide()."\<C-h>":
+    \ CocHide()."\<Plug>(smartinput_BS)"
+    imap <expr> <BS>   pumvisible()?CocHide()."\<C-h>":
+    \ coc#refresh()."\<Plug>(smartinput_C-h)"
+    imap <expr> <Space>   pumvisible()?CocHide()."\<C-h>":
+    \ coc#refresh()."\<Plug>(smartinput_SPACE)"
   else
-    inoremap <expr><C-h>  coc#_hide()."\<C-h>"
-    inoremap <expr><BS>   coc#_hide()."\<C-h>"
-    inoremap <expr><Space> coc#_hide()."\<Space>"
+    inoremap <expr><C-h>  CocHide()."\<C-h>"
+    inoremap <expr><BS>   CocHide()."\<C-h>"
+    inoremap <expr><Space> CocHide()."\<Space>"
   endif
 
   " inoremap <expr> <C-y>  coc#_hide()
-  inoremap <expr> <C-e> pumvisible() ? coc#_cancel() : "\<End>"
-  inoremap <expr> <C-j> pumvisible() ? coc#_hide() : "\<CR>"
+  inoremap <expr> <C-e> pumvisible() ? CocHide() : "\<End>"
+  inoremap <expr> <C-j> pumvisible() ? "\<C-y>" : "\<CR>"
 endif
 
 " youcompleteme {{{2
