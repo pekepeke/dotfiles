@@ -4563,13 +4563,13 @@ if s:bundle.tap('lexima.vim')
     elseif s:bundle.is_installed('coc.nvim')
       " TODO
       call lexima#insmode#map_hook('before', '<CR>',
-      \ "\<C-]><C-r>=coc#_cancel()\<CR>")
+      \ "\<C-]><C-r>=CocHide()\<CR>")
       " \ "\<C-g>u")
       call lexima#insmode#map_hook('before', '<Space>',
-      \ "\<C-]><C-r>=coc#_cancel()\<CR>")
+      \ "\<C-]><C-r>=CocHide()\<CR>")
       " \ "\<C-g>u")
       call lexima#insmode#map_hook('before', '<BS>',
-      \ "\<C-]><C-r>=coc#_cancel()\<CR>")
+      \ "\<C-]><C-r>=CocHide()\<CR>")
     elseif s:bundle.is_installed('deopolete.nvim')
       call lexima#insmode#map_hook('before', '<CR>',
       \ "\<C-]><C-r>=deoplete#smart_close_popup()\<CR>")
@@ -7518,16 +7518,15 @@ endif
 " coc.vim {{{2
 if s:bundle.is_installed('coc.nvim')
   function! CocHide()
-    call coc#_hide()
-    return ""
+    return pumvisible()?"\<C-e>":""
   endfunction
 
   if g:vimrc_enabled_plugins.lexima
     " default cr
-    imap <silent><expr> <CR> pumvisible()?"\<C-y>":"\<CR>"
+    " imap <silent><expr> <CR> CocHide()."\<CR>"
     inoremap <expr> <C-h>  CocHide()."\<C-h>"
-    inoremap <expr> <BS>   CocHide()."\<C-h>"
-    inoremap <expr> <Space> CocHide()."\<Space>"
+    " inoremap <expr> <BS>   CocHide()."\<C-h>"
+    " inoremap <expr> <Space> CocHide()."\<Space>"
   elseif g:vimrc_enabled_plugins.smartinput
     if g:vimrc_enabled_plugins.endwize
       imap <silent><expr> <CR> (pumvisible()?CocHide():"")
@@ -7655,7 +7654,7 @@ if s:bundle.is_installed('deoplete.nvim')
 
   if g:vimrc_enabled_plugins.lexima
     " default cr
-    imap <silent><expr> <CR> pumvisible()?deoplete#close_popup():"\<CR>"
+    imap <silent><expr> <CR> pumvisible()?deoplete#close_popup()."\<CR>"
     inoremap <expr> <C-h>  deoplete#smart_close_popup()."\<C-h>"
     inoremap <expr> <BS>   deoplete#smart_close_popup()."\<C-h>"
     inoremap <expr> <Space> deoplete#smart_close_popup()."\<Space>"
