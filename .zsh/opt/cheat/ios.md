@@ -6,6 +6,27 @@
 	targetView.convert(self.frame, from: self.superView)
 ```
 
+### tableView
+
+```
+let rect = tableView.rectForRow(at: indexPath)
+let rect = self.collectionViewLayout.layoutAttributesForItem(at: indexPath).frame
+```
+
+### RxSwift memo
+
+### rx.text/rx.controlEvent
+
+| 操作内容                                                               | UITextField.rx.textイベントの発生回数 | 同時に発行されるUIControl.Eventイベント |
+|------------------------------------------------------------------------|---------------------------------------|-----------------------------------------|
+| サブスクライブ                                                         | 1回                                   | なし                                    |
+| テキストフィールドをタップしてフォーカスを当てる                       | 1回                                   | editingDidBegin                         |
+| 画面タップによってフォーカスを外す                                     | 1回                                   | editingDidEnd                           |
+| キーボードで1文字入力する                                              | 1回                                   | editingChanged                          |
+| キーボードでリターンキーをタップする                                   | 2回                                   | editingDidEndOnExitとeditingDidEnd      |
+| UITextField.textにコードから文字を代入する                             | 0回                                   | なし                                    |
+| UITextField.textにコードから文字を代入し、valueChangedメッセージを送る | 1回                                   | valueChanged                            |
+
 ## Xcode plugin
 
 ```
