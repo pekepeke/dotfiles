@@ -39,3 +39,16 @@
         }
     }
 ```
+
+## eloquent
+### 
+```
+return $this->hasManyThrough(
+    Model\Game::class,
+    Model\UserGame::class,
+    'user_id', // user_game.user_id
+    'game_master_id', // game.game_master_id
+    null,
+    'game_id' // user_game.game_id
+);
+```
