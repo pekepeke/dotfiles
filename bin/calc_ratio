@@ -22,9 +22,11 @@ GetOptions(
 usage if $opt_help;
 
 my ($w, $h) = map {int($_)} @ARGV;
+# my ($w, $h) = map { $_ * 1.0 } @ARGV;
 
 sub gcd {
     my ($x, $y) = @_;
+    # print "$x - $y\n";
     return $x if $y == 0;
     gcd($y, $x % $y);
 }

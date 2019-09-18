@@ -52,3 +52,22 @@ return $this->hasManyThrough(
     'game_id' // user_game.game_id
 );
 ```
+
+## tinker
+### .tinker
+
+```
+<?php
+// vim:fdm=marker sw=2 ts=2 ft=php expandtab:
+
+$loader = Illuminate\Foundation\AliasLoader::getInstance();
+$loader->alias('User', 'App\Models\User');
+$classes = array_map(function ($v) {
+    $k = str_replace('/', '\\', preg_replace('!\.php$!', '', str_replace(__DIR__.'/app', 'App', $v)));
+    $n = explode('\\' , $k);
+    return array(end($n), $k);
+}, glob(__DIR__.'/app/Models/*.php'));
+collect($classes)->each(function ($c) use ($loader) {
+    $loader->alias($c[0], $c[1]);
+});
+```
