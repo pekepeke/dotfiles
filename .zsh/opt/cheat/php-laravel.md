@@ -71,3 +71,18 @@ collect($classes)->each(function ($c) use ($loader) {
     $loader->alias($c[0], $c[1]);
 });
 ```
+
+### faker
+
+```
+use Faker\Factory as Faker;$faker = Faker::create('ja_JP')
+```
+
+### query
+
+```
+\DB::listen(function ($query) {
+$s = $query->sql; foreach($query->bindings as $b) { $s = preg_replace('/\?/', $b, $s, 1); } echo $s."\n"; 
+});
+```
+
