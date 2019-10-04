@@ -145,7 +145,7 @@ if ! is_win ; then
   fi
 
   if is_exec php-no-xdebug ; then
-    composer() {
+    php-no-xdebug-composer() {
       php-no-xdebug `builtin command which composer` "$@"
     }
   fi

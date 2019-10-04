@@ -2035,6 +2035,24 @@ else
   " colorscheme wombat
   colorscheme desert
 endif
+let g:terminal_ansi_colors = [
+\ '#616161',
+\ '#ff8272',
+\ '#b4fa72',
+\ '#fefdc2',
+\ '#a5d5fe',
+\ '#ff8ffd',
+\ '#d0d1fe',
+\ '#f1f1f1',
+\ '#8e8e8e',
+\ '#ffc4bd',
+\ '#d6fcb9',
+\ '#fefdd5',
+\ '#c1e3fe',
+\ '#ffb1fe',
+\ '#e5e6fe',
+\ '#feffff',
+\ ]
 
 " statusline {{{1
 set laststatus=2  " ステータス表示用変数
@@ -2325,11 +2343,10 @@ if exists(':tmap')
   tnoremap <C-w>tl <C-w>:tabnext<CR>
   tnoremap <C-w>th <C-w>:tabprev<CR>
   tnoremap <C-w>tc <C-w>:tabnew<CR>
-  tnoremap <C-w>p <C-w>"
+  tnoremap <C-w>p <C-w>"0
+  tnoremap <C-w>h <C-w>.
+  tnoremap <C-w>n <C-\><C-n>
   tnoremap <C-w><C-[> <C-\><C-n>
-  tnoremap <C-\>n <C-\><C-n>
-  tnoremap <C-\><C-\> <C-\><C-n>
-  tnoremap <C-\>p <C-w>"
   " tnoremap <Esc> <C-\><C-n>
 endif
 
@@ -4720,11 +4737,13 @@ if s:bundle.tap('vim-altr')
     call altr#define('%.coffee', 'test/%Test.coffee', 'test/%_test.coffee', 'spec/%_spec.coffee', 'spec/%Spec.coffee')
 
     if get(g:vimrc_enabled_features, 'laravel', 0)
-      call altr#define('app/controllers/%.php', 'app/tests/controllers/%Test.php')
-      call altr#define('app/models/%.php', 'app/tests/models/%Test.php')
-      call altr#define('app/commands/%.php', 'app/tests/commands/%Test.php')
-      call altr#define('app/views/%.php', 'app/tests/libs/%Test.php')
-      call altr#define('app/views/%.php', 'app/tests/views/%Test.php')
+      call altr#define('app/%.php', 'tests/%Test.php')
+      call altr#define('app/Repositories/%.php', 'app/Repositories/%Interface.php', 'tests/Repositories/%Test.php')
+      " call altr#define('app/controllers/%.php', 'app/tests/controllers/%Test.php')
+      " call altr#define('app/models/%.php', 'app/tests/models/%Test.php')
+      " call altr#define('app/commands/%.php', 'app/tests/commands/%Test.php')
+      " call altr#define('app/views/%.php', 'app/tests/libs/%Test.php')
+      " call altr#define('app/views/%.php', 'app/tests/views/%Test.php')
     endif
     if get(g:vimrc_enabled_features, 'cakephp', 0)
       call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
@@ -7496,6 +7515,7 @@ if s:bundle.is_installed('neosnippet.vim')
         call neocomplete#smart_close_popup()
       elseif g:vimrc_enabled_plugins.deoplete
         call deoplete#smart_close_popup()
+      elseif g:vimrc_enabled_plugins.coc
       endif
       " return "\<Plug>(EmmetExpandAbbr)"
       return "\<Plug>(emmet-expand-abbr)"
@@ -7515,7 +7535,7 @@ if s:bundle.is_installed('neosnippet.vim')
   smap <C-l> <Plug>(neosnippet_jump_or_expand)
 endif
 
-" coc.vim {{{2
+" coc.nvim {{{2
 if s:bundle.is_installed('coc.nvim')
   function! CocHide()
     return pumvisible()?"\<C-e>":""
@@ -7529,10 +7549,12 @@ if s:bundle.is_installed('coc.nvim')
     " inoremap <expr> <Space> CocHide()."\<Space>"
   elseif g:vimrc_enabled_plugins.smartinput
     if g:vimrc_enabled_plugins.endwize
-      imap <silent><expr> <CR> (pumvisible()?CocHide():"")
+      " imap <silent><expr> <CR> (pumvisible()?CocHide():"")
+      imap <silent><expr> <CR> (pumvisible()?"\<C-y>":"")
         \ ."\<Plug>(smartinput_CR)\<C-r>=endwize#crend()\<CR>"
     else
-      imap <silent><expr> <CR> (pumvisible()?coc#_cancel():"")
+      " imap <silent><expr> <CR> (pumvisible()?coc#_cancel():"")
+      imap <silent><expr> <CR> (pumvisible()?"\<C-y>":"")
         \ ."\<Plug>(smartinput_CR)"
     endif
 
@@ -7551,6 +7573,67 @@ if s:bundle.is_installed('coc.nvim')
   " inoremap <expr> <C-y>  coc#_hide()
   inoremap <expr> <C-e> pumvisible() ? CocHide() : "\<End>"
   inoremap <expr> <C-j> pumvisible() ? "\<C-y>" : "\<CR>"
+
+  inoremap <silent><expr> <C-Space> coc#refresh()
+
+  " Use `[g` and `]g` to navigate diagnostics
+  nmap <silent> <Leader>[g <Plug>(coc-diagnostic-prev)
+  nmap <silent> <Leader>]g <Plug>(coc-diagnostic-next)
+
+  " Remap keys for gotos
+  nmap <silent> <Leader>gd <Plug>(coc-definition)
+  nmap <silent> <Leader>gy <Plug>(coc-type-definition)
+  nmap <silent> <Leader>gi <Plug>(coc-implementation)
+  nmap <silent> <Leader>gr <Plug>(coc-references)
+
+  nnoremap <F5> :call <SID>coc_menu()<CR>
+  let s:coc_menu_items = [
+  \ 'definition',
+  \ 'type-definition',
+  \ 'implementation',
+  \ 'references',
+  \ 'codeaction-selected',
+  \ 'diagnostic-prev',
+  \ 'diagnostic-next',
+  \ ]
+
+  function! s:coc_menu()
+    call popup_menu(s:coc_menu_items, {
+      \ 'drag': 1,
+      \ 'callback': function('s:on_cocmenu_selected')
+      \ })
+  endfunction
+  function s:on_cocmenu_selected(id, result)
+    if a:result == -1
+      return
+    endif
+    call popup_clear()
+    execute "normal \<Plug>(coc-".s:coc_menu_items[a:result - 1].")"
+  endfunction
+
+  " Use K to show documentation in preview window
+  nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+  function! s:show_documentation()
+    if (index(['vim','help'], &filetype) >= 0)
+      execute 'h '.expand('<cword>')
+    else
+      call CocAction('doHover')
+    endif
+  endfunction
+
+  " Highlight symbol under cursor on CursorHold
+  MyAutoCmd CursorHold * silent call CocActionAsync('highlight')
+
+  " Remap for rename current word
+  nmap <Leader>rn <Plug>(coc-rename)
+
+  " Remap for format selected region
+  xmap <Leader>f  <Plug>(coc-format-selected)
+  nmap <Leader>f  <Plug>(coc-format-selected)
+
+  xmap <leader>a  <Plug>(coc-codeaction-selected)
+  nmap <leader>a  <Plug>(coc-codeaction-selected)
 endif
 
 " youcompleteme {{{2
