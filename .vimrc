@@ -1302,7 +1302,7 @@ NeoBundle 'npacker/vim-css3complete'
 " NeoBundle 'slim-template/vim-slim' "polyglot
 
 " javascript {{{4
-NeoBundle 'jason0x43/vim-js-indent'
+" NeoBundle 'jason0x43/vim-js-indent'
 NeoBundle 'Quramy/vim-js-pretty-template'
 NeoBundle 'isRuslan/vim-es6'
 " NeoBundle 'guileen/simple-javascript-indenter'
@@ -7540,6 +7540,13 @@ if s:bundle.is_installed('coc.nvim')
   function! CocHide()
     return pumvisible()?"\<C-e>":""
   endfunction
+  let g:coc_filetype_map = {
+        \ 'html.twig': 'html',
+        \ 'ruby.rspec': 'ruby',
+        \ 'python.nosetests': 'python',
+        \ 'perl.prove': 'perl',
+        \ 'php.phpunit': 'php',
+        \ }
 
   if g:vimrc_enabled_plugins.lexima
     " default cr
