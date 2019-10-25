@@ -64,6 +64,12 @@ CocoaPodUI
 - Cmd+Opt+0 ： Utilities（右ペイン）を開閉
 
 
+### Print view hierarchy
+
+```
+po someView.value(forKey: "recursiveDescription")
+```
+
 ### `which may not be supported by this version of Xcode.`
 
 不足しているデバイスサポートファイルをDLして、`~/Library/Developer/Xcode/iOS\ DeviceSupport/`配下に入れる(ディレクトリはなければ作成する)

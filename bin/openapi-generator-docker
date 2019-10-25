@@ -1,4 +1,5 @@
 #!/bin/sh
 
+PWD=`pwd`
 docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli "$@"
 
