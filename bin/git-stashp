@@ -1,0 +1,20 @@
+#!/bin/bash
+
+while true ; do
+	STASH="$(git stash list | peco| awk -F: '{print $1}')"
+	COMMAND="$(cat <<EOM | peco
+show
+show -p
+drop
+apply
+pop
+EOM
+)"
+  git stash $COMMAND "$STASH"
+  echo -n "continue?: [y/n]"
+  read -r ret
+  if [ "$ret" = "no" -o "$ret" = "n" ]; then
+    break
+  fi
+done
+

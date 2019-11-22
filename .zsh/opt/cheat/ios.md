@@ -1,4 +1,5 @@
 ## code
+
 ### 座標系
 
 ```
@@ -13,9 +14,10 @@ let rect = tableView.rectForRow(at: indexPath)
 let rect = self.collectionViewLayout.layoutAttributesForItem(at: indexPath).frame
 ```
 
-### RxSwift memo
 
-### rx.text/rx.controlEvent
+## RxSwift memo
+
+#### rx.text/rx.controlEvent
 
 | 操作内容                                                               | UITextField.rx.textイベントの発生回数 | 同時に発行されるUIControl.Eventイベント |
 |------------------------------------------------------------------------|---------------------------------------|-----------------------------------------|
@@ -69,6 +71,12 @@ CocoaPodUI
 ```
 po someView.value(forKey: "recursiveDescription")
 ```
+
+### Content Priority
+- Content Hugging Priority
+	- Content Hugging Priority が高いと、コンテンツのサイズを優先する
+- Content Compression Resistance Priority
+		- Content Compression Resistance Priority が高いと、小さくなりにくさの優先度を高くしている
 
 ### `which may not be supported by this version of Xcode.`
 

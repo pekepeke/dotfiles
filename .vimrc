@@ -4736,6 +4736,8 @@ if s:bundle.tap('vim-altr')
     call altr#define('%.js', 'test/%Test.js', 'test/%_test.js', 'spec/%_spec.js', 'spec/%Spec.js')
     call altr#define('%.coffee', 'test/%Test.coffee', 'test/%_test.coffee', 'spec/%_spec.coffee', 'spec/%Spec.coffee')
 
+    call altr#define('Contract/%Contract.swift', 'View/%ViewController.swift', 'Presenter/%Presenter.swift', 'Interactor/%Interactor.swift', 'Router/%Router.swift')
+
     if get(g:vimrc_enabled_features, 'laravel', 0)
       call altr#define('app/%.php', 'tests/%Test.php')
       call altr#define('app/Repositories/%.php', 'app/Repositories/%Interface.php', 'tests/Repositories/%Test.php')
