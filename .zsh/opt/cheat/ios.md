@@ -70,6 +70,7 @@ CocoaPodUI
 
 ```
 po someView.value(forKey: "recursiveDescription")
+po po UIApplication.shared.windows.first{$0.isKeyWindow}?.value(forKey: "recursiveDescription")
 ```
 
 ### Content Priority

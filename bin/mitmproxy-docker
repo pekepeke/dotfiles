@@ -1,5 +1,63 @@
 #!/bin/sh
 
-MITM_CONF=~/.cache/dot-mitmproxy
-[ ! -e $MITM_CONF ] && mkdir -p $MITM_CONF
-docker run --rm -it -v $MITM_CONF:/home/mitmproxy/.mitmproxy -p 8080:8080 mitmproxy/mitmproxy
+LIB_DIR=$(cd "$(dirname "$0")"; pwd)/.opt/mitmproxy
+
+. $LIB_DIR/docker-functions.sh
+
+opt_port=8080
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h] [-p port] [progname]
+
+Options:
+  -p [port] : specify port number
+
+
+EOM
+  exit 1
+}
+
+
+main() {
+  if ! is_int $opt_port ; then
+    err_p "invalid port number: $opt_port"
+    err_p
+    usage
+  fi
+  MITM_CONF=~/.cache/dot-mitmproxy
+  [ ! -e $MITM_CONF ] && mkdir -p $MITM_CONF
+
+  S="/home/mitmproxy/scripts"
+  local options="-s $S/inject_weinre.py"
+  options="${options} -s $S/autoauth.py"
+  options="$options -s $S/replace_host.py"
+
+  docker run --rm -it -v $LIB_DIR:$S -v $MITM_CONF:/home/mitmproxy/.mitmproxy -p $opt_port:8080 mitmproxy/mitmproxy "$@" $options
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "p:hvs:" opt; do
+  case $opt in
+    p)
+      opt_port=$OPTARG ;;
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+
+
+

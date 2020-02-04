@@ -2,12 +2,12 @@
 :backtrace: true
 :bulk_threshold: 1000
 :sources:
-- https://gems.rubyforge.org
 - https://rubygems.org
+# - https://gems.rubyforge.org
 :update_sources: true
 :verbose: true
 :concurrent_downloads: 8
 benchmark: false
 gem: "--no-ri --no-rdoc"
-install: -N
-update: -N
+install: "-N"
+update: "-N"
