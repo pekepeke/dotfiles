@@ -34,7 +34,8 @@ main() {
   options="${options} -s $S/autoauth.py"
   options="$options -s $S/replace_host.py"
 
-  docker run --rm -it -v $LIB_DIR:$S -v $MITM_CONF:/home/mitmproxy/.mitmproxy -p $opt_port:8080 mitmproxy/mitmproxy "$@" $options
+  # docker run --rm -it -v $LIB_DIR:$S -v $MITM_CONF:/home/mitmproxy/.mitmproxy -p $opt_port:8080 mitmproxy/mitmproxy "$@" $options
+  docker run --rm -it -v $LIB_DIR:$S -v $MITM_CONF:/home/mitmproxy/.mitmproxy -p 127.0.0.1:8081:8081 -p $opt_port:8080 mitmproxy/mitmproxy "$@"
 }
 
 OPTIND_OLD=$OPTIND
