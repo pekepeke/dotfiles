@@ -5,11 +5,13 @@ LIB_DIR=$(cd "$(dirname "$0")"; pwd)/.opt/mitmproxy
 . $LIB_DIR/docker-functions.sh
 
 opt_port=8080
+opt_webport=8081
+opt_script=1
 
 usage() {
   prg_name=`basename $0`
   cat <<EOM
-  Usage: $prg_name [-h] [-p port] [progname]
+  Usage: $prg_name [-h] [-p port] [-P webport] [progname]
 
 Options:
   -p [port] : specify port number
@@ -34,20 +36,24 @@ main() {
   options="${options} -s $S/autoauth.py"
   options="$options -s $S/replace_host.py"
 
-  # docker run --rm -it -v $LIB_DIR:$S -v $MITM_CONF:/home/mitmproxy/.mitmproxy -p $opt_port:8080 mitmproxy/mitmproxy "$@" $options
-  docker run --rm -it -v $LIB_DIR:$S -v $MITM_CONF:/home/mitmproxy/.mitmproxy -p 127.0.0.1:8081:8081 -p $opt_port:8080 mitmproxy/mitmproxy "$@"
+  # [ "$opt_script" = "0" ] && options=""
+  options=""
+  docker run --rm -it -v $LIB_DIR:$S -v $MITM_CONF:/home/mitmproxy/.mitmproxy -p 127.0.0.1:$opt_webport:8081 -p $opt_port:8080 mitmproxy/mitmproxy "$@" $options
 }
 
 OPTIND_OLD=$OPTIND
 OPTIND=1
-while getopts "p:hvs:" opt; do
+while getopts "p:P:hvs" opt; do
   case $opt in
     p)
       opt_port=$OPTARG ;;
+    P)
+      opt_webport=$OPTARG ;;
     h)
       usage ;;
     v) ;;
     s)
+      opt_script=0
       #$OPTARG
       ;;
   esac
