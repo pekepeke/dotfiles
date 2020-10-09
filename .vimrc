@@ -2981,13 +2981,12 @@ if s:bundle.is_installed('vim-laravel')
   command! -narg=0 PhpFixProj call <SID>fix_php()
   " MyAutoCmd VimEnter * PhpFixProj
   function! s:fix_php()
-    let files = [
-      \ neobundle#config#get('vim-composer').rtp.'autoload/composer.vim',
-      \ neobundle#config#get('vim-laravel').rtp.'autoload/laravel.vim',
-      \ ]
-    for f in files
-      execute "source" f
-    endfor
+    call composer#sid()
+    call laravel#app()
+    runtime autoload/composer.vim
+    runtime autoload/laravel.vim
+    " execute 'runtime' neobundle#config#get('vim-composer').rtp 'autoload/composer.vim'
+    " execute 'runtime' neobundle#config#get('vim-laravel').rtp 'autoload/laravel.vim'
   endfunction
 endif
 
