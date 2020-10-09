@@ -1199,7 +1199,7 @@ NeoBundle 'juliosueiras/vim-terraform-completion'
 NeoBundle 'sheerun/vim-polyglot'
 
 " ruby {{{4
-NeoBundle 'vim-ruby/vim-ruby'
+" NeoBundle 'vim-ruby/vim-ruby' " polyglot
 if s:exec_ruby
   if get(g:vimrc_enabled_features, "rails", 0)
     NeoBundle 'tpope/vim-rails' , {
@@ -1327,7 +1327,7 @@ if s:exec_npm && (has('python3') || has('python'))
 endif
 NeoBundle 'othree/javascript-libraries-syntax.vim'
 NeoBundle 'claco/jasmine.vim'
-NeoBundle 'elzr/vim-json'
+" NeoBundle 'elzr/vim-json' " polyglot
 NeoBundleLazy 'Quramy/vison', {
 \ 'on_cmd': [
 \ 'VisonSetup',
@@ -1584,7 +1584,7 @@ if get(g:vimrc_enabled_features, 'cakephp', 0)
 endif
 if get(g:vimrc_enabled_features, 'laravel', 0)
   NeoBundle 'noahfrederick/vim-laravel'
-  NeoBundle 'jwalton512/vim-blade'
+  " NeoBundle 'jwalton512/vim-blade' " polyglot
 endif
 
 if !get(g:vimrc_enabled_features, "eclim", 0)
@@ -1607,25 +1607,27 @@ if !get(g:vimrc_enabled_features, "eclim", 0)
 endif
 
 " sql {{{4
-NeoBundle 'mattn/vdbi-vim'
-NeoBundleLazy 'vim-scripts/dbext.vim', {
-\ 'on_cmd': [
-\ { 'name': 'DBExecSQL'}, { 'name': 'DBExecSQLTopX'},
-\ { 'name': 'DBConnect'}, { 'name': 'DBDisconnect'},
-\ { 'name': 'DBDisconnectAll'}, { 'name': 'DBCommit'},
-\ { 'name': 'DBRollback'}, { 'name': 'DBListConnections'},
-\ { 'name': 'DBExecRangeSQL'}, { 'name': 'Call'}, { 'name': 'Create' },
-\ { 'name': 'Select', 'complete': 'customlist,dbext#DB_completeTables' },
-\ { 'name': 'Alter', 'complete': 'customlist,dbext#DB_completeTables' },
-\ { 'name': 'Update', 'complete': 'customlist,dbext#DB_completeTables' },
-\ { 'name': 'Insert', 'complete': 'customlist,dbext#DB_completeTables' },
-\ { 'name': 'Delete', 'complete': 'customlist,dbext#DB_completeTables' },
-\ { 'name': 'Drop', 'complete': 'customlist,dbext#DB_completeTables' },
-\ { 'name': 'DBSetOption', 'complete': 'customlist,dbext#DB_completeSettings' },
-\ { 'name': 'DBGetOption', 'complete': 'customlist,dbext#DB_completeSettings' },
-\ { 'name': 'DBVarRangeAssign' }, { 'name': 'DBListVar'},
-\ { 'name': 'DBSetVar', 'complete': 'customlist,dbext#DB_completeVariable'},
-\ ] }
+NeoBundle 'tpope/vim-dadbod'
+NeoBundle 'kristijanhusak/vim-dadbod-ui'
+" NeoBundle 'mattn/vdbi-vim'
+" NeoBundleLazy 'vim-scripts/dbext.vim', {
+" \ 'on_cmd': [
+" \ { 'name': 'DBExecSQL'}, { 'name': 'DBExecSQLTopX'},
+" \ { 'name': 'DBConnect'}, { 'name': 'DBDisconnect'},
+" \ { 'name': 'DBDisconnectAll'}, { 'name': 'DBCommit'},
+" \ { 'name': 'DBRollback'}, { 'name': 'DBListConnections'},
+" \ { 'name': 'DBExecRangeSQL'}, { 'name': 'Call'}, { 'name': 'Create' },
+" \ { 'name': 'Select', 'complete': 'customlist,dbext#DB_completeTables' },
+" \ { 'name': 'Alter', 'complete': 'customlist,dbext#DB_completeTables' },
+" \ { 'name': 'Update', 'complete': 'customlist,dbext#DB_completeTables' },
+" \ { 'name': 'Insert', 'complete': 'customlist,dbext#DB_completeTables' },
+" \ { 'name': 'Delete', 'complete': 'customlist,dbext#DB_completeTables' },
+" \ { 'name': 'Drop', 'complete': 'customlist,dbext#DB_completeTables' },
+" \ { 'name': 'DBSetOption', 'complete': 'customlist,dbext#DB_completeSettings' },
+" \ { 'name': 'DBGetOption', 'complete': 'customlist,dbext#DB_completeSettings' },
+" \ { 'name': 'DBVarRangeAssign' }, { 'name': 'DBListVar'},
+" \ { 'name': 'DBSetVar', 'complete': 'customlist,dbext#DB_completeVariable'},
+" \ ] }
 
 " etc {{{4
 " NeoBundle 'hashivim/vim-terraform' "polyglot
@@ -2481,6 +2483,7 @@ let g:square_brackets = {
   \ 'git' : '^@@\|^diff ',
   \ 'gitconfig' : '^\s*[',
   \ 'neosnippet' : '^snippet ',
+  \ '_diff': '^<<<<<<<\|^=======^>>>>>>>',
   \ }
 function! s:nmap_square_brackets() "{{{3
   if exists('g:square_brackets[&filetype]')
@@ -2497,6 +2500,9 @@ function! s:nmap_square_brackets() "{{{3
       nnoremap <silent><buffer> ]] :<C-u>call search(g:square_brackets[&filetype], "W")<CR>
       nnoremap <silent><buffer> [[ :<C-u>call search(g:square_brackets[&filetype], "Wb")<CR>
     endif
+  elseif &diff && exists('g:square_brackets["_diff"]')
+      nnoremap <silent><buffer> ]] :<C-u>call search(g:square_brackets["_diff"], "W")<CR>
+      nnoremap <silent><buffer> [[ :<C-u>call search(g:square_brackets["_diff"], "Wb")<CR>
   endif
 endfunction
 
@@ -2795,6 +2801,9 @@ iabbrev appropreate appropriate
 iabbrev acknowledgment acknowledgement
 
 " languages plugin {{{1
+" polyglot {{{2
+" let g:polyglot_disabled = ['markdown']
+
 " html {{{2
 let g:html_indent_script1="inc"
 let g:html_indent_style1="inc"
@@ -2900,6 +2909,9 @@ let g:markdown_fenced_languages = [
 \  'sass',
 \  'xml',
 \]
+" let g:markdown_syntax_conceal = 0
+let g:vim_markdown_conceal_code_blocks = 0
+
 " \  'erb=eruby', " filetype=html をしている
 " vim-json {{{2
 let g:vim_json_syntax_conceal = 0
@@ -2958,17 +2970,33 @@ let g:vimrc_enabled_plugins = {
   \ 'php_namespace': s:bundle.is_installed('vim-php-namespace'),
   \ }
 
+" vim-terraform {{{2
 if s:bundle.is_installed('vim-terraform-completion')
   let g:terraform_completion_keys = 1
   let g:terraform_registry_module_completion = 1
 endif
 
-" misspell.vim
+" vim-laravel {{{2
+if s:bundle.is_installed('vim-laravel')
+  command! -narg=0 PhpFixProj call <SID>fix_php()
+  " MyAutoCmd VimEnter * PhpFixProj
+  function! s:fix_php()
+    let files = [
+      \ neobundle#config#get('vim-composer').rtp.'autoload/composer.vim',
+      \ neobundle#config#get('vim-laravel').rtp.'autoload/laravel.vim',
+      \ ]
+    for f in files
+      execute "source" f
+    endfor
+  endfunction
+endif
+
+" misspell.vim {{{2
 if s:bundle.is_installed('vim-misspell') && executable('misspell')
   " autocmd BufWritePost * call misspell#run()
   function! s:misspell_after(...)
-    execute ':QuickfixStatusEnable'
-    execute ':HierUpdate'
+    execute 'QuickfixStatusEnable'
+    execute 'HierUpdate'
   endfunction
 
   let g:misspell_callbacks = {
@@ -2976,12 +3004,12 @@ if s:bundle.is_installed('vim-misspell') && executable('misspell')
     \ }
 endif
 
-" vim-monster
+" vim-monster {{{2
 if s:bundle.is_installed('vim-monster')
   let g:monster#completion#rcodetools#backend = "async_rct_complete"
 endif
 
-"
+" ale {{{2
 if s:bundle.is_installed('ale')
   let g:ale_sign_column_always = 1
   let g:ale_sign_error = '>>'
@@ -3002,7 +3030,7 @@ if s:bundle.is_installed('ale')
   let g:ale_php_phpmd_ruleset = $HOME."/.vim/lib/phpcheck/phpmd.xml"
 endif
 
-" vim-vue
+" vim-vue {{{2
 if s:bundle.is_installed('vim-vue')
   MyAutoCmd FileType vue syntax sync fromstart
 endif
@@ -6913,13 +6941,12 @@ if s:bundle.is_installed('vim-quickrun')
     \    'exec': ['%c %o %a'],
     \ },
     \ 'swift' : {
-    \   'type' : 'swift/xcrun',
+    \   'type' : 'swift/swift',
     \ },
-    \ 'swift/xcrun' : {
-    \    'command': 'xcrun swift',
-    \    'cmdopt': '-i',
-    \    'outputter': 'xctool',
-    \    'exec': ['%c %s %o %a'],
+    \ 'swift/swift' : {
+    \    'command': 'xcrun',
+    \    'cmdopt': 'swift',
+    \    'exec': ['%c %o %s %a'],
     \ },
     \ })
   else

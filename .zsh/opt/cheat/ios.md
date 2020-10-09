@@ -14,6 +14,19 @@ let rect = tableView.rectForRow(at: indexPath)
 let rect = self.collectionViewLayout.layoutAttributesForItem(at: indexPath).frame
 ```
 
+### container view
+
+```
+    oldContentViewController?.willMove(toParentViewController: nil)
+    oldContentViewController?.view.removeFromSuperview()
+    oldContentViewController?.removeFromParentViewController()
+
+    self.addChildViewController(contentViewController)
+    contentViewController.didMove(toParentViewController: self)
+    guard isViewLoaded else { return }
+    containerView.addSubview(contentViewController.view)
+
+```
 
 ## RxSwift memo
 

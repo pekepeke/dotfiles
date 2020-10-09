@@ -45,7 +45,10 @@ mysqldump --no-data --compact --skip-lock-tables --default-character-set=binary 
 mysqldump --skip-extended-insert --add-drop-table=false -t --where '1 = 1'
 mysqldump --complete-insert --skip-extended-insert --add-drop-table=false -t --where '1 = 1'
 mysqldump --quote-names --skip-lock-tables --complete-insert --skip-extended-insert --no-create-info --no-create-db --add-drop-table=false
+mysqldump -h 127.0.0.1 --port=3306 -uroot -p --skip-column-statistics -c --add-drop-table=false -t # with column
 
+# import(ignore error)
+mysql -h 127.0.0.1 --port=3306 -uroot -p -f schema < db.sql
 ```
 
 

@@ -1,4 +1,50 @@
 ## Tips
+### Shortcut
+#### Workspace Organization
+1. Hide / Show Navigation Area : ⌘+0
+2. Hide/Show Debugging Area : ⌘+⇧+Y
+3. Hide/Show Utility Area : ⌘+⌥+ 0
+4. Split screen/open Assistant Editor in the Editor Area : ⌘ +⌥ + ⏎
+5. Opens a new tab above the navigator, editor & utility areas : ⌘ + T
+6. Close the current tab : ⌘ + W
+
+#### Code Formatting & Beautification
+1. Confirms the auto-completion suggestion : ⇥ OR ⌃ + /
+2. Comment or Uncomment : ⌘ + /
+3. Re-indent the whole function: ⌃ + I
+4. Hides / expands a class or method body :⌥+⌘+⇢ OR ⌥+⌘+⇠
+5. Auto documentation : ⌘ +⌥ + /
+
+#### Debugging
+1. Add and Remove breakpoints : ⌘ + \
+2. Disable/Enable all breakpoints : ⌘ + Y
+
+#### Building
+1. Build : ⌘ + B
+2. Run & Build if necessary :⌘ + R
+3. Stop the current build/run/testing : ⌘ + .
+4. Run tests & Build if necessary: ⌘ + U
+5. Clean : ⌘ + K
+6. Clean All files and build folder : ⇧ + ⌘ + K
+7. Profile (Instruments): ⌘ + I
+8. Choose scheme : ⌃ + 0
+9. Choose Destination : ⌃ + ⇧ + 0
+10. Re-run the last run tests : ⇧ + ⌘ + ⌥ + G
+
+#### 
+1. Jump to a line : ⌘ + L
+2. Left panel tabs switch : ⌘ + (1–7)
+3. Right panel tabs switch :⌘ +⌥ + 1-6
+4. Search for lines of text in your files : ⌘+⇧+F
+5. Quick find/open : ⇧ + ⌘ + O
+
+#### Simulator
+1. Copy current screen : ⌃ + ⌘+ C
+2. Take Screenshot : ⌘ + S
+3. Go to Home :⇧+ ⌘ + H
+4. Shake Gesture : ⌃ + ⌘+ Z
+5. Toggle software keyboard : ⌘ + K
+
 ### シミュレータのフォントがおかしい件を修正する
 - [Edit scheme]-[Run ???.app]を表示し、[Arguments Passed On Launch]に以下の値を追加。
 

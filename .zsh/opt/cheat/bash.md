@@ -98,9 +98,18 @@ eval echo '$'$hoge
 
 ```
 ## toUpperCase
+
+```
 tr a-z A-Z
+tr '[:lower:]' '[:upper:]'
+```
+
 ## toLowerCase
+
+```
 tr A-Z a-z
+tr '[:upper:]' '[:lower:]'
+```
 ```
 
 ## 一行ずつ処理

@@ -2,11 +2,17 @@
 
 # (this script works best with --anticache)
 import re, socket, sys
-import httplib
+try:
+    import httplib
+except:
+    import http.client as httplib
 try:
     import netlib.http as http
 except:
-    import libmproxy.protocol.http as http
+    try:
+        import libmproxy.protocol.http as http
+    except:
+        import mitmproxy.http as http
 
 # from libmproxy.protocol.http import decoded
 

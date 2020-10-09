@@ -1,6 +1,10 @@
 
-import libmproxy.protocol.http as http
-from libmproxy.protocol.http import HTTPResponse
+try:
+    import libmproxy.protocol.http as http
+    from libmproxy.protocol.http import HTTPResponse
+except:
+    import mitmproxy.http as http
+    from mitmproxy.http import HTTPResponse
 from netlib.odict import ODictCaseless
 import os.path
 import os.path as ospath

@@ -540,13 +540,13 @@ if [ -z "$ZSH_DISABLES[vcs]" ] && is-at-least 4.3.10 ; then
 
       if [[ -n "$vcs_info_msg_4_" ]]; then # staged
         # branch="%F{green}$branch%f"
-        branch="%{$K{green} $branch%k"
+        branch="%F{black}%{$K{green} $branch%k%F{white}"
       elif [[ -n "$vcs_info_msg_5_" ]]; then # unstaged
         # branch="%F{red}$branch%f"
-        branch="%K{red} $branch%k"
+        branch="%F{black}%K{red} $branch%k%F{white}"
       else
         # branch="%F{blue}$branch%f"
-        branch="%K{blue} $branch%k"
+        branch="%F{black}%K{blue} $branch%k%F{white}"
       fi
 
       print -n "%F{white}%K{black} %25<..<"
@@ -670,9 +670,9 @@ add-zsh-hook chpwd chpwd_multiterm
 local __user='%{$bg[black]%}%{$fg[white]%} %n@%m %{$reset_color%}$ '
 [ -n "$MY_PROMPT" ] && __user="$MY_PROMPT"
 
-local vi_n="%{$bg[red]%}%{$fg_bold[white]%} N %{$reset_color%}"
-local vi_i="%{$bg[blue]%}%{$fg_bold[white]%} I %{$reset_color%}"
-local vi_v="%{$bg[yellow]%}%{$fg_bold[white]%} V %{$reset_color%}"
+local vi_n="%{$bg[red]%}%{$fg_bold[black]%} N %{$reset_color%}"
+local vi_i="%{$bg[blue]%}%{$fg_bold[black]%} I %{$reset_color%}"
+local vi_v="%{$bg[yellow]%}%{$fg_bold[black]%} V %{$reset_color%}"
 function zle-line-init zle-keymap-select zle-line-finish {
   case $KEYMAP in
     vicmd)

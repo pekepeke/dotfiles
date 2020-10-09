@@ -1,0 +1,28 @@
+#!/bin/sh
+
+aws_profiles() {
+  cat ~/.aws/credentials | grep -o '\[[^]]*\]' | sed -e 's/\[//g' -e 's/\]//g' -e 's/profile //g'
+}
+
+PROFILE_OPTS=""
+if [ -n "$1" -a "$1" = "-p" ]; then
+  PROFILE_OPTS="$(aws_profiles | peco | head -1)"
+  if [ -n $PROFILE_OPTS ];then
+    PROFILE_OPTS="--profile=$PROFILE_OPTS"
+  else
+    PROFILE_OPTS=""
+  fi
+  shift
+fi
+# IP="$(aws --output=json ec2 describe-instances | jq -r '.Reservations[].Instances[] | [.InstanceId, .LaunchTime, .InstanceType, .KeyName, .Tags[0].Value] | @tsv' | peco | awk '{ print $1 }')"
+# [ .Tags[] | select(.Key == "Name").Value ]
+IP="$(aws --output=json ec2 describe-instances $PROFILE_OPTS | \
+  jq -r '.Reservations[].Instances[] | [
+  .InstanceId, .LaunchTime, .InstanceType, .KeyName,
+  ( .Tags[] | select(.Key == "Name").Value ),
+  .State.Name
+  ] | @tsv' | peco | awk '{ print $1 }')"
+if [ -n "$IP" ]; then
+   echo aws $PROFILE_OPTS "$@" ssm start-session --target $IP
+   aws $PROFILE_OPTS "$@" ssm start-session --target $IP
+fi

@@ -2,5 +2,12 @@
 	"list.insertMappings": {
 		"<C-n>": "normal:j",
 		"<C-p>": "normal:k",
+	},
+	"suggest.enablePreselect": true,
+	"languageserver": {
+		"swift": {
+			"command": "/usr/local/bin/sourcekit-lsp",
+			"filetypes": ["swift"]
+		}
 	}
 }

@@ -38,7 +38,9 @@ main() {
 
   # [ "$opt_script" = "0" ] && options=""
   options=""
+  options="$options -s $S/sniff_ws.py"
   docker run --rm -it -v $LIB_DIR:$S -v $MITM_CONF:/home/mitmproxy/.mitmproxy -p 127.0.0.1:$opt_webport:8081 -p $opt_port:8080 mitmproxy/mitmproxy "$@" $options
+  echo docker run --rm -it -v $LIB_DIR:$S -v $MITM_CONF:/home/mitmproxy/.mitmproxy -p 127.0.0.1:$opt_webport:8081 -p $opt_port:8080 mitmproxy/mitmproxy "$@" $options
 }
 
 OPTIND_OLD=$OPTIND

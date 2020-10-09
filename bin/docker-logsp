@@ -8,7 +8,7 @@ IDS="$(docker ps | peco | awk '{print $1}')"
 
 if [ -n "$IDS" ]; then
   for id in $IDS; do
-    $SUDO docker logs $id
+    $SUDO docker logs "$@" $id
   done
 fi
 

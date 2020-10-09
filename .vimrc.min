@@ -250,6 +250,17 @@ nnoremap Q q
 nnoremap / :nohl<CR>/
 nnoremap ? :nohl<CR>?
 
+let g:square_brackets = {
+  \ '_diff': '^<<<<<<<\|^=======^>>>>>>>'
+  \ }
+function! s:nmap_square_brackets()
+    if &diff && exists('g:square_brackets["_diff"]')
+      nnoremap <silent><buffer> ]] :<C-u>call search(g:square_brackets["_diff"], "W")<CR>
+      nnoremap <silent><buffer> [[ :<C-u>call search(g:square_brackets["_diff"], "Wb")<CR>
+  endif
+endfunction
+MyAutoCmd FileType * call s:nmap_square_brackets()
+
 function! s:tselect_immediately(...)
   return get(a:000, 0, '') . (len(taglist(expand('<cword>'))) > 1 ? 'g' : '')."\<C-]>"
   " execute 'normal!' (len(taglist(expand('<cword>'))) > 1 ? 'g' : '')."\<C-]>"
