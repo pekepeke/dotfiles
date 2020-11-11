@@ -369,7 +369,11 @@ function! s:autochdir() "{{{3
 endfunction
 
 " diff {{{2
-set diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
+if v:version > 801 || (v:version == 801 && has('patch360'))
+  set diffopt& diffopt+=algorithm:histogram,indent-heuristic
+else
+  set diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
+endif
 if !s:feature('git_under1.8')
   set diffexpr=GitDiffNormal()
   function! GitDiffNormal()
@@ -687,37 +691,6 @@ endif
 " vundles {{{2
 " vundle start {{{3
 if neobundle#load_cache($MYVIMRC)
-  if 0
-
-if s:feature('gitsign')
-  if s:is_win
-    NeoBundle 'sgur/vim-lazygutter'
-  else
-    " NeoBundle 'mhinz/vim-signify'
-    NeoBundle 'tomtom/quickfixsigns_vim', {
-    \ 'depends': ['tomtom/tlib_vim'],
-    \ }
-  endif
-endif
-
-if s:is_win
-  NeoBundleLazy 'mattn/startmenu-vim', {
-  \ 'on_source': 'unite.vim',
-  \ }
-elseif s:is_mac
-  NeoBundleLazy 'rhysd/unite-mac-apps', {
-  \ 'on_source': 'unite.vim',
-  \ }
-endif
-if s:is_mac
-  NeoBundle 'tokorom/vim-quickrun-xctool'
-endif
-if s:is_win
-  NeoBundleLazy 'majutsushi/tagbar'
-else
-  NeoBundle 'majutsushi/tagbar'
-endif
-  endif
 " statusline {{{3
 NeoBundle 'itchyny/lightline.vim'
 
@@ -861,16 +834,6 @@ NeoBundle 'rhysd/clever-f.vim', {
 NeoBundle 't9md/vim-smalls', {
 \ 'on_map': [['nxo', '<Plug>(smalls']]
 \ }
-if s:feature('gitsign')
-  if s:is_win
-    NeoBundle 'sgur/vim-lazygutter'
-  else
-    " NeoBundle 'mhinz/vim-signify'
-    NeoBundle 'tomtom/quickfixsigns_vim', {
-    \ 'depends': ['tomtom/tlib_vim'],
-    \ }
-  endif
-endif
 NeoBundle 'sgur/vim-editorconfig'
 " if has('python')
 "   NeoBundle 'editorconfig/editorconfig-vim'
@@ -932,6 +895,16 @@ if has('job') && has('channel') && has('timers')
 else
   NeoBundle 'osyo-manga/shabadou.vim'
   NeoBundle 'osyo-manga/vim-watchdogs'
+  if s:feature('gitsign')
+    if s:is_win
+      NeoBundle 'sgur/vim-lazygutter'
+    else
+      " NeoBundle 'mhinz/vim-signify'
+      NeoBundle 'tomtom/quickfixsigns_vim', {
+      \ 'depends': ['tomtom/tlib_vim'],
+      \ }
+    endif
+  endif
 endif
 if s:is_mac
   NeoBundle 'tokorom/vim-quickrun-xctool'
@@ -1268,9 +1241,8 @@ NeoBundleLazy 'mattn/emmet-vim', {
 if s:exec_go
   NeoBundleLazy 'mattn/livestyle-vim', {
   \ 'on_cmd': ['LiveStyle'],
-  \ 'build' : {
-  \ 'others': 'go get golang.org/x/net/websocket && go build -o livestyled/livestyled livestyled/livestyled.go',
-  \ }}
+  \ 'build' : 'go get golang.org/x/net/websocket && go build -o livestyled/livestyled livestyled/livestyled.go',
+  \ }
 endif
 NeoBundleLazy 'https://gist.github.com/6576341', {
 \ 'directory' : 'endtagcomment',
@@ -1532,7 +1504,9 @@ NeoBundle 'previm/previm'
 " NeoBundle 'maxmeyer/vim-taskjuggler'
 NeoBundle 'hara/vim-opf'
 NeoBundle 'mozamimy/nymphia.vim'
-NeoBundle 'heavenshell/vim-misspell'
+if has('channel') && has('job')
+  NeoBundle 'heavenshell/vim-misspell'
+endif
 NeoBundle 'tokorom/vim-review'
 NeoBundle 'nvie/vim-rst-tables'
 NeoBundle 'vim-scripts/sequence'
@@ -2141,7 +2115,7 @@ MyAutoCmd BufReadPost *
 
 " http://vim-users.jp/2009/10/hack84/
 MyAutoCmd BufWritePost * if expand('%') != '' && &buftype !~ 'nofile' | mkview | endif
-MyAutoCmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent loadview | endif
+MyAutoCmd BufRead * if expand('%') != '' && &buftype !~ 'nofile' | silent! loadview | endif
 set viewoptions=cursor
 
 " setfiletype {{{2
@@ -2359,7 +2333,7 @@ function! s:set_grep(...) "{{{3
   for type in copy(a:000)
     if type == 'rg' && executable(type)
       set grepprg=rg\ --vimgrep\ --no-heading
-      set grepformat=%f:%l:%c:%m, %f:%l:%m
+      set grepformat=%f:%l:%c:%m,\ %f:%l:%m
     elseif type == "hw" && executable(type)
       set grepprg=hw
       set grepformat=%f:%l:%m
@@ -2849,7 +2823,7 @@ let PHP_autoformatcomment = 0
 let g:DisableAutoPHPFolding = 1
 
 if s:bundle.is_installed('pdv')
-  let g:pdv_template_dir =  neobundle#get('pdv').rtp . '/templates'
+  let g:pdv_template_dir =  s:bundle.get('pdv').rtp . '/templates'
 endif
 "" php-doc.vim
 " let g:pdv_cfg_php4always = 0
