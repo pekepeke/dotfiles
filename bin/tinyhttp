@@ -7,16 +7,18 @@ require 'socket'
 require 'timeout'
 
 def port_open?(port, ip = "127.0.0.1", seconds=1)
-  Timeout::timeout(seconds) do
-    begin
-      TCPSocket.new(ip, port).close
-      true
-    rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
-      false
+  begin
+    Timeout::timeout(seconds) do
+      begin
+        TCPSocket.new(ip, port).close
+        true
+      rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
+        false
+      end
     end
+  rescue Timeout::Error
+    false
   end
-rescue Timeout::Error
-  false
 end
 
 def run_server(port, with_ssl = false)
@@ -44,7 +46,7 @@ if __FILE__ == $0
   with_ssl = false
 
   ARGV.options do |opt|
-    opt.on('-p', 'port no') {|v| 
+    opt.on('-p PORT', 'port no') {|v|
       port = v
     }
     opt.on('-s', 'use ssl') {

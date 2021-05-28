@@ -1,0 +1,7 @@
+#!/bin/sh
+
+VIM=vim
+$VIM -c "DirDiff $1 $2"
+# $VIM -c "DirDiff ""$1"" ""$2"
+# echo $VIM -c "DirDiff "$@""
+

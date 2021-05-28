@@ -68,8 +68,10 @@ let g:vimrc_enabled_features = {} "{{{3
 function! s:set_features_flag(feature)
   let g:vimrc_enabled_features[a:feature] = 1
 endfunction
-function! s:feature(feature)
-  return get(g:vimrc_enabled_features, a:feature, 0)
+function! s:feature(...)
+  let args = copy(a:000)
+  return len(filter(args, 'get(g:vimrc_enabled_features, v:val, 0)')) > 0
+  " return s:feature(a:feature)
 endfunction
 
 call map(split($VIMRC_ENABLES), 's:set_features_flag(v:val)')
@@ -156,6 +158,18 @@ else
 
 
   if s:is_mac
+    function! s:env_find_latest(env, ver, ...)
+      let ver = type(a:ver) == s:type_s ? a:ver : string(a:ver)
+      let paths = split(glob('~/.'.a:env.'/versions/'.ver.'*'), "\n")
+      if len(paths) > 0
+        return paths[-1].'/'.get(a:, 1, '')
+      endif
+      return ""
+    endfunction
+    function s:find_pyenv_home(ver)
+      return get(readdir($HOME.'/.pyenv/versions/', 'v:val =~ "^'.a:ver.'"'), -1, '')
+    endfunction
+
     function s:pyenv_home(ver)
       " return $HOME.'/.pyenv/versions/'.a:ver.'/Python.framework/Versions/Current'
       return $HOME.'/.pyenv/versions/'.a:ver
@@ -183,7 +197,8 @@ else
     endfunction
 
     " let pyenv_home = s:pyenv_home('3.5.6')
-    let pyenv_home = s:pyenv_home('3.6.7')
+    " let pyenv_home = s:pyenv_home('3.6.7')
+    let pyenv_home = s:find_pyenv_home('3')
     if isdirectory(pyenv_home)
       let g:python3_host_prog = pyenv_home.'/bin/python3'
       let g:python3 = pyenv_home.'/bin/python3'
@@ -373,19 +388,19 @@ if v:version > 801 || (v:version == 801 && has('patch360'))
   set diffopt& diffopt+=algorithm:histogram,indent-heuristic
 else
   set diffopt& diffopt-=filler diffopt+=iwhite diffopt+=vertical
-endif
-if !s:feature('git_under1.8')
-  set diffexpr=GitDiffNormal()
-  function! GitDiffNormal()
-    let args=["git-diff-normal", '--diff-algorithm=histogram']
-    if &diffopt =~ "iwhite"
-      call add(args, '--ignore-all-space')
-    endif
-    let args += [v:fname_in, v:fname_new, '>', v:fname_out]
-    let cmd='!' . join(args, ' ')
-    silent execute cmd
-    redraw!
-  endfunction
+  if !s:feature('git_under1.8')
+    set diffexpr=GitDiffNormal()
+    function! GitDiffNormal()
+      let args=["git-diff-normal", '--diff-algorithm=histogram']
+      if &diffopt =~ "iwhite"
+        call add(args, '--ignore-all-space')
+      endif
+      let args += [v:fname_in, v:fname_new, '>', v:fname_out]
+      let cmd='!' . join(args, ' ')
+      silent execute cmd
+      redraw!
+    endfunction
+  endif
 endif
 if &diff
   set foldlevel=100
@@ -709,6 +724,7 @@ NeoBundle 'w0ng/vim-hybrid'
 " common {{{3
 NeoBundle 'Shougo/context_filetype.vim'
 NeoBundle 'Shougo/tabpagebuffer.vim'
+NeoBundle 'kassio/neoterm'
 NeoBundle 'Shougo/vimfiler.vim', {
 \ 'depends': 'Shougo/unite.vim',}
 if s:exec_make
@@ -884,6 +900,7 @@ NeoBundleLazy 'rhysd/unite-codic.vim', {
 
 " lang {{{3
 " basic {{{4
+NeoBundle  'vim-test/vim-test'
 NeoBundle 'thinca/vim-quickrun'
 NeoBundle 'mattn/quickrunex-vim'
 NeoBundleLazy 'mattn/emoji-vim', {
@@ -1174,7 +1191,7 @@ NeoBundle 'sheerun/vim-polyglot'
 " ruby {{{4
 " NeoBundle 'vim-ruby/vim-ruby' " polyglot
 if s:exec_ruby
-  if get(g:vimrc_enabled_features, "rails", 0)
+  if s:feature("rails")
     NeoBundle 'tpope/vim-rails' , {
     \ 'on_ft': ['ruby','haml','eruby'],
     \ }
@@ -1188,7 +1205,7 @@ if s:exec_ruby
   \ 'on_cmd' : ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
   \ }
   NeoBundle 'tpope/vim-bundler'
-  if get(g:vimrc_enabled_features, "sinatra", 0)
+  if s:feature("sinatra")
     NeoBundle 'hallison/vim-ruby-sinatra'
   endif
   NeoBundleLazy 'ecomba/vim-ruby-refactoring', {
@@ -1317,10 +1334,10 @@ NeoBundleLazy 'chikatoike/sourcemap.vim', {
 \ }
 " NeoBundle 'briancollins/vim-jst' "polyglot
 
-" if get(g:vimrc_enabled_features, "dart", 0)
+" if s:feature("dart")
 "   NeoBundle 'vim-scripts/Dart' "polyglot
 " endif
-" if get(g:vimrc_enabled_features, "haxe", 0)
+" if s:feature("haxe")
 "   NeoBundleLazy 'jdonaldson/vaxe', { "polyglot
 "   \ 'on_ft': ['haxe','hxml','nmml'],
 "   \ }
@@ -1350,7 +1367,7 @@ endif
 NeoBundle 'klen/python-mode'
 NeoBundle 'Vimjas/vim-python-pep8-indent'
 NeoBundle 'lambdalisue/vim-python-virtualenv'
-if get(g:vimrc_enabled_features, "django", 0)
+if s:feature("django")
   NeoBundle 'gerardo/vim-django-support'
 endif
 NeoBundle 'voithos/vim-python-matchit'
@@ -1431,7 +1448,7 @@ endif
 if s:is_win
   NeoBundle 'cd01/poshcomplete-vim'
 endif
-" if get(g:vimrc_enabled_features, "vbnet", 0)
+" if s:feature("vbnet")
 "   NeoBundleLazy 'hachibeeDI/vim-vbnet', { "polyglot
 "   \ 'on_ft': ['vbnet'],
 "   \ }
@@ -1441,7 +1458,7 @@ endif
 NeoBundleLazy 'mikelue/vim-maven-plugin', {
 \ 'on_ft': ['java'],
 \ }
-if get(g:vimrc_enabled_features, "eclim", 0)
+if s:feature("eclim")
   NeoBundleLazy 'ervandew/eclim', {
   \ 'build' : {
   \   'windows': 'ant -Declipse.home='.escape($ECLIPSE_HOME, '')
@@ -1513,7 +1530,7 @@ NeoBundle 'vim-scripts/sequence'
 NeoBundle 'delphinus/vim-firestore'
 
 " haskell {{{4
-if get(g:vimrc_enabled_features, "haskell", 0)
+if s:feature("haskell")
   " NeoBundle 'itchyny/vim-haskell-indent' "polyglot
   NeoBundleLazy 'dag/vim2hs', {
   \ 'on_ft': ['haskell'],
@@ -1533,7 +1550,7 @@ if get(g:vimrc_enabled_features, "haskell", 0)
 endif
 
 " php {{{4
-if get(g:vimrc_enabled_features, 'phphtml', 0)
+if s:feature('phphtml')
   NeoBundle 'captbaritone/better-indent-support-for-php-with-html'
 endif
 NeoBundle 'tobyS/pdv', {
@@ -1551,29 +1568,29 @@ NeoBundle 'noahfrederick/vim-composer'
 " endif
 NeoBundle 'adoy/vim-php-refactoring-toolbox'
 " NeoBundle 'beberlei/vim-php-refactor'
-if get(g:vimrc_enabled_features, 'cakephp', 0)
+if s:feature('cakephp')
   NeoBundleLazy 'violetyk/cake.vim', {
   \ 'on_ft': ['php'],
   \ }
 endif
-if get(g:vimrc_enabled_features, 'laravel', 0)
+if s:feature('laravel')
   NeoBundle 'noahfrederick/vim-laravel'
   " NeoBundle 'jwalton512/vim-blade' " polyglot
 endif
 
-if !get(g:vimrc_enabled_features, "eclim", 0)
-  if s:exec_php && get(g:vimrc_enabled_features, 'padawan', 0)
+if !s:feature("eclim")
+  if s:exec_php && s:feature('padawan')
     NeoBundle 'padawan-php/padawan.vim'
-  elseif get(g:vimrc_enabled_features, 'phpcomplete-extended', 0)
+  elseif s:feature('phpcomplete-extended')
     " NeoBundle 'm2mdas/phpcomplete-extended'
     NeoBundle 'pekepeke/phpcomplete-extended'
-    if get(g:vimrc_enabled_features, 'laravel', 0)
+    if s:feature('laravel')
       NeoBundle 'm2mdas/phpcomplete-extended-laravel'
     endif
-    if get(g:vimrc_enabled_features, 'symfony', 0)
+    if s:feature('symfony')
       NeoBundle 'm2mdas/phpcomplete-extended-symfony'
     endif
-  elseif v:version >= 704 && get(g:vimrc_enabled_features, 'phpcd', 0)
+  elseif v:version >= 704 && s:feature('phpcd')
     NeoBundle 'php-vim/phpcd.vim', {'build': {'others': 'composer install'}}
   elseif !s:bundle.is_installed('asyncomplete-lsp.vim')
     NeoBundle 'shawncplus/phpcomplete.vim'
@@ -2129,6 +2146,7 @@ MyAutoCmd FileType docker set filetype=dockerfile
 " MyAutoCmd BufNewFile,BufRead *.sql set filetype=mysql
 MyAutoCmd BufNewFile,BufRead *.io set filetype=io
 MyAutoCmd BufNewFile,BufRead *.command set filetype=sh
+MyAutoCmd BufNewFile,BufRead .env.* set filetype=sh
 
 MyAutoCmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
   \ | exe "normal! g`\""
@@ -2238,7 +2256,7 @@ nnoremap q/ q/
 nnoremap q? q?
 nnoremap Q q
 
-if get(g:vimrc_enabled_features, "us-keyboard", 0)
+if s:feature("us-keyboard")
   nnoremap ; :
   nnoremap : ;
 endif
@@ -2311,19 +2329,51 @@ unlet i
 
 if exists(':tmap')
   " tmaps
-  " tnoremap <C-w><C-w> <C-\><C-w>
-  " tnoremap <C-w><C-w> <C-w>.
-  " tnoremap <C-w><C-n> <C-w>:tabnext<CR>
-  " tnoremap <C-w><C-p> <C-w>:tabprev<CR>
-  " tnoremap <C-w><C-c> <C-w>:tabnew<CR>
-  tnoremap <C-w>tl <C-w>:tabnext<CR>
-  tnoremap <C-w>th <C-w>:tabprev<CR>
-  tnoremap <C-w>tc <C-w>:tabnew<CR>
-  tnoremap <C-w>p <C-w>"0
-  tnoremap <C-w>h <C-w>.
-  tnoremap <C-w>n <C-\><C-n>
-  tnoremap <C-w><C-[> <C-\><C-n>
-  " tnoremap <Esc> <C-\><C-n>
+  tnoremap <C-[>j <C-\><C-n><C-w>j
+  tnoremap <C-[>k <C-\><C-n><C-w>k
+  tnoremap <C-[>p <C-\><C-n><C-w>p
+  tnoremap <C-[>n <C-\><C-n>
+  tnoremap <C-[>P <C-\><C-n>"0p
+  tnoremap <C-[><C-[> <C-[>
+  tnoremap <C-[>tl <C-\><C-n>:tabnext<CR>
+  tnoremap <C-[>th <C-\><C-n>:tabprev<CR>
+  tnoremap <C-[>tc <C-\><C-n>:tabnew<CR>
+
+  function! s:nit_map(key, orig_key)
+    execute 'nnoremap '.a:key.' '.a:orig_key
+    execute 'inoremap '.a:key.' <Esc>'.a:orig_key
+    execute 'tnoremap '.a:key.' <C-\><C-n>'.a:orig_key
+  endfunction
+
+  call s:nit_map('<A-j>', '<C-w>j')
+  call s:nit_map('<A-k>', '<C-w>k')
+  call s:nit_map('<A-p>', '<C-w>p')
+  call s:nit_map('<A-;>', ':')
+  call s:nit_map('<A-/>', '/')
+  if s:is_mac
+    call s:nit_map('∆', '<C-w>j')
+    call s:nit_map('˚', '<C-w>k')
+    call s:nit_map('π', '<C-w>p')
+    call s:nit_map('…', ':')
+    call s:nit_map('÷', '/')
+  endif
+
+  if exists('&termwinkey')
+    set termwinkey=<C-g>
+  else
+    tnoremap <C-g> <C-\><C-n>
+    tnoremap <C-g><C-w> <C-\><C-n><C-w>w
+    tnoremap <C-g>. <C-g>
+  endif
+
+  if s:is_win
+    tnoremap <C-p> <Up>
+    tnoremap <C-n> <Down>
+    tnoremap <C-f> <Right>
+    tnoremap <C-b> <Left>
+    tnoremap <C-a> <Home>
+    tnoremap <C-e> <End>
+  endif
 endif
 
 " grep
@@ -2416,7 +2466,7 @@ command! -nargs=0 SetPt call s:set_grep("pt")
 let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
 let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
 let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
-if s:is_win || get(g:vimrc_enabled_features, 'jvgrep', 0)
+if s:is_win || s:feature('jvgrep')
   call s:set_grep("jvgrep", "rg", "hw", "ag", "ack-grep")
 else
   call s:set_grep("rg", "hw", "ag", "jvgrep", "ack-grep")
@@ -2944,6 +2994,24 @@ let g:vimrc_enabled_plugins = {
   \ 'php_namespace': s:bundle.is_installed('vim-php-namespace'),
   \ }
 
+" neoterm {{{2
+let g:neoterm_default_mod='belowright'
+let g:neoterm_size=10
+let g:neoterm_shell = '$SHELL -l'
+let g:neoterm_autoscroll=1
+
+" vim-test {{{2
+if s:bundle.is_installed('vim-test')
+  let g:test#strategy = 'neoterm'
+  let g:test#preserve_screen = 1
+  nnoremap <silent> [!t]<C-n> :<C-u>TestNearest<CR>
+  nnoremap <silent> [!t]<C-f> :<C-u>TestFile<CR>
+  nnoremap <silent> [!t]<C-s> :<C-u>TestSuite<CR>
+  nnoremap <silent> [!t]<C-l> :<C-u>TestLast<CR>
+  nnoremap <silent> [!t]<C-g> :<C-u>TestVisit<CR>
+endif
+
+
 " vim-terraform {{{2
 if s:bundle.is_installed('vim-terraform-completion')
   let g:terraform_completion_keys = 1
@@ -3249,7 +3317,7 @@ if s:bundle.is_installed('vdebug')
 endif
 
 " unified-diff {{{2
-if !get(g:vimrc_enabled_features, "git_under1.8", 0)
+if !s:feature("git_under1.8")
   \ && s:bundle.is_installed('vim-unified-diff') && has('gui_running')
   set diffexpr=unified_diff#diffexpr()
 
@@ -4739,7 +4807,7 @@ if s:bundle.tap('vim-altr')
 
     call altr#define('Contract/%Contract.swift', 'View/%ViewController.swift', 'Presenter/%Presenter.swift', 'Interactor/%Interactor.swift', 'Router/%Router.swift')
 
-    if get(g:vimrc_enabled_features, 'laravel', 0)
+    if s:feature('laravel')
       call altr#define('app/%.php', 'tests/%Test.php')
       call altr#define('app/Repositories/%.php', 'app/Repositories/%Interface.php', 'tests/Repositories/%Test.php')
       " call altr#define('app/controllers/%.php', 'app/tests/controllers/%Test.php')
@@ -4748,7 +4816,7 @@ if s:bundle.tap('vim-altr')
       " call altr#define('app/views/%.php', 'app/tests/libs/%Test.php')
       " call altr#define('app/views/%.php', 'app/tests/views/%Test.php')
     endif
-    if get(g:vimrc_enabled_features, 'cakephp', 0)
+    if s:feature('cakephp')
       call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
       call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
       call altr#define('View/Helper/%.php', 'Test/Case/View/Helper/%Test.php')
@@ -5463,7 +5531,7 @@ if s:bundle.tap('unite.vim')
     \ 'PHP Menu', s:menus)
     unlet s:menus
 
-    if get(g:vimrc_enabled_features, 'cakephp', 0)
+    if s:feature('cakephp')
     let g:unite_source_menu_menus["ft_php_cakephp"] = s:unite_menu_create(
     \ 'CakePHP Menu', [
     \   ["Man cakephp", s:gui_manual("cakephp")],
@@ -8613,28 +8681,30 @@ command! -nargs=? -range=0 Gtj call my#buffer#gtrans(<count>, <line1>, <line2>, 
 command! -nargs=? -range=0 Ginger call my#buffer#ginger(<count>, <line1>, <line2>, <q-args>)
 
 " dash & zeal {{{2
-if s:is_mac
-  command! -nargs=? -complete=customlist,my#docset#dash_complete Dash call my#docset#dash(<f-args>)
-  command! -nargs=? DashFiletype call my#docset#dash_with_filetype(<f-args>)
-  nnoremap <Plug>(dash) :Dash<Space>
-  nnoremap <Plug>(dash-cword) :<C-u>Dash<Space><C-r>=expand('<cword>')<CR><CR>
-  nnoremap <Plug>(dash-filetype-cword) :<C-u>DashFiletype<Space><C-r>=expand('<cword>')<CR><CR>
-  command! -nargs=0 DashRemoveCace call my#docset#docset_cache_remove()
-endif
+if 0
+  if s:is_mac
+    command! -nargs=? -complete=customlist,my#docset#dash_complete Dash call my#docset#dash(<f-args>)
+    command! -nargs=? DashFiletype call my#docset#dash_with_filetype(<f-args>)
+    nnoremap <Plug>(dash) :Dash<Space>
+    nnoremap <Plug>(dash-cword) :<C-u>Dash<Space><C-r>=expand('<cword>')<CR><CR>
+    nnoremap <Plug>(dash-filetype-cword) :<C-u>DashFiletype<Space><C-r>=expand('<cword>')<CR><CR>
+    command! -nargs=0 DashRemoveCace call my#docset#docset_cache_remove()
+  endif
 
-command! -nargs=? -complete=customlist,my#docset#zeal_complete Zeal call my#docset#zeal(<f-args>)
-command! -nargs=? ZealFiletype call my#docset#zeal_with_filetype(<f-args>)
-nnoremap <Plug>(zeal) :<C-u>Zeal<Space>
-nnoremap <Plug>(zeal-cword) :<C-u>Zeal<Space><C-r>=expand('<cword>')<CR><CR>
-nnoremap <Plug>(zeal-filetype-cword) :ZealFiletype<Space><C-r>=expand('<cword>')<CR><CR>
-command! -nargs=0 ZealRemoveCache call my#docset#docset_cache_remove()
+  command! -nargs=? -complete=customlist,my#docset#zeal_complete Zeal call my#docset#zeal(<f-args>)
+  command! -nargs=? ZealFiletype call my#docset#zeal_with_filetype(<f-args>)
+  nnoremap <Plug>(zeal) :<C-u>Zeal<Space>
+  nnoremap <Plug>(zeal-cword) :<C-u>Zeal<Space><C-r>=expand('<cword>')<CR><CR>
+  nnoremap <Plug>(zeal-filetype-cword) :ZealFiletype<Space><C-r>=expand('<cword>')<CR><CR>
+  command! -nargs=0 ZealRemoveCache call my#docset#docset_cache_remove()
 
-nmap [!space]ss <Plug>(zeal)
-nmap [!space]sw <Plug>(zeal-filetype-cword)
-if s:is_mac
-  nmap <D-k> <Plug>(zeal-filetype-cword)
-else
-  nmap <A-k> <Plug>(zeal-filetype-cword)
+  nmap [!space]ss <Plug>(zeal)
+  nmap [!space]sw <Plug>(zeal-filetype-cword)
+  if s:is_mac
+    nmap <D-k> <Plug>(zeal-filetype-cword)
+  else
+    nmap <A-k> <Plug>(zeal-filetype-cword)
+  endif
 endif
 
 " onsave {{{2

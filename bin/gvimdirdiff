@@ -1,0 +1,6 @@
+#!/bin/sh
+
+VIM=gvim
+which mvim 2>&1 >/dev/null && VIM=mvim
+
+$VIM -c "DirDiff $1 $2"

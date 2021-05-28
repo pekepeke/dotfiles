@@ -1,4 +1,9 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
+[difftool "vimrdiff"]
+    cmd = vimr --wait --nvim -d $LOCAL $REMOTE
+[difftool "vimrdirdiff"]
+  cmd = vimr --wait --nvim '+au GUIEnter * execute \"DirDiff\" argv(0) argv(1)' '+au GUIEnter * VimRTempMaxWin' $LOCAL $REMOTE
+
 [difftool "kdiff3"]
   path = ~/Applications/kdiff3.app/Contents/MacOS/kdiff3
   trustExitCode = false

@@ -1,0 +1,60 @@
+#!/bin/bash
+
+print_variables() {
+  cat <<EOM
+plenv    5.32.0   cpanm
+pyenv    2.7.17   pip
+pyenv    3.9.1    pip
+rbenv    2.7.2    gem
+nodenv   14.9.0   npm
+EOM
+}
+
+install_packages() {
+  is_update=1
+  [ "$2" = "" ] && is_update=0
+  case $1 in
+    plenv)
+      echo "App::cpanminus Neovim::Ext"
+      ;;
+    pyenv)
+      CMD="install"
+      # CMD="install -U"
+      echo "${CMD} neovim"
+      ;;
+    rbenv)
+      CMD="install"
+      # CMD="update"
+      echo "${CMD} neovim"
+      ;;
+    nodenv)
+      CMD="install -g"
+      # CMD="update -g"
+      echo "${CMD} neovim"
+      ;;
+  esac
+}
+
+env_version() {
+  $1 version | awk '{ print $1 }'
+}
+
+print_variables | while read LINE ; do
+  set $LINE
+  ENV_PROG=$1
+  INSTALL_VERSION=$2
+  ENV_PKG=$3
+  ENV_GLOBAL_VER=$($ENV_PROG version | awk '{ print $1 }')
+
+  if [ "$ENV_GLOBAL_VER" == "system" ]; then
+    $ENV_PROG install $INSTALL_VERSION
+    ~/.$ENV_PROG/versions/$INSTALL_VERSION/bin/$ENV_PKG $(install_packages $ENV_PROG)
+    echo "completed - $ENV_PROG : $INSTALL_VERSION" 1>&2
+  else
+    # $ENV_PRO install -l | grep -e '^\d\+\.\d\+' | sort --version-sort -r | head
+    echo "skipped - $ENV_PROG : $INSTALL_VERSION" 1>&2
+  fi
+done
+
+
+

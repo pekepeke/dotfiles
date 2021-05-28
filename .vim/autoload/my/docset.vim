@@ -18,7 +18,10 @@ function! s:get_zeal_docset_dir() "{{{2
   let candidates = []
 
   if s:is_mac
-    let candidates = [expand('~/Library/Application Support/zeal/docsets')]
+    let candidates = [
+      \ expand('~/Library/Application Support/zeal/docsets'),
+      \ expand('~/Library/Application\ Support/Dash/DocSets/'),
+      \ ]
   endif
   if s:is_win
     let candidates = [
@@ -125,8 +128,11 @@ endfunction
 " public {{{1
 function! my#docset#dash_complete(A, L, P) "{{{2
   if empty(s:dash_keywords)
-    let s:dash_keywords =
-    \ s:docset_keywords_gather(expand('~/Library/Application\ Support/Dash/DocSets/'), 1)
+    let dir = s:get_zeal_docset_dir()
+    if !empty(dir)
+      let s:dash_keywords =
+      \ s:docset_keywords_gather(dir, 1)
+    endif
   endif
   if stridx(a:A, ":") != -1
     return []
@@ -159,7 +165,7 @@ endfunction
 
 function! my#docset#zeal_complete(A, L, P) "{{{2
   if empty(s:zeal_keywords)
-    let dir = s:get_zeal_docset_dir
+    let dir = s:get_zeal_docset_dir()
     if !empty(dir)
       let s:zeal_keywords =
         \ s:docset_keywords_gather(dir, 0)
