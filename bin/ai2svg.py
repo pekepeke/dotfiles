@@ -1,4 +1,8 @@
 #!/usr/bin/python
+# SPDX-FileCopyrightText: 2015-2023 Han-Wen Nienhuys <hanwenn@gmail.com>
+# SPDX-License-Identifier: Apache-2.0
+# Upstream: https://github.com/hanwen/misc/blob/main/ai2svg.py
+
 import sys
 import os
 import re
