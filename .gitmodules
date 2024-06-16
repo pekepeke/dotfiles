@@ -24,11 +24,11 @@
 	branch = master
 [submodule ".zsh/plugins/zaw"]
 	path = .zsh/plugins/zaw
-	url = git://github.com/zsh-users/zaw.git
+	url = https://github.com/zsh-users/zaw.git
 	branch = master
 [submodule ".zsh/plugins/zsh-syntax-highlighting"]
 	path = .zsh/plugins/zsh-syntax-highlighting
-	url = git://github.com/zsh-users/zsh-syntax-highlighting.git
+	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
 	branch = master
 [submodule ".zsh/plugins/zsh-perl-completions"]
 	path = .zsh/plugins/zsh-perl-completions

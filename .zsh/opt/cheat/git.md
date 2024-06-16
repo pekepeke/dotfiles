@@ -525,6 +525,11 @@ git submodule foreach 'git submodule update --init'
 git submodule deinit path/to/submodule
 git rm path/to/submodule
 # git config -f .gitmodules --remove-section submodule.path/to/submodule
+
+# submodule の向きを変える
+vim .gitmodules
+# urlを書き換える
+git submodule sync
 ```
 
 ## pull-request
