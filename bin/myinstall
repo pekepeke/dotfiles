@@ -3,7 +3,8 @@
 INSTALL_LIBS=""
 # ENV_DEFAULTS="plenv rbenv pyenv phpenv nodenv goenv mysqlenv luaenv direnv"
 # ENV_DEFAULTS="plenv rbenv pyenv phpenv nodenv mysqlenv gobrew luaenv direnv"
-ENV_DEFAULTS="plenv rbenv pyenv phpenv nodenv"
+# ENV_DEFAULTS="plenv rbenv pyenv phpenv nodenv mysqlenv luaenv direnv"
+ENV_DEFAULTS="direnv"
 
 usage() {
   prg_name=`basename $0`

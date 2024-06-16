@@ -1,0 +1,4404 @@
+# vim:
+# =======================================================
+# [[plugins]]
+# repo = ''
+# hook_add = '''
+# '''
+
+# TOML sample
+# hook_add = 'let g:foo = 0'
+
+# [ftplugin] # Execute after ftplugin.
+# _ = '''
+#   setl formatoptions-=ro | setl formatoptions+=mMBl
+# '''
+# html = '''
+# setlocal includeexpr=v:fname->substitute('^\\/','','')
+# setlocal path+=./;/
+# '''
+
+# [[plugins]]
+# repo = 'rhysd/accelerated-jk'
+# on_map = '<Plug>'
+# hook_add = '''
+#   nnoremap <silent>j <Plug>(accelerated_jk_gj)
+#   nnoremap <silent>k <Plug>(accelerated_jk_gk)
+# '''
+# [[plugins]]
+# repo = 'seroqn/vim-hairline'
+# hook_add = '''
+# " https://qiita.com/seroqn/items/31cb24cea3f8a00f3ee7
+# let g:hairline = {}
+# let g:hairline.statusline.left = ["f:mode", "bufname", "H:filetype"]
+# let g:hairline.statusline.left_NC = ["bufname", "filetype"]
+# let g:hairline.statusline.right = [
+# \ "f:qfcount",
+# \ 'f:linestat', 'filetype',
+# \ 'f:charcode', 'f:fileinfo',
+# \ ]
+
+# let g:hairline.part_func = {}
+# function! g:hairline.part_func.mode() abort
+#   let mode = get(
+#   \ {'n': 'NORMAL', 'i': 'INSERT', 'v': 'VISUAL', 'V': 'V-LINE',
+#   \ "\<C-v>": 'V-BLOCK', 't': 'TERMINAL'}, mode(), 'NORMAL')
+#   return mode
+# endfunction
+
+# function! g:hairline.part_func.qfcount() abort
+#     if d#is_installed('ale')
+#       let counts = ale#statusline#Count(bufnr(''))
+
+#       let errors = counts.error + counts.style_error
+#       let warnings = counts.total - errors
+
+#       return counts.total == 0 ? '' : printf('%dW %dE', warnings, errors)
+#     endif
+#     let qflist = getqflist()
+#     let c = len(filter(qflist, 'v:val.lnum != 0'))
+#     unlet qflist
+#     if c <= 0
+#       return ""
+#     endif
+#     return "qf:" . c
+# endfunction
+
+# function! g:hairline.part_func.linestat() abort
+#   " １"
+# endfunction
+# function! g:hairline.part_func.charcode() abort
+#   let ch = matchstr(getline('.'), '.', col('.')-1)
+#   let code = strgetchar(ch, 0)
+#   if code < 0 | return 'NUL' | endif
+#   return printf('0x%0'.(code>256?4:2).'x[%d]', code, code)
+# endfunction
+# function! g:hairline.part_func.fileinfo() abort
+#     let s = empty(&fileformat) ? '' : '['.&fileformat.']'
+#     return &fileencoding . s
+# endfunction
+
+# " function! g:hairline#default.highlight() abort
+# " endfunc
+# '''
+# =======================================================
+[[plugins]]
+repo = 'itchyny/lightline.vim'
+hook_add = '''
+" colorscheme - http://cocopon.me/blog/?p=3522 " {{{3
+function! s:build_ll_colorscheme()
+  let mono0 = '#1d1f21'
+  let mono1 = '#282a2e'
+  let mono2 = '#303030'
+  let mono3 = '#373b41'
+  let mono4 = '#707880'
+  let mono5 = '#c5c8c6'
+
+  let red    = '#cc6666'
+  let green  = '#b5bd68'
+  let blue   = '#81a2be'
+  let orange = '#de935f'
+
+  let p = {
+        \ 'normal':   {},
+        \ 'inactive': {},
+        \ 'insert':   {},
+        \ 'replace':  {},
+        \ 'visual':   {},
+        \ 'tabline':  {}}
+  let p.normal.middle = [
+        \ {'bg': mono1, 'fg': mono4}]
+  let p.normal.left = [
+        \ {'bg': green, 'fg': mono0},
+        \ {'bg': mono3, 'fg': mono5}]
+  let p.normal.right = [
+        \ {'fg': 'white', 'bg': 'red'},
+        \ {'fg': 'gray5', 'bg': 'gray10'},
+        \ {'fg': 'gray9', 'bg': 'gray4'},
+        \ {'fg': 'gray8', 'bg': 'gray2'},
+        \ ]
+  " \ {'fg': 'white', 'bg': red},
+  let p.inactive.middle = [
+        \ {'bg': mono2, 'fg': mono4}]
+  let p.inactive.right = [
+        \ p.inactive.middle[0],
+        \ p.inactive.middle[0]]
+  let p.inactive.left = [
+        \ p.inactive.middle[0],
+        \ p.inactive.middle[0]]
+
+  let p.insert.left = [
+        \ {'bg': blue, 'fg': mono0},
+        \ p.normal.left[1]]
+  let p.replace.left = [
+        \ {'bg': red, 'fg': mono0},
+        \ p.normal.left[1]]
+  let p.visual.left = [
+        \ {'bg': orange, 'fg': mono0},
+        \ p.normal.left[1]]
+  let p.tabline.middle = [
+        \ {'bg': mono4, 'fg': mono0}]
+  let p.tabline.right = [
+        \ {'bg': mono1, 'fg': mono4},
+        \ {'bg': mono4, 'fg': mono0}]
+  let p.tabline.left = [
+        \ {'bg': mono1, 'fg': mono4}]
+  let p.tabline.tabsel = [
+        \ {'bg': mono0, 'fg': mono5}]
+  let p = copy(p)
+
+  for mode in values(p)
+    for colors in values(mode)
+      let colors = map(colors, '[v:val.fg, v:val.bg]')
+  endfor
+endfor
+
+let g:lightline#colorscheme#vimrc#palette = lightline#colorscheme#fill(p)
+  endfunction "}}}
+  call s:build_ll_colorscheme()
+
+  function! s:lightline_update() "{{{3
+    if !exists('g:loaded_lightline')
+      return
+  endif
+  try
+    if g:colors_name =~# 'wombat\|solarized\|landscape\|jellybeans\|Tomorrow'
+      let g:lightline.colorscheme =
+            \ substitute(substitute(g:colors_name, '-', '_', 'g'), '256.*', '', '') .
+            \ (g:colors_name ==# 'solarized' ? '_' . &background : '')
+  endif
+  call lightline#init()
+  call lightline#colorscheme()
+  call lightline#update()
+  catch
+endtry
+endfunction
+MyAutoCmd ColorScheme * call s:lightline_update()
+'''
+
+# =======================================================
+# [[plugins]]
+# repo = 'mattn/startmenu-vim'
+# on_if = 'd#is_win()'
+
+[[plugins]]
+repo = 'majutsushi/tagbar'
+
+# colorscheme {{{3
+[[plugins]]
+repo = 'freeo/vim-kalisi'
+script_type = 'colors'
+[[plugins]]
+repo = 'tpope/vim-vividchalk'
+script_type = 'colors'
+[[plugins]]
+repo = 'tomasr/molokai'
+script_type = 'colors'
+[[plugins]]
+repo = 'mopp/mopkai.vim'
+script_type = 'colors'
+[[plugins]]
+repo = 'mrkn/mrkn256.vim'
+script_type = 'colors'
+[[plugins]]
+repo = 'fmoralesc/vim-vitamins'
+script_type = 'colors'
+[[plugins]]
+repo = 'morhetz/gruvbox'
+script_type = 'colors'
+[[plugins]]
+repo = 'vim-scripts/Lucius'
+script_type = 'colors'
+[[plugins]]
+repo = 'jaromero/vim-monokai-refined'
+script_type = 'colors'
+[[plugins]]
+repo = 'freeo/vim-kalisi'
+script_type = 'colors'
+[[plugins]]
+repo = 'w0ng/vim-hybrid'
+script_type = 'colors'
+
+# common {{{3
+[[plugins]]
+repo = 'osyo-manga/vim-jplus'
+on_map = '<Plug>'
+hook_add = '''
+nmap <Leader>j <Plug>(jplus-getchar-with-space)
+vmap <Leader>j <Plug>(jplus-getchar-with-space)
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'Shougo/context_filetype.vim'
+hook_add = '''
+let g:context_filetype#search_offset = 500
+let g:context_filetype#filetypes = get(g:, 'context_filetype#filetypes', {})
+
+let g:context_filetype#filetypes.html = [{
+      \  'start':
+      \   '<script\%( [^>]*\)\? type="text/javascript"\%( [^>]*\)\?>',
+      \  'end': '</script>', 'filetype': 'javascript',
+      \ }, {
+      \  'start':
+      \   '<script\%( [^>]*\)\? type="text/coffee"\%( [^>]*\)\?>',
+      \  'end': '</script>', 'filetype': 'coffee',
+      \ }, {
+      \   'start': '<script[^>]*shader[^>]*>',
+      \   'end': '<\/script>', 'filetype' : 'glsl',
+      \ }, {
+      \  'start': '<style\%( [^>]*\)\? type="text/css"\%( [^>]*\)\?>',
+      \  'end': '</style>', 'filetype': 'css',
+      \ }, {
+      \  'start': '<?php\?',
+      \  'end': '?>', 'filetype': 'php',
+      \ } ]
+let g:context_filetype#filetypes.qml = [{
+      \   'filetype' : 'javascript',
+      \   'start'    : '^\(\s*\)\h\w*:\s*{$',
+      \   'end'      : '^\1}'
+      \ }, {
+      \   'filetype' : 'glsl',
+      \   'start'    : ':\s*"',
+      \   'end'      : '"'
+      \ },
+      \ ]
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'Shougo/tabpagebuffer.vim'
+
+#   " keymaps {{{3
+#   nnoremap <silent> [!space]f  :call <SID>vimfiler_tree_launch_or_enter()<CR>
+#   nnoremap <silent> [!space]fr :call <SID>vimfiler_tree_launch_or_enter()<CR>:wincmd p<CR>
+#   nnoremap <silent> [!space]ff :call <SID>vimfiler_tree_launch()<CR>
+#   nnoremap <silent> [!space]fg :call <SID>vimfiler_tree_launch(fnameescape(expand('%:p:h')))<CR>
+#   command! -nargs=? -complete=file VimFilerTree call s:vimfiler_tree_launch(<f-args>)
+#   command! -nargs=? -complete=file FTree call s:vimfiler_tree_launch(<f-args>)
+
+#   function! s:vimfiler_tree_launch_or_enter() "{{{4
+#     let fpath = expand('%:p')
+#     if !exists('b:vimfiler')
+#       wincmd t
+#       if !exists('b:vimfiler')
+#         wincmd p
+#         call s:vimfiler_tree_launch()
+#         return
+#       endif
+#       call s:vimfiler_tree_sync_currentfile(fpath)
+#     endif
+#   endfunction
+
+#   function! s:vimfiler_tree_sync_currentfile(fpath)
+#     if !exists('b:vimfiler.current_dir')
+#       return
+#     endif
+#     " lazy work --;;
+#     let dir = b:vimfiler.current_dir
+#     let fpath = a:fpath
+#     let pos = stridx(fpath, dir)
+#     if pos != -1
+#       let fpath = strpart(strpart(fpath, pos), strlen(dir))
+#       let paths = split(fpath, "/")
+#       let index = 0
+#       let max_index = len(paths) - 1
+#       if !b:vimfiler.is_visible_ignore_files &&
+#             \ len(filter(copy(paths), 'v:val =~# "^\\."')) > 0
+#         execute "normal \<Plug>(vimfiler_toggle_visible_ignore_files)"
+#       endif
+
+#       execute "normal \<Plug>(vimfiler_cursor_top)"
+#       while index <= max_index
+#         let item = paths[index]
+#         " call s:log("start : %s", item)
+#         let pattern = escape(" " . item . (max_index == index ? "" : "/"), '\.') . '\s\+$'
+#         if search(pattern, "W") == 0
+#           " call s:log("stop : %s, pattern=%s", item, pattern)
+#           break
+#         endif
+#         let file = vimfiler#get_file(b:vimfiler)
+#         if file.vimfiler__is_directory && !file.vimfiler__is_opened
+#           execute "normal \<Plug>(vimfiler_expand_tree)"
+#         endif
+#         let index = index + 1
+#       endwhile
+#     endif
+#   endfunction
+
+#   function! s:vimfiler_tree_launch(...) "{{{4
+#     let fpath = expand('%:p')
+#     let dir = a:0 > 0 ? a:1 : getcwd()
+#     execute 'VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:' . dir
+#     call s:vimfiler_tree_sync_currentfile(fpath)
+#   endfunction
+
+#   function! s:vimfiler_smart_tree_h(...) "{{{4
+#     let file = vimfiler#get_file(b:vimfiler)
+#     let cmd = a:0 > 0 ? a:1 : ""
+#     "\<Plug>(vimfiler_smart_h)"
+#     if !empty(file)
+#       if file.vimfiler__is_opened
+#         let cmd = "\<Plug>(vimfiler_expand_tree)"
+#       elseif file.vimfiler__nest_level > 0
+#         let nest_level = file.vimfiler__nest_level
+#         while 1
+#           exe 'normal!' 'k'
+#           let file = vimfiler#get_file(b:vimfiler)
+#           if empty(file) || file.vimfiler__nest_level < nest_level
+#             " let cmd = "\<Plug>(vimfiler_expand_tree)" | break
+#             normal! ^
+#             return
+#           endif
+#         endwhile
+#       endif
+#     endif
+#     if !empty(cmd)
+#       exe 'normal' cmd
+#       normal! ^
+#     endif
+#   endfunction
+
+#   function! s:vimfiler_tree_up() "{{{4
+#     call s:vimfiler_smart_tree_h("\<Plug>(vimfiler_smart_h)")
+#   endfunction
+
+#   function! s:vimfiler_tree_edit(method, ...) "{{{4
+#     " let file = vimfiler#get_file()
+#     " if empty(file) || empty(a:method) | return | endif
+#     " let path = file.action__path
+#     " wincmd p
+#     " execute a:method
+#     " exe 'edit' path
+#     if empty(a:method) | return | endif
+#     let linenr = line('.')
+#     let context = s:vimfiler_create_action_context(a:method, linenr)
+#     let cur_nr = bufnr('%')
+#     " silent wincmd l
+#     silent wincmd p
+#     if cur_nr == bufnr('%')
+#       silent wincmd l
+#       if cur_nr == bufnr('%')
+#         silent wincmd v
+#       endif
+#     endif
+#     for cmd in a:000
+#       silent execute cmd
+#     endfor
+#     " call vimfiler#mappings#do_action(a:method, linenr)
+#     call context.execute()
+#     unlet context
+#   endfunction
+
+#   function! s:vimfiler_smart_tree_l(method, ...) "{{{4
+#     let file = vimfiler#get_file(b:vimfiler)
+#     if empty(file)
+#       if (a:0 > 0 && a:1 == 1)
+#         execute 'normal' "\<Plug>(vimfiler_smart_h)"
+#       endif
+#       return
+#     endif
+#     let path = file.action__path
+#     if file.vimfiler__is_directory
+#       if (a:0 > 0 && a:1 == 2)
+#         execute 'normal' "\<Plug>(vimfiler_smart_l)"
+#       else
+#         execute 'normal' "\<Plug>(vimfiler_expand_tree)"
+#       endif
+#       normal! ^
+#       return
+#     endif
+#     call s:vimfiler_tree_edit(a:method)
+#   endfunction "}}}
+
+#   function! s:vimfiler_tabopen_silently() " {{{4
+#     let curt = tabpagenr()
+#     silent call s:vimfiler_do_action('tabopen')
+#     execute curt."tabnext"
+#   endfunction "}}}
+
+#   function! s:vimfiler_do_action(action) " {{{4
+#     let bnr = bufnr('%')
+#     let linenr = line('.')
+#     let context = s:vimfiler_create_action_context(a:action, linenr)
+#     call context.execute()
+#     unlet context
+#   endfunction
+
+#   let s:vimfiler_context = {} " {{{4
+#   function! s:vimfiler_context.new(...)
+#     let dict = get(a:000, 0, {})
+#     return extend(dict, self)
+#   endfunction
+
+#   function! s:vimfiler_context.execute()
+#     call unite#mappings#do_action(self.action, self.files, {
+#           \ 'vimfiler__current_directory' : self.current_dir,
+#           \ })
+#   endfunction
+
+#   function! s:vimfiler_create_action_context(action, ...) " {{{4
+#     let cursor_linenr = get(a:000, 0, line('.'))
+#     let vimfiler = b:vimfiler " vimfiler#get_current_vimfiler()
+#     let marked_files = vimfiler#get_marked_files(b:vimfiler)
+#     if empty(marked_files)
+#       let marked_files = [ vimfiler#get_file(b:vimfiler, cursor_linenr) ]
+#     endif
+
+#     let context = s:vimfiler_context.new({
+#           \ 'action' : a:action,
+#           \ 'files' : marked_files,
+#           \ 'current_dir' : vimfiler.current_dir,
+#           \ })
+#     return context
+#   endfunction
+
+#   MyAutoCmd FileType vimfiler call s:vimfiler_init() "{{{3
+#   function! s:vimfiler_init() " {{{3
+#     nmap <silent><buffer> p <Plug>(vimfiler_quick_look)
+#     nnoremap <silent><buffer> E :<C-u>call <SID>vimfiler_do_action('tabopen')<CR>
+#     nnoremap <silent><buffer> T :<C-u>call <SID>vimfiler_tabopen_silently()<CR>
+#     nnoremap <silent><buffer> <C-e> :<C-u>call <SID>vimfiler_do_action('split')<CR>
+#     nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
+#     hi link ExrenameModified Statement
+#     "nnoremap <buffer> v V
+#     if exists('b:vimfiler') && !exists('b:my_vimfiler_init')
+#       let b:my_vimfiler_init=1
+#       if exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
+#         nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('open')<CR>
+#         nnoremap <silent><buffer> E :call <SID>vimfiler_tree_edit('open', 'wincmd s')<CR>
+#         nnoremap <silent><buffer> <C-e> :call <SID>vimfiler_do_action('tabopen')<CR>
+#         nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
+#         if exists('g:scrolloff')
+#           nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>
+#             \:<C-u>:call <SID>vimfiler_smart_tree_l('', 1)<CR>:set eventignore=<CR>
+#           nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=<CR><LeftMouse>
+#             \ :<C-u>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
+#         else
+#           nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>
+#             \ :call <SID>vimfiler_smart_tree_l('', 1)<CR>
+#           nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>
+#             \ :call <SID>vimfiler_smart_tree_l('open', 2)<CR>
+#         endif
+#         " nmap <buffer> l <Plug>(vimfiler_expand_tree)
+#         nmap <buffer> L <Plug>(vimfiler_smart_l)
+#         nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
+#         nnoremap <silent><buffer> gu :call <SID>vimfiler_tree_up()<CR>
+#       endif
+#     endif
+#   endfunction
+# '''
+# repo = 'Shougo/vimshell.vim'
+# repo = "osyo-manga/unite-filters-collection"
+# repo = 'osyo-manga/vim-precious'
+# repo = 'pekepeke/vim-gitcomplete', 'develop'
+
+# =======================================================
+[[plugins]]
+repo = 'Shougo/vinarise'
+on_cmd = ['Vinarise', 'VinariseDump', 'VinariseScript2Hex']
+[[plugins]]
+repo = 'Shougo/junkfile.vim'
+on_cmd = ['JunkfileOpen']
+hook_add = '''
+nnoremap ,sj :<C-u>JunkfileOpen<CR>
+'''
+# =======================================================
+[[plugins]]
+repo = 'kana/vim-altr'
+on_map = '<Plug>'
+hook_add = '''
+nmap [!space]k <Plug>(altr-back)
+nmap [!space]j <Plug>(altr-forward)
+nmap <F1> <Plug>(altr-back)
+nmap <F2> <Plug>(altr-forward)
+
+call altr#define('autoload/%.vim', 'doc/%.txt', 'plugin/%.vim', 'test/%.vim')
+
+call altr#define('%.c', '%.cpp', '%.m', '%.h')
+
+call altr#define('%.rb', 'spec/%_spec.rb')
+call altr#define('lib/%.rb', 'spec/lib/%_spec.rb')
+call altr#define('app/models/%.rb', 'spec/models/%_spec.rb', 'spec/factories/%s.rb')
+call altr#define('app/controllers/%.rb', 'spec/controllers/%_spec.rb')
+call altr#define('app/helpers/%.rb', 'spec/helpers/%_spec.rb')
+
+call altr#define('%.js', 'test/%Test.js', 'test/%_test.js', 'spec/%_spec.js', 'spec/%Spec.js')
+call altr#define('%.coffee', 'test/%Test.coffee', 'test/%_test.coffee', 'spec/%_spec.coffee', 'spec/%Spec.coffee')
+
+call altr#define('app/controllers/%.php', 'app/tests/controllers/%Test.php')
+call altr#define('app/models/%.php', 'app/tests/models/%Test.php')
+call altr#define('app/commands/%.php', 'app/tests/commands/%Test.php')
+call altr#define('app/views/%.php', 'app/tests/libs/%Test.php')
+call altr#define('app/views/%.php', 'app/tests/views/%Test.php')
+
+call altr#define('Controller/%.php', 'Test/Case/Controller/%Test.php')
+call altr#define('Model/%.php', 'Test/Case/Model/%Test.php')
+call altr#define('View/Helper/%.php', 'Test/Case/View/Helper/%Test.php')
+call altr#define('View/%.php', 'Test/Case/View/%Test.php')
+'''
+# =======================================================
+[[plugins]]
+repo = 'kana/vim-fakeclip'
+hook_add = '''
+nmap ,y <Plug>(fakeclip-screen-y)
+nmap ,p <Plug>(fakeclip-screen-p)
+vmap ,y <Plug>(fakeclip-screen-y)
+vmap ,p <Plug>(fakeclip-screen-p)
+'''
+[[plugins]]
+repo = 'kana/vim-smartchr'
+hook_add = '''
+inoremap <expr>, smartchr#one_of(', ', ',')
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'kana/vim-submode'
+hook_add = '''
+
+" http://d.hatena.ne.jp/tyru/20100502/vim_mappings
+" browser {{{3
+if d#is_mac()
+  call submode#enter_with('cscroll', 'n', '', 'sb', ':ChromeScrollDown<CR>')
+  " call submode#enter_with('cscroll', 'n', '', 'sk', ':ChromeScrollUp<CR>')
+  call submode#map('cscroll', 'n', '', 'j', ':ChromeScrollDown<CR>')
+  call submode#map('cscroll', 'n', '', 'k', ':ChromeScrollUp<CR>')
+  call submode#map('cscroll', 'n', '', 'l', ':ChromeTabRight<CR>')
+  call submode#map('cscroll', 'n', '', 'h', ':ChromeTabLeft<CR>')
+  call submode#map('cscroll', 'n', '', 'L', ':ChromePageGo<CR>')
+  call submode#map('cscroll', 'n', '', 'H', ':ChromePageBack<CR>')
+  call submode#map('cscroll', 'n', '', 'r', ':ChromeTabReload<CR>')
+endif
+
+" Change current window size {{{3
+call submode#enter_with('winsize', 'n', '', 'sw', '<Nop>')
+call submode#leave_with('winsize', 'n', '', '<Esc>')
+call submode#map       ('winsize', 'n', '', 'j', '<C-w>-:redraw<CR>')
+call submode#map       ('winsize', 'n', '', 'k', '<C-w>+:redraw<CR>')
+call submode#map       ('winsize', 'n', '', 'h', '<C-w><:redraw<CR>')
+call submode#map       ('winsize', 'n', '', 'l', '<C-w>>:redraw<CR>')
+call submode#map       ('winsize', 'n', '', 'J', ':set lines+=1<CR>')
+call submode#map       ('winsize', 'n', '', 'K', ':set lines-=1<CR>')
+call submode#map       ('winsize', 'n', '', 'H', ':set columns-=5<CR>')
+call submode#map       ('winsize', 'n', '', 'L', ':set columns+=5<CR>')
+call submode#map       ('winsize', 'n', '', '-', '<C-w>-:redraw<CR>')
+call submode#map       ('winsize', 'n', '', '+', '<C-w>+:redraw<CR>')
+call submode#map       ('winsize', 'n', '', '<', '<C-w><:redraw<CR>')
+call submode#map       ('winsize', 'n', '', '>', '<C-w>>:redraw<CR>')
+
+" undo/redo {{{3
+call submode#enter_with('undo/redo', 'n', '', 'g-', 'g-')
+call submode#enter_with('undo/redo', 'n', '', 'g+', 'g+')
+call submode#leave_with('undo/redo', 'n', '', '<Esc>')
+call submode#map       ('undo/redo', 'n', '', '-', 'g-')
+call submode#map       ('undo/redo', 'n', '', '+', 'g+')
+
+" Tab walk. {{{3
+call submode#enter_with('tabwalk', 'n', '', 'st', '<Nop>')
+call submode#enter_with('tabwalk', 'n', '', 'se', '<Nop>')
+call submode#leave_with('tabwalk', 'n', '', '<Esc>')
+call submode#map       ('tabwalk', 'n', '', 'h', 'gT:redraw<CR>')
+call submode#map       ('tabwalk', 'n', '', 'l', 'gt:redraw<CR>')
+call submode#map       ('tabwalk', 'n', '', 'H', ':execute "tabmove" tabpagenr() - 2<CR>')
+call submode#map       ('tabwalk', 'n', '', 'L', ':execute "tabmove" tabpagenr()<CR>')
+call submode#map       ('tabwalk', 'n', '', 'n', ':execute "tabnew"<CR>:tabmove<CR>')
+call submode#map       ('tabwalk', 'n', '', 'c', ':execute "tabnew"<CR>:tabmove<CR>')
+call submode#map       ('tabwalk', 'n', '', 'q', ':execute "tabclose"<CR>')
+call submode#map       ('tabwalk', 'n', '', 'o', ':execute "tabonly"<CR>')
+
+" winmove {{{3
+call submode#enter_with('winmove', 'n', '', 'sj', '<C-w>j')
+call submode#enter_with('winmove', 'n', '', 'sk', '<C-w>k')
+call submode#enter_with('winmove', 'n', '', 'sh', '<C-w>h')
+call submode#enter_with('winmove', 'n', '', 'sl', '<C-w>l')
+call submode#leave_with('winmove', 'n', '', '<Esc>')
+call submode#map       ('winmove', 'n', '', 'j', '<C-w>j')
+call submode#map       ('winmove', 'n', '', 'k', '<C-w>k')
+call submode#map       ('winmove', 'n', '', 'h', '<C-w>h')
+call submode#map       ('winmove', 'n', '', 'l', '<C-w>l')
+call submode#map       ('winmove', 'n', '', 'J', '<C-w>j')
+call submode#map       ('winmove', 'n', '', 'K', '<C-w>k')
+call submode#map       ('winmove', 'n', '', 'H', '<C-w>h')
+call submode#map       ('winmove', 'n', '', 'L', '<C-w>l')
+
+" Quickfix {{{3
+call submode#enter_with('quickfix', 'n', '',  'sq', '<Nop>')
+call submode#leave_with('quickfix', 'n', '',  '<Esc>')
+call submode#map       ('quickfix', 'n', '',  'j', ':cn<CR>')
+call submode#map       ('quickfix', 'n', '',  'k', ':cp<CR>')
+call submode#map       ('quickfix', 'n', '',  'n', ':cn<CR>')
+call submode#map       ('quickfix', 'n', '',  'p', ':cp<CR>')
+call submode#map       ('quickfix', 'n', 'x', 'c', ':cclose<CR>')
+call submode#map       ('quickfix', 'n', '',  'o', ':copen<CR>')
+call submode#map       ('quickfix', 'n', '',  'w', ':cwindow<CR>')
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'kana/vim-niceblock'
+on_map = '<Plug>'
+hook_add = '''
+xmap I <Plug>(niceblock-I)
+xmap A <Plug>(niceblock-A)
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'tyru/vim-altercmd'
+hook_add = '''
+
+call altercmd#load()
+function! s:alias_lc(...) " {{{3
+  for cmd in a:000
+    silent exe 'Alias' tolower(cmd) cmd
+endfor
+endfunction "}}}
+
+command! -bar -nargs=+
+      \ Alias CAlterCommand <args> | AlterCommand <cmdwin> <args>
+command! -nargs=+ LCAlias call s:alias_lc(<f-args>)
+" command! -bar -nargs=+ LCAlias call <SID>nop(<f-args>)
+" command! -bar -nargs=+ Alias call <SID>nop(<f-args>)
+"Alias q bd
+Alias q MyQ
+Alias wq MyWQ
+Alias Q quit
+Alias WQ wq
+
+Alias ve vsplit
+Alias se split
+Alias n new
+Alias v vnew
+
+LCAlias Here This That
+Alias ren Rename
+" LCAlias Unite
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'cohama/lexima.vim'
+hook_add = '''
+call lexima#add_rule({
+      \ 'at':       '(\%#)',
+      \ 'char':     '<Space>',
+      \ 'input':    '<Space>',
+      \ 'input_after': '<Space>',
+      \ 'mode': 'i',
+      \ })
+
+call lexima#add_rule({
+      \ 'at': '( \%# )',
+      \ 'char': '<BS>',
+      \ 'input': '<BS>',
+      \ 'delete': 1,
+      \ 'mode': 'i',
+      \ })
+
+call lexima#add_rule({
+      \ 'at':       '{\%#}',
+      \ 'char':     '<Space>',
+      \ 'input':    '<Space>',
+      \ 'input_after': '<Space>',
+      \ 'mode': 'i',
+      \ })
+
+call lexima#add_rule({
+      \ 'at':       '{ \%# }',
+      \ 'char':     '<BS>',
+      \ 'input': '<BS>',
+      \ 'delete': 1,
+      \ 'mode': 'i',
+      \ })
+
+call lexima#add_rule({
+      \ 'at':       '\[\%#\]',
+      \ 'char':     '<Space>',
+      \ 'input':    '<Space>',
+      \ 'input_after': '<Space>',
+      \ 'mode': 'i',
+      \ })
+
+call lexima#add_rule({
+      \ 'at':       '\[ \%# \]',
+      \ 'char':     '<BS>',
+      \ 'input': '<BS>',
+      \ 'delete': 1,
+      \ 'mode': 'i',
+      \ })
+
+" Ruby 文字列内変数埋め込み
+call lexima#add_rule({
+      \ 'at': '\%#',
+      \ 'char': '#',
+      \ 'input':    '#{',
+      \ 'input_after': '}',
+      \ 'filetype': ['ruby'],
+      \ 'syntax': ['Constant', 'Special'],
+      \ 'mode': 'i',
+      \ })
+
+" Ruby ブロック引数 ||
+call lexima#add_rule({
+      \ 'at': '\({\|\<do\>\)\s*\%#',
+      \ 'char': '<Bar>',
+      \ 'input': '<Bar>',
+      \ 'input_after': '<Bar>',
+      \ 'filetype': ['ruby'],
+      \ 'mode': 'i',
+      \  })
+
+" テンプレート内のスペース
+call lexima#add_rule({
+      \ 'at':       '<\%#>',
+      \ 'char':     '<Space>',
+      \ 'input':    '<Space>',
+      \ 'input_after':    '<Space>',
+      \ 'filetype': ['cpp'],
+      \ 'mode': 'i',
+      \ })
+call lexima#add_rule({
+      \ 'at':       '< \%# >',
+      \ 'char':     '<BS>',
+      \ 'input':    '<BS>',
+      \ 'filetype': ['cpp'],
+      \ 'delete': 1,
+      \ 'mode': 'i',
+      \ })
+" struct
+call lexima#add_rule({
+      \ 'at'       : '\%(\<struct\>\|\<class\>\|\<enum\>\)\s*\w\+.*\%#',
+      \ 'char'     : '{',
+      \ 'input'    : '{',
+      \ 'input_after'    : '};',
+      \ 'filetype' : ['cpp'],
+      \ 'mode': 'i',
+      \ })
+" http://qiita.com/hatchinee/items/c5bc19a656925ce33882
+" classとかの定義時に:までを入れる
+call lexima#add_rule({
+      \ 'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#',
+      \ 'char'     : '(',
+      \ 'input'    : '(',
+      \ 'input_after': '):',
+      \ 'filetype' : ['python'],
+      \ 'mode': 'i',
+      \ })
+" が、すでに:がある場合は重複させない. (smartinputでは、atの定義が長いほど適用の優先度が高くなる)
+call lexima#add_rule({
+      \ 'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#.*:',
+      \ 'char'     : '(',
+      \ 'input'    : '(',
+      \ 'input_after': ')',
+      \ 'filetype' : ['python'],
+      \ 'mode': 'i',
+      \ })
+" 末尾:の手前でも、エンターとか:で次の行にカーソルを移動させる
+call lexima#add_rule({
+      \ 'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#:$',
+      \ 'char'     : ':',
+      \ 'input'    : '<CR>',
+      \ 'leave' : 1,
+      \ 'filetype' : ['python'],
+      \ 'mode': 'i',
+      \ })
+call lexima#add_rule({
+      \ 'at'       : '^\s*\%(\<def\>\|\<if\>\|\<for\>\|\<while\>\|\<class\>\|\<with\>\)\s*\w\+.*\%#:$',
+      \ 'char'     : '<CR>',
+      \ 'input'    : '<CR>',
+      \ 'leave' : 1,
+      \ 'filetype' : ['python'],
+      \ 'mode': 'i',
+      \ })
+
+" if d#is_installed('neocomplete.vim')
+"   call lexima#insmode#map_hook('before', '<CR>',
+"   \ "\<C-]><C-r>=neocomplete#smart_close_popup()\<CR>")
+"   call lexima#insmode#map_hook('before', '<Space>',
+"   \ "\<C-]>\<C-r>=neocomplete#smart_close_popup()\<CR>")
+"   try
+"     call lexima#insmode#map_hook('before', '<BS>',
+"     \ "\<C-r>=neocomplete#smart_close_popup()\<CR>")
+"     " call lexima#insmode#map_hook('before', '<C-h>',
+"     " \ "\<C-r>=neocomplete#smart_close_popup()\<CR>")
+"   catch /.*/
+"     echohl Error
+"     echomsg v:exception
+"     echohl None
+"   endtry
+" endif
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'tyru/capture.vim'
+on_cmd = 'Capture'
+
+[[plugins]]
+repo = 'chikatoike/concealedyank.vim'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'pekepeke/quickfixstatus'
+on_cmd = ['QuickfixStatusEnable', 'QuickfixStatusDisable']
+[[plugins]]
+repo = 'cohama/vim-hier'
+on_cmd = ['HierUpdate', 'HierClear', 'HierStart', 'HierStop',]
+[[plugins]]
+repo = 'tpope/vim-repeat'
+hook_add = '''
+nnoremap <silent> dp dp:silent! call repeat#set('dp', 1)<Enter>
+nnoremap <silent> do do:silent! call repeat#set('do', 1)<Enter>
+'''
+# =======================================================
+[[plugins]]
+repo = 'tpope/vim-surround'
+hook_add = '''
+nmap ss <Plug>Yssurround
+" nmap ss <Plug>Ysurround
+imap <C-g>y <Esc><Plug>Yssurround
+
+nmap si :Qsurround Yss<CR>
+vmap W :Qsurround VS<CR>
+command! -nargs=1 -range Qsurround call s:qsurround.exec(<q-args>)
+command! -nargs=1 QsurroundSet call s:qsurround.set(<q-args>)
+command! -range QsurroundRangeSet call s:qsurround.rangeset(<count>, <line1>, <line2>, <q-args>)
+let s:qsurround = {'data': ['', ''], 'pending':''}
+
+function! s:qsurround.rangeset(count, l1, l2, text)
+  let strs = a:count == 0 ? split(a:text, "\n") : getline(a:l1, a:l2)
+  if len(strs) == 1
+    let strs = [s, '']
+  elseif len(strs) > 2
+    let s = remove(strs, 0)
+    let strs = [s,  join(strs, "\n")]
+endif
+let self.data = strs
+endfunction
+
+function! s:qsurround.set(s)
+  if !empty(self.pending)
+    let self.data = [self.pending, a:s]
+    let self.pending = ''
+  else
+    let self.pending = a:s
+endif
+endfunction
+
+function! s:qsurround.exec(mode)
+  call self.surround(a:mode, self.data[0], self.data[1])
+endfunction
+
+function! s:qsurround.surround(mode, head, tail)
+  " if exists("b:surround_".char2nr('Z'))
+  "   let org = b:surrond_{char2nr('Z')}
+  " else
+  "   let org = ''
+  " endif
+  if !exists('b:surround_objects')
+    let b:surround_objects = {}
+endif
+let org = get(b:surround_objects, 'Z', '')
+let b:surround_objects.Z = a:head . "\n\r\n" . a:tail
+
+let char = tolower(a:mode[0:0])
+let op = ""
+if char == "v"
+  let op = "gv"
+  endif
+  execute "normal " . op . "\<Plug>" . a:mode . "urroundZ"
+
+  if !empty(org)
+    let b:surround_objects['Z'] = org
+  " let b:surrond_{char2nr('Z')} = org
+  else
+    unlet b:surround_objects['Z']
+    " unlet b:surrond_{char2nr('Z')}
+endif
+endfunction
+
+'''
+# =======================================================
+[[plugins]]
+repo = 't9md/vim-surround_custom_mapping'
+on_map = '<Plug>'
+hook_add = '''
+let g:surround_custom_mapping = {}
+let g:surround_custom_mapping._ = {
+      \ "\<CR>" : "\n\r\n",
+      \ 'g':  "_('\r')",
+      \ 'G':  "_(\"\r\")",
+      \ '!':  "<!-- \r -->",
+      \ }
+let g:surround_custom_mapping.html = {
+      \ '1':  "<h1>\r</h1>",
+      \ '2':  "<h2>\r</h2>",
+      \ '3':  "<h3>\r</h3>",
+      \ '4':  "<h4>\r</h4>",
+      \ '5':  "<h5>\r</h5>",
+      \ '6':  "<h6>\r</h6>",
+      \ 'p':  "<p>\r</p>",
+      \ 'u':  "<ul>\r</ul>",
+      \ 'o':  "<ol>\r</ol>",
+      \ 'l':  "<li>\r</li>",
+      \ 'a':  "<a href=\"\">\r</a>",
+      \ 'A':  "<a href=\"\r\"></a>",
+      \ 'i':  "<img src=\"\r\" alt=\"\" />",
+      \ 'I':  "<img src=\"\" alt=\"\r\" />",
+      \ 'd':  "<div>\r</div>",
+      \ 'D':  "<div class=\"selection\">\r</div>",
+      \ '!':  "<!-- \r -->",
+      \ '?':  "<?php \r ?>",
+      \ '%':  "<?php \r ?>",
+      \ '#':  "<?php # \r ?>",
+      \ '/':  "<?php // \r ?>",
+      \ '=':  "<?php echo \r ?>",
+      \ '8':  "(( \r ))",
+      \ '9':  "(( \r ))",
+      \ '(':  "(( \r ))",
+      \ ')':  "(( \r ))",
+      \ '{':  "{{ \r }}",
+      \ '}':  "{{ \r }}",
+      \ }
+let g:surround_custom_mapping.help = {
+      \ 'p':  "> \r <",
+      \ }
+let g:surround_custom_mapping.ruby = {
+      \ '-':  "<% \r %>",
+      \ '=':  "<%= \r %>",
+      \ '9':  "(\r)",
+      \ '5':  "%(\r)",
+      \ '%':  "%(\r)",
+      \ 'w':  "%w(\r)",
+      \ '#':  "#{\r}",
+      \ '3':  "#{\r}",
+      \ 'e':  "begin \r end",
+      \ 'E':  "<<EOS \r EOS",
+      \ 'i':  "if \1if\1 \r end",
+      \ 'u':  "unless \1unless\1 \r end",
+      \ 'c':  "class \1class\1 \r end",
+      \ 'm':  "module \1module\1 \r end",
+      \ 'd':  "def \1def\1\2args\r..*\r(&)\2 \r end",
+      \ 'p':  "\1method\1 do \2args\r..*\r|&| \2\r end",
+      \ 'P':  "\1method\1 {\2args\r..*\r|&|\2 \r }",
+      \ }
+let g:surround_custom_mapping.eruby = {
+      \ '-':  "<% \r %>",
+      \ '=':  "<%= \r %>",
+      \ '#':  "<%# \r %>",
+      \ 'h':  "<%= h \r %>",
+      \ 'e':  "<% \r %>\n<% end %>",
+      \ '%':  "<% \r %>",
+      \ }
+let g:surround_custom_mapping.markdown = {
+      \ 'h': "`\r`",
+      \ 'c': "```\n\r\n```",
+      \ '!':  "<!-- \r -->",
+      \ }
+let g:surround_custom_mapping.php = {
+      \ '-':  "<?php \r ?>",
+      \ '?':  "<?php \r ?>",
+      \ '=':  "<?php echo \r ?>",
+      \ 'h':  "<?php echo h( \r ); ?>",
+      \ 'e':  "<?php echo \r ?>",
+      \ 'f':  "<?php foreach ($\r as $val): ?>\n<?php endforeach; ?>",
+      \ '%':  "<?php \r ?>",
+      \ '#':  "<?php # \r ?>",
+      \ '/':  "<?php // \r ?>",
+      \ 'v':  "var_dump(\r);",
+      \ 'p':  "print_r(\r);",
+      \ }
+let g:surround_custom_mapping.javascript = {
+      \ 'f':  "function(){ \r }"
+      \ }
+let g:surround_custom_mapping.coffee = {
+      \ '-':  "<% \r %>",
+      \ '=':  "<%= \r %>",
+      \ '9':  "(\r)",
+      \ 'r':  "///\r///",
+      \ '#':  "#{\r}",
+      \ '3':  "#{\r}",
+      \ 'e':  "begin \r end",
+      \ 'E':  '""" \r """',
+      \ 'i':  "if \1if\1 \r",
+      \ 'u':  "unless \1unless\1 \r",
+      \ 'c':  "class \1class\1 \r",
+      \ }
+let g:surround_custom_mapping.lua = {
+      \ 'f':  "function(){ \r }"
+      \ }
+let g:surround_custom_mapping.python = {
+      \ 'p':  "print( \r)",
+      \ '[':  "[\r]",
+      \ }
+let g:surround_custom_mapping.vim = {
+      \'f':  "function! \r endfunction"
+      \ }
+let g:surround_custom_mapping.twig = {
+      \ '8':  "(( \r ))",
+      \ '9':  "(( \r ))",
+      \ '(':  "(( \r ))",
+      \ ')':  "(( \r ))",
+      \ '{':  "{{ \r }}",
+      \ '}':  "{{ \r }}",
+      \ '%':  "{% \r %}",
+      \ '#':  "{# \r #}",
+      \ '/':  "{# \r #}",
+      \ }
+function! s:_copy_surround_mapping(from, to)
+  if exists('g:surround_custom_mapping[a:from]')
+    let g:surround_custom_mapping[a:to] = g:surround_custom_mapping[a:from]
+endif
+endfunction
+function! s:copy_surround_mapping(copies)
+  call map(a:copies, 's:_copy_surround_mapping(v:val[0], v:val[1])')
+endfunction
+call s:copy_surround_mapping([
+      \ ['twig', 'html.twig'],
+      \ ['ruby', 'ruby.rspec'],
+      \ ['python', 'python.nosetests'],
+      \ ['perl', 'perl.prove'],
+      \ ])
+'''
+# TODO : http://qiita.com/hokorobi/items/f1bd7b52b1049a652dc2
+# repo = 'machakann/vim-sandwich'
+
+# repo = 'tpope/vim-abolish', {'autoload': {
+# on_cmd = ['Abolish', 'Subvert']
+# on_map = '<Plug>'
+
+# =======================================================
+[[plugins]]
+repo = 'tpope/vim-dispatch'
+on_cmd = ['FocusDispatch', 'Dispatch', 'Start', 'Make', 'Copen']
+# repo = 'rhysd/endwize.vim',  {'insert':1}
+
+# =======================================================
+# [[plugins]]
+# repo = 't9md/vim-quickhl'
+# on_cmd = [
+# 	'QuickhlManualEnable', 'QuickhlManualDisable', 'QuickhlManualList',
+# 	'QuickhlManualReset', 'QuickhlManualColors', 'QuickhlManualAdd',
+# 	'QuickhlManualDelete', 'QuickhlManualLock', 'QuickhlManualUnlock',
+# 	'QuickhlManualLockToggle', 'QuickhlManualLockWindow', 'QuickhlManualUnlockWindow',
+# 	'QuickhlManualLockWindowToggle', 'QuickhlCwordEnable', 'QuickhlCwordDisable',
+# 	'QuickhlCwordToggle', 'QuickhlTagEnable', 'QuickhlTagDisable',
+# 	'QuickhlTagToggle',
+# ]
+# on_map = '<Plug>'
+# hook_add = '''
+#   let g:quickhl_manual_enable_at_startup = 1
+#   let g:quickhl_cword_enable_at_startup = 1
+#   let g:quickhl_tag_enable_at_startup = 1
+#   nmap [!space]m <Plug>(quickhl-cword-toggle)
+#   xmap [!space]m <Plug>(quickhl-cword-toggle)
+#   nmap [!space]M <Plug>(quickhl-manual-reset)
+#   xmap [!space]M <Plug>(quickhl-manual-reset)
+#   nmap [!space], <Plug>(quickhl-manual-this)
+# '''
+
+# =======================================================
+[[plugins]]
+repo = 'bkad/CamelCaseMotion'
+on_map = '<Plug>'
+hook_add = '''
+nmap <silent> ,w <Plug>CamelCaseMotion_w
+nmap <silent> ,e <Plug>CamelCaseMotion_e
+nmap <silent> ,b <Plug>CamelCaseMotion_b
+vmap <silent> ,w <Plug>CamelCaseMotion_w
+vmap <silent> ,e <Plug>CamelCaseMotion_e
+vmap <silent> ,b <Plug>CamelCaseMotion_b
+
+omap <silent> i,w <Plug>CamelCaseMotion_iw
+xmap <silent> i,w <Plug>CamelCaseMotion_iw
+omap <silent> i,b <Plug>CamelCaseMotion_ib
+xmap <silent> i,b <Plug>CamelCaseMotion_ib
+omap <silent> i,e <Plug>CamelCaseMotion_ie
+xmap <silent> i,e <Plug>CamelCaseMotion_ie
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'h1mesuke/vim-alignta'
+on_cmd = [ 'Align', 'Alignta' ]
+hook_add = '''
+let g:alignta_confirm_for_retab = 0
+" let g:Align_xstrlen=3
+" vmap ,a :Align
+
+vnoremap ,a :Alignta
+vnoremap ,,a :Alignta<< [:=><\-)}\]]\+
+vnoremap ,,r :Alignta<< [=><\-)}\]]\+
+vnoremap ,,t :Alignta \|<CR>
+vnoremap ,,c :Alignta<< \(//\|#\|\/\*\)/1<CR>
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'syngan/vim-clurin'
+hook_add = '''
+nmap <C-a> <Plug>(clurin-next)
+nmap <C-x> <Plug>(clurin-prev)
+vmap <C-a> <Plug>(clurin-next)
+vmap <C-x> <Plug>(clurin-prev)
+nmap + <Plug>(clurin-next)
+nmap - <Plug>(clurin-prev)
+vmap + <Plug>(clurin-next)
+vmap - <Plug>(clurin-prev)
+function! VimrcCtrlAX(cnt) abort
+  let fallback = a:cnt > 0 ? "\<C-a>" : "\<C-x>"
+  if !s:bundle.is_installed('vim-speeddating')
+    execute 'normal!' abs(a:cnt) . fallback
+    return
+  endif
+  let speeddating = "\<Plug>SpeedDating" . (a:cnt > 0 ? "Up" : "Down")
+
+  let line = getline('.')
+  execute 'normal' abs(a:cnt) . speeddating
+  if line == getline('.')
+    execute 'normal!' abs(a:cnt) . fallback
+  endif
+endfunction
+let g:clurin = {
+      \ '-': {
+      \   'def': [
+      \     ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'],
+      \     [ 'january', 'february', 'march', 'april', 'may',
+      \       'june', 'july', 'august', 'september', 'october',
+      \       'november', 'december'],
+      \     ['get', 'post', 'put', 'delete'],
+      \     ['pick', 'squash', 'edit', 'reword', 'fixup', 'exec'],
+      \     ['previous', 'current', 'next'],
+      \     ['=', ':='],
+      \     ['true', 'false'],
+      \     ['月','火','水','木','金','土','日'],
+      \   ],
+      \   'nomatch': function('VimrcCtrlAX'),
+      \ },
+      \ 'php': {
+      \   'def': [
+      \     ['private', 'protected', 'public'],
+      \     ['extends', 'implements'],
+      \     ['assert', 'depends', 'dataProvider', 'expectedException', 'group', 'test'],
+      \   ],
+      \ },
+      \ 'vim': {
+      \   'def': [
+      \     ['echo', 'echomsg'],
+      \     ['if', 'elseif', 'endif'],
+      \     ['for', 'endfor'],
+      \     ['function', 'endfunction'],
+      \     ['try', 'catch', 'finally'],
+      \     ['nnoremap', 'xnoremap', 'inoremap', 'vnoremap', 'cnoremap', 'onoremap'],
+      \     ['nmap', 'xmap', 'imap', 'vmap', 'cmap', 'omap'],
+      \     ['NeoBundle', 'NeoBundleLazy'],
+      \     ['Home', 'End', 'Left', 'Right', 'Delete'],
+      \     ['has', 'has_key', 'exists'],
+      \   ],
+      \ },
+      \ 'go': {
+      \   'def': [
+      \     ['true', 'false', 'iota', 'nil'],
+      \     ['print', 'println'],
+      \     ['byte', 'complex64', 'complex128'],
+      \     ['int', 'int8', 'int16', 'int32', 'int64'],
+      \     ['uint', 'uint8', 'uint16', 'uint32', 'uint64'],
+      \     ['float32', 'float64'],
+      \     ['interface', 'struct'],
+      \   ],
+      \ },
+      \ 'ruby': {
+      \   'def': [
+      \     ["describe", "context", "specific", "example"],
+      \     ['public', 'protected', 'private'],
+      \     ['before', 'after'],
+      \     ['be_true', 'be_false'],
+      \     ['get', 'post', 'put', 'delete'],
+      \     ['==', 'eql', 'equal'],
+      \     [ '.should_not', '.should' ],
+      \     ['.to_not', '.to'],
+      \   ],
+      \ },
+      \ 'markdown': {
+      \   'def': [
+      \     ['[ ]', '[x]'],
+      \     ['#', '##', '###', '####', '#####', ],
+      \     ["-", "\t-", "\t\t-", "\t\t\t-", ],
+      \     ["+", "\t+", "\t\t+", "\t\t\t+", ],
+      \   ],
+      \ },
+      \ }
+'''
+# =======================================================
+[[plugins]]
+repo = 'tpope/vim-speeddating'
+on_map = '<Plug>'
+on_cmd = ['SpeedDatingFormat']
+hook_add = '''
+let g:speeddating_no_mappings = 1
+
+if !d#is_installed('vim-clurin')
+  nmap <C-A> <Plug>SpeedDatingUp
+  nmap <C-X> <Plug>SpeedDatingDown
+  xmap <C-A> <Plug>SpeedDatingUp
+  xmap <C-X> <Plug>SpeedDatingDown
+endif
+nmap d<C-A> <Plug>SpeedDatingNowUTC
+nmap d<C-X> <Plug>SpeedDatingNowLocal
+'''
+# =======================================================
+[[plugins]]
+repo = 'AndrewRadev/splitjoin.vim'
+on_cmd = ['SplitjoinJoin', 'SplitjoinSplit']
+hook_add = '''
+let g:splitjoin_split_mapping = 'gS'
+let g:splitjoin_join_mapping = 'gJ'
+let g:splitjoin_normalize_whitespace = 1
+let g:splitjoin_align = 1
+
+" nmap ,j :<C-u>SplitjoinSplit<CR>
+" nmap ,k :<C-u>SplitjoinJoin<CR>
+
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'AndrewRadev/inline_edit.vim'
+on_cmd = [ 'InlineEdit' ]
+hook_add = '''
+let g:inline_edit_autowrite = 1
+let g:inline_edit_patterns = [
+      \ {
+      \ 'main_filetype': '*html',
+      \ 'sub_filetype': 'handlebars',
+      \ 'indent_adjustment': 1,
+      \ 'start': '<script\>[^>]*type="text/template"[^>]*>',
+      \ 'end': '</script>',
+      \ }
+      \ ]
+nnoremap <Leader>i :<C-u>InlineEdit<CR>
+'''
+# =======================================================
+[[plugins]]
+repo = 'rhysd/clever-f.vim'
+on_map = '<Plug>'
+hook_add = '''
+let g:clever_f_not_overwrites_standard_mappings=1
+
+nmap [!duu]f <Plug>(clever-f-f)
+vmap f <Plug>(clever-f-f)
+map F <Plug>(clever-f-F)
+" map t <Plug>(clever-f-t)
+" map T <Plug>(clever-f-T)
+'''
+# =======================================================
+[[plugins]]
+repo = 't9md/vim-smalls'
+on_map = '<Plug>'
+hook_add = '''
+nmap ,f <Plug>(smalls)
+omap ,f <Plug>(smalls)
+xmap ,f <Plug>(smalls)
+let g:smalls_auto_excursion_min_input_length = 2
+
+let s:cli_table_custom = {
+      \ "\<C-g>": 'do_cancel',
+      \ "\<C-j>": 'do_jump',
+      \ "\<CR>": 'do_set',
+      \ }
+call smalls#keyboard#cli#extend_table(s:cli_table_custom)
+unlet s:cli_table_custom
+'''
+# =======================================================
+[[plugins]]
+repo = 'sgur/vim-editorconfig'
+# if has('python')
+#   repo = 'editorconfig/editorconfig-vim'
+# endif
+
+# =======================================================
+[[plugins]]
+repo = 'glidenote/memolist.vim'
+on_cmd = ['MemoNew', 'MemoGrep', 'MemoList']
+hook_add = '''
+let g:memolist_memo_suffix = "md"
+let g:memolist_path = $HOME . '/memo'
+" let g:memolist_vimfiler = 1
+
+if d#is_installed('unite.vim')
+  nmap <silent> ,ml :<C-u>Unite memolist<CR>
+  nmap <silent> ,mg :<C-u>call <SID>unite_grep(g:memolist_path)<CR>
+else
+  nmap <silent> ,ml :MemoList<CR>
+  nmap <silent> ,mg :MemoGrep<CR>
+endif
+nmap <silent> ,mc :MemoNew<CR>
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'pekepeke/vim-trimr'
+hook_add = '''
+let g:trimr_method = 'ignore_filetype'
+let g:trimr_targets = ['markdown', 'mkd', 'textile']
+'''
+# repo = 'othree/eregex.vim'
+# on_cmd = ['E2v', 'M', 'S', 'G', 'V']
+# hook_add = '''
+# let g:eregex_default_enable=0
+# '''
+# =======================================================
+[[plugins]]
+repo = 'mbbill/undotree'
+hook_add = '''
+nnoremap <Leader>u :<C-u>UndotreeToggle<CR>
+
+let g:undotree_SetFocusWhenToggle = 1
+" let g:undotree_SplitLocation = 'topleft'
+let g:undotree_WindowLayout = 'topleft'
+let g:undotree_SplitWidth = 35
+let g:undotree_diffAutoOpen = 1
+let g:undotree_diffpanelHeight = 25
+let g:undotree_RelativeTimestamp = 1
+let g:undotree_TreeNodeShape = '*'
+let g:undotree_HighlightChangedText = 1
+let g:undotree_HighlightSyntax = "UnderLined"
+'''
+# repo = 'sjl/gundo.vim'
+# =======================================================
+[[plugins]]
+repo = 'kana/vim-smartword'
+on_map = '<Plug>'
+hook_add = '''
+nmap w  <Plug>(smartword-w)
+nmap b  <Plug>(smartword-b)
+nmap e  <Plug>(smartword-e)
+nmap ge <Plug>(smartword-ge)
+vmap w  <Plug>(smartword-w)
+vmap b  <Plug>(smartword-b)
+vmap e  <Plug>(smartword-e)
+vmap ge <Plug>(smartword-ge)
+'''
+# =======================================================
+[[plugins]]
+repo = 'thinca/vim-qfreplace'
+
+# =======================================================
+[[plugins]]
+repo = 'thinca/vim-localrc'
+hook_add = '''
+let g:localrc_filename = '.vimrc_local.vim'
+if has('vim_starting')
+  " http://vim-users.jp/2009/12/hack112/ => vimrc-local
+  call localrc#load('vimrc_local.vim', getcwd(), 3)
+  call localrc#load(g:localrc_filename, getcwd(), 3)
+  endif
+  function! s:edit_vimrc_local()
+    let fpath = s:find_proj_dir() . "/" .g:localrc_filename
+    if !filereadable(fpath)
+      let fpath = input( g:localrc_filename . " :", fpath)
+  endif
+  if !empty(fpath)
+    execute "edit" "+split" fpath
+  endif
+endfunction
+command! VimrcLocalEdit call s:edit_vimrc_local()
+'''
+# =======================================================
+[[plugins]]
+repo = 'thinca/vim-prettyprint'
+on_cmd = ['PP', 'PrettyPrint']
+# =======================================================
+[[plugins]]
+repo = 'thinca/vim-ambicmd'
+hook_add = '''
+function! s:ambicmd_expand(key, mode, line)
+  " give priority to altercmd.vim
+  if hasmapto(a:line, a:mode, 1)
+    return a:key
+  endif
+  return ambicmd#expand(a:key)
+endfunction
+
+cmap <expr> <Space> <SID>ambicmd_expand("\<Space>", "c", getcmdline())
+cmap <expr> <CR> <SID>ambicmd_expand("\<CR>", "c", getcmdline())
+'''
+# =======================================================
+[[plugins]]
+repo = 'deris/vim-rengbang'
+on_cmd = ['RengBang']
+on_map = '<Plug>'
+hook_add = '''
+let g:rengbang_default_pattern  = '\(\d\+\)'
+let g:rengbang_default_start    = 1
+let g:rengbang_default_step     = 1
+let g:rengbang_default_usefirst = 0
+let g:rengbang_default_confirm_sequence = [
+      \ 'pattern',
+      \ 'start',
+      \ 'step',
+      \ 'usefirst',
+      \ 'format',
+      \ ]
+'''
+# =======================================================
+[[plugins]]
+repo = 'nathanaelkane/vim-indent-guides'
+hook_add = '''
+let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_indent_levels = 10
+if has('gui_running')
+  let g:indent_guides_auto_colors = 1
+else
+  let g:indent_guides_auto_colors = 0
+  augroup vimrc-plugin-indentguides
+    autocmd!
+    autocmd VimEnter,Colorscheme * :highlight IndentGuidesEven ctermbg=236 ctermfg=white
+    autocmd VimEnter,Colorscheme * :highlight IndentGuidesOdd ctermbg=235 ctermfg=white
+  augroup END
+endif
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'vim-scripts/sudo.vim'
+hook_add = '''
+if d#is_mac() && has('gui_running') && d#is_installed('sudo-gui.vim')
+  command! -bang SW SudoWriteMacGUI
+else
+  command! SW w sudo:%
+  command! SR read sudo:%
+endif
+'''
+# [[plugins]]
+# repo = 'mattn/startmenu-vim'
+# [[plugins]]
+# repo = 'rhysd/unite-mac-apps'
+[[plugins]]
+repo = 'koron/codic-vim'
+hook_add = '''
+" http://sgur.tumblr.com/post/91906146884/codic-vim
+inoremap <silent> <C-x><C-t> <C-R>=<SID>codic_complete()<CR>
+function! s:codic_complete()
+  let line = getline('.')
+  let start = match(line, '\k\+$')
+  let cand = s:codic_candidates(line[start :])
+  call complete(start +1, cand)
+  return ''
+endfunction
+
+function! s:codic_candidates(arglead)
+  let cand = codic#search(a:arglead, 30)
+  " error
+  if type(cand) == type(0)
+    return []
+  endif
+  " english -> english terms
+  if a:arglead =~# '^\w\+$'
+    return map(cand, '{"word": v:val["label"], "menu": join(map(copy(v:val["values"]), "v:val.word"), ",")}')
+  endif
+  " japanese -> english terms
+  return s:reverse_candidates(cand)
+endfunction
+
+function! s:reverse_candidates(cand)
+  let _ = []
+  for c in a:cand
+    for v in c.values
+      call add(_, {"word": v.word, "menu": !empty(v.desc) ? v.desc : c.label })
+    endfor
+  endfor
+  return _
+endfunction
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'rhysd/unite-codic.vim'
+
+# lang {{{3
+# basic {{{4
+# =======================================================
+[[plugins]]
+repo = 'thinca/vim-quickrun'
+hook_add = '''
+  nnoremap <expr><silent><C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+  "silent! nmap <unique> <Space> <Plug>(quickrun)
+  if !exists('g:quickrun_config')
+    let g:quickrun_config={}
+  endif
+
+  " objc {{{4
+  call extend(g:quickrun_config, {
+    \ 'objc/gcc' : {
+    \   'command' : 'gcc',
+    \   'exec' : ['%c %o %s -o %s:p:r -framework Foundation', '%s:p:r %a', 'rm -f %s:p:r'],
+    \   'tempfile': '{tempname()}.m'
+    \ },
+    \ })
+  if d#is_mac()
+    call extend(g:quickrun_config, {
+    \ 'objc' : {
+    \   'type' : 'objc/xctool',
+    \ },
+    \ 'objc/xctool' : {
+    \    'command': 'xctool',
+    \    'cmdopt': 'test',
+    \    'outputter': 'xctool',
+    \    'exec': ['%c %o %a'],
+    \ },
+    \ 'swift' : {
+    \   'type' : 'swift/xcrun',
+    \ },
+    \ 'swift/xcrun' : {
+    \    'command': 'xcrun swift',
+    \    'cmdopt': '-i',
+    \    'outputter': 'xctool',
+    \    'exec': ['%c %s %o %a'],
+    \ },
+    \ })
+  else
+    call extend(g:quickrun_config, {
+    \ 'objc' : {
+    \   'type' : 'objc/gcc',
+    \ },
+    \ })
+  endif
+  " gcc {{{4
+  call extend(g:quickrun_config, {
+  \ 'cpp': {
+  \   'type' : 'cpp/clang++',
+  \ },
+  \ 'cpp/gcc': {
+  \   'command' : 'g++',
+  \   'cmdopt' : '-std=c++11 -Wall -Wextra',
+  \   'hook/quickrunex/enable' : 1,
+  \ },
+  \ 'cpp/clang++': {
+  \   'command' : 'clang++',
+  \   'cmdopt' : '-std=c++1y -Wall -Wextra',
+  \   'hook/quickrunex/enable' : 1,
+  \ },
+  \ })
+  " go {{{4
+  call extend(g:quickrun_config, {
+  \ 'go' : {
+  \   'type' : executable('go') && executable('8g') ? 'go/8g': '',
+  \ },
+  \ 'go/8g' : {
+  \   'command': '8g',
+  \   'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],
+  \ },
+  \ })
+  " csharp {{{4
+  call extend(g:quickrun_config, {
+  \ 'cs' : {
+  \   'type' : executable('csc') ? 'cs/csc':
+  \            executable('cs') ? 'cs/cs': '',
+  \ },
+  \ 'cs/csc' : {
+  \   'command' : 'csc',
+  \   'runmode' : 'simple',
+  \   'exec' : ['%c /nologo %s:gs?/?\\? > /dev/null', '"%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
+  \   'tempfile' : '{tempname()}.cs',
+  \ },
+  \ 'cs/cs' : {
+  \   'command' : 'cs',
+  \   'runmode' : 'simple',
+  \   'exec' : ['%c %s > /dev/null', 'mono "%S:p:r:gs?/?\\?.exe" %a', ':call delete("%S:p:r.exe")'],
+  \   'tempfile' : '{tempname()}.cs',
+  \ },
+  \ })
+  if d#is_win() && executable('C:\Program Files (x86)\LINQPad4\LPRun.exe')
+    let g:quickrun_config['cs/lprun'] = {
+      \   'command': 'C:\Program Files (x86)\LINQPad4\LPRun.exe',
+      \ , 'cmdopt': '-lang=S',
+      \ , 'exec': '%c:gs?/?\\? %o %s',
+      \ , 'tempfile': '%{tempname()}.cs',
+      \ , 'hook/output_encode/encoding': '&termencoding',
+      \ , 'hook/sweep/files': ['%S:p:r.exe'],
+      \ }
+  endif
+  " html {{{4
+  call extend(g:quickrun_config, {
+  \ 'html' : {
+  \   "type" : "html/haml"
+  \ },
+  \ 'html/haml' : {
+  \   "command" : "html2haml"
+  \ },
+  \ 'html/haml_repace' : {
+  \   "outputter" : "error",
+  \   "outputter/success" : "replace_region",
+  \   "outputter/error"   : "message",
+  \   "outputter/message/log"   : 1,
+  \   "runner" : "system",
+  \   "type" : "html/haml"
+  \ },
+  \})
+  " javascript {{{4
+  call extend(g:quickrun_config, {
+  \ 'json': {
+  \   'type': 'json/jq',
+  \ },
+  \ 'coffee/coffee2javascript' : {
+  \    'command': 'coffee',
+  \    'cmdopt': '-pb',
+  \    'outputter/buffer/filetype': 'javascript',
+  \ },
+  \ 'json/jq': {
+  \   'command': 'jq',
+  \ },
+  \ })
+
+  call extend(g:quickrun_config, {
+  \ 'javascript/babel': {
+  \   'cmdopt': '',
+  \   'exec': "babel %o %s",
+  \   'outputter/buffer/filetype': 'javascript',
+  \ }})
+
+  " call extend(g:quickrun_config, {
+  " \ 'jsx' : {
+  " \   'type' : 'denajsx/jsx',
+  " \ },
+  " \ 'denajsx/jsx' : {
+  " \   'command': 'jsx',
+  " \   'exec' : '%c %o --run %s',
+  " \ },
+  " \ })
+
+  " css {{{4
+  call extend(g:quickrun_config, {
+  \ 'slim' : {
+  \   'type' : 'slim/slimrb',
+  \ },
+  \ 'slim/slimrb' : {
+  \   'command' : 'slimrb',
+  \   'exec' : ['%c %o -p %s'],
+  \ },
+  \ })
+  " rspec {{{4
+  " http://qiita.com/joker1007/items/9dc7f2a92cfb245ad502
+  call extend(g:quickrun_config, {
+  \ 'ruby.rspec' : {
+  \   'type' : 'ruby/rspec',
+  \ },
+  \ 'ruby/rspec' : {
+  \   'command' : 'rspec',
+  \   'exec' : '%c %o -l {line(".")}',
+  \ },
+  \ 'ruby.rspec/rspec_bundle': {
+  \   'command': 'rspec',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'bundle exec %c %o --color --tty %s'
+  \ },
+  \ 'ruby.rspec/rspec_normal': {
+  \   'command': 'rspec',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': '%c %o --color --tty %s'
+  \ },
+  \ 'ruby.rspec/rspec_zeus': {
+  \   'command': 'rspec',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'zeus test %o --color --tty %s'
+  \ },
+  \ 'ruby.rspec/rspec_spring': {
+  \   'command': 'rspec',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'spring rspec %o --color --tty %s'
+  \ },
+  \ 'ruby/cucumber_bundle': {
+  \   'command': 'cucumber',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'bundle exec %c %o --color %s'
+  \ },
+  \ 'ruby/cucumber_zeus': {
+  \   'command': 'cucumber',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'zeus cucumber %o --color %s'
+  \ },
+  \ 'ruby/cucumber_spring': {
+  \   'command': 'cucumber',
+  \   'outputter/buffer/split': 'botright',
+  \   'exec': 'spring cucumber %o --color %s'
+  \ },
+  \ })
+
+  " tests {{{4
+  call extend(g:quickrun_config, {
+  \ 'python.nosetests' : {
+  \   'type' : 'python/nosetests',
+  \ },
+  \ 'perl.prove' : {
+  \   'type' : 'perl/prove',
+  \ },
+  \ 'php.phpunit' : {
+  \   'type' : 'php/phpunit',
+  \ },
+  \ 'python/nosetests' : {
+  \   'command' : 'nosetests',
+  \   'cmdopt': '-s -vv',
+  \ },
+  \ 'php/phpunit' : {
+  \   'command' : 'phpunit',
+  \ },
+  \ 'perl/prove' : {
+  \   'command' : 'prove',
+  \ },
+  \ })
+
+  function! s:build_options(vars, ...) "{{{5
+    let opts = []
+    for [field, fmt] in items(a:vars)
+      let value = get(b:, field, get(g:, field, ''))
+      if !empty(value)
+        call add(opts, printf(fmt, value))
+      endif
+    endfor
+
+    return join(opts, " ")
+  endfunction "}}}
+
+  function! s:str_prepend(val, ch)
+    return empty(a:val) ? "" : a:ch . a:val
+  endfunction
+
+  function! s:build_sqlplus_options() "{{{5
+    let opts = []
+    let vars = [
+      \ 'dbext_user',
+      \ 'dbext_passwd',
+      \ 'dbext_host',
+      \ 'dbext_port',
+      \ 'dbext_dbname',
+      \ ]
+    let [user, pass, host, port, db] = map(vars, 'get(b:, field, get(g:, field, ""))')
+    return printf("%s%s@%s%s%s", user,
+      \ s:str_prepend(pass, "/"),
+      \ host,
+      \ s:str_prepend(port, ":"),
+      \ s:str_prepend(db, "/")
+      \ )
+  endfunction " }}}
+  function! MySQLCommandOptions() "{{{5
+    if exists('b:MYSQL_cmd_options')
+      return b:MYSQL_cmd_options
+    endif
+    return s:build_options({
+          \ 'dbext_host': '-h %s',
+          \ 'dbext_user': '-u %s',
+          \ 'dbext_passwd': '-p%s',
+          \ 'dbext_port': '-P %s',
+          \ 'dbext_dbname': '%s',
+          \ })
+  endfunction "}}}
+  function! PgSQLCommandOptions() "{{{5
+    if exists('b:PGSQL_cmd_options')
+      return b:PGSQL_cmd_options
+    endif
+    return s:build_options({
+      \ 'dbext_host': '-h %s',
+      \ 'dbext_user': '-u %s',
+      \ 'dbext_port': '-p %s',
+      \ 'dbext_dbname': '-d %s',
+      \ })
+  endfunction "}}}
+  function! OracleCommandOptions() "{{{5
+    if exists('b:SQLPLUS_cmd_options')
+      return b:PGSQL_cmd_options
+    endif
+
+    return s:build_sqlplus_options()
+  endfunction
+
+  " configs{{{4
+  call extend(g:quickrun_config, {
+  \ 'mysql' : {
+  \   'type' : 'sql/mysql',
+  \ },
+  \ 'sql' : {
+  \   'type' : 'sql/postgresql',
+  \ },
+  \ 'sql/mysql' : {
+  \   'command' : 'mysql',
+  \   'cmdopt': '%{MySQLCommandOptions()}',
+  \   'exec' : ['%c %o < %s'],
+  \ },
+  \ 'sql/postgresql': {
+  \   'command' : 'psql',
+  \   'cmdopt': '%{PgSQLCommandOptions()}',
+  \   'exec': ['%c %o -f %s'],
+  \ }
+  \ })
+  " texts {{{4
+  if d#is_installed('previm')
+    call extend(g:quickrun_config, {
+    \ 'markdown': { 'type': 'text/previm' },
+    \ 'rst': { 'type': 'text/previm' },
+    \ 'textile': { 'type': 'text/previm' },
+    \ })
+    call extend(g:quickrun_config, {
+    \ 'text/previm' : {
+    \   'runner' : 'vimscript',
+    \   'exec' : 'silent PrevimOpen %o',
+    \   'outputter' : 'null',
+    \ }})
+  else
+    call extend(g:quickrun_config, { 'rst': { 'type': 'rst/rst2html', }})
+    call extend(g:quickrun_config, {
+    \ 'markdown' : {
+    \   'type' :
+    \      d#is_mac() && isdirectory('/Applications/Marked.app') ? 'markdown/Marked':
+    \      executable('markedwrapper')    ? 'markdown/markedwrapper':
+    \      executable('mdown')            ? 'markdown/mdown':
+    \      executable('pandoc')           ? 'markdown/pandoc':
+    \      executable('multimarkdown')    ? 'markdown/multimarkdown':
+    \      executable('MultiMarkdown.pl') ? 'markdown/MultiMarkdown.pl':
+    \      executable('rdiscount')        ? 'markdown/rdiscount':
+    \      executable('bluecloth')        ? 'markdown/bluecloth':
+    \      executable('markdown')         ? 'markdown/markdown':
+    \      executable('Markdown.pl')      ? 'markdown/Markdown.pl':
+    \      executable('redcarpet')        ? 'markdown/redcarpet':
+    \      executable('kramdown')         ? 'markdown/kramdown':
+    \      '',
+    \   'outputter' : 'browser',
+    \ },
+    \ })
+  endif
+
+  call extend(g:quickrun_config, {
+  \ 'markdown/markedwrapper' : {
+  \   'command' : 'markedwrapper',
+  \   'exec' : '%c %o %s',
+  \ },
+  \ 'markdown/mdown' : {
+  \   'command' : 'mdown',
+  \   'exec' : '%c %o -i %s',
+  \ },
+  \ 'markdown/Marked' : {
+  \   'command' : 'open',
+  \   'outputter' : 'null',
+  \   'exec' : '%c -a Marked %o %s',
+  \ },
+  \ 'markdown/multimarkdown' : {
+  \   'command' : 'multimarkdown',
+  \ },
+  \ 'markdown/rdiscount' : {
+  \   'command' : 'rdiscount',
+  \ },
+  \ 'markdown/markdown' : {
+  \   'command' : 'markdown',
+  \ },
+  \ })
+
+  " script langs {{{4
+  call extend(g:quickrun_config, {
+  \ 'processing' : {
+  \   'type' : executable('processing-java') ? 'processing/processing-java' :
+  \            executable('osascript') ? 'processing/osascript':
+  \            '',
+  \ },
+  \ 'applescript' : {
+  \   'type' : executable('osascript') ? 'applescript/osascript':
+  \            '',
+  \ },
+  \ 'diag' : {
+  \   'type' : 'diag/diag',
+  \ },
+  \ })
+  call extend(g:quickrun_config, {
+  \ 'processing/osascript' : {
+  \   'command': 'osascript',
+  \   'exec' : ['osascript %o ' . globpath(&runtimepath, 'bin/runPSketch.scpt'). ' %s:p:h:t']
+  \ },
+  \ 'processing/processing-java' : {
+  \   'command': 'processing-java',
+  \   'exec' : '%c %o --sketch=$PWD/ --output=/Library/Processing --run --force',
+  \ },
+  \ 'applescript/osascript' : {
+  \   'command' : 'osascript',
+  \   'output' : '_',
+  \ },
+  \ 'diag/diag' : {
+  \   'exec': [
+  \      '%c -a %s -o %{expand("%:r")}.png',
+  \      printf("%s %{expand(%:r)}.png %s",
+  \        d#is_win() ? 'explorer' : (d#is_mac() ? 'open -g' : 'xdg-open'),
+  \        d#is_win() ? "" : "&"),
+  \   ],
+  \   'outputter': 'message',
+  \ },
+  \ })
+  call extend(g:quickrun_config, {
+  \ 'command/cat' : {
+  \   'command' : 'cat',
+  \   'exec' : ['%c %o %s'],
+  \ },
+  \ })
+
+  " TODO : not work
+  call extend(g:quickrun_config, {
+  \ 'w3m' : {
+  \   'type' : 'w3m/open',
+  \ },
+  \ 'w3m/open': {
+  \   'command': (d#is_win() ? 'start ""' : (d#is_mac() ? "open" : "xdg-open")),
+  \   'exec': [
+  \     '%c %o "%{b:last_url}"',
+  \   ],
+  \ }
+  \ })
+
+  nnoremap <Leader><Leader>r :<C-u>QuickRun command/cat<CR>
+  function! s:vimrc_quickrun_init() "{{{4
+    nmap <buffer> q :quit<CR>
+  endfunction "}}}
+  MyAutoCmd FileType quickrun call s:vimrc_quickrun_init()
+'''
+
+# =======================================================
+[[plugins]]
+repo = 'mattn/quickrunex-vim'
+[[plugins]]
+repo = 'mattn/emoji-vim'
+on_cmd = ['Emoji']
+on_map = '<Plug>'
+
+# =======================================================
+[[plugins]]
+repo = 'w0rp/ale'
+hook_add = '''
+  let g:ale_sign_column_always = 1
+  let g:ale_sign_error = '>>'
+  let g:ale_sign_warning = '--'
+  let g:ale_linters = {
+    \ }
+  let g:ale_echo_msg_error_str = 'E'
+  let g:ale_echo_msg_warning_str = 'W'
+  let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+  " let g:ale_lint_on_text_changed = 'never'
+  " let g:ale_lint_on_enter = 0
+  let g:ale_set_loclist = 0
+  let g:ale_set_quickfix = 1
+  " let g:ale_open_list = 1
+  " let g:ale_keep_list_window_open = 1
+'''
+
+# [[plugins]]
+# repo = 'tokorom/vim-quickrun-xctool'
+# =======================================================
+[[plugins]]
+repo = 'manicmaniac/vim-quickrun-qo'
+[[plugins]]
+repo = 'osyo-manga/vim-anzu'
+on_map = '<Plug>'
+hook_add = '''
+  let g:anzu_status_format = "%p(%i/%l)"
+  let g:anzu_bottomtop_word = "search hit BOTTOM, continuing at TOP"
+  let g:anzu_topbottom_word = "search hit TOP, continuing at BOTTOM"
+  " nmap n <Plug>(anzu-n)zx
+  " nmap n <Plug>(anzu-n)zo:<C-u>silent AnzuUpdateSearchStatus\|redraw!<CR>
+  function! ExecIfFoldClosed(key)
+    if foldclosed('.') != -1
+      execute "normal!" a:key
+    endif
+  endfunction
+  nnoremap <Plug>(vimrc-eifc-zO) :call ExecIfFoldClosed("zO")<CR>
+  nmap <silent> n <Plug>(anzu-n)<Plug>(vimrc-eifc-zO)
+  " nmap n <Plug>(anzu-jump-n)zx<Plug>(anzu-echo-search-status)
+  nmap <silent> N <Plug>(anzu-N)<Plug>(vimrc-eifc-zO)
+  nmap <silent> * <Plug>(anzu-star)N<Plug>(vimrc-eifc-zO)
+  nmap <silent> # <Plug>(anzu-sharp)n<Plug>(vimrc-eifc-zO)
+
+  " 一定時間キー入力がないとき、ウインドウを移動したとき、タブを移動したときに
+  " 検索ヒット数の表示を消去する
+  MyAutoCmd CursorMoved,CursorMovedI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
+'''
+# repo = 'kien/rainbow_parentheses.vim'
+# hook_add = '''
+#     MyAutoCmd VimEnter * RainbowParenthesesToggleAll
+# '''
+# repo = 'oblitum/rainbow'
+[[plugins]]
+repo = 'luochen1990/rainbow'
+hook_add = '''
+  let g:rainbow_active = 1
+  let g:rainbow_conf = {
+  \  'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+  \  'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+  \  'operators': '_,_',
+  \  'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+  \  'separately': {
+  \    '*': {},
+  \    'tex': {
+  \      'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+  \    },
+  \    'lisp': {
+  \      'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+  \    },
+  \    'vim': {
+  \      'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+  \    },
+  \    'html': {
+  \      'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+  \    },
+  \    'css': 0,
+  \  }}
+'''
+[[plugins]]
+repo = 'vim-scripts/matchit.zip'
+# \ ,  { 'on_map' : [['nx', '%']], }
+[[plugins]]
+repo = 'gregsexton/MatchTag'
+[[plugins]]
+repo = 'tpope/vim-unimpaired'
+# [[plugins]]
+# repo = 'vim-scripts/ShowMultiBase'
+# on_cmd = ['ShowMultiBase']
+# hook_add = '''
+#   let g:ShowMultiBase_General_UseDefaultMappings = 0
+
+#   noremap <silent> <Leader>= :ShowMultiBase<CR>
+#   noremap <silent> <Leader>b= :ShowMultiBase 2<CR>
+#   noremap <silent> <Leader>o= :ShowMultiBase 8<CR>
+#   noremap <silent> <Leader>d= :ShowMultiBase 10<CR>
+#   noremap <silent> <Leader>h= :ShowMultiBase 16<CR>
+# '''
+[[plugins]]
+repo = 'tommcdo/vim-exchange'
+# repo = 'tyru/current-func-info.vim'
+[[plugins]]
+repo = 'majutsushi/tagbar'
+hook_add = '''
+  let g:tagbar_type_objc = {
+    \ 'ctagstype' : 'objc',
+    \ 'kinds'     : [
+    \   'P:protocols',
+    \   'i:interfaces',
+    \   'I:implementations',
+    \   'M:instance methods',
+    \   'C:implementation methods',
+    \   'Z:protocol methods',
+    \   'v:property',
+    \ ]}
+  let g:tagbar_type_ruby = {'ctagstype': 'Ruby', 'kinds':
+    \   ['c:classes', 'f:methods', 'm:modules', 'F:singleton methods', 'r:regex']
+    \ }
+  let g:tagbar_type_javascript = {
+    \ 'ctagstype' : 'js',
+    \ 'kinds'     : [
+    \   'o:object',
+    \   'f:function',
+    \   'a:array',
+    \   's:string',
+    \   'v:variable',
+    \   'b:boolean',
+    \   'n:number',
+    \ ]}
+  if executable('php') && executable('phpctags')
+    let g:tagbar_type_php = {
+      \ 'ctagsbin'  : 'phpctags',
+      \ 'ctagsargs' : '--memory="128M" -f -',
+      \ 'kinds'     : [
+      \   'd:Constants:0:0',
+      \   'v:Variables:0:0',
+      \   'f:Functions:1',
+      \   'i:Interfaces:0',
+      \   'c:Classes:0',
+      \   'p:Properties:0:0',
+      \   'm:Methods:1',
+      \   'n:Namespaces:0',
+      \   't:Traits:0',
+      \ ],
+      \ 'sro'        : '::',
+      \ 'kind2scope' : {
+      \   'c' : 'class',
+      \   'm' : 'method',
+      \   'f' : 'function',
+      \   'i' : 'interface',
+      \   'n' : 'namespace',
+      \   't' : 'trait',
+      \ },
+      \ 'scope2kind' : {
+      \   'class'     : 'c',
+      \   'method'    : 'm',
+      \   'function'  : 'f',
+      \   'interface' : 'i',
+      \   'namespace' : 'n',
+      \   'trait'     : 't',
+      \ }}
+  endif
+  " let g:tagbar_type_javascript = {'ctagstype': 'JavaScript',
+  "       \   'kinds': ['f:functions', 'c:classes', 'm:methods', 'p:properties', 'v:global variables', 'I:inner'] }
+  if executable('npm') && executable('coffeetags')
+    let g:tagbar_type_coffee = {
+      \ 'ctagsbin' : 'coffeetags',
+      \ 'ctagsargs' : '',
+      \ 'kinds' : [
+      \   'f:functions',
+      \   'o:object',
+      \ ],
+      \ 'sro' : ".",
+      \ 'kind2scope' : {
+      \   'f' : 'object',
+      \   'o' : 'object',
+      \ }}
+  else
+    let g:tagbar_type_coffee = {'ctagstype': 'coffee',
+      \   'kinds': ['c:class', 'n:namespace', 'f:function', 'm:method', 'v:var', 'i:ivar'] }
+  endif
+  let g:tagbar_type_scala = {'ctagstype': 'scala',
+    \   'kinds': ['c:classes', 'o:objects', 't:traits', 'r:cclasses',
+    \   'a:aclasses', 'm:methods', 'V:values', 'v:variables',
+    \   'T:types', 'i:includes', 'p:packages'] }
+  let g:tagbar_type_actionscript = {'ctagstype': 'actionscript',
+    \   'kinds': ['f:functions', 'p:properties', 'v:variables',
+    \   'r:function, functions', 'c:classes'] }
+  let g:tagbar_type_tex = {
+    \ 'ctagstype' : 'latex',
+    \   'kinds': ['c:chapters', 's:sections', 'u:subsections', 'b:subsubsections',
+    \   'p:parts', 'P:paragraphs', 'G:subparagraphs'] }
+  let g:tagbar_type_make = { 'ctagstype' : 'make',
+    \   'kinds': ['m:macros', 't:targets'] }
+  let g:tagbar_type_ant = {'ctagstype': 'Ant',
+    \   'kinds': ['p:projects', 't:targets'] }
+  let g:tagbar_type_typescript = {'ctagstype': 'typescript',
+    \   'kinds': ['c:classes', 'n:modules', 'f:functions', 'v:variables', 'm:members',
+    \   'i:interfaces', 'e:enums'] }
+  let g:tagbar_type_haxe = {'ctagstype': 'haxe', 'kinds': [
+    \ 'p:package', 'f:function', 'v:variable', 'p:package', 'c:class', 'i:interface', 't:typedef',
+    \ ] }
+  let g:tagbar_type_go = {
+    \ 'ctagstype' : 'go',
+    \ 'kinds'     : [
+    \   'p:package',
+    \   'i:imports:1',
+    \   'c:constants',
+    \   'v:variables',
+    \   't:types',
+    \   'n:interfaces',
+    \   'w:fields',
+    \   'e:embedded',
+    \   'm:methods',
+    \   'r:constructor',
+    \   'f:functions'
+    \ ],
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+    \   't' : 'ctype',
+    \   'n' : 'ntype'
+    \ },
+    \ 'scope2kind' : {
+    \   'ctype' : 't',
+    \   'ntype' : 'n'
+    \ },
+    \ 'ctagsbin'  : 'gotags',
+    \ 'ctagsargs' : '-sort -silent',
+    \ }
+  " let g:tagbar_type_xxx = {
+  "       \ 'ctagstype' : '',
+  "       \ 'kinds'     : [
+  "       \   '',
+  "       \ ]}
+
+  if d#is_mac() && executable('/Applications/MacVim.app/Contents/MacOS/ctags')
+    " let g:Tlist_Ctags_Cmd='/Applications/MacVim.app/Contents/MacOS/ctags'
+    let g:tagbar_ctags_bin='/Applications/MacVim.app/Contents/MacOS/ctags'
+  endif
+  nnoremap <silent> ,tt :<C-u>TagbarToggle<CR>
+  nnoremap <silent> ,to :<C-u>TagbarOpen<CR>1<C-w>h
+'''
+# repo = 'tomtom/tcomment_vim'
+[[plugins]]
+repo = 'tpope/vim-commentary'
+hook_add = '''
+  xmap gc <Plug>Commentary
+  nmap gc <Plug>Commentary
+  nmap gcc <Plug>CommentaryLine
+  nmap gcu <Plug>CommentaryUndo
+'''
+[[plugins]]
+repo = 'tpope/vim-projectionist'
+[[plugins]]
+repo = 'thinca/vim-template'
+hook_add = '''
+  let g:template_basedir = expand('$HOME/.vim')
+  let g:template_files = 'template/**'
+  let g:template_free_pattern = 'template'
+
+  function! VimrcTemplateReplaceKeywords() "{{{3
+    silent! %s/<+FILENAME_NOEXTUC+>/\=toupper(expand('%:t:r'))/g
+    silent! %s/<+FILENAME_NOEXT+>/\=expand('%:t:r')/g
+    silent! %s/<+FILENAME+>/\=expand('%:t')/g
+    silent! %s/<+EMAIL+>/\=g:email/g
+    silent! %s/<+AUTHOR+>/\=g:author/g
+    silent! %s/<+HOMEPAGE_URL+>/\=g:homepage_url/g
+    silent! %s/<+DATE+>/\=strftime('%Y-%m-%d')/g
+    silent! execute "normal! gg"
+    "" expand eval
+    %s/<%=\(.\{-}\)%>/\=eval(submatch(1))/ge
+
+    if search('<+CURSOR+>')
+      silent! execute 'normal! "_da>'
+    endif
+  endfunction
+
+  call my#config#mkvars(['g:email', 'g:author', 'g:homepage_url'], '')
+
+  "autocmd BufNewFile * execute 'TemplateLoad'
+  MyAutoCmd User plugin-template-loaded call s:VimrcTemplateReplaceKeywords()
+'''
+[[plugins]]
+repo = 'mattn/sonictemplate-vim'
+hook_add = '''
+  let g:sonictemplate_vim_template_dir = expand('$HOME/.vim/sonictemplate/')
+  " nmap <C-y><C-t> <Plug>(sonictemplate)
+  " imap <C-y><C-t> <Plug>(sonictemplate)
+  nmap <C-y><C-t> :<C-u>Unite sonictemplate<CR>
+  imap <C-y><C-t> <ESC>:<C-u>Unite sonictemplate<CR>
+
+  let g:sonictemplate_key='\<Nop>'
+  " let g:sonictemplate_intelligent_key='\<Nop>'
+  nmap <C-y>t :<C-u>Unite sonictemplate<CR>
+  imap <C-y>t <ESC>:<C-u>Unite sonictemplate<CR>
+'''
+
+[[plugins]]
+repo = 'ujihisa/shadow.vim'
+[[plugins]]
+repo = 'mhinz/vim-hugefile'
+[[plugins]]
+repo = 'tpope/vim-git'
+[[plugins]]
+repo = 'tpope/vim-fugitive'
+on_cmd = [ "Git", "Gstatus", "Gcommit", "Gedit", "Gwrite", "Ggrep", "Glog", "Gdiff"]
+hook_add = '''
+function! s:git_qfix(...)
+  let word = input("Pattern: ")
+  if empty(word)
+    echoerr "abort"
+  endif
+  execute 'silent' call('printf', copy(a:000) + [word])
+  " TODO: "
+  Unite -no-quit quickfix
+endfunction
+  " if &diff
+  " //2 = target-branch, //3 = merge branch
+  if d#is_mac()
+    map <leader>1 :diffget //2 <Bar> duffupdate<CR>
+    map <leader>2 :diffget //3 <Bar> duffupdate<CR>
+    map <leader>3 :diffupdate <Bar>
+      \ echo '<Leader>1 = merges from target branch(left buffer), '."\n"
+      \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
+  else
+    map <leader>1 :diffget LOCAL <Bar> duffupdate<CR>
+    map <leader>2 :diffget REMOTE <Bar> duffupdate<CR>
+    map <leader>3 :diffupdate <Bar>
+      \ echo '<Leader>1 = merges from target branch(left buffer), '."\n"
+      \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
+  endif
+  " endif
+
+  nnoremap <silent> [!space]gd :<C-u>Gdiff --cached<CR>
+  nnoremap <silent> [!space]gD :<C-u>Gdiff<CR>
+  nnoremap <silent> [!space]gs :<C-u>Gstatus<CR>
+  nnoremap [!space]gl :<C-u>silent Glog <Bar> Unite -no-quit quickfix<CR>
+  nnoremap [!space]gL :<C-u>silent Glog --<Bar> Unite -no-quit quickfix<CR>
+  nnoremap [!space]gg :<C-u>call <SID>git_qfix('Ggrep -i "%s"')<CR>
+  nnoremap [!space]ggg :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
+  nnoremap [!space]ggr :<C-u>Unite -no-quit -start-insert vcs_grep<CR>
+  nnoremap [!space]ggm :<C-u>call <SID>git_qfix('Glog --grep="%s"')<CR>
+  nnoremap [!space]ggl :<C-u>call <SID>git_qfix('Glog -S="%s"')<CR>
+  nnoremap [!space]gR :<C-u>Gremove<CR>
+  nnoremap [!space]gm :<C-u>Gmove<Space>
+  nnoremap [!space]ga :<C-u>Gwrite<CR>
+  nnoremap [!space]gA :<C-u>Gwrite <cfile><CR>
+  nnoremap <silent> [!space]gc :<C-u>Gcommit<CR>
+  nnoremap <silent> [!space]gC :<C-u>Gcommit --amend<CR>
+  nnoremap <silent> [!space]gb :<C-u>Gblame<CR>
+  nnoremap <silent> [!space]gB :<C-u>Gbrowse<CR>
+  nnoremap <silent> [!space]gp :<C-u>Git push
+  nnoremap <silent> [!space]ge :<C-u>Gedit<Space>
+  if d#is_installed('agit.vim')
+    nnoremap <silent> [!space]gv :<C-u>Agit<CR>
+    nnoremap <silent> [!space]gV :<C-u>AgitFile<CR>
+  elseif d#is_installed('gitv')
+    nnoremap <silent> [!space]gv :<C-u>Gitv<CR>
+    nnoremap <silent> [!space]gV :<C-u>Gitv!<CR>
+  endif
+  command! Gdiffoff diffoff | q | Gedit
+
+function! s:vimrc_git_init()
+  setlocal foldmethod=expr
+  " setlocal foldexpr=getline(v:lnum)!~'^commit'
+  setlocal foldexpr=GitLogViewerFoldExpr(v:lnum)
+  setlocal foldtext=GitLogViewerFoldText()
+endfunction
+MyAutoCmd FileType git call s:vimrc_git_init()
+function! s:vimrc_fugitive_bufread_init()
+  if exists('b:fugitive_type')
+    if b:fugitive_type == "commit"
+      " if exists('b:fugitive_display_format') && !b:fugitive_display_format
+      "   normal a
+      " endif
+      normal! G
+      if line('.') == 3
+        setlocal modifiable
+        normal! o
+        execute "r! git show --no-color " . fugitive#buffer().sha1()
+        setlocal nomodified nomodifiable
+      endif
+      normal! gg
+    endif
+  endif
+endfunction
+" MyAutoCmd BufReadPost  fugitive://**//[0-9a-f][0-9a-f]* call s:vimrc_fugitive_bufread_init()
+" MyAutoCmd User Fugitive call s:vimrc_fugitive_init()
+'''
+[[plugins]]
+repo = 'rhysd/committia.vim'
+[[plugins]]
+repo = 'rhysd/conflict-marker.vim'
+[[plugins]]
+repo = 'idanarye/vim-merginal'
+on_cmd = [ "Merginal", "MerginalToggle", "MerginalClose"]
+[[plugins]]
+repo = 'AndrewRadev/gapply.vim'
+on_cmd = [ "Gapply"]
+
+# repo = 'gregsexton/gitv'
+# on_cmd = ['Gitv']
+hook_add = '''
+  let g:Gitv_OpenHorizontal = 1
+  let g:Gitv_WipeAllOnClose = 1
+  let g:Gitv_DoNotMapCtrlKey = 1
+
+  MyAutoCmd FileType gitv call s:vimrc_gitv_init()
+  MyAutoCmd FileType git setlocal foldlevel=99
+  " MyAutoCmd FileReadCmd,BufReadCmd fugitive://** setlocal foldlevel=99
+  function! s:vimrc_gitv_init()
+    setlocal iskeyword+=/,-,.
+
+    nnoremap <buffer> gx :<C-u>Gbrowse <C-r>=GitvGetCurrentHash()<CR><CR>
+    if d#is_installed('unite.vim')
+      nnoremap <buffer><nowait> [!space] :<C-u>Unite menu:ft_gitv<CR>
+    endif
+  endfunction
+
+  function! GitvGetCurrentHash()
+    return matchstr(getline('.'), '\[\zs.\{7\}\ze\]$')
+  endfunction
+'''
+[[plugins]]
+repo = 'cohama/agit.vim'
+on_cmd = ['Agit', 'AgitGit', 'AgitFile']
+hook_add = '''
+  let g:agit_enable_auto_show_commit = 0
+  let g:agit_enable_auto_refresh = 0
+  MyAutoCmd FileType agit call s:vimrc_agit_init()
+  function! s:vimrc_agit_init()
+    if d#is_installed('unite.vim')
+      nnoremap <buffer><nowait> [!space] :<C-u>Unite menu:ft_agit<CR>
+    endif
+  endfunction
+'''
+[[plugins]]
+repo = 'rhysd/git-messenger.vim'
+[[plugins]]
+repo = 'vim-scripts/DirDiff.vim'
+on_cmd = [
+  'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
+  'DirDiffUpdate', 'DirDiffQuit',
+  'DirDiff'
+]
+hook_add = '''
+  let g:DirDiffExcludes = "CVS,*.class,*.o,*.exe,.*.swp,*.log,.git,.svn,.hg"
+  let g:DirDiffIgnore = "Id:,Revision:,Date:"
+  map ;dg <Plug>DirDiffGet
+  map ;dp <Plug>DirDiffPut
+  map ;dj <Plug>DirDiffNext
+  map ;dk <Plug>DirDiffPrev
+'''
+[[plugins]]
+repo = 'vim-scripts/diffchar.vim'
+[[plugins]]
+repo = 'AndrewRadev/linediff.vim'
+on_cmd = ['Linediff', 'LinediffReset']
+# repo = 'vim-scripts/ConflictDetection'
+# \ 'depends': 'vim-scripts/ingo-library'
+# \ }
+
+# help {{{4
+[[plugins]]
+repo = 'rhysd/devdocs.vim'
+hook_add = '''
+  " let g:devdocs_host = 'localhost:9292'
+  let g:devdocs_filetype_map = {
+    \   'typescript': 'javascript',
+    \   'javascript.jsx': 'react',
+    \ }
+  command! -nargs=* DevDocsDocker call devdocs#open_doc(<q-args>, 'docker')
+  command! -nargs=* DevDocsRuby call devdocs#open_doc(<q-args>, 'ruby')
+  command! -nargs=* DevDocsRails call devdocs#open_doc(<q-args>, 'rails')
+  command! -nargs=* DevDocsBootstrap call devdocs#open_doc(<q-args>, 'bootstrap')
+  command! -nargs=* DevDocsReact call devdocs#open_doc(<q-args>, 'react')
+  command! -nargs=* DevDocsLaravel call devdocs#open_doc(<q-args>, 'laravel')
+'''
+[[plugins]]
+repo = 'thinca/vim-ref'
+on_cmd = ['Ref']
+# on_map = ['K', '<Plug>']
+on_map = '<Plug>'
+hook_add = '''
+
+  let g:ref_open = '8split'
+  let g:ref_cache_dir = $VIM_CACHE . '/vim-ref'
+  if !exists('g:ref_detect_filetype')
+    let g:ref_detect_filetype = {}
+  endif
+  let g:ref_detect_filetype._ = 'webdict'
+  let g:ref_use_vimproc = 0
+  let g:ref_alc_use_cache = 1
+  let g:ref_alc_start_linenumber = 43
+
+  " if vimproc
+  "   let g:ref_use_vimproc = 1
+  " endif
+
+  " options {{{3
+  " webdict {{{4
+  if d#is_win()
+    " for w3m
+    let $LANG='C.UTF-8'
+    let g:ref_source_webdict_encoding = 'utf-8'
+  endif
+  let g:ref_source_webdict_sites = {
+    \ 'alc' : {
+    \   'url': 'http://eow.alc.co.jp/%s',
+    \   'keyword_encoding,': 'utf-8',
+    \   'cache': 1,
+    \ },
+    \ 'weblio': {
+    \   'url': 'http://ejje.weblio.jp/content/%s',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': 1,
+    \ },
+    \ 'wikipedia': {
+    \   'url': 'http://ja.wikipedia.org/wiki/%s',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '0',
+    \ },
+    \ 'wikipedia:en': {
+    \   'url': 'http://en.wikipedia.org/wiki/%s',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '0',
+    \ },
+    \ 'wiktionary': {
+    \   'url': 'http://ja.wiktionary.org/wiki/%s',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '0',
+    \ },
+    \ 'ja_en': {
+    \   'url': 'http://translate.google.co.jp/m?hl=ja\&sl=ja\&tl=en\&ie=UTF-8\&prev=_m\&q=%s',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '0',
+    \ },
+    \ 'en_ja': {
+    \   'url': 'http://translate.google.co.jp/m?hl=ja\&sl=en\&tl=ja\&ie=UTF-8\&prev=_m\&q=%s',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '0',
+    \ },
+    \ 'ruby_toolbox': {
+    \   'url': 'https://www.ruby-toolbox.com/search?utf8=%%E2%%9C%%93\&q=%s',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '0',
+    \ },
+    \ 'rurema': {
+    \   'url': 'http://doc.ruby-lang.org/ja/search/query:%s/',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '0',
+    \ },
+    \ 'rubygems': {
+    \   'url': 'http://rubygems.org/search?query=%s',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '0',
+    \ },
+    \ 'node_toolbox': {
+    \   'url': 'http://nodetoolbox.com/search?q=%s',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '0',
+    \ },
+    \ 'chef_cookbooks': {
+    \   'url': 'http://community.opscode.com/search?query=%s\&scope=cookbook',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '0',
+    \ },
+    \ 'underscore.js': {
+    \   'url': 'http://underscorejs.org/?q=%s',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '1',
+    \ },
+    \ 'lodash.js': {
+    \   'url': 'http://lodash.com/docs?q=%s',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '1',
+    \ },
+    \ 'cpan': {
+    \   'url': 'http://search.cpan.org/search?q=%s;s={startIndex}',
+    \   'keyword_encoding': 'utf-8',
+    \   'cache': '0',
+    \ },
+    \ }
+  function! g:ref_source_webdict_sites.alc.filter(output)
+    return join(split(a:output, "\n")[38:], "\n")
+  endfunction
+  function! g:ref_source_webdict_sites.weblio.filter(output)
+    return join(split(a:output, "\n")[53 :], "\n")
+  endfunction
+  function! g:ref_source_webdict_sites.wikipedia.filter(output)
+    return join(split(a:output, "\n")[17 :], "\n")
+  endfunction
+  function! g:ref_source_webdict_sites.wiktionary.filter(output)
+    return join(split(a:output, "\n")[38:], "\n")
+  endfunction
+  function! g:ref_source_webdict_sites.rurema.filter(output)
+    return substitute(a:output, '.*検索結果', '', '')
+  endfunction
+  function! g:ref_source_webdict_sites.node_toolbox.filter(output)
+    return join(split(a:output, "\n")[34 :], "\n")
+  endfunction
+  function! g:ref_source_webdict_sites.chef_cookbooks.filter(output)
+    return join(split(a:output, "\n")[18 :], "\n")
+  endfunction
+
+  " webdict default {{{4
+  let g:ref_source_webdict_sites.default = 'alc'
+
+  " webdict command {{{4
+  command! -nargs=? -range=0 GTransEnJa call my#buffer#ref_gtrans(<count>, <line1>, <line2>, 'en_ja',<q-args>)
+  command! -nargs=? -range=0 GTransJaEn call my#buffer#ref_gtrans(<count>, <line1>, <line2>, 'ja_en',<q-args>)
+
+  " langs {{{4
+  let g:ref_source_webdict_sites.default = 'alc'
+  let g:ref_phpmanual_path=$VIM_REFDOC.'/phpman/'
+  let g:ref_javadoc_path = $VIM_REFDOC.'/jdk-6-doc/ja'
+  let g:ref_jquery_path = $VIM_REFDOC.'/jqapi-latest/docs'
+  let g:ref_html_path=$VIM_REFDOC.'/htmldoc/www.aptana.com/reference/html/api'
+  let g:ref_html5_path=$VIM_REFDOC.'/html5doc/dist'
+  let g:ref_jscore_path=$VIM_REFDOC.'/jscore/www.aptana.com/reference/html/api'
+  let g:ref_jsdom_path=$VIM_REFDOC.'/jscore/www.aptana.com/reference/html/api'
+  "let g:ref_jquery_use_cache = 1
+  let g:ref_nodejsdoc_dir=$VIM_REFDOC.'/nodejs/doc'
+
+  if executable('ruby') && executable('rurema')
+    let g:ref_refe_cmd     = "rurema"
+    let g:ref_refe_version = 2
+  endif
+  if d#is_win()
+    let g:ref_refe_encoding = 'cp932'
+  else
+    " let g:ref_refe_encoding = 'utf-8'
+    " if exists('$RSENSE_HOME') && executable($RSENSE_HOME.'/bin/rsense')
+    "   let g:ref_refe_rsense_cmd = $RSENSE_HOME.'/bin/rsense'
+    " endif
+  endif
+  let g:ref_perldoc_complete_head = 1
+  " }}}
+
+  if d#is_installed('vim-altercmd')
+    LCAlias Ref
+    " for src in ['refe', 'ri', 'perldoc', 'man'
+    "       \ , 'pydoc', 'jsref', 'jquery'
+    "       \ , 'cppref', 'cheat', 'nodejs', ]
+    "   silent! exe 'Alias' src 'Ref' src
+    " endfor
+    Alias rd Ref ri
+    Alias pd Ref perldoc
+    Alias phd Ref phpmanual
+    Alias pyd Ref pydoc
+    Alias jsd Ref jsref
+    Alias jqd Ref jquery
+    Alias cppd Ref phpmanual
+    Alias nd Ref nodejs
+    Alias webd[ict] Ref webdict
+    Alias mr Ref webdict
+    Alias al[c] Ref webdict alc
+  endif
+
+  augroup vimrc-plugin-ref
+    autocmd!
+    autocmd FileType ruby.rspec,php.phpunit,python.nosetests,perl.prove call s:testcase_lazy_init()
+  augroup END
+
+  function! s:testcase_lazy_init()
+    call ref#register_detection('ruby.rspec', 'refe', 'append')
+    call ref#register_detection('php.phpunit', 'phpmanual', 'append')
+    call ref#register_detection('python.nosetests', 'pydoc', 'append')
+    call ref#register_detection('perl.prove', 'perldoc', 'append')
+    augroup vimrc-plugin-ref
+      autocmd!
+    augroup END
+  endfunction
+'''
+[[plugins]]
+repo = 'pekepeke/ref-javadoc'
+[[plugins]]
+repo = 'soh335/vim-ref-jquery'
+[[plugins]]
+repo = 'taka84u9/vim-ref-ri'
+[[plugins]]
+repo = 'mfumi/ref-dicts-en'
+# repo = 'nishigori/vim-ref-phpunit'
+# repo = 'eiiches/vim-ref-gtkdoc'
+# repo = 'eiiches/vim-ref-info'
+# repo = 'mojako/ref-sources.vim'
+
+# vim {{{4
+[[plugins]]
+repo = 'kana/vim-vspec'
+[[plugins]]
+repo = 'vim-jp/vital.vim'
+on_cmd = ['Vitalize']
+
+# vim-help {{{4
+[[plugins]]
+repo = 'mattn/learn-vimscript'
+
+# completion {{{4
+[[plugins]]
+repo = 'tjdevries/nvim-langserver-shim'
+
+[[plugins]]
+repo = 'Shougo/ddc.vim'
+hook_add = '''
+  call ddc#custom#patch_global('sources', [
+  \ 'lsp',
+  \ 'tabnine',
+  \ 'around',
+  \ 'file',
+  \ 'buffer',
+  \ 'dictionary',
+  \ 'ale',
+  \ 'omni',
+  \ 'cmdline', 'cmdline-history',
+  \ ])
+	call ddc#custom#patch_filetype(['vim', 'toml'], 'sources', ['necovim'])
+
+"	    \   'matchers': ['matcher_head'],
+"	    \   'sorters': ['sorter_rank']
+"	call ddc#custom#patch_global('ui', 'pum')
+	call ddc#custom#patch_global('sourceOptions', {
+	    \ '_': #{
+		\     matchers: ['matcher_fuzzy'],
+		\     sorters: ['sorter_fuzzy', 'sorter_rank'],
+		\     converters: ['converter_fuzzy', 'converter_remove_overlap'],
+	    \ },
+	    \ 'necovim': {'mark': 'vim'},
+        \ 'buffer': {'mark': 'B'},
+        \ 'dictionary': {'mark': 'D'},
+        \ 'file': {
+        \   'mark': 'F',
+        \   'isVolatile': v:true,
+        \   'forceCompletionPattern': '\S/\S*',
+		\ },
+		\ 'lsp': #{
+		\   mark: 'lsp',
+		\   forceCompletionPattern: '\.\w*|:\w*|->\w*',
+		\ },
+        \ 'omni': #{ mark: 'O' },
+        \ 'around': #{ mark: 'A' },
+		\ 'tabnine': #{
+		\   mark: 'TN',
+		\   maxItems: 5,
+		\ },
+	    \ 'cmdline': #{ mark: 'cmdline'},
+	    \ 'cmdline-history': #{ mark: 'history' },
+		\ })
+call ddc#custom#patch_global('sourceParams', #{
+    \ lsp: #{
+    \   snippetEngine: denops#callback#register({
+    \         body -> vsnip#anonymous(body)
+    \   }),
+    \   enableResolveItem: v:true,
+    \   enableAdditionalTextEdit: v:true,
+    \ },
+    \ buffer: {
+    \   'requireSameFiletype': v:false,
+    \   'limitBytes': 5000000,
+    \   'fromAltBuf': v:true,
+    \   'forceCollect': v:true,
+    \ },
+	\ dictionary: {
+	\   'dictPaths': [
+	\     '/usr/share/dict/american-english',
+	\     '/usr/share/dict/words',
+	\   ],
+	\   'smartCase': v:true,
+	\   'isVolatile': v:true,
+	\ },
+    \ ale: {'cleanResultsWhitespace': v:false},
+	\ around: #{ maxSize: 500 },
+	\ })
+call ddc#enable()
+'''
+[[plugins]]
+repo = 'Shougo/deol.nvim'
+[[plugins]]
+repo = 'Shougo/neco-vim'
+[[plugins]]
+repo = 'Shougo/ddc-ui-native'
+hook_add = '''
+" call ddc#custom#patch_global('ui', 'native')
+'''
+[[plugins]]
+repo = 'Shougo/ddc-ui-pum'
+[[plugins]]
+repo = 'Shougo/pum.vim'
+hook_add = '''
+" inoremap <silent><expr> <TAB>
+"       \ pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' :
+"       \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+"       \ '<TAB>' : ddc#map#manual_complete()
+inoremap <silent><expr> <TAB>
+      \ neosnippet#expandable() ? "\<Plug>(neosnippet_expand)" :
+	  \ neosnippet#jumpable() ? "\<Plug>(neosnippet_jump_or_expand)" :
+      \ pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' :
+      \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+      \ '<TAB>' : ddc#map#manual_complete()
+inoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
+inoremap <C-n>   <Cmd>call pum#map#select_relative(+1)<CR>
+inoremap <C-p>   <Cmd>call pum#map#select_relative(-1)<CR>
+inoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
+inoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
+" call ddc#custom#patch_global(#{
+"         \   ui: 'pum',
+"         \   autoCompleteEvents: [
+"         \     'InsertEnter', 'TextChangedI', 'TextChangedP', 'CmdlineChanged',
+"         \   ],
+"         \   cmdlineSources: {
+"         \     ':': ['cmdline', 'cmdline-history', 'around'],
+"         \   },
+"         \ })
+" nnoremap :       <Cmd>call CommandlinePre()<CR>:
+
+function! CommandlinePre() abort
+    cnoremap <Tab>   <Cmd>call pum#map#insert_relative(+1)<CR>
+    cnoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
+    cnoremap <C-n>   <Cmd>call pum#map#insert_relative(+1)<CR>
+    cnoremap <C-p>   <Cmd>call pum#map#insert_relative(-1)<CR>
+    cnoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
+    cnoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
+
+    autocmd User DDCCmdlineLeave ++once call CommandlinePost()
+
+    " Enable command line completion for the buffer
+    call ddc#enable_cmdline_completion()
+endfunction
+function! CommandlinePost() abort
+    silent! cunmap <Tab>
+    silent! cunmap <S-Tab>
+    silent! cunmap <C-n>
+    silent! cunmap <C-p>
+    silent! cunmap <C-y>
+    silent! cunmap <C-e>
+endfunction
+'''
+[[plugins]]
+repo = 'tani/ddc-fuzzy'
+hook_add = '''
+'''
+[[plugins]]
+repo = 'LumaKernel/ddc-tabnine'
+[[plugins]]
+repo = 'Shougo/ddc-source-lsp'
+hook_add = '''
+'''
+[[plugins]]
+repo = 'matsui54/ddc-source-buffer'
+hook_add = '''
+'''
+
+[[plugins]]
+repo = 'matsui54/ddc-source-dictionary'
+hook_add = '''
+if empty(&dictionary) | setlocal dictionary+=/usr/share/dict/words | endif
+'''
+[[plugins]]
+repo = 'LumaKernel/ddc-source-file'
+hook_add = '''
+call ddc#custom#patch_filetype(
+    \ ['ps1', 'dosbatch', 'autohotkey', 'registry'], {
+    \ 'sourceOptions': {
+    \   'file': {
+    \     'forceCompletionPattern': '\S\\\S*',
+    \   },
+    \ },
+    \ 'sourceParams': {
+    \   'file': {
+    \     'mode': 'win32',
+    \   },
+    \ }})
+'''
+[[plugins]]
+repo = 'statiolake/ddc-ale'
+hook_add = '''
+
+" Option: cleanResultsWhitespace
+'''
+
+[[plugins]]
+repo = 'Shougo/ddc-source-omni'
+hook_add = '''
+" Example: Use vimtex
+"call vimtex#init()
+"call ddc#custom#patch_filetype(['tex'], 'sourceOptions', #{
+"      \   'omni': #{
+"      \     'forceCompletionPattern': g:vimtex#re#deoplete,
+"      \   },
+"      \ })
+"call ddc#custom#patch_filetype(['tex'], 'sourceParams', #{
+"      \   'omni': #{ 'omnifunc': 'vimtex#complete#omnifunc' },
+"      \ })
+'''
+
+[[plugins]]
+repo = 'Shougo/ddc-source-around'
+[[plugins]]
+repo = 'Shougo/ddc-source-cmdline'
+[[plugins]]
+repo = 'Shougo/ddc-source-cmdline-history'
+[[plugins]]
+repo = 'Shougo/ddc-filter-matcher_head'
+[[plugins]]
+repo = 'Shougo/ddc-filter-sorter_rank'
+[[plugins]]
+repo = 'Shougo/ddc-converter_remove_overlap'
+
+# [[plugins]]
+# repo = 'Shougo/deoppet.nvim'
+# hook_add = '''
+# '''
+
+[[plugins]]
+repo = 'Shougo/neosnippet.vim'
+on_event = 'InsertEnter'
+on_ft = 'snippet'
+hook_add = '''
+  let g:neosnippet#snippets_directory            = $HOME . '/.vim/snippets'
+  let g:neosnippet#enable_snipmate_compatibility = 0
+  " let g:neosnippet#disable_runtime_snippets._    = 1
+
+  function! s:can_snip()
+    return neosnippet#expandable_or_jumpable() && &filetype != "snippet"
+  endfunction
+  let s:pair_closes = [ "]", "}", ")", "'", '"', ">", "|" , ","]
+
+  function! s:imap_tab()
+    " len(matchstr(line[pos-1:pos+1], '[<>"'']')) <= 0
+    if d#is_installed('neosnippet.vim')
+      if neosnippet#expandable()
+        if d#is_installed('neocomplete.vim')
+          call neocomplete#smart_close_popup()
+        endif
+        return "\<Plug>(neosnippet_expand)"
+      elseif neosnippet#jumpable()
+        if d#is_installed('neocomplete.vim')
+          call neocomplete#smart_close_popup()
+        endif
+        return "\<Plug>(neosnippet_jump)"
+      " if s:can_snip()
+      "   return "\<Plug>(neosnippet_jump_or_expand)"
+      endif
+    elseif pumvisible()
+      return "\<C-n>"
+    endif
+
+    let line = getline(".")
+    let pos = col(".") - 1
+
+    let org_pos = pos
+    if strlen(substitute(line[0:pos], '^\s*', '', '')) <= 0
+      return "\<TAB>"
+    endif
+    while (line[pos] == " ")
+      let pos = pos + 1
+    endwhile
+    let ch = line[pos]
+    if index(s:pair_closes, ch) != -1
+      while (line[pos+1] == " ")
+        let pos = pos+1
+      endwhile
+      return repeat("\<Right>", pos - org_pos + 1)
+    endif
+
+    if d#is_installed('emmet-vim')
+      \ && len(matchstr(&filetype, 'x\?html\|s\?css\|php\|eruby')) > 0
+      \ && emmet#isExpandable()
+      \ && len(matchstr(getline('.'), '^\(\w*\%'.col('.').'c\)')) > 0
+      if d#is_installed('neocomplete.vim')
+        call neocomplete#smart_close_popup()
+      endif
+      " return "\<Plug>(EmmetExpandAbbr)"
+      return "\<Plug>(emmet-expand-abbr)"
+    endif
+
+    return "\<TAB>"
+  endfunction
+
+  imap <expr><TAB> <SID>imap_tab()
+  smap <expr><TAB> <SID>can_snip() ?
+    \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
+
+  imap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+  smap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+
+  imap <C-l> <Plug>(neosnippet_jump_or_expand)
+  smap <C-l> <Plug>(neosnippet_jump_or_expand)
+'''
+[[plugins]]
+repo = 'Shougo/neosnippet-snippets'
+[[plugins]]
+repo = 'prabirshrestha/vim-lsp'
+hook_add = '''
+function! s:on_lsp_buffer_enabled() abort
+    setlocal omnifunc=lsp#complete
+    setlocal signcolumn=no
+    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+    nmap <buffer> gd <plug>(lsp-definition)
+    nmap <buffer> gs <plug>(lsp-document-symbol-search)
+    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+    nmap <buffer> gr <plug>(lsp-references)
+    nmap <buffer> gi <plug>(lsp-implementation)
+    nmap <buffer> gt <plug>(lsp-type-definition)
+    nmap <buffer> <leader>rn <plug>(lsp-rename)
+    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+    nmap <buffer> K <plug>(lsp-hover)
+    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+
+    let g:lsp_diagnostics_enabled = 0
+    let g:lsp_diagnostics_signs_enabled = 0
+    let g:lsp_document_highlight_enabled = 0
+    let g:lsp_document_code_action_signs_enabled = 0
+
+    let g:lsp_format_sync_timeout = 1000
+    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+
+    " refer to doc to add more commands
+endfunction
+
+augroup vimrc_vim_lsp
+    au!
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+'''
+
+[[plugins]]
+repo = 'mattn/vim-lsp-settings'
+
+[[plugins]]
+repo = 'hrsh7th/vim-neco-calc'
+[[plugins]]
+repo = 'rhysd/github-complete.vim'
+hook_add = '''
+  if !d#is_mac() && !d#is_win()
+    let g:github_complete_emoji_japanese_workaround = 1
+  endif
+  " let g:github_complete_enable_neocomplete = s:bundle.is_installed('neocomplete.vim')
+'''
+[[plugins]]
+repo = 'wellle/tmux-complete.vim'
+
+# ruby {{{4
+[[plugins]]
+repo = 'vim-ruby/vim-ruby'
+[[plugins]]
+repo = 'tpope/vim-rails'
+hook_add = '''
+  let g:rails_some_option = 1
+  let g:rails_level = 4
+  let g:rails_syntax = 1
+  let g:rails_statusline = 1
+  let g:rails_url='http://localhost:3000'
+  let g:rails_subversion=0
+  let g:rails_default_file='config/database.yml'
+
+  function! s:vimrc_rails_init()
+    nnoremap <buffer>[!space]vv :Rview<CR>
+    nnoremap <buffer>[!space]cc :Rcontroller<CR>
+    nnoremap <buffer>[!space]mm :Rmodel<Space>
+    nnoremap <buffer>[!space]pp :Rpreview<CR>
+
+    nnoremap <buffer> [!space]r :R<CR>
+    nnoremap <buffer> [!space]a :A<CR>
+
+    Rnavcommand api app/controllers/api -glob=**/* -suffix=_controller.rb
+    " Rnavcommand tmpl app/controllers/tmpl -glob=**/* -suffix=_controller.rb
+    Rnavcommand config config   -glob=*.*  -suffix= -default=routes.rb
+    nnoremap <buffer>[!app]v  :<C-U>Unite rails/view<CR>
+    nnoremap <buffer>[!app]m  :<C-U>Unite rails/model<CR>
+    nnoremap <buffer>[!app]c  :<C-U>Unite rails/controller<CR>
+    nnoremap <buffer>[!app]C  :<C-U>Unite rails/config<CR>
+    nnoremap <buffer>[!app]s  :<C-U>Unite rails/spec<CR>
+    nnoremap <buffer>[!app]m  :<C-U>Unite rails/db -input=migrate<CR>
+    nnoremap <buffer>[!app]l  :<C-U>Unite rails/lib<CR>
+
+    " nnoremap <buffer><expr><C-H>g     ':e '.b:rails_root.'/Gemfile<CR>'
+    " nnoremap <buffer><expr><C-H>r     ':e '.b:rails_root.'/config/routes.rb<CR>'
+    " nnoremap <buffer><expr><C-H>se    ':e '.b:rails_root.'/db/seeds.rb<CR>'
+    " nnoremap <buffer><C-H>ra          :<C-U>Unite rails/rake<CR>
+    " nnoremap <buffer><C-H>h           :<C-U>Unite rails/heroku<CR>
+  endfunction
+
+  MyAutoCmd User Rails call s:vimrc_rails_init()
+'''
+[[plugins]]
+repo = 'basyura/unite-rails'
+[[plugins]]
+repo = 'skwp/vim-rspec'
+on_cmd = ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
+[[plugins]]
+repo = 'tpope/vim-bundler'
+[[plugins]]
+repo = 'ecomba/vim-ruby-refactoring'
+[[plugins]]
+repo = 'tpope/vim-cucumber'
+[[plugins]]
+repo = 'yaymukund/vim-rabl'
+[[plugins]]
+repo = 'vim-scripts/eruby.vim'
+[[plugins]]
+repo = 'hashivim/vim-vagrant'
+[[plugins]]
+repo = 't9md/vim-chef'
+[[plugins]]
+repo = 'rodjek/vim-puppet'
+[[plugins]]
+repo = 'joker1007/vim-ruby-heredoc-syntax'
+hook_add = '''
+  let g:ruby_heredoc_syntax_filetypes = {
+    \  "sql" : {
+    \    "start" : "SQL",
+    \ },
+    \ }
+'''
+
+# [[plugins]]
+#   repo = 'rhysd/unite-ruby-require.vim'
+# [[plugins]]
+#   repo = 'rhysd/neco-ruby-keyword-args'
+
+# [[plugins]]
+# repo = 'ujihisa/unite-gem'
+# [[plugins]]
+# repo = 'ujihisa/unite-rake'
+# [[plugins]]
+# repo = 'moro/unite-stepdefs'
+[[plugins]]
+repo = 'astashov/vim-ruby-debugger'
+on_cmd = ['Rdebugger']
+
+# html {{{4
+[[plugins]]
+repo = 'othree/html5.vim'
+hook_add = '''
+let g:event_handler_attributes_complete = 1
+let g:rdfa_attributes_complete = 1
+let g:microdata_attributes_complete = 1
+let g:aria_attributes_complete = 1
+'''
+[[plugins]]
+repo = 'heracek/HTML-AutoCloseTag'
+# [[plugins]]
+# repo = 'mattn/emmet-vim'
+# [[plugins]]
+# repo = 'https://gist.github.com/pekepeke/6576341'
+# on_map = '<Plug>'
+# script_type = 'plugin'
+# hook_add = '''
+# nmap ,/ <Plug>(endtagcomment)
+# '''
+#  templates
+[[plugins]]
+repo = 'tpope/vim-haml'
+[[plugins]]
+repo = 'digitaltoad/vim-jade'
+[[plugins]]
+repo = 'mustache/vim-mustache-handlebars'
+[[plugins]]
+repo = 'chrisgillis/vim-bootstrap3-snippets'
+
+# css {{{4
+[[plugins]]
+repo = 'Rykka/colorv.vim'
+hook_add = '''
+  let g:colorv_cache_fav = $VIM_CACHE . "/vim_colorv_fav"
+  let g:colorv_cache_file = $VIM_CACHE . "/vim_colorv_cache"
+  " let g:colorv_preview_ftype = 'css,html,scss,sass'
+  let g:colorv_preview_ftype = 'css,scss,sass'
+  " let g:colorv_python_cmd = ''
+  let g:colorv_no_global_map = 1
+  " g:colorv_global_leader
+'''
+# \ 'on_ft': ['html','javascript','css','sass','scss','less','slim','stylus'],
+# repo = 'gorodinskiy/vim-coloresque'
+
+[[plugins]]
+repo = 'hail2u/vim-css3-syntax'
+[[plugins]]
+repo = 'npacker/vim-css3complete'
+[[plugins]]
+  repo = 'groenewege/vim-less'
+[[plugins]]
+  repo = 'wavded/vim-stylus'
+[[plugins]]
+repo = 'slim-template/vim-slim'
+
+# javascript {{{4
+[[plugins]]
+repo = 'isRuslan/vim-es6'
+[[plugins]]
+repo = 'guileen/simple-javascript-indenter'
+# repo = 'othree/yajs.vim'
+[[plugins]]
+repo = 'pangloss/vim-javascript'
+[[plugins]]
+repo = 'mxw/vim-jsx'
+# repo = 'jsx/vim-jsx'
+# repo = 'moll/vim-node'
+[[plugins]]
+repo = 'pekepeke/vim-node'
+hook_add = '''
+  let node#filetypes = ["javascript", "json", 'coffee']
+  let node#suffixesadd = [] " already registered at ftplugin
+'''
+
+  # repo = 'marijnh/tern_for_vim'
+  # \ 'build' : {
+  # \   'cygwin': 'npm install',
+  # \   'windows': 'npm install',
+  # \   'mac': 'npm install',
+  # \   'unix': 'npm install',
+  # \ }}
+[[plugins]]
+repo = 'othree/javascript-libraries-syntax.vim'
+[[plugins]]
+repo = 'claco/jasmine.vim'
+[[plugins]]
+repo = 'elzr/vim-json'
+[[plugins]]
+repo = 'Quramy/vison'
+on_cmd = [ 'VisonSetup', 'Vison', 'VisonRemoveSchema', 'VisonRegisterSchema']
+
+[[plugins]]
+repo = 'chikatoike/sourcemap.vim'
+on_cmd = [
+	'SourceMapAddMap', 'SourceMapSwitch', 'SourceMapConvertQuickfixToOriginal',
+   'SourceMapConvertLocListToOriginal', 'SourceMapAddOriginalToQuickfix',
+   'SourceMapAddOriginalToLocList',
+]
+[[plugins]]
+repo = 'briancollins/vim-jst'
+
+[[plugins]]
+repo = 'vim-scripts/Dart'
+[[plugins]]
+repo = 'jdonaldson/vaxe'
+on_ft = ['haxe','hxml','nmml']
+[[plugins]]
+repo = 'kchmck/vim-coffee-script'
+[[plugins]]
+repo = 'leafgarland/typescript-vim'
+[[plugins]]
+repo = 'clausreinke/typescript-tools'
+'build' = 'npm install'
+# repo = 'Quramy/tsuquyomi'
+# \ 'on_ft': 'typescript',
+# \ }
+
+# python {{{4
+# http://rope.sourceforge.net/
+[[plugins]]
+repo = 'klen/python-mode'
+hook_add = '''
+let g:pymode_rope = 1
+let g:pymode_rope_lookup_project = 1
+let g:pymode_rope_regenerate_on_write = 0
+let g:pymode_rope_goto_def_newwin = 'new'
+let g:pymode_rope_completion = 0
+let g:pymode_rope_complete_on_dot = 0
+let g:pymode_run = 0
+let g:pymode_doc = 0
+let g:pymode_lint = 0
+let g:pymode_virtualenv = 0
+let g:pymode_rope_global_prefix = '[!rope]'
+" let g:vimrc_pymode_rope_project_dirprefixes = [expand("~/project")]
+'''
+[[plugins]]
+repo = 'Vimjas/vim-python-pep8-indent'
+[[plugins]]
+repo = 'lambdalisue/vim-python-virtualenv'
+[[plugins]]
+repo = 'gerardo/vim-django-support'
+[[plugins]]
+repo = 'voithos/vim-python-matchit'
+[[plugins]]
+repo = 'heavenshell/vim-pydocstring'
+[[plugins]]
+repo = 'hachibeeDI/unite-pythonimport'
+[[plugins]]
+repo = 'Glench/Vim-Jinja2-Syntax'
+
+# perl {{{4
+[[plugins]]
+repo = 'vim-perl/vim-perl'
+[[plugins]]
+repo = 'moznion/vim-cpanfile'
+[[plugins]]
+repo = 'motemen/xslate-vim'
+[[plugins]]
+repo = 'y-uuki/unite-perl-module.vim'
+[[plugins]]
+repo = 'y-uuki/perl-local-lib-path.vim'
+[[plugins]]
+repo = 'soh335/unite-perl-module'
+
+# C,CPP {{{4
+[[plugins]]
+repo = 'vim-scripts/DoxygenToolkit.vim'
+[[plugins]]
+repo = 'peterhoeg/vim-qml'
+
+# C# {{{4
+# repo = 'OrangeT/vim-csharp'
+# \ 'on_ft': ['cs'],
+# \ }
+
+    # repo = 'OmniSharp/omnisharp-vim'
+    # \ 'on_ft': ['cs'],
+    # \ 'build': {
+    # \   'windows': 'MSBuild.exe server/OmniSharp.sln /p:Platform="Any CPU"',
+    # \   'mac': 'xbuild server/OmniSharp.sln',
+    # \   'unix': 'xbuild server/OmniSharp.sln',
+    # \ }
+# hook_add = '''
+# " let g:OmniSharp_host = "http://localhost:2000"
+# let g:OmniSharp_typeLookupInPreview = 1
+# '''
+
+# OSX {{{4
+[[plugins]]
+repo = 'vim-scripts/applescript.vim'
+
+# windows {{{4
+[[plugins]]
+repo = 'PProvost/vim-ps1'
+[[plugins]]
+repo = 'cd01/poshcomplete-vim'
+hook_add = '''
+  MyAutoCmd FileType ps1 setlocal omnifunc=poshcomplete#CompleteCommand
+'''
+[[plugins]]
+repo = 'hachibeeDI/vim-vbnet'
+on_ft = 'vb'
+
+# java, android {{{4
+# [[plugins]]
+# repo = 'mikelue/vim-maven-plugin'
+[[plugins]]
+repo = 'kamichidu/unite-javaimport'
+[[plugins]]
+repo = 'kamichidu/vim-javaclasspath'
+[[plugins]]
+repo = 'artur-shaik/vim-javacomplete2'
+# [[plugins]]
+# repo = 'vim-scripts/jcommenter.vim'
+[[plugins]]
+repo = 'vim-scripts/groovyindent-unix'
+[[plugins]]
+repo = 'vim-scripts/groovy.vim'
+[[plugins]]
+repo = 'tfnico/vim-gradle'
+[[plugins]]
+repo = 'martinda/Jenkinsfile-vim-syntax'
+[[plugins]]
+repo = 'thinca/vim-logcat'
+on_cmd = ['Logcat', 'LogcatClear']
+[[plugins]]
+repo = 'lepture/vim-velocity'
+[[plugins]]
+repo = 'ryotakato/unite-gradle'
+
+# scala {{{4
+[[plugins]]
+repo = 'derekwyatt/vim-scala'
+on_ft = 'scala'
+
+# go {{{4
+[[plugins]]
+repo = 'fatih/vim-go'
+on_ft = ['go']
+[[plugins]]
+repo = 'undx/vim-gocode'
+
+# texts {{{4
+[[plugins]]
+repo = 'tpope/vim-markdown'
+[[plugins]]
+repo = 'nelstrom/vim-markdown-folding'
+[[plugins]]
+repo = 'tani/vim-glance'
+hook_add = '''
+" \   'https://esm.sh/markdown-it-markmap',
+let g:glance#markdown_plugins = [
+\   'https://esm.sh/markdown-it-emoji',
+\   'https://esm.sh/markdown-it-mermaid',
+\   'https://esm.sh/markdown-it-plantuml',
+\    'https://esm.sh/markdown-it-highlightjs',
+\ ]
+'''
+[[plugins]]
+repo = 'kannokanno/previm'
+hook_add = '''
+  let g:previm_enable_realtime=1
+'''
+# repo = 'beckorz/previm'
+[[plugins]]
+repo = 'timcharper/textile.vim'
+[[plugins]]
+repo = 'aklt/plantuml-syntax'
+# repo = 'maxmeyer/vim-taskjuggler'
+[[plugins]]
+repo = 'mozamimy/nymphia.vim'
+
+[[plugins]]
+repo = 'moznion/hateblo.vim'
+on_cmd = [
+    'HatebloCreate', 'HatebloCreateDraft', 'HatebloList',
+    'HatebloUpdate', 'HatebloDelete',
+]
+[[plugins]]
+repo = 'moro/vim-review'
+[[plugins]]
+repo = 'nvie/vim-rst-tables'
+[[plugins]]
+repo = 'vim-scripts/sequence'
+
+# haskell {{{4
+[[plugins]]
+repo = 'itchyny/vim-haskell-indent'
+[[plugins]]
+repo = 'dag/vim2hs'
+[[plugins]]
+  repo = 'eagletmt/ghcmod-vim'
+[[plugins]]
+  repo = 'elixir-lang/vim-elixir'
+[[plugins]]
+  repo = 'ujihisa/ref-hoogle'
+  # repo = 'ujihisa/neco-ghc'
+  # repo = "ujihisa/unite-haskellimport"
+  # repo = 'eagletmt/unite-haddock'
+
+# php {{{4
+# [[plugins]]
+# repo = 'captbaritone/better-indent-support-for-php-with-html'
+
+[[plugins]]
+repo = 'tobyS/pdv'
+hook_add = '''
+  " TODO
+  " let g:pdv_template_dir =  neobundle#get('pdv').rtp . '/templates'
+'''
+
+[[plugins]]
+repo = '2072/PHP-Indenting-for-VIm'
+# repo = 'Gasol/vim-php'
+[[plugins]]
+repo = 'StanAngeloff/php.vim'
+# repo = 'arnaud-lb/vim-php-namespace'
+# repo = 'pekepeke/phpfoding.vim'
+# [[plugins]]
+# repo = 'noahfrederick/vim-composer'
+[[plugins]]
+repo = 'adoy/vim-php-refactoring-toolbox'
+hook_add = '''
+  let g:vim_php_refactoring_use_default_mapping = 0
+
+  " let g:vim_php_refactoring_auto_validate_sg = 1
+  " let g:vim_php_refactoring_auto_validate_rename = 1
+  " let g:vim_php_refactoring_auto_validate_visibility = 1
+  " let g:vim_php_refactoring_default_property_visibility = 'private'
+  " let g:vim_php_refactoring_default_method_visibility = 'private'
+  command! -nargs=0 PhpRenameLocalVariable call PhpRenameLocalVariable()
+  command! -nargs=0 PhpRenameClassVariable call PhpRenameClassVariable()
+  command! -nargs=0 PhpRenameMethod call PhpRenameMethod()
+  command! -nargs=0 PhpExtractUse call PhpExtractUse()
+  command! -nargs=0 PhpExtractConst call PhpExtractConst()
+  command! -nargs=0 PhpExtractClassProperty call PhpExtractClassProperty()
+  command! -nargs=0 PhpExtractMethod call PhpExtractMethod()
+  command! -nargs=0 PhpCreateProperty call PhpCreateProperty()
+  command! -nargs=0 PhpDetectUnusedUseStatements call PhpDetectUnusedUseStatements()
+  command! -nargs=0 PhpAlignAssigns call PhpAlignAssigns()
+  command! -nargs=0 PhpCreateSettersAndGetters call PhpCreateSettersAndGetters()
+  command! -nargs=0 PhpDocAll call PhpDocAll()
+'''
+# repo = 'beberlei/vim-php-refactor'
+# [[plugins]]
+# repo = 'violetyk/cake.vim'
+[[plugins]]
+repo = 'noahfrederick/vim-laravel'
+[[plugins]]
+repo = 'jwalton512/vim-blade'
+
+# sql {{{4
+[[plugins]]
+repo = 'mattn/vdbi-vim'
+[[plugins]]
+repo = 'vim-scripts/dbext.vim'
+on_cmd = [
+  'DBExecSQL', 'DBConnect', 'DBDisconnectAll', 'DBRollback', 'DBExecRangeSQL',
+  'Select', 'Alter', 'Update', 'Insert', 'Delete', 'Drop', 'DBSetOption',
+  'DBGetOption', 'DBVarRangeAssign', 'DBListVar', 'DBSetVar',
+]
+hook_add = '''
+  let g:dbext_default_prompt_for_parameters=0
+  let g:dbext_default_history_file=expand('$VIM_CACHE/dbext_sql_history.txt')
+  let g:dbext_default_menu_mode=0
+  command! -nargs=+ -complete=customlist,dbext#DB_completeTables SELECT :call dbext#DB_execSql("select " . <q-args>)
+'''
+
+# etc {{{4
+[[plugins]]
+repo = 'honza/dockerfile.vim'
+[[plugins]]
+repo = 'chase/vim-ansible-yaml'
+[[plugins]]
+repo = 'MicahElliott/Rocannon'
+[[plugins]]
+repo = 'cespare/vim-toml'
+[[plugins]]
+repo = 'xolox/vim-misc'
+[[plugins]]
+repo = 'vim-scripts/httplog'
+[[plugins]]
+repo = 'vim-scripts/syslog-syntax-file'
+[[plugins]]
+repo = 'uarun/vim-protobuf'
+[[plugins]]
+repo = 'sophacles/vim-processing'
+[[plugins]]
+repo = 'pekepeke/ref-processing-vim'
+on_ft = 'processing'
+[[plugins]]
+repo = 'sjl/strftimedammit.vim'
+[[plugins]]
+repo = 'tangledhelix/vim-octopress'
+[[plugins]]
+repo = 'jcfaria/Vim-R-plugin'
+on_ft = 'r'
+[[plugins]]
+repo = 'rbtnn/vimconsole.vim'
+on_cmd = [
+  'VimConsoleLog', 'VimConsoleOpen', 'VimConsoleWarn', 'VimConsoleError',
+  'VimConsoleError', 'VimConsoleToggle', 'VimConsoleClear', 'VimConsoleRedraw',
+]
+hook_add = '''
+  let g:vimconsole#auto_redraw = 1
+  let g:vimconsole#maximum_caching_objects_count = 1000
+
+  nnoremap [!space]vc :<C-u>VimConsoleToggle<CR>
+
+    MyAutoCmd FileType vimconsole call s:vimrc_vimconsole_init()
+    function! s:vimrc_vimconsole_init() "{{{3
+      nnoremap <buffer> <C-l> :<C-u>VimConsoleRedraw<CR>
+    endfunction
+'''
+[[plugins]]
+repo = 'basyura/rmine.vim'
+on_cmd = [ 'Rmine', 'RmineIssue', 'RmineNewIssue']
+
+# config {{{4
+[[plugins]]
+repo = 'qqshfox/vim-tmux'
+[[plugins]]
+repo = 'vim-scripts/nginx.vim'
+[[plugins]]
+repo = 'smerrill/vcl-vim-plugin'
+[[plugins]]
+repo = 'ksauzz/haproxy.vim'
+# [[plugins]]
+# repo = 'empanda/vim-varnish.vim'
+[[plugins]]
+repo = 'glidenote/keepalived-syntax.vim'
+# repo = 'Shougo/vim-nyaos'
+
+[[plugins]]
+repo = 'Shougo/ddu.vim'
+hook_add = '''
+call ddu#custom#patch_global({
+    \   'ui': 'ff',
+    \   'sources': [
+	\     {'name':'file','params':{}},
+	\     {'name':'mr'},
+	\     {'name':'register'},
+	\     {'name':'buffer'},
+	\   ],
+    \   'sourceOptions': {
+    \     '_': #{
+    \       matchers: ['matcher_substring'],
+    \     },
+    \   },
+    \   'kindOptions': {
+    \     'file': {
+    \       'defaultAction': 'open',
+    \     },
+	\     'word': {
+	\        'defaultAction': 'append',
+	\     },
+    \   },
+    \   'uiParams': {
+    \      'ff': {
+    \         'startFilter': v:false,
+    \      },
+    \   },
+    \   'filterParams': {
+    \      'matcher_substring': {
+    \          'highlightMatched': 'Search',
+    \      },
+    \   },
+    \ })
+call ddu#custom#patch_local('file_rec', {
+\	'sources': [{
+\		'name':'file_rec',
+\		'params': {
+\			'ignoredDirectories': ['.git', 'var', 'node_modules', ]
+\		},
+\	}],
+\})
+call ddu#custom#patch_local('filer', {
+\	'ui': 'filer',
+\	'sources': [
+\		{'name': 'file', 'params': {}},
+\	],
+\   'sourceOptions': {
+\     '_': {
+\       'columns': ['filename'],
+\     },
+\   },
+\   'kindOptions': {
+\     'file': {
+\       'defaultAction': 'open',
+\     },
+\   },
+\   'uiParams': {
+\     'filer': {
+\       'winWidth': 40,
+\       'split': 'vertical',
+\       'splitDirection': 'topleft',
+\     }
+\   },
+\	'resume': v:true,
+\ })
+
+call ddu#custom#patch_local('grep', {
+\	'sourceParams' : {
+\		'rg' : {
+\			'args': ['--column', '--no-heading', '--color', 'never', '-i'],
+\		},
+\	 },
+\	'uiParams': {
+\		'ff': {
+\			'startFilter': v:false,
+\		 }
+\	 },
+\	'resume': v:true,
+\ })
+"ddu-key-setting
+autocmd FileType ddu-ff call s:ddu_my_settings()
+function! s:ddu_my_settings() abort
+  nnoremap <buffer><silent> <CR>
+        \ <Cmd>call ddu#ui#do_action('itemAction')<CR>
+  nnoremap <buffer><silent> <Space>
+        \ <Cmd>call ddu#ui#do_action('toggleSelectItem')<CR>
+  nnoremap <buffer><silent> i
+        \ <Cmd>call ddu#ui#do_action('openFilterWindow')<CR>
+  nnoremap <buffer><silent> q
+        \ <Cmd>call ddu#ui#do_action('quit')<CR>
+endfunction
+
+autocmd FileType ddu-ff-filter call s:ddu_filter_my_settings()
+function! s:ddu_filter_my_settings() abort
+  nnoremap <buffer> <CR>
+  \ <Cmd>call ddu#ui#do_action('itemAction')<CR>
+  nnoremap <buffer><silent> q
+  \ <Cmd>call ddu#ui#do_action('quit')<CR>
+  inoremap <buffer> <CR>
+  \ <Cmd>call ddu#ui#do_action('itemAction')<CR>
+  inoremap <buffer> <C-j>
+  \ <Cmd>call cursor(line('.')+1,0)<CR>
+  inoremap <buffer> <C-k>
+  \ <Cmd>call cursor(line('.')-1,0)<CR>
+endfunction
+
+
+autocmd TabEnter,CursorHold,FocusGained <buffer>
+	\ call ddu#ui#do_action('checkItems')
+
+autocmd FileType ddu-filer call s:ddu_filer_my_settings()
+function! s:ddu_filer_my_settings() abort
+  nnoremap <buffer><silent><expr> <CR>
+    \ ddu#ui#get_item()->get('isTree', v:false) ?
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'narrow'})<CR>" :
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'open', 'params': {'command': 'vsplit'}})<CR>"
+
+  nnoremap <buffer><silent><expr> <Space>
+    \ ddu#ui#get_item()->get('isTree', v:false) ?
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'narrow'})<CR>" :
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'open', 'params': {'command': 'split'}})<CR>"
+
+  nnoremap <buffer><silent> <Esc>
+    \ <Cmd>call ddu#ui#do_action('quit')<CR>
+
+  nnoremap <buffer><silent> q
+    \ <Cmd>call ddu#ui#do_action('quit')<CR>
+
+  nnoremap <buffer><silent> ..
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'narrow', 'params': {'path': '..'}})<CR>
+
+  nnoremap <buffer><silent> c
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'copy'})<CR>
+
+  nnoremap <buffer><silent> p
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'paste'})<CR>
+
+  nnoremap <buffer><silent> d
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'delete'})<CR>
+
+  nnoremap <buffer><silent> r
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'rename'})<CR>
+
+  nnoremap <buffer><silent> mv
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'move'})<CR>
+
+  nnoremap <buffer><silent> t
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'newFile'})<CR>
+
+  nnoremap <buffer><silent> mk
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'newDirectory'})<CR>
+
+  nnoremap <buffer><silent> yy
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'yank'})<CR>
+endfunction
+
+nnoremap [!ddu] <Nop>
+nmap f [!ddu]
+
+nnoremap <silent> [!ddu]<Space>  :<C-u>Ddu buffer<CR>
+nnoremap <silent> [!ddu]j  <Cmd>Ddu buffer<CR>
+" nnoremap <silent> [!ddu]k  <Cmd>Ddu buffer<CR>
+nnoremap <silent> [!ddu]l  <Cmd>Ddu file<CR>
+nnoremap <silent> [!ddu]l  <Cmd>Ddu file<CR>
+nnoremap <silent> [!ddu]m  <Cmd>Ddu mr<CR>
+nnoremap <silent> [!ddu]p  <Cmd>Ddu register<CR>
+nnoremap <silent> [!ddu]a  <Cmd>Ddu -name=file_rec<CR>
+nnoremap <silent> [!ddu]d  <Cmd>Ddu -name=filer<CR>
+nnoremap <silent> [!ddu]gg  <Cmd>Ddu rg -name=grep -source-param-rg-input='`'Pattern: '->input('<cword>'->expand())`'<CR>
+nnoremap <silent> [!ddu]gr  <Cmd>Ddu -name=grep<CR>
+
+nnoremap <silent> [!ddu]gl  <Cmd>Ddu line<CR>
+
+function! DduGrepInteractive(input) abort
+  call ddu#start({
+  \ 'name': 'grep',
+  \ 'volatile': v:true,
+  \ 'input': a:input,
+  \ 'sources': [{
+  \   'name': 'rg',
+  \   'options': {'matchers': []},
+  \   'params': {
+  \     'args': ['--json'],
+  \     'highlights': s:rg_highlights,
+  \   },
+  \ }],
+  \ 'uiParams': {'ff': {
+  \   'autoResize': v:false,
+  \   'ignoreEmpty': v:false,
+  \   'startFilter': v:true,
+  \ }},
+  \})
+endfunction
+
+function! DduGrep(fargs) abort
+  let args = copy(a:fargs)
+  let path = ''
+  let opts = []
+  let search = ''
+  let optend = 0
+  while len(args)
+    let arg = remove(args, 0)
+    if arg ==# '--'
+      let optend = 1
+    elseif !optend && arg[0] ==# '-'
+      call add(opts, arg)
+    elseif search ==# ''
+      let search = arg
+    elseif path ==# ''
+      let path = fnamemodify(arg, ':p')
+      if !isdirectory(path) && !filereadable(path)
+        echoe 'Grep: path does not exist:' path
+        return
+      endif
+    else
+      let search = ''
+      break
+    endif
+  endwhile
+  if search ==# ''
+    echoe 'usage: Grep [options] <search> [path]'
+    return
+  endif
+  call ddu#start({
+  \ 'name': 'grep',
+  \ 'sources': [{
+  \   'name': 'rg',
+  \   'params': {
+  \     'args': ['--json'] + opts,
+  \     'input': search,
+  \     'path': path,
+  \     'highlights': s:rg_highlights,
+  \   },
+  \ }],
+  \})
+endfunction
+'''
+[[plugins]]
+repo = 'Shougo/ddu-commands.vim'
+[[plugins]]
+repo = 'Shougo/ddu-ui-ff'
+[[plugins]]
+repo = 'Shougo/ddu-ui-filer'
+[[plugins]]
+repo = 'Shougo/ddu-commands.vim'
+[[plugins]]
+repo = 'Shougo/ddu-source-file'
+[[plugins]]
+repo = 'Shougo/ddu-source-file_rec'
+[[plugins]]
+repo = 'Shougo/ddu-source-register'
+[[plugins]]
+repo = 'Shougo/ddu-source-line'
+[[plugins]]
+repo = 'shun/ddu-source-buffer'
+[[plugins]]
+repo = 'shun/ddu-source-rg'
+[[plugins]]
+repo = 'kuuote/ddu-source-mr'
+[[plugins]]
+repo = 'lambdalisue/vim-mr'
+[[plugins]]
+repo = 'Shougo/ddu-filter-matcher_substring'
+[[plugins]]
+repo = 'Shougo/ddu-kind-file'
+[[plugins]]
+repo = 'Shougo/ddu-kind-word'
+[[plugins]]
+repo = 'Shougo/ddu-column-filename'
+
+# unite.vim {{{3
+# repo = 'Shougo/unite.vim'
+# #
+# # \   'on_cmd' : ['Unite', 'UniteBookmarkAdd']
+# # \ }
+# repo = 'Shougo/neomru.vim'
+# #
+# # \ 'on_unite': ['file_mru', 'directory_mru',
+# # \   'neomru/file', 'neomru/directory']
+# # \ }
+# repo = 'Shougo/neoyank.vim'
+# repo = 'thinca/vim-unite-history'
+# repo = 'Shougo/unite-help'
+# \ 'on_source': 'unite.vim',
+# \ }
+# repo = 'tacroe/unite-mark'
+# \ 'on_source': 'unite.vim',
+# \ }
+# repo = 'zhaocai/unite-scriptnames'
+# # repo = 'pasela/unite-webcolorname'
+# # \ 'on_source': 'unite.vim',
+# # \ }
+# # repo = 'ujihisa/unite-colorscheme'
+# # \ 'on_source': 'unite.vim',
+# # \ }
+# # repo = 'LeafCage/unite-gvimrgb'
+# # \ 'on_source': 'unite.vim',
+# # \ }
+# # repo = 'Shougo/unite-build'
+# # \ 'on_source': 'unite.vim',
+# # \ }
+# repo = 'Shougo/unite-outline'
+# # repo = 'kmnk/vim-unite-giti'
+# # repo = 'sgur/unite-git_grep'
+# # \ 'on_source': 'unite.vim',
+# # \ }
+# repo = 'osyo-manga/unite-highlight'
+# \ 'on_source': 'unite.vim',
+# \ }
+# repo = 'osyo-manga/unite-candidate_sorter'
+# on_map = [['n', '<Plug>(unite-candidate_sort)']]
+# \ }
+# repo = 'osyo-manga/unite-quickfix'
+# repo = "osyo-manga/unite-quickrun_config"
+# repo = 'eiiches/unite-tselect'
+# hook_add = '''
+#   nnoremap <silent> [!t]t :<C-u>Unite tselect:<C-r>=expand('<cword>')<CR> -immediately<CR>
+#   nnoremap <silent> <C-w>tt <C-w>s:<C-u>Unite tselect:<C-r>=expand('<cword>')<CR> -immediately<CR>
+# '''
+# repo = 'tsukkee/unite-tag'
+# \ 'on_source': 'unite.vim',
+# \ }
+# # repo = 'hewes/unite-gtags'
+# # \ 'on_source': 'unite.vim',
+# # \ }
+# repo = 'rafi/vim-unite-issue'
+# \ 'depends' : ['mattn/webapi-vim',  'tyru/open-browser.vim',  'Shougo/unite.vim'],
+# \ }
+# repo = 'haya14busa/unite-ghq'
+# if s:exec_ruby && executable('watson')
+#   repo = 'alpaca-tc/vim-unite-watson.vim'
+# on_cmd = 'Watson',
+#   \ 'depends' : 'Shougo/unite.vim',
+#   \ 'on_source': 'unite.vim',
+#   \ }
+# endif
+# repo = 'pekepeke/quicklearn'
+# hook_add = '''
+# let g:quicklearn = get(g:, 'quicklearn', {})
+# call extend(g:quicklearn, {
+#   \ 'markdown/md2remark/intermediate' : {
+#   \   'command' : 'md2remark',
+#   \   'exec' : '%c %o %s',
+#   \ },
+#   \ 'markdown/md2backlog/intermediate' : {
+#   \   'command' : 'md2backlog',
+#   \   'exec' : '%c %o %s',
+#   \ },
+#   \ 'markdown/vim-helpfile/intermediate' : {
+#   \   'command' : 'vim-helpfile',
+#   \   'exec' : '%c %o %s',
+#   \ },
+#   \ 'markdown/markdown2pod/intermediate' : {
+#   \   'command' : 'markdown2pod',
+#   \   'exec' : '%c %o %s',
+#   \ },
+#   \ })
+# call extend(g:quicklearn, {
+#   \ 'markdown/textile/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t textile %o %s',
+#   \ },
+#   \ 'markdown/rst/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t rst %o %s',
+#   \ },
+#   \ 'markdown/html5/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t html5 %o %s',
+#   \ },
+#   \ 'markdown/mediawiki/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t mediawiki %o %s',
+#   \ },
+#   \ 'markdown/s5/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t s5 %o %s',
+#   \ },
+#   \ 'markdown/revealjs/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t revealjs %o %s',
+#   \ },
+#   \ 'markdown/dzslides/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t dzslides %o %s',
+#   \ },
+#   \ 'markdown/slidy/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t slidy %o %s',
+#   \ },
+#   \ 'markdown/slideous/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t slideous %o %s',
+#   \ },
+#   \ 'markdown/beamer/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t beamer %o %s',
+#   \ },
+#   \ 'markdown/latex/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t latex %o %s',
+#   \ },
+#   \ 'markdown/rtf/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f markdown -t rtf %o %s',
+#   \ },
+#   \ })
+# call extend(g:quicklearn, {
+#   \ 'textile/markdown/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f textile -t markdown %o %s',
+#   \ },
+#   \ 'textile/rst/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f textile -t rst %o %s',
+#   \ },
+#   \ 'textile/html5/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f textile -t html5 %o %s',
+#   \ },
+#   \ 'textile/mediawiki/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f textile -t mediawiki %o %s',
+#   \ },
+#   \ 'textile/s5/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f textile -t s5 %o %s',
+#   \ },
+#   \ 'textile/slidy/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f textile -t slidy %o %s',
+#   \ },
+#   \ 'textile/slideous/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f textile -t slideous %o %s',
+#   \ },
+#   \ 'textile/beamer/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f textile -t beamer %o %s',
+#   \ },
+#   \ 'textile/latex/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f textile -t latex %o %s',
+#   \ },
+#   \ 'textile/rtf/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f textile -t rtf %o %s',
+#   \ },
+#   \ })
+# call extend(g:quicklearn, {
+#   \ 'rst/markdown/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f rst -t markdown %o %s',
+#   \ },
+#   \ 'rst/textile/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f rst -t textile %o %s',
+#   \ },
+#   \ 'rst/html5/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f rst -t html5 %o %s',
+#   \ },
+#   \ 'rst/mediawiki/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f rst -t mediawiki %o %s',
+#   \ },
+#   \ 'rst/s5/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f rst -t s5 %o %s',
+#   \ },
+#   \ 'rst/slidy/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f rst -t slidy %o %s',
+#   \ },
+#   \ 'rst/slideous/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f rst -t slideous %o %s',
+#   \ },
+#   \ 'rst/beamer/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f rst -t beamer %o %s',
+#   \ },
+#   \ 'rst/latex/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f rst -t latex %o %s',
+#   \ },
+#   \ 'rst/rtf/intermediate': {
+#   \   'command': 'pandoc',
+#   \   'exec' : '%c -f rst -t rtf %o %s',
+#   \ },
+#   \ })
+#   call extend(g:quicklearn, {
+#   \ 'rst/rst2html/intermediate': {
+#   \   'command': 'rst2html',
+#   \   'exec': '%c %o %s',
+#   \ },
+#   \ })
+# '''
+# repo = "osyo-manga/unite-fold"
+# \ 'on_source': 'unite.vim',
+# \ }
+# repo = "monochromegane/unite-yaml"
+# \ 'on_source': 'unite.vim',
+# \ 'on_ft': ['yaml'],
+# \ }
+# repo = 'RomainEndelin/fusion.vim'
+# \ 'on_source': 'unite.vim',
+# \ }
+# repo = 'pekepeke/vim-unite-repo-files'
+# \ 'on_source': 'unite.vim',
+# \ }
+# repo = 'pekepeke/vim-unite-z'
+# \ 'on_source': 'unite.vim',
+# \ }
+
+# if d#is_win()
+#   repo = 'sgur/unite-everything'
+#   \ 'on_source': 'unite.vim',
+#   \ }
+# else
+#   if d#is_mac()
+#     repo = 'choplin/unite-spotlight'
+#     \ 'on_source': 'unite.vim',
+#     \ }
+#   else
+#     repo = 'ujihisa/unite-locate'
+#     \ 'on_source': 'unite.vim',
+#     \ }
+#   endif
+#   repo = 'ujihisa/neco-look'
+# endif
+
+# www {{{3
+[[plugins]]
+repo = 'tyru/open-browser.vim'
+on_func = ['OpenBrowser']
+on_cmd = [ 'OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch']
+on_map = '<Plug>'
+hook_add = '''
+  nmap [!space]u <Plug>(openbrowser-open)
+  vmap [!space]u <Plug>(openbrowser-open)
+'''
+
+[[plugins]]
+repo = 'tyru/open-browser-github.vim'
+on_cmd = ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq']
+[[plugins]]
+repo = 'junegunn/vim-github-dashboard'
+on_cmd = [ 'GHD', 'GHA', 'GHDashboard', 'GHActivity' ]
+[[plugins]]
+repo = 'mattn/webapi-vim'
+[[plugins]]
+repo = 'mattn/excitetranslate-vim'
+on_cmd = ['ExciteTranslate']
+[[plugins]]
+repo = 'mattn/gist-vim'
+on_cmd = ['Gist']
+
+# gf-user {{{3
+[[plugins]]
+repo = 'kana/vim-gf-user'
+[[plugins]]
+repo = 'kana/vim-gf-diff'
+[[plugins]]
+repo = 'sgur/vim-gf-autoload'
+[[plugins]]
+repo = 'zhaocai/vim-gf-python'
+on_ft = 'python'
+[[plugins]]
+repo = 'pekepeke/vim-gf-ruby-require'
+on_ft = 'ruby'
+[[plugins]]
+repo = 'pekepeke/vim-gf-vundle'
+
+# operator {{{3
+[[plugins]]
+repo = 'kana/vim-operator-user'
+hook_add = '''
+    call operator#user#define('excelize', 'OperatorExcelize')
+    function! OperatorExcelize(motion_wise)
+      let b = line("'[")
+      let e = line("']")
+      execute b ',' e 'substitute/\v(\''?)(\$?\u+\$?\d+)(\''?)/\1" \& \2 \& "\3/g'
+      execute b 'substitute/^/="/'
+      execute e 'substitute/$/"/'
+    endfunction
+
+    call operator#user#define_ex_command('retab', 'retab')
+    call operator#user#define_ex_command('join', 'join')
+    call operator#user#define_ex_command('uniq', 'sort u')
+    call operator#user#define_ex_command('trimright', 's/\s\+$//')
+
+  map H <Plug>(operator-furround-append-reg)
+  map _ <Plug>(operator-replace)
+  map ;e <Plug>(operator-excelize)
+  map ;h <Plug>(operator-html-escape)
+  map ;H <Plug>(operator-html-unescape)
+  map ;c <Plug>(operator-camelize)
+  map ;C <Plug>(operator-decamelize)
+  map ;<C-i> <Plug>(operator-retab)
+  map ;j <Plug>(operator-join)
+  map ;u <Plug>(operator-uniq)
+  map ;k <Plug>(operator-trimright)
+
+  " map ;q <Plug>(operator-quickhl-manual-this-motion)
+  map ;u <Plug>(operator-openbrowser)
+
+  map <Leader>tm <Plug>(operator-tabular-tsv2md))
+  map <Leader>Tm <Plug>(operator-tabular-md2tsv)
+  map <Leader>nm <Plug>(operator-normalize_utf8mac)
+  map ;s <Plug>(operator-shuffle)
+'''
+[[plugins]]
+repo = 'kana/vim-operator-replace'
+# \ 'on_map' : [
+# \ ['nx', '<Plug>(operator-replace)']]
+# \ }
+[[plugins]]
+repo = 'tyru/operator-camelize.vim'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'tyru/operator-html-escape.vim'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'syngan/vim-operator-furround'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'rhysd/vim-operator-surround'
+on_map = '<Plug>'
+hook_add = '''
+    map <silent>sa <Plug>(operator-surround-append)
+    map <silent>sd <Plug>(operator-surround-delete)
+    map <silent>sr <Plug>(operator-surround-replace)
+    nmap <silent>saa <Plug>(operator-surround-append)<Plug>(textobj-multiblock-a)
+    nmap <silent>sdd <Plug>(perator-surround-delete)<Plug>(textobj-multiblock-a)
+    nmap <silent>srr <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
+    nmap <silent>sdb <Plug>(operator-surround-delete)<Plug>(textobj-between-a)
+    nmap <silent>srb <Plug>(operator-surround-replace)<Plug>(textobj-between-a)
+
+'''
+[[plugins]]
+repo = 'sgur/vim-operator-openbrowser'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'pekepeke/vim-operator-shuffle'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'pekepeke/vim-operator-tabular'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'pekepeke/vim-operator-normalize-utf8mac'
+on_map = '<Plug>'
+
+# textobj {{{3
+[[plugins]]
+repo = 'kana/vim-textobj-user'
+hook_add = '''
+  function! s:textobj_mapping(key, cmd)
+    silent exe 'omap' a:key a:cmd
+    silent exe 'vmap' a:key a:cmd
+    " silent exe 'xmap' a:key a:cmd
+    " silent exe 'smap' a:key a:cmd
+  endfunction
+  command! -nargs=+ Tmap call s:textobj_mapping(<f-args>)
+  function! s:textobj_mapping_by_name(key, name)
+    call s:textobj_mapping('i'.a:key, '<Plug>(textobj-' . a:name . '-i)')
+    call s:textobj_mapping('a'.a:key, '<Plug>(textobj-' . a:name . '-a)')
+  endfunction
+  command! -nargs=+ TTmap call s:textobj_mapping_by_name(<f-args>)
+
+  Tmap if <Plug>(textobj-function-i)
+  Tmap af <Plug>(textobj-function-a)
+  Tmap ii <Plug>(textobj-indent-i)
+  Tmap ai <Plug>(textobj-indent-a)
+
+  " Tmap a/ <Plug>(textobj-lastpat-n)
+  " Tmap i/ <Plug>(textobj-lastpat-n)
+  " Tmap a? <Plug>(textobj-lastpat-N)
+  " Tmap i? <Plug>(textobj-lastpat-N)
+
+  TTmap e entire
+  nnoremap <silent> yie :<C-u>call <SID>execute_motionless("normal y\<Plug>(textobj-entire-i)")<CR>
+  nnoremap <silent> yae :<C-u>call <SID>execute_motionless("normal y\<Plug>(textobj-entire-a)")<CR>
+  TTmap y syntax
+  TTmap ,_ quoted
+  TTmap f function
+
+  " TTmap e entire
+  TTmap ,, parameter
+  " TTmap l line
+  TTmap ,b between
+  TTmap ,f fold
+  TTmap q enclosedsyntax
+  " TTmap b multiblock
+  TTmap b multitextobj
+  TTmap ,w wiw
+  TTmap u lastinserted
+  TTmap U url
+  TTmap # ifdef
+  Tmap ixx <Plug>(textobj-context-i)
+
+  " Tmap axa <Plug>(textobj-xmlattribute-xmlattribute)
+  " Tmap ixa <Plug>(textobj-xmlattribute-xmlattributenospace)
+  " TTmap m  motionmotion
+
+  TTmap P php-phptag
+  TTmap aP php-phparray
+
+  TTmap c wordcolumn-w
+  TTmap C wordcolumn-W
+
+  " let g:textboj_ _no_default_key_mappings=1
+  " let g:textboj_datetime_no_default_key_mappings=1
+  " let g:textboj_jabraces_no_default_key_mappings=1
+
+  let g:textboj_syntax_no_default_key_mappings=1
+  let g:textboj_quoted_no_default_key_mappings=1
+  let g:textboj_function_no_default_key_mappings=1
+
+  " let g:textobj_entire_no_default_key_mappings=1
+  let g:textobj_parameter_no_default_key_mappings=1
+  " let g:textobj_line_no_default_key_mappings=1
+  let g:textobj_between_no_default_key_mappings=1
+  let g:textboj_fold_no_default_key_mappings=1
+  let g:textboj_enclosedsyntax_no_default_key_mappings=1
+  let g:textboj_multiblock_no_default_key_mappings=1
+  let g:textobj_wiw_no_default_key_mappings=1
+  let g:textboj_lastinserted_no_default_key_mappings=1
+  let g:textboj_url_no_default_key_mappings=1
+  let g:textboj_ifdef_no_default_key_mappings=1
+  let g:textboj_context_no_default_key_mappings=1
+  " let g:textboj_xbrackets_no_default_key_mappings=1
+  let g:textboj_php_no_default_key_mappings=1
+  let g:textobj_wordcolumn_no_default_key_mappings=1
+
+  let g:textobj_multiblock_blocks = [
+  \ [ '(', ')' ],
+  \ [ '[', ']' ],
+  \ [ '{', '}' ],
+  \ [ '<', '>', 1 ],
+  \ [ '"', '"', 1 ],
+  \ [ "'", "'", 1 ],
+  \ [ "_", "_", 1 ],
+  \]
+
+  let g:textobj_multitextobj_textobjects_i = [
+  \ "\<Plug>(textobj-url-i)",
+  \ "\<Plug>(textobj-php-i)",
+  \ "\<Plug>(textobj-parameter-i)",
+  \ "\<Plug>(textobj-multiblock-i)",
+  \ "\<Plug>(textobj-function-i)",
+  \ "\<Plug>(textobj-indent-i)",
+  \]
+  " \ "\<Plug>(textobj-entire-i)",
+
+  let g:textobj_multitextobj_textobjects_a = [
+  \ "\<Plug>(textobj-url-a)",
+  \ "\<Plug>(textobj-php-a)",
+  \ "\<Plug>(textobj-parameter-a)",
+  \ "\<Plug>(textobj-multiblock-a)",
+  \ "\<Plug>(textobj-function-a)",
+  \ "\<Plug>(textobj-indent-a)",
+  \]
+  " \ "\<Plug>(textobj-entire-a)",
+
+  let g:textobj_multitextobj_textobjects_group_i = {
+  \ "A" : [
+  \   "\<Plug>(textobj-url-i)",
+  \   "\<Plug>(textobj-wiw-i)",
+  \   "iw",
+  \ ]
+  \}
+'''
+# repo = 'kana/vim-textobj-datetime'
+# \ 'on_map': [[
+# \ 'ada', 'adf', 'add', 'adt', 'adz',
+# \ 'ida', 'idf', 'idd', 'idt', 'idz',
+# \ ]],
+# \ }
+[[plugins]]
+repo = 'kana/vim-textobj-diff'
+# on_map = '<Leader>d'
+[[plugins]]
+repo = 'kana/vim-textobj-entire'
+on_map = '<Plug>'
+# on_map = ['ie', 'ae']
+[[plugins]]
+repo = 'kana/vim-textobj-fold'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'kana/vim-textobj-lastpat'
+# on_map = ['a/', 'i/', 'a?', 'i?', '<Plug>' ]
+[[plugins]]
+repo = 'kana/vim-textobj-syntax'
+# on_map = ['al', 'il', '<Plug>']
+on_map = '<Plug>'
+[[plugins]]
+repo = 'kana/vim-textobj-underscore'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'thinca/vim-textobj-between'
+on_map = '<Plug>'
+# repo = 'thinca/vim-textobj-comment'
+[[plugins]]
+repo = 'kana/vim-textobj-function'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'thinca/vim-textobj-function-javascript'
+[[plugins]]
+repo = 'thinca/vim-textobj-function-perl'
+[[plugins]]
+repo = 't9md/vim-textobj-function-ruby'
+[[plugins]]
+repo = 'nelstrom/vim-textobj-rubyblock'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'deris/vim-textobj-enclosedsyntax'
+on_map = '<Plug>'
+[[plugins]]
+repo = "osyo-manga/vim-textobj-multitextobj"
+on_map = '<Plug>'
+[[plugins]]
+repo = 'osyo-manga/vim-textobj-multiblock'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'vim-scripts/textobj-indent'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'sgur/vim-textobj-parameter'
+on_map = '<Plug>'
+# repo = 'h1mesuke/textobj-wiw'
+# \ 'depends' : 'vim-textobj-user',
+# \ 'on_map' : [
+# \ ['nvo', '<Plug>(textobj-wiw-i)', '<Plug>(textobj-wiw-a)']]
+# \ }
+[[plugins]]
+repo = 'rhysd/vim-textobj-word-column'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'rhysd/vim-textobj-continuous-line'
+[[plugins]]
+repo = 'osyo-manga/vim-textobj-context'
+on_map = '<Plug>'
+[[plugins]]
+repo = "osyo-manga/vim-textobj-blockwise"
+[[plugins]]
+repo = 'akiyan/vim-textobj-xml-attribute'
+on_map = '<Plug>'
+# on_map = ['<Plug>', 'axa', 'ixa']
+[[plugins]]
+repo = 'rhysd/vim-textobj-lastinserted'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'gilligan/textobj-lastpaste'
+on_map = '<Plug>'
+# on_map = ['<Plug>', 'aip', 'iip']
+[[plugins]]
+repo = 'mattn/vim-textobj-url'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'anyakichi/vim-textobj-ifdef'
+on_map = '<Plug>'
+[[plugins]]
+repo = 'akiyan/vim-textobj-php'
+on_map = '<Plug>'
+

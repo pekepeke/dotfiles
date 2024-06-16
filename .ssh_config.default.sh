@@ -33,14 +33,16 @@ Host *
 
 Host github.com
   User git
-  HostName github.com
+  Hostname ssh.github.com
+  Port 443
   TCPKeepAlive yes
   IdentitiesOnly yes
 
 
 # Host xxx.github.com
 #   User git
-#   HostName github.com
+#   Hostname ssh.github.com
+#   Port 443
 #   TCPKeepAlive yes
 #   IdentitiesOnly yes
 #   IdentityFile ~/.ssh/certs/hoge_id_rsa

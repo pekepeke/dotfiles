@@ -1,0 +1,36 @@
+[[plugins]]
+repo = 'b4winckler/vim-objc'
+[[plugins]]
+repo = 'pekepeke/cocoa.vim'
+hook_add = '''
+let g:objc#man#dash_keyword = 'ios:'
+if s:is_mac
+  if executable($HOME . '/Applications/zeal.app/Contents/MacOS/zeal')
+    let g:objc#man#dash_command_format = $HOME . '/Applications/zeal.app/Contents/MacOS/zeal --query "%s" &'
+  endif
+endif
+'''
+[[plugins]]
+repo = 'eraserhd/vim-ios'
+# [[plugins]]
+# repo = 'rhysd/unite-mac-apps'
+# [[plugins]]
+# repo = 'tokorom/vim-quickrun-xctool'
+#   repo = 'Yggdroot/indentLine'
+# on_if = 'd#is_mac() && has("conceal")'
+# hook_add = '''
+#   let g:indentLine_enabled=1
+#   let g:indentLine_char = '¦'
+#   let g:indentLine_color_term = 236
+#   if s:is_win
+#     let g:indentLine_color_gui = 'lightgray'
+#   else
+#     let g:indentLine_color_gui = '#333'
+#   endif
+#   let g:indentLine_faster = 1
+#   let g:indentLine_fileTypeExclude = [
+#   \ 'help', 'nerdtree', 'calendar', 'thumbnail', 'tweetvim',
+#   \ 'unite', 'vimfiler', 'vimshell',
+#   \ ]
+# '''
+

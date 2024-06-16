@@ -1,0 +1,22 @@
+[[plugins]]
+repo = 'xolox/vim-lua-ftplugin'
+on_ft = 'lua'
+[[plugins]]
+repo = 'joonty/vdebug'
+on_ft = 'php'
+on_cmd = [
+  "VdebugStart", "Breakpoint",
+  "BreakpointRemove", "BreakpointWindow",
+  "VdebugEval", "VdebugOpt",
+]
+hook_add = '''
+  let g:vdebug_options = {
+  \ 'server': 'localhost',
+  \ 'port': 9000,
+  \ 'timeout': 20,
+  \ 'break_on_open': 1,
+  \ 'on_close': 'detach',
+  \ 'path_maps': {},
+  \ }
+'''
+
