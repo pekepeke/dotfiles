@@ -1,0 +1,25 @@
+"dockerFile": "Dockerfile",
+"appPort": ["3000:3000"],
+"runArgs": [],
+"mounts": [ "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind" ],
+"overrideCommand": false,
+"remoteEnv": {
+	"LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+},
+"postCreateCommand": "npm install",
+"features": {
+	// https://containers.dev/features
+}
+"customizations": {
+	// Configure properties specific to VS Code.
+	"vscode": {
+		// Add the IDs of extensions you want installed when the container is created.
+		"extensions": [
+			"dbaeumer.vscode-eslint",
+			"MS-CEINTL.vscode-language-pack-ja",
+			"esbenp.prettier-vscode",
+			"formulahendry.code-runner"
+		]
+	}
+}
+

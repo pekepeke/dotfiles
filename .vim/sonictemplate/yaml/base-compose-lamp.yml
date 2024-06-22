@@ -15,6 +15,7 @@ services:
       - '43306:3306'
     volumes:
       - mysql-storage:/var/lib/mysql
+    restart: always
     # volumes:
     #   - ./mysql:/var/lib/mysql
     environment:

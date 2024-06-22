@@ -2,6 +2,45 @@ debian memo
 ===========
 
 ## ubuntu
+### 最初にすること - https://zenn.dev/sprout2000/articles/8ea4a77d81583a
+- ソフトウェアのダウンロード元を変更する
+    - ソフトウェアとアップデートを起動
+    - Ubuntuのソフトウェアのダウンロード元を近い場所のサーバーに変更する
+- CapslockをCtrlに変更
+    - /etc/default/keyboard 
+```
+XKBOPTIONS="ctrl:nocaps"
+```
+- NTPをNICTへ
+```
+sudo sed -i 's/#NTP=/NTP=ntp.nict.jp/g' /etc/systemd/timesyncd.conf
+```
+- ウィンドウスイッチャーが上下に伸び縮みするのを直す
+```
+gsettings set org.gnome.desktop.interface font-name 'Noto Sans CJK JP 11'
+```
+- 開かれたウィンドウが自動的に最大化されないようにする
+```
+gsettings set org.gnome.mutter auto-maximize false
+```
+
+- 詳細設定アプリをインストールする
+```
+sudo apt install gnome-tweaks
+```
+- 日本語のフォルダ名を英語にする
+```
+env LANGUAGE=C LC_MESSAGES=C xdg-user-dirs-gtk-update
+```
+- 変換・無変換で IME のオンオフを切り替える
+```
+sudo apt install mozc-utils-gui
+# mozc の設定画面からキーバインドを設定
+```
+- 動画再生用コーデックをインストールする
+```
+sudo apt install ubuntu-restricted-extras
+```
 ### /boot が100%でカーネルを入れられない
 
 ```
@@ -29,6 +68,12 @@ sudo update-alternatives --set editor /usr/bin/vim.basic
 
 ### パッケージ検索
 - https://packages.ubuntu.com/
+
+```
+apt list --installed  # インストールされているすべてのパッケージを一覧表示する。
+dpkg-query -l         # インストールされているすべてのパッケージを一覧表示する。
+snap list             # インストールされたSnapパッケージを一覧表示する
+```
 
 ### swap 追加
 
@@ -243,3 +288,8 @@ apt install iptables-persistent
 /etc/init.d/iptables-persistent reload
 # /etc/init.d/netfilter-persistent
 ```
+
+### desktop
+
+#### startup
+- ~/.config/autostart/xxx.desktop

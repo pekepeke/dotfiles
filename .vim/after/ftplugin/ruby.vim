@@ -27,13 +27,4 @@ let b:match_words .= '\<\(module\|class\|def\|until\|while\|begin\|do\|if\|unles
 " vnoremap <buffer> [space]xs ! xmpfiler -s
 " vnoremap <buffer> [space]xm ! xmpfiler -m
 
-if get(g:vimrc_enabled_plugins, 'smartchr', 0)
-  inoremap <expr><buffer> #
-        \ synchat#is('rubyString\|rubyInterporation\|rubyInterporationDelimiter')
-        \ ? smartchr#loop('#', '#{', '##') : '#'
-  " inoremap <expr><buffer> { smartchr#loop('{', '#{', '{{')
-  inoremap <expr><buffer> > synchat#is('rubyString\|rubyInterporation\|rubyInterporationDelimiter')?
-        \ '>' : smartchr#one_of('>', '=>', '>>')
-endif
-
 let &cpo = s:save_cpo

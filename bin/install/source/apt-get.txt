@@ -1,6 +1,7 @@
+# vim:fdm=marker sw=2 ts=2 ft=sh expandtab:
 git
-mercurial
-bzr
+# mercurial
+# bzr
 cmake
 curl
 zsh
@@ -26,13 +27,14 @@ p7zip-full
 
 silversearcher-ag
 exuberant-ctags
+ripgrep
 
 # vim-nox
 # vim-lua
 # vim-gnome
-emacs24
-emacs24-el
-emacs24-common-non-dfsg
+# emacs24
+# emacs24-el
+# emacs24-common-non-dfsg
 
 retext
 gitg
@@ -59,7 +61,8 @@ nautilus-open-terminal
 conky
 indicator-multiload
 # glipper
-clipit
+# clipit
+diodon
 trash-cli
 
 vlc
@@ -71,8 +74,8 @@ shutter
 okular
 gimp
 inkscape
-keepass2
-polipo
+# keepass2
+# polipo
 goldendict
 
 ruby
@@ -121,26 +124,27 @@ filezilla
 compizconfig-settings-manager
 compiz-plugins
 
-virtualbox
-virtualbox-guest-additions-iso
-wine
+# virtualbox
+# virtualbox-guest-additions-iso
+# wine
 
-mysql-workbench
+# mysql-workbench
 
 # openjdk-8-jre
 oracle-java8-installer
 
-android
-android-emulator
-android-tools-adb
-android-tools-adbd
-android-tools-fsutils
-androidsdk-ddms
-androidsdk-hierarchyviewer
-androidsdk-traceview
-androidsdk-uiautomatorviewer
+# android
+# android-emulator
+# android-tools-adb
+# android-tools-adbd
+# android-tools-fsutils
+# androidsdk-ddms
+# androidsdk-hierarchyviewer
+# androidsdk-traceview
+# androidsdk-uiautomatorviewer
 
-freemind
-freemind-plugins-help
-freemind-plugins-script
-freemind-plugins-svg
+# freemind
+# freemind-plugins-help
+# freemind-plugins-script
+# freemind-plugins-svg
+

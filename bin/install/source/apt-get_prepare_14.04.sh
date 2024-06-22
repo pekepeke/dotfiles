@@ -32,10 +32,10 @@ ppa:damnvid/ppa
 ppa:stebbins/handbrake-releases
 ppa:mitya57
 ppa:ubuntu-on-rails/ppa
-ppa:webupd8team/atom
 EOM
 # ppa:bikooo/glippy
 # ppa:cassou/emacs
+# ppa:webupd8team/atom
 }
 
 apt_keys() {

@@ -74,6 +74,9 @@ endfunction
 
 call map(split($VIMRC_ENABLES), 's:set_features_flag(v:val)')
 
+command! -bar -nargs=+ Alias call <SID>nop()
+command! -bar -nargs=+ LCAlias call <SID>nop()
+
 " reset settings & restore runtimepath {{{2
 " let s:configured_runtimepath = &runtimepath
 set guioptions+=T guioptions-=m guioptions-=M
@@ -614,9 +617,10 @@ if dpp#min#load_state(s:dpp_base)
   autocmd User DenopsReady
   \ call dpp#make_state(s:dpp_base, $HOME.'/.vim/dpp.ts')
 endif
+command! -narg=0 DppEditStartup execute 'edit' g:dpp#_base_path.'/'.(has('gui_running') ? 'gvim' : has('nvim') ? 'nvim' : 'vim').'/startup.vim'
 command! -narg=0 DppMakeState call dpp#make_state(s:dpp_base, $HOME.'/.vim/dpp.ts')
+command! -narg=0 DppClearState call dpp#clear_state((has('gui_running')?'gvim':has('nvim')?'nvim':'vim'))
 command! -narg=0 DppInstall call dpp#async_ext_action('installer', 'install')
-command! -narg=0 DppReinstall call dpp#async_ext_action('installer', 'reinstall')
 command! -narg=0 DppUpdate call dpp#async_ext_action('installer', 'update')
 command! -narg=0 DppRecache call dpp#async_ext_action('installer', 'recache')
 if !isdirectory(s:denops_src)
@@ -1246,6 +1250,7 @@ inoremap <C-f> <Right>
 inoremap <C-b> <Left>
 inoremap <C-d> <Delete>
 inoremap <C-a> <Home>
+inoremap <S-Insert> <C-r>+
 
 " inoremap <C-]>a <Home>
 " inoremap <C-]>e <End>

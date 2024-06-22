@@ -6,8 +6,8 @@ keycode 101 = Henkan_Mode NoSymbol Henkan_Mode
 keycode 102 = Muhenkan NoSymbol Muhenkan
 
 ! capslock
-! keycode  66 = Control_L
 remove Lock = Caps_Lock
-keysym Caps_Lock = Control_L
-add Control = Control_L
+! keysym Caps_Lock = Control_L
+! add Control = Control_L
 
+keycode  66 = Control_L

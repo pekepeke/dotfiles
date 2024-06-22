@@ -8,15 +8,93 @@
 # TOML sample
 # hook_add = 'let g:foo = 0'
 
-# [ftplugin] # Execute after ftplugin.
+[ftplugin] # Execute after ftplugin.
 # _ = '''
 #   setl formatoptions-=ro | setl formatoptions+=mMBl
 # '''
-# html = '''
-# setlocal includeexpr=v:fname->substitute('^\\/','','')
-# setlocal path+=./;/
-# '''
+c = '''
+if d#is_installed('vim-smartchr')
+  inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
+endif
+'''
 
+cpp = '''
+if d#is_installed('vim-smartchr')
+  inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
+endif
+'''
+
+html = '''
+if d#is_installed('vim-smartchr')
+  inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', 'this.', '@@')
+endif
+'''
+javascript = '''
+if d#is_installed('vim-smartchr')
+  inoremap <buffer> <expr> \  synchat#isnt_src()?'\':smartchr#one_of('\', 'function(', '\\')
+  inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', 'this.', '@@')
+endif
+'''
+
+typescript = '''
+if d#is_installed('vim-smartchr')
+  inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', 'this.', '@@')
+endif
+'''
+
+typescriptreact = '''
+if d#is_installed('vim-smartchr')
+  inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', 'this.', '@@')
+endif
+'''
+coffee = '''
+if d#is_installed('vim-smartchr')
+  inoremap <expr> <buffer> { smartchr#loop('{', '#{', '{{')
+  inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '->', '>>')
+  inoremap <buffer><expr> - synchat#isnt_src()?'-':smartchr#one_of('-', '->', '--')
+  inoremap <buffer><expr> \ synchat#isnt_src()?'\':smartchr#one_of('\', '->', '=>', '\\')
+  inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
+  inoremap <expr><buffer> #
+    \ synchat#is('coffeeString\|coffeeInterporation\|coffeeInterporationDelimiter')
+    \ ? smartchr#loop('#', '#{', '##') : '#'
+endif
+'''
+perl = '''
+if d#is_installed('vim-smartchr')
+  inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', '$self->', '@@')
+  inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
+  inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '=>', '>>')
+endif
+'''
+
+ruby = '''
+if d#is_installed('vim-smartchr')
+  inoremap <expr><buffer> #
+        \ synchat#is('rubyString\|rubyInterporation\|rubyInterporationDelimiter')
+        \ ? smartchr#loop('#', '#{', '##') : '#'
+  inoremap <expr><buffer> > synchat#is('rubyString\|rubyInterporation\|rubyInterporationDelimiter')?
+        \ '>' : smartchr#one_of('>', '=>', '>>')
+endif
+'''
+
+zsh = '''
+if d#is_installed('vim-smartchr')
+  inoremap <buffer> <expr> \ synchat#isnt_src()?'\':smartchr#one_of('\', 'function ', '\\')
+endif
+'''
+
+php = '''
+if d#is_installed('vim-smartchr')
+  inoremap <buffer><expr> \ synchat#isnt_src()?'\':smartchr#one_of('\', 'function', '\\')
+  inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', '$this->', 'self::$', '@@')
+  inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
+  inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '=>', '>>')
+endif
+'''
+# xxx = '''
+# if d#is_installed('vim-smartchr')
+# endif
+# '''
 # [[plugins]]
 # repo = 'rhysd/accelerated-jk'
 # on_map = '<Plug>'
@@ -2246,21 +2324,23 @@ hook_add = '''
   call my#config#mkvars(['g:email', 'g:author', 'g:homepage_url'], '')
 
   "autocmd BufNewFile * execute 'TemplateLoad'
-  MyAutoCmd User plugin-template-loaded call s:VimrcTemplateReplaceKeywords()
+  MyAutoCmd User plugin-template-loaded call VimrcTemplateReplaceKeywords()
 '''
 [[plugins]]
 repo = 'mattn/sonictemplate-vim'
 hook_add = '''
   let g:sonictemplate_vim_template_dir = expand('$HOME/.vim/sonictemplate/')
+  Alias SonicTemplate Template
+  Alias ST Template
+
   " nmap <C-y><C-t> <Plug>(sonictemplate)
   " imap <C-y><C-t> <Plug>(sonictemplate)
-  nmap <C-y><C-t> :<C-u>Unite sonictemplate<CR>
-  imap <C-y><C-t> <ESC>:<C-u>Unite sonictemplate<CR>
-
-  let g:sonictemplate_key='\<Nop>'
-  " let g:sonictemplate_intelligent_key='\<Nop>'
-  nmap <C-y>t :<C-u>Unite sonictemplate<CR>
-  imap <C-y>t <ESC>:<C-u>Unite sonictemplate<CR>
+  " TODO: implements
+  " nmap <C-y><C-t> :<C-u>Unite sonictemplate<CR>
+  " imap <C-y><C-t> <ESC>:<C-u>Unite sonictemplate<CR>
+  " let g:sonictemplate_key='\<Nop>'
+  " nmap <C-y>t :<C-u>Unite sonictemplate<CR>
+  " imap <C-y>t <ESC>:<C-u>Unite sonictemplate<CR>
 '''
 
 [[plugins]]
@@ -2962,7 +3042,7 @@ repo = 'prabirshrestha/vim-lsp'
 hook_add = '''
 function! s:on_lsp_buffer_enabled() abort
     setlocal omnifunc=lsp#complete
-    setlocal signcolumn=no
+    setlocal signcolumn=yes
     if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
     nmap <buffer> gd <plug>(lsp-definition)
     nmap <buffer> gs <plug>(lsp-document-symbol-search)
@@ -2997,6 +3077,10 @@ augroup END
 
 [[plugins]]
 repo = 'mattn/vim-lsp-settings'
+[[plugins]]
+repo = 'rhysd/vim-lsp-ale'
+hook_add = '''
+'''
 
 [[plugins]]
 repo = 'hrsh7th/vim-neco-calc'
@@ -3211,9 +3295,6 @@ on_ft = ['haxe','hxml','nmml']
 repo = 'kchmck/vim-coffee-script'
 [[plugins]]
 repo = 'leafgarland/typescript-vim'
-[[plugins]]
-repo = 'clausreinke/typescript-tools'
-'build' = 'npm install'
 # repo = 'Quramy/tsuquyomi'
 # \ 'on_ft': 'typescript',
 # \ }
@@ -3544,6 +3625,16 @@ call ddu#custom#patch_global({
 	\     {'name':'mr'},
 	\     {'name':'register'},
 	\     {'name':'buffer'},
+	\     {'name':'jumplist'},
+	\     {'name':'qf', 'params': #{
+	\ 				what: #{ title: 'qf' },
+	\               dup: v:true,
+	\            }
+	\     },
+	\     {'name':'help'},
+	\     {'name':'file_old'},
+	\     {'name':'make'},
+	\     {'name':'colorscheme'},
 	\   ],
     \   'sourceOptions': {
     \     '_': #{
@@ -3557,6 +3648,12 @@ call ddu#custom#patch_global({
 	\     'word': {
 	\        'defaultAction': 'append',
 	\     },
+	\     'help': {
+	\        'defaultAction': 'open',
+	\     },
+	\     'colorscheme': {
+	\        'defaultAction': 'set',
+	\     },
     \   },
     \   'uiParams': {
     \      'ff': {
@@ -3569,6 +3666,12 @@ call ddu#custom#patch_global({
     \      },
     \   },
     \ })
+call ddu#custom#alias('source', 'directory_rec', 'file_external')
+call ddu#custom#patch_global('sourceParams', {
+	 \   'directory_rec': {
+	 \     'cmd': ['fd', '.', '-H', '-t', 'd']
+	 \   },
+	 \ })
 call ddu#custom#patch_local('file_rec', {
 \	'sources': [{
 \		'name':'file_rec',
@@ -3657,6 +3760,10 @@ function! s:ddu_filer_my_settings() abort
     \ ddu#ui#get_item()->get('isTree', v:false) ?
     \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'narrow'})<CR>" :
     \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'open', 'params': {'command': 'split'}})<CR>"
+  nnoremap <buffer><silent><expr> l
+    \ ddu#ui#get_item()->get('isTree', v:false) ?
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'narrow'})<CR>" :
+    \ "<Cmd>call ddu#ui#do_action('itemAction', {'name': 'open', 'params': {'command': 'split'}})<CR>"
 
   nnoremap <buffer><silent> <Esc>
     \ <Cmd>call ddu#ui#do_action('quit')<CR>
@@ -3665,6 +3772,8 @@ function! s:ddu_filer_my_settings() abort
     \ <Cmd>call ddu#ui#do_action('quit')<CR>
 
   nnoremap <buffer><silent> ..
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'narrow', 'params': {'path': '..'}})<CR>
+  nnoremap <buffer><silent> h
     \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'narrow', 'params': {'path': '..'}})<CR>
 
   nnoremap <buffer><silent> c
@@ -3695,7 +3804,9 @@ endfunction
 nnoremap [!ddu] <Nop>
 nmap f [!ddu]
 
-nnoremap <silent> [!ddu]<Space>  :<C-u>Ddu buffer<CR>
+nnoremap [!ddu]f f
+nnoremap [!ddu]u :<C-u>Ddu<Space>
+nnoremap <silent> [!ddu]<Space>  <Cmd>Ddu buffer<CR>
 nnoremap <silent> [!ddu]j  <Cmd>Ddu buffer<CR>
 " nnoremap <silent> [!ddu]k  <Cmd>Ddu buffer<CR>
 nnoremap <silent> [!ddu]l  <Cmd>Ddu file<CR>
@@ -3704,73 +3815,79 @@ nnoremap <silent> [!ddu]m  <Cmd>Ddu mr<CR>
 nnoremap <silent> [!ddu]p  <Cmd>Ddu register<CR>
 nnoremap <silent> [!ddu]a  <Cmd>Ddu -name=file_rec<CR>
 nnoremap <silent> [!ddu]d  <Cmd>Ddu -name=filer<CR>
-nnoremap <silent> [!ddu]gg  <Cmd>Ddu rg -name=grep -source-param-rg-input='`'Pattern: '->input('<cword>'->expand())`'<CR>
-nnoremap <silent> [!ddu]gr  <Cmd>Ddu -name=grep<CR>
+nnoremap <silent> [!ddu]gg  <Cmd>Ddu rg -name=grep -source-param-rg-input='`'<cword>'->expand()`'<CR>
+nnoremap <silent> [!ddu]gr  <Cmd>Ddu rg -name=grep -source-param-rg-input='`'Pattern: '->input('<cword>'->expand())`'<CR>
+nnoremap <silent> [!ddu]gd  <Cmd> call ddu#start(#{
+		\ name: 'grep',
+		\   sources: [#{
+        \     name: 'rg',
+		\     params: #{ input: input('Pattern: ', expand('<cword>')) },
+        \     options: {'path': input('Target Dir: ', expand('%:p:h'), 'file')},
+        \   }],
+        \ })<CR>
+nnoremap <silent> [!ddu]ge  <Cmd>Ddu -name=grep<CR>
 
 nnoremap <silent> [!ddu]gl  <Cmd>Ddu line<CR>
 
-function! DduGrepInteractive(input) abort
-  call ddu#start({
-  \ 'name': 'grep',
-  \ 'volatile': v:true,
-  \ 'input': a:input,
-  \ 'sources': [{
-  \   'name': 'rg',
-  \   'options': {'matchers': []},
-  \   'params': {
-  \     'args': ['--json'],
-  \     'highlights': s:rg_highlights,
-  \   },
-  \ }],
-  \ 'uiParams': {'ff': {
-  \   'autoResize': v:false,
-  \   'ignoreEmpty': v:false,
-  \   'startFilter': v:true,
-  \ }},
-  \})
+nnoremap <silent> [!ddu]hh  <Cmd>Ddu help<CR>
+nnoremap <silent> [!ddu]hk  <Cmd>call ddu#start(#{sources: [
+	\   #{ name: 'vim', params: #{ func: 'DduSourceKeymap' } }
+	\ ]})<CR>
+call ddu#custom#patch_local('vim_type', {'ui': 'ff',
+	    \ 'sources': [
+		\ {'name': 'vim_variable', 'params': {'bufnr': bufnr('%')}},
+            	\ {'name': 'vim_option', 'params': {'bufnr': bufnr('%')}},
+            	\ {'name': 'vim_function', 'params': {'bufnr': bufnr('%')}},
+            	\ {'name': 'vim_command', 'params': {'bufnr': bufnr('%')}},
+            	\ {'name': 'vim_event', 'params': {'bufnr': bufnr('%')}},
+				\ ]})
+nnoremap <silent> [!ddu]hv  <Cmd>call ddu#start({'name': 'vim_type'})<CR>
+
+nnoremap <silent> [!t]t  <Cmd>call DduTagListImmediately()<CR>
+nnoremap <silent> <C-w>tt  <C-w>s<Cmd>call DduTagListImmediately()<CR>
+
+function DduTagListImmediately()
+  let keyword = expand('<cword>')
+  if len(maplist(keyword)) <= 1
+    execute 'tag' keyword
+  	return
+  endif
+  call ddu#start(#{sources: [
+  	\   #{ name: 'vim', params: #{ func: 'DduSourceTaglist' } },
+  	\ ]})
 endfunction
 
-function! DduGrep(fargs) abort
-  let args = copy(a:fargs)
-  let path = ''
-  let opts = []
-  let search = ''
-  let optend = 0
-  while len(args)
-    let arg = remove(args, 0)
-    if arg ==# '--'
-      let optend = 1
-    elseif !optend && arg[0] ==# '-'
-      call add(opts, arg)
-    elseif search ==# ''
-      let search = arg
-    elseif path ==# ''
-      let path = fnamemodify(arg, ':p')
-      if !isdirectory(path) && !filereadable(path)
-        echoe 'Grep: path does not exist:' path
-        return
-      endif
-    else
-      let search = ''
-      break
-    endif
-  endwhile
-  if search ==# ''
-    echoe 'usage: Grep [options] <search> [path]'
-    return
-  endif
-  call ddu#start({
-  \ 'name': 'grep',
-  \ 'sources': [{
-  \   'name': 'rg',
-  \   'params': {
-  \     'args': ['--json'] + opts,
-  \     'input': search,
-  \     'path': path,
-  \     'highlights': s:rg_highlights,
-  \   },
-  \ }],
-  \})
+function! DduSourceKeymap()
+	" n  j           * v:count == 0 ? 'gj' : 'j'
+	" {'lhs': '<C-G>S', 'mode': 'i', 'expr': 0, 'sid': 321, 'lnum': 626, 'noremap': 0, 'nowait': 0, 'rhs': '<Plug>ISurround', 'lhsraw': '<80><fc>^DGS', 'abbr': 0, 'lhsrawalt': '^GS', 'script': 0, 'mode_bits': 16, 'silent': 0, 'buffer': 0, 'scriptversion': 1}
+    " return map(maplist(), {_, v -> s:format_maplist(v) })
+  return map(map(maplist(), {k, v ->
+        \ printf('%s  %-10s  %s%s',
+        \   v.mode, v.lhs,
+        \   v.rhs =~? '^<Plug>' ? '  ' : ((v.noremap ? '*' : '&' ).(v.buffer ? '@' : ' ')),
+        \   v.rhs )
+        \ }), { _, line -> #{
+		\   word: line,
+		\   kind: 'word',
+		\   action: #{
+		\     word: line,
+		\   }
+		\ } })
+endfunction
+
+function! DduSourceTaglist()
+	let keyword = expand('<cword>')
+
+	" TODO {'cmd': '/*''g:go_debug_mappings''*', 'static': 0, 'name': 'g:go_debug_mappings', 'kind': '', 'filename': '.dpp/doc/vim-go.txt'}
+	return map(taglist(keyword), { _, v -> #{
+	\   word: printf('[%s] %s   %s   %s', v.kind, t.name, t.cmd, t.filename),
+	\   kind: 'file',
+	\   action: #{
+	\     path: v.filename,
+	\     isDirectory: isdirectory(v.filename),
+	\     cmd: v.cmd,
+	\   },
+	\ } })
 endfunction
 '''
 [[plugins]]
@@ -3792,11 +3909,39 @@ repo = 'Shougo/ddu-source-line'
 [[plugins]]
 repo = 'shun/ddu-source-buffer'
 [[plugins]]
+repo = 'Shougo/ddu-source-file_old'
+[[plugins]]
+repo = 'tennashi/ddu-source-make'
+[[plugins]]
 repo = 'shun/ddu-source-rg'
 [[plugins]]
 repo = 'kuuote/ddu-source-mr'
 [[plugins]]
 repo = 'lambdalisue/vim-mr'
+[[plugins]]
+repo = 'matsui54/ddu-source-file_external'
+[[plugins]]
+repo = 'matsui54/ddu-source-help'
+[[plugins]]
+repo = 'Shougo/ddu-source-vim'
+[[plugins]]
+repo = 'flow6852/ddu-source-qf'
+[[plugins]]
+repo = 'kamecha/ddu-source-jumplist'
+[[plugins]]
+repo = 'Shougo/ddu-source-file_point'
+[[plugins]]
+repo = '4513ECHO/ddu-source-colorscheme'
+[[plugins]]
+repo = 'flow6852/ddu-source-vim_variable'
+[[plugins]]
+repo = 'flow6852/ddu-source-vim_option'
+[[plugins]]
+repo = 'flow6852/ddu-source-vim_function'
+[[plugins]]
+repo = 'flow6852/ddu-source-vim_command'
+[[plugins]]
+repo = 'flow6852/ddu-source-vim_event'
 [[plugins]]
 repo = 'Shougo/ddu-filter-matcher_substring'
 [[plugins]]
@@ -3804,7 +3949,13 @@ repo = 'Shougo/ddu-kind-file'
 [[plugins]]
 repo = 'Shougo/ddu-kind-word'
 [[plugins]]
+repo = '4513ECHO/ddu-kind-url'
+[[plugins]]
 repo = 'Shougo/ddu-column-filename'
+[[plugins]]
+repo = 'tennashi/ddu-kind-extcmd'
+[[plugins]]
+repo = 'flow6852/ddu-kind-vim_type'
 
 # unite.vim {{{3
 # repo = 'Shougo/unite.vim'

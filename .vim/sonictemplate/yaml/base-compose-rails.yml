@@ -15,6 +15,7 @@ services:
       - '43306:3306'
     volumes:
       - mysql-storage:/var/lib/mysql
+    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
     # password: <%= ENV['MYSQL_ENV_MYSQL_ROOT_PASSWORD'] %>

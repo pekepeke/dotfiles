@@ -6,10 +6,12 @@ unity-tweak-tool
 
 mbuntu-y-ithemes-v5
 mbuntu-y-icons-v5
+# quicklook
+gnome-sushi
 gksu
+
 # indicator-weather
 indicator-cpufreq
 indicator-multiload
 caffeine
 
-ripgrep

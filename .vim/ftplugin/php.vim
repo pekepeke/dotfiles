@@ -19,9 +19,4 @@ let b:match_words .= '<?\(php\)\?:?>,\<switch\>:\<endswitch\>,' .
   \ '<:>,(:),{:},[:]'
 setlocal cinwords=if,elseif,else,for,while,try,except,finally,function,class,switch,case
 
-if get(g:vimrc_enabled_plugins, 'php_namespace')
-  imap <buffer> <C-x>u <Plug>(php-ns-inser-use)
-  imap <buffer> <C-x>c <Plug>(php-ns-expand-class)
-endif
-
 let &cpo = s:save_cpo

@@ -1,22 +1,8 @@
 [[plugins]]
 repo = 'xolox/vim-lua-ftplugin'
-on_ft = 'lua'
+
 [[plugins]]
-repo = 'joonty/vdebug'
-on_ft = 'php'
-on_cmd = [
-  "VdebugStart", "Breakpoint",
-  "BreakpointRemove", "BreakpointWindow",
-  "VdebugEval", "VdebugOpt",
-]
-hook_add = '''
-  let g:vdebug_options = {
-  \ 'server': 'localhost',
-  \ 'port': 9000,
-  \ 'timeout': 20,
-  \ 'break_on_open': 1,
-  \ 'on_close': 'detach',
-  \ 'path_maps': {},
-  \ }
-'''
+repo = "puremourning/vimspector"
+on_ft = ["python", "javascript"]
+build = "./install_gadget.py --enable-python --force-enable-noden_ft = 'lua' --force-enable-php --force-enable-java --enable-go"
 

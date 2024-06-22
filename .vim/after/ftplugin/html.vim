@@ -22,8 +22,4 @@ let b:match_words .= ',<:>,' .
 	\ '<\@<=\([^/][^ \t>]*\)[^>]*\%(>\|$\):<\@<=/\1>'
 let b:match_ignorecase = 1
 
-if get(g:vimrc_enabled_plugins, 'smartchr', 0)
-  inoremap <buffer> <expr> \ synchat#isnt_src()?'\':smartchr#one_of('\', 'function(', '\\')
-endif
-
 let &cpo = s:save_cpo
