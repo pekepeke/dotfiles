@@ -33,20 +33,19 @@ javascript = '''
 if d#is_installed('vim-smartchr')
   inoremap <buffer> <expr> \  synchat#isnt_src()?'\':smartchr#one_of('\', 'function(', '\\')
   inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', 'this.', '@@')
+  inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
+  inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '=>', '>>')
 endif
 '''
 
 typescript = '''
 if d#is_installed('vim-smartchr')
   inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', 'this.', '@@')
+  inoremap <buffer><expr> . synchat#isnt_src()?'.':smartchr#one_of('.', '->', '..')
+  inoremap <buffer><expr> > synchat#isnt_src()?'>':smartchr#one_of('>', '=>', '>>')
 endif
 '''
 
-typescriptreact = '''
-if d#is_installed('vim-smartchr')
-  inoremap <buffer><expr> @ synchat#isnt_src()?'@':smartchr#one_of('@', 'this.', '@@')
-endif
-'''
 coffee = '''
 if d#is_installed('vim-smartchr')
   inoremap <expr> <buffer> { smartchr#loop('{', '#{', '{{')
@@ -346,225 +345,6 @@ let g:context_filetype#filetypes.qml = [{
 [[plugins]]
 repo = 'Shougo/tabpagebuffer.vim'
 
-#   " keymaps {{{3
-#   nnoremap <silent> [!space]f  :call <SID>vimfiler_tree_launch_or_enter()<CR>
-#   nnoremap <silent> [!space]fr :call <SID>vimfiler_tree_launch_or_enter()<CR>:wincmd p<CR>
-#   nnoremap <silent> [!space]ff :call <SID>vimfiler_tree_launch()<CR>
-#   nnoremap <silent> [!space]fg :call <SID>vimfiler_tree_launch(fnameescape(expand('%:p:h')))<CR>
-#   command! -nargs=? -complete=file VimFilerTree call s:vimfiler_tree_launch(<f-args>)
-#   command! -nargs=? -complete=file FTree call s:vimfiler_tree_launch(<f-args>)
-
-#   function! s:vimfiler_tree_launch_or_enter() "{{{4
-#     let fpath = expand('%:p')
-#     if !exists('b:vimfiler')
-#       wincmd t
-#       if !exists('b:vimfiler')
-#         wincmd p
-#         call s:vimfiler_tree_launch()
-#         return
-#       endif
-#       call s:vimfiler_tree_sync_currentfile(fpath)
-#     endif
-#   endfunction
-
-#   function! s:vimfiler_tree_sync_currentfile(fpath)
-#     if !exists('b:vimfiler.current_dir')
-#       return
-#     endif
-#     " lazy work --;;
-#     let dir = b:vimfiler.current_dir
-#     let fpath = a:fpath
-#     let pos = stridx(fpath, dir)
-#     if pos != -1
-#       let fpath = strpart(strpart(fpath, pos), strlen(dir))
-#       let paths = split(fpath, "/")
-#       let index = 0
-#       let max_index = len(paths) - 1
-#       if !b:vimfiler.is_visible_ignore_files &&
-#             \ len(filter(copy(paths), 'v:val =~# "^\\."')) > 0
-#         execute "normal \<Plug>(vimfiler_toggle_visible_ignore_files)"
-#       endif
-
-#       execute "normal \<Plug>(vimfiler_cursor_top)"
-#       while index <= max_index
-#         let item = paths[index]
-#         " call s:log("start : %s", item)
-#         let pattern = escape(" " . item . (max_index == index ? "" : "/"), '\.') . '\s\+$'
-#         if search(pattern, "W") == 0
-#           " call s:log("stop : %s, pattern=%s", item, pattern)
-#           break
-#         endif
-#         let file = vimfiler#get_file(b:vimfiler)
-#         if file.vimfiler__is_directory && !file.vimfiler__is_opened
-#           execute "normal \<Plug>(vimfiler_expand_tree)"
-#         endif
-#         let index = index + 1
-#       endwhile
-#     endif
-#   endfunction
-
-#   function! s:vimfiler_tree_launch(...) "{{{4
-#     let fpath = expand('%:p')
-#     let dir = a:0 > 0 ? a:1 : getcwd()
-#     execute 'VimFiler -toggle -split -direction=topleft -buffer-name=ftree -simple -winwidth=40 file:' . dir
-#     call s:vimfiler_tree_sync_currentfile(fpath)
-#   endfunction
-
-#   function! s:vimfiler_smart_tree_h(...) "{{{4
-#     let file = vimfiler#get_file(b:vimfiler)
-#     let cmd = a:0 > 0 ? a:1 : ""
-#     "\<Plug>(vimfiler_smart_h)"
-#     if !empty(file)
-#       if file.vimfiler__is_opened
-#         let cmd = "\<Plug>(vimfiler_expand_tree)"
-#       elseif file.vimfiler__nest_level > 0
-#         let nest_level = file.vimfiler__nest_level
-#         while 1
-#           exe 'normal!' 'k'
-#           let file = vimfiler#get_file(b:vimfiler)
-#           if empty(file) || file.vimfiler__nest_level < nest_level
-#             " let cmd = "\<Plug>(vimfiler_expand_tree)" | break
-#             normal! ^
-#             return
-#           endif
-#         endwhile
-#       endif
-#     endif
-#     if !empty(cmd)
-#       exe 'normal' cmd
-#       normal! ^
-#     endif
-#   endfunction
-
-#   function! s:vimfiler_tree_up() "{{{4
-#     call s:vimfiler_smart_tree_h("\<Plug>(vimfiler_smart_h)")
-#   endfunction
-
-#   function! s:vimfiler_tree_edit(method, ...) "{{{4
-#     " let file = vimfiler#get_file()
-#     " if empty(file) || empty(a:method) | return | endif
-#     " let path = file.action__path
-#     " wincmd p
-#     " execute a:method
-#     " exe 'edit' path
-#     if empty(a:method) | return | endif
-#     let linenr = line('.')
-#     let context = s:vimfiler_create_action_context(a:method, linenr)
-#     let cur_nr = bufnr('%')
-#     " silent wincmd l
-#     silent wincmd p
-#     if cur_nr == bufnr('%')
-#       silent wincmd l
-#       if cur_nr == bufnr('%')
-#         silent wincmd v
-#       endif
-#     endif
-#     for cmd in a:000
-#       silent execute cmd
-#     endfor
-#     " call vimfiler#mappings#do_action(a:method, linenr)
-#     call context.execute()
-#     unlet context
-#   endfunction
-
-#   function! s:vimfiler_smart_tree_l(method, ...) "{{{4
-#     let file = vimfiler#get_file(b:vimfiler)
-#     if empty(file)
-#       if (a:0 > 0 && a:1 == 1)
-#         execute 'normal' "\<Plug>(vimfiler_smart_h)"
-#       endif
-#       return
-#     endif
-#     let path = file.action__path
-#     if file.vimfiler__is_directory
-#       if (a:0 > 0 && a:1 == 2)
-#         execute 'normal' "\<Plug>(vimfiler_smart_l)"
-#       else
-#         execute 'normal' "\<Plug>(vimfiler_expand_tree)"
-#       endif
-#       normal! ^
-#       return
-#     endif
-#     call s:vimfiler_tree_edit(a:method)
-#   endfunction "}}}
-
-#   function! s:vimfiler_tabopen_silently() " {{{4
-#     let curt = tabpagenr()
-#     silent call s:vimfiler_do_action('tabopen')
-#     execute curt."tabnext"
-#   endfunction "}}}
-
-#   function! s:vimfiler_do_action(action) " {{{4
-#     let bnr = bufnr('%')
-#     let linenr = line('.')
-#     let context = s:vimfiler_create_action_context(a:action, linenr)
-#     call context.execute()
-#     unlet context
-#   endfunction
-
-#   let s:vimfiler_context = {} " {{{4
-#   function! s:vimfiler_context.new(...)
-#     let dict = get(a:000, 0, {})
-#     return extend(dict, self)
-#   endfunction
-
-#   function! s:vimfiler_context.execute()
-#     call unite#mappings#do_action(self.action, self.files, {
-#           \ 'vimfiler__current_directory' : self.current_dir,
-#           \ })
-#   endfunction
-
-#   function! s:vimfiler_create_action_context(action, ...) " {{{4
-#     let cursor_linenr = get(a:000, 0, line('.'))
-#     let vimfiler = b:vimfiler " vimfiler#get_current_vimfiler()
-#     let marked_files = vimfiler#get_marked_files(b:vimfiler)
-#     if empty(marked_files)
-#       let marked_files = [ vimfiler#get_file(b:vimfiler, cursor_linenr) ]
-#     endif
-
-#     let context = s:vimfiler_context.new({
-#           \ 'action' : a:action,
-#           \ 'files' : marked_files,
-#           \ 'current_dir' : vimfiler.current_dir,
-#           \ })
-#     return context
-#   endfunction
-
-#   MyAutoCmd FileType vimfiler call s:vimfiler_init() "{{{3
-#   function! s:vimfiler_init() " {{{3
-#     nmap <silent><buffer> p <Plug>(vimfiler_quick_look)
-#     nnoremap <silent><buffer> E :<C-u>call <SID>vimfiler_do_action('tabopen')<CR>
-#     nnoremap <silent><buffer> T :<C-u>call <SID>vimfiler_tabopen_silently()<CR>
-#     nnoremap <silent><buffer> <C-e> :<C-u>call <SID>vimfiler_do_action('split')<CR>
-#     nmap <buffer> u <Plug>(vimfiler_move_to_history_directory)
-#     hi link ExrenameModified Statement
-#     "nnoremap <buffer> v V
-#     if exists('b:vimfiler') && !exists('b:my_vimfiler_init')
-#       let b:my_vimfiler_init=1
-#       if exists('b:vimfiler.context') && b:vimfiler.context.profile_name == 'ftree' "{{{4
-#         nnoremap <silent><buffer> e :call <SID>vimfiler_tree_edit('open')<CR>
-#         nnoremap <silent><buffer> E :call <SID>vimfiler_tree_edit('open', 'wincmd s')<CR>
-#         nnoremap <silent><buffer> <C-e> :call <SID>vimfiler_do_action('tabopen')<CR>
-#         nnoremap <silent><buffer> l :call <SID>vimfiler_smart_tree_l('')<CR>
-#         if exists('g:scrolloff')
-#           nnoremap <silent><buffer> <LeftMouse>       <Esc>:set eventignore=all<CR><LeftMouse>
-#             \:<C-u>:call <SID>vimfiler_smart_tree_l('', 1)<CR>:set eventignore=<CR>
-#           nnoremap <silent><buffer> <2-LeftMouse>     <Esc>:set eventignore=<CR><LeftMouse>
-#             \ :<C-u>:call <SID>vimfiler_smart_tree_l('open', 2)<CR>
-#         else
-#           nnoremap <silent><buffer> <LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>
-#             \ :call <SID>vimfiler_smart_tree_l('', 1)<CR>
-#           nnoremap <silent><buffer> <2-LeftMouse> :call <SID>noscrolloff_leftmouse()<CR>
-#             \ :call <SID>vimfiler_smart_tree_l('open', 2)<CR>
-#         endif
-#         " nmap <buffer> l <Plug>(vimfiler_expand_tree)
-#         nmap <buffer> L <Plug>(vimfiler_smart_l)
-#         nnoremap <silent><buffer> h :call <SID>vimfiler_smart_tree_h()<CR>
-#         nnoremap <silent><buffer> gu :call <SID>vimfiler_tree_up()<CR>
-#       endif
-#     endif
-#   endfunction
-# '''
 # repo = 'Shougo/vimshell.vim'
 # repo = "osyo-manga/unite-filters-collection"
 # repo = 'osyo-manga/vim-precious'
@@ -2068,30 +1848,82 @@ hook_add = '''
 [[plugins]]
 repo = 'manicmaniac/vim-quickrun-qo'
 [[plugins]]
-repo = 'osyo-manga/vim-anzu'
-on_map = '<Plug>'
+repo = 'hrsh7th/vim-searchx'
 hook_add = '''
-  let g:anzu_status_format = "%p(%i/%l)"
-  let g:anzu_bottomtop_word = "search hit BOTTOM, continuing at TOP"
-  let g:anzu_topbottom_word = "search hit TOP, continuing at BOTTOM"
-  " nmap n <Plug>(anzu-n)zx
-  " nmap n <Plug>(anzu-n)zo:<C-u>silent AnzuUpdateSearchStatus\|redraw!<CR>
-  function! ExecIfFoldClosed(key)
-    if foldclosed('.') != -1
-      execute "normal!" a:key
-    endif
-  endfunction
-  nnoremap <Plug>(vimrc-eifc-zO) :call ExecIfFoldClosed("zO")<CR>
-  nmap <silent> n <Plug>(anzu-n)<Plug>(vimrc-eifc-zO)
-  " nmap n <Plug>(anzu-jump-n)zx<Plug>(anzu-echo-search-status)
-  nmap <silent> N <Plug>(anzu-N)<Plug>(vimrc-eifc-zO)
-  nmap <silent> * <Plug>(anzu-star)N<Plug>(vimrc-eifc-zO)
-  nmap <silent> # <Plug>(anzu-sharp)n<Plug>(vimrc-eifc-zO)
+" Overwrite / and ?.
+nnoremap ? <Cmd>call searchx#start({ 'dir': 0 })<CR>
+nnoremap / <Cmd>call searchx#start({ 'dir': 1 })<CR>
+xnoremap ? <Cmd>call searchx#start({ 'dir': 0 })<CR>
+xnoremap / <Cmd>call searchx#start({ 'dir': 1 })<CR>
+cnoremap ; <Cmd>call searchx#select()<CR>
 
-  " 一定時間キー入力がないとき、ウインドウを移動したとき、タブを移動したときに
-  " 検索ヒット数の表示を消去する
-  MyAutoCmd CursorMoved,CursorMovedI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
+" Move to next/prev match.
+nnoremap N <Cmd>call searchx#prev_dir()<CR>
+nnoremap n <Cmd>call searchx#next_dir()<CR>
+xnoremap N <Cmd>call searchx#prev_dir()<CR>
+xnoremap n <Cmd>call searchx#next_dir()<CR>
+nnoremap <C-k> <Cmd>call searchx#prev()<CR>
+nnoremap <C-j> <Cmd>call searchx#next()<CR>
+xnoremap <C-k> <Cmd>call searchx#prev()<CR>
+xnoremap <C-j> <Cmd>call searchx#next()<CR>
+cnoremap <C-k> <Cmd>call searchx#prev()<CR>
+cnoremap <C-j> <Cmd>call searchx#next()<CR>
+
+" Clear highlights
+nnoremap <C-l> <Cmd>call searchx#clear()<CR>
+
+let g:searchx = {}
+
+" Auto jump if the recent input matches to any marker.
+let g:searchx.auto_accept = v:true
+
+" The scrolloff value for moving to next/prev.
+let g:searchx.scrolloff = &scrolloff
+
+" To enable scrolling animation.
+let g:searchx.scrolltime = 500
+
+" To enable auto nohlsearch after cursor is moved
+let g:searchx.nohlsearch = {}
+let g:searchx.nohlsearch.jump = v:true
+
+" Marker characters.
+let g:searchx.markers = split('ABCDEFGHIJKLMNOPQRSTUVWXYZ', '.\zs')
+
+" Convert search pattern.
+function g:searchx.convert(input) abort
+  if a:input !~# '\k'
+    return '\V' .. a:input
+  endif
+  return a:input[0] .. substitute(a:input[1:], '\\\@<! ', '.\\{-}', 'g')
+endfunction
 '''
+
+# [[plugins]]
+# repo = 'osyo-manga/vim-anzu'
+# on_map = '<Plug>'
+# hook_add = '''
+#   let g:anzu_status_format = "%p(%i/%l)"
+#   let g:anzu_bottomtop_word = "search hit BOTTOM, continuing at TOP"
+#   let g:anzu_topbottom_word = "search hit TOP, continuing at BOTTOM"
+#   " nmap n <Plug>(anzu-n)zx
+#   " nmap n <Plug>(anzu-n)zo:<C-u>silent AnzuUpdateSearchStatus\|redraw!<CR>
+#   function! ExecIfFoldClosed(key)
+#     if foldclosed('.') != -1
+#       execute "normal!" a:key
+#     endif
+#   endfunction
+#   nnoremap <Plug>(vimrc-eifc-zO) :call ExecIfFoldClosed("zO")<CR>
+#   nmap <silent> n <Plug>(anzu-n)<Plug>(vimrc-eifc-zO)
+#   " nmap n <Plug>(anzu-jump-n)zx<Plug>(anzu-echo-search-status)
+#   nmap <silent> N <Plug>(anzu-N)<Plug>(vimrc-eifc-zO)
+#   nmap <silent> * <Plug>(anzu-star)N<Plug>(vimrc-eifc-zO)
+#   nmap <silent> # <Plug>(anzu-sharp)n<Plug>(vimrc-eifc-zO)
+
+#   " 一定時間キー入力がないとき、ウインドウを移動したとき、タブを移動したときに
+#   " 検索ヒット数の表示を消去する
+#   MyAutoCmd CursorMoved,CursorMovedI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
+# '''
 # repo = 'kien/rainbow_parentheses.vim'
 # hook_add = '''
 #     MyAutoCmd VimEnter * RainbowParenthesesToggleAll
@@ -2746,9 +2578,6 @@ repo = 'mattn/learn-vimscript'
 
 # completion {{{4
 [[plugins]]
-repo = 'tjdevries/nvim-langserver-shim'
-
-[[plugins]]
 repo = 'Shougo/ddc.vim'
 hook_add = '''
   call ddc#custom#patch_global('sources', [
@@ -2773,7 +2602,7 @@ hook_add = '''
 		\     sorters: ['sorter_fuzzy', 'sorter_rank'],
 		\     converters: ['converter_fuzzy', 'converter_remove_overlap'],
 	    \ },
-	    \ 'necovim': {'mark': 'vim'},
+	    \ 'necovim': {'mark': 'VIM'},
         \ 'buffer': {'mark': 'B'},
         \ 'dictionary': {'mark': 'D'},
         \ 'file': {
@@ -2782,7 +2611,7 @@ hook_add = '''
         \   'forceCompletionPattern': '\S/\S*',
 		\ },
 		\ 'lsp': #{
-		\   mark: 'lsp',
+		\   mark: 'LSP',
 		\   forceCompletionPattern: '\.\w*|:\w*|->\w*',
 		\ },
         \ 'omni': #{ mark: 'O' },
@@ -2796,9 +2625,9 @@ hook_add = '''
 		\ })
 call ddc#custom#patch_global('sourceParams', #{
     \ lsp: #{
-    \   snippetEngine: denops#callback#register({
-    \         body -> vsnip#anonymous(body)
-    \   }),
+    \     snippetEngine: denops#callback#register({
+    \           body -> neosnippet#anonymous(body)
+    \     }),
     \   enableResolveItem: v:true,
     \   enableAdditionalTextEdit: v:true,
     \ },
@@ -3038,6 +2867,10 @@ hook_add = '''
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
 [[plugins]]
+repo = 'thomasfaingnaert/vim-lsp-snippets'
+[[plugins]]
+repo = 'thomasfaingnaert/vim-lsp-neosnippet'
+[[plugins]]
 repo = 'prabirshrestha/vim-lsp'
 hook_add = '''
 function! s:on_lsp_buffer_enabled() abort
@@ -3054,8 +2887,8 @@ function! s:on_lsp_buffer_enabled() abort
     nmap <buffer> [g <plug>(lsp-previous-diagnostic)
     nmap <buffer> ]g <plug>(lsp-next-diagnostic)
     nmap <buffer> K <plug>(lsp-hover)
-    nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-    nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+    " nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+    " nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
 
     let g:lsp_diagnostics_enabled = 0
     let g:lsp_diagnostics_signs_enabled = 0
@@ -3666,12 +3499,23 @@ call ddu#custom#patch_global({
     \      },
     \   },
     \ })
+
+let s:fd_bin = executable('fdfind') ? 'fdfind' : 'fd'
+
 call ddu#custom#alias('source', 'directory_rec', 'file_external')
 call ddu#custom#patch_global('sourceParams', {
 	 \   'directory_rec': {
-	 \     'cmd': ['fd', '.', '-H', '-t', 'd']
+	 \     'cmd': [s:fd_bin, '.', '-H', '-t', 'd']
 	 \   },
 	 \ })
+call ddu#custom#alias('source', 'dotfiles', 'file_external')
+call ddu#custom#patch_global('sourceParams', {
+	 \   'dotfiles': {
+	 \     'cmd': [s:fd_bin, '--full-path', '~/.github-dotfiles', '-H', '-t', 'f', '-E', '.git']
+	 \   },
+	 \ })
+unlet s:fd_bin
+
 call ddu#custom#patch_local('file_rec', {
 \	'sources': [{
 \		'name':'file_rec',
@@ -3791,14 +3635,37 @@ function! s:ddu_filer_my_settings() abort
   nnoremap <buffer><silent> mv
     \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'move'})<CR>
 
-  nnoremap <buffer><silent> t
-    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'newFile'})<CR>
+  nnoremap <buffer><silent><expr> t
+    \ ddu#ui#get_item()->get('isTree', v:false) ?
+    \ "<Cmd>call ddu#ui#do_action('expandItem', {'mode': 'toggle'})<CR>" :
+    \ "\<Ignore><CR>"
 
+  nnoremap <buffer><silent> mf
+    \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'newFile'})<CR>
   nnoremap <buffer><silent> mk
     \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'newDirectory'})<CR>
 
   nnoremap <buffer><silent> yy
     \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'yank'})<CR>
+
+	nnoremap <buffer> >
+	\ <Cmd>call ddu#ui#do_action('updateOptions', #{
+	\   sourceOptions: #{
+	\     _: #{
+	\       matchers: s:ddu_filer_toggle_hidden(),
+	\     },
+	\   },
+	\ })<CR>
+	\<Cmd>call ddu#ui#do_action('redraw')<CR>
+
+endfunction
+
+function s:ddu_filer_toggle_hidden()
+  const current = ddu#custom#get_current(b:ddu_ui_name)
+  const source_options = get(current, 'sourceOptions', {})
+  const source_options_all = get(source_options, '_', {})
+  const matchers = get(source_options_all, 'matchers', [])
+  return empty(matchers) ? ['matcher_hidden'] : []
 endfunction
 
 nnoremap [!ddu] <Nop>
@@ -3818,7 +3685,7 @@ nnoremap <silent> [!ddu]d  <Cmd>Ddu -name=filer<CR>
 nnoremap <silent> [!ddu]gg  <Cmd>Ddu rg -name=grep -source-param-rg-input='`'<cword>'->expand()`'<CR>
 nnoremap <silent> [!ddu]gr  <Cmd>Ddu rg -name=grep -source-param-rg-input='`'Pattern: '->input('<cword>'->expand())`'<CR>
 nnoremap <silent> [!ddu]gd  <Cmd> call ddu#start(#{
-		\ name: 'grep',
+		\   name: 'grep',
 		\   sources: [#{
         \     name: 'rg',
 		\     params: #{ input: input('Pattern: ', expand('<cword>')) },
@@ -3828,6 +3695,9 @@ nnoremap <silent> [!ddu]gd  <Cmd> call ddu#start(#{
 nnoremap <silent> [!ddu]ge  <Cmd>Ddu -name=grep<CR>
 
 nnoremap <silent> [!ddu]gl  <Cmd>Ddu line<CR>
+
+nnoremap <silent> [!ddu]q  <Cmd>Ddu -name=qf qf<CR>
+nnoremap <silent> [!ddu]w  <Cmd>Ddu -name=qf<CR>
 
 nnoremap <silent> [!ddu]hh  <Cmd>Ddu help<CR>
 nnoremap <silent> [!ddu]hk  <Cmd>call ddu#start(#{sources: [

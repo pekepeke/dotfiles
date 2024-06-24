@@ -14,7 +14,7 @@ use File::Copy;
 use File::Basename;
 use File::Path  qw(make_path remove_tree);
 
-# use File::Copy::Recursive;
+use File::Copy::Recursive qw(rcopy);
 
 sub usage {
     pod2usage(-verbose => 2);
@@ -39,7 +39,7 @@ EOM
     exit 1;
 }
 
-sub rcopy { recursive_copy(@_); }
+# sub rcopy { recursive_copy(@_); }
 
 # Recursive copy function
 sub recursive_copy {
@@ -79,9 +79,10 @@ for my $name (@ARGV) {
     rcopy(File::Spec->catfile($fpath, "*"), $curdir);
     my $init_sh = File::Spec->catfile($curdir, "__init.sh");
     if (-x $init_sh) {
-        print "executing : $init_sh\n";
         system($init_sh) == 0 or die "failed: $init_sh\n";
         unlink($init_sh);
+    } else {
+        print "executable not found: $init_sh\n";
     }
     print "import : $name\n";
 }

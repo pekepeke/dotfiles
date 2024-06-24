@@ -1,61 +1,63 @@
-web:
-  build: containers/app
-  ports:
-    - "80:80"
-    - "443:443"
-    - "50022:22"
-  environment:
-    XXX_ENV: development
-  volumes:
-    - ~/path/to/bin:/root/bin
-  links:
-    - mysql
+services:
+  web:
+    build: containers/app
+    ports:
+      - "80:80"
+      - "443:443"
+      - "50022:22"
+    environment:
+      XXX_ENV: development
+    volumes:
+      - ~/path/to/bin:/root/bin
+    links:
+      - mysql
 
-mysql:
-  image: mysql:5.6
-  ports:
-    - '53306:3306'
-  volumes_from:
-    - datastore
-  environment:
-    MYSQL_ROOT_PASSWORD: root
-  # password: <%= ENV['MYSQL_ENV_MYSQL_ROOT_PASSWORD'] %>
-  # host: <%= ENV['MYSQL_PORT_3306_TCP_ADDR'] %>
-  # port: <%= ENV['MYSQL_PORT_3306_TCP_PORT'] %>
+  mysql:
+    image: mysql:5.6
+    ports:
+      - '53306:3306'
+    volumes_from:
+      - datastore
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      password: <%= ENV['MYSQL_ENV_MYSQL_ROOT_PASSWORD'] %>
+      host: <%= ENV['MYSQL_PORT_3306_TCP_ADDR'] %>
+      port: <%= ENV['MYSQL_PORT_3306_TCP_PORT'] %>
 
-# mongo:
-#   image: mongo:2.6
-#   ports:
-#     - '57017:27017'
-#   volumes_from:
-#     - datastore
-#
-# memcache:
-#   image: memcached:latest
-#   ports:
-#     - '51211:11211'
-#
-# redis:
-#   image: redis:2.8.19
-#   ports:
-#     - '6379:6379'
-#   volumes_from:
-#     - datastore
-#
-# elasticsearch:
-#   build: containers/elasticsearch
-#   ports:
-#     - '9200:9200'
-#     - '9300:9300'
-#   volumes_from:
-#     - datastore
-#
-# nginx:
-#   build: containers/nginx
-#   ports:
-#     - '8080:80'
-#   volumes_from:
-#     - datastore
+   # mongo:
+   #   image: mongo:2.6
+   #   ports:
+   #     - '57017:27017'
+   #   volumes_from:
+   #     - datastore
+
+   # memcache:
+   #   image: memcached:latest
+   #   ports:
+   #     - '51211:11211'
+
+   # redis:
+   #   image: redis:2.8.19
+   #   ports:
+   #     - '6379:6379'
+   #   volumes_from:
+   #     - datastore
+
+   # elasticsearch:
+   #   build: containers/elasticsearch
+   #   ports:
+   #     - '9200:9200'
+   #     - '9300:9300'
+   #   volumes_from:
+   #     - datastore
+
+   # nginx:
+   #   build: containers/nginx
+   #   ports:
+   #     - '8080:80'
+   #   volumes_from:
+   #     - datastore
 
 datastore:
   build: containers/datastore
