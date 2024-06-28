@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """Command line script to convert a file, usually an image, into a data URI
 for use on the web."""
 
@@ -19,12 +19,12 @@ def img_to_data(path):
     mime, _ = mimetypes.guess_type(path)
     with open(path, 'rb') as fp:
         data = fp.read()
-        data64 = u''.join(base64.encodestring(data).splitlines())
+        data64 = u''.join(base64.encodebytes(data).decode('utf-8').splitlines())
         return u'data:%s;base64,%s' % (mime, data64)
 
 
 def usage(argv):
-    print 'Usage: %s <path-to-file>' % argv[0]
+    print('Usage: %s <path-to-file>' % argv[0])
 
 
 if __name__ == '__main__':
@@ -35,7 +35,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     try:
-        print img_to_data(path)
+        print(img_to_data(path))
     except FileNotFoundError:
-        print 'File not found!'
+        print('File not found!')
         sys.exit(2)

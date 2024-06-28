@@ -12,7 +12,7 @@ setlocal path+=;/
 inoreabbrev <buffer> true True
 inoreabbrev <buffer> false False
 
-if neobundle#is_installed('vim-ref')
+if d#is_installed('vim-ref')
   nmap <buffer> K <Plug>(ref-keyword)
 endif
 

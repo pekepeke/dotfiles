@@ -66,7 +66,7 @@ if exists(':EnableFastPHPFolds')
 endif
 
 
-" if neobundle#is_installed('PIV') && neobundle#is_installed('neocomplcache')
+" if d#is_installed('PIV') && d#is_installed('neocomplcache')
 "   inoremap <buffer><expr><C-h>  neocomplcache#smart_close_popup()."\<C-h>"
 " endif
 

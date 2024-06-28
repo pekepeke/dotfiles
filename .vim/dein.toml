@@ -296,14 +296,6 @@ repo = 'w0ng/vim-hybrid'
 script_type = 'colors'
 
 # common {{{3
-[[plugins]]
-repo = 'osyo-manga/vim-jplus'
-on_map = '<Plug>'
-hook_add = '''
-nmap <Leader>j <Plug>(jplus-getchar-with-space)
-vmap <Leader>j <Plug>(jplus-getchar-with-space)
-'''
-
 # =======================================================
 [[plugins]]
 repo = 'Shougo/context_filetype.vim'
@@ -1004,16 +996,16 @@ vmap + <Plug>(clurin-next)
 vmap - <Plug>(clurin-prev)
 function! VimrcCtrlAX(cnt) abort
   let fallback = a:cnt > 0 ? "\<C-a>" : "\<C-x>"
-  if !s:bundle.is_installed('vim-speeddating')
-    execute 'normal!' abs(a:cnt) . fallback
+  if !d#is_installed('vim-speeddating')
+    execute 'normal!' abs(a:cnt).fallback
     return
   endif
   let speeddating = "\<Plug>SpeedDating" . (a:cnt > 0 ? "Up" : "Down")
 
   let line = getline('.')
-  execute 'normal' abs(a:cnt) . speeddating
+  execute 'normal' abs(a:cnt).speeddating
   if line == getline('.')
-    execute 'normal!' abs(a:cnt) . fallback
+    execute 'normal!' abs(a:cnt).fallback
   endif
 endfunction
 let g:clurin = {
@@ -1029,12 +1021,13 @@ let g:clurin = {
       \     ['=', ':='],
       \     ['true', 'false'],
       \     ['月','火','水','木','金','土','日'],
+      \     ['public', 'protected', 'private'],
+      \     ['get', 'post', 'put', 'delete'],
       \   ],
       \   'nomatch': function('VimrcCtrlAX'),
       \ },
       \ 'php': {
       \   'def': [
-      \     ['private', 'protected', 'public'],
       \     ['extends', 'implements'],
       \     ['assert', 'depends', 'dataProvider', 'expectedException', 'group', 'test'],
       \   ],
@@ -1067,10 +1060,8 @@ let g:clurin = {
       \ 'ruby': {
       \   'def': [
       \     ["describe", "context", "specific", "example"],
-      \     ['public', 'protected', 'private'],
       \     ['before', 'after'],
       \     ['be_true', 'be_false'],
-      \     ['get', 'post', 'put', 'delete'],
       \     ['==', 'eql', 'equal'],
       \     [ '.should_not', '.should' ],
       \     ['.to_not', '.to'],
@@ -1150,47 +1141,10 @@ map F <Plug>(clever-f-F)
 '''
 # =======================================================
 [[plugins]]
-repo = 't9md/vim-smalls'
-on_map = '<Plug>'
-hook_add = '''
-nmap ,f <Plug>(smalls)
-omap ,f <Plug>(smalls)
-xmap ,f <Plug>(smalls)
-let g:smalls_auto_excursion_min_input_length = 2
-
-let s:cli_table_custom = {
-      \ "\<C-g>": 'do_cancel',
-      \ "\<C-j>": 'do_jump',
-      \ "\<CR>": 'do_set',
-      \ }
-call smalls#keyboard#cli#extend_table(s:cli_table_custom)
-unlet s:cli_table_custom
-'''
-# =======================================================
-[[plugins]]
 repo = 'sgur/vim-editorconfig'
 # if has('python')
 #   repo = 'editorconfig/editorconfig-vim'
 # endif
-
-# =======================================================
-[[plugins]]
-repo = 'glidenote/memolist.vim'
-on_cmd = ['MemoNew', 'MemoGrep', 'MemoList']
-hook_add = '''
-let g:memolist_memo_suffix = "md"
-let g:memolist_path = $HOME . '/memo'
-" let g:memolist_vimfiler = 1
-
-if d#is_installed('unite.vim')
-  nmap <silent> ,ml :<C-u>Unite memolist<CR>
-  nmap <silent> ,mg :<C-u>call <SID>unite_grep(g:memolist_path)<CR>
-else
-  nmap <silent> ,ml :MemoList<CR>
-  nmap <silent> ,mg :MemoGrep<CR>
-endif
-nmap <silent> ,mc :MemoNew<CR>
-'''
 
 # =======================================================
 [[plugins]]
@@ -1369,10 +1323,6 @@ function! s:reverse_candidates(cand)
 endfunction
 '''
 
-# =======================================================
-[[plugins]]
-repo = 'rhysd/unite-codic.vim'
-
 # lang {{{3
 # basic {{{4
 # =======================================================
@@ -1380,6 +1330,8 @@ repo = 'rhysd/unite-codic.vim'
 repo = 'thinca/vim-quickrun'
 hook_add = '''
   nnoremap <expr><silent><C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+  nnoremap <Leader>r <Plug>(quickrun)
+  nnoremap <Leader>qr <Plug>(quickrun)
   "silent! nmap <unique> <Space> <Plug>(quickrun)
   if !exists('g:quickrun_config')
     let g:quickrun_config={}
@@ -1689,18 +1641,28 @@ hook_add = '''
   \ }
   \ })
   " texts {{{4
-  if d#is_installed('previm')
+  call extend(g:quickrun_config, {
+  \ 'text/glance' : {
+  \   'runner' : 'vimscript',
+  \   'exec' : 'Glance',
+  \   'outputter' : 'null',
+  \ }})
+  call extend(g:quickrun_config, {
+  \ 'text/previm' : {
+  \   'runner' : 'vimscript',
+  \   'exec' : 'silent PrevimOpen %o',
+  \   'outputter' : 'null',
+  \ }})
+  if d#is_installed('glance')
+    call extend(g:quickrun_config, {
+    \ 'markdown': { 'type': 'text/glance' },
+    \ })
+  elseif d#is_installed('previm')
     call extend(g:quickrun_config, {
     \ 'markdown': { 'type': 'text/previm' },
     \ 'rst': { 'type': 'text/previm' },
     \ 'textile': { 'type': 'text/previm' },
     \ })
-    call extend(g:quickrun_config, {
-    \ 'text/previm' : {
-    \   'runner' : 'vimscript',
-    \   'exec' : 'silent PrevimOpen %o',
-    \   'outputter' : 'null',
-    \ }})
   else
     call extend(g:quickrun_config, { 'rst': { 'type': 'rst/rst2html', }})
     call extend(g:quickrun_config, {
@@ -1847,83 +1809,83 @@ hook_add = '''
 # =======================================================
 [[plugins]]
 repo = 'manicmaniac/vim-quickrun-qo'
-[[plugins]]
-repo = 'hrsh7th/vim-searchx'
-hook_add = '''
-" Overwrite / and ?.
-nnoremap ? <Cmd>call searchx#start({ 'dir': 0 })<CR>
-nnoremap / <Cmd>call searchx#start({ 'dir': 1 })<CR>
-xnoremap ? <Cmd>call searchx#start({ 'dir': 0 })<CR>
-xnoremap / <Cmd>call searchx#start({ 'dir': 1 })<CR>
-cnoremap ; <Cmd>call searchx#select()<CR>
-
-" Move to next/prev match.
-nnoremap N <Cmd>call searchx#prev_dir()<CR>
-nnoremap n <Cmd>call searchx#next_dir()<CR>
-xnoremap N <Cmd>call searchx#prev_dir()<CR>
-xnoremap n <Cmd>call searchx#next_dir()<CR>
-nnoremap <C-k> <Cmd>call searchx#prev()<CR>
-nnoremap <C-j> <Cmd>call searchx#next()<CR>
-xnoremap <C-k> <Cmd>call searchx#prev()<CR>
-xnoremap <C-j> <Cmd>call searchx#next()<CR>
-cnoremap <C-k> <Cmd>call searchx#prev()<CR>
-cnoremap <C-j> <Cmd>call searchx#next()<CR>
-
-" Clear highlights
-nnoremap <C-l> <Cmd>call searchx#clear()<CR>
-
-let g:searchx = {}
-
-" Auto jump if the recent input matches to any marker.
-let g:searchx.auto_accept = v:true
-
-" The scrolloff value for moving to next/prev.
-let g:searchx.scrolloff = &scrolloff
-
-" To enable scrolling animation.
-let g:searchx.scrolltime = 500
-
-" To enable auto nohlsearch after cursor is moved
-let g:searchx.nohlsearch = {}
-let g:searchx.nohlsearch.jump = v:true
-
-" Marker characters.
-let g:searchx.markers = split('ABCDEFGHIJKLMNOPQRSTUVWXYZ', '.\zs')
-
-" Convert search pattern.
-function g:searchx.convert(input) abort
-  if a:input !~# '\k'
-    return '\V' .. a:input
-  endif
-  return a:input[0] .. substitute(a:input[1:], '\\\@<! ', '.\\{-}', 'g')
-endfunction
-'''
-
 # [[plugins]]
-# repo = 'osyo-manga/vim-anzu'
-# on_map = '<Plug>'
+# repo = 'hrsh7th/vim-searchx'
 # hook_add = '''
-#   let g:anzu_status_format = "%p(%i/%l)"
-#   let g:anzu_bottomtop_word = "search hit BOTTOM, continuing at TOP"
-#   let g:anzu_topbottom_word = "search hit TOP, continuing at BOTTOM"
-#   " nmap n <Plug>(anzu-n)zx
-#   " nmap n <Plug>(anzu-n)zo:<C-u>silent AnzuUpdateSearchStatus\|redraw!<CR>
-#   function! ExecIfFoldClosed(key)
-#     if foldclosed('.') != -1
-#       execute "normal!" a:key
-#     endif
-#   endfunction
-#   nnoremap <Plug>(vimrc-eifc-zO) :call ExecIfFoldClosed("zO")<CR>
-#   nmap <silent> n <Plug>(anzu-n)<Plug>(vimrc-eifc-zO)
-#   " nmap n <Plug>(anzu-jump-n)zx<Plug>(anzu-echo-search-status)
-#   nmap <silent> N <Plug>(anzu-N)<Plug>(vimrc-eifc-zO)
-#   nmap <silent> * <Plug>(anzu-star)N<Plug>(vimrc-eifc-zO)
-#   nmap <silent> # <Plug>(anzu-sharp)n<Plug>(vimrc-eifc-zO)
+# " Overwrite / and ?.
+# nnoremap ? <Cmd>call searchx#start({ 'dir': 0 })<CR>
+# nnoremap / <Cmd>call searchx#start({ 'dir': 1 })<CR>
+# xnoremap ? <Cmd>call searchx#start({ 'dir': 0 })<CR>
+# xnoremap / <Cmd>call searchx#start({ 'dir': 1 })<CR>
+# cnoremap ; <Cmd>call searchx#select()<CR>
 
-#   " 一定時間キー入力がないとき、ウインドウを移動したとき、タブを移動したときに
-#   " 検索ヒット数の表示を消去する
-#   MyAutoCmd CursorMoved,CursorMovedI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
+# " Move to next/prev match.
+# nnoremap N <Cmd>call searchx#prev_dir()<CR>
+# nnoremap n <Cmd>call searchx#next_dir()<CR>
+# xnoremap N <Cmd>call searchx#prev_dir()<CR>
+# xnoremap n <Cmd>call searchx#next_dir()<CR>
+# nnoremap <C-k> <Cmd>call searchx#prev()<CR>
+# nnoremap <C-j> <Cmd>call searchx#next()<CR>
+# xnoremap <C-k> <Cmd>call searchx#prev()<CR>
+# xnoremap <C-j> <Cmd>call searchx#next()<CR>
+# cnoremap <C-k> <Cmd>call searchx#prev()<CR>
+# cnoremap <C-j> <Cmd>call searchx#next()<CR>
+
+# " Clear highlights
+# nnoremap <C-l> <Cmd>call searchx#clear()<CR>
+
+# let g:searchx = {}
+
+# " Auto jump if the recent input matches to any marker.
+# let g:searchx.auto_accept = v:true
+
+# " The scrolloff value for moving to next/prev.
+# let g:searchx.scrolloff = &scrolloff
+
+# " To enable scrolling animation.
+# let g:searchx.scrolltime = 500
+
+# " To enable auto nohlsearch after cursor is moved
+# let g:searchx.nohlsearch = {}
+# let g:searchx.nohlsearch.jump = v:true
+
+# " Marker characters.
+# let g:searchx.markers = split('ABCDEFGHIJKLMNOPQRSTUVWXYZ', '.\zs')
+
+# " Convert search pattern.
+# function g:searchx.convert(input) abort
+#   if a:input !~# '\k'
+#     return '\V' .. a:input
+#   endif
+#   return a:input[0] .. substitute(a:input[1:], '\\\@<! ', '.\\{-}', 'g')
+# endfunction
 # '''
+
+[[plugins]]
+repo = 'osyo-manga/vim-anzu'
+on_map = '<Plug>'
+hook_add = '''
+  let g:anzu_status_format = "%p(%i/%l)"
+  let g:anzu_bottomtop_word = "search hit BOTTOM, continuing at TOP"
+  let g:anzu_topbottom_word = "search hit TOP, continuing at BOTTOM"
+  " nmap n <Plug>(anzu-n)zx
+  " nmap n <Plug>(anzu-n)zo:<C-u>silent AnzuUpdateSearchStatus\|redraw!<CR>
+  function! ExecIfFoldClosed(key)
+    if foldclosed('.') != -1
+      execute "normal!" a:key
+    endif
+  endfunction
+  nnoremap <Plug>(vimrc-eifc-zO) :call ExecIfFoldClosed("zO")<CR>
+  nmap <silent> n <Plug>(anzu-n)<Plug>(vimrc-eifc-zO)
+  " nmap n <Plug>(anzu-jump-n)zx<Plug>(anzu-echo-search-status)
+  nmap <silent> N <Plug>(anzu-N)<Plug>(vimrc-eifc-zO)
+  nmap <silent> * <Plug>(anzu-star)N<Plug>(vimrc-eifc-zO)
+  nmap <silent> # <Plug>(anzu-sharp)n<Plug>(vimrc-eifc-zO)
+
+  " 一定時間キー入力がないとき、ウインドウを移動したとき、タブを移動したときに
+  " 検索ヒット数の表示を消去する
+  MyAutoCmd CursorMoved,CursorMovedI,WinLeave,TabLeave * if exists('*anzu#clear_search_status') | call anzu#clear_search_status() | endif
+'''
 # repo = 'kien/rainbow_parentheses.vim'
 # hook_add = '''
 #     MyAutoCmd VimEnter * RainbowParenthesesToggleAll
@@ -2923,7 +2885,7 @@ hook_add = '''
   if !d#is_mac() && !d#is_win()
     let g:github_complete_emoji_japanese_workaround = 1
   endif
-  " let g:github_complete_enable_neocomplete = s:bundle.is_installed('neocomplete.vim')
+  " let g:github_complete_enable_neocomplete = d#is_installed('neocomplete.vim')
 '''
 [[plugins]]
 repo = 'wellle/tmux-complete.vim'
@@ -2980,6 +2942,9 @@ on_cmd = ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
 repo = 'tpope/vim-bundler'
 [[plugins]]
 repo = 'ecomba/vim-ruby-refactoring'
+hook_add = '''
+" let g:ruby_refactoring_map_keys = 0
+'''
 [[plugins]]
 repo = 'tpope/vim-cucumber'
 [[plugins]]
@@ -3067,9 +3032,9 @@ repo = 'hail2u/vim-css3-syntax'
 [[plugins]]
 repo = 'npacker/vim-css3complete'
 [[plugins]]
-  repo = 'groenewege/vim-less'
+repo = 'groenewege/vim-less'
 [[plugins]]
-  repo = 'wavded/vim-stylus'
+repo = 'wavded/vim-stylus'
 [[plugins]]
 repo = 'slim-template/vim-slim'
 
@@ -3092,13 +3057,6 @@ hook_add = '''
   let node#suffixesadd = [] " already registered at ftplugin
 '''
 
-  # repo = 'marijnh/tern_for_vim'
-  # \ 'build' : {
-  # \   'cygwin': 'npm install',
-  # \   'windows': 'npm install',
-  # \   'mac': 'npm install',
-  # \   'unix': 'npm install',
-  # \ }}
 [[plugins]]
 repo = 'othree/javascript-libraries-syntax.vim'
 [[plugins]]
@@ -3173,11 +3131,11 @@ repo = 'moznion/vim-cpanfile'
 [[plugins]]
 repo = 'motemen/xslate-vim'
 [[plugins]]
-repo = 'y-uuki/unite-perl-module.vim'
-[[plugins]]
 repo = 'y-uuki/perl-local-lib-path.vim'
-[[plugins]]
-repo = 'soh335/unite-perl-module'
+# [[plugins]]
+# repo = 'y-uuki/unite-perl-module.vim'
+# [[plugins]]
+# repo = 'soh335/unite-perl-module'
 
 # C,CPP {{{4
 [[plugins]]
@@ -3186,7 +3144,8 @@ repo = 'vim-scripts/DoxygenToolkit.vim'
 repo = 'peterhoeg/vim-qml'
 
 # C# {{{4
-# repo = 'OrangeT/vim-csharp'
+[[plugins]]
+repo = 'OrangeT/vim-csharp'
 # \ 'on_ft': ['cs'],
 # \ }
 
@@ -3511,7 +3470,7 @@ call ddu#custom#patch_global('sourceParams', {
 call ddu#custom#alias('source', 'dotfiles', 'file_external')
 call ddu#custom#patch_global('sourceParams', {
 	 \   'dotfiles': {
-	 \     'cmd': [s:fd_bin, '--full-path', '~/.github-dotfiles', '-H', '-t', 'f', '-E', '.git']
+	 \     'path': expand('~/.github-dotfiles'),
 	 \   },
 	 \ })
 unlet s:fd_bin
@@ -3548,6 +3507,18 @@ call ddu#custom#patch_local('filer', {
 \   },
 \	'resume': v:true,
 \ })
+function! s:launch_ddu_filer(directory)
+  " TODO:
+  call ddu#start(#{ name: 'filer', searchPath: a:directory})
+" call ddu#start(#{ name: 'filer', sourceOptions: #{ file: #{path: expand('~/.vim/bundle')}}})
+" call ddu#start(#{ name: 'filer', input: expand('~/.vim'), searchPath: expand('~/.vim'), uiParams: #{ filer: #{search: expand('~/.vim')} }, sourceOptions: #{ filer: #{path: expand('~/.vim') }, file: #{path: expand('~/.vim') }}})
+" call ddu#start(#{ name: 'filer', searchPath: expand('~/.vim'), uiParams: #{ filer: #{search: expand('~/.vim')} }, sourceOptions: #{ filer: #{path: expand('~/.vim') }, file: #{path: expand('~/.vim') }}})
+  " let cwd = getcwd()
+  " silent execute 'lcd' a:directory
+  " Ddu -name=filer
+  " execute 'lcd' cwd
+endfunction
+command! -nargs=1 -complete=dir DduFiler call s:launch_ddu_filer("<args>")
 
 call ddu#custom#patch_local('grep', {
 \	'sourceParams' : {
@@ -3681,10 +3652,11 @@ nnoremap <silent> [!ddu]l  <Cmd>Ddu file<CR>
 nnoremap <silent> [!ddu]m  <Cmd>Ddu mr<CR>
 nnoremap <silent> [!ddu]p  <Cmd>Ddu register<CR>
 nnoremap <silent> [!ddu]a  <Cmd>Ddu -name=file_rec<CR>
+nnoremap <silent> [!ddu]v  <Cmd>Ddu -name=file_rec -source-option-file_rec-path='`expand("~/.vim")`'<CR>
+nnoremap <silent> [!ddu]z  <Cmd>Ddu -name=file_rec -source-option-file_rec-path='`expand("~/.zsh")`'<CR>
 nnoremap <silent> [!ddu]d  <Cmd>Ddu -name=filer<CR>
-nnoremap <silent> [!ddu]gg  <Cmd>Ddu rg -name=grep -source-param-rg-input='`'<cword>'->expand()`'<CR>
-nnoremap <silent> [!ddu]gr  <Cmd>Ddu rg -name=grep -source-param-rg-input='`'Pattern: '->input('<cword>'->expand())`'<CR>
-nnoremap <silent> [!ddu]gd  <Cmd> call ddu#start(#{
+nnoremap <silent> [!ddu]gg  <Cmd>Ddu rg -name=grep -source-param-rg-input='`'Pattern: '->input('<cword>'->expand())`'<CR>
+nnoremap <silent> [!ddu]gr  <Cmd> call ddu#start(#{
 		\   name: 'grep',
 		\   sources: [#{
         \     name: 'rg',
@@ -3893,168 +3865,169 @@ repo = 'flow6852/ddu-kind-vim_type'
 #   \ 'on_source': 'unite.vim',
 #   \ }
 # endif
-# repo = 'pekepeke/quicklearn'
-# hook_add = '''
-# let g:quicklearn = get(g:, 'quicklearn', {})
-# call extend(g:quicklearn, {
-#   \ 'markdown/md2remark/intermediate' : {
-#   \   'command' : 'md2remark',
-#   \   'exec' : '%c %o %s',
-#   \ },
-#   \ 'markdown/md2backlog/intermediate' : {
-#   \   'command' : 'md2backlog',
-#   \   'exec' : '%c %o %s',
-#   \ },
-#   \ 'markdown/vim-helpfile/intermediate' : {
-#   \   'command' : 'vim-helpfile',
-#   \   'exec' : '%c %o %s',
-#   \ },
-#   \ 'markdown/markdown2pod/intermediate' : {
-#   \   'command' : 'markdown2pod',
-#   \   'exec' : '%c %o %s',
-#   \ },
-#   \ })
-# call extend(g:quicklearn, {
-#   \ 'markdown/textile/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t textile %o %s',
-#   \ },
-#   \ 'markdown/rst/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t rst %o %s',
-#   \ },
-#   \ 'markdown/html5/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t html5 %o %s',
-#   \ },
-#   \ 'markdown/mediawiki/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t mediawiki %o %s',
-#   \ },
-#   \ 'markdown/s5/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t s5 %o %s',
-#   \ },
-#   \ 'markdown/revealjs/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t revealjs %o %s',
-#   \ },
-#   \ 'markdown/dzslides/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t dzslides %o %s',
-#   \ },
-#   \ 'markdown/slidy/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t slidy %o %s',
-#   \ },
-#   \ 'markdown/slideous/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t slideous %o %s',
-#   \ },
-#   \ 'markdown/beamer/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t beamer %o %s',
-#   \ },
-#   \ 'markdown/latex/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t latex %o %s',
-#   \ },
-#   \ 'markdown/rtf/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f markdown -t rtf %o %s',
-#   \ },
-#   \ })
-# call extend(g:quicklearn, {
-#   \ 'textile/markdown/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f textile -t markdown %o %s',
-#   \ },
-#   \ 'textile/rst/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f textile -t rst %o %s',
-#   \ },
-#   \ 'textile/html5/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f textile -t html5 %o %s',
-#   \ },
-#   \ 'textile/mediawiki/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f textile -t mediawiki %o %s',
-#   \ },
-#   \ 'textile/s5/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f textile -t s5 %o %s',
-#   \ },
-#   \ 'textile/slidy/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f textile -t slidy %o %s',
-#   \ },
-#   \ 'textile/slideous/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f textile -t slideous %o %s',
-#   \ },
-#   \ 'textile/beamer/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f textile -t beamer %o %s',
-#   \ },
-#   \ 'textile/latex/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f textile -t latex %o %s',
-#   \ },
-#   \ 'textile/rtf/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f textile -t rtf %o %s',
-#   \ },
-#   \ })
-# call extend(g:quicklearn, {
-#   \ 'rst/markdown/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f rst -t markdown %o %s',
-#   \ },
-#   \ 'rst/textile/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f rst -t textile %o %s',
-#   \ },
-#   \ 'rst/html5/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f rst -t html5 %o %s',
-#   \ },
-#   \ 'rst/mediawiki/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f rst -t mediawiki %o %s',
-#   \ },
-#   \ 'rst/s5/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f rst -t s5 %o %s',
-#   \ },
-#   \ 'rst/slidy/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f rst -t slidy %o %s',
-#   \ },
-#   \ 'rst/slideous/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f rst -t slideous %o %s',
-#   \ },
-#   \ 'rst/beamer/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f rst -t beamer %o %s',
-#   \ },
-#   \ 'rst/latex/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f rst -t latex %o %s',
-#   \ },
-#   \ 'rst/rtf/intermediate': {
-#   \   'command': 'pandoc',
-#   \   'exec' : '%c -f rst -t rtf %o %s',
-#   \ },
-#   \ })
-#   call extend(g:quicklearn, {
-#   \ 'rst/rst2html/intermediate': {
-#   \   'command': 'rst2html',
-#   \   'exec': '%c %o %s',
-#   \ },
-#   \ })
-# '''
+[[plugin]]
+repo = 'pekepeke/quicklearn'
+hook_add = '''
+let g:quicklearn = get(g:, 'quicklearn', {})
+call extend(g:quicklearn, {
+  \ 'markdown/md2remark/intermediate' : {
+  \   'command' : 'md2remark',
+  \   'exec' : '%c %o %s',
+  \ },
+  \ 'markdown/md2backlog/intermediate' : {
+  \   'command' : 'md2backlog',
+  \   'exec' : '%c %o %s',
+  \ },
+  \ 'markdown/vim-helpfile/intermediate' : {
+  \   'command' : 'vim-helpfile',
+  \   'exec' : '%c %o %s',
+  \ },
+  \ 'markdown/markdown2pod/intermediate' : {
+  \   'command' : 'markdown2pod',
+  \   'exec' : '%c %o %s',
+  \ },
+  \ })
+call extend(g:quicklearn, {
+  \ 'markdown/textile/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t textile %o %s',
+  \ },
+  \ 'markdown/rst/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t rst %o %s',
+  \ },
+  \ 'markdown/html5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t html5 %o %s',
+  \ },
+  \ 'markdown/mediawiki/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t mediawiki %o %s',
+  \ },
+  \ 'markdown/s5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t s5 %o %s',
+  \ },
+  \ 'markdown/revealjs/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t revealjs %o %s',
+  \ },
+  \ 'markdown/dzslides/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t dzslides %o %s',
+  \ },
+  \ 'markdown/slidy/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t slidy %o %s',
+  \ },
+  \ 'markdown/slideous/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t slideous %o %s',
+  \ },
+  \ 'markdown/beamer/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t beamer %o %s',
+  \ },
+  \ 'markdown/latex/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t latex %o %s',
+  \ },
+  \ 'markdown/rtf/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t rtf %o %s',
+  \ },
+  \ })
+call extend(g:quicklearn, {
+  \ 'textile/markdown/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t markdown %o %s',
+  \ },
+  \ 'textile/rst/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t rst %o %s',
+  \ },
+  \ 'textile/html5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t html5 %o %s',
+  \ },
+  \ 'textile/mediawiki/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t mediawiki %o %s',
+  \ },
+  \ 'textile/s5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t s5 %o %s',
+  \ },
+  \ 'textile/slidy/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t slidy %o %s',
+  \ },
+  \ 'textile/slideous/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t slideous %o %s',
+  \ },
+  \ 'textile/beamer/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t beamer %o %s',
+  \ },
+  \ 'textile/latex/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t latex %o %s',
+  \ },
+  \ 'textile/rtf/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t rtf %o %s',
+  \ },
+  \ })
+call extend(g:quicklearn, {
+  \ 'rst/markdown/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t markdown %o %s',
+  \ },
+  \ 'rst/textile/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t textile %o %s',
+  \ },
+  \ 'rst/html5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t html5 %o %s',
+  \ },
+  \ 'rst/mediawiki/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t mediawiki %o %s',
+  \ },
+  \ 'rst/s5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t s5 %o %s',
+  \ },
+  \ 'rst/slidy/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t slidy %o %s',
+  \ },
+  \ 'rst/slideous/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t slideous %o %s',
+  \ },
+  \ 'rst/beamer/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t beamer %o %s',
+  \ },
+  \ 'rst/latex/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t latex %o %s',
+  \ },
+  \ 'rst/rtf/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t rtf %o %s',
+  \ },
+  \ })
+  call extend(g:quicklearn, {
+  \ 'rst/rst2html/intermediate': {
+  \   'command': 'rst2html',
+  \   'exec': '%c %o %s',
+  \ },
+  \ })
+'''
 # repo = "osyo-manga/unite-fold"
 # \ 'on_source': 'unite.vim',
 # \ }
@@ -4078,9 +4051,6 @@ repo = 'flow6852/ddu-kind-vim_type'
 #   \ }
 # else
 #   if d#is_mac()
-#     repo = 'choplin/unite-spotlight'
-#     \ 'on_source': 'unite.vim',
-#     \ }
 #   else
 #     repo = 'ujihisa/unite-locate'
 #     \ 'on_source': 'unite.vim',
