@@ -1157,64 +1157,64 @@ hook_add = '''
   endfunction
   let s:pair_closes = [ "]", "}", ")", "'", '"', ">", "|" , ","]
 
-  # function! s:imap_tab()
-  #   " len(matchstr(line[pos-1:pos+1], '[<>"'']')) <= 0
-  #   if d#is_installed('neosnippet.vim')
-  #     if neosnippet#expandable()
-  #       if d#is_installed('neocomplete.vim')
-  #         call neocomplete#smart_close_popup()
-  #       endif
-  #       return "\<Plug>(neosnippet_expand)"
-  #     elseif neosnippet#jumpable()
-  #       if d#is_installed('neocomplete.vim')
-  #         call neocomplete#smart_close_popup()
-  #       endif
-  #       return "\<Plug>(neosnippet_jump)"
-  #     " if s:can_snip()
-  #     "   return "\<Plug>(neosnippet_jump_or_expand)"
-  #     endif
-  #   elseif pumvisible()
-  #     return "\<C-n>"
-  #   endif
-
-  #   let line = getline(".")
-  #   let pos = col(".") - 1
-
-  #   let org_pos = pos
-  #   if strlen(substitute(line[0:pos], '^\s*', '', '')) <= 0
-  #     return "\<TAB>"
-  #   endif
-  #   while (line[pos] == " ")
-  #     let pos = pos + 1
-  #   endwhile
-  #   let ch = line[pos]
-  #   if index(s:pair_closes, ch) != -1
-  #     while (line[pos+1] == " ")
-  #       let pos = pos+1
-  #     endwhile
-  #     return repeat("\<Right>", pos - org_pos + 1)
-  #   endif
-
-  #   if d#is_installed('emmet-vim')
-  #     \ && len(matchstr(&filetype, 'x\?html\|s\?css\|php\|eruby')) > 0
-  #     \ && emmet#isExpandable()
-  #     \ && len(matchstr(getline('.'), '^\(\w*\%'.col('.').'c\)')) > 0
-  #     if d#is_installed('neocomplete.vim')
-  #       call neocomplete#smart_close_popup()
-  #     endif
-  #     " return "\<Plug>(EmmetExpandAbbr)"
-  #     return "\<Plug>(emmet-expand-abbr)"
-  #   endif
-
-  #   return "\<TAB>"
-  # endfunction
-
-  # imap <expr><TAB> <SID>imap_tab()
-  # smap <expr><TAB> <SID>can_snip() ?
-  #   \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
-
-  # imap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
-  # smap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+  " function! s:imap_tab()
+  "   " len(matchstr(line[pos-1:pos+1], '[<>"'']')) <= 0
+  "   if d#is_installed('neosnippet.vim')
+  "     if neosnippet#expandable()
+  "       if d#is_installed('neocomplete.vim')
+  "         call neocomplete#smart_close_popup()
+  "       endif
+  "       return "\<Plug>(neosnippet_expand)"
+  "     elseif neosnippet#jumpable()
+  "       if d#is_installed('neocomplete.vim')
+  "         call neocomplete#smart_close_popup()
+  "       endif
+  "       return "\<Plug>(neosnippet_jump)"
+  "     " if s:can_snip()
+  "     "   return "\<Plug>(neosnippet_jump_or_expand)"
+  "     endif
+  "   elseif pumvisible()
+  "     return "\<C-n>"
+  "   endif
+  "
+  "   let line = getline(".")
+  "   let pos = col(".") - 1
+  "
+  "   let org_pos = pos
+  "   if strlen(substitute(line[0:pos], '^\s*', '', '')) <= 0
+  "     return "\<TAB>"
+  "   endif
+  "   while (line[pos] == " ")
+  "     let pos = pos + 1
+  "   endwhile
+  "   let ch = line[pos]
+  "   if index(s:pair_closes, ch) != -1
+  "     while (line[pos+1] == " ")
+  "       let pos = pos+1
+  "     endwhile
+  "     return repeat("\<Right>", pos - org_pos + 1)
+  "   endif
+  "
+  "   if d#is_installed('emmet-vim')
+  "     \ && len(matchstr(&filetype, 'x\?html\|s\?css\|php\|eruby')) > 0
+  "     \ && emmet#isExpandable()
+  "     \ && len(matchstr(getline('.'), '^\(\w*\%'.col('.').'c\)')) > 0
+  "     if d#is_installed('neocomplete.vim')
+  "       call neocomplete#smart_close_popup()
+  "     endif
+  "     " return "\<Plug>(EmmetExpandAbbr)"
+  "     return "\<Plug>(emmet-expand-abbr)"
+  "   endif
+  "
+  "   return "\<TAB>"
+  " endfunction
+  "
+  " imap <expr><TAB> <SID>imap_tab()
+  " smap <expr><TAB> <SID>can_snip() ?
+  "   \ "\<Plug>(neosnippet_jump_or_expand)" : "\<TAB>"
+  "
+  " imap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+  " smap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
 
   imap <C-l> <Plug>(neosnippet_jump_or_expand)
   smap <C-l> <Plug>(neosnippet_jump_or_expand)

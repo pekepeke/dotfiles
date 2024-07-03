@@ -647,11 +647,11 @@ else
     let cwd = getcwd()
     for repo in s:dpp_repos
       execute 'lcd' s:dpp_src_base.'/'.repo
-      call system('git pull')
+      echo system('git pull')
     endfor
     call mkdir(s:denops_src, 'p')
     execute 'lcd' s:denops_src
-    call system('git pull')
+    echo system('git pull')
     execute 'lcd' cwd
     echo 'finish'
   endfunction
