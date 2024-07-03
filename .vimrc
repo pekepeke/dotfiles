@@ -590,6 +590,8 @@ augroup END
 
 " dpp
 " let denops#debug = 1
+" let denops#trace = 1
+let g:denops_server_addr = '127.0.0.1:32123'
 let s:dpp_base = expand('~/.cache/dpp')
 
 " Set dpp source path (required)
@@ -617,6 +619,7 @@ if dpp#min#load_state(s:dpp_base)
   autocmd User DenopsReady
   \ call dpp#make_state(s:dpp_base, $HOME.'/.vim/dpp.ts')
 endif
+command! -narg=0 DenopsCacheReload call denops#cache#update(#{reload: v:true})
 command! -narg=0 DppEditStartup execute 'edit' g:dpp#_base_path.'/'.(has('gui_running') ? 'gvim' : has('nvim') ? 'nvim' : 'vim').'/startup.vim'
 command! -narg=0 DppMakeState call dpp#make_state(s:dpp_base, $HOME.'/.vim/dpp.ts')
 command! -narg=0 DppClearState call dpp#clear_state((has('gui_running')?'gvim':has('nvim')?'nvim':'vim'))
@@ -638,9 +641,21 @@ if !isdirectory(s:denops_src)
     execute 'lcd' cwd
     echo 'finish'
   endfunction
-  command! -narg=0 DppInit call s:vimrc_install_dpp()
+  command! -narg=0 DppCoreInit call s:vimrc_install_dpp()
 else
-  unlet s:dpp_src_base s:denops_src s:dpp_repos
+  function! s:vimrc_update_dpp()
+    let cwd = getcwd()
+    for repo in s:dpp_repos
+      execute 'lcd' s:dpp_src_base.'/'.repo
+      call system('git pull')
+    endfor
+    call mkdir(s:denops_src, 'p')
+    execute 'lcd' s:denops_src
+    call system('git pull')
+    execute 'lcd' cwd
+    echo 'finish'
+  endfunction
+  command! -narg=0 DppCoreUpdate call s:vimrc_update_dpp()
 endif
 
 let s:bundle = {'vimrc_installed':[]}
@@ -943,108 +958,114 @@ for i in range(10)
 endfor
 unlet i
 
-if exists(':tmap')
-  nnoremap <C-w><C-n> :tabnext<CR>
-  nnoremap <C-w><C-p> :tabprev<CR>
-  nnoremap <C-w><C-c> :tabnew<CR>
-  " tmaps
-  tnoremap <C-w><C-n> <C-w>:tabnext<CR>
-  tnoremap <C-w><C-p> <C-w>:tabprev<CR>
-  tnoremap <C-w><C-c> <C-w>:tabnew<CR>
-  tnoremap <C-\><C-\> <C-\><C-n>
+nnoremap <C-w><C-n> :tabnext<CR>
+nnoremap <C-w><C-p> :tabprev<CR>
+nnoremap <C-w><C-c> :tabnew<CR>
+" tmaps
+tnoremap <C-w><C-n> <C-w>:tabnext<CR>
+tnoremap <C-w><C-p> <C-w>:tabprev<CR>
+tnoremap <C-w><C-c> <C-w>:tabnew<CR>
+tnoremap <C-\><C-\> <C-\><C-n>
   " tnoremap <Esc> <C-\><C-n>
-endif
 
 " grep
-function! s:set_grep(...) "{{{3
-  let retval = 0
-  for type in copy(a:000)
-    if type == "hw" && executable(type)
-      set grepprg=hw
-      set grepformat=%f:%l:%m
-      " set grepprg=jvgrep\ -n
+"function! s:set_grep(...) "{{{3
+"  let retval = 0
+"  for type in copy(a:000)
+"    if type == "hw" && executable(type)
+"      set grepprg=hw
+"      set grepformat=%f:%l:%m
+"      " set grepprg=jvgrep\ -n
 
-      let g:unite_source_grep_command = "hw"
-      " let g:unite_source_grep_default_opts = '-i --exclude "(\.git|\.svn|\.hg|\.bzr|tags|tmp)"'
-      let g:unite_source_grep_default_opts = '-i --no-group --no-color'
-      let g:unite_source_grep_recursive_opt = ''
-      return 1
-    elseif type == "jvgrep" && executable(type)
-      set grepprg=jvgrep
-      set grepformat=%f:%l:%m
-      " set grepprg=jvgrep\ -n
+"      let g:unite_source_grep_command = "hw"
+"      " let g:unite_source_grep_default_opts = '-i --exclude "(\.git|\.svn|\.hg|\.bzr|tags|tmp)"'
+"      let g:unite_source_grep_default_opts = '-i --no-group --no-color'
+"      let g:unite_source_grep_recursive_opt = ''
+"      return 1
+"    elseif type == "jvgrep" && executable(type)
+"      set grepprg=jvgrep
+"      set grepformat=%f:%l:%m
+"      " set grepprg=jvgrep\ -n
 
-      " #1159 のため動作しない
-      " let g:unite_source_grep_command = "jvgrep"
-      " " let g:unite_source_grep_default_opts = '-i --exclude "(\.git|\.svn|\.hg|\.bzr|tags|tmp)"'
-      " let g:unite_source_grep_default_opts = '-ir'
-      " let g:unite_source_grep_recursive_opt = '-R'
-      return 1
-    elseif type == "ag" && executable(type)
-      set grepprg=ag\ -S\ --nocolor\ --nogroup\ --nopager
-      set grepformat=%f:%l:%m
-      let g:ackprg="ag -i -S --nocolor --nogroup --column --nopager"
+"      " #1159 のため動作しない
+"      " let g:unite_source_grep_command = "jvgrep"
+"      " " let g:unite_source_grep_default_opts = '-i --exclude "(\.git|\.svn|\.hg|\.bzr|tags|tmp)"'
+"      " let g:unite_source_grep_default_opts = '-ir'
+"      " let g:unite_source_grep_recursive_opt = '-R'
+"      return 1
+"    elseif type == "ag" && executable(type)
+"      set grepprg=ag\ -S\ --nocolor\ --nogroup\ --nopager
+"      set grepformat=%f:%l:%m
+"      let g:ackprg="ag -i -S --nocolor --nogroup --column --nopager"
 
-      let g:unite_source_grep_command = 'ag'
-      " \ '--ignore-case -S --noheading --nocolor --nogroup --nopager',
-      let opts = [
-        \ '-i --vimgrep --hidden --noheading --nocolor --nogroup --nopager',
-        \ '--ignore ".hg"',
-        \ '--ignore ".git"',
-        \ '--ignore ".bzr"',
-        \ '--ignore ".svn"',
-        \ '--ignore "node_modules"',
-        \ ]
-      let g:unite_source_grep_default_opts = join(opts, " ")
-      let g:unite_source_grep_recursive_opt = ''
-      return 1
-    elseif type == "ack" && executable(type)
-      set grepprg=ack\ --smart-case\ -a\ --nocolor\ --nogroup\ --nopager
-      set grepformat=%f:%l:%m
-      let g:ackprg="ack -H --smart-case --nocolor --nogroup --column --nopager"
-      let g:unite_source_grep_command = 'ack'
-      let g:unite_source_grep_default_opts = '--smartcase --no-heading --nocolor --nogroup --nopager'
-      let g:unite_source_grep_recursive_opt = ''
-      return 1
-    elseif type == "ack-grep"  && executable(type)
-      set grepprg=ack-grep\ -a\ --nocolor\ --nogroup\ --nopager
-      set grepformat=%f:%l:%m
+"      let g:unite_source_grep_command = 'ag'
+"      " \ '--ignore-case -S --noheading --nocolor --nogroup --nopager',
+"      let opts = [
+"        \ '-i --vimgrep --hidden --noheading --nocolor --nogroup --nopager',
+"        \ '--ignore ".hg"',
+"        \ '--ignore ".git"',
+"        \ '--ignore ".bzr"',
+"        \ '--ignore ".svn"',
+"        \ '--ignore "node_modules"',
+"        \ ]
+"      let g:unite_source_grep_default_opts = join(opts, " ")
+"      let g:unite_source_grep_recursive_opt = ''
+"      return 1
+"    elseif type == "ack" && executable(type)
+"      set grepprg=ack\ --smart-case\ -a\ --nocolor\ --nogroup\ --nopager
+"      set grepformat=%f:%l:%m
+"      let g:ackprg="ack -H --smart-case --nocolor --nogroup --column --nopager"
+"      let g:unite_source_grep_command = 'ack'
+"      let g:unite_source_grep_default_opts = '--smartcase --no-heading --nocolor --nogroup --nopager'
+"      let g:unite_source_grep_recursive_opt = ''
+"      return 1
+"    elseif type == "ack-grep"  && executable(type)
+"      set grepprg=ack-grep\ -a\ --nocolor\ --nogroup\ --nopager
+"      set grepformat=%f:%l:%m
 
-      let g:ackprg="ack-grep -H --nocolor --nogroup --column --nopager"
-      let g:unite_source_grep_command = 'ack-grep'
-      let g:unite_source_grep_default_opts = '--no-heading --nocolor -a --nogroup --nopager'
-      let g:unite_source_grep_recursive_opt = ''
-      return 1
-    endif
-    if type == "grep"
-      let retval = 1
-      break
-    endif
-  endfor
+"      let g:ackprg="ack-grep -H --nocolor --nogroup --column --nopager"
+"      let g:unite_source_grep_command = 'ack-grep'
+"      let g:unite_source_grep_default_opts = '--no-heading --nocolor -a --nogroup --nopager'
+"      let g:unite_source_grep_recursive_opt = ''
+"      return 1
+"    endif
+"    if type == "grep"
+"      let retval = 1
+"      break
+"    endif
+"  endfor
 
-  set grepprg=grep\ -n\ $*\ /dev/null
-  "set grepprg=grep\ -n\ $*\ /dev/null\ --exclude\ \"\*\.svn\*\"
+"  set grepprg=grep\ -n\ $*\ /dev/null
+"  "set grepprg=grep\ -n\ $*\ /dev/null\ --exclude\ \"\*\.svn\*\"
 
-  let g:unite_source_grep_command = 'grep'
-  let g:unite_source_grep_default_opts = '-iRHn'
-  let g:unite_source_grep_recursive_opt = ''
-  return retval
-endfunction
+"  let g:unite_source_grep_command = 'grep'
+"  let g:unite_source_grep_default_opts = '-iRHn'
+"  let g:unite_source_grep_recursive_opt = ''
+"  return retval
+"endfunction
 
-command! -nargs=0 SetHw call s:set_grep("hw")
-command! -nargs=0 SetJvgrep call s:set_grep("jvgrep")
-command! -nargs=0 SetAck call s:set_grep("ack-grep")
-command! -nargs=0 SetAg call s:set_grep("ag")
-command! -nargs=0 SetPt call s:set_grep("pt")
+"command! -nargs=0 SetHw call s:set_grep("hw")
+"command! -nargs=0 SetJvgrep call s:set_grep("jvgrep")
+"command! -nargs=0 SetAck call s:set_grep("ack-grep")
+"command! -nargs=0 SetAg call s:set_grep("ag")
+"command! -nargs=0 SetPt call s:set_grep("pt")
 
 let Grep_Skip_Dirs = 'RCS CVS SCCS .svn .git .hg BIN bin LIB lib Debug debug Release release'
 let Grep_Skip_Files = '*~ *.bak *.v *.o *.d *.deps tags TAGS *.rej *.orig'
-let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
-if s:is_win || get(g:vimrc_enabled_features, 'jvgrep', 0)
-  call s:set_grep("jvgrep", "hw", "ag", "ack-grep")
-else
-  call s:set_grep("hw", "ag", "jvgrep", "ack-grep")
-endif
+" let Grep_Default_Filelist = '*' "join(split('* '.Grep_Skip_Files, ' '), ' --exclude=')
+" if s:is_win || get(g:vimrc_enabled_features, 'jvgrep', 0)
+"   call s:set_grep("jvgrep", "hw", "ag", "ack-grep")
+" else
+"   call s:set_grep("hw", "ag", "jvgrep", "ack-grep")
+" endif
+
+set grepprg=rg
+set grepformat=%f:%l:%m
+
+let g:unite_source_grep_command = "rg"
+" let g:unite_source_grep_default_opts = '-i --exclude "(\.git|\.svn|\.hg|\.bzr|tags|tmp)"'
+let g:unite_source_grep_default_opts = '-i --no-group --no-color'
+let g:unite_source_grep_recursive_opt = ''
 
 let Grep_Default_Options = '-i'
 let Grep_OpenQuickfixWindow = 1
@@ -1168,43 +1189,6 @@ nnoremap *  *N
 nnoremap #  #n
 nnoremap <C-w>*  <C-w>s*N
 nnoremap <C-w>#  <C-w>s#n
-
-nnoremap ,ds :call <SID>replace_at_caret_data_scheme()<CR>
-function! s:replace_at_caret_data_scheme() " {{{4
-  let cfile = expand('<cfile>')
-  let cpath = expand(cfile)
-  let errmsg = ""
-  if empty(cfile) || !filereadable(cpath)
-    let errmsg = "file not found : " . cfile
-  endif
-  if s:exec_ruby
-    let cmd = printf("ruby -rwebrick/httputils -e '%s'",
-          \ printf('fp="%s";include WEBrick::HTTPUtils;'
-          \      . 'puts "data:#{mime_type(fp, DefaultMimeTypes)};base64,'
-          \      . '#{[File.read(fp)].pack("m").gsub(/\n/,"")}"', cpath))
-  " elseif executable('python')
-  "   let cmd = printf("python -c 'import mimetypes;fp=\"%s\";print %s'"
-  "         \ , cpath, printf('"data:%s;base64,%s" % mimetypes.guess_type(fp)[0], open(fp).read().encode("base64")'))
-  elseif s:exec_php
-    let cmd = printf("php -r '$fp=\"%s\";%s;'", cpath,
-          \ 'printf("data:%s;base64,%s",mime_content_type($fp),base64_encode(file_get_contents($fp)))'
-          \ )
-  else
-    let errmsg = "exe not found : ruby or php"
-  endif
-  if !empty(errmsg)
-    echohl Error
-    echo errmsg
-    echohl None
-    return
-  endif
-  let line = getline(".")
-  call setline(".",
-        \ strpart(line, 0, stridx(line, cfile))
-        \ . system(cmd)
-        \ . strpart(line, stridx(line, cfile) + strlen(cfile))
-        \ )
-endfunction
 
 " {{{4 http://vim-users.jp/2011/04/hack213/
 let g:scrolloff = &scrolloff

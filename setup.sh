@@ -91,6 +91,12 @@ exec_install() {
     if matchin "$F" $SKIP_FILES ; then
       # echo -e "${GRAY}skip object $F${DEFAULT}"
       skipfiles="$skipfiles\n${GRAY}skip object $F${DEFAULT}"
+    elif [ "$F" = ".config" ]; then
+      for fname in .config/* ; do
+        execfiles="$execfiles\n${YELLOW}ln -s $CDIR/${fname} $HOME/${fname}${DEFAULT}"
+        ln -s "$CDIR/${fname}" "$HOME/${fname}"
+      done
+
     elif forematchin "$F" $OS_DIFFER_FILES ; then
       local base=${F%.*}
       local prefix=""
@@ -111,7 +117,7 @@ exec_install() {
       esac
 
       # echo $F $base $prefix
-      if [ x"$prefix" != x -a x"$F" = x"${base}.${prefix}" ]; then
+      if [ x"$prefix" != x -a x"$F" = x"${base}.${prefix}" -a ! -L "$HOME/${base}" ]; then
         execfiles="$execfiles\n${YELLOW}ln -s $CDIR/$F $HOME/${base}${DEFAULT}"
         ln -s "$CDIR/$F" "$HOME/${base}"
       fi

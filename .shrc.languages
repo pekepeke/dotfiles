@@ -143,13 +143,10 @@ export MANPATH
 
 # mise {{{2
 shrc_section_title "mise" # {{{2
-export MISE_ENABLED=5
 if is_exec mise; then
   eval "$(mise activate $SHELL_NAME)"
-  export MISE_ENABLED=1
 elif [ -e ~/.local/bin/mise ]; then
   eval "$(~/.local/bin/mise activate $SHELL_NAME)"
-  export MISE_ENABLED=2
 fi
 
 export ASDF_VIM_CONFIG='
@@ -172,7 +169,6 @@ export ASDF_VIM_CONFIG='
 --enable-xim
 --enable-fontset
 '
-eval "$(~/.local/bin/mise activate $SHELL_NAME)"
 
 shrc_section_title "finalize" # {{{1
 env_unique PATH

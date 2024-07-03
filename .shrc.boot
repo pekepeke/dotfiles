@@ -234,6 +234,11 @@ if [ -n "$ZSH_NAME" ]; then
   alias SELECT='noglob SELECT_MYSQL'
   alias SHOW='noglob SHOW_MYSQL'
 fi
+alias dstat-full='dstat -Tclmdrn'
+alias dstat-mem='dstat -Tclm'
+alias dstat-cpu='dstat -Tclr'
+alias dstat-net='dstat -Tclnd'
+alias dstat-disk='dstat -Tcldr'
 
 shrc_section_title "etc" #{{{2
 alias dm='docker-machine'

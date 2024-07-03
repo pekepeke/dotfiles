@@ -1,0 +1,136 @@
+#!/bin/bash
+
+# https://github.com/hirose31/observe-file
+#
+# perform arbitrary command when change file or directory
+#
+
+prog=${0##*/}
+basedir=${0%/*}
+
+die() { echo "[ABORT] $@"; exit 1; }
+
+_color_() {
+  color=$1; shift
+  echo -e "\e[${color}${@}\e[0m"
+}
+fg_GREEN()   { _color_ "32;1m" $@; }
+
+begin_command() { fg_GREEN ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "; }
+end_command()   { fg_GREEN "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< "; }
+
+usage() {
+  [ -z "$@" ] || echo "[error] $@" 1>&2
+  cat <<EOUSAGE
+[usage]
+  $prog [-1] [-h?] -c COMMAND FILE|DIR [ FILE|DIR ] ...
+  $prog [-1] [-h?] -x FILE
+    -1     oneshot
+    -h -?  help
+EOUSAGE
+  exit 2
+}
+
+command=
+observe_targets=
+oneshot=
+additional_exclude=
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "h?c:x:e:" opt; do
+  case $opt in
+    c)
+      command=$OPTARG
+      observe_targets='' # set later
+      ;;
+    x)
+      command=$OPTARG
+      observe_targets=$command
+      case $observe_targets in
+        *.go)
+          command="go run $observe_targets"
+      esac
+      ;;
+    1)
+      oneshot=1
+      ;;
+    e)
+      additional_exclude=$OPTARG
+      ;;
+    ?|h)
+      usage
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+OPTIND=$OPTIND_OLD
+
+if [ -z "$observe_targets" ]; then
+  observe_targets="$@"
+fi
+if [ -z "$observe_targets" ]; then
+  usage "missing arguments"
+fi
+
+pid=
+
+kill_child() {
+  if [[ -z "$pid" ]]; then
+    return
+  fi
+
+  if kill -0 $pid >/dev/null 2>&1; then
+    {
+      #echo "kill $pid"
+      kill -TERM $pid
+      #echo "wait $pid"
+      wait $pid
+      if [[ $? != "0" ]]; then
+        sleep 2
+      fi
+    } >/dev/null 2>&1
+    end_command
+  fi
+}
+
+wait_for_change() {
+  exclude='(.*\.swp$|\.git/|service/|\.#.*|.*~$|_flymake|flycheck_'
+  if [[ $additional_exclude ]]; then
+    exclude="${exclude}|${additional_exclude}"
+  fi
+  exclude="${exclude})"
+
+  inotifywait -r \
+    -e 'close_write,create,delete' \
+    --excludei $exclude \
+    "$@" 2>/dev/null
+  kill_child
+}
+
+trap kill_child EXIT
+
+echo "target : $observe_targets"
+echo "command: $command:"
+
+while :; do
+  begin_command
+  bash -c "$command" &
+  pid=$!
+
+  # 数秒だけ終了するのを待つ
+  for _n in 1 2 3; do
+    if kill -0 $pid >/dev/null 2>&1; then
+      #echo "$pid still alive"
+      sleep 1
+    else
+      #echo "$pid dead"
+      wait $pid
+      end_command
+      break
+    fi
+  done
+
+  wait_for_change $observe_targets
+  sleep 0.5
+done

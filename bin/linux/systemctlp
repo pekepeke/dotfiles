@@ -1,0 +1,26 @@
+#!/bin/sh
+
+has_user=0
+SUDO=""
+
+for arg in "$@"; do
+  [ "$arg" = "--user" ] && has_user=1
+  if [ "$arg" = "--help" -o "$arg" = "-h" ] ;then
+  	systemctl --help
+	exit 1
+  fi
+done
+if [ $has_user -eq 1 ]; then
+  SELECTED="$(systemctl list-unit-files --user --type=service | peco |awk '{ print $1}')"
+else
+  SELECTED="$({
+  systemctl list-unit-files --type=service;
+  systemctl list-unit-files --user --type=service;
+  } | peco | awk '{print $1}')"
+  SUDO="sudo"
+fi
+if [ "$SELECTED" != "" ]; then
+  echo $SUDO systemctl "$@" $SELECTED
+  $SUDO systemctl "$@" $SELECTED
+fi
+

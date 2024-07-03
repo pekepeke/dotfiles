@@ -28,6 +28,11 @@ goto :EOF
 
 :D_MKLINK
 
+if "%1" == ".config" (
+	:: TODO
+	if not exist "%1" mkdir "%1"
+	for %%i in ('dir /a:A-S /b %1\*') echo call :D_MKLINK %HOME%\%1\%%i %~dp0\%1\%%i
+)
 if defined is_xp (
     if not exist "%1" (
         echo link %2 %1

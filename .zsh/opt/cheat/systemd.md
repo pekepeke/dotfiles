@@ -4,6 +4,10 @@
 ```
 systemctl list-unit-files --type=service
 systemctl list-unit-files --type=service | grep -P 'nginx|postfix'
+systemctl list-unit-files -t service | grep enabled
+systemctl list-unit-files -t service | grep disabled
+systemctl list-units
+systemctl list-units --user
 ```
 
 ### 設定の上書き
@@ -155,3 +159,17 @@ ExecReload=/bin/kill -HUP $MAINPID
 KillMode=process
 Restart=always
 ```
+## user 関連
+- `~/.config/systemd/user/[service].service` 配下にファイルが配置されている
+
+```
+# 有効化
+systemctl --user enable [service].service
+# サービス再起動
+systemctl --user daemon-reload
+# 実行ツリーにサービスが含まれているか確認する
+systemctl --user list-dependencies
+# 実行結果を書くにする
+journalctl --user -xeu [service].service
+```
+

@@ -167,3 +167,38 @@ diff <(ssh host1 cat /etc/hosts) <(ssh host2 cat /etc/hosts)
 - `$LINENO` 	この変数を使用している行の行番号が設定される変数。
 - `${PIPESTATUS[@]}` 	パイプで連結した各コマンドの終了ステータスが設定される変数(配列)。パイプ(「|」)により連結された各コマンドの終了ステータスが設定設定されている変数(配列)。
 
+## if
+
+| expr                   | 意味                    |                       |     |
+| ---------------------- | --------------------- | --------------------- | --- |
+| num1 -eq num2                | num1とnum2が等しければ true        | equal                 | =   |
+| num1 -ne num2                | num1とnum2が等しくなければ true      | not equal             | !=  |
+| num1 -gt num2                | num1がnum2より大なら true         | greater than          | >   |
+| num1 -ge num2                | num1がnum2以上なら true          | greater than or equal | >=  |
+| num1 -lt num2                | num1がnum2より小なら true         | less than             | <   |
+| num1 -le num2                | num1がnum2以下なら true          | less than or equal    | <=  |
+| str = str2                  | strとstr2が等しければ true        |                       |     |
+| str != str2                 | strとstr2が等しくなければ true      |                       |     |
+| -z str                   | strの文字列長が 0 なら true     |                       |     |
+| -n str                   | strの文字列長が 0 より大なら true  |                       |     |
+| -f file                   | fileがファイルなら true         |                       |     |
+| -d file                   | fileがディレクトリなら true       |                       |     |
+| -e file                   | fileが存在するなら true         |                       |     |
+| -s file                   | fileのサイズが 0 より大きければ true |                       |     |
+| -r file                   | fileが読み取り可能なら true       |                       |     |
+| -w file                   | fileが書き込み可能なら true       |                       |     |
+| -x file                   | fileが実行可能なら true         |                       |     |
+| -L file<br>-h file | fileがシンボリックリンクなら true     |                       |     |
+
+## Exit code
+| code    | 意味                               | 例                       | 備考                                                                                                                                                                               |
+| ------- | -------------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `1`     | 一般的なエラー全般                        | `$ let "var 1 = 1 / 0"` | ゼロ除算などのコマンドを継続できない雑多なエラー                                                                                                                                                         |
+| `2`     | （Bash のドキュメントによると）シェルビルトインな機能の誤用 | `$ empty_function(){}`  | [キーワードのつけ忘れ](http://tldp.org/LDP/abs/html/debugging.html#MISSINGKEYWORD) やコマンド，または権限周りの問題（あと，[`diff` がバイナリファイルの比較に失敗した時](http://tldp.org/LDP/abs/html/filearchiv.html#DIFFERR2)） |
+| `126`   | 呼び出したコマンドが実行できなかった時              | `$ /dev/null`           | パーミッションの問題かコマンドが executable でない時                                                                                                                                                 |
+| `127`   | コマンドが見つからない時                     | `$ illegal_command`     | `$PATH` がおかしい時や typo した時などに起こる                                                                                                                                                   |
+| `128`   | `exit` コマンドに不正な引数を渡した時           | `$ exit 3.14159`        | `exit` コマンドは 0〜255 の整数だけを引数に取る                                                                                                                                                   |
+| `128+n` | シグナル `n` で致命的なエラー                | `$ kill -9 $PPID`       | 例では， `$?` は 137（128 + 9）を返す                                                                                                                                                      |
+| `130`   | スクリプトが Ctrl+C で終了                | Ctrl+C                  | Ctrl+C はシグナル2で終了する = 128 + 2 = 130（上記）                                                                                                                                           |
+| `255`   | 範囲外の exit status                 | `$ exit -1`             | `exit` コマンドは 0〜255 の整数だけを引数に取る                                                                                                                                                   |
+

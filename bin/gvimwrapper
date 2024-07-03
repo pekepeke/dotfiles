@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# eval "$(~/.local/bin/mise activate bash)"
+export PATH=~/.local/bin/:$PATH
+eval "$(mise env)"
+gvim "$@" &
