@@ -545,6 +545,7 @@ function! s:init_fern() abort
   " Use 'select' instead of 'edit' for default 'open' action
   nnoremap <buffer> q <Cmd>q<CR>
   " nnoremap <buffer> q <Cmd>q<CR>
+  nnoremap <buffer> H <Cmd>execute 'Fern' fnamemodify(b:fern['root']['_path'], ':h')<CR>
 endfunction
 
 augroup fern-custom
@@ -973,6 +974,7 @@ hook_add = '''
 		\ 'lsp': #{
 		\   mark: 'LSP',
 		\   forceCompletionPattern: '\.\w*|:\w*|->\w*',
+	    \   sorters: ['sorter_lsp-kind'],
 		\ },
         \ 'omni': #{ mark: 'O' },
         \ 'around': #{ mark: 'A' },
@@ -991,6 +993,7 @@ call ddc#custom#patch_global('sourceParams', #{
     \     }),
     \   enableResolveItem: v:true,
     \   enableAdditionalTextEdit: v:true,
+	\   lspEngine: 'vim-lsp',
     \ },
     \ buffer: {
     \   'requireSameFiletype': v:false,
@@ -1026,20 +1029,59 @@ repo = 'Shougo/ddc-ui-pum'
 [[plugins]]
 repo = 'Shougo/pum.vim'
 hook_add = '''
+function! s:input_tab()
+  if d#is_installed('neosnippet.vim')
+    if neosnippet#expandable()
+      return "\<Plug>(neosnippet_expand)"
+    elseif neosnippet#jumpable()
+      return "\<Plug>(neosnippet_jump)"
+	endif
+  endif
+  if pumvisible()
+    return "\<C-n>"
+    " return '<Cmd>call pum#map#insert_relative(+1)<CR>'
+  endif
+
+  " space, bracket 飛ばす
+  let line = getline(".")
+  let pos = col(".") - 1
+
+  let org_pos = pos
+  while (line[pos] == " ")
+    let pos = pos + 1
+  endwhile
+  let ch = line[pos]
+  if index([ "]", "}", ")", "'", '"', ">", "|" , ","], ch) != -1
+    while (line[pos+1] == " ")
+      let pos = pos+1
+    endwhile
+    return repeat("\<Right>", pos - org_pos + 1)
+  endif
+
+  if d#is_installed('emmet-vim')
+    \ && len(matchstr(&filetype, 'x\?html\|s\?css\|php\|eruby\|typescript')) > 0
+    \ && emmet#isExpandable()
+    \ && len(matchstr(getline('.'), '^\(\w*\%'.col('.').'c\)')) > 0
+    return "\<Plug>(emmet-expand-abbr)"
+  endif
+
+  if (col('.') <= 1 || getline('.')[col('.') - 2] =~# '\s')
+    return "\<TAB>"
+  endif
+  return ddc#map#manual_complete()
+endfunction
+
 " inoremap <silent><expr> <TAB>
 "       \ pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' :
 "       \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
 "       \ '<TAB>' : ddc#map#manual_complete()
-inoremap <silent><expr> <TAB>
-      \ neosnippet#expandable() ? "\<Plug>(neosnippet_expand)" :
-	  \ neosnippet#jumpable() ? "\<Plug>(neosnippet_jump_or_expand)" :
-      \ pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' :
-      \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
-      \ '<TAB>' : ddc#map#manual_complete()
+inoremap <silent><expr> <TAB> <SID>input_tab()
 inoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
 inoremap <C-n>   <Cmd>call pum#map#select_relative(+1)<CR>
 inoremap <C-p>   <Cmd>call pum#map#select_relative(-1)<CR>
 inoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
+inoremap <C-y><C-y>   <Cmd>call pum#map#confirm()<CR>
+inoremap <C-y>y   <Cmd>call pum#map#confirm()<CR>
 inoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
 " call ddc#custom#patch_global(#{
 "         \   ui: 'pum',
@@ -1142,6 +1184,9 @@ repo = 'Shougo/ddc-filter-matcher_head'
 repo = 'Shougo/ddc-filter-sorter_rank'
 [[plugins]]
 repo = 'Shougo/ddc-converter_remove_overlap'
+
+[[plugins]]
+repo = 'mattn/emmet-vim'
 
 [[plugins]]
 repo = 'Shougo/neosnippet.vim'
@@ -1273,6 +1318,7 @@ hook_add = '''
 [[plugins]]
 repo = 'Shougo/ddu.vim'
 hook_add = '''
+let g:ddu_source_lsp_clientName = 'vim-lsp'
 call ddu#custom#patch_global({
     \   'ui': 'ff',
     \   'sources': [
@@ -1297,6 +1343,8 @@ call ddu#custom#patch_global({
 	\     {'name':'lsp_callHierarchy'},
 	\     {'name':'lsp_typeHierarchy'},
 	\     {'name':'lsp_codeAction'},
+	\     {'name':'lsp_diagnostic'},
+	\     {'name':'custom-list'},
 	\   ],
     \   'sourceOptions': {
     \     '_': #{
@@ -1322,6 +1370,9 @@ call ddu#custom#patch_global({
 	\     'lsp_codeAction': {
 	\        'defaultAction': 'apply',
 	\     },
+	\     'custom-list': {
+	\        'defaultAction': 'callback',
+	\     },
     \   },
     \   'uiParams': {
     \      'ff': {
@@ -1341,12 +1392,6 @@ call ddu#custom#alias('source', 'directory_rec', 'file_external')
 call ddu#custom#patch_global('sourceParams', {
 	 \   'directory_rec': {
 	 \     'cmd': [s:fd_bin, '.', '-H', '-t', 'd']
-	 \   },
-	 \ })
-call ddu#custom#alias('source', 'dotfiles', 'file_external')
-call ddu#custom#patch_global('sourceParams', {
-	 \   'dotfiles': {
-	 \     'path': expand('~/.github-dotfiles'),
 	 \   },
 	 \ })
 unlet s:fd_bin
@@ -1405,18 +1450,6 @@ call ddu#custom#patch_local('vim_type', {'ui': 'ff',
             	\ {'name': 'vim_command', 'params': {'bufnr': bufnr('%')}},
             	\ {'name': 'vim_event', 'params': {'bufnr': bufnr('%')}},
 				\ ]})
-function! s:launch_ddu_filer(directory)
-  " TODO:
-  call ddu#start(#{ name: 'filer', searchPath: a:directory})
-" call ddu#start(#{ name: 'filer', sourceOptions: #{ file: #{path: expand('~/.vim/bundle')}}})
-" call ddu#start(#{ name: 'filer', input: expand('~/.vim'), searchPath: expand('~/.vim'), uiParams: #{ filer: #{search: expand('~/.vim')} }, sourceOptions: #{ filer: #{path: expand('~/.vim') }, file: #{path: expand('~/.vim') }}})
-" call ddu#start(#{ name: 'filer', searchPath: expand('~/.vim'), uiParams: #{ filer: #{search: expand('~/.vim')} }, sourceOptions: #{ filer: #{path: expand('~/.vim') }, file: #{path: expand('~/.vim') }}})
-  " let cwd = getcwd()
-  " silent execute 'lcd' a:directory
-  " Ddu -name=filer
-  " execute 'lcd' cwd
-endfunction
-command! -nargs=1 -complete=dir DduFiler call s:launch_ddu_filer("<args>")
 
 "ddu-key-setting
 autocmd FileType ddu-ff call s:ddu_my_settings()
@@ -1524,15 +1557,24 @@ function s:ddu_filer_toggle_hidden()
   return empty(matchers) ? ['matcher_hidden'] : []
 endfunction
 
-nnoremap [!ddu] <Nop>
-nmap f [!ddu]
+let g:vimrc_denops_callback_ids = get(g:, 'vimrc_denops_callback_ids', {})
+
+function! s:ddu_custom_list(texts, callback_id)
+  call ddu#start(#{sources:[#{
+  \    name: 'custom-list',
+  \    params: #{
+  \      texts: a:texts,
+  \      callbackId: a:callback_id,
+  \    },
+  \  }, ]})
+endfunction
 
 function! s:ddu_file_rec(dir)
   call ddu#start(#{
   \   name: 'file_rec',
   \   sources: [#{
   \     name: 'file_rec',
-  \     options: #{ path: a:dir},
+  \     options: #{ path: expand(a:dir) },
   \   }]
   \ })
 endfunction
@@ -1546,48 +1588,58 @@ function! s:ddu_grep(input, dir)
           \   }],
           \ })
 endfunction
-nnoremap [!ddu]f f
-nnoremap [!ddu]u :<C-u>Ddu<Space>
-nnoremap <silent> [!ddu]<Space>  <Cmd>Ddu buffer<CR>
-nnoremap <silent> [!ddu]j  <Cmd>Ddu buffer<CR>
-" nnoremap <silent> [!ddu]k  <Cmd>Ddu buffer<CR>
-nnoremap <silent> [!ddu]l  <Cmd>Ddu file<CR>
-nnoremap <silent> [!ddu]l  <Cmd>Ddu file<CR>
-nnoremap <silent> [!ddu]m  <Cmd>Ddu mr<CR>
-nnoremap <silent> [!ddu]p  <Cmd>Ddu register<CR>
-nnoremap <silent> [!ddu]a  <Cmd>Ddu -name=file_rec<CR>
-" nnoremap <silent> [!ddu]v  <Cmd>Ddu -name=file_rec -source-option-file_rec-path='`expand("~/.vim")`'<CR>
-" nnoremap <silent> [!ddu]z  <Cmd>Ddu -name=file_rec -source-option-file_rec-path='`expand("~/.zsh")`'<CR>
-nnoremap <silent> [!ddu]v  <Cmd>call <SID>ddu_file_rec(expand('~/.vim'))<CR>
-nnoremap <silent> [!ddu]z  <Cmd>call <SID>ddu_file_rec(expand('~/.zsh'))<CR>
-nnoremap <silent> [!ddu]d  <Cmd>Ddu -name=filer<CR>
-nnoremap <silent> [!ddu]gg  <Cmd>Ddu rg -name=grep -source-param-rg-input='`'Pattern: '->input('<cword>'->expand())`'<CR>
-nnoremap <silent> [!ddu]gr  <Cmd>call <SID>ddu_grep(input('Pattern: ', expand('<cword>')), input('Target Dir: ', expand('%:p:h'), 'file'))<CR>
-nnoremap <silent> [!ddu]ge  <Cmd>Ddu -name=grep<CR>
 
-nnoremap <silent> [!ddu]gl  <Cmd>Ddu line<CR>
-
-nnoremap <silent> [!ddu]q  <Cmd>Ddu -name=qf qf<CR>
-nnoremap <silent> [!ddu]w  <Cmd>Ddu -name=qf<CR>
-
-nnoremap <silent> [!ddu]hh  <Cmd>Ddu help<CR>
-nnoremap <silent> [!ddu]hk  <Cmd>call ddu#start(#{sources: [
-	\   #{ name: 'vim', params: #{ func: 'DduSourceKeymap' } }
-	\ ]})<CR>
-nnoremap <silent> [!ddu]hv  <Cmd>call ddu#start({'name': 'vim_type'})<CR>
-
-nnoremap <silent> [!t]t  <Cmd>call DduTagListImmediately()<CR>
-nnoremap <silent> <C-w>tt  <C-w>s<Cmd>call DduTagListImmediately()<CR>
-
-function DduTagListImmediately()
+function! s:ddu_lsp(source)
   let keyword = expand('<cword>')
-  if len(maplist(keyword)) <= 1
+  call ddu#start(#{
+  \   name: 'lsp',
+  \   sources: [#{
+  \     name: a:source,
+  \     method: keyword,
+  \     query: keyword,
+  \   }]
+  \ })
+endfunction
+
+function! s:ddu_tagjump(str)
+  let matched = matchlist(a:str, '\[.\?\] \(.\+\)  \(.\+\)  \(.\+\)')
+  if empty(matched)
+	echoerr 'cannot parse string: '.a:str
+    return
+  endif
+  let file = matched[3]
+  let cmd = matched[2]
+  let cmd = substitute(l:cmd, '/^', '/^\\C', 'g')
+  let cmd = substitute(l:cmd,  '\*',  '\\\*', 'g')
+  let cmd = substitute(l:cmd,  '\[',  '\\\[', 'g')
+  let cmd = substitute(l:cmd,  '\]',  '\\\]', 'g')
+  silent execute 'edit' '+'.cmd file
+  " echoerr 'edit' '+'.cmd file
+endfunction
+
+function! s:ddu_sonictemplate(template)
+  call sonictemplate#apply(a:template, mode())
+endfunction
+
+call extend(g:vimrc_denops_callback_ids, #{
+  \ ddu_lsp: denops#callback#register(funcref('s:ddu_lsp'), {}),
+  \ ddu_taglist: denops#callback#register( funcref('s:ddu_tagjump'), {}),
+  \ ddu_file_rec: denops#callback#register( funcref('s:ddu_file_rec'), {}),
+  \ ddu_sonictemplate: denops#callback#register( funcref('s:ddu_sonictemplate'), {}),
+  \ })
+
+function s:ddu_taglist_immediately()
+  let keyword = expand('<cword>')
+  let tags = taglist(keyword)
+  if len(tags) <= 0
+    return
+  elseif len(tags) <= 1
     execute 'tag' keyword
   	return
   endif
-  call ddu#start(#{sources: [
-  	\   #{ name: 'vim', params: #{ func: 'DduSourceTaglist' } },
-  	\ ]})
+  call s:ddu_custom_list(map(taglist(keyword), { _, v ->
+	  \   printf('[%s] %s   %s   %s', v.kind, v.name, v.cmd, v.filename)
+	  \ }), g:vimrc_denops_callback_ids['ddu_taglist'])
 endfunction
 
 function! DduSourceKeymap()
@@ -1608,20 +1660,56 @@ function! DduSourceKeymap()
 		\ } })
 endfunction
 
-function! DduSourceTaglist()
-	let keyword = expand('<cword>')
+nnoremap [!ddu] <Nop>
+nmap f [!ddu]
 
-	" TODO {'cmd': '/*''g:go_debug_mappings''*', 'static': 0, 'name': 'g:go_debug_mappings', 'kind': '', 'filename': '.dpp/doc/vim-go.txt'}
-	return map(taglist(keyword), { _, v -> #{
-	\   word: printf('[%s] %s   %s   %s', v.kind, t.name, t.cmd, t.filename),
-	\   kind: 'file',
-	\   action: #{
-	\     path: v.filename,
-	\     isDirectory: isdirectory(v.filename),
-	\     cmd: v.cmd,
-	\   },
-	\ } })
-endfunction
+nnoremap [!ddu]f f
+nnoremap [!ddu]u :<C-u>Ddu<Space>
+nnoremap <silent> [!ddu]<Space>  <Cmd>Ddu buffer<CR>
+nnoremap <silent> [!ddu]j  <Cmd>Ddu buffer<CR>
+" nnoremap <silent> [!ddu]k  <Cmd>Ddu buffer<CR>
+nnoremap <silent> [!ddu]l  <Cmd>Ddu file<CR>
+nnoremap <silent> [!ddu]m  <Cmd>Ddu mr<CR>
+nnoremap <silent> [!ddu]p  <Cmd>Ddu register<CR>
+nnoremap <silent> [!ddu]a  <Cmd>Ddu -name=file_rec<CR>
+" nnoremap <silent> [!ddu]v  <Cmd>Ddu -name=file_rec -source-option-file_rec-path='`expand("~/.vim")`'<CR>
+" nnoremap <silent> [!ddu]z  <Cmd>Ddu -name=file_rec -source-option-file_rec-path='`expand("~/.zsh")`'<CR>
+nnoremap <silent> [!ddu]y  <Cmd>call <SID>ddu_custom_list(
+  \   sonictemplate#complete('', '', 0),
+  \   g:vimrc_denops_callback_ids['ddu_sonictemplate']
+  \ )<CR>
+nnoremap <silent> [!ddu]v  <Cmd>call <SID>ddu_custom_list([
+  \   '~/.vim', '~/.zsh', '~/memos',
+  \   ], g:vimrc_denops_callback_ids['ddu_file_rec']
+  \ )<CR>
+nnoremap <silent> [!ddu]d  <Cmd>Ddu -name=filer<CR>
+
+nnoremap <silent> [!ddu]q  <Cmd>Ddu -name=qf qf<CR>
+nnoremap <silent> [!ddu]w  <Cmd>Ddu -name=qf<CR>
+
+nnoremap <silent> [!ddu]hh  <Cmd>Ddu help<CR>
+nnoremap <silent> [!ddu]hk  <Cmd>call ddu#start(#{sources: [
+	\   #{ name: 'vim', params: #{ func: 'DduSourceKeymap' } }
+	\ ]})<CR>
+nnoremap <silent> [!ddu]hv  <Cmd>call ddu#start({'name': 'vim_type'})<CR>
+
+nnoremap <silent> [!t]t  <Cmd>call <SID>ddu_taglist_immediately()<CR>
+nnoremap <silent> <C-w>tt  <C-w>s<Cmd>call <SID>ddu_taglist_immediately()<CR>
+
+nnoremap <silent> [!ddu]gg  <Cmd>Ddu rg -name=grep -source-param-rg-input='`'Pattern: '->input('<cword>'->expand())`'<CR>
+nnoremap <silent> [!ddu]gr  <Cmd>call <SID>ddu_grep(input('Pattern: ', expand('<cword>')), input('Target Dir: ', expand('%:p:h'), 'file'))<CR>
+nnoremap <silent> [!ddu]ge  <Cmd>Ddu -name=grep<CR>
+
+nnoremap <silent> [!ddu]gl  <Cmd>Ddu line<CR>
+
+nnoremap <silent> [!ddu]gs  <Cmd>Ddu -name=lsp<CR>
+nnoremap <silent> [!ddu]gd  <Cmd>call <SID>ddu_custom_list([
+  \   'lsp_definition', 'lsp_references', 'lsp_documentSymbol',
+  \   'lsp_workspaceSymbol', 'lsp_callHierarchy', 'lsp_typeHierarchy',
+  \   'lsp_codeAction', 'lsp_diagnostic',
+  \ ], g:vimrc_denops_callback_ids['ddu_lsp'])<CR>
+
+
 '''
 [[plugins]]
 repo = 'Shougo/ddu-commands.vim'
@@ -1677,6 +1765,8 @@ repo = 'flow6852/ddu-source-vim_command'
 repo = 'flow6852/ddu-source-vim_event'
 [[plugins]]
 repo = 'uga-rosa/ddu-source-lsp'
+[[plugins]]
+repo = 'liquidz/ddu-source-custom-list'
 [[plugins]]
 repo = 'Shougo/ddu-filter-matcher_substring'
 [[plugins]]

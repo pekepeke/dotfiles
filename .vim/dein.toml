@@ -1779,8 +1779,6 @@ let g:aria_attributes_complete = 1
 [[plugins]]
 repo = 'heracek/HTML-AutoCloseTag'
 # [[plugins]]
-# repo = 'mattn/emmet-vim'
-# [[plugins]]
 # repo = 'https://gist.github.com/pekepeke/6576341'
 # on_map = '<Plug>'
 # script_type = 'plugin'
