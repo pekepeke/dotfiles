@@ -1537,7 +1537,7 @@ function! s:ddu_filer_my_settings() abort
   nnoremap <buffer><silent> yy
     \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'yank'})<CR>
 
-	nnoremap <buffer> >
+  nnoremap <buffer> >
 	\ <Cmd>call ddu#ui#do_action('updateOptions', #{
 	\   sourceOptions: #{
 	\     _: #{
@@ -1557,6 +1557,34 @@ function s:ddu_filer_toggle_hidden()
   return empty(matchers) ? ['matcher_hidden'] : []
 endfunction
 
+function! s:ddu_grep(input, dir)
+  call ddu#start(#{
+	\   name: 'grep',
+	\   sources: [#{
+	\     name: 'rg',
+	\     params: #{ input: a:input },
+	\     options: {'path': a:dir},
+	\   }],
+	\ })
+endfunction
+
+let g:vimrc_ddu_menu_items = #{
+	\ vimhelp: [
+    \   'help function-list',
+    \   'help usr_41',
+    \   'help pattern-overview',
+    \   'help quickref',
+    \   'help option-list',
+    \   'help tips',
+    \   'help usr_toc',
+    \   'help startup-options',
+    \   'help windows',
+    \   'help tabpage',
+    \   'help write-plugin',
+    \   'help write-filetype-plugin',
+    \   'help help-writing',
+	\ ],
+	\ }
 let g:vimrc_denops_callback_ids = get(g:, 'vimrc_denops_callback_ids', {})
 
 function! s:ddu_custom_list(texts, callback_id)
@@ -1569,6 +1597,14 @@ function! s:ddu_custom_list(texts, callback_id)
   \  }, ]})
 endfunction
 
+function! s:ddu_menu(texts)
+  let texts = g:vimrc_ddu_menu_items[a:texts]
+  if empty(texts)
+    return
+  endif
+  call s:ddu_custom_list(texts, g:vimrc_denops_callback_ids['cbfn_execute'])
+endfunction
+
 function! s:ddu_file_rec(dir)
   call ddu#start(#{
   \   name: 'file_rec',
@@ -1577,16 +1613,6 @@ function! s:ddu_file_rec(dir)
   \     options: #{ path: expand(a:dir) },
   \   }]
   \ })
-endfunction
-function! s:ddu_grep(input, dir)
-  call ddu#start(#{
-  		\   name: 'grep',
-  		\   sources: [#{
-          \     name: 'rg',
-  		\     params: #{ input: a:input },
-          \     options: {'path': a:dir},
-          \   }],
-          \ })
 endfunction
 
 function! s:ddu_lsp(source)
@@ -1601,7 +1627,7 @@ function! s:ddu_lsp(source)
   \ })
 endfunction
 
-function! s:ddu_tagjump(str)
+function! s:cbfn_tagjump(str)
   let matched = matchlist(a:str, '\[.\?\] \(.\+\)  \(.\+\)  \(.\+\)')
   if empty(matched)
 	echoerr 'cannot parse string: '.a:str
@@ -1617,15 +1643,26 @@ function! s:ddu_tagjump(str)
   " echoerr 'edit' '+'.cmd file
 endfunction
 
-function! s:ddu_sonictemplate(template)
+function! s:cbfn_sonictemplate(template)
   call sonictemplate#apply(a:template, mode())
+endfunction
+
+function! s:ddu_grep_dir(dir)
+ call s:ddu_grep(input('Keyword: '), expand(a:dir))
+endfunction
+
+function s:cbfn_execute(cmd)
+  execute a:cmd
 endfunction
 
 call extend(g:vimrc_denops_callback_ids, #{
   \ ddu_lsp: denops#callback#register(funcref('s:ddu_lsp'), {}),
-  \ ddu_taglist: denops#callback#register( funcref('s:ddu_tagjump'), {}),
+  \ cbfn_tagjump: denops#callback#register( funcref('s:cbfn_tagjump'), {}),
   \ ddu_file_rec: denops#callback#register( funcref('s:ddu_file_rec'), {}),
-  \ ddu_sonictemplate: denops#callback#register( funcref('s:ddu_sonictemplate'), {}),
+  \ cbfn_sonictemplate: denops#callback#register( funcref('s:cbfn_sonictemplate'), {}),
+  \ ddu_grep_dir: denops#callback#register( funcref('s:ddu_grep_dir'), {}),
+  \ ddu_menu: denops#callback#register( funcref('s:ddu_menu'), {}),
+  \ cbfn_execute:  denops#callback#register( funcref('s:cbfn_execute'), {}),
   \ })
 
 function s:ddu_taglist_immediately()
@@ -1639,7 +1676,7 @@ function s:ddu_taglist_immediately()
   endif
   call s:ddu_custom_list(map(taglist(keyword), { _, v ->
 	  \   printf('[%s] %s   %s   %s', v.kind, v.name, v.cmd, v.filename)
-	  \ }), g:vimrc_denops_callback_ids['ddu_taglist'])
+	  \ }), g:vimrc_denops_callback_ids['cbfn_tagjump'])
 endfunction
 
 function! DduSourceKeymap()
@@ -1667,20 +1704,21 @@ nnoremap [!ddu]f f
 nnoremap [!ddu]u :<C-u>Ddu<Space>
 nnoremap <silent> [!ddu]<Space>  <Cmd>Ddu buffer<CR>
 nnoremap <silent> [!ddu]j  <Cmd>Ddu buffer<CR>
-" nnoremap <silent> [!ddu]k  <Cmd>Ddu buffer<CR>
 nnoremap <silent> [!ddu]l  <Cmd>Ddu file<CR>
 nnoremap <silent> [!ddu]m  <Cmd>Ddu mr<CR>
 nnoremap <silent> [!ddu]p  <Cmd>Ddu register<CR>
 nnoremap <silent> [!ddu]a  <Cmd>Ddu -name=file_rec<CR>
-" nnoremap <silent> [!ddu]v  <Cmd>Ddu -name=file_rec -source-option-file_rec-path='`expand("~/.vim")`'<CR>
-" nnoremap <silent> [!ddu]z  <Cmd>Ddu -name=file_rec -source-option-file_rec-path='`expand("~/.zsh")`'<CR>
 nnoremap <silent> [!ddu]y  <Cmd>call <SID>ddu_custom_list(
   \   sonictemplate#complete('', '', 0),
-  \   g:vimrc_denops_callback_ids['ddu_sonictemplate']
+  \   g:vimrc_denops_callback_ids['cbfn_sonictemplate']
   \ )<CR>
 nnoremap <silent> [!ddu]v  <Cmd>call <SID>ddu_custom_list([
   \   '~/.vim', '~/.zsh', '~/memos',
   \   ], g:vimrc_denops_callback_ids['ddu_file_rec']
+  \ )<CR>
+nnoremap <silent> [!ddu]gv  <Cmd>call <SID>ddu_custom_list([
+  \   '~/.vim', '~/.zsh', '~/memos',
+  \   ], g:vimrc_denops_callback_ids['ddu_grep_dir']
   \ )<CR>
 nnoremap <silent> [!ddu]d  <Cmd>Ddu -name=filer<CR>
 
@@ -1692,6 +1730,9 @@ nnoremap <silent> [!ddu]hk  <Cmd>call ddu#start(#{sources: [
 	\   #{ name: 'vim', params: #{ func: 'DduSourceKeymap' } }
 	\ ]})<CR>
 nnoremap <silent> [!ddu]hv  <Cmd>call ddu#start({'name': 'vim_type'})<CR>
+nnoremap <silent> [!ddu]hm  <Cmd>call <SID>ddu_custom_list(
+  \   keys(g:vimrc_ddu_menu_items), g:vimrc_denops_callback_ids['ddu_menu']
+  \ )<CR>
 
 nnoremap <silent> [!t]t  <Cmd>call <SID>ddu_taglist_immediately()<CR>
 nnoremap <silent> <C-w>tt  <C-w>s<Cmd>call <SID>ddu_taglist_immediately()<CR>
