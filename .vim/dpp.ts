@@ -39,6 +39,7 @@ import {
       const tomls: Toml[] = [];
 	  let candidates = [
 		  {path: '~/.vim/common.toml', options:{lazy: false}},
+		  {path: '~/.vim/quickrun.toml', options:{lazy: false}},
 		  {path: '~/.vim/dein.toml', options:{lazy: false}},
 		  {path: '~/.vim/dein_lazy.toml', options:{lazy: true}},
 		  // {path: '~/.vim/dein_.toml', options:{lazy: false}},

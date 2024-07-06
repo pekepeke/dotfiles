@@ -823,6 +823,19 @@ nnoremap <Leader>i :<C-u>InlineEdit<CR>
 
 # =======================================================
 [[plugins]]
+repo = 'AndrewRadev/linediff.vim'
+on_cmd = ['Linediff', 'LinediffReset']
+
+# =======================================================
+[[plugins]]
+repo = 'drmingdrmer/vim-toggle-quickfix'
+
+# =======================================================
+[[plugins]]
+repo = 'zdcthomas/medit'
+
+# =======================================================
+[[plugins]]
 repo = 'kana/vim-smartword'
 on_map = '<Plug>'
 hook_add = '''
@@ -2130,4 +2143,5 @@ on_map = '<Plug>'
 [[plugins]]
 repo = 'akiyan/vim-textobj-php'
 on_map = '<Plug>'
+
 
