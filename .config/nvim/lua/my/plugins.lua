@@ -1,7 +1,7 @@
 local dpp_base = vim.fn.expand('~/.cache/dpp')
 
-vim.g["denops#debug"] = 1
-vim.g["denops#trace"] = 1
+-- vim.g["denops#debug"] = 1
+-- vim.g["denops#trace"] = 1
 vim.g.denops_server_addr = "127.0.0.1:32123"
 -- Set dpp source path (required)
 local denops_src = dpp_base..'/repos/github.com/vim-denops/denops.vim'
@@ -27,7 +27,6 @@ if dpp.load_state(dpp_base) then
   vim.api.nvim_create_autocmd('User', {
 	  pattern = 'DenopsReady',
 	  callback = function ()
-		  vim.notify()
 		  dpp.make_state(dpp_base, dpp_config)
 	  end
   })
@@ -39,14 +38,15 @@ vim.api.nvim_create_autocmd('User', {
 	end
 })
 
-vim.cmd([[
-	command! -narg=0 DppEditStartup execute 'edit' g:dpp#_base_path.'/nvim'.'/startup.vim'
-	command! -narg=0 DppMakeState call dpp#make_state(s:dpp_base, ddp_config)
-	command! -narg=0 DppClearState call dpp#clear_state('nvim')
-	command! -narg=0 DppInstall call dpp#async_ext_action('installer', 'install')
-	command! -narg=0 DppUpdate call dpp#async_ext_action('installer', 'update')
-	command! -narg=0 DppRecache call dpp#async_ext_action('installer', 'recache')
-]])
+vim.api.nvim_create_command('DppEditStartup', function()
+	vim.cmd(string.format('edit %s/nvim/startup.vim', dpp_base))
+end, {bang = true})
+vim.api.nvim_create_command('DppMakeState', function() dpp.make_state(dpp_base, dpp_config) end, {bang = true})
+vim.api.nvim_create_command('DppClearState', function() dpp.clear_state('nvim') end, {bang = true})
+vim.api.nvim_create_command('DppInstall', function() dpp.async_ext_action('installer', 'install') end, {bang = true})
+vim.api.nvim_create_command('DppUpdate', function() dpp.async_ext_action('installer', 'update') end, {bang = true})
+vim.api.nvim_create_command('DppRecache', function() dpp.async_ext_action('installer', 'recache') end, {bang = true})
+
 -- if !isdirectory(s:denops_src)
 --   function! s:vimrc_install_dpp()
 --     let cwd = getcwd()

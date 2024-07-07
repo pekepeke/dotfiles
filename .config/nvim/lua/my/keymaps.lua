@@ -1,5 +1,6 @@
 local util = require('my/util')
 
+local map = util.map
 local nmap = util.nmap
 local imap = util.imap
 local xmap = util.xmap

@@ -93,8 +93,11 @@ exec_install() {
       skipfiles="$skipfiles\n${GRAY}skip object $F${DEFAULT}"
     elif [ "$F" = ".config" ]; then
       for fname in .config/* ; do
-        execfiles="$execfiles\n${YELLOW}ln -s $CDIR/${fname} $HOME/${fname}${DEFAULT}"
-        ln -s "$CDIR/${fname}" "$HOME/${fname}"
+        echo $fname
+        if [ ! -L "$HOME/$fname" -a ! -d "$HOME/$fname" ]; then
+          execfiles="$execfiles\n${YELLOW}ln -s $CDIR/${fname} $HOME/${fname}${DEFAULT}"
+          ln -s "$CDIR/${fname}" "$HOME/${fname}"
+        fi
       done
 
     elif forematchin "$F" $OS_DIFFER_FILES ; then

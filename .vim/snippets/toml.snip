@@ -1,0 +1,16 @@
+snippet plug plugins
+    [[plugins]]
+    repo = '${1}'
+snippet hook hook_add
+    hook_add = '''
+    ${1}
+    '''
+snippet hookl hook_addl
+    hook_add = '''
+    lua = <<EOF
+    ${1}
+    EOF
+    '''
+snippet ---
+    # =======================================================
+

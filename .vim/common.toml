@@ -171,7 +171,12 @@ on_cmd = ['JunkfileOpen']
 hook_add = '''
 nnoremap ,sj :<C-u>JunkfileOpen<CR>
 '''
-
+[[plugins]]
+repo = 'voldikss/vim-translator'
+hook_add = '''
+let g:translator_target_lang = 'ja'
+let g:translator_default_engines = ['google', 'bing']
+'''
 # =======================================================
 [[plugins]]
 repo = 'w0rp/ale'
@@ -908,7 +913,7 @@ hook_add = '''
   let g:template_files = 'template/**'
   let g:template_free_pattern = 'template'
 
-  function! VimrcTemplateReplaceKeywords() "{{{3
+  function! s:template_replace_keywords() "{{{3
     silent! %s/<+FILENAME_NOEXTUC+>/\=toupper(expand('%:t:r'))/g
     silent! %s/<+FILENAME_NOEXT+>/\=expand('%:t:r')/g
     silent! %s/<+FILENAME+>/\=expand('%:t')/g
@@ -931,7 +936,7 @@ hook_add = '''
   endfor
 
   "autocmd BufNewFile * execute 'TemplateLoad'
-  MyAutoCmd User plugin-template-loaded call VimrcTemplateReplaceKeywords()
+  MyAutoCmd User plugin-template-loaded call <SID>template_replace_keywords()
 '''
 [[plugins]]
 repo = 'mattn/sonictemplate-vim'
@@ -1793,6 +1798,11 @@ repo = 'shun/ddu-source-rg'
 repo = 'kuuote/ddu-source-mr'
 [[plugins]]
 repo = 'lambdalisue/vim-mr'
+hook_add = '''
+let g:mr#mru#filename = "~/.cache/mr/mru".(has('nvim')?'-nvim':'-vim')
+let g:mr#mrr#filename = "~/.cache/mr/mrr".(has('nvim')?'-nvim':'-vim')
+let g:mr#mrw#filename = "~/.cache/mr/mrw".(has('nvim')?'-nvim':'-vim')
+'''
 [[plugins]]
 repo = 'matsui54/ddu-source-file_external'
 [[plugins]]

@@ -1,0 +1,776 @@
+[ftplugin] # Execute after ftplugin.
+# [[plugins]]
+# repo = 'p00f/nvim-ts-rainbow'
+# hook_add = '''
+# lua = <<EOF
+# EOF
+# '''
+[[plugins]]
+repo = 'nvim-lua/popup.nvim'
+[[plugins]]
+repo = 'nvim-lua/plenary.nvim'
+[[plugins]]
+repo = 'tami5/sqlite.lua'
+[[plugins]]
+repo = 'MunifTanjim/nui.nvim'
+[[plugins]]
+repo = 'kyazdani42/nvim-web-devicons'
+hook_add = '''
+lua = <<EOF
+require('nvim-web-devicons').setup {
+ -- your personnal icons can go here (to override)
+ -- you can specify color or cterm_color instead of specifying both of them
+ -- DevIcon will be appended to `name`
+ override = {
+  zsh = {
+    icon = "",
+    color = "#428850",
+    cterm_color = "65",
+    name = "Zsh"
+  }
+ };
+ -- globally enable different highlight colors per icon (default to true)
+ -- if set to false all icons will have the default icon's color
+ color_icons = true;
+ -- globally enable default icons (default to false)
+ -- will get overriden by `get_icons` option
+ default = true;
+ -- globally enable "strict" selection of icons - icon will be looked up in
+ -- different tables, first by filename, and if not found by extension; this
+ -- prevents cases when file doesn't have any extension but still gets some icon
+ -- because its name happened to match some extension (default to false)
+ strict = true;
+ -- same as `override` but specifically for overrides by filename
+ -- takes effect when `strict` is true
+ override_by_filename = {
+  [".gitignore"] = {
+    icon = "",
+    color = "#f1502f",
+    name = "Gitignore"
+  }
+ };
+ -- same as `override` but specifically for overrides by extension
+ -- takes effect when `strict` is true
+ override_by_extension = {
+  ["log"] = {
+    icon = "",
+    color = "#81e043",
+    name = "Log"
+  }
+ };
+ -- same as `override` but specifically for operating system
+ -- takes effect when `strict` is true
+ override_by_operating_system = {
+  ["apple"] = {
+    icon = "",
+    color = "#A2AAAD",
+    cterm_color = "248",
+    name = "Apple",
+  },
+ };
+}
+EOF
+'''
+[[plugins]]
+repo = 'rcarriga/nvim-notify'
+hook_add = '''
+lua <<EOF
+EOF
+'''
+[[plugins]]
+repo = 'nvim-lualine/lualine.nvim'
+hook_add = '''
+lua = <<EOF
+require('lualine').setup {
+  options = {
+    icons_enabled = true,
+    theme = 'auto',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {
+      statusline = {},
+      winbar = {},
+    },
+    ignore_focus = {},
+    always_divide_middle = true,
+    globalstatus = false,
+    refresh = {
+      statusline = 1000,
+      tabline = 1000,
+      winbar = 1000,
+    }
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = {'filename'},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  winbar = {},
+  inactive_winbar = {},
+  extensions = {}
+}
+
+EOF
+'''
+# repo = 'akinsho/bufferline.nvim'
+[[plugins]]
+repo = 'sidebar-nvim/sidebar.nvim'
+hook_add= '''
+lua = <<EOF
+sidebar.setup{
+  open = true,
+  side = "right",
+  initial_width = 35,
+}
+EOF
+'''
+[[plugins]]
+repo = 'SmiteshP/nvim-gps'
+[[plugins]]
+repo = 'nvim-treesitter/nvim-treesitter'
+hook_add = '''
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  -- A list of parser names, or "all" (the listed parsers MUST always be installed)
+  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
+
+  -- Install parsers synchronously (only applied to `ensure_installed`)
+  sync_install = false,
+
+  -- Automatically install missing parsers when entering buffer
+  -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+  auto_install = true,
+
+  -- List of parsers to ignore installing (or "all")
+  -- ignore_install = { "javascript" },
+
+  ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
+  -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
+
+  disable = {
+    'lua',
+    'toml',
+    'c_sharp',
+    'help',
+  },
+  highlight = {
+    enable = true,
+
+    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+    -- the name of the parser)
+    -- list of language that will be disabled
+    -- disable = { "c", "rust" },
+    -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+    disable = function(lang, buf)
+        local max_filesize = 100 * 1024 -- 100 KB
+        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+        if ok and stats and stats.size > max_filesize then
+            return true
+        end
+    end,
+
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+}
+EOF
+'''
+[[plugins]]
+repo = 'yioneko/nvim-yati'
+hook_add ='''
+lua = <<EOF
+require("nvim-treesitter.configs").setup {
+  yati = {
+    enable = true,
+    -- Disable by languages, see `Supported languages`
+    -- disable = { "python" },
+
+    -- Whether to enable lazy mode (recommend to enable this if bad indent happens frequently)
+    default_lazy = true,
+
+    -- Determine the fallback method used when we cannot calculate indent by tree-sitter
+    --   "auto": fallback to vim auto indent
+    --   "asis": use current indent as-is
+    --   "cindent": see `:h cindent()`
+    -- Or a custom function return the final indent result.
+    default_fallback = "auto",
+	suppress_conflict_warning = true,
+  },
+  indent = {
+    enable = false -- disable builtin indent module
+  }
+}
+EOF
+'''
+[[plugins]]
+repo = 'romgrk/nvim-treesitter-context'
+hook_add = '''
+lua = <<EOF
+require'treesitter-context'.setup{
+  enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+  max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+  min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+  line_numbers = true,
+  multiline_threshold = 20, -- Maximum number of lines to show for a single context
+  trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+  mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+  -- Separator between context and content. Should be a single character string, like '-'.
+  -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+  separator = nil,
+  zindex = 20, -- The Z-index of the context window
+  on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+}
+EOF
+'''
+[[plugins]]
+repo = 'p00f/nvim-ts-rainbow'
+hook_add = '''
+lua = <<EOF
+require("nvim-treesitter.configs").setup {
+  highlight = {
+      -- ...
+  },
+  -- ...
+  rainbow = {
+    enable = true,
+    -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+    extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+    max_file_lines = nil, -- Do not enable for files with more than n lines, int
+    -- colors = {}, -- table of hex strings
+    -- termcolors = {} -- table of colour name strings
+  }
+}
+EOF
+'''
+[[plugins]]
+repo = 'JoosepAlviste/nvim-ts-context-commentstring'
+hook_add = '''
+lua = <<EOF
+require('ts_context_commentstring').setup {
+  enable_autocmd = false,
+}
+EOF
+'''
+[[plugins]]
+repo = 'haringsrob/nvim_context_vt'
+hook_add = '''
+lua = <<EOF
+require('nvim_context_vt').setup({
+  -- Enable by default. You can disable and use :NvimContextVtToggle to maually enable.
+  -- Default: true
+  enabled = true,
+
+  -- Override default virtual text prefix
+  -- Default: '-->'
+  prefix = '',
+
+  -- Override the internal highlight group name
+  -- Default: 'ContextVt'
+  highlight = 'CustomContextVt',
+
+  -- Disable virtual text for given filetypes
+  -- Default: { 'markdown' }
+  disable_ft = { 'markdown' },
+
+  -- Disable display of virtual text below blocks for indentation based languages like Python
+  -- Default: false
+  disable_virtual_lines = false,
+
+  -- Same as above but only for spesific filetypes
+  -- Default: {}
+  disable_virtual_lines_ft = { 'yaml' },
+
+  -- How many lines required after starting position to show virtual text
+  -- Default: 1 (equals two lines total)
+  min_rows = 1,
+
+  -- Same as above but only for spesific filetypes
+  -- Default: {}
+  min_rows_ft = {},
+
+  -- Custom virtual text node parser callback
+  -- Default: nil
+  custom_parser = function(node, ft, opts)
+    local utils = require('nvim_context_vt.utils')
+
+    -- If you return `nil`, no virtual text will be displayed.
+    if node:type() == 'function' then
+      return nil
+    end
+
+    -- This is the standard text
+    return opts.prefix .. ' ' .. utils.get_node_text(node)[1]
+  end,
+
+  -- Custom node validator callback
+  -- Default: nil
+  custom_validator = function(node, ft, opts)
+    -- Internally a node is matched against min_rows and configured targets
+    local default_validator = require('nvim_context_vt.utils').default_validator
+    if default_validator(node, ft) then
+      -- Custom behaviour after using the internal validator
+      if node:type() == 'function' then
+        return false
+      end
+    end
+
+    return true
+  end,
+
+  -- Custom node virtual text resolver callback
+  -- Default: nil
+  custom_resolver = function(nodes, ft, opts)
+    -- By default the last node is used
+    return nodes[#nodes]
+  end,
+})
+EOF
+'''
+[[plugins]]
+repo = 'm-demare/hlargs.nvim'
+hook_add = '''
+lua = <<EOF
+require('hlargs').setup {
+  color = '#ef9062',
+  highlight = {},
+  excluded_filetypes = {},
+  disable = function(lang, bufnr) -- If changed, `excluded_filetypes` will be ignored
+    return vim.tbl_contains(opts.excluded_filetypes, lang)
+  end,
+  paint_arg_declarations = true,
+  paint_arg_usages = true,
+  paint_catch_blocks = {
+    declarations = false,
+    usages = false
+  },
+  extras = {
+    named_parameters = false,
+  },
+  hl_priority = 120,
+  excluded_argnames = {
+    declarations = {},
+    usages = {
+      python = { 'self', 'cls' },
+      lua = { 'self' }
+    }
+  },
+  performance = {
+    parse_delay = 1,
+    slow_parse_delay = 50,
+    max_iterations = 400,
+    max_concurrent_partial_parses = 30,
+    debounce = {
+      partial_parse = 3,
+      partial_insert_mode = 100,
+      total_parse = 700,
+      slow_parse = 5000
+    }
+  }
+}
+EOF
+'''
+[[plugins]]
+repo = 'nvim-treesitter/nvim-treesitter-textobjects'
+hook_add = '''
+lua = <<EOF
+require'nvim-treesitter.configs'.setup {
+  textobjects = {
+    select = {
+      enable = true,
+
+      -- Automatically jump forward to textobj, similar to targets.vim
+      lookahead = true,
+
+      keymaps = {
+        -- You can use the capture groups defined in textobjects.scm
+        ["af"] = "@function.outer",
+        ["if"] = "@function.inner",
+        ["ac"] = "@class.outer",
+        -- You can optionally set descriptions to the mappings (used in the desc parameter of
+        -- nvim_buf_set_keymap) which plugins like which-key display
+        ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+        -- You can also use captures from other query groups like `locals.scm`
+        ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
+      },
+      -- You can choose the select mode (default is charwise 'v')
+      --
+      -- Can also be a function which gets passed a table with the keys
+      -- * query_string: eg '@function.inner'
+      -- * method: eg 'v' or 'o'
+      -- and should return the mode ('v', 'V', or '<c-v>') or a table
+      -- mapping query_strings to modes.
+      selection_modes = {
+        ['@parameter.outer'] = 'v', -- charwise
+        ['@function.outer'] = 'V', -- linewise
+        ['@class.outer'] = '<c-v>', -- blockwise
+      },
+      -- If you set this to `true` (default is `false`) then any textobject is
+      -- extended to include preceding or succeeding whitespace. Succeeding
+      -- whitespace has priority in order to act similarly to eg the built-in
+      -- `ap`.
+      --
+      -- Can also be a function which gets passed a table with the keys
+      -- * query_string: eg '@function.inner'
+      -- * selection_mode: eg 'v'
+      -- and should return true or false
+      include_surrounding_whitespace = true,
+    },
+    swap = {
+      enable = true,
+      swap_next = {
+        ["<leader>a"] = "@parameter.inner",
+      },
+      swap_previous = {
+        ["<leader>A"] = "@parameter.inner",
+      },
+    },
+    move = {
+      enable = true,
+      set_jumps = true, -- whether to set jumps in the jumplist
+      goto_next_start = {
+        ["]m"] = "@function.outer",
+        ["]]"] = { query = "@class.outer", desc = "Next class start" },
+        --
+        -- You can use regex matching (i.e. lua pattern) and/or pass a list in a "query" key to group multiple queires.
+        ["]o"] = "@loop.*",
+        -- ["]o"] = { query = { "@loop.inner", "@loop.outer" } }
+        --
+        -- You can pass a query group to use query from `queries/<lang>/<query_group>.scm file in your runtime path.
+        -- Below example nvim-treesitter's `locals.scm` and `folds.scm`. They also provide highlights.scm and indent.scm.
+        ["]s"] = { query = "@scope", query_group = "locals", desc = "Next scope" },
+        ["]z"] = { query = "@fold", query_group = "folds", desc = "Next fold" },
+      },
+      goto_next_end = {
+        ["]M"] = "@function.outer",
+        ["]["] = "@class.outer",
+      },
+      goto_previous_start = {
+        ["[m"] = "@function.outer",
+        ["[["] = "@class.outer",
+      },
+      goto_previous_end = {
+        ["[M"] = "@function.outer",
+        ["[]"] = "@class.outer",
+      },
+      -- Below will go to either the start or the end, whichever is closer.
+      -- Use if you want more granular movements
+      -- Make it even more gradual by adding multiple queries and regex.
+      goto_next = {
+        ["]d"] = "@conditional.outer",
+      },
+      goto_previous = {
+        ["[d"] = "@conditional.outer",
+      }
+    },
+  }
+}
+EOF
+'''
+[[plugins]]
+repo = 'RRethy/nvim-treesitter-textsubjects'
+hook_add = '''
+lua = <<EOF
+require('nvim-treesitter.configs').setup {
+    textsubjects = {
+        enable = true,
+        prev_selection = ',', -- (Optional) keymap to select the previous selection
+        keymaps = {
+            ['.'] = 'textsubjects-smart',
+            [';'] = 'textsubjects-container-outer',
+            ['i;'] = { 'textsubjects-container-inner', desc = "Select inside containers (classes, functions, etc.)" },
+        },
+    },
+}
+EOF
+'''
+[[plugins]]
+repo = 'mfussenegger/nvim-ts-hint-textobject'
+hook_add = '''
+lua = <<EOF
+require("tsht").config.hint_keys = { "h", "j", "f", "d", "n", "v", "s", "l", "a" }
+EOF
+'''
+[[plugins]]
+repo = 'David-Kunz/treesitter-unit'
+hook_add = '''
+lua = <<EOF
+vim.api.nvim_set_keymap('x', 'iu', ':lua require"treesitter-unit".select()<CR>', {noremap=true})
+vim.api.nvim_set_keymap('x', 'au', ':lua require"treesitter-unit".select(true)<CR>', {noremap=true})
+vim.api.nvim_set_keymap('o', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>', {noremap=true})
+vim.api.nvim_set_keymap('o', 'au', ':<c-u>lua require"treesitter-unit".select(true)<CR>', {noremap=true})
+EOF
+'''
+[[plugins]]
+repo = 'mizlan/iswap.nvim'
+hook_add = '''
+lua = <<EOF
+require('iswap').setup{
+  -- The keys that will be used as a selection, in order
+  -- ('asdfghjklqwertyuiopzxcvbnm' by default)
+  keys = 'qwertyuiop',
+
+  -- Grey out the rest of the text when making a selection
+  -- (enabled by default)
+  grey = 'disable',
+
+  -- Highlight group for the sniping value (asdf etc.)
+  -- default 'Search'
+  hl_snipe = 'ErrorMsg',
+
+  -- Highlight group for the visual selection of terms
+  -- default 'Visual'
+  hl_selection = 'WarningMsg',
+
+  -- Highlight group for the greyed background
+  -- default 'Comment'
+  hl_grey = 'LineNr',
+
+  -- Post-operation flashing highlight style,
+  -- either 'simultaneous' or 'sequential', or false to disable
+  -- default 'sequential'
+  flash_style = false,
+
+  -- Highlight group for flashing highlight afterward
+  -- default 'IncSearch'
+  hl_flash = 'ModeMsg',
+
+  -- Move cursor to the other element in ISwap*With commands
+  -- default false
+  move_cursor = true,
+
+  -- Automatically swap with only two arguments
+  -- default nil
+  autoswap = true,
+
+  -- Other default options you probably should not change:
+  debug = nil,
+  hl_grey_priority = '1000',
+}
+EOF
+'''
+[[plugins]]
+repo = 'petertriho/nvim-scrollbar'
+hook_add = '''
+lua = <<EOF
+reqiure('scrollbar').setup {
+}
+EOF
+'''
+[[plugins]]
+repo = 'monaqa/dial.nvim'
+hook_add = '''
+lua = <<EOF
+vim.keymap.set("n", "<C-a>", function()
+    require("dial.map").manipulate("increment", "normal")
+end)
+vim.keymap.set("n", "<C-x>", function()
+    require("dial.map").manipulate("decrement", "normal")
+end)
+vim.keymap.set("n", "g<C-a>", function()
+    require("dial.map").manipulate("increment", "gnormal")
+end)
+vim.keymap.set("n", "g<C-x>", function()
+    require("dial.map").manipulate("decrement", "gnormal")
+end)
+vim.keymap.set("v", "<C-a>", function()
+    require("dial.map").manipulate("increment", "visual")
+end)
+vim.keymap.set("v", "<C-x>", function()
+    require("dial.map").manipulate("decrement", "visual")
+end)
+vim.keymap.set("v", "g<C-a>", function()
+    require("dial.map").manipulate("increment", "gvisual")
+end)
+vim.keymap.set("v", "g<C-x>", function()
+    require("dial.map").manipulate("decrement", "gvisual")
+end)
+local augend = require("dial.augend")
+require("dial.config").augends:register_group{
+  -- default augends used when no group name is specified
+  default = {
+    augend.integer.alias.decimal,   -- nonnegative decimal number (0, 1, 2, 3, ...)
+    augend.integer.alias.hex,       -- nonnegative hex number  (0x01, 0x1a1f, etc.)
+    augend.date.alias["%Y/%m/%d"],  -- date (2022/02/19, etc.)
+  },
+
+  -- augends used when group with name `mygroup` is specified
+  mygroup = {
+    augend.integer.alias.decimal,
+    augend.constant.alias.bool,    -- boolean value (true <-> false)
+    augend.date.alias["%m/%d/%Y"], -- date (02/19/2022, etc.)
+  }
+}
+EOF
+'''
+[[plugins]]
+repo = 'kevinhwang91/nvim-hlslens'
+hook_add = '''
+lua = <<EOF
+require('hlslens').setup()
+
+local kopts = {noremap = true, silent = true}
+
+vim.api.nvim_set_keymap('n', 'n',
+    [[<Cmd>execute('normal! ' . v:count1 . 'n')<CR><Cmd>lua require('hlslens').start()<CR>]],
+    kopts)
+vim.api.nvim_set_keymap('n', 'N',
+    [[<Cmd>execute('normal! ' . v:count1 . 'N')<CR><Cmd>lua require('hlslens').start()<CR>]],
+    kopts)
+vim.api.nvim_set_keymap('n', '*', [[*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+vim.api.nvim_set_keymap('n', '#', [[#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+vim.api.nvim_set_keymap('n', 'g*', [[g*<Cmd>lua require('hlslens').start()<CR>]], kopts)
+vim.api.nvim_set_keymap('n', 'g#', [[g#<Cmd>lua require('hlslens').start()<CR>]], kopts)
+
+vim.api.nvim_set_keymap('n', '<Leader>l', '<Cmd>noh<CR>', kopts)
+EOF
+'''
+[[plugins]]
+repo = 'chentoast/marks.nvim'
+hook_add = '''
+lua = <<EOF
+require'marks'.setup {
+  -- whether to map keybinds or not. default true
+  default_mappings = true,
+  -- which builtin marks to show. default {}
+  builtin_marks = { ".", "<", ">", "^" },
+  -- whether movements cycle back to the beginning/end of buffer. default true
+  cyclic = true,
+  -- whether the shada file is updated after modifying uppercase marks. default false
+  force_write_shada = false,
+  -- how often (in ms) to redraw signs/recompute mark positions.
+  -- higher values will have better performance but may cause visual lag,
+  -- while lower values may cause performance penalties. default 150.
+  refresh_interval = 250,
+  -- sign priorities for each type of mark - builtin marks, uppercase marks, lowercase
+  -- marks, and bookmarks.
+  -- can be either a table with all/none of the keys, or a single number, in which case
+  -- the priority applies to all marks.
+  -- default 10.
+  sign_priority = { lower=10, upper=15, builtin=8, bookmark=20 },
+  -- disables mark tracking for specific filetypes. default {}
+  excluded_filetypes = {},
+  -- disables mark tracking for specific buftypes. default {}
+  excluded_buftypes = {},
+  -- marks.nvim allows you to configure up to 10 bookmark groups, each with its own
+  -- sign/virttext. Bookmarks can be used to group together positions and quickly move
+  -- across multiple buffers. default sign is '!@#$%^&*()' (from 0 to 9), and
+  -- default virt_text is "".
+  bookmark_0 = {
+    sign = "⚑",
+    virt_text = "hello world",
+    -- explicitly prompt for a virtual line annotation when setting a bookmark from this group.
+    -- defaults to false.
+    annotate = false,
+  },
+  mappings = {}
+}
+EOF
+'''
+[[plugins]]
+repo = 'akinsho/toggleterm.nvim'
+hook_add = '''
+lua = <<EOF
+require('toggleterm').setup{
+}
+EOF
+'''
+[[plugins]]
+repo = 'lukas-reineke/indent-blankline.nvim'
+hook_add = '''
+lua = <<EOF
+require('ibl').setup()
+EOF
+'''
+[[plugins]]
+repo = 'numToStr/Comment.nvim'
+hook_add = '''
+lua = <<EOF
+require('Comment').setup()
+EOF
+'''
+[[plugins]]
+repo = 'windwp/nvim-ts-autotag'
+hook_add = '''
+lua = <<EOF
+require('nvim-ts-autotag').setup({
+  opts = {
+    -- Defaults
+    enable_close = true, -- Auto close tags
+    enable_rename = true, -- Auto rename pairs of tags
+    enable_close_on_slash = true -- Auto close on trailing </
+  },
+  -- Also override individual filetype configs, these take priority.
+  -- Empty by default, useful if one of the "opts" global settings
+  -- doesn't work well in a specific filetype
+  per_filetype = {
+    -- ["html"] = {
+    --   enable_close = true
+    -- }
+  }
+})
+EOF
+'''
+[[plugins]]
+repo = 'gpanders/editorconfig.nvim'
+[[plugins]]
+repo = 'klen/nvim-config-local'
+hook_add = '''
+lua = <<EOF
+require('config-local').setup {
+  -- Default options (optional)
+
+  -- Config file patterns to load (lua supported)
+  config_files = { ".nvim.lua", ".nvimrc", ".exrc" },
+
+  -- Where the plugin keeps files data
+  hashfile = vim.fn.stdpath("data") .. "/config-local",
+
+  autocommands_create = true, -- Create autocommands (VimEnter, DirectoryChanged)
+  commands_create = true,     -- Create commands (ConfigLocalSource, ConfigLocalEdit, ConfigLocalTrust, ConfigLocalIgnore)
+  silent = false,             -- Disable plugin messages (Config loaded/ignored)
+  lookup_parents = false,     -- Lookup config files in parent directories
+}
+EOF
+'''
+[[plugins]]
+repo = 'NeogitOrg/neogit'
+hook_add = '''
+lua = <<EOF
+require('neogit').setup {
+}
+EOF
+'''
+[[plugins]]
+repo = 'sindrets/diffview.nvim'
+hook_add = '''
+lua = <<EOF
+require('diffview').setup {
+  hooks = {},
+}
+EOF
+'''
+[[plugins]]
+repo = 'akinsho/git-conflict.nvim'
+hook_add = '''
+lua = <<EOF
+require('git-conflict').setup {
+
+}
+EOF
+'''

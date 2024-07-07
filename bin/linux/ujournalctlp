@@ -1,0 +1,22 @@
+#!/bin/sh
+
+has_user=0
+SUDO=""
+has_user=1
+# for arg in "$@"; do
+#   [ "$arg" = "--user" ] && has_user=1
+# done
+if [ $has_user -eq 1 ]; then
+  SELECTED="$(systemctl list-unit-files --user --type=service | peco |awk '{ print "-u " $1}')"
+else
+  SELECTED="$({
+  systemctl list-unit-files --type=service;
+  systemctl list-unit-files --user --type=service;
+  } | peco | awk '{print "-u " $1}')"
+  SUDO="sudo"
+fi
+if [ "$SELECTED" != "" ]; then
+  echo $SUDO journalctl --user "$@" $SELECTED
+  $SUDO journalctl --user "$@" $SELECTED
+fi
+

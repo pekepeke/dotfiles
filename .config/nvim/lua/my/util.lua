@@ -45,6 +45,9 @@ local util = {
 	end,
 	initAutocmdGroup = function()
 		vim.api.nvim_create_augroup('MyAutoCmd', {})
+		vim.api.nvim_create_user_command('MyAutoCmd', function(callback)
+			vim.cmd('autocmd MyAutoCmd '..callback["args"])
+		end, {bang = true, nargs='*'})
 		vim.api.nvim_create_user_command('Lazy', function(callback)
 			-- error(vim.inspect(callback))
 			vim.cmd(callback["args"])
@@ -54,8 +57,18 @@ local util = {
 	-- 	vim.api.nvim_clear_autocmds({ group = 'MyAutoCmd' })
 	-- end,
 	myautocmd = myautocmd,
-	map = map,
-	noremap = noremap,
+	map = function(lhs, rhs, opts)
+		-- map('nvo', lhs, rhs, opts)
+		map('n', lhs, rhs, opts)
+		map('v', lhs, rhs, opts)
+		map('o', lhs, rhs, opts)
+	end,
+	noremap = function(lhs, rhs, opts)
+		-- noremap('nvo', lhs, rhs, opts)
+		noremap('n', lhs, rhs, opts)
+		noremap('v', lhs, rhs, opts)
+		noremap('o', lhs, rhs, opts)
+	end,
 	lazy = lazy,
 }
 
