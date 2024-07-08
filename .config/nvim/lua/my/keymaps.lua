@@ -9,6 +9,7 @@ local omap = util.omap
 local vmap = util.vmap
 local tmap = util.tmap
 local cmap = util.cmap
+local noremap = util.noremap
 local nnoremap = util.nnoremap
 local inoremap = util.inoremap
 local xnoremap = util.xnoremap
@@ -17,6 +18,41 @@ local onoremap = util.onoremap
 local vnoremap = util.vnoremap
 local tnoremap = util.tnoremap
 local cnoremap = util.cnoremap
+
+noremap('[!space]', '<Nop>')
+nnoremap('g<Space>', '<Space>')
+vnoremap('g<Space>', '<Space>')
+nmap('<Space>', '[!space]')
+vmap('<Space>', '[!space]')
+
+noremap('[!edit]', '<Nop>')
+nmap('<C-e>', '[!edit]')
+vmap('<C-e>', '[!edit]')
+
+noremap('[!comment-doc]', '<Nop>')
+map(',c', '[!comment-doc]')
+
+noremap('[!t]', '<Nop>')
+nmap('t', '[!t]')
+nnoremap('<silent> [!t]e', 't')
+nnoremap('<silent> [!t]2', 't"')
+nnoremap('<silent> [!t]7', "t'")
+nnoremap('<silent> [!t]8', 't(')
+nnoremap('<silent> [!t]9', 't)')
+nnoremap('<silent> [!t][', 't[')
+nnoremap('<silent> [!t]]', 't]')
+
+nnoremap('q', '<Nop>')
+-- nnoremap('q:', 'q:')
+-- nnoremap('q/', 'q/')
+-- nnoremap('q?', 'q?')
+nnoremap('Q', 'q')
+
+-- 行単位で移動 {{{2
+nnoremap('j', 'v:count == 0 ? "gj": "j"', { expr=true })
+xnoremap('j', '(v:count == 0 && mode() !=# "V") ? "gj": "j"', { expr=true })
+nnoremap('k', 'v:count == 0 ? "gk": "k"', { expr=true })
+xnoremap('k', '(v:count == 0 && mode() !=# "V") ? "gk": "k"', { expr=true })
 
 nnoremap('ZZ', '<NOP>')
 nnoremap('ZQ', '<NOP>')

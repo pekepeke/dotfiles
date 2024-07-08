@@ -1,7 +1,15 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [diff]
+  colorMoved = default ; for delta
   algorithm = histogram ; patience
   compactionHeuristic = true
+[delta]
+  navigate = true
+  side-by-side = true
+  line-numbers = true
+[merge]
+  conflictstyle = diff3
+
 [diff "xlsx"]
   binary = true
   textconv = $GOPATH/bin/git-xlsx-textconv

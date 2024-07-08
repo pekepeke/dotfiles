@@ -2,7 +2,7 @@
 # [[plugins]]
 # repo = 'p00f/nvim-ts-rainbow'
 # hook_add = '''
-# lua = <<EOF
+# lua <<EOF
 # EOF
 # '''
 [[plugins]]
@@ -16,7 +16,7 @@ repo = 'MunifTanjim/nui.nvim'
 [[plugins]]
 repo = 'kyazdani42/nvim-web-devicons'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
 require('nvim-web-devicons').setup {
  -- your personnal icons can go here (to override)
  -- you can specify color or cterm_color instead of specifying both of them
@@ -73,14 +73,10 @@ EOF
 '''
 [[plugins]]
 repo = 'rcarriga/nvim-notify'
-hook_add = '''
-lua <<EOF
-EOF
-'''
 [[plugins]]
 repo = 'nvim-lualine/lualine.nvim'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
 require('lualine').setup {
   options = {
     icons_enabled = true,
@@ -98,7 +94,7 @@ require('lualine').setup {
       statusline = 1000,
       tabline = 1000,
       winbar = 1000,
-    }
+    },
   },
   sections = {
     lualine_a = {'mode'},
@@ -128,8 +124,8 @@ EOF
 [[plugins]]
 repo = 'sidebar-nvim/sidebar.nvim'
 hook_add= '''
-lua = <<EOF
-sidebar.setup{
+lua <<EOF
+require('sidebar-nvim').setup{
   open = true,
   side = "right",
   initial_width = 35,
@@ -142,9 +138,16 @@ repo = 'SmiteshP/nvim-gps'
 repo = 'nvim-treesitter/nvim-treesitter'
 hook_add = '''
 lua <<EOF
-require'nvim-treesitter.configs'.setup {
+vim.opt.runtimepath:append('~/.cache/nvim-treesitter')
+require('nvim-treesitter.configs').setup {
   -- A list of parser names, or "all" (the listed parsers MUST always be installed)
-  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
+  ensure_installed = {
+    "c", "lua",
+	"vim", "vimdoc",
+	"query", "markdown", "markdown_inline",
+	"xml", "yaml", "gitignore", "dot",
+	"php", "html", "scss", "javascript", "tsx", "json",
+  },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
@@ -158,12 +161,10 @@ require'nvim-treesitter.configs'.setup {
 
   ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
   -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
-
+  parser_install_dir = '~/.cache/nvim-treesitter',
   disable = {
-    'lua',
     'toml',
     'c_sharp',
-    'help',
   },
   highlight = {
     enable = true,
@@ -194,7 +195,8 @@ EOF
 [[plugins]]
 repo = 'yioneko/nvim-yati'
 hook_add ='''
-lua = <<EOF
+lua <<EOF
+-- print('yati')
 require("nvim-treesitter.configs").setup {
   yati = {
     enable = true,
@@ -221,8 +223,9 @@ EOF
 [[plugins]]
 repo = 'romgrk/nvim-treesitter-context'
 hook_add = '''
-lua = <<EOF
-require'treesitter-context'.setup{
+lua <<EOF
+-- print('context')
+require('treesitter-context').setup {
   enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
   max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
   min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
@@ -241,7 +244,8 @@ EOF
 [[plugins]]
 repo = 'p00f/nvim-ts-rainbow'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('rainbow')
 require("nvim-treesitter.configs").setup {
   highlight = {
       -- ...
@@ -261,7 +265,8 @@ EOF
 [[plugins]]
 repo = 'JoosepAlviste/nvim-ts-context-commentstring'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('commentstr')
 require('ts_context_commentstring').setup {
   enable_autocmd = false,
 }
@@ -270,8 +275,9 @@ EOF
 [[plugins]]
 repo = 'haringsrob/nvim_context_vt'
 hook_add = '''
-lua = <<EOF
-require('nvim_context_vt').setup({
+lua <<EOF
+-- print('context')
+require('nvim_context_vt').setup {
   -- Enable by default. You can disable and use :NvimContextVtToggle to maually enable.
   -- Default: true
   enabled = true,
@@ -309,6 +315,7 @@ require('nvim_context_vt').setup({
   custom_parser = function(node, ft, opts)
     local utils = require('nvim_context_vt.utils')
 
+    if not opts then return nil end
     -- If you return `nil`, no virtual text will be displayed.
     if node:type() == 'function' then
       return nil
@@ -323,6 +330,7 @@ require('nvim_context_vt').setup({
   custom_validator = function(node, ft, opts)
     -- Internally a node is matched against min_rows and configured targets
     local default_validator = require('nvim_context_vt.utils').default_validator
+
     if default_validator(node, ft) then
       -- Custom behaviour after using the internal validator
       if node:type() == 'function' then
@@ -339,20 +347,21 @@ require('nvim_context_vt').setup({
     -- By default the last node is used
     return nodes[#nodes]
   end,
-})
+}
 EOF
 '''
 [[plugins]]
 repo = 'm-demare/hlargs.nvim'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('hlargs')
 require('hlargs').setup {
   color = '#ef9062',
   highlight = {},
   excluded_filetypes = {},
-  disable = function(lang, bufnr) -- If changed, `excluded_filetypes` will be ignored
-    return vim.tbl_contains(opts.excluded_filetypes, lang)
-  end,
+  -- disable = function(lang, bufnr) -- If changed, `excluded_filetypes` will be ignored
+  --   return vim.tbl_contains(opts.excluded_filetypes, lang)
+  -- end,
   paint_arg_declarations = true,
   paint_arg_usages = true,
   paint_catch_blocks = {
@@ -388,7 +397,8 @@ EOF
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter-textobjects'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('textobjects')
 require'nvim-treesitter.configs'.setup {
   textobjects = {
     select = {
@@ -485,7 +495,8 @@ EOF
 [[plugins]]
 repo = 'RRethy/nvim-treesitter-textsubjects'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('tsubjects')
 require('nvim-treesitter.configs').setup {
     textsubjects = {
         enable = true,
@@ -502,14 +513,16 @@ EOF
 [[plugins]]
 repo = 'mfussenegger/nvim-ts-hint-textobject'
 hook_add = '''
-lua = <<EOF
-require("tsht").config.hint_keys = { "h", "j", "f", "d", "n", "v", "s", "l", "a" }
+lua <<EOF
+-- print('tsht')
+require('tsht').config.hint_keys = { "h", "j", "f", "d", "n", "v", "s", "l", "a" }
 EOF
 '''
 [[plugins]]
 repo = 'David-Kunz/treesitter-unit'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('unit')
 vim.api.nvim_set_keymap('x', 'iu', ':lua require"treesitter-unit".select()<CR>', {noremap=true})
 vim.api.nvim_set_keymap('x', 'au', ':lua require"treesitter-unit".select(true)<CR>', {noremap=true})
 vim.api.nvim_set_keymap('o', 'iu', ':<c-u>lua require"treesitter-unit".select()<CR>', {noremap=true})
@@ -519,7 +532,8 @@ EOF
 [[plugins]]
 repo = 'mizlan/iswap.nvim'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('iswap')
 require('iswap').setup{
   -- The keys that will be used as a selection, in order
   -- ('asdfghjklqwertyuiopzxcvbnm' by default)
@@ -567,15 +581,17 @@ EOF
 [[plugins]]
 repo = 'petertriho/nvim-scrollbar'
 hook_add = '''
-lua = <<EOF
-reqiure('scrollbar').setup {
+lua <<EOF
+-- print('scrollbar')
+require('scrollbar').setup {
 }
 EOF
 '''
 [[plugins]]
 repo = 'monaqa/dial.nvim'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('dial')
 vim.keymap.set("n", "<C-a>", function()
     require("dial.map").manipulate("increment", "normal")
 end)
@@ -621,7 +637,8 @@ EOF
 [[plugins]]
 repo = 'kevinhwang91/nvim-hlslens'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('hlslens')
 require('hlslens').setup()
 
 local kopts = {noremap = true, silent = true}
@@ -643,7 +660,8 @@ EOF
 [[plugins]]
 repo = 'chentoast/marks.nvim'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('marks')
 require'marks'.setup {
   -- whether to map keybinds or not. default true
   default_mappings = true,
@@ -685,29 +703,43 @@ EOF
 [[plugins]]
 repo = 'akinsho/toggleterm.nvim'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
 require('toggleterm').setup{
 }
+function _G.set_terminal_keymaps()
+  local opts = {buffer = 0}
+  vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
+  vim.keymap.set('t', 'jk', [[<C-\><C-n>]], opts)
+  -- vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
+  -- vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+  -- vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
+  -- vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
+  -- vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
+end
+vim.cmd('MyAutoCmd TermOpen term://* lua set_terminal_keymaps()')
 EOF
 '''
 [[plugins]]
 repo = 'lukas-reineke/indent-blankline.nvim'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('ibl')
 require('ibl').setup()
 EOF
 '''
 [[plugins]]
 repo = 'numToStr/Comment.nvim'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('comment')
 require('Comment').setup()
 EOF
 '''
 [[plugins]]
 repo = 'windwp/nvim-ts-autotag'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
+-- print('autotag')
 require('nvim-ts-autotag').setup({
   opts = {
     -- Defaults
@@ -731,7 +763,7 @@ repo = 'gpanders/editorconfig.nvim'
 [[plugins]]
 repo = 'klen/nvim-config-local'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
 require('config-local').setup {
   -- Default options (optional)
 
@@ -751,15 +783,16 @@ EOF
 [[plugins]]
 repo = 'NeogitOrg/neogit'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
 require('neogit').setup {
+  integrations = { diffview = true, }
 }
 EOF
 '''
 [[plugins]]
 repo = 'sindrets/diffview.nvim'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
 require('diffview').setup {
   hooks = {},
 }
@@ -768,9 +801,29 @@ EOF
 [[plugins]]
 repo = 'akinsho/git-conflict.nvim'
 hook_add = '''
-lua = <<EOF
+lua <<EOF
 require('git-conflict').setup {
 
+}
+EOF
+'''
+[[plugins]]
+repo = 'lewis6991/gitsigns.nvim'
+hook_add = '''
+lua <<EOF
+require('gitsigns').setup{
+
+}
+EOF
+'''
+[[plugins]]
+repo = 'norcalli/nvim-colorizer.lua'
+hook_add = '''
+lua <<EOF
+require('colorizer').setup {
+  RRGGBBAA = true,
+  rgb_fn = true,
+  hsl_fn = true,
 }
 EOF
 '''

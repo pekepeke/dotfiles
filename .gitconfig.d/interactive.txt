@@ -1,3 +1,4 @@
+# vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [interactive]
-  diffFilter = (diff-highlight 2>/dev/null || cat)
-
+  # diffFilter = (diff-highlight 2>/dev/null || cat)
+  diffFilter = delta --color-only

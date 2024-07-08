@@ -913,7 +913,8 @@ hook_add = '''
   let g:template_files = 'template/**'
   let g:template_free_pattern = 'template'
 
-  function! s:template_replace_keywords() "{{{3
+  " s: が使えない…
+  function! VimrcTemplateReplaceKeywords() "{{{3
     silent! %s/<+FILENAME_NOEXTUC+>/\=toupper(expand('%:t:r'))/g
     silent! %s/<+FILENAME_NOEXT+>/\=expand('%:t:r')/g
     silent! %s/<+FILENAME+>/\=expand('%:t')/g
@@ -936,7 +937,7 @@ hook_add = '''
   endfor
 
   "autocmd BufNewFile * execute 'TemplateLoad'
-  MyAutoCmd User plugin-template-loaded call <SID>template_replace_keywords()
+  MyAutoCmd User plugin-template-loaded call VimrcTemplateReplaceKeywords()
 '''
 [[plugins]]
 repo = 'mattn/sonictemplate-vim'

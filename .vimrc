@@ -874,11 +874,6 @@ noremap [!edit] <Nop>
 nmap <C-e> [!edit]
 vmap <C-e> [!edit]
 
-noremap [!app] <Nop>
-map [!unite]c [!app]
-noremap [!cw-app] <Nop>
-map <C-w>[!unite]c [!cw-app]
-
 noremap [!comment-doc] <Nop>
 map     ,c     [!comment-doc]
 

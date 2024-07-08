@@ -145,6 +145,7 @@ else " unix setting {{{2
   set guioptions=te
 
   "set guifont=VL\ ゴシック\ 12
+  command! -nargs=0 InconsolataNF set guifont=Inconsolata\ Nerd\ Font\ Mono\ 11
   command! -nargs=0 SauceCodeNF set guifont=SauceCodePro\ NF\ 10
   command! -nargs=0 Inconsolata set guifont=Inconsolata\ 11
   command! -nargs=0 Ricty set guifont=Ricty\ 11
@@ -159,7 +160,9 @@ else " unix setting {{{2
     return filereadable($HOME . '/.fonts/' . a:fname)
     \ || filereadable($HOME . '/.local/share/fonts/' . a:fname)
   endfunction
-  if s:font_exists('SauceCodeProNF_LINESeedJP.ttf')
+  if s:font_exists('InconsolataNerdFontMono-Regular.ttf')
+    InconsolataNF
+  elseif s:font_exists('SauceCodeProNF_LINESeedJP.ttf')
     SauceCodeNF
   elseif s:font_exists('SourceHanCodeJP-Regular.otf')
     SourceHanCodeJP
