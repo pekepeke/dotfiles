@@ -11,11 +11,10 @@ EOM
 
 main() {
   AUTHOR=jesseduffield
-  PG=lazygit
+  PG=lazydocker
   INSTALL_DIR=~/.local/bin
   if [ -e "$INSTALL_DIR/$PG" ]; then
     echo "already installed: $INSTALL_DIR/$PG"
-    curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
     return 0
   fi
   DL_URL="$(curl -s https://api.github.com/repos/$AUTHOR/$PG/releases/latest \

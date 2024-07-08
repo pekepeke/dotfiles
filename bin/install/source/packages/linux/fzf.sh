@@ -10,16 +10,17 @@ EOM
 }
 
 main() {
-  AUTHOR=jesseduffield
-  PG=lazygit
+  AUTHOR=junegunn
+  PG=fzf
   INSTALL_DIR=~/.local/bin
   if [ -e "$INSTALL_DIR/$PG" ]; then
     echo "already installed: $INSTALL_DIR/$PG"
-    curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
     return 0
   fi
+  ARCH=`uname -m`
+  [ "$ARCH" = "x86_64" ] && ARCH=amd64
   DL_URL="$(curl -s https://api.github.com/repos/$AUTHOR/$PG/releases/latest \
-| grep "browser_download_url.*Linux_`uname -m`" \
+| grep "browser_download_url.*linux_$ARCH" \
 | cut -d : -f 2,3 \
 | tr -d \")"
   if [ "$DL_URL" = "" ]; then

@@ -22,7 +22,10 @@ vim.opt.encoding='utf-8'
 -- vim.opt.termencoding='utf-8'
 vim.opt.fileencoding='utf-8'
 vim.opt.fileformat=unix
--- vim.opt.termguicolors=true
+if not vim.fn.has('gui_running') then
+	-- vim.cmd([[set termguicolors]])
+	vim.opt.termguicolors=true
+end
 vim.opt.fileencodings='ucs-bom,utf-8,iso-2022-jp,euc-jp,cp932'
 vim.opt.fileformats='unix,dos,mac'
 vim.opt.synmaxcol=1000

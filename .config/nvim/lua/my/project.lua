@@ -52,7 +52,8 @@ return {
 			return
 		elseif vim.g.my_lcd_autochdir then
 			local dir = project:findRoot()
-			if dir and dir ~= '' and vim.fn.isdirectory(dir) then
+			if dir and dir ~= '' and vim.fn.isdirectory(dir) ~= 0 then
+				print(dir)
 				vim.cmd.lcd(vim.fn.fnameescape(dir))
 			end
 		end

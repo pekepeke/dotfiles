@@ -292,7 +292,7 @@ require('nvim_context_vt').setup {
 
   -- Disable virtual text for given filetypes
   -- Default: { 'markdown' }
-  disable_ft = { 'markdown' },
+  disable_ft = { 'markdown', 'toml', },
 
   -- Disable display of virtual text below blocks for indentation based languages like Python
   -- Default: false
@@ -706,10 +706,28 @@ hook_add = '''
 lua <<EOF
 require('toggleterm').setup{
 }
+local Terminal = require('toggleterm.terminal').Terminal
+local lazygit = Terminal:new({
+  cmd = 'lazygit',
+  dir = 'git_dir',
+  direction = "float",
+  hidden = true,
+  on_open = function(term)
+    vim.api.nvim_buf_set_keymap(term.bufnr, "t", "<Leader>g", "<CMD>close<CR>", { noremap = true, silent = true })
+  end,
+})
+function _G.toggleterm_lazygit()
+  lazygit:toggle()
+end
+vim.api.nvim_set_keymap('n', '<Leader>g', '<CMD>lua toggleterm_lazygit()<CR>', {
+  noremap = true, silent = true,
+})
+vim.api.nvim_set_keymap('n', '<Leader>c', '<CMD>ToggleTerm direction=float<CR>', { noremap = true, silent = true })
 function _G.set_terminal_keymaps()
   local opts = {buffer = 0}
   vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
   vim.keymap.set('t', 'jk', [[<C-\><C-n>]], opts)
+  vim.keymap.set('t', '<Leader>c', [[<Cmd>close<CR>]], opts)
   -- vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
   -- vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
   -- vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)

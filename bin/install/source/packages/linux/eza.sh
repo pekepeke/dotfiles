@@ -10,8 +10,8 @@ EOM
 }
 
 main() {
-  AUTHOR=jesseduffield
-  PG=lazygit
+  AUTHOR=eza-community
+  PG=eza
   INSTALL_DIR=~/.local/bin
   if [ -e "$INSTALL_DIR/$PG" ]; then
     echo "already installed: $INSTALL_DIR/$PG"
@@ -19,9 +19,9 @@ main() {
     return 0
   fi
   DL_URL="$(curl -s https://api.github.com/repos/$AUTHOR/$PG/releases/latest \
-| grep "browser_download_url.*Linux_`uname -m`" \
+| grep "browser_download_url.*`uname -m`.*-linux-musl" \
 | cut -d : -f 2,3 \
-| tr -d \")"
+| tr -d \" | head -1)"
   if [ "$DL_URL" = "" ]; then
     echo "url not found" 1>&2
     return 1
