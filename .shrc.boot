@@ -74,43 +74,33 @@ GREP_OPTIONS="--exclude-dir=.git $GREP_OPTIONS"
 GREP_OPTIONS="--exclude-dir=.hg $GREP_OPTIONS"
 GREP_OPTIONS="--exclude-dir=.deps $GREP_OPTIONS"
 GREP_OPTIONS="--exclude-dir=.libs $GREP_OPTIONS"
-
 LS_OPTIONS="--show-control-chars"
 
 if [ "$TERM" != "dumb" ]; then
-  if [ -z "$MSYSTEM" -a -x /usr/bin/dircolors ]; then
-    [ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
-    #   # eval "`dircolors -b`"
-  fi
-  #alias dir='ls --color=auto --format=vertical'
-  #alias vdir='ls --color=auto --format=long'
-
+  [ -z "$MSYSTEM" -a -x /usr/bin/dircolors ] && [ -e ~/.dir_colors ] && eval `dircolors ~/.dir_colors -b`
   export GREP_COLOR='1;37;41'
-  #alias fgrep='fgrep --color=auto'
-  #alias egrep='egrep --color=auto'
   GREP_OPTIONS="--color=auto $GREP_OPTIONS"
-
   LS_OPTIONS="--color=always $LS_OPTIONS"
 fi
 export GREP_OPTIONS
 export LS_OPTIONS
 
+shrc_section_title "###" #{{{1
+_SHELL_NAME=${SHELL##*/}
+eval "$(zoxide init $_SHELL_NAME)"
+eval "$(fzf --$_SHELL_NAME)"
+export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
+
+
 shrc_section_title "aliases" #{{{1
 shrc_section_title "notify" #{{{2
 
 shrc_section_title "basic commands" #{{{2
-if is_mac ; then
-  if is_exec gls; then
-    alias ls="gls $LS_OPTIONS"
-    alias ll="gls -l $LS_OPTIONS"
-    alias la="gls -A $LS_OPTIONS"
-    alias l="gls -CF $LS_OPTIONS"
-  else
-    alias ls="ls -GF"
-    alias ll="ls -GFl"
-    alias la="ls -GFA"
-    alias l="ls -GCF"
-  fi
+if is_exec eza; then
+  alias ls="eza"
+  alias ll="eza -l"
+  alias la="eza -A"
+  alias l="eza -CF"
 else
   alias ls="ls $LS_OPTIONS"
   alias ll="ls -l $LS_OPTIONS"
@@ -152,10 +142,6 @@ fi
 #   # alias less=$PAGER
 #   # alias zless=$PAGER
 # fi
-alias vimfiler="$EDITOR_VIM_MIN -c VimFiler"
-alias vimshell="$EDITOR_VIM_MIN -c VimShell"
-alias diary="$EDITOR_VIM_MIN ~/$(date +'%Y-%m-%d.md')"
-
 alias vimrcinspect='vim --startuptime "$HOME/vimrc-read.txt" +q && vim ~/vimrc-read.txt'
 alias gvimrcinspect='gvim --startuptime "$HOME/gvimrc-read.txt" && gvim --remote-silent ~/gvimrc-read.txt'
 alias vimrcprofile='vim --cmd "profile start ~/vimrc-profile.txt" --cmd "profile file $HOME/.vimrc" +q && vim ~/vimrc-profile.txt'
@@ -263,18 +249,11 @@ shrc_section_title "zsh" #{{{2
 if [ -n "$ZSH_NAME" ]; then
   alias -g L="|& $PAGER"
   alias -g G="| grep -i"
-  alias -g H=' $(git-hash-p)'
-  alias -g F=' $(git-changed-files-p)'
-  alias -g FA=' $(git-ls-files-p)'
+  alias -g F="| fzf | pbcopy-wrapper"
   # alias -g V="| $EDITOR_VIM_MIN -"
   alias -g V="| $COL_CMD | $EDITOR_VIM_MIN -"
-  alias -g P="| peco"
-  alias -g PC="| peco | xargs echo -n | pbcopy-wrapper"
   alias -g J="| jq"
-  # alias -g C="| col -bx | pbcopy-wrapper"
   alias -g C="| $COL_CMD | pbcopy-wrapper"
-  # alias -g V="| view -"
-  alias -g W=" 2>&1 | iconv -c -f Shift_JIS -t UTF-8"
 fi
 
 shrc_section_title "some commands" #{{{1

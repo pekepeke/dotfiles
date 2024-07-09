@@ -1,0 +1,66 @@
+#!/bin/bash
+
+MEMO_DIR=~/memos
+VIM=gvim
+[ -z "$XDG_SESSION_TYPE" ] && VIM=vim
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+$prg_name <command>
+
+Usage:
+
+$prg_name new
+$prg_name find <foo>
+$prg_name help
+
+All commands:
+
+  new, find, search, help
+
+EOM
+  exit 1
+}
+
+main() {
+  cmd="$1"
+  shift
+  case "$cmd" in
+    new)
+      local FNAME="$1"
+      [ ! -z "$FNAME" -a "${FNAME##*.}" != "md" ] && FNAME="$FNAME.md"
+      [ -z "$FNAME" ] && FNAME=`date +%Y-%m-%d`.md
+      $VIM "$MEMO_DIR/$FNAME"
+      ;;
+    find|search)
+      selected="$(rg -n "$@" "$MEMO_DIR" | fzf)"
+      [ ! -z "$selected" ] && view +`echo "$selected" | cut -d : -f 2` `echo "$selected" | cut -d : -f 1`
+      ;;
+    help)
+      usage;;
+    *)
+      usage;;
+  esac
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

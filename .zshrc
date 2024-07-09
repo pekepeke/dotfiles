@@ -1,5 +1,4 @@
 # .boot
-[ -e ~/.shrc.boot ] && source ~/.shrc.boot
 _is_win=$(is_win; echo $?)
 
 
@@ -197,15 +196,12 @@ bindkey -v '^E' end-of-line
 bindkey -v '^B' backward-char
 bindkey -v '^F' forward-char
 bindkey -v '^K' kill-line
-bindkey -v '^S' history-incremental-search-forward
 bindkey -v '^Y' yank
+bindkey -v '^S' history-incremental-search-forward
 bindkey -v '^R' history-incremental-pattern-search-backward
 
 _copy-buffer() {
-  local copy_cmd="xsel -b"
-  type pbcopy >/dev/null && copy_cmd="pbcopy"
-  type xclip >/dev/null && copy_cmd="xclip -i -selection clipboard"
-  print -rn $BUFFER | eval $copy_cmd
+  print -rn $BUFFER | pbcopy-wrapper
   zle -M "copy : ${BUFFER}"
 }
 zle -N _copy-buffer
@@ -481,8 +477,23 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
     unfunction "_zaw-init"
 
     bindkey -v '^V;' zaw
-    bindkey -v '^Vj' zaw-z
-    bindkey -v '^Vh' zaw-cheat
+    function _zi() { zi }; zle -N _zi
+    function _cheat() {
+      local selected="$(find ~/.zsh/opt/cheat -type f | \
+        fzf --preview 'cat {}' --bind 'enter:become(echo cat {})' --bind 'ctrl-l:become(echo less {})' --bind 'ctrl-y:execute-silent:(cat {} | pbcopy-wrapper)')"
+      if [ "$selected" != "" ] ;then
+        if [ "$selected[1,4]" == "less" ]; then
+          eval $selected
+        else
+          eval $selected | fzf --bind 'enter:become(echo {} | pbcopy-wrapper)'
+        fi
+      fi
+    }
+    zle -N _cheat
+    # bindkey -v '^Vj' zaw-z
+    bindkey -v '^Vj' _zi
+    # bindkey -v '^Vh' zaw-cheat
+    bindkey -v '^Vh' _cheat
 
     bindkey -v '^Vtt' zaw-tmux
     bindkey -v '^Vtw' zaw-tmux-window
@@ -499,13 +510,13 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
   # zle -N _zaw-init
   # bindkey -v '^V' _zaw-init
 fi
-shrc_section_title "autojump" #{{{2
-if [ -z "$ZSH_DISABLES[autojump]" -a -e ~/.zsh/plugins/z/z.sh ]; then
-  # if [ "$OSTYPE" != "msys" -a -z "$CYGWIN" ]; then
-  _Z_CMD=j
-  . ~/.zsh/plugins/z/z.sh
-  # fi
-fi
+# shrc_section_title "autojump" #{{{2
+# if [ -z "$ZSH_DISABLES[autojump]" -a -e ~/.zsh/plugins/z/z.sh ]; then
+#   # if [ "$OSTYPE" != "msys" -a -z "$CYGWIN" ]; then
+#   _Z_CMD=j
+#   . ~/.zsh/plugins/z/z.sh
+#   # fi
+# fi
 
 shrc_section_title "zsh-syntax-highlighting" #{{{2
 if [ -z "ZSH_DISABLES[zsh-syntax-highlighting]" -a $_is_win -ne 0 -a -e ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
@@ -851,6 +862,8 @@ _zsh-complete-init() {
 }
 zle -N _zsh-complete-init
 bindkey -v '^I' _zsh-complete-init
+
+[ -e ~/.shrc.boot ] && source ~/.shrc.boot
 
 shrc_section_title "finish"
 type zprof >/dev/null 2>&1 && zprof | less

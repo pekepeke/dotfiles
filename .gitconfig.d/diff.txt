@@ -7,6 +7,7 @@
   navigate = true
   side-by-side = true
   line-numbers = true
+  syntax-theme = Monokai Extended
 [merge]
   conflictstyle = diff3
 

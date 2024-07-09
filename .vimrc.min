@@ -4,7 +4,6 @@ endif
 
 " environment {{{1
 let $VIM_CACHE = $HOME . '/.cache/vim'
-let s:standalone = 0
 
 let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') || (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
@@ -20,7 +19,8 @@ function! s:has_plugin(plugin)
   if exists(':NeoBundle')
     return neobundle#is_installed(a:plugin)
   endif
-  return strlen(globpath(&runtimepath, '*/'.a:plugin))
+  " return strlen(globpath(&runtimepath, '*/'.a:plugin))
+  return 0
 endfunction
 
 augroup vimrc-myautocmd
@@ -385,178 +385,101 @@ cnoremap <C-]><C-i> <C-d>
 
 " }}}
 " commands {{{1
-if s:standalone
-  function! SudoRead(url) "{{{2
-    if a:url ==# '<afile>'
-      let file=expand(a:url)
-    else
-      let file=a:url
-    endif
-    let prot=matchstr(file,'^\(sudo\)\ze:')
-    if '' !=# prot
-      let file=strpart(file,strlen(prot)+1)
-    endif
-    0,$d
-    call setline(1,'foo')
-    execute '1read !sudo cat "'.file.'" '
-    1d
-    setlocal nomodified
-    filetype detect
-  endfunction
+function! SudoRead(url) "{{{2
+  if a:url ==# '<afile>'
+    let file=expand(a:url)
+  else
+    let file=a:url
+  endif
+  let prot=matchstr(file,'^\(sudo\)\ze:')
+  if '' !=# prot
+    let file=strpart(file,strlen(prot)+1)
+  endif
+  0,$d
+  call setline(1,'foo')
+  execute '1read !sudo cat "'.file.'" '
+  1d
+  setlocal nomodified
+  filetype detect
+endfunction
 
-  function! SudoWrite(url) abort "{{{2
-    let file = a:url ==# '<afile>' ? expand(a:url) : a:url
-    let prot=matchstr(file,'^\(sudo\)\ze:')
-    if '' !=# prot
-      let file=strpart(file,strlen(prot)+1)
-    endif
-    set nomodified
-    execute '%write !sudo tee >/dev/null "'.file.'"'
-  endf
- " commands {{{2
-  command! -nargs=1 SudoRead call SudoRead(<f-args>)
-  command! -nargs=1 SudoWrite call SudoWrite(<f-args>)
-  command! SW w sudo:%
-  command! SR read sudo:%
-  augroup Sudo
-    autocmd!
-    au BufReadCmd	sudo:*,sudo:*/* SudoRead <afile>
-    au FileReadCmd	sudo:*,sudo:*/* SudoRead <afile>
-    au BufWriteCmd	sudo:*,sudo:*/* SudoWrite <afile>
-    au FileWriteCmd	sudo:*,sudo:*/* SudoWrite <afile>
-  augroup END
+function! SudoWrite(url) abort "{{{2
+  let file = a:url ==# '<afile>' ? expand(a:url) : a:url
+  let prot=matchstr(file,'^\(sudo\)\ze:')
+  if '' !=# prot
+    let file=strpart(file,strlen(prot)+1)
+  endif
+  set nomodified
+  execute '%write !sudo tee >/dev/null "'.file.'"'
+endf
+" commands {{{2
+command! -nargs=1 SudoRead call SudoRead(<f-args>)
+command! -nargs=1 SudoWrite call SudoWrite(<f-args>)
+command! SW w sudo:%
+command! SR read sudo:%
+augroup Sudo
+  autocmd!
+  au BufReadCmd	sudo:*,sudo:*/* SudoRead <afile>
+  au FileReadCmd	sudo:*,sudo:*/* SudoRead <afile>
+  au BufWriteCmd	sudo:*,sudo:*/* SudoWrite <afile>
+  au FileWriteCmd	sudo:*,sudo:*/* SudoWrite <afile>
+augroup END
 
-  if s:is_win
-    if exists(':tmap')
-      command! PowerShell terminal ++close ++curwin powershell
-      command! Bash terminal ++close ++curwin C:/Windows/System32/bash.exe -c "cd; bash -l"
-    endif
+if s:is_win
+  if exists(':tmap')
+    command! PowerShell terminal ++close ++curwin powershell
+    command! Bash terminal ++close ++curwin C:/Windows/System32/bash.exe -c "cd; bash -l"
   endif
 endif
 " }}}
 " plugin {{{1
 if v:version > 702
-  if !s:standalone "{{{2
-    if has('vim_starting')
-      set runtimepath+=~/.vim/neobundle.vim
+  " if has('vim_starting')
+  "   filetype off
+  "   silent call pathogen#infect()
+  " endif
+
+  " enable some plugin {{{3
+  runtime macros/matchit.vim
+
+  " mkdir -p ~/.vim/autoload ~/.vim/bundle; curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim; mkdir -p ~/.vim/bundle ; cd ~/.vim/bundle;
+  " git clone https://github.com/Shougo/vimfiler.git
+  " git clone https://github.com/Shougo/unite.vim.git
+  " curl -L https://github.com/Shougo/vimfiler/tarball/master | tar zxv
+  " curl -L https://github.com/Shougo/unite.vim/tarball/master | tar zxv
+
+  function! s:plugin_install() " {{{3
+    let exec_git = executable('git')
+    let repos = [
+    \ 'https://github.com/Shougo/vimfiler',
+    \ 'https://github.com/Shougo/unite.vim',
+    \ 'https://github.com/kana/vim-operator-replace',
+    \ 'https://github.com/kana/vim-operator-user',
+    \ ]
+    if input('install plugin? [y/n]:') !=# 'y'
+      echo 'Canceled.'
+      return
     endif
-    call neobundle#begin(expand('~/.vim/neobundle-min'))
+    call mkdir(exppand('~/.vim'))
+    call mkdir(expand('~/.vim/autoload'))
+    call mkdir(expand('~/.vim/bundle'))
 
-    " minimum plugin
-    NeoBundle 'tpope/vim-vividchalk'
-    NeoBundle 'Shougo/unite.vim'
-    NeoBundle 'Shougo/neomru.vim'
-    " , {'autoload': {
-    " \ 'on_unite': ['file_mru', 'directory_mru',
-    " \   'neomru/file', 'neomru/directory']
-    " \}}
-    NeoBundleLazy 'eiiches/unite-tselect', { 'autoload' : {
-    \ 'on_unite' : ['tselect'],
-    \ }}
-    NeoBundle 'rafi/vim-unite-issue', {
-    \ 'depends' : ['mattn/webapi-vim',  'tyru/open-browser.vim',  'Shougo/unite.vim'],
-    \ }
-    NeoBundleLazy 'Shougo/vimfiler.vim', {
-      \ 'depends': 'Shougo/unite.vim', 'autoload' : {
-      \ 'on_cmd' : [
-      \ { 'name' : 'VimFiler', 'complete' : 'customlist,vimfiler#complete' },
-      \ { 'name' : 'VimFilerExplorer', 'complete' : 'customlist,vimfiler#complete' },
-      \ { 'name' : 'Edit', 'complete' : 'customlist,vimfiler#complete' },
-      \ { 'name' : 'Write', 'complete' : 'customlist,vimfiler#complete' },
-      \ 'Read', 'Source'],
-      \ 'on_map' : ['<Plug>(vimfiler'],
-      \ 'explorer' : 1,
-      \ }}
-    NeoBundle 'Shougo/vimproc.vim', { 'build' : {
-      \ 'cygwin' : 'make -f make_cygwin.mak',
-      \ 'mac'    : 'make -f make_mac.mak',
-      \ 'unix'   : 'make -f make_unix.mak',
-      \ }}
-    NeoBundleLazy 'Shougo/vimshell', {
-      \ 'depends': 'Shougo/vimproc.vim', 'autoload' : {
-      \ 'on_cmd' : [{ 'name' : 'VimShell',
-      \ 'complete' : 'customlist,vimshell#complete'},
-      \   'VimShellExecute', 'VimShellInteractive',
-      \   'VimShellTerminal', 'VimShellPop'],
-      \ 'on_map' : ['<Plug>(vimshell']
-      \ }}
-    NeoBundle 'kana/vim-operator-user'
-    NeoBundle 'kana/vim-operator-replace'
-    NeoBundle 'kana/vim-fakeclip'
-    NeoBundle 'kana/vim-niceblock', {
-    \ 'on_map' : ['<Plug>(niceblock-',]
-    \ }
-    NeoBundle 'tpope/vim-surround'
-    NeoBundle 'tpope/vim-fugitive'
-    NeoBundle 'cohama/agit.vim'
-    NeoBundle 'rhysd/committia.vim'
-    NeoBundle 'rhysd/conflict-marker.vim'
-    NeoBundle 'idanarye/vim-merginal'
-    NeoBundle 'AndrewRadev/gapply.vim'
-    NeoBundle 'lambdalisue/vim-unified-diff'
-    NeoBundleLazy 'vim-scripts/DirDiff.vim', {'autoload': {
-      \ 'on_cmd' : [
-      \   'DirDiffOpen', 'DirDiffNext', 'DirDiffPrev',
-      \   'DirDiffUpdate', 'DirDiffQuit',
-      \   {'name': 'DirDiff', 'complete': 'dir'},
-      \ ],
-      \ }}
-    NeoBundle 'vim-scripts/sudo.vim'
-    " NeoBundle 'chrisbra/SudoEdit.vim'
-    NeoBundle 'tpope/vim-commentary'
-    call neobundle#end()
-  elseif s:standalone " plugin load {{{2
-    if has('vim_starting')
-      filetype off
-      silent call pathogen#infect()
-    endif
-
-    " enable some plugin {{{3
-    runtime macros/matchit.vim
-
-    " mkdir -p ~/.vim/autoload ~/.vim/bundle; curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim; mkdir -p ~/.vim/bundle ; cd ~/.vim/bundle;
-    " git clone https://github.com/Shougo/vimfiler.git
-    " git clone https://github.com/Shougo/unite.vim.git
-    " curl -L https://github.com/Shougo/vimfiler/tarball/master | tar zxv
-    " curl -L https://github.com/Shougo/unite.vim/tarball/master | tar zxv
-
-    function! s:plugin_install() " {{{3
-      let exec_git = executable('git')
-      let repos = [
-      \ 'https://github.com/Shougo/vimfiler',
-      \ 'https://github.com/Shougo/unite.vim',
-      \ 'https://github.com/kana/vim-operator-replace',
-      \ 'https://github.com/kana/vim-operator-user',
-      \ ]
-      if input('install plugin? [y/n]:') !=# 'y'
-        echo 'Canceled.'
-        return
-      endif
-      call mkdir(exppand('~/.vim'))
-      call mkdir(expand('~/.vim/autoload'))
-      call mkdir(expand('~/.vim/bundle'))
+    call system('curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim')
+    let cwd = getcwd()
+    execute 'lcd' expand('~/.vim/bundle')
+    for repo in repos
       if exec_git
-          call system('git clone https://github.com/Shougo/neobundle.vim.git ~/.vim/neobundle.vim')
-        return
+        call system(printf('git clone %s.git', repo))
+      else
+        call system(printf('curl -L %s/tarball/master | tar zxv', repo))
       endif
+    endfor
 
-      call system('curl -Lso ~/.vim/autoload/pathogen.vim https://raw.github.com/tpope/vim-pathogen/HEAD/autoload/pathogen.vim')
-      let cwd = getcwd()
-      execute 'lcd' expand('~/.vim/bundle')
-      for repo in repos
-        if exec_git
-          call system(printf('git clone %s.git', repo))
-          call system('git clone https://github.com/Shougo/unite.vim.git')
-        else
-          call system(printf('curl -L %s/tarball/master | tar zxv', repo))
-        endif
-      endfor
-
-      execute 'lcd' cwd
-    endfunction
-    command! -nargs=0 PluginInstall call s:plugin_install()
-  endif
+    execute 'lcd' cwd
+  endfunction
+  command! -nargs=0 PluginInstall call s:plugin_install()
 endif "}}}
+
 " plugin and colors {{{1
 filetype indent plugin on
 if has('syntax')
@@ -586,7 +509,7 @@ else
   if has('gui_running')
     MyAutoCmd GUIEnter * colorscheme desert256
   else
-    colorscheme desert256
+    colorscheme retrobox
   endif
 endif
 

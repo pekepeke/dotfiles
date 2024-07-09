@@ -63,6 +63,7 @@ doc/tags-ja
 #emacs
 /.emacs.d/cache
 /.emacs.d/elisp
+/.emacs.d/places
 *.elc
 
 # freemind
