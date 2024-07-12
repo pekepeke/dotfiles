@@ -479,13 +479,16 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
     bindkey -v '^V;' zaw
     function _zi() { zi }; zle -N _zi
     function _cheat() {
+      local _CAT=cat
+      is_exec bat && _CAT=bat
       local selected="$(find ~/.zsh/opt/cheat -type f | \
-        fzf --preview 'cat {}' --bind 'enter:become(echo cat {})' --bind 'ctrl-l:become(echo less {})' --bind 'ctrl-y:execute-silent:(cat {} | pbcopy-wrapper)')"
+        fzf --preview "$_CAT {}" --bind "enter:become(echo $_CAT {})" --bind 'ctrl-l:become(echo cat {})' --bind 'ctrl-y:execute-silent:(cat {} | pbcopy-wrapper)')"
       if [ "$selected" != "" ] ;then
         if [ "$selected[1,4]" == "less" ]; then
           eval $selected
         else
-          eval $selected | fzf --bind 'enter:become(echo {} | pbcopy-wrapper)'
+          eval $selected
+          # | fzf --multi --bind 'enter:become(echo {} | pbcopy-wrapper)'
         fi
       fi
     }

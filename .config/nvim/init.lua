@@ -1,3 +1,5 @@
+require('my/disable')
 require('my/settings')
+require('my/commands')
 require('my/keymaps')
 require('my/plugins')

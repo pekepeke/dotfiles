@@ -3,10 +3,13 @@ local project = require('my/project')
 local HOME = util.HOME
 local VIM_CACHE = util.VIM_CACHE
 local TEMP = util.TEMP
+local is_win = util.is_win
 local mkdir = util.mkdir
 local myautocmd = util.myautocmd
 local autochdir = project.autochdir
 
+vim.cmd(string.format('let $VIM_CACHE="%s"', VIM_CACHE))
+vim.cmd(string.format('let $VIM_REFDOC="%s"', vim.fn.expand('~/.local/share/vim/docs')))
 util.initAutocmdGroup()
 
 myautocmd({'BufEnter', 'BufRead'}, {
@@ -147,3 +150,29 @@ vim.opt.background=dark
 
 vim.opt.grepprg='rg'
 vim.opt.grepformat='%f:%l:%m'
+
+vim.opt.laststatus=2
+vim.opt.viewoptions='cursor'
+
+if is_win then
+	myautocmd({'BufWritePost'}, {
+		pattern = {"*"},
+		callback = function(ev)
+			if string.find(vim.fn.getline('1'), '^#!') then
+				vim.fn.execute('silent! chmod +x')
+			end
+		end
+	})
+end
+myautocmd({'BufWritePre'}, {
+	pattern = {'*'},
+	callback = function(ev)
+		local dir = vim.fn.expand('%:p:h')
+		if vim.fn.isdirectory(dir) == 0
+			and string.find(vim.fn.input(string.format('"%s" does not exist. Create? [y/N]', dir)), '^ye?s?$') == 1 then
+			vim.fn.mkdir(dir, 'p')
+		end
+	end
+})
+
+

@@ -34,8 +34,9 @@ main() {
       $VIM "$MEMO_DIR/$FNAME"
       ;;
     find|search)
-      selected="$(rg -n "$@" "$MEMO_DIR" | fzf)"
-      [ ! -z "$selected" ] && view +`echo "$selected" | cut -d : -f 2` `echo "$selected" | cut -d : -f 1`
+      selected="$(rg -n "$@" "$MEMO_DIR" | fzf --delimiter=: --preview 'bat -r 0:100 {1} --highlight-line {2}')"
+      [ ! -z "$selected" ] && bat `echo "$selected" | cut -d : -f 1`
+      # [ ! -z "$selected" ] && view +`echo "$selected" | cut -d : -f 2` `echo "$selected" | cut -d : -f 1`
       ;;
     help)
       usage;;

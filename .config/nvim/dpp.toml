@@ -1,3 +1,4 @@
+# vim:fdm=manual sw=2 ts=2 ft=toml expandtab:
 [ftplugin] # Execute after ftplugin.
 # [[plugins]]
 # repo = 'p00f/nvim-ts-rainbow'
@@ -128,7 +129,7 @@ lua <<EOF
 require('sidebar-nvim').setup{
   open = true,
   side = "right",
-  initial_width = 35,
+  initial_width = 25,
 }
 EOF
 '''
@@ -312,41 +313,41 @@ require('nvim_context_vt').setup {
 
   -- Custom virtual text node parser callback
   -- Default: nil
-  custom_parser = function(node, ft, opts)
-    local utils = require('nvim_context_vt.utils')
+  -- custom_parser = function(node, ft, opts)
+  --   local utils = require('nvim_context_vt.utils')
 
-    if not opts then return nil end
-    -- If you return `nil`, no virtual text will be displayed.
-    if node:type() == 'function' then
-      return nil
-    end
+  --   if not opts then return nil end
+  --   -- If you return `nil`, no virtual text will be displayed.
+  --   if node:type() == 'function' then
+  --     return nil
+  --   end
 
-    -- This is the standard text
-    return opts.prefix .. ' ' .. utils.get_node_text(node)[1]
-  end,
+  --   -- This is the standard text
+  --   return opts.prefix .. ' ' .. utils.get_node_text(node)[1]
+  -- end,
 
   -- Custom node validator callback
   -- Default: nil
-  custom_validator = function(node, ft, opts)
-    -- Internally a node is matched against min_rows and configured targets
-    local default_validator = require('nvim_context_vt.utils').default_validator
+  -- custom_validator = function(node, ft, opts)
+  --   -- Internally a node is matched against min_rows and configured targets
+  --   local default_validator = require('nvim_context_vt.utils').default_validator
 
-    if default_validator(node, ft) then
-      -- Custom behaviour after using the internal validator
-      if node:type() == 'function' then
-        return false
-      end
-    end
+  --   if default_validator(node, ft) then
+  --     -- Custom behaviour after using the internal validator
+  --     if node:type() == 'function' then
+  --       return false
+  --     end
+  --   end
 
-    return true
-  end,
+  --   return true
+  -- end,
 
   -- Custom node virtual text resolver callback
   -- Default: nil
-  custom_resolver = function(nodes, ft, opts)
-    -- By default the last node is used
-    return nodes[#nodes]
-  end,
+  -- custom_resolver = function(nodes, ft, opts)
+  --   -- By default the last node is used
+  --   return nodes[#nodes]
+  -- end,
 }
 EOF
 '''
@@ -839,9 +840,21 @@ repo = 'norcalli/nvim-colorizer.lua'
 hook_add = '''
 lua <<EOF
 require('colorizer').setup {
-  RRGGBBAA = true,
-  rgb_fn = true,
-  hsl_fn = true,
+  css = {
+    RRGGBBAA = true,
+    rgb_fn = true,
+    hsl_fn = true,
+    enable_tailwind = true,
+  }, 
+  javascript = {
+    enable_tailwind = true,
+  },
+  javascriptreact = {
+    enable_tailwind = true,
+  },
+  typescriptreact = {
+    enable_tailwind = true,
+  }, 
 }
 EOF
 '''

@@ -810,10 +810,12 @@ set viewoptions=cursor
 " setfiletype {{{2
 " alias
 MyAutoCmd FileType js set filetype=javascript
+MyAutoCmd FileType ts set filetype=typescript
 MyAutoCmd FileType rb set filetype=ruby
 MyAutoCmd FileType pl set filetype=perl
 MyAutoCmd FileType py set filetype=python
 MyAutoCmd FileType md set filetype=markdown
+MyAutoCmd FileType hs set filetype=haskell
 MyAutoCmd FileType docker set filetype=dockerfile
 " MyAutoCmd BufNewFile,BufRead *.sql set filetype=mysql
 MyAutoCmd BufNewFile,BufRead *.io set filetype=io

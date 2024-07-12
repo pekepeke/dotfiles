@@ -18,7 +18,7 @@ end
 local function noremap(mode, lhs, rhs, opts)
 	if not opts then opts = {} end
 	local options = vim.tbl_extend("force", {noremap = true}, opts)
-	vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+	vim.keymap.set(mode, lhs, rhs, options)
 end
 local function myautocmd(event, opts)
 	-- error(vim.inspect(event)..vim.inspect(opts))
@@ -30,7 +30,7 @@ local function lazy(callback)
 		pattern = '*',
 		callback = callback,
 	}
-	myautocmd('VimEnter', opts)
+	myautocmd({'VimEnter'}, opts)
 end
 
 -- vim.api.nvim_create_autocmd('')
@@ -38,6 +38,8 @@ local util = {
 	HOME = HOME,
 	VIM_CACHE = VIM_CACHE,
 	TEMP = TEMP,
+	is_win = vim.fn.has('win16')==1 or vim.fn.has('win32')==1 or vim.fn.has('win64')==1,
+	is_mac = vim.fn.has('mac')==1 or vim.fn.has('macunix')==1 or vim.fn.has('gui_mac')==1,
 	mkdir = function (dir)
 		if vim.fn.isdirectory(dir) ~= 0 then
 			vim.fn.mkdir(dir, 'p')

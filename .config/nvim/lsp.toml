@@ -1,0 +1,130 @@
+# vim:fdm=marker sw=2 ts=2 ft=toml expandtab:
+[[plugins]]
+repo = "neovim/nvim-lspconfig"
+[[plugins]]
+repo = "williamboman/mason-lspconfig.nvim"
+[[plugins]]
+repo = "williamboman/mason.nvim"
+hook_add = '''
+lua <<EOF
+require("mason").setup()
+require("mason-lspconfig").setup()
+
+local registry = require "mason-registry"
+    local packages = {
+      "typescript-language-server",
+    }
+    registry.refresh(function ()
+      for _, pkg_name in ipairs(packages) do
+        local pkg = registry.get_package(pkg_name)
+        if not pkg:is_installed() then
+            pkg:install()
+        end
+      end
+    end)
+require("lspconfig").tsserver.setup {}
+EOF
+'''
+[[plugins]]
+repo = 'hrsh7th/cmp-nvim-lsp'
+[[plugins]]
+repo = 'hrsh7th/cmp-buffer'
+[[plugins]]
+repo = 'hrsh7th/cmp-path'
+[[plugins]]
+repo = 'hrsh7th/cmp-cmdline'
+[[plugins]]
+repo = 'L3MON4D3/LuaSnip'
+rev = "v2.*"
+build = "make install_jsregexp"
+hook_add = '''
+lua <<EOF
+require("luasnip.loaders.from_snipmate").lazy_load({paths = "~/.vim/snippets"})
+EOF
+'''
+[[plugins]]
+repo = 'saadparwaiz1/cmp_luasnip'
+[[plugins]]
+repo = "zbirenbaum/copilot.lua"
+[[plugins]]
+repo = "zbirenbaum/copilot-cmp"
+# [[plugins]]
+# repo = 'hrsh7th/cmp-copilot'
+[[plugins]]
+repo = 'hrsh7th/nvim-cmp'
+hook_add = '''
+lua <<EOF
+-- require('copilot').setup()
+-- require('copilot').setup {
+--   suggestion = { enabled = true },
+--   panel= { enabled = true },
+-- }
+-- require('copilot_cmp').setup()
+local cmp = require('cmp')
+cmp.setup {
+  window = {
+    documentation = cmp.config.window.bordered(),
+  },
+  preselect = cmp.PreselectMode.None,
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-p>'] = cmp.mapping.select_prev_item(),
+    ['<C-n>'] = cmp.mapping.select_next_item(),
+    ['<Tab>'] = cmp.mapping.complete(),
+    ['<CR>'] = cmp.mapping.confirm({select = true}),
+    -- ['<C-l>'] = cmp.mapping(function(_)
+    --   vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true), 'n', true)
+    -- end)
+
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'luasnip' },
+    { name = 'buffer' },
+    { name = 'path' },
+    -- { name = "copilot" },
+    -- { name = "crates" },
+  }),
+  view = {
+    entries = 'native',
+  },
+  expand = function(args)
+    -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+    require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+  end,
+}
+cmp.setup.cmdline({ '/', '?' }, {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' },
+  },
+})
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' },
+    { name = 'cmdline' },
+  }),
+  matching = { disallow_symbol_nonprefix_matching = false }
+})
+
+-- Set up lspconfig.
+-- local capabilities = require('cmp_nvim_lsp').default_capabilities()
+-- local lspconfig = require('lspconfig')
+-- for _, server in pairs(['typescript']) do
+--   local ret, err = pcall(function()
+--     lspconfig[server].setup { capabilities = capabilities }
+--   end)
+--   if err then
+--     print(err)
+--   end
+-- end
+-- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+-- require('lspconfig')['<YOUR_LSP_SERVER>'].setup {
+--   capabilities = capabilities
+-- }
+EOF
+'''

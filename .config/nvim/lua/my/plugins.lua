@@ -68,4 +68,6 @@ vim.api.nvim_create_user_command('DppRecache', function() dpp.async_ext_action('
 -- endif
 vim.cmd('syntax enable')
 vim.cmd('filetype plugin indent on')
-
+vim.cmd([[
+	colorscheme Monokai-Refined
+]])

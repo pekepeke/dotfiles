@@ -1,0 +1,511 @@
+# vim:fdm=marker sw=2 ts=2 ft=toml expandtab:
+[[plugins]]
+repo = 'sgur/vim-editorconfig'
+[[plugins]]
+repo = 'vim-scripts/sudo.vim'
+hook_add = '''
+if d#is_mac() && has('gui_running') && d#is_installed('sudo-gui.vim')
+  command! -bang SW SudoWriteMacGUI
+else
+  command! SW w sudo:%
+  command! SR read sudo:%
+endif
+'''
+
+[[plugins]]
+repo = 'andymass/vim-matchup'
+hook_add = '''
+let g:loaded_matchit = 1
+'''
+[[plugins]]
+repo = 'tpope/vim-unimpaired'
+[[plugins]]
+repo = 'vim-scripts/diffchar.vim'
+[[plugins]]
+repo = 'rhysd/devdocs.vim'
+hook_add = '''
+let g:devdocs_filetype_map = {
+  \   'javascript.jsx': 'react',
+  \ }
+command! -nargs=* DevDocsDocker call devdocs#open_doc(<q-args>, 'docker')
+command! -nargs=* DevDocsRuby call devdocs#open_doc(<q-args>, 'ruby')
+command! -nargs=* DevDocsRails call devdocs#open_doc(<q-args>, 'rails')
+command! -nargs=* DevDocsBootstrap call devdocs#open_doc(<q-args>, 'bootstrap')
+command! -nargs=* DevDocsReact call devdocs#open_doc(<q-args>, 'react')
+command! -nargs=* DevDocsLaravel call devdocs#open_doc(<q-args>, 'laravel')
+'''
+[[plugins]]
+repo = 'thinca/vim-ref'
+on_cmd = ['Ref']
+# on_map = ['K', '<Plug>']
+on_map = '<Plug>'
+hook_add = '''
+
+let g:ref_open = '8split'
+let g:ref_cache_dir = $VIM_CACHE . '/vim-ref'
+if !exists('g:ref_detect_filetype')
+  let g:ref_detect_filetype = { '_':'webdict' }
+endif
+let g:ref_use_vimproc = 0
+let g:ref_alc_use_cache = 1
+let g:ref_alc_start_linenumber = 43
+
+if d#is_win()
+  " for w3m
+  let $LANG='C.UTF-8'
+  let g:ref_source_webdict_encoding = 'utf-8'
+endif
+
+let g:ref_source_webdict_sites = {
+\ 'alc' : {
+\   'url': 'http://eow.alc.co.jp/%s',
+\   'keyword_encoding,': 'utf-8',
+\   'cache': 1,
+\ },
+\ 'weblio': {
+\   'url': 'http://ejje.weblio.jp/content/%s',
+\   'keyword_encoding': 'utf-8',
+\   'cache': 1,
+\ },
+\ 'wikipedia': {
+\   'url': 'http://ja.wikipedia.org/wiki/%s',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '0',
+\ },
+\ 'wikipedia:en': {
+\   'url': 'http://en.wikipedia.org/wiki/%s',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '0',
+\ },
+\ 'wiktionary': {
+\   'url': 'http://ja.wiktionary.org/wiki/%s',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '0',
+\ },
+\ 'ja_en': {
+\   'url': 'http://translate.google.co.jp/m?hl=ja\&sl=ja\&tl=en\&ie=UTF-8\&prev=_m\&q=%s',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '0',
+\ },
+\ 'en_ja': {
+\   'url': 'http://translate.google.co.jp/m?hl=ja\&sl=en\&tl=ja\&ie=UTF-8\&prev=_m\&q=%s',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '0',
+\ },
+\ 'ruby_toolbox': {
+\   'url': 'https://www.ruby-toolbox.com/search?utf8=%%E2%%9C%%93\&q=%s',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '0',
+\ },
+\ 'rurema': {
+\   'url': 'http://doc.ruby-lang.org/ja/search/query:%s/',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '0',
+\ },
+\ 'rubygems': {
+\   'url': 'http://rubygems.org/search?query=%s',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '0',
+\ },
+\ 'node_toolbox': {
+\   'url': 'http://nodetoolbox.com/search?q=%s',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '0',
+\ },
+\ 'chef_cookbooks': {
+\   'url': 'http://community.opscode.com/search?query=%s\&scope=cookbook',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '0',
+\ },
+\ 'underscore.js': {
+\   'url': 'http://underscorejs.org/?q=%s',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '1',
+\ },
+\ 'lodash.js': {
+\   'url': 'http://lodash.com/docs?q=%s',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '1',
+\ },
+\ 'cpan': {
+\   'url': 'http://search.cpan.org/search?q=%s;s={startIndex}',
+\   'keyword_encoding': 'utf-8',
+\   'cache': '0',
+\ },
+\ }
+function! g:ref_source_webdict_sites.alc.filter(output)
+  return join(split(a:output, "\n")[38:], "\n")
+endfunction
+function! g:ref_source_webdict_sites.weblio.filter(output)
+  return join(split(a:output, "\n")[53 :], "\n")
+endfunction
+function! g:ref_source_webdict_sites.wikipedia.filter(output)
+  return join(split(a:output, "\n")[17 :], "\n")
+endfunction
+function! g:ref_source_webdict_sites.wiktionary.filter(output)
+  return join(split(a:output, "\n")[38:], "\n")
+endfunction
+function! g:ref_source_webdict_sites.rurema.filter(output)
+  return substitute(a:output, '.*検索結果', '', '')
+endfunction
+function! g:ref_source_webdict_sites.node_toolbox.filter(output)
+  return join(split(a:output, "\n")[34 :], "\n")
+endfunction
+function! g:ref_source_webdict_sites.chef_cookbooks.filter(output)
+  return join(split(a:output, "\n")[18 :], "\n")
+endfunction
+
+" webdict default
+let g:ref_source_webdict_sites.default = 'alc'
+
+" langs
+let g:ref_source_webdict_sites.default = 'alc'
+let g:ref_phpmanual_path=$VIM_REFDOC.'/phpman/'
+let g:ref_javadoc_path = $VIM_REFDOC.'/jdk-6-doc/ja'
+let g:ref_jquery_path = $VIM_REFDOC.'/jqapi-latest/docs'
+let g:ref_html_path=$VIM_REFDOC.'/htmldoc/www.aptana.com/reference/html/api'
+let g:ref_html5_path=$VIM_REFDOC.'/html5doc/dist'
+let g:ref_jscore_path=$VIM_REFDOC.'/jscore/www.aptana.com/reference/html/api'
+let g:ref_jsdom_path=$VIM_REFDOC.'/jscore/www.aptana.com/reference/html/api'
+"let g:ref_jquery_use_cache = 1
+let g:ref_nodejsdoc_dir=$VIM_REFDOC.'/nodejs/doc'
+
+if executable('ruby') && executable('rurema')
+  let g:ref_refe_cmd     = "rurema"
+  let g:ref_refe_version = 2
+endif
+if d#is_win()
+  let g:ref_refe_encoding = 'cp932'
+endif
+let g:ref_perldoc_complete_head = 1
+
+if d#is_installed('vim-altercmd')
+  LCAlias Ref
+  Alias rd Ref ri
+  Alias pd Ref perldoc
+  Alias phd Ref phpmanual
+  Alias pyd Ref pydoc
+  Alias jsd Ref jsref
+  Alias jqd Ref jquery
+  Alias cppd Ref phpmanual
+  Alias nd Ref nodejs
+  Alias webd[ict] Ref webdict
+  Alias mr Ref webdict
+  Alias al[c] Ref webdict alc
+endif
+
+augroup vimrc-plugin-ref
+  autocmd!
+  autocmd FileType ruby.rspec,php.phpunit,python.nosetests,perl.prove call s:testcase_lazy_init()
+augroup END
+
+function! s:testcase_lazy_init()
+  call ref#register_detection('ruby.rspec', 'refe', 'append')
+  call ref#register_detection('php.phpunit', 'phpmanual', 'append')
+  call ref#register_detection('python.nosetests', 'pydoc', 'append')
+  call ref#register_detection('perl.prove', 'perldoc', 'append')
+  augroup vimrc-plugin-ref
+    autocmd!
+  augroup END
+endfunction
+'''
+[[plugins]]
+repo = 'pekepeke/ref-javadoc'
+[[plugins]]
+repo = 'soh335/vim-ref-jquery'
+[[plugins]]
+repo = 'taka84u9/vim-ref-ri'
+[[plugins]]
+repo = 'mfumi/ref-dicts-en'
+
+[[plugins]]
+repo = 'vim-ruby/vim-ruby'
+[[plugins]]
+repo = 'tpope/vim-rails'
+hook_add = '''
+  let g:rails_some_option = 1
+  let g:rails_level = 4
+  let g:rails_syntax = 1
+  let g:rails_statusline = 1
+  let g:rails_url='http://localhost:3000'
+  let g:rails_subversion=0
+  let g:rails_default_file='config/database.yml'
+
+  function! s:vimrc_rails_init()
+    nnoremap <buffer>[!space]vv :Rview<CR>
+    nnoremap <buffer>[!space]cc :Rcontroller<CR>
+    nnoremap <buffer>[!space]mm :Rmodel<Space>
+    nnoremap <buffer>[!space]pp :Rpreview<CR>
+
+    nnoremap <buffer> [!space]r :R<CR>
+    nnoremap <buffer> [!space]a :A<CR>
+
+    Rnavcommand api app/controllers/api -glob=**/* -suffix=_controller.rb
+    " Rnavcommand tmpl app/controllers/tmpl -glob=**/* -suffix=_controller.rb
+    Rnavcommand config config   -glob=*.*  -suffix= -default=routes.rb
+    nnoremap <buffer>[!app]v  :<C-U>Unite rails/view<CR>
+    nnoremap <buffer>[!app]m  :<C-U>Unite rails/model<CR>
+    nnoremap <buffer>[!app]c  :<C-U>Unite rails/controller<CR>
+    nnoremap <buffer>[!app]C  :<C-U>Unite rails/config<CR>
+    nnoremap <buffer>[!app]s  :<C-U>Unite rails/spec<CR>
+    nnoremap <buffer>[!app]m  :<C-U>Unite rails/db -input=migrate<CR>
+    nnoremap <buffer>[!app]l  :<C-U>Unite rails/lib<CR>
+
+    " nnoremap <buffer><expr><C-H>g     ':e '.b:rails_root.'/Gemfile<CR>'
+    " nnoremap <buffer><expr><C-H>r     ':e '.b:rails_root.'/config/routes.rb<CR>'
+    " nnoremap <buffer><expr><C-H>se    ':e '.b:rails_root.'/db/seeds.rb<CR>'
+    " nnoremap <buffer><C-H>ra          :<C-U>Unite rails/rake<CR>
+    " nnoremap <buffer><C-H>h           :<C-U>Unite rails/heroku<CR>
+  endfunction
+
+  MyAutoCmd User Rails call s:vimrc_rails_init()
+'''
+[[plugins]]
+repo = 'skwp/vim-rspec'
+on_cmd = ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
+[[plugins]]
+repo = 'tpope/vim-bundler'
+[[plugins]]
+repo = 'tpope/vim-cucumber'
+[[plugins]]
+repo = 'yaymukund/vim-rabl'
+[[plugins]]
+repo = 'vim-scripts/eruby.vim'
+[[plugins]]
+repo = 'hashivim/vim-vagrant'
+[[plugins]]
+repo = 't9md/vim-chef'
+[[plugins]]
+repo = 'rodjek/vim-puppet'
+[[plugins]]
+repo = 'joker1007/vim-ruby-heredoc-syntax'
+hook_add = '''
+  let g:ruby_heredoc_syntax_filetypes = {
+    \  "sql" : {
+    \    "start" : "SQL",
+    \ },
+    \ }
+'''
+[[plugins]]
+repo = 'othree/html5.vim'
+hook_add = '''
+let g:event_handler_attributes_complete = 1
+let g:rdfa_attributes_complete = 1
+let g:microdata_attributes_complete = 1
+let g:aria_attributes_complete = 1
+'''
+[[plugins]]
+repo = 'tpope/vim-haml'
+[[plugins]]
+repo = 'digitaltoad/vim-jade'
+[[plugins]]
+repo = 'mustache/vim-mustache-handlebars'
+[[plugins]]
+repo = 'hail2u/vim-css3-syntax'
+[[plugins]]
+repo = 'groenewege/vim-less'
+[[plugins]]
+repo = 'wavded/vim-stylus'
+[[plugins]]
+repo = 'slim-template/vim-slim'
+[[plugins]]
+repo = 'isRuslan/vim-es6'
+[[plugins]]
+repo = 'pangloss/vim-javascript'
+[[plugins]]
+repo = 'mxw/vim-jsx'
+[[plugins]]
+repo = 'othree/javascript-libraries-syntax.vim'
+[[plugins]]
+repo = 'claco/jasmine.vim'
+[[plugins]]
+repo = 'elzr/vim-json'
+[[plugins]]
+repo = 'Quramy/vison'
+on_cmd = [ 'VisonSetup', 'Vison', 'VisonRemoveSchema', 'VisonRegisterSchema']
+
+[[plugins]]
+repo = 'chikatoike/sourcemap.vim'
+on_cmd = [
+	'SourceMapAddMap', 'SourceMapSwitch', 'SourceMapConvertQuickfixToOriginal',
+   'SourceMapConvertLocListToOriginal', 'SourceMapAddOriginalToQuickfix',
+   'SourceMapAddOriginalToLocList',
+]
+[[plugins]]
+repo = 'briancollins/vim-jst'
+
+[[plugins]]
+repo = 'vim-scripts/Dart'
+[[plugins]]
+repo = 'jdonaldson/vaxe'
+on_ft = ['haxe','hxml','nmml']
+[[plugins]]
+repo = 'kchmck/vim-coffee-script'
+[[plugins]]
+repo = 'leafgarland/typescript-vim'
+[[plugins]]
+repo = 'peitalin/vim-jsx-typescript'
+[[plugins]]
+repo = 'purescript-contrib/purescript-vim'
+[[plugins]]
+repo = 'klen/python-mode'
+hook_add = '''
+let g:pymode_rope = 1
+let g:pymode_rope_lookup_project = 1
+let g:pymode_rope_regenerate_on_write = 0
+let g:pymode_rope_goto_def_newwin = 'new'
+let g:pymode_rope_completion = 0
+let g:pymode_rope_complete_on_dot = 0
+let g:pymode_run = 0
+let g:pymode_doc = 0
+let g:pymode_lint = 0
+let g:pymode_virtualenv = 0
+let g:pymode_rope_global_prefix = '[!rope]'
+" let g:vimrc_pymode_rope_project_dirprefixes = [expand("~/project")]
+'''
+[[plugins]]
+repo = 'Vimjas/vim-python-pep8-indent'
+[[plugins]]
+repo = 'lambdalisue/vim-python-virtualenv'
+[[plugins]]
+repo = 'gerardo/vim-django-support'
+[[plugins]]
+repo = 'heavenshell/vim-pydocstring'
+[[plugins]]
+repo = 'Glench/Vim-Jinja2-Syntax'
+[[plugins]]
+repo = 'vim-perl/vim-perl'
+[[plugins]]
+repo = 'moznion/vim-cpanfile'
+[[plugins]]
+repo = 'motemen/xslate-vim'
+[[plugins]]
+repo = 'y-uuki/perl-local-lib-path.vim'
+[[plugins]]
+repo = 'vim-scripts/DoxygenToolkit.vim'
+[[plugins]]
+repo = 'peterhoeg/vim-qml'
+[[plugins]]
+repo = 'OrangeT/vim-csharp'
+[[plugins]]
+repo = 'vim-scripts/applescript.vim'
+[[plugins]]
+repo = 'PProvost/vim-ps1'
+[[plugins]]
+repo = 'hachibeeDI/vim-vbnet'
+on_ft = 'vb'
+[[plugins]]
+repo = 'kamichidu/vim-javaclasspath'
+[[plugins]]
+repo = 'vim-scripts/groovyindent-unix'
+[[plugins]]
+repo = 'vim-scripts/groovy.vim'
+[[plugins]]
+repo = 'tfnico/vim-gradle'
+[[plugins]]
+repo = 'martinda/Jenkinsfile-vim-syntax'
+[[plugins]]
+repo = 'lepture/vim-velocity'
+[[plugins]]
+repo = 'derekwyatt/vim-scala'
+on_ft = 'scala'
+[[plugins]]
+repo = 'fatih/vim-go'
+on_ft = ['go']
+[[plugins]]
+repo = 'undx/vim-gocode'
+[[plugins]]
+repo = 'tpope/vim-markdown'
+[[plugins]]
+repo = 'nelstrom/vim-markdown-folding'
+[[plugins]]
+repo = 'tani/vim-glance'
+hook_add = '''
+" \   'https://esm.sh/markdown-it-markmap',
+let g:glance#markdown_plugins = [
+\   'https://esm.sh/markdown-it-emoji',
+\   'https://esm.sh/markdown-it-mermaid',
+\   'https://esm.sh/markdown-it-plantuml',
+\    'https://esm.sh/markdown-it-highlightjs',
+\ ]
+'''
+[[plugins]]
+repo = 'timcharper/textile.vim'
+[[plugins]]
+repo = 'aklt/plantuml-syntax'
+[[plugins]]
+repo = 'mozamimy/nymphia.vim'
+[[plugins]]
+repo = 'moro/vim-review'
+[[plugins]]
+repo = 'nvie/vim-rst-tables'
+[[plugins]]
+repo = 'vim-scripts/sequence'
+[[plugins]]
+repo = 'neovimhaskell/haskell-vim'
+[[plugins]]
+repo = 'dag/vim2hs'
+[[plugins]]
+  repo = 'eagletmt/ghcmod-vim'
+[[plugins]]
+  repo = 'elixir-lang/vim-elixir'
+[[plugins]]
+  repo = 'ujihisa/ref-hoogle'
+[[plugins]]
+repo = 'StanAngeloff/php.vim'
+[[plugins]]
+repo = 'noahfrederick/vim-laravel'
+[[plugins]]
+repo = 'jwalton512/vim-blade'
+[[plugins]]
+repo = 'honza/dockerfile.vim'
+[[plugins]]
+repo = 'chase/vim-ansible-yaml'
+[[plugins]]
+repo = 'MicahElliott/Rocannon'
+[[plugins]]
+repo = 'cespare/vim-toml'
+[[plugins]]
+repo = 'xolox/vim-misc'
+[[plugins]]
+repo = 'vim-scripts/httplog'
+[[plugins]]
+repo = 'vim-scripts/syslog-syntax-file'
+[[plugins]]
+repo = 'uarun/vim-protobuf'
+[[plugins]]
+repo = 'sophacles/vim-processing'
+[[plugins]]
+repo = 'pekepeke/ref-processing-vim'
+on_ft = 'processing'
+[[plugins]]
+repo = 'sjl/strftimedammit.vim'
+[[plugins]]
+repo = 'tangledhelix/vim-octopress'
+[[plugins]]
+repo = 'jcfaria/Vim-R-plugin'
+on_ft = 'r'
+[[plugins]]
+repo = 'qqshfox/vim-tmux'
+[[plugins]]
+repo = 'vim-scripts/nginx.vim'
+[[plugins]]
+repo = 'smerrill/vcl-vim-plugin'
+[[plugins]]
+repo = 'ksauzz/haproxy.vim'
+# [[plugins]]
+# repo = 'empanda/vim-varnish.vim'
+[[plugins]]
+repo = 'glidenote/keepalived-syntax.vim'
+[[plugins]]
+repo = 'dag/vim-fish'
+# repo = 'Shougo/vim-nyaos'
+[[plugins]]
+repo = 'jparise/vim-graphql'
+[[plugins]]
+repo = 'skanehira/denops-docker.vim'
+[[plugins]]
+repo = 'skanehira/k8s.vim'
+[[plugins]]
+repo = 'skanehira/denops-graphql.vim'
+

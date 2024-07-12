@@ -1,0 +1,53 @@
+# vim:fdm=marker sw=2 ts=2 ft=toml expandtab:
+[[plugins]]
+repo = 'nvim-telescope/telescope-ui-select.nvim'
+[[plugins]]
+repo = "fdschmidt93/telescope-egrepify.nvim"
+[[plugins]]
+repo = 'nvim-telescope/telescope.nvim'
+hook_add = '''
+lua <<EOF
+local telescope = require("telescope")
+local actions = require('telescope.actions')
+
+telescope.load_extension("ui-select")
+telescope.setup {
+  pickers = {
+    live_grep = {
+      mappings = {
+        i = {
+          ['<C-o>'] = actions.send_to_qflist + actions.open_qflist,
+          ['<C-l>'] = actions.send_to_loclist + actions.open_loclist,
+        },
+      },
+    },
+  },
+  extensions = {
+    ['ui-select'] = {
+      require('telescope.themes').get_dropdown({})
+    }
+  }
+}
+local function egrepify()
+  require('telescope').extensions.egrepify.egrepify({})
+end
+
+local builtin = require('telescope.builtin')
+-- local nmap = require('my/util').nmap
+local nnoremap = require('my/util').nnoremap
+nnoremap('ff', 'f')
+nnoremap('fj', builtin.buffers)
+nnoremap('fl', builtin.find_files)
+nnoremap('fh', builtin.help_tags)
+nnoremap('fgr', builtin.live_grep)
+nnoremap('fgd', builtin.diagnostics)
+nnoremap('fgl', builtin.current_buffer_fuzzy_find)
+nnoremap('fgs', builtin.lsp_document_symbols)
+nnoremap('fe', builtin.resume)
+nnoremap('fge', builtin.resume)
+nnoremap('fhc', builtin.commands)
+nnoremap('fm', builtin.oldfiles)
+nnoremap('fgr', egrepify)
+
+EOF
+'''

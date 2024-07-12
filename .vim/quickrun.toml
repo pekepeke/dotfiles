@@ -453,3 +453,166 @@ repo = 'manicmaniac/vim-quickrun-qo'
 # [[plugins]]
 # repo = 'tokorom/vim-quickrun-xctool'
 # repo = "osyo-manga/unite-quickrun_config"
+[[plugin]]
+repo = 'pekepeke/quicklearn'
+hook_add = '''
+let g:quicklearn = get(g:, 'quicklearn', {})
+call extend(g:quicklearn, {
+  \ 'markdown/md2remark/intermediate' : {
+  \   'command' : 'md2remark',
+  \   'exec' : '%c %o %s',
+  \ },
+  \ 'markdown/md2backlog/intermediate' : {
+  \   'command' : 'md2backlog',
+  \   'exec' : '%c %o %s',
+  \ },
+  \ 'markdown/vim-helpfile/intermediate' : {
+  \   'command' : 'vim-helpfile',
+  \   'exec' : '%c %o %s',
+  \ },
+  \ 'markdown/markdown2pod/intermediate' : {
+  \   'command' : 'markdown2pod',
+  \   'exec' : '%c %o %s',
+  \ },
+  \ })
+call extend(g:quicklearn, {
+  \ 'markdown/textile/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t textile %o %s',
+  \ },
+  \ 'markdown/rst/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t rst %o %s',
+  \ },
+  \ 'markdown/html5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t html5 %o %s',
+  \ },
+  \ 'markdown/mediawiki/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t mediawiki %o %s',
+  \ },
+  \ 'markdown/s5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t s5 %o %s',
+  \ },
+  \ 'markdown/revealjs/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t revealjs %o %s',
+  \ },
+  \ 'markdown/dzslides/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t dzslides %o %s',
+  \ },
+  \ 'markdown/slidy/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t slidy %o %s',
+  \ },
+  \ 'markdown/slideous/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t slideous %o %s',
+  \ },
+  \ 'markdown/beamer/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t beamer %o %s',
+  \ },
+  \ 'markdown/latex/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t latex %o %s',
+  \ },
+  \ 'markdown/rtf/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f markdown -t rtf %o %s',
+  \ },
+  \ })
+call extend(g:quicklearn, {
+  \ 'textile/markdown/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t markdown %o %s',
+  \ },
+  \ 'textile/rst/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t rst %o %s',
+  \ },
+  \ 'textile/html5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t html5 %o %s',
+  \ },
+  \ 'textile/mediawiki/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t mediawiki %o %s',
+  \ },
+  \ 'textile/s5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t s5 %o %s',
+  \ },
+  \ 'textile/slidy/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t slidy %o %s',
+  \ },
+  \ 'textile/slideous/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t slideous %o %s',
+  \ },
+  \ 'textile/beamer/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t beamer %o %s',
+  \ },
+  \ 'textile/latex/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t latex %o %s',
+  \ },
+  \ 'textile/rtf/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f textile -t rtf %o %s',
+  \ },
+  \ })
+call extend(g:quicklearn, {
+  \ 'rst/markdown/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t markdown %o %s',
+  \ },
+  \ 'rst/textile/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t textile %o %s',
+  \ },
+  \ 'rst/html5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t html5 %o %s',
+  \ },
+  \ 'rst/mediawiki/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t mediawiki %o %s',
+  \ },
+  \ 'rst/s5/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t s5 %o %s',
+  \ },
+  \ 'rst/slidy/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t slidy %o %s',
+  \ },
+  \ 'rst/slideous/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t slideous %o %s',
+  \ },
+  \ 'rst/beamer/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t beamer %o %s',
+  \ },
+  \ 'rst/latex/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t latex %o %s',
+  \ },
+  \ 'rst/rtf/intermediate': {
+  \   'command': 'pandoc',
+  \   'exec' : '%c -f rst -t rtf %o %s',
+  \ },
+  \ })
+  call extend(g:quicklearn, {
+  \ 'rst/rst2html/intermediate': {
+  \   'command': 'rst2html',
+  \   'exec': '%c %o %s',
+  \ },
+  \ })
+'''

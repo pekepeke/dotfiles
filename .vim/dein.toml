@@ -16,68 +16,24 @@
 # if d#is_installed('vim-smartchr')
 # endif
 # '''
+[[plugins]]
+repo = 'tpope/vim-commentary'
+hook_add = '''
+  xmap gc <Plug>Commentary
+  nmap gc <Plug>Commentary
+  nmap gcc <Plug>CommentaryLine
+  nmap gcu <Plug>CommentaryUndo
+'''
+
+[[plugins]]
+repo = 'tpope/vim-projectionist'
+
 # [[plugins]]
 # repo = 'rhysd/accelerated-jk'
 # on_map = '<Plug>'
 # hook_add = '''
 #   nnoremap <silent>j <Plug>(accelerated_jk_gj)
 #   nnoremap <silent>k <Plug>(accelerated_jk_gk)
-# '''
-# [[plugins]]
-# repo = 'seroqn/vim-hairline'
-# hook_add = '''
-# " https://qiita.com/seroqn/items/31cb24cea3f8a00f3ee7
-# let g:hairline = {}
-# let g:hairline.statusline.left = ["f:mode", "bufname", "H:filetype"]
-# let g:hairline.statusline.left_NC = ["bufname", "filetype"]
-# let g:hairline.statusline.right = [
-# \ "f:qfcount",
-# \ 'f:linestat', 'filetype',
-# \ 'f:charcode', 'f:fileinfo',
-# \ ]
-
-# let g:hairline.part_func = {}
-# function! g:hairline.part_func.mode() abort
-#   let mode = get(
-#   \ {'n': 'NORMAL', 'i': 'INSERT', 'v': 'VISUAL', 'V': 'V-LINE',
-#   \ "\<C-v>": 'V-BLOCK', 't': 'TERMINAL'}, mode(), 'NORMAL')
-#   return mode
-# endfunction
-
-# function! g:hairline.part_func.qfcount() abort
-#     if d#is_installed('ale')
-#       let counts = ale#statusline#Count(bufnr(''))
-
-#       let errors = counts.error + counts.style_error
-#       let warnings = counts.total - errors
-
-#       return counts.total == 0 ? '' : printf('%dW %dE', warnings, errors)
-#     endif
-#     let qflist = getqflist()
-#     let c = len(filter(qflist, 'v:val.lnum != 0'))
-#     unlet qflist
-#     if c <= 0
-#       return ""
-#     endif
-#     return "qf:" . c
-# endfunction
-
-# function! g:hairline.part_func.linestat() abort
-#   " １"
-# endfunction
-# function! g:hairline.part_func.charcode() abort
-#   let ch = matchstr(getline('.'), '.', col('.')-1)
-#   let code = strgetchar(ch, 0)
-#   if code < 0 | return 'NUL' | endif
-#   return printf('0x%0'.(code>256?4:2).'x[%d]', code, code)
-# endfunction
-# function! g:hairline.part_func.fileinfo() abort
-#     let s = empty(&fileformat) ? '' : '['.&fileformat.']'
-#     return &fileencoding . s
-# endfunction
-
-# " function! g:hairline#default.highlight() abort
-# " endfunc
 # '''
 # =======================================================
 [[plugins]]
@@ -383,12 +339,6 @@ map F <Plug>(clever-f-F)
 " map t <Plug>(clever-f-t)
 " map T <Plug>(clever-f-T)
 '''
-# =======================================================
-[[plugins]]
-repo = 'sgur/vim-editorconfig'
-# if has('python')
-#   repo = 'editorconfig/editorconfig-vim'
-# endif
 
 # =======================================================
 [[plugins]]
@@ -461,16 +411,6 @@ endif
 '''
 
 # =======================================================
-[[plugins]]
-repo = 'vim-scripts/sudo.vim'
-hook_add = '''
-if d#is_mac() && has('gui_running') && d#is_installed('sudo-gui.vim')
-  command! -bang SW SudoWriteMacGUI
-else
-  command! SW w sudo:%
-  command! SR read sudo:%
-endif
-'''
 # [[plugins]]
 # repo = 'mattn/startmenu-vim'
 # [[plugins]]
@@ -631,17 +571,10 @@ hook_add = '''
   \    'css': 0,
   \  }}
 '''
-[[plugins]]
-repo = 'andymass/vim-matchup'
-hook_add = '''
-let g:loaded_matchit = 1
-'''
 # repo = 'vim-scripts/matchit.zip'
 # \ ,  { 'on_map' : [['nx', '%']], }
 [[plugins]]
 repo = 'gregsexton/MatchTag'
-[[plugins]]
-repo = 'tpope/vim-unimpaired'
 # [[plugins]]
 # repo = 'vim-scripts/ShowMultiBase'
 # on_cmd = ['ShowMultiBase']
@@ -956,232 +889,11 @@ hook_add = '''
   map ;dj <Plug>DirDiffNext
   map ;dk <Plug>DirDiffPrev
 '''
-[[plugins]]
-repo = 'vim-scripts/diffchar.vim'
 # repo = 'vim-scripts/ConflictDetection'
 # \ 'depends': 'vim-scripts/ingo-library'
 # \ }
 
 # help {{{4
-[[plugins]]
-repo = 'rhysd/devdocs.vim'
-hook_add = '''
-  " let g:devdocs_host = 'localhost:9292'
-  let g:devdocs_filetype_map = {
-    \   'typescript': 'javascript',
-    \   'javascript.jsx': 'react',
-    \ }
-  command! -nargs=* DevDocsDocker call devdocs#open_doc(<q-args>, 'docker')
-  command! -nargs=* DevDocsRuby call devdocs#open_doc(<q-args>, 'ruby')
-  command! -nargs=* DevDocsRails call devdocs#open_doc(<q-args>, 'rails')
-  command! -nargs=* DevDocsBootstrap call devdocs#open_doc(<q-args>, 'bootstrap')
-  command! -nargs=* DevDocsReact call devdocs#open_doc(<q-args>, 'react')
-  command! -nargs=* DevDocsLaravel call devdocs#open_doc(<q-args>, 'laravel')
-'''
-[[plugins]]
-repo = 'thinca/vim-ref'
-on_cmd = ['Ref']
-# on_map = ['K', '<Plug>']
-on_map = '<Plug>'
-hook_add = '''
-
-  let g:ref_open = '8split'
-  let g:ref_cache_dir = $VIM_CACHE . '/vim-ref'
-  if !exists('g:ref_detect_filetype')
-    let g:ref_detect_filetype = {}
-  endif
-  let g:ref_detect_filetype._ = 'webdict'
-  let g:ref_use_vimproc = 0
-  let g:ref_alc_use_cache = 1
-  let g:ref_alc_start_linenumber = 43
-
-  " if vimproc
-  "   let g:ref_use_vimproc = 1
-  " endif
-
-  " options {{{3
-  " webdict {{{4
-  if d#is_win()
-    " for w3m
-    let $LANG='C.UTF-8'
-    let g:ref_source_webdict_encoding = 'utf-8'
-  endif
-  let g:ref_source_webdict_sites = {
-    \ 'alc' : {
-    \   'url': 'http://eow.alc.co.jp/%s',
-    \   'keyword_encoding,': 'utf-8',
-    \   'cache': 1,
-    \ },
-    \ 'weblio': {
-    \   'url': 'http://ejje.weblio.jp/content/%s',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': 1,
-    \ },
-    \ 'wikipedia': {
-    \   'url': 'http://ja.wikipedia.org/wiki/%s',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '0',
-    \ },
-    \ 'wikipedia:en': {
-    \   'url': 'http://en.wikipedia.org/wiki/%s',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '0',
-    \ },
-    \ 'wiktionary': {
-    \   'url': 'http://ja.wiktionary.org/wiki/%s',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '0',
-    \ },
-    \ 'ja_en': {
-    \   'url': 'http://translate.google.co.jp/m?hl=ja\&sl=ja\&tl=en\&ie=UTF-8\&prev=_m\&q=%s',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '0',
-    \ },
-    \ 'en_ja': {
-    \   'url': 'http://translate.google.co.jp/m?hl=ja\&sl=en\&tl=ja\&ie=UTF-8\&prev=_m\&q=%s',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '0',
-    \ },
-    \ 'ruby_toolbox': {
-    \   'url': 'https://www.ruby-toolbox.com/search?utf8=%%E2%%9C%%93\&q=%s',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '0',
-    \ },
-    \ 'rurema': {
-    \   'url': 'http://doc.ruby-lang.org/ja/search/query:%s/',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '0',
-    \ },
-    \ 'rubygems': {
-    \   'url': 'http://rubygems.org/search?query=%s',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '0',
-    \ },
-    \ 'node_toolbox': {
-    \   'url': 'http://nodetoolbox.com/search?q=%s',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '0',
-    \ },
-    \ 'chef_cookbooks': {
-    \   'url': 'http://community.opscode.com/search?query=%s\&scope=cookbook',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '0',
-    \ },
-    \ 'underscore.js': {
-    \   'url': 'http://underscorejs.org/?q=%s',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '1',
-    \ },
-    \ 'lodash.js': {
-    \   'url': 'http://lodash.com/docs?q=%s',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '1',
-    \ },
-    \ 'cpan': {
-    \   'url': 'http://search.cpan.org/search?q=%s;s={startIndex}',
-    \   'keyword_encoding': 'utf-8',
-    \   'cache': '0',
-    \ },
-    \ }
-  function! g:ref_source_webdict_sites.alc.filter(output)
-    return join(split(a:output, "\n")[38:], "\n")
-  endfunction
-  function! g:ref_source_webdict_sites.weblio.filter(output)
-    return join(split(a:output, "\n")[53 :], "\n")
-  endfunction
-  function! g:ref_source_webdict_sites.wikipedia.filter(output)
-    return join(split(a:output, "\n")[17 :], "\n")
-  endfunction
-  function! g:ref_source_webdict_sites.wiktionary.filter(output)
-    return join(split(a:output, "\n")[38:], "\n")
-  endfunction
-  function! g:ref_source_webdict_sites.rurema.filter(output)
-    return substitute(a:output, '.*検索結果', '', '')
-  endfunction
-  function! g:ref_source_webdict_sites.node_toolbox.filter(output)
-    return join(split(a:output, "\n")[34 :], "\n")
-  endfunction
-  function! g:ref_source_webdict_sites.chef_cookbooks.filter(output)
-    return join(split(a:output, "\n")[18 :], "\n")
-  endfunction
-
-  " webdict default {{{4
-  let g:ref_source_webdict_sites.default = 'alc'
-
-  " webdict command {{{4
-  command! -nargs=? -range=0 GTransEnJa call my#buffer#ref_gtrans(<count>, <line1>, <line2>, 'en_ja',<q-args>)
-  command! -nargs=? -range=0 GTransJaEn call my#buffer#ref_gtrans(<count>, <line1>, <line2>, 'ja_en',<q-args>)
-
-  " langs {{{4
-  let g:ref_source_webdict_sites.default = 'alc'
-  let g:ref_phpmanual_path=$VIM_REFDOC.'/phpman/'
-  let g:ref_javadoc_path = $VIM_REFDOC.'/jdk-6-doc/ja'
-  let g:ref_jquery_path = $VIM_REFDOC.'/jqapi-latest/docs'
-  let g:ref_html_path=$VIM_REFDOC.'/htmldoc/www.aptana.com/reference/html/api'
-  let g:ref_html5_path=$VIM_REFDOC.'/html5doc/dist'
-  let g:ref_jscore_path=$VIM_REFDOC.'/jscore/www.aptana.com/reference/html/api'
-  let g:ref_jsdom_path=$VIM_REFDOC.'/jscore/www.aptana.com/reference/html/api'
-  "let g:ref_jquery_use_cache = 1
-  let g:ref_nodejsdoc_dir=$VIM_REFDOC.'/nodejs/doc'
-
-  if executable('ruby') && executable('rurema')
-    let g:ref_refe_cmd     = "rurema"
-    let g:ref_refe_version = 2
-  endif
-  if d#is_win()
-    let g:ref_refe_encoding = 'cp932'
-  else
-    " let g:ref_refe_encoding = 'utf-8'
-    " if exists('$RSENSE_HOME') && executable($RSENSE_HOME.'/bin/rsense')
-    "   let g:ref_refe_rsense_cmd = $RSENSE_HOME.'/bin/rsense'
-    " endif
-  endif
-  let g:ref_perldoc_complete_head = 1
-  " }}}
-
-  if d#is_installed('vim-altercmd')
-    LCAlias Ref
-    " for src in ['refe', 'ri', 'perldoc', 'man'
-    "       \ , 'pydoc', 'jsref', 'jquery'
-    "       \ , 'cppref', 'cheat', 'nodejs', ]
-    "   silent! exe 'Alias' src 'Ref' src
-    " endfor
-    Alias rd Ref ri
-    Alias pd Ref perldoc
-    Alias phd Ref phpmanual
-    Alias pyd Ref pydoc
-    Alias jsd Ref jsref
-    Alias jqd Ref jquery
-    Alias cppd Ref phpmanual
-    Alias nd Ref nodejs
-    Alias webd[ict] Ref webdict
-    Alias mr Ref webdict
-    Alias al[c] Ref webdict alc
-  endif
-
-  augroup vimrc-plugin-ref
-    autocmd!
-    autocmd FileType ruby.rspec,php.phpunit,python.nosetests,perl.prove call s:testcase_lazy_init()
-  augroup END
-
-  function! s:testcase_lazy_init()
-    call ref#register_detection('ruby.rspec', 'refe', 'append')
-    call ref#register_detection('php.phpunit', 'phpmanual', 'append')
-    call ref#register_detection('python.nosetests', 'pydoc', 'append')
-    call ref#register_detection('perl.prove', 'perldoc', 'append')
-    augroup vimrc-plugin-ref
-      autocmd!
-    augroup END
-  endfunction
-'''
-[[plugins]]
-repo = 'pekepeke/ref-javadoc'
-[[plugins]]
-repo = 'soh335/vim-ref-jquery'
-[[plugins]]
-repo = 'taka84u9/vim-ref-ri'
-[[plugins]]
-repo = 'mfumi/ref-dicts-en'
 # repo = 'nishigori/vim-ref-phpunit'
 # repo = 'eiiches/vim-ref-gtkdoc'
 # repo = 'eiiches/vim-ref-info'
@@ -1219,79 +931,11 @@ repo = 'wellle/tmux-complete.vim'
 
 # ruby {{{4
 [[plugins]]
-repo = 'vim-ruby/vim-ruby'
-[[plugins]]
-repo = 'tpope/vim-rails'
-hook_add = '''
-  let g:rails_some_option = 1
-  let g:rails_level = 4
-  let g:rails_syntax = 1
-  let g:rails_statusline = 1
-  let g:rails_url='http://localhost:3000'
-  let g:rails_subversion=0
-  let g:rails_default_file='config/database.yml'
-
-  function! s:vimrc_rails_init()
-    nnoremap <buffer>[!space]vv :Rview<CR>
-    nnoremap <buffer>[!space]cc :Rcontroller<CR>
-    nnoremap <buffer>[!space]mm :Rmodel<Space>
-    nnoremap <buffer>[!space]pp :Rpreview<CR>
-
-    nnoremap <buffer> [!space]r :R<CR>
-    nnoremap <buffer> [!space]a :A<CR>
-
-    Rnavcommand api app/controllers/api -glob=**/* -suffix=_controller.rb
-    " Rnavcommand tmpl app/controllers/tmpl -glob=**/* -suffix=_controller.rb
-    Rnavcommand config config   -glob=*.*  -suffix= -default=routes.rb
-    nnoremap <buffer>[!app]v  :<C-U>Unite rails/view<CR>
-    nnoremap <buffer>[!app]m  :<C-U>Unite rails/model<CR>
-    nnoremap <buffer>[!app]c  :<C-U>Unite rails/controller<CR>
-    nnoremap <buffer>[!app]C  :<C-U>Unite rails/config<CR>
-    nnoremap <buffer>[!app]s  :<C-U>Unite rails/spec<CR>
-    nnoremap <buffer>[!app]m  :<C-U>Unite rails/db -input=migrate<CR>
-    nnoremap <buffer>[!app]l  :<C-U>Unite rails/lib<CR>
-
-    " nnoremap <buffer><expr><C-H>g     ':e '.b:rails_root.'/Gemfile<CR>'
-    " nnoremap <buffer><expr><C-H>r     ':e '.b:rails_root.'/config/routes.rb<CR>'
-    " nnoremap <buffer><expr><C-H>se    ':e '.b:rails_root.'/db/seeds.rb<CR>'
-    " nnoremap <buffer><C-H>ra          :<C-U>Unite rails/rake<CR>
-    " nnoremap <buffer><C-H>h           :<C-U>Unite rails/heroku<CR>
-  endfunction
-
-  MyAutoCmd User Rails call s:vimrc_rails_init()
-'''
-[[plugins]]
 repo = 'basyura/unite-rails'
-[[plugins]]
-repo = 'skwp/vim-rspec'
-on_cmd = ['RunSpec', 'RSpecLine', 'RunSpecs', 'RunSpecLine']
-[[plugins]]
-repo = 'tpope/vim-bundler'
 [[plugins]]
 repo = 'ecomba/vim-ruby-refactoring'
 hook_add = '''
 " let g:ruby_refactoring_map_keys = 0
-'''
-[[plugins]]
-repo = 'tpope/vim-cucumber'
-[[plugins]]
-repo = 'yaymukund/vim-rabl'
-[[plugins]]
-repo = 'vim-scripts/eruby.vim'
-[[plugins]]
-repo = 'hashivim/vim-vagrant'
-[[plugins]]
-repo = 't9md/vim-chef'
-[[plugins]]
-repo = 'rodjek/vim-puppet'
-[[plugins]]
-repo = 'joker1007/vim-ruby-heredoc-syntax'
-hook_add = '''
-  let g:ruby_heredoc_syntax_filetypes = {
-    \  "sql" : {
-    \    "start" : "SQL",
-    \ },
-    \ }
 '''
 
 # [[plugins]]
@@ -1314,14 +958,6 @@ let g:ruby_debugger_no_maps = 1
 
 # html {{{4
 [[plugins]]
-repo = 'othree/html5.vim'
-hook_add = '''
-let g:event_handler_attributes_complete = 1
-let g:rdfa_attributes_complete = 1
-let g:microdata_attributes_complete = 1
-let g:aria_attributes_complete = 1
-'''
-[[plugins]]
 repo = 'heracek/HTML-AutoCloseTag'
 # [[plugins]]
 # repo = 'https://gist.github.com/pekepeke/6576341'
@@ -1331,12 +967,6 @@ repo = 'heracek/HTML-AutoCloseTag'
 # nmap ,/ <Plug>(endtagcomment)
 # '''
 #  templates
-[[plugins]]
-repo = 'tpope/vim-haml'
-[[plugins]]
-repo = 'digitaltoad/vim-jade'
-[[plugins]]
-repo = 'mustache/vim-mustache-handlebars'
 [[plugins]]
 repo = 'chrisgillis/vim-bootstrap3-snippets'
 
@@ -1356,26 +986,12 @@ hook_add = '''
 # repo = 'gorodinskiy/vim-coloresque'
 
 [[plugins]]
-repo = 'hail2u/vim-css3-syntax'
-[[plugins]]
 repo = 'npacker/vim-css3complete'
-[[plugins]]
-repo = 'groenewege/vim-less'
-[[plugins]]
-repo = 'wavded/vim-stylus'
-[[plugins]]
-repo = 'slim-template/vim-slim'
 
 # javascript {{{4
 [[plugins]]
-repo = 'isRuslan/vim-es6'
-[[plugins]]
 repo = 'guileen/simple-javascript-indenter'
 # repo = 'othree/yajs.vim'
-[[plugins]]
-repo = 'pangloss/vim-javascript'
-[[plugins]]
-repo = 'mxw/vim-jsx'
 # repo = 'jsx/vim-jsx'
 # repo = 'moll/vim-node'
 [[plugins]]
@@ -1385,35 +1001,6 @@ hook_add = '''
   let node#suffixesadd = [] " already registered at ftplugin
 '''
 
-[[plugins]]
-repo = 'othree/javascript-libraries-syntax.vim'
-[[plugins]]
-repo = 'claco/jasmine.vim'
-[[plugins]]
-repo = 'elzr/vim-json'
-[[plugins]]
-repo = 'Quramy/vison'
-on_cmd = [ 'VisonSetup', 'Vison', 'VisonRemoveSchema', 'VisonRegisterSchema']
-
-[[plugins]]
-repo = 'chikatoike/sourcemap.vim'
-on_cmd = [
-	'SourceMapAddMap', 'SourceMapSwitch', 'SourceMapConvertQuickfixToOriginal',
-   'SourceMapConvertLocListToOriginal', 'SourceMapAddOriginalToQuickfix',
-   'SourceMapAddOriginalToLocList',
-]
-[[plugins]]
-repo = 'briancollins/vim-jst'
-
-[[plugins]]
-repo = 'vim-scripts/Dart'
-[[plugins]]
-repo = 'jdonaldson/vaxe'
-on_ft = ['haxe','hxml','nmml']
-[[plugins]]
-repo = 'kchmck/vim-coffee-script'
-[[plugins]]
-repo = 'leafgarland/typescript-vim'
 # repo = 'Quramy/tsuquyomi'
 # \ 'on_ft': 'typescript',
 # \ }
@@ -1421,59 +1008,19 @@ repo = 'leafgarland/typescript-vim'
 # python {{{4
 # http://rope.sourceforge.net/
 [[plugins]]
-repo = 'klen/python-mode'
-hook_add = '''
-let g:pymode_rope = 1
-let g:pymode_rope_lookup_project = 1
-let g:pymode_rope_regenerate_on_write = 0
-let g:pymode_rope_goto_def_newwin = 'new'
-let g:pymode_rope_completion = 0
-let g:pymode_rope_complete_on_dot = 0
-let g:pymode_run = 0
-let g:pymode_doc = 0
-let g:pymode_lint = 0
-let g:pymode_virtualenv = 0
-let g:pymode_rope_global_prefix = '[!rope]'
-" let g:vimrc_pymode_rope_project_dirprefixes = [expand("~/project")]
-'''
-[[plugins]]
-repo = 'Vimjas/vim-python-pep8-indent'
-[[plugins]]
-repo = 'lambdalisue/vim-python-virtualenv'
-[[plugins]]
-repo = 'gerardo/vim-django-support'
-[[plugins]]
 repo = 'voithos/vim-python-matchit'
 [[plugins]]
-repo = 'heavenshell/vim-pydocstring'
-[[plugins]]
 repo = 'hachibeeDI/unite-pythonimport'
-[[plugins]]
-repo = 'Glench/Vim-Jinja2-Syntax'
 
 # perl {{{4
-[[plugins]]
-repo = 'vim-perl/vim-perl'
-[[plugins]]
-repo = 'moznion/vim-cpanfile'
-[[plugins]]
-repo = 'motemen/xslate-vim'
-[[plugins]]
-repo = 'y-uuki/perl-local-lib-path.vim'
 # [[plugins]]
 # repo = 'y-uuki/unite-perl-module.vim'
 # [[plugins]]
 # repo = 'soh335/unite-perl-module'
 
 # C,CPP {{{4
-[[plugins]]
-repo = 'vim-scripts/DoxygenToolkit.vim'
-[[plugins]]
-repo = 'peterhoeg/vim-qml'
 
 # C# {{{4
-[[plugins]]
-repo = 'OrangeT/vim-csharp'
 # \ 'on_ft': ['cs'],
 # \ }
 
@@ -1490,20 +1037,13 @@ repo = 'OrangeT/vim-csharp'
 # '''
 
 # OSX {{{4
-[[plugins]]
-repo = 'vim-scripts/applescript.vim'
 
 # windows {{{4
-[[plugins]]
-repo = 'PProvost/vim-ps1'
 [[plugins]]
 repo = 'cd01/poshcomplete-vim'
 hook_add = '''
   MyAutoCmd FileType ps1 setlocal omnifunc=poshcomplete#CompleteCommand
 '''
-[[plugins]]
-repo = 'hachibeeDI/vim-vbnet'
-on_ft = 'vb'
 
 # java, android {{{4
 # [[plugins]]
@@ -1511,68 +1051,27 @@ on_ft = 'vb'
 [[plugins]]
 repo = 'kamichidu/unite-javaimport'
 [[plugins]]
-repo = 'kamichidu/vim-javaclasspath'
-[[plugins]]
 repo = 'artur-shaik/vim-javacomplete2'
 # [[plugins]]
 # repo = 'vim-scripts/jcommenter.vim'
 [[plugins]]
-repo = 'vim-scripts/groovyindent-unix'
-[[plugins]]
-repo = 'vim-scripts/groovy.vim'
-[[plugins]]
-repo = 'tfnico/vim-gradle'
-[[plugins]]
-repo = 'martinda/Jenkinsfile-vim-syntax'
-[[plugins]]
 repo = 'thinca/vim-logcat'
 on_cmd = ['Logcat', 'LogcatClear']
-[[plugins]]
-repo = 'lepture/vim-velocity'
 [[plugins]]
 repo = 'ryotakato/unite-gradle'
 
 # scala {{{4
-[[plugins]]
-repo = 'derekwyatt/vim-scala'
-on_ft = 'scala'
 
 # go {{{4
-[[plugins]]
-repo = 'fatih/vim-go'
-on_ft = ['go']
-[[plugins]]
-repo = 'undx/vim-gocode'
 
 # texts {{{4
-[[plugins]]
-repo = 'tpope/vim-markdown'
-[[plugins]]
-repo = 'nelstrom/vim-markdown-folding'
-[[plugins]]
-repo = 'tani/vim-glance'
-hook_add = '''
-" \   'https://esm.sh/markdown-it-markmap',
-let g:glance#markdown_plugins = [
-\   'https://esm.sh/markdown-it-emoji',
-\   'https://esm.sh/markdown-it-mermaid',
-\   'https://esm.sh/markdown-it-plantuml',
-\    'https://esm.sh/markdown-it-highlightjs',
-\ ]
-'''
 [[plugins]]
 repo = 'kannokanno/previm'
 hook_add = '''
   let g:previm_enable_realtime=1
 '''
 # repo = 'beckorz/previm'
-[[plugins]]
-repo = 'timcharper/textile.vim'
-[[plugins]]
-repo = 'aklt/plantuml-syntax'
 # repo = 'maxmeyer/vim-taskjuggler'
-[[plugins]]
-repo = 'mozamimy/nymphia.vim'
 
 [[plugins]]
 repo = 'moznion/hateblo.vim'
@@ -1580,24 +1079,10 @@ on_cmd = [
     'HatebloCreate', 'HatebloCreateDraft', 'HatebloList',
     'HatebloUpdate', 'HatebloDelete',
 ]
-[[plugins]]
-repo = 'moro/vim-review'
-[[plugins]]
-repo = 'nvie/vim-rst-tables'
-[[plugins]]
-repo = 'vim-scripts/sequence'
 
 # haskell {{{4
 [[plugins]]
 repo = 'itchyny/vim-haskell-indent'
-[[plugins]]
-repo = 'dag/vim2hs'
-[[plugins]]
-  repo = 'eagletmt/ghcmod-vim'
-[[plugins]]
-  repo = 'elixir-lang/vim-elixir'
-[[plugins]]
-  repo = 'ujihisa/ref-hoogle'
   # repo = 'ujihisa/neco-ghc'
   # repo = "ujihisa/unite-haskellimport"
   # repo = 'eagletmt/unite-haddock'
@@ -1616,8 +1101,6 @@ hook_add = '''
 [[plugins]]
 repo = '2072/PHP-Indenting-for-VIm'
 # repo = 'Gasol/vim-php'
-[[plugins]]
-repo = 'StanAngeloff/php.vim'
 # repo = 'arnaud-lb/vim-php-namespace'
 # repo = 'pekepeke/phpfoding.vim'
 # [[plugins]]
@@ -1648,10 +1131,6 @@ hook_add = '''
 # repo = 'beberlei/vim-php-refactor'
 # [[plugins]]
 # repo = 'violetyk/cake.vim'
-[[plugins]]
-repo = 'noahfrederick/vim-laravel'
-[[plugins]]
-repo = 'jwalton512/vim-blade'
 
 # sql {{{4
 [[plugins]]
@@ -1672,34 +1151,6 @@ hook_add = '''
 
 # etc {{{4
 [[plugins]]
-repo = 'honza/dockerfile.vim'
-[[plugins]]
-repo = 'chase/vim-ansible-yaml'
-[[plugins]]
-repo = 'MicahElliott/Rocannon'
-[[plugins]]
-repo = 'cespare/vim-toml'
-[[plugins]]
-repo = 'xolox/vim-misc'
-[[plugins]]
-repo = 'vim-scripts/httplog'
-[[plugins]]
-repo = 'vim-scripts/syslog-syntax-file'
-[[plugins]]
-repo = 'uarun/vim-protobuf'
-[[plugins]]
-repo = 'sophacles/vim-processing'
-[[plugins]]
-repo = 'pekepeke/ref-processing-vim'
-on_ft = 'processing'
-[[plugins]]
-repo = 'sjl/strftimedammit.vim'
-[[plugins]]
-repo = 'tangledhelix/vim-octopress'
-[[plugins]]
-repo = 'jcfaria/Vim-R-plugin'
-on_ft = 'r'
-[[plugins]]
 repo = 'rbtnn/vimconsole.vim'
 on_cmd = [
   'VimConsoleLog', 'VimConsoleOpen', 'VimConsoleWarn', 'VimConsoleError',
@@ -1719,21 +1170,6 @@ hook_add = '''
 [[plugins]]
 repo = 'basyura/rmine.vim'
 on_cmd = [ 'Rmine', 'RmineIssue', 'RmineNewIssue']
-
-# config {{{4
-[[plugins]]
-repo = 'qqshfox/vim-tmux'
-[[plugins]]
-repo = 'vim-scripts/nginx.vim'
-[[plugins]]
-repo = 'smerrill/vcl-vim-plugin'
-[[plugins]]
-repo = 'ksauzz/haproxy.vim'
-# [[plugins]]
-# repo = 'empanda/vim-varnish.vim'
-[[plugins]]
-repo = 'glidenote/keepalived-syntax.vim'
-# repo = 'Shougo/vim-nyaos'
 
 # unite.vim {{{3
 # repo = 'Shougo/unite.vim'
@@ -1800,169 +1236,6 @@ repo = 'glidenote/keepalived-syntax.vim'
 #   \ 'on_source': 'unite.vim',
 #   \ }
 # endif
-[[plugin]]
-repo = 'pekepeke/quicklearn'
-hook_add = '''
-let g:quicklearn = get(g:, 'quicklearn', {})
-call extend(g:quicklearn, {
-  \ 'markdown/md2remark/intermediate' : {
-  \   'command' : 'md2remark',
-  \   'exec' : '%c %o %s',
-  \ },
-  \ 'markdown/md2backlog/intermediate' : {
-  \   'command' : 'md2backlog',
-  \   'exec' : '%c %o %s',
-  \ },
-  \ 'markdown/vim-helpfile/intermediate' : {
-  \   'command' : 'vim-helpfile',
-  \   'exec' : '%c %o %s',
-  \ },
-  \ 'markdown/markdown2pod/intermediate' : {
-  \   'command' : 'markdown2pod',
-  \   'exec' : '%c %o %s',
-  \ },
-  \ })
-call extend(g:quicklearn, {
-  \ 'markdown/textile/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t textile %o %s',
-  \ },
-  \ 'markdown/rst/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t rst %o %s',
-  \ },
-  \ 'markdown/html5/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t html5 %o %s',
-  \ },
-  \ 'markdown/mediawiki/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t mediawiki %o %s',
-  \ },
-  \ 'markdown/s5/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t s5 %o %s',
-  \ },
-  \ 'markdown/revealjs/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t revealjs %o %s',
-  \ },
-  \ 'markdown/dzslides/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t dzslides %o %s',
-  \ },
-  \ 'markdown/slidy/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t slidy %o %s',
-  \ },
-  \ 'markdown/slideous/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t slideous %o %s',
-  \ },
-  \ 'markdown/beamer/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t beamer %o %s',
-  \ },
-  \ 'markdown/latex/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t latex %o %s',
-  \ },
-  \ 'markdown/rtf/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f markdown -t rtf %o %s',
-  \ },
-  \ })
-call extend(g:quicklearn, {
-  \ 'textile/markdown/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f textile -t markdown %o %s',
-  \ },
-  \ 'textile/rst/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f textile -t rst %o %s',
-  \ },
-  \ 'textile/html5/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f textile -t html5 %o %s',
-  \ },
-  \ 'textile/mediawiki/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f textile -t mediawiki %o %s',
-  \ },
-  \ 'textile/s5/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f textile -t s5 %o %s',
-  \ },
-  \ 'textile/slidy/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f textile -t slidy %o %s',
-  \ },
-  \ 'textile/slideous/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f textile -t slideous %o %s',
-  \ },
-  \ 'textile/beamer/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f textile -t beamer %o %s',
-  \ },
-  \ 'textile/latex/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f textile -t latex %o %s',
-  \ },
-  \ 'textile/rtf/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f textile -t rtf %o %s',
-  \ },
-  \ })
-call extend(g:quicklearn, {
-  \ 'rst/markdown/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f rst -t markdown %o %s',
-  \ },
-  \ 'rst/textile/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f rst -t textile %o %s',
-  \ },
-  \ 'rst/html5/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f rst -t html5 %o %s',
-  \ },
-  \ 'rst/mediawiki/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f rst -t mediawiki %o %s',
-  \ },
-  \ 'rst/s5/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f rst -t s5 %o %s',
-  \ },
-  \ 'rst/slidy/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f rst -t slidy %o %s',
-  \ },
-  \ 'rst/slideous/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f rst -t slideous %o %s',
-  \ },
-  \ 'rst/beamer/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f rst -t beamer %o %s',
-  \ },
-  \ 'rst/latex/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f rst -t latex %o %s',
-  \ },
-  \ 'rst/rtf/intermediate': {
-  \   'command': 'pandoc',
-  \   'exec' : '%c -f rst -t rtf %o %s',
-  \ },
-  \ })
-  call extend(g:quicklearn, {
-  \ 'rst/rst2html/intermediate': {
-  \   'command': 'rst2html',
-  \   'exec': '%c %o %s',
-  \ },
-  \ })
-'''
 # repo = "osyo-manga/unite-fold"
 # \ 'on_source': 'unite.vim',
 # \ }

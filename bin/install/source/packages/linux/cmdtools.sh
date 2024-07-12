@@ -13,7 +13,7 @@ main() {
   curl -sS https://starship.rs/install.sh | BIN_DIR=~/.local/bin sh -b ~/.local/bin
   curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 
-  for cmd in eza fzf lazygit lazydocker gitui; do
+  for cmd in bat eza fzf lazygit lazydocker gitui xremap; do
     myinstall package $cmd
   done
 }
