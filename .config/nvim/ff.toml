@@ -4,6 +4,8 @@ repo = 'nvim-telescope/telescope-ui-select.nvim'
 [[plugins]]
 repo = "fdschmidt93/telescope-egrepify.nvim"
 [[plugins]]
+repo = 'folke/trouble.nvim'
+[[plugins]]
 repo = 'nvim-telescope/telescope.nvim'
 hook_add = '''
 lua <<EOF
@@ -15,9 +17,13 @@ telescope.setup {
   pickers = {
     live_grep = {
       mappings = {
+        n = {
+          ['q'] = require('telescope.actions').close,
+        },
         i = {
           ['<C-o>'] = actions.send_to_qflist + actions.open_qflist,
           ['<C-l>'] = actions.send_to_loclist + actions.open_loclist,
+          ['<C-u>'] = '<Esc>^wDA',
         },
       },
     },
@@ -31,23 +37,26 @@ telescope.setup {
 local function egrepify()
   require('telescope').extensions.egrepify.egrepify({})
 end
-
+local util = require('my/util')
+local nmap = util.nmap
+local nnoremap = util.nnoremap
 local builtin = require('telescope.builtin')
--- local nmap = require('my/util').nmap
-local nnoremap = require('my/util').nnoremap
-nnoremap('ff', 'f')
-nnoremap('fj', builtin.buffers)
-nnoremap('fl', builtin.find_files)
-nnoremap('fh', builtin.help_tags)
-nnoremap('fgr', builtin.live_grep)
-nnoremap('fgd', builtin.diagnostics)
-nnoremap('fgl', builtin.current_buffer_fuzzy_find)
-nnoremap('fgs', builtin.lsp_document_symbols)
-nnoremap('fe', builtin.resume)
-nnoremap('fge', builtin.resume)
-nnoremap('fhc', builtin.commands)
-nnoremap('fm', builtin.oldfiles)
-nnoremap('fgr', egrepify)
+nnoremap('[!zz]', function() end)
+-- nmap('f', '[!zz]')
+vim.cmd('nmap f [!zz]')
+nnoremap('[!zz]f', 'f')
+nnoremap('[!zz]j', builtin.buffers)
+nnoremap('[!zz]l', builtin.find_files)
+nnoremap('[!zz]h', builtin.help_tags)
+nnoremap('[!zz]gr', builtin.live_grep)
+nnoremap('[!zz]gd', builtin.diagnostics)
+nnoremap('[!zz]gl', builtin.current_buffer_fuzzy_find)
+nnoremap('[!zz]gs', builtin.lsp_document_symbols)
+nnoremap('[!zz]e', builtin.resume)
+nnoremap('[!zz]ge', builtin.resume)
+nnoremap('[!zz]hc', builtin.commands)
+nnoremap('[!zz]m', builtin.oldfiles)
+nnoremap('[!zz]gr', egrepify)
 
 EOF
 '''

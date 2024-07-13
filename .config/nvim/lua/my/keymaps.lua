@@ -22,18 +22,25 @@ local cnoremap = util.cnoremap
 noremap('[!space]', '<Nop>')
 nnoremap('g<Space>', '<Space>')
 vnoremap('g<Space>', '<Space>')
-nmap('<Space>', '[!space]')
-vmap('<Space>', '[!space]')
+vim.cmd([[
+nmap <Space> [!space]
+vmap <Space> [!space]
+nmap <C-e> [!edit]
+vmap <C-e> [!edit]
+nmap t [!t]
+]])
+-- nmap('<Space>', '[!space]')
+-- vmap('<Space>', '[!space]')
 
 noremap('[!edit]', '<Nop>')
-nmap('<C-e>', '[!edit]')
-vmap('<C-e>', '[!edit]')
+-- nmap('<C-e>', '[!edit]')
+-- vmap('<C-e>', '[!edit]')
 
 noremap('[!comment-doc]', '<Nop>')
 map(',c', '[!comment-doc]')
 
 noremap('[!t]', '<Nop>')
-nmap('t', '[!t]')
+-- nmap('t', '[!t]')
 nnoremap('[!t]e', 't', {silent=true})
 nnoremap('[!t]2', 't"', {silent=true})
 nnoremap('[!t]7', "t'", {silent=true})

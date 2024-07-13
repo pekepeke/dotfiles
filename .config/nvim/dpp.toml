@@ -830,31 +830,92 @@ EOF
 repo = 'lewis6991/gitsigns.nvim'
 hook_add = '''
 lua <<EOF
-require('gitsigns').setup{
-
-}
+require('gitsigns').setup {}
 EOF
 '''
 [[plugins]]
-repo = 'norcalli/nvim-colorizer.lua'
+repo = 'uga-rosa/ccc.nvim'
+hoo_add='''
+lua <<EOF
+require('ccc').setup {}
+EOF
+'''
+# [[plugins]]
+# repo = 'norcalli/nvim-colorizer.lua'
+# on_cmd = ["Other", "OtherClear", "OtherSplit", "OtherVSplit"]
+# hook_add = '''
+# lua <<EOF
+# require('colorizer').setup {
+#   css = {
+#     RRGGBBAA = true,
+#     rgb_fn = true,
+#     hsl_fn = true,
+#     enable_tailwind = true,
+#   },
+#   javascript = {
+#     enable_tailwind = true,
+#   },
+#   javascriptreact = {
+#     enable_tailwind = true,
+#   },
+#   typescriptreact = {
+#     enable_tailwind = true,
+#   },
+# }
+#EOF
+#'''
+[[plugins]]
+repo = 'rgroli/other.nvim'
+on_cmd = ["Other", "OtherClear", "OtherSplit", "OtherVSplit"]
 hook_add = '''
 lua <<EOF
-require('colorizer').setup {
-  css = {
-    RRGGBBAA = true,
-    rgb_fn = true,
-    hsl_fn = true,
-    enable_tailwind = true,
-  }, 
-  javascript = {
-    enable_tailwind = true,
+local sveltekit_target = {
+  { target = "/%1/%+%2.svelte", context = "view" },
+  { target = "/%1/%+%2\\(*.ts\\|*.js\\)", context = "script", transform = "remove_server" },
+  { target = "/%1/%+%2\\(*.ts\\|*.js\\)", context = "script", transform = "add_server" },
+}
+require("other-nvim").setup {
+  mappings = {
+    "livewire",
+    "angular",
+    "laravel",
+    "rails",
+    "golang",
+    {
+      pattern = "/(.*)/%+(.*).server.ts$",
+      target = sveltekit_target,
+    },
+    {
+      pattern = "/(.*)/%+(.*).server.js$",
+      target = sveltekit_target,
+    },
+    {
+      pattern = "/(.*)/%+(.*).ts$",
+      target = sveltekit_target,
+    },
+    {
+      pattern = "/(.*)/%+(.*).js$",
+      target = sveltekit_target,
+    },
+    {
+      pattern = "/(.*)/%+(.*).svelte$",
+      target = sveltekit_target,
+    },
   },
-  javascriptreact = {
-    enable_tailwind = true,
+  transformers = {
+    lowercase = function (inputString)
+        return inputString:lower()
+    end,
+    -- remove `server` from the path
+    remove_server = function(inputString)
+      return inputString:gsub("server", "")
+    end,
+    -- add `server` to the path
+    add_server = function(inputString)
+      print(inputString)
+      return inputString:gsub("%.(ts|js)$", ".server.%1")
+    end,
   },
-  typescriptreact = {
-    enable_tailwind = true,
-  }, 
 }
 EOF
 '''

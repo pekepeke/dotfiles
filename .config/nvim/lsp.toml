@@ -8,7 +8,7 @@ repo = "williamboman/mason.nvim"
 hook_add = '''
 lua <<EOF
 require("mason").setup()
-require("mason-lspconfig").setup()
+require("mason-lspconfig").setup({ })
 
 local registry = require "mason-registry"
     local packages = {
@@ -40,6 +40,7 @@ build = "make install_jsregexp"
 hook_add = '''
 lua <<EOF
 require("luasnip.loaders.from_snipmate").lazy_load({paths = "~/.vim/snippets"})
+require('my/util').inoremap('<C-l>', require('luasnip').expand_or_jumpable)
 EOF
 '''
 [[plugins]]
@@ -48,18 +49,17 @@ repo = 'saadparwaiz1/cmp_luasnip'
 repo = "zbirenbaum/copilot.lua"
 [[plugins]]
 repo = "zbirenbaum/copilot-cmp"
-# [[plugins]]
-# repo = 'hrsh7th/cmp-copilot'
+#[[plugins]]
+#repo = 'hrsh7th/cmp-copilot'
 [[plugins]]
 repo = 'hrsh7th/nvim-cmp'
 hook_add = '''
 lua <<EOF
--- require('copilot').setup()
--- require('copilot').setup {
---   suggestion = { enabled = true },
---   panel= { enabled = true },
--- }
--- require('copilot_cmp').setup()
+require('copilot').setup {
+  suggestion = { enabled = true },
+  panel= { enabled = true },
+}
+require('copilot_cmp').setup()
 local cmp = require('cmp')
 cmp.setup {
   window = {
@@ -71,20 +71,31 @@ cmp.setup {
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-p>'] = cmp.mapping.select_prev_item(),
     ['<C-n>'] = cmp.mapping.select_next_item(),
-    ['<Tab>'] = cmp.mapping.complete(),
+    -- ['<Tab>'] = cmp.mapping.complete(),
+    ['<Tab>'] = function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      else
+        fallback()
+      end
+    end,
     ['<CR>'] = cmp.mapping.confirm({select = true}),
-    -- ['<C-l>'] = cmp.mapping(function(_)
-    --   vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true), 'n', true)
-    -- end)
-
+    ['<C-l>'] = cmp.mapping(function(_)
+        vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
+      end)
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
-    { name = 'buffer' },
+    {
+      name = 'buffer',
+      option = {
+        get_bufnrs = function() return { vim.api.nvim_get_current_buf() } end
+      },
+    },
     { name = 'path' },
-    -- { name = "copilot" },
-    -- { name = "crates" },
+    { name = "copilot" },
+    { name = "crates" },
   }),
   view = {
     entries = 'native',
@@ -94,24 +105,24 @@ cmp.setup {
     require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
   end,
 }
-cmp.setup.cmdline({ '/', '?' }, {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = {
-    { name = 'buffer' },
-  },
-})
+-- cmp.setup.cmdline({ '/', '?' }, {
+--   mapping = cmp.mapping.preset.cmdline(),
+--   sources = {
+--     { name = 'buffer' },
+--   },
+-- })
+--
+-- -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+-- cmp.setup.cmdline(':', {
+--   mapping = cmp.mapping.preset.cmdline(),
+--   sources = cmp.config.sources({
+--     { name = 'path' },
+--     { name = 'cmdline' },
+--   }),
+--   matching = { disallow_symbol_nonprefix_matching = false }
+-- })
 
--- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-cmp.setup.cmdline(':', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({
-    { name = 'path' },
-    { name = 'cmdline' },
-  }),
-  matching = { disallow_symbol_nonprefix_matching = false }
-})
-
--- Set up lspconfig.
+-- -- Set up lspconfig.
 -- local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- local lspconfig = require('lspconfig')
 -- for _, server in pairs(['typescript']) do

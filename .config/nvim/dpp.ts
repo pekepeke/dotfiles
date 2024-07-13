@@ -36,9 +36,9 @@ export class Config extends BaseConfig {
 		{path: '~/.vim/common.toml', options:{lazy: false}},
 		{path: '~/.vim/lang.toml', options:{lazy: false}},
 		{path: '~/.vim/quickrun.toml', options:{lazy: false}},
+		{path: '~/.config/nvim/dpp.toml', options:{lazy: false}},
 		{path: '~/.config/nvim/lsp.toml', options:{lazy: false}},
 		{path: '~/.config/nvim/ff.toml', options:{lazy: false}},
-		{path: '~/.config/nvim/dpp.toml', options:{lazy: false}},
 		// {path: '~/.config/nvim/dpp_lazy.toml', options:{lazy: true}},
 		// {path: '~/.config/nvim/dein_.toml', options:{lazy: false}},
 	];

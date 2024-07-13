@@ -13,7 +13,7 @@ if not TEMP then
 end
 local function map(mode, lhs, rhs, opts)
 	if not opts then opts = {} end
-	vim.api.nvim_set_keymap(mode, lhs, rhs, opts)
+	vim.keymap.set(mode, lhs, rhs, opts)
 end
 local function noremap(mode, lhs, rhs, opts)
 	if not opts then opts = {} end
