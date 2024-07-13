@@ -64,7 +64,7 @@ Description=xremap
 [Service]
 KillMode=process
 ExecStartPre=/usr/bin/xhost +SI:localuser:root
-ExecStart=$HOME/.local/bin/xremap-x11 $HOME.config/xremap/config.yml
+ExecStart=$HOME/.local/bin/xremap-x11 $HOME/.config/xremap/config.yml
 Type=simple
 Restart=always
 RestartSec=10s

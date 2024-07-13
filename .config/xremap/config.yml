@@ -1,6 +1,10 @@
 # Credit: https://github.com/mooz/xkeysnail/blob/bf3c93b4fe6efd42893db4e6588e5ef1c4909cfb/example/config.py#L62-L125
-virtual_modifiers:
-  - MUHENKAN
+# virtual_modifiers:
+#   - CapsLock
+modmap:
+  - name: CapsLock to Ctrl_L
+    remap:
+      CapsLock: Ctrl_L
 keymap:
   - name: Emacs
     application:
@@ -33,7 +37,7 @@ keymap:
       C-y: [C-v, { set_mark: false }]
       # Delete
       C-d: [delete, { set_mark: false }]
-      M-d: [C-delete, { set_mark: false }]
+      # M-d: [C-delete, { set_mark: false }]
       # Kill line
       C-k: [Shift-end, C-x, { set_mark: false }]
       # Kill word backward
@@ -48,7 +52,7 @@ keymap:
       # Search
       C-s: C-f
       C-r: Shift-F3
-      M-Shift-5: C-h
+      # M-Shift-5: C-h
       # Cancel
       C-g: [esc, { set_mark: false }]
       # C-x YYY
@@ -71,29 +75,29 @@ keymap:
       not: [Emacs, vim, gvim, nvim, goneovim, gnome-terminal-server.Gnome-terminal]
     remap:
       # KEY_MUHENKAN
-      MUHENKAN-a: C-a
-      MUHENKAN-b: C-b
-      MUHENKAN-c: C-c
-      MUHENKAN-d: C-d
-      MUHENKAN-e: C-e
-      MUHENKAN-f: C-f
-      MUHENKAN-g: C-g
-      MUHENKAN-h: C-h
-      MUHENKAN-i: C-i
-      MUHENKAN-j: C-j
-      MUHENKAN-k: C-k
-      MUHENKAN-l: C-l
-      MUHENKAN-m: C-m
-      MUHENKAN-n: C-n
-      MUHENKAN-o: C-o
-      MUHENKAN-p: C-p
-      MUHENKAN-q: C-q
-      MUHENKAN-r: C-r
-      MUHENKAN-s: C-s
-      MUHENKAN-t: C-t
-      MUHENKAN-u: C-u
-      MUHENKAN-v: C-v
-      MUHENKAN-w: C-w
-      MUHENKAN-x: C-x
-      MUHENKAN-y: C-y
-      MUHENKAN-z: C-z
+      Alt-a: C-a
+      Alt-b: C-b
+      Alt-c: C-c
+      Alt-d: C-d
+      Alt-e: C-e
+      Alt-f: C-f
+      Alt-g: C-g
+      Alt-h: C-h
+      Alt-i: C-i
+      Alt-j: C-j
+      Alt-k: C-k
+      Alt-l: C-l
+      Alt-m: C-m
+      Alt-n: C-n
+      Alt-o: C-o
+      Alt-p: C-p
+      Alt-q: C-q
+      Alt-r: C-r
+      Alt-s: C-s
+      Alt-t: C-t
+      Alt-u: C-u
+      Alt-v: C-v
+      Alt-w: C-w
+      Alt-x: C-x
+      Alt-y: C-y
+      Alt-z: C-z
