@@ -305,6 +305,8 @@ repo = 'hail2u/vim-css3-syntax'
 [[plugins]]
 repo = 'groenewege/vim-less'
 [[plugins]]
+repo = 'cakebaker/scss-syntax.vim'
+[[plugins]]
 repo = 'wavded/vim-stylus'
 [[plugins]]
 repo = 'slim-template/vim-slim'
@@ -335,7 +337,7 @@ on_cmd = [
 repo = 'briancollins/vim-jst'
 
 [[plugins]]
-repo = 'vim-scripts/Dart'
+repo = 'dart-lang/dart-vim-plugin'
 [[plugins]]
 repo = 'jdonaldson/vaxe'
 on_ft = ['haxe','hxml','nmml']
@@ -347,6 +349,8 @@ repo = 'leafgarland/typescript-vim'
 repo = 'peitalin/vim-jsx-typescript'
 [[plugins]]
 repo = 'purescript-contrib/purescript-vim'
+[[plugins]]
+repo = 'rust-lang/rust.vim'
 [[plugins]]
 repo = 'klen/python-mode'
 hook_add = '''
@@ -508,4 +512,6 @@ repo = 'skanehira/denops-docker.vim'
 repo = 'skanehira/k8s.vim'
 [[plugins]]
 repo = 'skanehira/denops-graphql.vim'
+[[plugins]]
+repo = 'hashivim/vim-terraform'
 

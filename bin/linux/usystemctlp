@@ -10,6 +10,10 @@ for arg in "$@"; do
 	exit 1
   fi
 done
+if [ $# -eq 0 ]; then
+  echo "required subcommands: start stop restart reload stop list-units list-times"
+  exit 1
+fi
 if [ $has_user -eq 1 ]; then
   SELECTED="$(systemctl list-unit-files --user --type=service | peco |awk '{ print $1}')"
 else

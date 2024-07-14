@@ -45,21 +45,24 @@ EOF
 '''
 [[plugins]]
 repo = 'saadparwaiz1/cmp_luasnip'
-[[plugins]]
-repo = "zbirenbaum/copilot.lua"
-[[plugins]]
-repo = "zbirenbaum/copilot-cmp"
+# [[plugins]]
+# repo = "zbirenbaum/copilot.lua"
+# [[plugins]]
+# repo = "zbirenbaum/copilot-cmp"
 #[[plugins]]
 #repo = 'hrsh7th/cmp-copilot'
+[[plugins]]
+repo = 'tzachar/cmp-tabnine'
+build = './install.sh'
 [[plugins]]
 repo = 'hrsh7th/nvim-cmp'
 hook_add = '''
 lua <<EOF
-require('copilot').setup {
-  suggestion = { enabled = true },
-  panel= { enabled = true },
-}
-require('copilot_cmp').setup()
+-- require('copilot').setup {
+--   suggestion = { enabled = true },
+--   panel= { enabled = true },
+-- }
+-- require('copilot_cmp').setup()
 local cmp = require('cmp')
 cmp.setup {
   window = {
@@ -80,9 +83,9 @@ cmp.setup {
       end
     end,
     ['<CR>'] = cmp.mapping.confirm({select = true}),
-    ['<C-l>'] = cmp.mapping(function(_)
-        vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
-      end)
+    -- ['<C-l>'] = cmp.mapping(function(_)
+    --     vim.api.nvim_feedkeys(vim.fn['copilot#Accept'](vim.api.nvim_replace_termcodes('<Tab>', true, true, true)), 'n', true)
+    --   end)
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
@@ -94,7 +97,8 @@ cmp.setup {
       },
     },
     { name = 'path' },
-    { name = "copilot" },
+    -- { name = "copilot" },
+    { name = 'cmp_tabnine' },
     { name = "crates" },
   }),
   view = {

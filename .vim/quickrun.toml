@@ -61,9 +61,6 @@ hook_add = '''
   \ })
   " go {{{4
   call extend(g:quickrun_config, {
-  \ 'go' : {
-  \   'type' : executable('go') && executable('8g') ? 'go/8g': '',
-  \ },
   \ 'go/8g' : {
   \   'command': '8g',
   \   'exec': ['8g %s', '8l -o %s:p:r %s:p:r.8', '%s:p:r %a', 'rm -f %s:p:r'],

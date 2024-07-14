@@ -8,7 +8,7 @@ modmap:
 keymap:
   - name: Emacs
     application:
-      not: [Emacs, vim, gvim, nvim, goneovim, gnome-terminal-server.Gnome-terminal]
+      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal]
     remap:
       # Cursor
       C-b: { with_mark: left }
@@ -16,24 +16,24 @@ keymap:
       C-p: { with_mark: up }
       C-n: { with_mark: down }
       # Forward/Backward word
-      M-b: { with_mark: C-left }
-      M-f: { with_mark: C-right }
+      # M-b: { with_mark: C-left }
+      # M-f: { with_mark: C-right }
       # Beginning/End of line
       C-a: { with_mark: home }
       C-e: { with_mark: end }
       # Page up/down
-      M-v: { with_mark: pageup }
-      C-v: { with_mark: pagedown }
+      # M-v: { with_mark: pageup }
+      # C-v: { with_mark: pagedown }
       # Beginning/End of file
-      M-Shift-comma: { with_mark: C-home }
-      M-Shift-dot: { with_mark: C-end }
+      # M-Shift-comma: { with_mark: C-home }
+      # M-Shift-dot: { with_mark: C-end
       # Newline
       C-m: enter
       C-j: enter
       C-o: [enter, left]
       # Copy
       C-w: [C-x, { set_mark: false }]
-      M-w: [C-c, { set_mark: false }]
+      # M-w: [C-c, { set_mark: false }]
       C-y: [C-v, { set_mark: false }]
       # Delete
       C-d: [delete, { set_mark: false }]
@@ -41,9 +41,9 @@ keymap:
       # Kill line
       C-k: [Shift-end, C-x, { set_mark: false }]
       # Kill word backward
-      Alt-backspace: [C-backspace, {set_mark: false}]
-      # set mark next word continuously.
-      C-M-space: [C-Shift-right, {set_mark: true}]
+      # Alt-backspace: [C-backspace, {set_mark: false}]
+      # # set mark next word continuously.
+      # C-M-space: [C-Shift-right, {set_mark: true}]
       # Undo
       C-slash: [C-z, { set_mark: false }]
       C-Shift-ro: C-z
@@ -72,7 +72,7 @@ keymap:
           u: [C-z, { set_mark: false }]
   - name: Cmd key mapping
     application:
-      not: [Emacs, vim, gvim, nvim, goneovim, gnome-terminal-server.Gnome-terminal]
+      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal]
     remap:
       # KEY_MUHENKAN
       Alt-a: C-a
