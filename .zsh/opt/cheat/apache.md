@@ -16,6 +16,7 @@ httpd -l                 # 静的モジュール一覧
 httpd -M                 # ロード済みモジュール一覧
 rpm -qi httpd            # パッケージ情報
 rpm -q --changelog httpd # パッケージ更新履歴
+httpd -DFOREGROUND          # FOREGROUNDで実行
 
 ```
 
