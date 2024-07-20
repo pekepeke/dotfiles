@@ -1,0 +1,17 @@
+localstack:
+  image: localstack/localstack:2.0.2
+  container_name: localstack       # 任意だがboto3でのアクセスで必要
+  environment:
+    # @see https://docs.localstack.cloud/references/configuration/
+    - SERVICES=s3,lambda,dynamodb,ses,sqs,sns,cloudwatch,cognito-idp   # 必須。カンマ区切りでサービス名を指定
+    - PERSISTENCE=1
+    - AWS_DEFAULT_REGION=<arbitary-region>      # 必須
+    - MAIN_CONTAINER_NAME=localstack      # 任意だが、boto3でのアクセスで必要。container_name と合わせる
+  volumes:
+    - "${LOCALSTACK_VOLUME_DIR:-./localstack}:/var/lib/localstack"  # v2では必須
+    - "/var/run/docker.sock:/var/run/docker.sock"                   # ソケットのマウント。Lambdaを使うなら必須
+  hostname: localstack
+  ports:
+    - 4566:4566
+  networks:
+    - local

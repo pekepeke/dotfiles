@@ -38,6 +38,9 @@ vim.api.nvim_create_autocmd('User', {
 	end
 })
 
+vim.api.nvim_create_user_command('DenopsCacheReload', function()
+	vim.cmd([[call denops#cache#update(#{reload: v:true})]])
+end, {bang = true})
 vim.api.nvim_create_user_command('DppEditStartup', function()
 	vim.cmd(string.format('edit %s/nvim/startup.vim', dpp_base))
 end, {bang = true})
@@ -45,7 +48,6 @@ vim.api.nvim_create_user_command('DppMakeState', function() dpp.make_state(dpp_b
 vim.api.nvim_create_user_command('DppClearState', function() dpp.clear_state('nvim') end, {bang = true})
 vim.api.nvim_create_user_command('DppInstall', function() dpp.async_ext_action('installer', 'install') end, {bang = true})
 vim.api.nvim_create_user_command('DppUpdate', function() dpp.async_ext_action('installer', 'update') end, {bang = true})
-vim.api.nvim_create_user_command('DppRecache', function() dpp.async_ext_action('installer', 'recache') end, {bang = true})
 
 -- if !isdirectory(s:denops_src)
 --   function! s:vimrc_install_dpp()

@@ -34,3 +34,6 @@
 	path = .zsh/plugins/zsh-perl-completions
 	url = https://github.com/syohex/zsh-perl-completions.git
 	branch = master
+[submodule ".zsh/opt/reference"]
+	path = .zsh/opt/reference
+	url = https://github.com/Fechin/reference.git

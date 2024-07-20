@@ -1,0 +1,12 @@
+configuration {
+    font: "Ubuntu 12";
+    show-icons: true;
+    display-window: "Window";
+    display-drun: "Launch";
+}
+
+@theme "oxide"
+
+listview {
+    lines: 12;
+}

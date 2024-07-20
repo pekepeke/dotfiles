@@ -625,7 +625,6 @@ command! -narg=0 DppMakeState call dpp#make_state(s:dpp_base, $HOME.'/.vim/dpp.t
 command! -narg=0 DppClearState call dpp#clear_state((has('gui_running')?'gvim':has('nvim')?'nvim':'vim'))
 command! -narg=0 DppInstall call dpp#async_ext_action('installer', 'install')
 command! -narg=0 DppUpdate call dpp#async_ext_action('installer', 'update')
-command! -narg=0 DppRecache call dpp#async_ext_action('installer', 'recache')
 if !isdirectory(s:denops_src)
   function! s:vimrc_install_dpp()
     let cwd = getcwd()

@@ -8,6 +8,9 @@ let g:author                          = ""
 let g:email                           = ""
 let g:company                         = ""
 
+" gptwriter
+let g:gptwriter_key = ''
+
 " hatena.vim & changelog, etc "{{{1
 " hateblo.vim {{{2
 let g:hateblo_vim = {

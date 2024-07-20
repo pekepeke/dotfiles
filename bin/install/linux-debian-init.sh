@@ -3,14 +3,14 @@
 PACKAGES="aptitude openssh-server ttf-inconsolata ethtool build-essential vim screen zsh"
 PACKAGES="$PACKAGES samba samba-client"
 PACKAGES="$PACKAGES git-core subversion cvs zlib1g-deb libssl-dev curl bison"
-PACKAGES="$PACKAGES libreadline5-dev libxml2-dev libxslt-dev"
-PACKAGES="$PACKAGES mono-2.0-devel bison-doc libglib2.0-doc"
-PACKAGES="$PACKAGES libmono-winforms1.0-cli sqlite3 autoconf automake libtool"
+PACKAGES="$PACKAGES libreadline-dev libxml2-dev libxslt-dev"
+PACKAGES="$PACKAGES bison-doc"
+PACKAGES="$PACKAGES sqlite3 autoconf automake libtool"
 PACKAGES="$PACKAGES ruby ruby-dev rubygems rdoc ri libopenssl-ruby"
-PACKAGES="$PACKAGES perl-doc libreadline5-dev libncurses5-dev mysql-server mysqltuner maatkit"
+PACKAGES="$PACKAGES perl-doc libncurses5-dev mysql-server mysqltuner maatkit"
 PACKAGES="$PACKAGES snmp snmpd snmptt"
 PACKAGES="$PACKAGES librrds-perl libsnmp-perl"
-PACKAGES="$PACKAGES nodejs-dev coffeescript"
+# PACKAGES="$PACKAGES "
 
 usage() {
   prg_name=`basename $0`

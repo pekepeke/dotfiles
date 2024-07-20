@@ -1,4 +1,5 @@
 # vim:fdm=marker sw=2 ts=2 ft=toml expandtab:
+# ftplugin {{{1
 [ftplugin] # Execute after ftplugin.
 c = '''
 if d#is_installed('vim-smartchr')
@@ -84,7 +85,7 @@ if d#is_installed('vim-smartchr')
 endif
 '''
 
-# colorscheme {{{3
+# colorscheme {{{1
 [[plugins]]
 repo = 'sainnhe/gruvbox-material'
 script_type = 'colors'
@@ -122,7 +123,7 @@ script_type = 'colors'
 repo = 'w0ng/vim-hybrid'
 script_type = 'colors'
 
-# common {{{3
+# common {{{1
 # =======================================================
 [[plugins]]
 repo = 'vim-denops/denops-shared-server.vim'
@@ -253,7 +254,6 @@ repo = 'kana/vim-submode'
 hook_add = '''
 
 " http://d.hatena.ne.jp/tyru/20100502/vim_mappings
-" browser {{{3
 if d#is_mac()
   call submode#enter_with('cscroll', 'n', '', 'sb', ':ChromeScrollDown<CR>')
   " call submode#enter_with('cscroll', 'n', '', 'sk', ':ChromeScrollUp<CR>')
@@ -266,7 +266,7 @@ if d#is_mac()
   call submode#map('cscroll', 'n', '', 'r', ':ChromeTabReload<CR>')
 endif
 
-" Change current window size {{{3
+" Change current window size
 call submode#enter_with('winsize', 'n', '', 'sw', '<Nop>')
 call submode#leave_with('winsize', 'n', '', '<Esc>')
 call submode#map       ('winsize', 'n', '', 'j', '<C-w>-:redraw<CR>')
@@ -282,14 +282,14 @@ call submode#map       ('winsize', 'n', '', '+', '<C-w>+:redraw<CR>')
 call submode#map       ('winsize', 'n', '', '<', '<C-w><:redraw<CR>')
 call submode#map       ('winsize', 'n', '', '>', '<C-w>>:redraw<CR>')
 
-" undo/redo {{{3
+" undo/redo
 call submode#enter_with('undo/redo', 'n', '', 'g-', 'g-')
 call submode#enter_with('undo/redo', 'n', '', 'g+', 'g+')
 call submode#leave_with('undo/redo', 'n', '', '<Esc>')
 call submode#map       ('undo/redo', 'n', '', '-', 'g-')
 call submode#map       ('undo/redo', 'n', '', '+', 'g+')
 
-" Tab walk. {{{3
+" Tab walk.
 call submode#enter_with('tabwalk', 'n', '', 'st', '<Nop>')
 call submode#enter_with('tabwalk', 'n', '', 'se', '<Nop>')
 call submode#leave_with('tabwalk', 'n', '', '<Esc>')
@@ -302,7 +302,7 @@ call submode#map       ('tabwalk', 'n', '', 'c', ':execute "tabnew"<CR>:tabmove<
 call submode#map       ('tabwalk', 'n', '', 'q', ':execute "tabclose"<CR>')
 call submode#map       ('tabwalk', 'n', '', 'o', ':execute "tabonly"<CR>')
 
-" winmove {{{3
+" winmove
 call submode#enter_with('winmove', 'n', '', 'sj', '<C-w>j')
 call submode#enter_with('winmove', 'n', '', 'sk', '<C-w>k')
 call submode#enter_with('winmove', 'n', '', 'sh', '<C-w>h')
@@ -317,7 +317,7 @@ call submode#map       ('winmove', 'n', '', 'K', '<C-w>k')
 call submode#map       ('winmove', 'n', '', 'H', '<C-w>h')
 call submode#map       ('winmove', 'n', '', 'L', '<C-w>l')
 
-" Quickfix {{{3
+" Quickfix
 call submode#enter_with('quickfix', 'n', '',  'sq', '<Nop>')
 call submode#leave_with('quickfix', 'n', '',  '<Esc>')
 call submode#map       ('quickfix', 'n', '',  'j', ':cn<CR>')
@@ -344,11 +344,11 @@ repo = 'tyru/vim-altercmd'
 hook_add = '''
 
 call altercmd#load()
-function! s:alias_lc(...) " {{{3
+function! s:alias_lc(...) "
   for cmd in a:000
     silent exe 'Alias' tolower(cmd) cmd
   endfor
-endfunction "}}}
+endfunction
 
 command! -bar -nargs=+
       \ Alias CAlterCommand <args> | AlterCommand <cmdwin> <args>
@@ -888,7 +888,7 @@ hook_add = '''
   let g:template_free_pattern = 'template'
 
   " s: が使えない…
-  function! VimrcTemplateReplaceKeywords() "{{{3
+  function! VimrcTemplateReplaceKeywords()
     silent! %s/<+FILENAME_NOEXTUC+>/\=toupper(expand('%:t:r'))/g
     silent! %s/<+FILENAME_NOEXT+>/\=expand('%:t:r')/g
     silent! %s/<+FILENAME+>/\=expand('%:t')/g
@@ -962,7 +962,7 @@ repo = 'thomasfaingnaert/vim-lsp-snippets'
 [[plugins]]
 repo = 'thomasfaingnaert/vim-lsp-neosnippet'
 
-# gf-user {{{3
+# gf-user {{{1
 [[plugins]]
 repo = 'kana/vim-gf-user'
 [[plugins]]
@@ -978,7 +978,7 @@ on_ft = 'ruby'
 [[plugins]]
 repo = 'pekepeke/vim-gf-vundle'
 
-# operator {{{3
+# operator {{{1
 [[plugins]]
 repo = 'kana/vim-operator-user'
 hook_add = '''
@@ -1057,7 +1057,7 @@ on_map = '<Plug>'
 repo = 'pekepeke/vim-operator-normalize-utf8mac'
 on_map = '<Plug>'
 
-# textobj {{{3
+# textobj {{{1
 [[plugins]]
 repo = 'kana/vim-textobj-user'
 hook_add = '''
@@ -1269,5 +1269,6 @@ on_map = '<Plug>'
 [[plugins]]
 repo = 'akiyan/vim-textobj-php'
 on_map = '<Plug>'
-
-
+# others {{{1
+[[plugins]]
+repo = 'takavfx/gptwriter.vim'

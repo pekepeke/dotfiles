@@ -481,7 +481,7 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
     function _cheat() {
       local _CAT=cat
       is_exec bat && _CAT=bat
-      local selected="$(find ~/.zsh/opt/cheat -type f | \
+      local selected="$(find ~/.zsh/opt/cheat ~/.zsh/opt/reference/_posts -type f | \
         fzf --preview "$_CAT {}" --bind "enter:become(echo $_CAT {})" \
         --bind 'ctrl-l:become(echo cat {})' \
         --bind 'ctrl-e:become(echo cat {} | fzf)' \

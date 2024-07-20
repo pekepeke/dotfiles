@@ -37,13 +37,14 @@ fd-find
 # emacs24-el
 # emacs24-common-non-dfsg
 
-retext
+rofi
+# retext
 gitg
 gedit-gmate
 gedit-plugins
 # chromium-browser
 google-chrome-stable
-easystroke
+# easystroke
 
 # mozc-utils-gui
 # ibus-mozc
@@ -131,8 +132,9 @@ compiz-plugins
 
 # mysql-workbench
 
+openjdk-21-jre
 # openjdk-8-jre
-oracle-java8-installer
+# oracle-java8-installer
 
 # android
 # android-emulator

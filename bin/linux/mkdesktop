@@ -46,14 +46,16 @@ EOM
 main() {
 
   if [ x"$1" = x ]; then
-    exit 1
+    usage
+    return 1
   fi
   local name=$(basename $1 2>/dev/null)
   if [ -e "$1" ]; then
     exepath="$1"
   elif ! which $1 >/dev/null 2>&1; then
     echo "$1 : command not found" 1>&2
-    exit 1
+    usage
+    return 1
   else
     exepath=$(which $1)
   fi
