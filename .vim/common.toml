@@ -1272,3 +1272,15 @@ on_map = '<Plug>'
 # others {{{1
 [[plugins]]
 repo = 'takavfx/gptwriter.vim'
+[[plugins]]
+repo = 'ryicoh/deepl.vim'
+hook_add = '''
+let g:deepl#endpoint = "https://api-free.deepl.com/v2/translate"
+" let g:deepl#auth_key = "00000000-0000-0000-0000-000000000000:fx" " or readfile(expand('~/.config/deepl.auth_key'))[0]
+
+" replace a visual selection
+command! -range -nargs=0 DeeplEN call deepl#v("EN")
+command! -range -nargs=0 DeeplJA call deepl#v("JA")
+command! -range -nargs=* Deepl call deepl#v(<f-args>)
+'''
+

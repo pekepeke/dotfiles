@@ -1,0 +1,52 @@
+[env]
+TERM = 'alacritty'
+[font]
+size = 11
+
+[font.bold]
+family = "Inconsolata Nerd Font Mono"
+style = "Bold"
+
+[font.bold_italic]
+family = "Inconsolata Nerd Font Mono"
+style = "Bold Italic"
+
+[font.italic]
+family = "Inconsolata Nerd Font Mono"
+style = "Italic"
+
+[font.normal]
+family = "Inconsolata Nerd Font Mono"
+style = "Regular"
+
+[window]
+opacity = 0.95
+# decorations = "full"
+# startup_mode = "Fullscreen"
+
+# Default colors
+[colors.primary]
+background = '#282a36'
+foreground = '#f8f8f2'
+
+# Normal colors
+[colors.normal]
+black   = '#000000'
+red     = '#ff5555'
+green   = '#50fa7b'
+yellow  = '#f1fa8c'
+blue    = '#bd93f9'
+magenta = '#ff79c6'
+cyan    = '#8be9fd'
+white   = '#bbbbbb'
+
+# Bright colors
+[colors.bright]
+black   = '#555555'
+red     = '#ff5555'
+green   = '#50fa7b'
+yellow  = '#f1fa8c'
+blue    = '#caa9fa'
+magenta = '#ff79c6'
+cyan    = '#8be9fd'
+white   = '#ffffff'
