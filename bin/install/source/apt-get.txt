@@ -69,11 +69,11 @@ trash-cli
 
 vlc
 smplayer
-jd
-comix
-gwenview
-shutter
-okular
+mcomix
+# jd
+# gwenview
+# shutter
+# okular
 gimp
 inkscape
 # keepass2
@@ -119,8 +119,8 @@ postgresql-client
 # mongodb
 mongodb-clients
 
-zeal
-guake
+# zeal
+# guake
 w3m
 filezilla
 compizconfig-settings-manager

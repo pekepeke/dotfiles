@@ -11,6 +11,7 @@ Usage: $prg_name [-h] [progname or path]
 Option:
   -a : put into ~/.local/share/applications
   -s : put into ~/.config/autostart/
+  -o : open ~/.local/share/applications
 EOM
   exit 1
 }
@@ -79,13 +80,26 @@ main() {
 
 OPTIND_OLD=$OPTIND
 OPTIND=1
-while getopts "ashv" opt; do
+while getopts "ashov" opt; do
   case $opt in
     a)
       opt_install_application=1
       ;;
     s)
       opt_install_autostart=1
+      ;;
+    o)
+      case $OSTYPE in
+        darwin*)
+          open ~/.local/share/applications
+          ;;
+        linux*)
+          xdg-open ~/.local/share/applications
+          ;;
+        *)
+          wsl-open ~/.local/share/applications
+          ;;
+      esac
       ;;
     h)
       usage ;;
