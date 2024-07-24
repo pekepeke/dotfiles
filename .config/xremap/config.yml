@@ -8,7 +8,7 @@ modmap:
 keymap:
   - name: Emacs
     application:
-      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal, obsidian.obsidian]
+      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal, Alacritty.Alacritty, obsidian.obsidian]
     remap:
       # Cursor
       C-b: { with_mark: left }
@@ -39,7 +39,7 @@ keymap:
       C-d: [delete, { set_mark: false }]
       # M-d: [C-delete, { set_mark: false }]
       # Kill line
-      C-k: [Shift-end, C-x, { set_mark: false }]
+      # C-k: [Shift-end, C-x, { set_mark: false }]
       # Kill word backward
       # Alt-backspace: [C-backspace, {set_mark: false}]
       # # set mark next word continuously.
@@ -72,7 +72,7 @@ keymap:
           u: [C-z, { set_mark: false }]
   - name: Cmd key mapping
     application:
-      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal, obsidian.obsidian]
+      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal, Alacritty.Alacritty, obsidian.obsidian]
     remap:
       # KEY_MUHENKAN
       Alt-a: C-a

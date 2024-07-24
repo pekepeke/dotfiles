@@ -1,0 +1,82 @@
+#!/bin/bash
+
+opt_allyes=0
+TARGET_DIRS="$(echo ~/.dropbox ~/.mozilla ~/.config)"
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+optimize_file() {
+  local f=$1
+  # ls -l $f
+  if [ $opt_allyes -eq 0 ]; then
+    echo "optimize?: $f [y/n/A]"
+    read INPUT
+    if [ "$INPUT" = "y" -o "$INPUT" = "Y" ]; then
+      # do nothing
+      :
+    elif [ "$INPUT" = "A" ]; then
+      opt_allyes=1
+    else
+      # continue
+      return 1
+    fi
+
+  else
+    echo "optimize: $f"
+  fi
+  echo "VACUUM;" | sqlite3 "$f"
+  # ls -l $f
+}
+
+main() {
+  local f
+  # echo $opt_allyes
+  (
+    IFS=$'\n';
+    for f in $(eval find $TARGET_DIRS -type f -regex '.*\.sqlite3?'); do
+      if [ ! -e "$f" ]; then
+        echo "file not found: $f" 1>&2
+        continue
+      fi
+      optimize_file "$f"
+    done
+  # )
+  # (
+  #   IFS=$'\n';
+    for f in $(eval find $TARGET_DIRS -type f -name '*-journal'); do
+      f=$(echo "$f" | sed 's/-journal$//')
+      echo "$f"
+      if [ ! -e "$f" ]; then
+        echo "file not found: $f" 1>&2
+        continue
+      fi
+      optimize_file "$f"
+    done
+  )
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+

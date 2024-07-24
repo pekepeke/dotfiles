@@ -1283,4 +1283,11 @@ command! -range -nargs=0 DeeplEN call deepl#v("EN")
 command! -range -nargs=0 DeeplJA call deepl#v("JA")
 command! -range -nargs=* Deepl call deepl#v(<f-args>)
 '''
-
+[[plugins]]
+repo = 'junegunn/vim-easy-align'
+hook_add = '''
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+'''

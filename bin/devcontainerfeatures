@@ -1,0 +1,43 @@
+#!/bin/bash
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  TEMP_FILE=/tmp/containers_features-$(date +'%Y%m%d').html
+
+  [ ! -e $TEMP_FILE ] && curl -L https://containers.dev/features > $TEMP_FILE
+
+    # php -r 'echo trim(strip_tags(file_get_contents("php://stdin")));' | \
+  cat $TEMP_FILE | grep "<td" | \
+    sed 's/^\s*//g' | \
+    sed 's/<[^>]*>//g' | \
+    awk '{ if (NR%4) ORS="\t"; else ORS="\n"; print }' | \
+    perl -ne '($f, $m, $r, $l) = split(/\t/); printf("%-15s %s   %s", $f, $r, $l);'
+}
+
+OPTIND_OLD=$OPTIND
+OPTIND=1
+while getopts "hvs:" opt; do
+  case $opt in
+    h)
+      usage ;;
+    v) ;;
+    s)
+      #$OPTARG
+      ;;
+  esac
+done
+shift `expr $OPTIND - 1`
+OPTIND=$OPTIND_OLD
+if [ $OPT_ERROR ]; then
+  usage
+fi
+
+main "$@"
+
