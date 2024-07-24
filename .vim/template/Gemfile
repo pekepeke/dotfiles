@@ -6,7 +6,10 @@ source "https://rubygems.org"
 # source :rubyforge
 # source :gemcutter
 
-gem 'sinatra', '0.9.4'
-gem 'haml'
+gem 'sqlite3'
 # gem "dm-is-localizable", :git => "git://github.com/snusnu/dm-is-localizable.git"
+# group :development, :test do
+#   gem 'rspec-rails'
+#   gem 'spring-commands-rspec'
+# end
 
