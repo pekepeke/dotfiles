@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -z "$1" ];then
+  $(dirname $0)/copyqlist list
+else
+	$(dirname $0)/copyqlist decode "$1"
+fi
