@@ -91,9 +91,8 @@ exec_install() {
     if matchin "$F" $SKIP_FILES ; then
       # echo -e "${GRAY}skip object $F${DEFAULT}"
       skipfiles="$skipfiles\n${GRAY}skip object $F${DEFAULT}"
-    elif [ "$F" = ".config" ]; then
-      for fname in .config/* ; do
-        echo $fname
+    elif [ "$F" = ".config" -o "$F" = ".local" ]; then
+      for fname in $F/* ; do
         if [ ! -L "$HOME/$fname" -a ! -d "$HOME/$fname" ]; then
           execfiles="$execfiles\n${YELLOW}ln -s $CDIR/${fname} $HOME/${fname}${DEFAULT}"
           ln -s "$CDIR/${fname}" "$HOME/${fname}"

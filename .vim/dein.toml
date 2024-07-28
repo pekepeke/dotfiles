@@ -1,4 +1,4 @@
-# vim:
+# vim:fdm=marker sw=2 ts=2 ft=toml expandtab:
 # =======================================================
 # [[plugins]]
 # repo = ''
@@ -104,16 +104,17 @@ function! s:build_ll_colorscheme()
   for mode in values(p)
     for colors in values(mode)
       let colors = map(colors, '[v:val.fg, v:val.bg]')
+    endfor
   endfor
-endfor
 
-let g:lightline#colorscheme#vimrc#palette = lightline#colorscheme#fill(p)
-  endfunction "}}}
-  call s:build_ll_colorscheme()
+	let g:lightline#colorscheme#vimrc#palette = lightline#colorscheme#fill(p)
+endfunction "}}}
 
-  function! s:lightline_update() "{{{3
-    if !exists('g:loaded_lightline')
-      return
+call s:build_ll_colorscheme()
+
+function! s:lightline_update() "{{{3
+  if !exists('g:loaded_lightline')
+    return
   endif
   try
     if g:colors_name =~# 'wombat\|solarized\|landscape\|jellybeans\|Tomorrow'
@@ -125,7 +126,7 @@ let g:lightline#colorscheme#vimrc#palette = lightline#colorscheme#fill(p)
   call lightline#colorscheme()
   call lightline#update()
   catch
-endtry
+  endtry
 endfunction
 MyAutoCmd ColorScheme * call <SNR>lightline_update()
 '''
@@ -1269,27 +1270,8 @@ on_cmd = [ 'Rmine', 'RmineIssue', 'RmineNewIssue']
 
 # www {{{3
 [[plugins]]
-repo = 'tyru/open-browser.vim'
-on_func = ['OpenBrowser']
-on_cmd = [ 'OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch']
-on_map = '<Plug>'
-hook_add = '''
-  nmap [!space]u <Plug>(openbrowser-open)
-  vmap [!space]u <Plug>(openbrowser-open)
-'''
-
-[[plugins]]
-repo = 'tyru/open-browser-github.vim'
-on_cmd = ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq']
-[[plugins]]
 repo = 'junegunn/vim-github-dashboard'
 on_cmd = [ 'GHD', 'GHA', 'GHDashboard', 'GHActivity' ]
 [[plugins]]
-repo = 'mattn/webapi-vim'
-[[plugins]]
 repo = 'mattn/excitetranslate-vim'
 on_cmd = ['ExciteTranslate']
-[[plugins]]
-repo = 'mattn/gist-vim'
-on_cmd = ['Gist']
-

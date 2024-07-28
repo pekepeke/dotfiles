@@ -6,6 +6,9 @@ repo = "fdschmidt93/telescope-egrepify.nvim"
 [[plugins]]
 repo = 'folke/trouble.nvim'
 [[plugins]]
+repo = 'nvim-telescope/telescope-fzf-native.nvim'
+build = 'make'
+[[plugins]]
 repo = 'nvim-telescope/telescope.nvim'
 hook_add = '''
 lua <<EOF

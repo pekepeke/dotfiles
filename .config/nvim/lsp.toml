@@ -4,6 +4,10 @@ repo = "neovim/nvim-lspconfig"
 [[plugins]]
 repo = "williamboman/mason-lspconfig.nvim"
 [[plugins]]
+repo = "tamago324/nlsp-settings.nvim"
+[[plugins]]
+repo = "nvimtools/none-ls.nvim"
+[[plugins]]
 repo = "williamboman/mason.nvim"
 hook_add = '''
 lua <<EOF

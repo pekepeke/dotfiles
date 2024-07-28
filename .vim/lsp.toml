@@ -1,4 +1,4 @@
-# completion {{{4
+# completion
 [[plugins]]
 repo = 'Shougo/ddc.vim'
 hook_add = '''
@@ -143,6 +143,7 @@ inoremap <C-p>   <Cmd>call pum#map#select_relative(-1)<CR>
 inoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
 inoremap <C-y><C-y>   <Cmd>call pum#map#confirm()<CR>
 inoremap <C-y>y   <Cmd>call pum#map#confirm()<CR>
+inoremap <C-j>   <Cmd>call pum#map#confirm()<CR><CR>
 inoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
 " call ddc#custom#patch_global(#{
 "         \   ui: 'pum',
@@ -246,6 +247,8 @@ repo = 'Shougo/ddc-filter-sorter_rank'
 [[plugins]]
 repo = 'Shougo/ddc-converter_remove_overlap'
 
+[[plugins]]
+repo = 'prabirshrestha/async.vim'
 [[plugins]]
 repo = 'prabirshrestha/vim-lsp'
 hook_add = '''
@@ -803,4 +806,9 @@ repo = 'Shougo/ddu-column-filename'
 repo = 'tennashi/ddu-kind-extcmd'
 [[plugins]]
 repo = 'flow6852/ddu-kind-vim_type'
+
+[[plugins]]
+repo = 'thomasfaingnaert/vim-lsp-snippets'
+[[plugins]]
+repo = 'thomasfaingnaert/vim-lsp-neosnippet'
 

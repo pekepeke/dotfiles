@@ -957,10 +957,25 @@ hook_add = '''
 '''
 [[plugins]]
 repo = 'Shougo/neosnippet-snippets'
+
 [[plugins]]
-repo = 'thomasfaingnaert/vim-lsp-snippets'
+repo = 'tyru/open-browser.vim'
+on_func = ['OpenBrowser']
+on_cmd = [ 'OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch']
+on_map = '<Plug>'
+hook_add = '''
+  nmap [!space]u <Plug>(openbrowser-open)
+  vmap [!space]u <Plug>(openbrowser-open)
+'''
+
 [[plugins]]
-repo = 'thomasfaingnaert/vim-lsp-neosnippet'
+repo = 'tyru/open-browser-github.vim'
+on_cmd = ['OpenGithubFile', 'OpenGithubIssue', 'OpenGithubPullReq']
+[[plugins]]
+repo = 'mattn/webapi-vim'
+[[plugins]]
+repo = 'mattn/gist-vim'
+on_cmd = ['Gist']
 
 # gf-user {{{1
 [[plugins]]

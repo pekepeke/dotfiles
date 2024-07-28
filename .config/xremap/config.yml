@@ -56,20 +56,20 @@ keymap:
       # Cancel
       C-g: [esc, { set_mark: false }]
       # C-x YYY
-      C-x:
-        remap:
-          # C-x h (select all)
-          h: [C-home, C-a, { set_mark: true }]
-          # C-x C-f (open)
-          C-f: C-o
-          # C-x C-s (save)
-          C-s: C-s
-          # C-x k (kill tab)
-          k: C-f4
-          # C-x C-c (exit)
-          C-c: C-q
-          # C-x u (undo)
-          u: [C-z, { set_mark: false }]
+      # C-x:
+      #   remap:
+      #     # C-x h (select all)
+      #     h: [C-home, C-a, { set_mark: true }]
+      #     # C-x C-f (open)
+      #     C-f: C-o
+      #     # C-x C-s (save)
+      #     C-s: C-s
+      #     # C-x k (kill tab)
+      #     k: C-f4
+      #     # C-x C-c (exit)
+      #     C-c: C-q
+      #     # C-x u (undo)
+      #     u: [C-z, { set_mark: false }]
   - name: Cmd key mapping
     application:
       not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal, Alacritty.Alacritty, obsidian.obsidian]
@@ -100,4 +100,33 @@ keymap:
       Alt-w: C-w
       Alt-x: C-x
       Alt-y: C-y
-      Alt-z: C-z
+      # Alt-z: C-z
+      Alt-z:
+        remap:
+          Alt-a: Alt-a
+          Alt-b: Alt-b
+          Alt-c: Alt-c
+          Alt-d: Alt-d
+          Alt-e: Alt-e
+          Alt-f: Alt-f
+          Alt-g: Alt-g
+          Alt-h: Alt-h
+          Alt-i: Alt-i
+          Alt-j: Alt-j
+          Alt-k: Alt-k
+          Alt-l: Alt-l
+          Alt-m: Alt-m
+          Alt-n: Alt-n
+          Alt-o: Alt-o
+          Alt-p: Alt-p
+          Alt-q: Alt-q
+          Alt-r: Alt-r
+          Alt-s: Alt-s
+          Alt-t: Alt-t
+          Alt-u: Alt-u
+          Alt-v: Alt-v
+          Alt-w: Alt-w
+          Alt-x: Alt-x
+          Alt-y: Alt-y
+          Alt-z: Alt-z
+
