@@ -11,8 +11,8 @@ hook_add = '''
   \ 'dictionary',
   \ 'ale',
   \ 'omni',
-  \ 'cmdline', 'cmdline-history',
   \ ])
+  "\ 'cmdline', 'cmdline-history', 'shell-native',
 	call ddc#custom#patch_filetype(['vim', 'toml'], 'sources', ['necovim'])
 
 "	    \   'matchers': ['matcher_head'],
@@ -46,6 +46,7 @@ hook_add = '''
 		\ },
 	    \ 'cmdline': #{ mark: 'cmdline'},
 	    \ 'cmdline-history': #{ mark: 'history' },
+		\ 'shell-native': #{ mark: 'zsh' },
 		\ })
 call ddc#custom#patch_global('sourceParams', #{
     \ lsp: #{
@@ -75,6 +76,7 @@ call ddc#custom#patch_global('sourceParams', #{
 	\   maxNumResults: 10,
 	\ },
 	\ around: #{ maxSize: 500 },
+	\ shell-native: #{ shell: 'zsh' },
 	\ })
 call ddc#enable()
 '''
@@ -151,7 +153,7 @@ inoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
 "         \     'InsertEnter', 'TextChangedI', 'TextChangedP', 'CmdlineChanged',
 "         \   ],
 "         \   cmdlineSources: {
-"         \     ':': ['cmdline', 'cmdline-history', 'around'],
+"         \     ':': ['cmdline', 'cmdline-history', 'shell-native', 'around'],
 "         \   },
 "         \ })
 " nnoremap :       <Cmd>call CommandlinePre()<CR>:
@@ -236,6 +238,8 @@ hook_add = '''
 
 [[plugins]]
 repo = 'Shougo/ddc-source-around'
+[[plugins]]
+repo = 'Shougo/ddc-source-shell-native'
 [[plugins]]
 repo = 'Shougo/ddc-source-cmdline'
 [[plugins]]

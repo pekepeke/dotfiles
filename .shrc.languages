@@ -92,6 +92,7 @@ if ! is_mac ; then
   # export _JAVA_OPTIONS
 fi
 # python {{{2
+[ -e "$HOME/.rye/env" ] && . "$HOME/.rye/env"
 export PYTHONSTARTUP=~/.pyrc
 # node {{{2
 PATH="node_modules/.bin:$PATH"

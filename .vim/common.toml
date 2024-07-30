@@ -1286,6 +1286,12 @@ repo = 'akiyan/vim-textobj-php'
 on_map = '<Plug>'
 # others {{{1
 [[plugins]]
+repo = 'pekepeke/vim-trimr'
+hook_add = '''
+let g:trimr_method = 'ignore_filetype'
+let g:trimr_targets = ['markdown', 'mkd', 'textile']
+'''
+[[plugins]]
 repo = 'takavfx/gptwriter.vim'
 [[plugins]]
 repo = 'ryicoh/deepl.vim'
@@ -1305,4 +1311,14 @@ hook_add = '''
 xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
+'''
+[[plugins]]
+repo = 'madox2/vim-ai'
+hook_add = '''
+" let g:vim_ai_token_file_path = '~/.config/openai.token'
+'''
+[[plugins]]
+repo = 'lambdalisue/vim-gin'
+hook_add = '''
+
 '''

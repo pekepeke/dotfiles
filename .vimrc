@@ -937,6 +937,21 @@ nnoremap <M-v> P
 vnoremap <M-c> y
 vnoremap <M-x> x
 
+" if &diff
+" //2 = target-branch, //3 = merge branch
+if d#is_mac()
+  map <leader>1 :diffget //2 <Bar> duffupdate<CR>
+  map <leader>2 :diffget //3 <Bar> duffupdate<CR>
+  map <leader>3 :diffupdate <Bar>
+    \ echo '<Leader>1 = merges from target branch(left buffer), '."\n"
+    \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
+else
+  map <leader>1 :diffget LOCAL <Bar> duffupdate<CR>
+  map <leader>2 :diffget REMOTE <Bar> duffupdate<CR>
+  map <leader>3 :diffupdate <Bar>
+    \ echo '<Leader>1 = merges from target branch(left buffer), '."\n"
+    \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
+endif
 " winmove & winsize {{{2
 nnoremap <silent> <C-Left>  :wincmd h<CR>
 nnoremap <silent> <C-Right> :wincmd l<CR>

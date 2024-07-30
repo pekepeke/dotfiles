@@ -341,13 +341,6 @@ map F <Plug>(clever-f-F)
 " map T <Plug>(clever-f-T)
 '''
 
-# =======================================================
-[[plugins]]
-repo = 'pekepeke/vim-trimr'
-hook_add = '''
-let g:trimr_method = 'ignore_filetype'
-let g:trimr_targets = ['markdown', 'mkd', 'textile']
-'''
 # repo = 'othree/eregex.vim'
 # on_cmd = ['E2v', 'M', 'S', 'G', 'V']
 # hook_add = '''
@@ -739,8 +732,6 @@ repo = 'ujihisa/shadow.vim'
 [[plugins]]
 repo = 'mhinz/vim-hugefile'
 [[plugins]]
-repo = 'tpope/vim-git'
-[[plugins]]
 repo = 'tpope/vim-fugitive'
 on_cmd = [ "Git", "Gstatus", "Gcommit", "Gedit", "Gwrite", "Ggrep", "Glog", "Gdiff"]
 hook_add = '''
@@ -753,22 +744,6 @@ function! s:git_qfix(...)
   " TODO: "
   Unite -no-quit quickfix
 endfunction
-  " if &diff
-  " //2 = target-branch, //3 = merge branch
-  if d#is_mac()
-    map <leader>1 :diffget //2 <Bar> duffupdate<CR>
-    map <leader>2 :diffget //3 <Bar> duffupdate<CR>
-    map <leader>3 :diffupdate <Bar>
-      \ echo '<Leader>1 = merges from target branch(left buffer), '."\n"
-      \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
-  else
-    map <leader>1 :diffget LOCAL <Bar> duffupdate<CR>
-    map <leader>2 :diffget REMOTE <Bar> duffupdate<CR>
-    map <leader>3 :diffupdate <Bar>
-      \ echo '<Leader>1 = merges from target branch(left buffer), '."\n"
-      \ . '<Leader>2 = merges from merge branch(right buffer)'<CR>
-  endif
-  " endif
 
   nnoremap <silent> [!space]gd :<C-u>Gdiff --cached<CR>
   nnoremap <silent> [!space]gD :<C-u>Gdiff<CR>
@@ -839,27 +814,27 @@ on_cmd = [ "Gapply"]
 
 # repo = 'gregsexton/gitv'
 # on_cmd = ['Gitv']
-hook_add = '''
-  let g:Gitv_OpenHorizontal = 1
-  let g:Gitv_WipeAllOnClose = 1
-  let g:Gitv_DoNotMapCtrlKey = 1
+# hook_add = '''
+#   let g:Gitv_OpenHorizontal = 1
+#   let g:Gitv_WipeAllOnClose = 1
+#   let g:Gitv_DoNotMapCtrlKey = 1
 
-  MyAutoCmd FileType gitv call s:vimrc_gitv_init()
-  MyAutoCmd FileType git setlocal foldlevel=99
-  " MyAutoCmd FileReadCmd,BufReadCmd fugitive://** setlocal foldlevel=99
-  function! s:vimrc_gitv_init()
-    setlocal iskeyword+=/,-,.
+#   MyAutoCmd FileType gitv call s:vimrc_gitv_init()
+#   MyAutoCmd FileType git setlocal foldlevel=99
+#   " MyAutoCmd FileReadCmd,BufReadCmd fugitive://** setlocal foldlevel=99
+#   function! s:vimrc_gitv_init()
+#     setlocal iskeyword+=/,-,.
 
-    nnoremap <buffer> gx :<C-u>Gbrowse <C-r>=GitvGetCurrentHash()<CR><CR>
-    if d#is_installed('unite.vim')
-      nnoremap <buffer><nowait> [!space] :<C-u>Unite menu:ft_gitv<CR>
-    endif
-  endfunction
+#     nnoremap <buffer> gx :<C-u>Gbrowse <C-r>=GitvGetCurrentHash()<CR><CR>
+#     if d#is_installed('unite.vim')
+#       nnoremap <buffer><nowait> [!space] :<C-u>Unite menu:ft_gitv<CR>
+#     endif
+#   endfunction
 
-  function! GitvGetCurrentHash()
-    return matchstr(getline('.'), '\[\zs.\{7\}\ze\]$')
-  endfunction
-'''
+#   function! GitvGetCurrentHash()
+#     return matchstr(getline('.'), '\[\zs.\{7\}\ze\]$')
+#   endfunction
+# '''
 [[plugins]]
 repo = 'cohama/agit.vim'
 on_cmd = ['Agit', 'AgitGit', 'AgitFile']

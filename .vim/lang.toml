@@ -217,6 +217,14 @@ repo = 'soh335/vim-ref-jquery'
 repo = 'taka84u9/vim-ref-ri'
 [[plugins]]
 repo = 'mfumi/ref-dicts-en'
+# [[plugins]]
+# repo = 'nishigori/vim-ref-phpunit'
+[[plugins]]
+repo = 'eiiches/vim-ref-gtkdoc'
+[[plugins]]
+repo = 'eiiches/vim-ref-info'
+[[plugins]]
+repo = 'mojako/ref-sources.vim'
 
 [[plugins]]
 repo = 'vim-ruby/vim-ruby'
@@ -505,6 +513,10 @@ repo = 'glidenote/keepalived-syntax.vim'
 repo = 'dag/vim-fish'
 # repo = 'Shougo/vim-nyaos'
 [[plugins]]
+repo = 'tpope/vim-git'
+[[plugins]]
+repo = 'kblin/vim-fountain'
+[[plugins]]
 repo = 'jparise/vim-graphql'
 [[plugins]]
 repo = 'skanehira/denops-docker.vim'
@@ -514,4 +526,3 @@ repo = 'skanehira/k8s.vim'
 repo = 'skanehira/denops-graphql.vim'
 [[plugins]]
 repo = 'hashivim/vim-terraform'
-
