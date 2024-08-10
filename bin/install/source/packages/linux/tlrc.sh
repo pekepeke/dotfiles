@@ -29,6 +29,7 @@ main() {
   curl -LO $DL_URL
   tar xvf $(basename $DL_URL) -C /tmp/
   mv /tmp/$PG $INSTALL_DIR
+  # mv /tmp/$(basename $DL_URL .tar.gz)/$PG $INSTALL_DIR
   rm -f $(basename $DL_URL)
 }
 

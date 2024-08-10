@@ -10,8 +10,8 @@ EOM
 }
 
 main() {
-  AUTHOR=sharkdp
-  PG=vivid
+  AUTHOR=hadolint
+  PG=hadolint
   INSTALL_DIR=~/.local/bin
   if [ -e "$INSTALL_DIR/$PG" ]; then
     echo "already installed: $INSTALL_DIR/$PG"
@@ -19,7 +19,8 @@ main() {
   fi
   ARCH=`uname -m`
   DL_URL="$(curl -s https://api.github.com/repos/$AUTHOR/$PG/releases/latest \
-| grep "browser_download_url.*$ARCH-.*linux-musl" \
+| grep -v sha256 \
+| grep "browser_download_url.*$(uname -s).*$ARCH" \
 | cut -d : -f 2,3 \
 | tr -d \")"
   if [ "$DL_URL" = "" ]; then
@@ -27,10 +28,12 @@ main() {
     return 1
   fi
   curl -LO $DL_URL
-  tar xvf $(basename $DL_URL) -C /tmp/
+  chmod 755 /tmp/$(basename $DL_URL)
+  mv /tmp/$(basename $DL_URL) $INSTALL_DIR
+  # tar xvf $(basename $DL_URL) -C /tmp/
   # mv /tmp/$PG $INSTALL_DIR
-  mv /tmp/$(basename $DL_URL .tar.gz)/$PG $INSTALL_DIR
-  rm -f $(basename $DL_URL)
+  # # mv /tmp/$(basename $DL_URL .tar.gz)/$PG $INSTALL_DIR
+  # rm -f $(basename $DL_URL)
 }
 
 OPTIND_OLD=$OPTIND
