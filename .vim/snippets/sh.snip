@@ -26,6 +26,51 @@ snippet case
 		${2:pattern})
 			${3};;
 	esac
+snippet casea
+	case `uname -m` in
+		alpha) ;;
+		arc) ;;
+		arm) ;;
+		aarch64_be) ;; # (arm64)
+		aarch64) ;; # (arm64)
+		armv8b) ;; # (arm64 compat)
+		armv8l) ;; # (arm64 compat)
+		blackfin) ;;
+		c6x) ;;
+		cris) ;;
+		frv) ;;
+		h8300) ;;
+		hexagon) ;;
+		ia64) ;;
+		m32r) ;;
+		m68k) ;;
+		metag) ;;
+		microblaze) ;;
+		mips) ;; # (native or compat)
+		mips64) ;; # (mips)
+		mn10300) ;;
+		nios2) ;;
+		openrisc) ;;
+		parisc) ;; # (native or compat)
+		parisc64) ;; # (parisc)
+		ppc) ;; # (powerpc native or compat)
+		ppc64) ;; # (powerpc)
+		ppcle) ;; # (powerpc native or compat)
+		ppc64le) ;; # (powerpc)
+		s390) ;; # (s390x compat)
+		s390x) ;;
+		score) ;;
+		sh) ;;
+		sh64) ;; # (sh)
+		sparc) ;; # (native or compat)
+		sparc64) ;; # (sparc)
+		tile) ;;
+		unicore32) ;;
+		i386) ;; # (x86)
+		i686) ;; # (x86 compat)
+		x86_64) ;; # (x64)
+		xtensa) ;;
+	esac
 snippet func
 	function ${1:func} {
 		$2
