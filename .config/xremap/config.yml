@@ -8,7 +8,7 @@ modmap:
 keymap:
   - name: Emacs
     application:
-      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal, Alacritty.Alacritty, obsidian.obsidian]
+      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal, Alacritty.Alacritty, obsidian.obsidian, Vivaldi-stable]
     remap:
       # Cursor
       C-b: { with_mark: left }
@@ -72,7 +72,7 @@ keymap:
       #     u: [C-z, { set_mark: false }]
   - name: Cmd key mapping
     application:
-      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal, Alacritty.Alacritty, obsidian.obsidian]
+      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal, Alacritty.Alacritty, obsidian.obsidian, Vivaldi-stable]
     remap:
       # KEY_MUHENKAN
       Alt-a: C-a
