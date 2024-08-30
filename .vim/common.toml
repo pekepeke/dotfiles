@@ -530,6 +530,7 @@ let g:fern#default_hidden = 1
 let g:fern#default_exclude = '\.git$\|\.DS_Store'
 
 nnoremap <Leader>f <Cmd>Fern . -drawer<CR>
+nnoremap <Leader>F <Cmd>Fern %:p:h -drawer<CR>
 
 function! s:init_fern() abort
   " Use 'select' instead of 'edit' for default 'open' action
