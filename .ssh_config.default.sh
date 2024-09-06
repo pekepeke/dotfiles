@@ -51,6 +51,7 @@ Host *-ec2-
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
     # LogLevel QUIET # warning がうざいときに
+    # ProxyCommand sh -c "aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
 
 # Host localhost
 #    User docker
