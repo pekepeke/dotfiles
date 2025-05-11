@@ -1,0 +1,14 @@
+#!/bin/bash
+
+for d in /usr/share/spotify ; do
+  if [ -e "$d" ]; then
+    DEFAULT_OPTS="-P $d"
+    break
+  fi
+done
+
+bash <(curl -sSL https://raw.githubusercontent.com/SpotX-Official/SpotX-Bash/main/spotx.sh) "$@" $DEFAULT_OPTS
+RET=$?
+[ $RET -ne 0 ] && echo "exit code=$RET" 1>&2
+exit $RET
+

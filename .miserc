@@ -1,0 +1,22 @@
+# vim:fdm=marker sw=2 ts=2 ft=sh expandtab:
+export ASDF_VIM_CONFIG='
+--with-tlib=ncurses
+--with-compiledby=asdf
+--enable-multibyte
+--enable-cscope
+--enable-terminal
+--enable-rubyinterp
+--enable-pythoninterp
+--enable-python3interp
+--enable-perlinterp
+--enable-tclinterp
+--enable-mzschemeinterp
+--enable-luainterp
+--with-luajit
+--with-lua-prefix=/usr
+--enable-gui=gtk2
+--enable-gpm
+--enable-xim
+--enable-fontset
+'
+

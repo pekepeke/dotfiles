@@ -1129,7 +1129,7 @@ hook_add = '''
 [[plugins]]
 repo = 'rbtnn/vimconsole.vim'
 on_cmd = [
-  'VimConsoleLog', 'VimConsoleOpen', 'VimConsoleWarn', 'VimConsoleError',
+  'VimConsoleLog', 'VimConsoleOpen', 'VimConsoleWarn',
   'VimConsoleError', 'VimConsoleToggle', 'VimConsoleClear', 'VimConsoleRedraw',
 ]
 hook_add = '''

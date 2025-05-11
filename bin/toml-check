@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+
+import toml
+import sys
+
+for fpath in sys.argv[1:]:
+    with open(fpath, "r") as f:
+        config = toml.load(f)
+

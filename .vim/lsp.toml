@@ -371,7 +371,7 @@ call ddu#custom#patch_global({
 
 let s:fd_bin = executable('fdfind') ? 'fdfind' : 'fd'
 
-call ddu#custom#alias('source', 'directory_rec', 'file_external')
+call ddu#custom#alias('default', 'source', 'directory_rec', 'file_external')
 call ddu#custom#patch_global('sourceParams', {
 	 \   'directory_rec': {
 	 \     'cmd': [s:fd_bin, '.', '-H', '-t', 'd']

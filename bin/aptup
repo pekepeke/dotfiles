@@ -9,9 +9,11 @@ EOM
 }
 
 main() {
-  curl -LsSf https://rye-up.com/get | bash
+  while ! sudo apt update; do
+    sleep 1
+  done
+  sudo apt upgrade
 }
-
 
 OPTIND_OLD=$OPTIND
 OPTIND=1

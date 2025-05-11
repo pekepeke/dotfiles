@@ -1,0 +1,65 @@
+#!/bin/bash
+
+PLUGINS="
+flutter  https://github.com/oae/asdf-flutter.git
+haskell  https://github.com/asdf-community/asdf-haskell.git
+lua      https://github.com/Stratus3D/asdf-lua.git
+mysql    https://github.com/iroddis/asdf-mysql.git
+neovim   https://github.com/richin13/asdf-neovim.git
+perl     https://github.com/ouest/asdf-perl.git
+php      https://github.com/asdf-community/asdf-php.git
+scala    https://github.com/asdf-community/asdf-scala.git
+vim      https://github.com/tsuyoshicho/asdf-vim.git
+"
+
+usage() {
+  prg_name=`basename $0`
+  cat <<EOM
+  Usage: $prg_name [-h]
+EOM
+  exit 1
+}
+
+main() {
+  unalias mise > /dev/null 2>&1
+
+  if ! which mise >/dev/null 2>&1; then
+    curl https://mise.run | sh
+    echo '### write codes on your .[shell]rc'
+    echo 'eval "$(mise activate $(basename $SHELL))"'
+
+    eval "$(mise activate $(basename $SHELL))"
+
+    while read PLUG URL ; do
+      [ "$PLUG" == "" -o "$URL" == "" ] && continue
+      mise plugins install $PLUG $URL
+      [ $? -ne 0 ] && echo "### cannnot install plugin: $PLUG $URL"
+    done <<< "${PLUGINS}"
+  fi
+  [ -e ~/.miserc ] && source ~/.miserc
+  # grep -v '' | \
+  PATH="$(echo $PATH | sed 's/:/\n/g' | \
+    grep -v '/.rye/' | \
+    xargs | tr ' ' ':')" mise $@
+}
+
+#OPTIND_OLD=$OPTIND
+#OPTIND=1
+#while getopts "hvs:" opt; do
+#  case $opt in
+#    h)
+#      usage ;;
+#    v) ;;
+#    s)
+#      #$OPTARG
+#      ;;
+#  esac
+#done
+#shift `expr $OPTIND - 1`
+#OPTIND=$OPTIND_OLD
+#if [ $OPT_ERROR ]; then
+#  usage
+#fi
+
+main "$@"
+

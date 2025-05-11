@@ -150,26 +150,7 @@ elif [ -e ~/.local/bin/mise ]; then
   eval "$(~/.local/bin/mise activate $SHELL_NAME)"
 fi
 
-export ASDF_VIM_CONFIG='
---with-tlib=ncurses
---with-compiledby=asdf
---enable-multibyte
---enable-cscope
---enable-terminal
---enable-rubyinterp
---enable-pythoninterp
---enable-python3interp
---enable-perlinterp
---enable-tclinterp
---enable-mzschemeinterp
---enable-luainterp
---with-luajit
---with-lua-prefix=/usr
---enable-gui=gtk2
---enable-gpm
---enable-xim
---enable-fontset
-'
+alias mise=mise-exec
 
 shrc_section_title "finalize" # {{{1
 env_unique PATH

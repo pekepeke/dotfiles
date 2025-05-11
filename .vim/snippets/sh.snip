@@ -17,6 +17,14 @@ snippet wh
 	while [[ ${1:condition} ]]; do
 		${2:#statements}
 	done
+snippet whf whilef
+	while read _LINE ; do
+		echo "$_LINE"
+	done < ${1:file}
+snippet whv whilev
+	while read _LINE ; do
+		echo "$_LINE"
+	done <<< ${1:var}
 snippet until
 	until [[ ${1:condition} ]]; do
 		${2:#statements}
