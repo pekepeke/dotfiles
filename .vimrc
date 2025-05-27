@@ -1177,7 +1177,9 @@ if has('gui_running')
       nnoremap <M-x> :<C-u>simalt ~x<CR>
       nnoremap <M-r> :<C-u>simalt ~r<CR>
       nnoremap <M-s> :<C-u>simalt ~s<CR>
-      execute 'nnoremap <A-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
+      if exists('&transparency')
+        execute 'nnoremap <A-Left> :<C-u>call <SID>set_transparency(' . &transparency . ')<CR>'
+      endif
     endfunction
     MyAutoCmd GUIEnter * call s:map_gui()
   endif
@@ -1691,7 +1693,7 @@ if s:bundle.tap('lightline.vim')
   function! g:ll_helper.git()
     if g:vimrc_enabled_plugins.gita
       return self.shorten(gita#statusline#format('%lb'), 10)
-    elseif g:vimrc_enabled_plugins.fugitive
+    elseif g:vimrc_enabled_plugins.fugitive && exists('*fugitive#Head')
       let s = fugitive#Head()
       return self.shorten(s, 10)
     endif

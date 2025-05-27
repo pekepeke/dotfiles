@@ -1,0 +1,121 @@
+" vim:fdm=marker sw=2 ts=2 ft=vim expandtab:
+" env {{{1
+let s:is_mac = has('macunix') || (executable('uname') && system('uname') =~? '^darwin')
+let s:is_win = has('win16') || has('win32') || has('win64')
+
+" template {{{1
+let g:author                          = ""
+let g:email                           = ""
+let g:company                         = ""
+
+" gptwriter
+let g:gptwriter_key = ''
+
+" hatena.vim & changelog, etc "{{{1
+" hateblo.vim {{{2
+let g:hateblo_vim = {
+\ 'user':         'user_name',
+\ 'api_key':      'api_key',
+\ 'api_endpoint': 'http://.../atom',
+\ 'WYSIWYG_mode': 0,
+\ 'always_yes':   0,
+\ 'edit_command': 'split',
+\ }
+" hatena {{{2
+let g:hatena_user                     = ''
+let g:hatena_group_name               = ''
+
+" hatenablog {{{2
+let g:hatenablog_config = {
+\ 'username'  : "hatena_id",
+\ 'domain'    : "blog_domain",
+\ 'password'  : "api_key"
+\}
+
+" changelog {{{2
+let g:changelog_timeformat            = "%Y-%m-%d"
+let g:changelog_username              = ""
+let g:changelog_date_end_entry_search = '^\s*$'
+
+" languages, or web services {{{1
+" vdebug {{{2
+let g:vdebug_options = get(g:, 'vdebug_options', {})
+" let g:vdebug_options.path_maps = {
+"   \ "remote": "local",
+"   \ }
+
+" php-doc.vim {{{2
+let g:pdv_cfg_Type = "mixed"
+let g:pdv_cfg_Package = ""
+let g:pdv_cfg_Version = "$id$"
+let g:pdv_cfg_Author = g:author
+let g:pdv_cfg_Copyright = empty(g:company) ? printf("%s All Rights Reserved", g:company) : ""
+let g:pdv_cfg_License = ""
+
+" rmine.vim {{{2
+let g:rmine_server_url = 'http://localhost:3000'
+let g:rmine_access_key = 'access key'
+
+" unite-issue {{{2
+" nmap [!unite]ii :<C-u>Unite issue:github<CR>
+" nmap [!unite]ii :<C-u>Unite issue:jira<CR>
+let g:github_token = ''
+" let g:unite_source_issue_github_state_table = {
+"   \ 'open': 'O',  'closed': 'C' }
+let g:jira_url = 'https://bugs.jira.com'
+let g:jira_username = ''
+let g:jira_password = ''
+" let g:unite_source_issue_jira_priority_table = {
+"   \ 10000: '◡', 1: '⚡', 2: 'ᛏ', 3: '●', 4: '○', 5: '▽' }
+" let g:unite_source_issue_jira_status_table = {
+"   \ 1: 'plan', 3: 'develop', 4: 'reopened', 5: 'resolved', 6: 'closed',
+"   \ 10000: 'feedback', 10001: 'staged', 10002: 'waiting',
+"   \ 10003: 'deployed', 10004: 'pending', 10008: 'review' }
+" let g:unite_source_issue_jira_type_table = {
+"   \ 1: 'bug', 2: 'feature', 3: 'task', 4: 'change', 5: 'sub-task',
+"   \ 6: 'epic', 7: 'story', 8: 'system', 9: 'sub-bug' }
+
+" unite_yarm {{{2
+" let g:unite_yarm_server_url = 'http://localhost:3000'
+" let g:unite_yarm_access_key = 'your API access key'
+" let g:unite_yarm_limit = 25
+" let g:unite_yarm_backup_dir = $VIM_CACHE . '/vim-unite_yarm'
+
+" lingr.vim {{{2
+let g:lingr_vim_user = ""
+let g:lingr_vim_password = ""
+
+" vimplenote.vim {{{2
+let g:VimpleNoteUsername = ""
+let g:VimpleNotePassword = ""
+
+" dbext.vim {{{2
+let g:dbext_default_MYSQL_definer = 'root@localhost'
+let g:dbext_default_stored_proc_author = 'root'
+
+let g:dbext_default_user="root"
+let g:dbext_default_passwd=""
+"let g:dbext_default_dbname=""
+let g:dbext_default_host="localhost"
+let g:dbext_default_port=3306
+"let g:dbext_default_usermaps=0
+let g:dbext_default_MYSQL_bin = 'mysql'
+
+" trans.vim {{{2
+let g:bing_client_id = ''
+let g:bing_client_secret = ''
+let g:baidu_client_id = ''
+let g:youdao_client_id = ''
+
+" vimrc {{{1
+if s:is_win
+  let g:my_chm_dir = expand("")
+  let g:my_cheatsheets_dir = expand("")
+elseif s:is_mac
+  let g:my_chm_dir = expand('')
+  let g:my_chm_command = 'open -a iChm'
+  let g:my_cheatsheets_dir = expand("")
+endif
+
+" vim: set fdm=marker sw=2 ts=2 et:
+" __END__

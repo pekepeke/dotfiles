@@ -1,9 +1,11 @@
 # vim:fdm=marker sw=2 ts=2 ft=gitconfig expandtab:
 [difftool "winmerge"]
-  path = C:/Program Files (x86)/WinMerge/WinMergeU.exe
-  cmd = \"C:/Program Files (x86)/WinMerge/WinmergeU.exe\" -r -u \"$LOCAL\" \"$REMOTE\"
-  ; path = C:/Apps/WinMerge/WinMergeU.exe
-  ; cmd = \"C:/Apps/WinMerge/WinMergeU.exe\" -e -ub -dl \"Base\" -dr \"Mine\" \"$LOCAL\" \"$REMOTE\"
+  path = $USERPROFILE/AppData/Local/Programs/WinMerge/WinMergeU.exe
+  cmd = \"$USERPROFILE/AppData/Local/Programs/WinMerge/WinMergeU.exe\" -r -u \"$LOCAL\" \"$REMOTE\"
+  ; path = C:/Program Files (x86)/WinMerge/WinMergeU.exe
+  ; cmd = \"C:/Program Files (x86)/WinMerge/WinmergeU.exe\" -r -u \"$LOCAL\" \"$REMOTE\"
+  ; path = $USERPROFILE/Apps/WinMerge/WinMergeU.exe
+  ; cmd = \"$USERPROFILE/Apps/WinMerge/WinMergeU.exe\" -e -ub -dl \"Base\" -dr \"Mine\" \"$LOCAL\" \"$REMOTE\"
 
 [mergetool "p4merge"]
   cmd = "p4merge.exe $BASE $LOCAL $REMOTE $MERGED"

@@ -33,7 +33,7 @@ if s:is_win " {{{2
   command! -nargs=0 RictyBig set guifont=Ricty:h20 guifontwide=Ricty:h20
   command! -nargs=0 RictyDiminishedBig set guifont=Ricty\ Diminished:h20 guifontwide=Ricty\ Diminished:h20
 
-  MyAutoCmd GUIEnter * set transparency=210
+  MyAutoCmd GUIEnter * if exists('&transparency') | set transparency=210 | endif
 
   if filereadable($WINDIR . '\Fonts\Ricty-Regular.ttf')
     Ricty
@@ -64,7 +64,7 @@ if s:is_win " {{{2
   set linespace=2 " 行間隔
   "set guioptions=egmrLt
   set guioptions=te
-  set transparency=210
+  if exists('&transparency') | set transparency=210 | endif
 
   if has('kaoriya')
     set iminsert=0 imsearch=0
@@ -102,7 +102,7 @@ elseif s:is_mac "{{{2
       set printfont=Osaka-Mono:h14
     endif
 
-    set transparency=10
+    if exists('&transparency') | set transparency=10 | endif
     augroup gvimrc-hack234
       autocmd!
       if has('mac')

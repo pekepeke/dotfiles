@@ -87,9 +87,9 @@ export LS_OPTIONS
 
 shrc_section_title "###" #{{{1
 _SHELL_NAME=${SHELL##*/}
-eval "$(zoxide init $_SHELL_NAME)"
-eval "$(fzf --$_SHELL_NAME)"
-export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
+is_exec zoxide && eval "$(zoxide init $_SHELL_NAME)"
+is_exec fzf && eval "$(fzf --$_SHELL_NAME)"
+is_exec rg && export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
 
 
 shrc_section_title "aliases" #{{{1

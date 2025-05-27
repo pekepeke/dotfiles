@@ -1,6 +1,7 @@
 #!/bin/bash
 # vim:fdm=marker sw=2 ts=2 ft=sh expandtab:
 
+USERNAME=`git config get user.name`
 _print_config() {
   DIFFTOOL="vimdiff"
   MERGETOOL="vimfugitive"
@@ -34,8 +35,8 @@ _print_config() {
   path = ~/.gitconfig.d/difftool.local.txt
   path = ~/.gitconfig.d/interactive.txt
 [user]
-  name = hoge
-  email = hoge+git@gmail.com
+  name = $USERNAME
+  email = $USERNAME+git@gmail.com
 [push]
   default = simple
 ; default = tracking ; <=2.0
@@ -84,6 +85,11 @@ show_config() {
   _print_config
 }
 
+if [ "$USERNAME" = "" ]; then
+  echo -n "input username: "
+  read USERNAME
+  [ "$USERNAME" = "" ] && USERNAME=$USER
+fi
 [ ! -e ~/.gitconfig ] && show_config > ~/.gitconfig
 
 [ "$1" = "-d" ] && show_config
