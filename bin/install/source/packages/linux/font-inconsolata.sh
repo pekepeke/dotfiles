@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-# fonts_dir="$HOME/.local/share/fonts"
-fonts_dir="$HOME/.local/share/_fonts"
+fonts_dir="$HOME/.local/share/fonts"
+# fonts_dir="$HOME/.local/share/_fonts"
 
 usage() {
   prg_name=`basename $0`

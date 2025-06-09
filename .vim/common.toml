@@ -528,6 +528,7 @@ hook_add = '''
 let g:fern#window_selector_use_popup = 1
 let g:fern#default_hidden = 1
 let g:fern#default_exclude = '\.git$\|\.DS_Store'
+let g:fern_disable_startup_warnings = 1
 
 nnoremap <Leader>f <Cmd>Fern . -drawer<CR>
 nnoremap <Leader>F <Cmd>Fern %:p:h -drawer<CR>

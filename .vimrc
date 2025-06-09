@@ -226,7 +226,7 @@ else
 endif
 set spellfile=~/.vim/spell/spellfile.utf-8.add
 set noautochdir
-set shellslash
+" set shellslash
 set directory=$VIM_CACHE,/var/tmp,/tmp
 set viminfo& viminfo+=!
 set viminfo+=n$VIM_CACHE/viminfo.txt

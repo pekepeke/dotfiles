@@ -1,83 +1,86 @@
+# vim:fdm=marker sw=2 ts=2 ft=toml expandtab:
 # completion
 [[plugins]]
 repo = 'Shougo/ddc.vim'
 hook_add = '''
-  call ddc#custom#patch_global('sources', [
-  \ 'lsp',
-  \ 'tabnine',
-  \ 'around',
-  \ 'file',
-  \ 'buffer',
-  \ 'dictionary',
-  \ 'ale',
-  \ 'omni',
-  \ ])
-  "\ 'cmdline', 'cmdline-history', 'shell-native',
-	call ddc#custom#patch_filetype(['vim', 'toml'], 'sources', ['necovim'])
+call ddc#custom#patch_global('sources', [
+\ 'lsp',
+\ 'tabnine',
+\ 'around',
+\ 'file',
+\ 'buffer',
+\ 'dictionary',
+\ 'ale',
+\ 'omni',
+\ ])
+"\ 'cmdline', 'cmdline-history', 'shell-native',
+call ddc#custom#patch_filetype(['vim', 'toml'], 'sources', ['necovim'])
 
-"	    \   'matchers': ['matcher_head'],
-"	    \   'sorters': ['sorter_rank']
-	call ddc#custom#patch_global('ui', 'pum')
-	call ddc#custom#patch_global('sourceOptions', {
-	    \ '_': #{
-		\     matchers: ['matcher_fuzzy'],
-		\     sorters: ['sorter_fuzzy', 'sorter_rank'],
-		\     converters: ['converter_fuzzy', 'converter_remove_overlap'],
-	    \ },
-	    \ 'necovim': {'mark': 'VIM'},
-        \ 'buffer': {'mark': 'B'},
-        \ 'dictionary': {'mark': 'D'},
-        \ 'file': {
-        \   'mark': 'F',
-        \   'isVolatile': v:true,
-        \   'forceCompletionPattern': '\S/\S*',
-		\ },
-		\ 'lsp': #{
-		\   mark: 'LSP',
-		\   forceCompletionPattern: '\.\w*|:\w*|->\w*',
-	    \   sorters: ['sorter_lsp-kind'],
-		\ },
-        \ 'omni': #{ mark: 'O' },
-        \ 'around': #{ mark: 'A' },
-		\ 'tabnine': #{
-		\   mark: 'TN',
-		\   maxItems: 5,
-		\   isVolatile: v:true,
-		\ },
-	    \ 'cmdline': #{ mark: 'cmdline'},
-	    \ 'cmdline-history': #{ mark: 'history' },
-		\ 'shell-native': #{ mark: 'zsh' },
-		\ })
+"     \   'matchers': ['matcher_head'],
+"     \   'sorters': ['sorter_rank']
+call ddc#custom#patch_global('ui', 'pum')
+call ddc#custom#patch_global('sourceOptions', {
+  \ '_': #{
+  \     matchers: ['matcher_fuzzy'],
+  \     sorters: ['sorter_fuzzy', 'sorter_rank'],
+  \     converters: ['converter_fuzzy', 'converter_remove_overlap'],
+  \ },
+  \ 'necovim': {'mark': 'VIM'},
+  \ 'buffer': {'mark': 'B'},
+  \ 'dictionary': {'mark': 'D'},
+  \ 'file': {
+  \   'mark': 'F',
+  \   'isVolatile': v:true,
+  \   'forceCompletionPattern': '\S/\S*',
+  \ },
+  \ 'lsp': #{
+  \   mark: 'LSP',
+  \   forceCompletionPattern: '\.\w*|:\w*|->\w*',
+  \   sorters: ['sorter_lsp-kind'],
+  \ },
+  \ 'omni': #{ mark: 'O' },
+  \ 'around': #{ mark: 'A' },
+  \ 'tabnine': #{
+  \   mark: 'TN',
+  \   maxItems: 5,
+  \   isVolatile: v:true,
+  \ },
+  \ 'cmdline': #{ mark: 'cmdline'},
+  \ 'cmdline-history': #{ mark: 'history' },
+  \ 'shell-native': #{ mark: 'zsh' },
+  \ })
+let dict_paths = filter([
+  \   '/usr/share/dict/american-english',
+  \   '/usr/share/dict/words',
+  \   $HOME.'/.local/share/dict/words',
+  \ ], 'file_readable(v:val)')
 call ddc#custom#patch_global('sourceParams', #{
-    \ lsp: #{
-    \     snippetEngine: denops#callback#register({
-    \           body -> neosnippet#anonymous(body)
-    \     }),
-    \   enableResolveItem: v:true,
-    \   enableAdditionalTextEdit: v:true,
-	\   lspEngine: 'vim-lsp',
-    \ },
-    \ buffer: {
-    \   'requireSameFiletype': v:false,
-    \   'limitBytes': 5000000,
-    \   'fromAltBuf': v:true,
-    \   'forceCollect': v:true,
-    \ },
-	\ dictionary: {
-	\   'dictPaths': [
-	\     '/usr/share/dict/american-english',
-	\     '/usr/share/dict/words',
-	\   ],
-	\   'smartCase': v:true,
-	\   'isVolatile': v:true,
-	\ },
-    \ ale: {'cleanResultsWhitespace': v:false},
-	\ tabnine: #{
-	\   maxNumResults: 10,
-	\ },
-	\ around: #{ maxSize: 500 },
-	\ shell-native: #{ shell: 'zsh' },
-	\ })
+  \ lsp: #{
+  \     snippetEngine: denops#callback#register({
+  \           body -> neosnippet#anonymous(body)
+  \     }),
+  \   enableResolveItem: v:true,
+  \   enableAdditionalTextEdit: v:true,
+  \   lspEngine: 'vim-lsp',
+  \ },
+  \ buffer: {
+  \   'requireSameFiletype': v:false,
+  \   'limitBytes': 5000000,
+  \   'fromAltBuf': v:true,
+  \   'forceCollect': v:true,
+  \ },
+  \ dictionary: {
+  \   'dictPaths': dict_paths,
+  \   'smartCase': v:true,
+  \   'isVolatile': v:true,
+  \ },
+  \ ale: {'cleanResultsWhitespace': v:false},
+  \ tabnine: #{
+  \   maxNumResults: 10,
+  \ },
+  \ around: #{ maxSize: 500 },
+  \ shell-native: #{ shell: 'zsh' },
+  \ })
 call ddc#enable()
 '''
 [[plugins]]
@@ -98,7 +101,7 @@ function! s:input_tab()
       return "\<Plug>(neosnippet_expand)"
     elseif neosnippet#jumpable()
       return "\<Plug>(neosnippet_jump)"
-	endif
+  endif
   endif
   if pumvisible()
     return "\<C-n>"
@@ -159,25 +162,25 @@ inoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
 " nnoremap :       <Cmd>call CommandlinePre()<CR>:
 
 function! CommandlinePre() abort
-    cnoremap <Tab>   <Cmd>call pum#map#insert_relative(+1)<CR>
-    cnoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
-    cnoremap <C-n>   <Cmd>call pum#map#insert_relative(+1)<CR>
-    cnoremap <C-p>   <Cmd>call pum#map#insert_relative(-1)<CR>
-    cnoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
-    cnoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
+  cnoremap <Tab>   <Cmd>call pum#map#insert_relative(+1)<CR>
+  cnoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
+  cnoremap <C-n>   <Cmd>call pum#map#insert_relative(+1)<CR>
+  cnoremap <C-p>   <Cmd>call pum#map#insert_relative(-1)<CR>
+  cnoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
+  cnoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
 
-    autocmd User DDCCmdlineLeave ++once call CommandlinePost()
+  autocmd User DDCCmdlineLeave ++once call CommandlinePost()
 
-    " Enable command line completion for the buffer
-    call ddc#enable_cmdline_completion()
+  " Enable command line completion for the buffer
+  call ddc#enable_cmdline_completion()
 endfunction
 function! CommandlinePost() abort
-    silent! cunmap <Tab>
-    silent! cunmap <S-Tab>
-    silent! cunmap <C-n>
-    silent! cunmap <C-p>
-    silent! cunmap <C-y>
-    silent! cunmap <C-e>
+  silent! cunmap <Tab>
+  silent! cunmap <S-Tab>
+  silent! cunmap <C-n>
+  silent! cunmap <C-p>
+  silent! cunmap <C-y>
+  silent! cunmap <C-e>
 endfunction
 '''
 [[plugins]]
@@ -202,17 +205,17 @@ if empty(&dictionary) | setlocal dictionary+=/usr/share/dict/words | endif
 repo = 'LumaKernel/ddc-source-file'
 hook_add = '''
 call ddc#custom#patch_filetype(
-    \ ['ps1', 'dosbatch', 'autohotkey', 'registry'], {
-    \ 'sourceOptions': {
-    \   'file': {
-    \     'forceCompletionPattern': '\S\\\S*',
-    \   },
-    \ },
-    \ 'sourceParams': {
-    \   'file': {
-    \     'mode': 'win32',
-    \   },
-    \ }})
+  \ ['ps1', 'dosbatch', 'autohotkey', 'registry'], {
+  \ 'sourceOptions': {
+  \   'file': {
+  \     'forceCompletionPattern': '\S\\\S*',
+  \   },
+  \ },
+  \ 'sourceParams': {
+  \   'file': {
+  \     'mode': 'win32',
+  \   },
+  \ }})
 '''
 [[plugins]]
 repo = 'statiolake/ddc-ale'
@@ -257,37 +260,37 @@ repo = 'prabirshrestha/async.vim'
 repo = 'prabirshrestha/vim-lsp'
 hook_add = '''
 function! s:on_lsp_buffer_enabled() abort
-    setlocal omnifunc=lsp#complete
-    setlocal signcolumn=yes
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-    nmap <buffer> gd <plug>(lsp-definition)
-    nmap <buffer> gs <plug>(lsp-document-symbol-search)
-    nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
-    nmap <buffer> gr <plug>(lsp-references)
-    nmap <buffer> gi <plug>(lsp-implementation)
-    nmap <buffer> gt <plug>(lsp-type-definition)
-    nmap <buffer> <leader>rn <plug>(lsp-rename)
-    nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-    nmap <buffer> ]g <plug>(lsp-next-diagnostic)
-    nmap <buffer> K <plug>(lsp-hover)
-    " nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-    " nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+  setlocal omnifunc=lsp#complete
+  setlocal signcolumn=yes
+  if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+  nmap <buffer> gd <plug>(lsp-definition)
+  nmap <buffer> gs <plug>(lsp-document-symbol-search)
+  nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+  nmap <buffer> gr <plug>(lsp-references)
+  nmap <buffer> gi <plug>(lsp-implementation)
+  nmap <buffer> gt <plug>(lsp-type-definition)
+  nmap <buffer> <leader>rn <plug>(lsp-rename)
+  nmap <buffer> [g <plug>(lsp-previous-diagnostic)
+  nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+  nmap <buffer> K <plug>(lsp-hover)
+  " nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+  " nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
 
-    let g:lsp_diagnostics_enabled = 0
-    let g:lsp_diagnostics_signs_enabled = 0
-    let g:lsp_document_highlight_enabled = 0
-    let g:lsp_document_code_action_signs_enabled = 0
+  let g:lsp_diagnostics_enabled = 0
+  let g:lsp_diagnostics_signs_enabled = 0
+  let g:lsp_document_highlight_enabled = 0
+  let g:lsp_document_code_action_signs_enabled = 0
 
-    let g:lsp_format_sync_timeout = 1000
-    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+  let g:lsp_format_sync_timeout = 1000
+  autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
 
-    " refer to doc to add more commands
+  " refer to doc to add more commands
 endfunction
 
 augroup vimrc_vim_lsp
-    au!
-    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+  au!
+  " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 '''
 
@@ -303,95 +306,95 @@ repo = 'Shougo/ddu.vim'
 hook_add = '''
 let g:ddu_source_lsp_clientName = 'vim-lsp'
 call ddu#custom#patch_global({
-    \   'ui': 'ff',
-    \   'sources': [
-    \     {'name':'file','params':{}},
-    \     {'name':'mr'},
-    \     {'name':'register'},
-    \     {'name':'buffer'},
-    \     {'name':'jumplist'},
-    \     {'name':'qf', 'params': #{
-    \         what: #{ title: 'qf' },
-    \         dup: v:true,
-    \       },
-    \     },
-    \     {'name':'help'},
-    \     {'name':'file_old'},
-    \     {'name':'make'},
-    \     {'name':'colorscheme'},
-    \     {'name':'lsp_definition'},
-    \     {'name':'lsp_references'},
-    \     {'name':'lsp_documentSymbol'},
-    \     {'name':'lsp_workspaceSymbol'},
-    \     {'name':'lsp_callHierarchy'},
-    \     {'name':'lsp_typeHierarchy'},
-    \     {'name':'lsp_codeAction'},
-    \     {'name':'lsp_diagnostic'},
-    \     {'name':'custom-list'},
-    \   ],
-    \   'sourceOptions': {
-    \     '_': #{
-    \       matchers: ['matcher_substring'],
-    \     },
-    \   },
-    \   'kindOptions': {
-    \     'file': {
-    \       'defaultAction': 'open',
-    \     },
-    \     'word': {
-    \        'defaultAction': 'append',
-    \     },
-    \     'help': {
-    \        'defaultAction': 'open',
-    \     },
-    \     'colorscheme': {
-    \        'defaultAction': 'set',
-    \     },
-    \     'lsp': {
-    \        'defaultAction': 'open',
-    \     },
-    \     'lsp_codeAction': {
-    \        'defaultAction': 'apply',
-    \     },
-    \     'custom-list': {
-    \        'defaultAction': 'callback',
-    \     },
-    \   },
-    \   'uiParams': {
-    \      'ff': {
-    \         'startFilter': v:false,
-    \      },
-    \   },
-    \   'filterParams': {
-    \      'matcher_substring': {
-    \          'highlightMatched': 'Search',
-    \      },
-    \   },
-    \ })
+  \   'ui': 'ff',
+  \   'sources': [
+  \     {'name':'file','params':{}},
+  \     {'name':'mr'},
+  \     {'name':'register'},
+  \     {'name':'buffer'},
+  \     {'name':'jumplist'},
+  \     {'name':'qf', 'params': #{
+  \         what: #{ title: 'qf' },
+  \         dup: v:true,
+  \       },
+  \     },
+  \     {'name':'help'},
+  \     {'name':'file_old'},
+  \     {'name':'make'},
+  \     {'name':'colorscheme'},
+  \     {'name':'lsp_definition'},
+  \     {'name':'lsp_references'},
+  \     {'name':'lsp_documentSymbol'},
+  \     {'name':'lsp_workspaceSymbol'},
+  \     {'name':'lsp_callHierarchy'},
+  \     {'name':'lsp_typeHierarchy'},
+  \     {'name':'lsp_codeAction'},
+  \     {'name':'lsp_diagnostic'},
+  \     {'name':'custom-list'},
+  \   ],
+  \   'sourceOptions': {
+  \     '_': #{
+  \       matchers: ['matcher_substring'],
+  \     },
+  \   },
+  \   'kindOptions': {
+  \     'file': {
+  \       'defaultAction': 'open',
+  \     },
+  \     'word': {
+  \        'defaultAction': 'append',
+  \     },
+  \     'help': {
+  \        'defaultAction': 'open',
+  \     },
+  \     'colorscheme': {
+  \        'defaultAction': 'set',
+  \     },
+  \     'lsp': {
+  \        'defaultAction': 'open',
+  \     },
+  \     'lsp_codeAction': {
+  \        'defaultAction': 'apply',
+  \     },
+  \     'custom-list': {
+  \        'defaultAction': 'callback',
+  \     },
+  \   },
+  \   'uiParams': {
+  \      'ff': {
+  \         'startFilter': v:false,
+  \      },
+  \   },
+  \   'filterParams': {
+  \      'matcher_substring': {
+  \          'highlightMatched': 'Search',
+  \      },
+  \   },
+  \ })
 
 let s:fd_bin = executable('fdfind') ? 'fdfind' : 'fd'
 
 call ddu#custom#alias('default', 'source', 'directory_rec', 'file_external')
 call ddu#custom#patch_global('sourceParams', {
-	 \   'directory_rec': {
-	 \     'cmd': [s:fd_bin, '.', '-H', '-t', 'd']
-	 \   },
-	 \ })
+   \   'directory_rec': {
+   \     'cmd': [s:fd_bin, '.', '-H', '-t', 'd']
+   \   },
+   \ })
 unlet s:fd_bin
 
 call ddu#custom#patch_local('file_rec', {
-\	'sources': [{
-\		'name':'file_rec',
-\		'params': {
-\			'ignoredDirectories': ['.git', 'var', 'node_modules', ]
-\		},
-\	}],
+\ 'sources': [{
+\   'name':'file_rec',
+\   'params': {
+\     'ignoredDirectories': ['.git', 'var', 'node_modules', ]
+\   },
+\ }],
 \})
 call ddu#custom#patch_local('filer', {
-\	'ui': 'filer',
-\	'sources': [
-\		{'name': 'file', 'params': {}},
-\	],
+\ 'ui': 'filer',
+\ 'sources': [
+\   {'name': 'file', 'params': {}},
+\ ],
 \   'sourceOptions': {
 \     '_': {
 \       'columns': ['filename'],
@@ -409,7 +412,7 @@ call ddu#custom#patch_local('filer', {
 \       'splitDirection': 'topleft',
 \     }
 \   },
-\	'resume': v:true,
+\ 'resume': v:true,
 \ })
 
 call ddu#custom#patch_local('grep', {
@@ -463,7 +466,7 @@ endfunction
 
 
 autocmd TabEnter,CursorHold,FocusGained <buffer>
-	\ call ddu#ui#do_action('checkItems')
+  \ call ddu#ui#do_action('checkItems')
 
 autocmd FileType ddu-filer call s:ddu_filer_my_settings()
 function! s:ddu_filer_my_settings() abort
@@ -521,14 +524,14 @@ function! s:ddu_filer_my_settings() abort
     \ <Cmd>call ddu#ui#do_action('itemAction', {'name': 'yank'})<CR>
 
   nnoremap <buffer> >
-	\ <Cmd>call ddu#ui#do_action('updateOptions', #{
-	\   sourceOptions: #{
-	\     _: #{
-	\       matchers: s:ddu_filer_toggle_hidden(),
-	\     },
-	\   },
-	\ })<CR>
-	\<Cmd>call ddu#ui#do_action('redraw')<CR>
+  \ <Cmd>call ddu#ui#do_action('updateOptions', #{
+  \   sourceOptions: #{
+  \     _: #{
+  \       matchers: s:ddu_filer_toggle_hidden(),
+  \     },
+  \   },
+  \ })<CR>
+  \<Cmd>call ddu#ui#do_action('redraw')<CR>
 
 endfunction
 
@@ -542,17 +545,17 @@ endfunction
 
 function! s:ddu_grep(input, dir)
   call ddu#start(#{
-	\   name: 'grep',
-	\   sources: [#{
-	\     name: 'rg',
-	\     params: #{ input: a:input },
-	\     options: {'path': a:dir},
-	\   }],
-	\ })
+  \   name: 'grep',
+  \   sources: [#{
+  \     name: 'rg',
+  \     params: #{ input: a:input },
+  \     options: {'path': a:dir},
+  \   }],
+  \ })
 endfunction
 
 let g:vimrc_ddu_menu_items = #{
-	\ vimhelp: [
+  \ vimhelp: [
     \   'help function-list',
     \   'help usr_41',
     \   'help pattern-overview',
@@ -566,8 +569,8 @@ let g:vimrc_ddu_menu_items = #{
     \   'help write-plugin',
     \   'help write-filetype-plugin',
     \   'help help-writing',
-	\ ],
-	\ }
+  \ ],
+  \ }
 let g:vimrc_denops_callback_ids = get(g:, 'vimrc_denops_callback_ids', {})
 
 function! s:ddu_custom_list(texts, callback_id)
@@ -613,7 +616,7 @@ endfunction
 function! s:cbfn_tagjump(str)
   let matched = matchlist(a:str, '\[.\?\] \(.\+\)  \(.\+\)  \(.\+\)')
   if empty(matched)
-	echoerr 'cannot parse string: '.a:str
+  echoerr 'cannot parse string: '.a:str
     return
   endif
   let file = matched[3]
@@ -655,16 +658,16 @@ function s:ddu_taglist_immediately()
     return
   elseif len(tags) <= 1
     execute 'tag' keyword
-  	return
+    return
   endif
   call s:ddu_custom_list(map(taglist(keyword), { _, v ->
-	  \   printf('[%s] %s   %s   %s', v.kind, v.name, v.cmd, v.filename)
-	  \ }), g:vimrc_denops_callback_ids['cbfn_tagjump'])
+    \   printf('[%s] %s   %s   %s', v.kind, v.name, v.cmd, v.filename)
+    \ }), g:vimrc_denops_callback_ids['cbfn_tagjump'])
 endfunction
 
 function! DduSourceKeymap()
-	" n  j           * v:count == 0 ? 'gj' : 'j'
-	" {'lhs': '<C-G>S', 'mode': 'i', 'expr': 0, 'sid': 321, 'lnum': 626, 'noremap': 0, 'nowait': 0, 'rhs': '<Plug>ISurround', 'lhsraw': '<80><fc>^DGS', 'abbr': 0, 'lhsrawalt': '^GS', 'script': 0, 'mode_bits': 16, 'silent': 0, 'buffer': 0, 'scriptversion': 1}
+  " n  j           * v:count == 0 ? 'gj' : 'j'
+  " {'lhs': '<C-G>S', 'mode': 'i', 'expr': 0, 'sid': 321, 'lnum': 626, 'noremap': 0, 'nowait': 0, 'rhs': '<Plug>ISurround', 'lhsraw': '<80><fc>^DGS', 'abbr': 0, 'lhsrawalt': '^GS', 'script': 0, 'mode_bits': 16, 'silent': 0, 'buffer': 0, 'scriptversion': 1}
     " return map(maplist(), {_, v -> s:format_maplist(v) })
   return map(map(maplist(), {k, v ->
         \ printf('%s  %-10s  %s%s',
@@ -672,12 +675,12 @@ function! DduSourceKeymap()
         \   v.rhs =~? '^<Plug>' ? '  ' : ((v.noremap ? '*' : '&' ).(v.buffer ? '@' : ' ')),
         \   v.rhs )
         \ }), { _, line -> #{
-		\   word: line,
-		\   kind: 'word',
-		\   action: #{
-		\     word: line,
-		\   }
-		\ } })
+    \   word: line,
+    \   kind: 'word',
+    \   action: #{
+    \     word: line,
+    \   }
+    \ } })
 endfunction
 
 nnoremap [!ddu] <Nop>
@@ -710,8 +713,8 @@ nnoremap <silent> [!ddu]w  <Cmd>Ddu -name=qf<CR>
 
 nnoremap <silent> [!ddu]hh  <Cmd>Ddu help<CR>
 nnoremap <silent> [!ddu]hk  <Cmd>call ddu#start(#{sources: [
-	\   #{ name: 'vim', params: #{ func: 'DduSourceKeymap' } }
-	\ ]})<CR>
+  \   #{ name: 'vim', params: #{ func: 'DduSourceKeymap' } }
+  \ ]})<CR>
 nnoremap <silent> [!ddu]hv  <Cmd>call ddu#start({'name': 'vim_type'})<CR>
 nnoremap <silent> [!ddu]hm  <Cmd>call <SID>ddu_custom_list(
   \   keys(g:vimrc_ddu_menu_items), g:vimrc_denops_callback_ids['ddu_menu']

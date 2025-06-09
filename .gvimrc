@@ -7,7 +7,7 @@ if has('vim_starting')
   set t_Co=256
 endif
 set cmdheight=1
-" set guioptions-=T
+set guioptions-=T
 " set nohlsearch
 " set guioptions+=a
 " set mouse=a
@@ -20,6 +20,17 @@ set cmdheight=1
 let s:is_mac = has('mac') || has('macunix') || has('gui_macvim') ||
       \ (executable('uname') && system('uname') =~? '^darwin')
 let s:is_win = has('win16') || has('win32') || has('win64')
+function! s:font_exists(fname)
+  if s:is_win
+    return filereadable($WINDIR.'\Fonts\'.a:fname)
+      \ || filereadable($LOCALAPPDATA.'\Microsoft\Windows\Fonts\'.a:fname)
+  elseif s:is_mac
+    return filereadable('/Library/Fonts/'.a:fname)
+      \ || filereadable($HOME.'/Library/Fonts/'.a:fname)
+  endif
+  return filereadable($HOME . '/.fonts/' . a:fname)
+    \ || filereadable($HOME . '/.local/share/fonts/' . a:fname)
+endfunction
 
 if s:is_win " {{{2
   "set guifont=MS_Gothic:h10:cSHIFTJIS
@@ -28,6 +39,7 @@ if s:is_win " {{{2
   command! -nargs=0 Consolas set guifont=Consolas:h10,Lucida_Console:h10:w5 guifontwide=MS_Gothic:h10
   command! -nargs=0 Ricty set guifont=Ricty:h11 guifontwide=Ricty:h11
   command! -nargs=0 RictyDiminished set guifont=Ricty\ Diminished:h11 guifontwide=Ricty\ Diminished:h11
+  command! -nargs=0 Hackgen set guifont=HackGen\ Console\ NF:h10 guifontwide=HackGen\ Console\ NF:h10
   " command! -nargs=0 Ricty set guifont=Ricty:h12 guifontwide=Ricty:h12
   command! -nargs=0 ConsolasBig set guifont=Consolas:h18,Lucida_Console:h18:w5 guifontwide=MS_Gothic:h18
   command! -nargs=0 RictyBig set guifont=Ricty:h20 guifontwide=Ricty:h20
@@ -35,13 +47,19 @@ if s:is_win " {{{2
 
   MyAutoCmd GUIEnter * if exists('&transparency') | set transparency=210 | endif
 
-  if filereadable($WINDIR . '\Fonts\Ricty-Regular.ttf')
-    Ricty
-  elseif  filereadable($WINDIR . '\Fonts\RictyDiminished-Regular.ttf')
-    RictyDiminished
-  else
-    Consolas
-  endif
+  let s:fonts = {
+        \ 'Ricty': 'Ricty-Regular.ttf',
+        \ 'RictyDiminished': 'RictyDiminished-Regular.ttf',
+        \ 'Hackgen': 'HackGenConsoleNF-Regular.ttf',
+        \ }
+  let s:is_font_enabled = 0
+  for font in keys(s:fonts)
+    if s:font_exists(s:fonts[font])
+      execute font
+      let s:is_font_enabled = 1
+      break
+    endif
+  endfor
 
   if &termencoding =~# 'utf-8'
     set printheader=%<%f%h%m%=%N\ Page
@@ -91,7 +109,7 @@ elseif s:is_mac "{{{2
     command! -nargs=0 RictyBig set antialias guifont=Ricty:h20 guifontwide=Ricty:h20
     " Monaco
     " OsakaMonaco
-    if filereadable('/Library/Fonts/Ricty.ttc')
+    if s:font_exists('Ricty.ttc')
       Ricty
     else
       Monaco
@@ -145,6 +163,7 @@ else " unix setting {{{2
   set guioptions=te
 
   "set guifont=VL\ ゴシック\ 12
+  command! -nargs=0 Hackgen set guifont=HackGen\ Console\ NF\ 10
   command! -nargs=0 InconsolataNF set guifont=Inconsolata\ Nerd\ Font\ Mono\ 11
   command! -nargs=0 SauceCodeNF set guifont=SauceCodePro\ NF\ 10
   command! -nargs=0 Inconsolata set guifont=Inconsolata\ 11
@@ -156,21 +175,25 @@ else " unix setting {{{2
   command! -nargs=0 SourceHanCodeJPBig set guifont=Source\ Han\ Code\ JP\ Regular\ 16
   command! -nargs=0 RictyBig set guifont=Ricty\ 20
   command! -nargs=0 RictyDiminishedBig set guifont=Ricty\ Diminished\ 20
-  function! s:font_exists(fname)
-    return filereadable($HOME . '/.fonts/' . a:fname)
-    \ || filereadable($HOME . '/.local/share/fonts/' . a:fname)
-  endfunction
-  if s:font_exists('InconsolataNerdFontMono-Regular.ttf')
-    InconsolataNF
-  elseif s:font_exists('SauceCodeProNF_LINESeedJP.ttf')
-    SauceCodeNF
-  elseif s:font_exists('SourceHanCodeJP-Regular.otf')
-    SourceHanCodeJP
-  elseif s:font_exists('Ricty-Regular.ttf')
-    Ricty
-  elseif s:font_exists('RictyDiminished-Regular.ttf')
-    RictyDiminished
-  endif
+  let s:fonts = {
+    \ 'Hackgen': 'HackGenConsoleNF-Regular.ttf',
+    \ 'InconsolataNF': 'InconsolataNerdFontMono-Regular.ttf',
+    \ 'SauceCodeNF': 'SauceCodeProNF_LINESeedJP.ttf',
+    \ 'SourceHanCodeJP': 'SourceHanCodeJP-Regular.otf',
+    \ 'Ricty': 'Ricty-Regular.ttf',
+    \ 'RictyDiminished': 'RictyDiminished-Regular.ttf',
+    \ }
+  let s:is_font_enabled = 0
+  for font in keys(s:fonts)
+    if s:font_exists(s:fonts[font])
+      execute font
+      let s:is_font_enabled = 1
+      break
+    endif
+  endfor
+  " if !s:is_font_enabled
+  "   set guifont=DejaVu\ Sans\ Mono\ 10
+  " endif
 endif
 "source $HOME/.vimrc
 

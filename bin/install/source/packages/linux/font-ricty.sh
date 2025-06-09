@@ -15,9 +15,9 @@ executable() {
 
 main() {
   # install Ricty
-  [ ! -e ~/.tmp ] && mkdir ~/.tmp
-  cd ~/.tmp
-  https://github.com/yascentur/Ricty.git
+  # [ ! -e ~/.tmp ] && mkdir ~/.tmp
+  cd /tmp
+  git clone --depth=1 https://github.com/yascentur/Ricty.git
   cd Ricty
 
   if ! executable fontforge ; then
@@ -38,8 +38,8 @@ main() {
   sh ricty_generator.sh Inconsolata.otf migu-1m-regular.ttf migu-1m-bold.ttf
 
   if executable fc-cache ; then
-    [ ! -e ~/.fonts ] && mkdir ~/.fonts
-    cp -f Ricty*.ttf ~/.fonts/
+    [ ! -e ~/.local/share/fonts/ ] && mkdir -p ~/.local/share/fonts
+    cp -f Ricty*.ttf ~/.local/share/fonts/
     fc-cache -vf
   fi
 }

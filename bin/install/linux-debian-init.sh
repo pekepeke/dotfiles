@@ -1,15 +1,20 @@
 #!/bin/bash
 
-PACKAGES="aptitude openssh-server ttf-inconsolata ethtool build-essential vim screen zsh"
-PACKAGES="$PACKAGES samba samba-client"
-PACKAGES="$PACKAGES git-core subversion cvs zlib1g-deb libssl-dev curl bison"
+PACKAGES="aptitude openssh-server ethtool build-essential screen tmux zsh tig"
+PACKAGES="$PACKAGES git-core subversion libssl-dev curl bison"
 PACKAGES="$PACKAGES libreadline-dev libxml2-dev libxslt-dev"
 PACKAGES="$PACKAGES bison-doc"
 PACKAGES="$PACKAGES sqlite3 autoconf automake libtool"
-PACKAGES="$PACKAGES ruby ruby-dev rubygems rdoc ri libopenssl-ruby"
-PACKAGES="$PACKAGES perl-doc libncurses5-dev mysql-server mysqltuner maatkit"
+# PACKAGES="$PACKAGES ruby ruby-dev ri perl-doc "
+PACKAGES="$PACKAGES mysqltuner percona-toolkit"
+# PACKAGES="$PACKAGES samba samba-client"
+# PACKAGES="$PACKAGES mysql-server"
 PACKAGES="$PACKAGES snmp snmpd snmptt"
 PACKAGES="$PACKAGES librrds-perl libsnmp-perl"
+PACKAGES="$PACKAGES ruby-dev python3-dev libperl-dev lua5.4 luajit"
+PACKAGES="$PACKAGES bat eza fzf zoxide git-delta ripgrep fd-find jq"
+PACKAGES="$PACKAGES editorconfig exuberant-ctags"
+# PACKAGES="$PACKAGES vim cvs ttf-inconsolata libncurses5-dev maatkit  zlib1g-deb"
 # PACKAGES="$PACKAGES "
 
 usage() {
@@ -21,6 +26,7 @@ EOM
 }
 
 main() {
+  # sudo apt-get install --no-install-recommends -y $PACKAGES
   sudo apt-get install -y $PACKAGES
 
   # mkdir ~/setup-init
