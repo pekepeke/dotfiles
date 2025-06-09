@@ -20,12 +20,16 @@ main() {
   DL_URL="$(curl -s https://api.github.com/repos/$AUTHOR/$PG/releases/latest \
     | grep "browser_download_url.*_NF_" \
     | cut -d : -f 2,3 \
-    | tr -d \")"
+    | tr -d ' \"')"
   # https://github.com/yuru7/HackGen/releases/download/v2.10.0/HackGen_NF_v2.10.0.zip
-  echo "# Download from $download_url"
-  curl -LO "/tmp/$PG.zip" "$download_url"
+  echo "# Download from $DL_URL"
+  curl -Lo "/tmp/$PG.zip" "$DL_URL"
+  if [ ! -e /tmp/$PG.zip  ]; then
+    echo "# download failed"
+    exit 2
+  fi
   unzip "/tmp/$PG.zip" -d "/tmp/$PG/"
-  mv /tmp/$PG/*.ttf $fonts_dir
+  mv /tmp/$PG/HackGen_NF*/*.ttf $fonts_dir
   rm "/tmp/$PG.zip"
   rm "/tmp/$PG/" -rf
 }
