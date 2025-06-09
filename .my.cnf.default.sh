@@ -12,10 +12,14 @@ read USER
 echo "Mysql Password > "
 read PASSWORD
 
-if [ x"$USER" = x -o x"$PASSWORD" = x ]; then
-  echo "USER or PASSWORD is must be specified." 1>&2
+if [ x"$USER" = x ]; then
+  echo "USER is must be specified." 1>&2
   exit 1
 fi
+# if [ x"$USER" = x -o x"$PASSWORD" = x ]; then
+#   echo "USER and PASSWORD is must be specified." 1>&2
+#   exit 1
+# fi
 
 cat <<EOM > $FILE
 [client]

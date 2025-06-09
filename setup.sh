@@ -6,7 +6,7 @@ OS_DIFFER_FILES=".xinitrc"
 BACKUP_FILES=".bash_profile .bashrc .screenrc .vimrc"
 SKIP_FILES=". .. .git setup.sh .projections.json"
 TEMPLATE_FILES=".gitattributes_global.tmpl .shrc.local.tmpl .vimrc.personal.tmpl"
-INITIALIZE_FILES="~/.ssh_config.default.sh .gitconfig.init.sh .my.cnf.default.sh .docker/config.json.template.sh"
+INITIALIZE_FILES=".ssh_config.default.sh .gitconfig.init.sh .my.cnf.default.sh .docker/config.json.template.sh"
 COPY_FILES=""
 
 opt_uninstall=0
@@ -147,8 +147,9 @@ exec_install() {
 
   for f in $INITIALIZE_FILES ; do
     if [ ! -x ~/$f ] ; then
-      echo "${RED}file not found: ~/${f}${DEFAULT}"
+      echo "${RED}file not found: ${f}${DEFAULT}"
     else
+      echo "# execute ~/$f"
       ~/$f
     fi
   done

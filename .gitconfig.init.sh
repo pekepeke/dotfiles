@@ -1,7 +1,7 @@
 #!/bin/bash
 # vim:fdm=marker sw=2 ts=2 ft=sh expandtab:
 
-USERNAME=`git config get user.name`
+USERNAME=`git config user.name`
 _print_config() {
   DIFFTOOL="vimdiff"
   MERGETOOL="vimfugitive"
