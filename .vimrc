@@ -120,16 +120,6 @@ if s:is_win
     set shellxquote=\"
   endfunction
 
-  function! s:nyacus_init()
-    " Use NYAOS.
-    set shell=nyacus.exe
-    set shellcmdflag=-e
-    if executable('tee') | set shellpipe=\|&\ tee | endif
-    set shellredir=>%s\ 2>&1
-    set shellxquote=\"
-  endfunction
-  command! -nargs=0 NyacusEnable call s:nyacus_init()
-
   function! s:sh_init()
     set shell=bash.exe
     set shellcmdflag=--login\ -c
@@ -140,12 +130,11 @@ if s:is_win
   command! -nargs=0 ShEnable call s:sh_init()
 
   " if !empty($MSYSTEM)
-  " if executable('nyacus')
   " if exists('$HISTFILE')
   if exists('$CYGWIN') || exists('$MSYSTEM')
     call s:sh_init()
-  " elseif exists('$PSMODULEPATH')
-  "   call s:ps_init()
+  elseif exists('$PSModulePath')
+    call s:ps_init()
   else
     call s:cmd_init()
   endif
@@ -620,42 +609,54 @@ if dpp#min#load_state(s:dpp_base)
   \ call dpp#make_state(s:dpp_base, $HOME.'/.vim/dpp.ts')
 endif
 command! -narg=0 DenopsCacheReload call denops#cache#update(#{reload: v:true})
+command! -narg=0 DenopsSharedServerInstall call denops_shared_server#install()
+command! -narg=0 DenopsSharedServerUninstall call denops_shared_server#uninstall()
 command! -narg=0 DppEditStartup execute 'edit' g:dpp#_base_path.'/'.(has('gui_running') ? 'gvim' : has('nvim') ? 'nvim' : 'vim').'/startup.vim'
 command! -narg=0 DppMakeState call dpp#make_state(s:dpp_base, $HOME.'/.vim/dpp.ts')
 command! -narg=0 DppClearState call dpp#clear_state((has('gui_running')?'gvim':has('nvim')?'nvim':'vim'))
 command! -narg=0 DppInstall call dpp#async_ext_action('installer', 'install')
 command! -narg=0 DppUpdate call dpp#async_ext_action('installer', 'update')
-if !isdirectory(s:denops_src)
-  function! s:vimrc_install_dpp()
-    let cwd = getcwd()
-    call mkdir(s:dpp_src_base, 'p')
-    execute 'lcd' s:dpp_src_base
-    for repo in s:dpp_repos
-      call system(printf('git clone https://github.com/Shougo/%s', repo))
-    endfor
-    call mkdir(s:denops_src, 'p')
-    execute 'lcd' s:denops_src.'/..'
-    call system('git clone https://github.com/vim-denops/denops.vim')
+function! s:vimrc_install_dpp()
+  let cwd = getcwd()
 
-    execute 'lcd' cwd
-    echo 'finish'
-  endfunction
-  command! -narg=0 DppCoreInit call s:vimrc_install_dpp()
-else
-  function! s:vimrc_update_dpp()
-    let cwd = getcwd()
-    for repo in s:dpp_repos
-      execute 'lcd' s:dpp_src_base.'/'.repo
-      echo system('git pull')
-    endfor
-    call mkdir(s:denops_src, 'p')
-    execute 'lcd' s:denops_src
+  if isdirectory(s:dpp_src_base)
+    echoerr "directory already exists: ".s:dpp_src_base
+    return
+  endif
+  call mkdir(s:dpp_src_base, 'p')
+  execute 'lcd' s:dpp_src_base
+  for repo in s:dpp_repos
+    echo s:dpp_src_base."/".repo
+    call system(printf('git clone https://github.com/Shougo/%s', repo))
+  endfor
+  call mkdir(s:denops_src, 'p')
+  execute 'lcd' s:denops_src.'/..'
+  echo s:denops_src
+  call system('git clone https://github.com/vim-denops/denops.vim')
+
+  execute 'lcd' cwd
+  echo 'finish'
+endfunction
+command! -narg=0 DppCoreInstall call s:vimrc_install_dpp()
+function! s:vimrc_update_dpp()
+  let cwd = getcwd()
+  if !isdirectory(s:dpp_src_base)
+    echoerr "directory not found:".s:dpp_src_base
+    return
+  endif
+  for repo in s:dpp_repos
+    execute 'lcd' s:dpp_src_base.'/'.repo
+    echo s:dpp_src_base.'/'.repo
     echo system('git pull')
-    execute 'lcd' cwd
-    echo 'finish'
-  endfunction
-  command! -narg=0 DppCoreUpdate call s:vimrc_update_dpp()
-endif
+  endfor
+  call mkdir(s:denops_src, 'p')
+  execute 'lcd' s:denops_src
+  echo s:denops_src
+  echo system('git pull')
+  execute 'lcd' cwd
+  echo 'finish'
+endfunction
+command! -narg=0 DppCoreUpdate call s:vimrc_update_dpp()
 
 let s:bundle = {'vimrc_installed':[]}
 function! s:bundle.tap(bundle) " {{{

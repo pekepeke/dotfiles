@@ -199,7 +199,7 @@ repo = 'matsui54/ddc-source-buffer'
 [[plugins]]
 repo = 'matsui54/ddc-source-dictionary'
 hook_add = '''
-if empty(&dictionary) | setlocal dictionary+=/usr/share/dict/words | endif
+" if empty(&dictionary) | setlocal dictionary+=/usr/share/dict/words | endif
 '''
 [[plugins]]
 repo = 'LumaKernel/ddc-source-file'
