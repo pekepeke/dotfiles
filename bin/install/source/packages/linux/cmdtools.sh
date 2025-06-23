@@ -9,9 +9,9 @@ EOM
 }
 
 main() {
-  curl -sfL https://raw.githubusercontent.com/ducaale/xh/master/install.sh | sh
-  curl -sS https://starship.rs/install.sh | BIN_DIR=~/.local/bin sh -b ~/.local/bin
-  curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+  executable xh || curl -sfL https://raw.githubusercontent.com/ducaale/xh/master/install.sh | sh
+  executable starship || curl -sS https://starship.rs/install.sh | BIN_DIR=~/.local/bin sh -b ~/.local/bin
+  executable zoxide || curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 
   for cmd in bat eza fzf lazygit lazydocker gitui xremap; do
     myinstall package $cmd

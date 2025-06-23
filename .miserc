@@ -14,7 +14,7 @@ export ASDF_VIM_CONFIG='
 --enable-luainterp
 --with-luajit
 --with-lua-prefix=/usr
---enable-gui=gtk2
+--enable-gui=gtk3
 --enable-gpm
 --enable-xim
 --enable-fontset
