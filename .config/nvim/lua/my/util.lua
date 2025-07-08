@@ -1,5 +1,5 @@
 
-local HOME = os.getenv('HOME')
+local HOME = os.getenv('HOME') or os.getenv('USERPROFILE')
 local VIM_CACHE = HOME..'/.cache/nvim'
 local TEMP = nil
 for _, name in pairs({'TEMP', 'TMP'}) do

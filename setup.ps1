@@ -4,9 +4,14 @@ param (
 
 $IsEnabledBackup = $false
 $IgnoreFilePattern = "^setup"
+$ConfigDirs = @(
+    ".config"
+    , "AppData\Local"
+)
 $IgnoreFiles = @(
     "README.md"
     , ".config"
+    , "AppData"
     , ".git"
     , ".gitmodules"
     , ".gitignore"
@@ -83,16 +88,18 @@ function CleanLink() {
 $backupDir = Join-Path $HOME ".rc-org"
 $configDir = Join-Path $HOME ".config"
 if ($Uninstall) {
-    Get-ChildItem ".config" | ForEach-Object {
-        CleanLink $_ $configDir
+    foreach ($d in $ConfigDirs) {
+        Get-ChildItem $d | ForEach-Object {
+            CleanLink $_ (Join-Path $HOME $d)
+        }
     }
     Get-ChildItem | ForEach-Object {
         CleanLink $_ $HOME
     }
 } else {
-    if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole("Administrators")) { 
+    if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole("Administrators")) {
         Start-Process powershell.exe "-File `"$PSCommandPath`"" -Verb RunAs
-        exit 
+        exit
     }
 
     if (-not (Test-Path $backupDir)) {
@@ -103,8 +110,10 @@ if ($Uninstall) {
         New-Item -ItemType Directory -Path $configDir
         Write-Host ("# created : " + $configDir)
     }
-    Get-ChildItem ".config" | ForEach-Object {
-        MakeLink $_ $configDir
+    foreach ($d in $ConfigDirs) {
+        Get-ChildItem $d | ForEach-Object {
+            MakeLink $_ (Join-Path $HOME $d)
+        }
     }
     Get-ChildItem | ForEach-Object {
         MakeLink $_ $HOME

@@ -63,7 +63,7 @@ xnoremap('k', '(v:count == 0 && mode() !=# "V") ? "gk": "k"', { expr=true })
 
 nnoremap('ZZ', '<NOP>')
 nnoremap('ZQ', '<NOP>')
-if string.match(os.getenv('TERM'), 'screen') then
+if string.match(os.getenv('TERM') or '', 'screen') then
 	map('<C-z>', '<Nop>')
 end
 

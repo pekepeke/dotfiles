@@ -13,7 +13,7 @@
 let $VIM_CACHE = $HOME . '/.cache/vim'
 let $VIM_REFDOC = $HOME . '/.local/share/vim/docs'
 
-" defun macros {{{2
+" define macros {{{2
 augroup vimrc-myautocmd
   autocmd!
 augroup END
