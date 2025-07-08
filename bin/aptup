@@ -9,10 +9,21 @@ EOM
 }
 
 main() {
-  while ! sudo apt update; do
-    sleep 1
-  done
-  sudo apt upgrade
+  if [ -f /etc/redhat-release ]; then
+    # yum update
+    sudo dnf update
+    sudo dnf autoclean
+  fi
+
+  if [ -f /etc/lsb-release ]; then
+    while ! sudo apt update; do
+      sleep 1
+    done
+    sudo apt upgrade
+    sudo apt autoclean
+  fi
+  mise self-update
+  # gvim -c "DppCoreUpdate | DenopsCacheReload | DppUpdate"
 }
 
 OPTIND_OLD=$OPTIND

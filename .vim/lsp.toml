@@ -664,6 +664,7 @@ function s:ddu_taglist_immediately()
     \   printf('[%s] %s   %s   %s', v.kind, v.name, v.cmd, v.filename)
     \ }), g:vimrc_denops_callback_ids['cbfn_tagjump'])
 endfunction
+command! -nargs=0 DduTaglist call s:ddu_taglist_immediately()
 
 function! DduSourceKeymap()
   " n  j           * v:count == 0 ? 'gj' : 'j'
