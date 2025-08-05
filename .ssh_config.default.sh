@@ -37,6 +37,7 @@ Host github.com
   Port 443
   TCPKeepAlive yes
   IdentitiesOnly yes
+  Compression yes
 
 
 # Host xxx.github.com
@@ -46,6 +47,7 @@ Host github.com
 #   TCPKeepAlive yes
 #   IdentitiesOnly yes
 #   IdentityFile ~/.ssh/certs/hoge_id_rsa
+#   Compression yes
 
 Host *-ec2-
     StrictHostKeyChecking no

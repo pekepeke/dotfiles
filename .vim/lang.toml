@@ -470,6 +470,10 @@ repo = 'noahfrederick/vim-laravel'
 [[plugins]]
 repo = 'jwalton512/vim-blade'
 [[plugins]]
+repo = 'thosakwe/vim-flutter'
+hook_add = '''
+'''
+[[plugins]]
 repo = 'honza/dockerfile.vim'
 [[plugins]]
 repo = 'chase/vim-ansible-yaml'

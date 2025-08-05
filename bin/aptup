@@ -19,10 +19,10 @@ main() {
     while ! sudo apt update; do
       sleep 1
     done
-    sudo apt upgrade
+    sudo apt upgrade -y
     sudo apt autoclean
   fi
-  mise self-update
+  mise self-update -y
   # gvim -c "DppCoreUpdate | DenopsCacheReload | DppUpdate"
 }
 
