@@ -521,6 +521,13 @@ hook_add = '''
 nnoremap <silent> dp dp:silent! call repeat#set('dp', 1)<Enter>
 nnoremap <silent> do do:silent! call repeat#set('do', 1)<Enter>
 '''
+
+# =======================================================
+[[plugins]]
+repo = 'qpkorr/vim-renamer'
+hook_add = '''
+let g:RenamerShowHidden = 1
+'''
 # =======================================================
 [[plugins]]
 repo = 'lambdalisue/fern.vim'

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+xargs_opt=""
+if echo|xargs -r >/dev/null 2>&1; then
+  xargs_opt="-r" # --no-run-if-empty
+fi
+echo "docker volume ls -qf dangling=true | xargs ${xargs_opt} docker volume rm"
+docker volume ls -qf dangling=true | xargs ${xargs_opt} docker volume rm
+
+echo "docker images | awk '/^<none>/ { print $3 }' | xargs ${xargs_opt} docker rmi"
+docker images | awk '/^<none>/ { print $3 }' | xargs ${xargs_opt} docker rmi
+
+# remove killed container
+# echo "docker ps -a -q --filter 'exited=137' | xargs --no-run-if-empty docker rm"
+# docker ps -a -q --filter 'exited=137' | xargs --no-run-if-empty docker rm
+docker ps -a --filter 'exited=137'
+

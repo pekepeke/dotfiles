@@ -1,0 +1,27 @@
+#!/bin/bash
+
+[ -z "$SUDO" ] && SUDO=""
+ENTRYPOINT=""
+CMD=/bin/bash
+FALLBACK_CMD=/bin/sh
+if [ "$1" = "-e" ]; then
+  ENTRYPOINT="--entrypoint /bin/sh"
+  CMD=""
+  shift
+elif [ "$1" = "--" ]; then
+  shift
+  CMD="$@"
+fi
+
+IDS="$(docker images | fzf | awk '{print $3}')"
+for id in $IDS; do
+  # if $SUDO docker exec --rm -t -i ${CONTAINER} sh -c "builtin type bash" >/dev/null 2>&1; then
+  #   echo $SUDO docker run --rm -t "$@" -i $id /bin/bash
+  #   $SUDO docker run --rm -t "$@" -i $id /bin/bash
+  # else
+  # fi
+  echo $SUDO docker run $ENTRYPOINT --rm -t "$@" -i $id $CMD
+  $SUDO docker run $ENTRYPOINT --rm -t "$@" -i $id $CMD \
+  || $SUDO docker run $ENTRYPOINT --rm -t "$@" -i $id $FALLBACK_CMD
+done
+

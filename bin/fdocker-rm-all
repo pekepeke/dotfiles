@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# 停止したコンテナを全て削除
+# docker ps -a -q | xargs docker rm
+docker ps -a | grep -v storage | awk '{print $1}' | xargs docker rm
+

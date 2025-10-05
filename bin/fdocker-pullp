@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if !which docker >/dev/null 2>&1; then
+  echo "command not found : docker " >&2
+fi
+PIDS="$(docker images | fzf | awk '{print $1":"$2}')"
+# echo $ID
+
+if [ -n "$PIDS" ]; then
+  echo docker pull $@ $PIDS
+  for pid in $PIDS ; do
+    docker pull "$@" $pid
+  done
+fi
+

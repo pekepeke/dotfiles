@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# 不要イメージの全削除
+docker images | awk '/^<none>/ { print $3 }' | xargs docker rmi "$@"
+

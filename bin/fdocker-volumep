@@ -1,0 +1,16 @@
+#!/bin/bash
+
+[ -z "$SUDO" ] && SUDO=""
+VOLUME_NAMES="$(docker volume ls | fzf | awk '{ print $2}')"
+DIRS="/var/lib/docker/volumes /var/lib/docker/vfs/dir"
+for v in $VOLUME_NAMES; do
+
+  for d in $DIRS ; do
+    if $SUDO test -e $d/$v ; then
+      echo "# $SUDO tree $d/$v/_data"
+      # echo $SUDO sh -c "cd $d/$v/_data; pwd;  find . | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'"
+      $SUDO sh -c "cd $d/$v/_data; pwd; find . | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'"
+      # $SUDO ls $d/$v/_data
+    fi
+  done
+done

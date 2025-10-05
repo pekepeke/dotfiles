@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if !which docker >/dev/null 2>&1; then
+  echo "command not found : docker " >&2
+fi
+CONTAINER=$(docker ps | fzf | awk '{print $NF}')
+# echo $PID
+
+[ -z "$SUDO" ] && SUDO=""
+if [ -n "$CONTAINER" ]; then
+  # if $SUDO docker exec -t -i ${CONTAINER} sh -c "builtin type bash" >/dev/null 2>&1; then
+  if $SUDO docker exec -t -i ${CONTAINER} sh -c "type bash" >/dev/null 2>&1; then
+    $SUDO docker exec -it "${CONTAINER}" bash
+  else
+    $SUDO docker exec -it "${CONTAINER}" sh
+  fi
+  # || sudo docker exec -t -i ${CONTAINER} sh
+  # "[ -e /bin/bash ] && /bin/bash || /bin/sh"
+fi
+
+

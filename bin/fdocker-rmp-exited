@@ -1,0 +1,7 @@
+#!/bin/bash
+
+PIDS="$(docker ps -a --filter 'status=exited' | fzf | awk '{print $1}')"
+if [ -n "$PIDS" ]; then
+  echo docker rm $@ $PIDS
+  echo "$PIDS" | xargs docker rm "$@"
+fi

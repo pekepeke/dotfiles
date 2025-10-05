@@ -607,6 +607,8 @@ if dpp#min#load_state(s:dpp_base)
   " NOTE: dpp#make_state() requires denops.vim
   autocmd User DenopsReady
   \ call dpp#make_state(s:dpp_base, $HOME.'/.vim/dpp.ts')
+else
+  Lazy DppReset
 endif
 command! -narg=0 DenopsCacheReload call denops#cache#update(#{reload: v:true})
 command! -narg=0 DenopsSharedServerInstall call denops_shared_server#install()
@@ -616,6 +618,15 @@ command! -narg=0 DppMakeState call dpp#make_state(s:dpp_base, $HOME.'/.vim/dpp.t
 command! -narg=0 DppClearState call dpp#clear_state((has('gui_running')?'gvim':has('nvim')?'nvim':'vim'))
 command! -narg=0 DppInstall call dpp#async_ext_action('installer', 'install')
 command! -narg=0 DppUpdate call dpp#async_ext_action('installer', 'update')
+command! -narg=0 DppReset call s:vimrc_dpp_reset()
+
+function! s:vimrc_dpp_reset()
+  if stridx(&runtimepath, $VIMRUNTIME) == -1
+    DppClearState
+    DppMakeState
+  endif
+endfunction
+
 function! s:vimrc_install_dpp()
   let cwd = getcwd()
 
