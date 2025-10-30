@@ -32,7 +32,7 @@ main() {
 ######################################################################
 EOM
     [ ! -e ./logs ] && mkdir logs/
-    nginx -p . -c "$HOME/bin/.opt/cocproxy.nginx.conf"
+    nginx -p . -c "$HOME/.config/local/cocproxy/cocproxy.nginx.conf"
     for dname in fastcgi client_body uwsgi scgi proxy ; do
       [ -e ./${dname}_temp ] && rmdir ./${dname}_temp
     done

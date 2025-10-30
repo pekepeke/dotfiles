@@ -85,11 +85,12 @@ fi
 export GREP_OPTIONS
 export LS_OPTIONS
 
-shrc_section_title "###" #{{{1
+shrc_section_title "### init" #{{{1
 _SHELL_NAME=${SHELL##*/}
 is_exec zoxide && eval "$(zoxide init $_SHELL_NAME)"
 is_exec fzf && eval "$(fzf --$_SHELL_NAME)"
 is_exec rg && export FZF_DEFAULT_COMMAND='rg --files --hidden --glob "!.git"'
+export FZF_DEFAULT_OOPTS='--cycle'
 
 
 shrc_section_title "aliases" #{{{1
@@ -107,6 +108,7 @@ else
   alias la="ls -A $LS_OPTIONS"
   alias l="ls -CF $LS_OPTIONS"
 fi
+is_exec batcat && alias bat='batcat'
 
 alias grep="grep $GREP_OPTIONS"
 unset GREP_OPTIONS

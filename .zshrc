@@ -480,6 +480,7 @@ if [ -e ~/.zsh/plugins/zaw ] ; then
     function _zi() { zi }; zle -N _zi
     function _cheat() {
       local _CAT=cat
+      is_exec batcat && _CAT=batcat
       is_exec bat && _CAT=bat
       local selected="$(find ~/.zsh/opt/cheat ~/.zsh/opt/reference/source/_posts -type f | \
         fzf --preview "$_CAT {}" --bind "enter:become(echo $_CAT {})" \

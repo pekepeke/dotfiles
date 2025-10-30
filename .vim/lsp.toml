@@ -5,7 +5,6 @@ repo = 'Shougo/ddc.vim'
 hook_add = '''
 call ddc#custom#patch_global('sources', [
 \ 'lsp',
-\ 'tabnine',
 \ 'around',
 \ 'file',
 \ 'buffer',
@@ -13,7 +12,8 @@ call ddc#custom#patch_global('sources', [
 \ 'ale',
 \ 'omni',
 \ ])
-"\ 'cmdline', 'cmdline-history', 'shell-native',
+" \ 'cmdline', 'cmdline-history', 'shell-native',
+" \ 'tabnine',
 call ddc#custom#patch_filetype(['vim', 'toml'], 'sources', ['necovim'])
 
 "     \   'matchers': ['matcher_head'],
@@ -34,9 +34,9 @@ call ddc#custom#patch_global('sourceOptions', {
   \   'forceCompletionPattern': '\S/\S*',
   \ },
   \ 'lsp': #{
+  \   isVolatile: v:true,
   \   mark: 'LSP',
   \   forceCompletionPattern: '\.\w*|:\w*|->\w*',
-  \   sorters: ['sorter_lsp-kind'],
   \ },
   \ 'omni': #{ mark: 'O' },
   \ 'around': #{ mark: 'A' },
@@ -187,8 +187,8 @@ endfunction
 repo = 'tani/ddc-fuzzy'
 hook_add = '''
 '''
-[[plugins]]
-repo = 'LumaKernel/ddc-tabnine'
+# [[plugins]]
+# repo = 'LumaKernel/ddc-tabnine'
 [[plugins]]
 repo = 'Shougo/ddc-source-lsp'
 [[plugins]]
@@ -699,13 +699,14 @@ nnoremap <silent> [!ddu]y  <Cmd>call <SID>ddu_custom_list(
   \   sonictemplate#complete('', '', 0),
   \   g:vimrc_denops_callback_ids['cbfn_sonictemplate']
   \ )<CR>
-nnoremap <silent> [!ddu]v  <Cmd>call <SID>ddu_custom_list([
-  \   '~/.vim', '~/.zsh', '~/memos',
-  \   ], g:vimrc_denops_callback_ids['ddu_file_rec']
+let g:my_ddu_notes_dirs = filter([
+  \   '~/.vim', '~/.zsh', '~/memos', '~/obsidian/notes',
+  \   ], 'isdirectory(expand(v:val))')
+nnoremap <silent> [!ddu]v  <Cmd>call <SID>ddu_custom_list(
+  \ g:my_ddu_notes_dirs, g:vimrc_denops_callback_ids['ddu_file_rec']
   \ )<CR>
-nnoremap <silent> [!ddu]gv  <Cmd>call <SID>ddu_custom_list([
-  \   '~/.vim', '~/.zsh', '~/memos',
-  \   ], g:vimrc_denops_callback_ids['ddu_grep_dir']
+nnoremap <silent> [!ddu]gv  <Cmd>call <SID>ddu_custom_list(
+  \ g:my_ddu_notes_dirs, g:vimrc_denops_callback_ids['ddu_grep_dir']
   \ )<CR>
 nnoremap <silent> [!ddu]d  <Cmd>Ddu -name=filer<CR>
 

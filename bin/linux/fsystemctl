@@ -1,17 +1,36 @@
 #!/bin/sh
 
 has_user=0
+USER_OPTS=""
 SUDO=""
 
 for arg in "$@"; do
-  [ "$arg" = "--user" ] && has_user=1
+  if [ "$arg" = "--user" ]; then
+    USER_OPTS="--user"
+    shift
+  fi
   if [ "$arg" = "--help" -o "$arg" = "-h" ] ;then
   	systemctl --help
 	exit 1
   fi
 done
-if [ $has_user -eq 1 ]; then
-  SELECTED="$(systemctl list-unit-files --user --type=service | peco |awk '{ print $1}')"
+ACTION="$1"
+if [ -z "$ACTION" ] ; then
+  ACTION="$(cat <<EOM | fzf --cycle
+start
+stop
+restart
+enable
+disable
+is-enabled
+status
+EOM
+)"
+else
+  shift
+fi
+if [ ! -z "$USER_OPTS" ]; then
+  SELECTED="$(systemctl list-unit-files $USER_OPTS --type=service | fzf -m --cycle |awk '{ print $1}')"
 else
   SELECTED="$({
   systemctl list-unit-files --type=service;
@@ -19,9 +38,9 @@ else
   } | fzf | awk '{print $1}')"
   SUDO="sudo"
 fi
-if [ "$SELECTED" != "" ]; then
-  echo $SUDO systemctl "$@" $SELECTED
-  $SUDO systemctl "$@" $SELECTED
-fi
+for s in $SELECTED ; do
+  echo $SUDO systemctl $USER_OPTS $ACTION "$@" $s
+  $SUDO systemctl $USER_OPTS $ACTION "$@" $s
+done
 
 

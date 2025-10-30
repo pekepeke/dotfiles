@@ -1,12 +1,13 @@
 #!/bin/bash
 
+SCRIPT_DIR=~/.config/local/mitmproxy/
+
 main() {
   local cwd=$(pwd)
-  local scriptdir=$(cd "$(dirname $0)"; pwd)
-  local options="-s $scriptdir/.opt/mitmproxy/cocproxy.py"
+  local options="-s $SCRIPT_DIR/cocproxy.py"
 
   cd "${cwd}"
-  . $scriptdir/.opt/mitmproxy/functions.sh "$@"
+  . $SCRIPT_DIR/functions.sh "$@"
   exec_mitmproxy "$@"
 
 }

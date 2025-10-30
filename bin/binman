@@ -1,0 +1,49 @@
+#!/bin/sh
+
+is_exec() {
+  which $1 > /dev/null 2>&1
+  return $?
+}
+if ! is_exec bin; then
+
+  INSTALL_DIR=~/.local/bin
+  ARCH=`uname -m | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64/'`
+
+  curl -s https://api.github.com/repos/$AUTHOR/$PG/releases/latest > /tmp/bin.json
+  CDIR=`pwd`
+
+  DL_URL="$(cat /tmp/bin.json \
+| grep "browser_download_url.*linux_$ARCH" \
+| cut -d : -f 2,3 \
+| tr -d \")"
+
+  cd /tmp/
+  echo curl -Lo bin $DL_URL
+  curl -Lo bin $DL_URL
+  chmod +x /tmp/bin
+  mv /tmp/bin $INSTALL_DIR/bin
+
+  cd $CDIR
+fi
+if ! is_exec fzf; then
+  bin install github.com/junegunn/fzf
+fi
+
+SELECTED=$(cat <<EOM | fzf -m
+extrawurst/gitui
+jesseduffield/lazydocker
+jesseduffield/lazygit
+sharkdp/vivid
+zellij-org/zellij
+ducaale/xh
+starship/starship
+EOM
+)
+
+for p in $SELECTED ; do
+  if bin ensure $p >/dev/null 2>&1; then
+    bin update $p
+  else
+    bin install github.com/$p
+  fi
+done

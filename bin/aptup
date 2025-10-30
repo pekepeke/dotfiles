@@ -8,22 +8,39 @@ EOM
   exit 1
 }
 
+update_for_rhel() {
+  # yum update
+  while ! sudo dnf update -y ; do
+    sleep 1
+  done
+  sudo dnf autoclean -y
+}
+
+update_for_deb() {
+  while ! sudo apt update --fix-missing; do
+    sleep 1
+  done
+  sudo apt upgrade -y --fix-missing
+  sudo apt autoclean -y
+}
+
+update_usual() {
+  if ! grep disable-gpu /usr/share/applications/brave-browser.desktop > /dev/null 2>&1 ; then
+    sudo perl -i.bak -plane 's/^(Exec=\S+)/$1 --disable-gpu/g' /usr/share/applications/brave-browser.desktop
+  fi
+  # gvim -c "DppCoreUpdate | DenopsCacheReload | DppUpdate"
+  mise self-update -y
+
+  mise outdated
+}
+
 main() {
   if [ -f /etc/redhat-release ]; then
-    # yum update
-    sudo dnf update
-    sudo dnf autoclean
+    update_for_rhel
+  elif [ -f /etc/lsb-release ]; then
+    update_for_deb
   fi
-
-  if [ -f /etc/lsb-release ]; then
-    while ! sudo apt update --fix-missing; do
-      sleep 1
-    done
-    sudo apt upgrade -y --fix-missing
-    sudo apt autoclean -y
-  fi
-  mise self-update -y
-  # gvim -c "DppCoreUpdate | DenopsCacheReload | DppUpdate"
+  update_usual
 }
 
 OPTIND_OLD=$OPTIND

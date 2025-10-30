@@ -1,0 +1,10 @@
+[Unit]
+Description=Local system resume actions
+After=suspend.target
+
+[Service]
+Type=simple
+ExecStart=-/path/to/exe
+
+[Install]
+WantedBy=suspend.target

@@ -1,6 +1,24 @@
 # Credit: https://github.com/mooz/xkeysnail/blob/bf3c93b4fe6efd42893db4e6588e5ef1c4909cfb/example/config.py#L62-L125
+# x11 -> wmctrl -x -l
+# wayland+Gnome -> A-F2, lg
+# wayland+kde -> swaymsg -t get_tree, niri msg windows
 # virtual_modifiers:
 #   - CapsLock
+shared:
+  terminals: &terminals
+    - gvim.Gvim
+    - gnome-terminal-server
+    - floorp
+    - Gnome-terminal
+    - Emacs
+    - code.Code
+    - gvim
+    - goneovim.goneovim
+    - org.gnome.Terminal.desktop
+    - gnome-terminal-server.Gnome-terminal
+    - Alacritty.Alacritty
+    - obsidian.obsidian
+    - Vivaldi-stable
 modmap:
   - name: CapsLock to Ctrl_L
     remap:
@@ -8,7 +26,7 @@ modmap:
 keymap:
   - name: Emacs
     application:
-      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal, Alacritty.Alacritty, obsidian.obsidian, Vivaldi-stable]
+      not: *terminals
     remap:
       # Cursor
       C-b: { with_mark: left }
@@ -72,61 +90,33 @@ keymap:
       #     u: [C-z, { set_mark: false }]
   - name: Cmd key mapping
     application:
-      not: [Emacs, code.Code, gvim.Gvim, goneovim.goneovim, gnome-terminal-server.Gnome-terminal, Alacritty.Alacritty, obsidian.obsidian, Vivaldi-stable]
+      not: *terminals
     remap:
       # KEY_MUHENKAN
-      Alt-a: C-a
-      Alt-b: C-b
-      Alt-c: C-c
-      Alt-d: C-d
-      Alt-e: C-e
-      Alt-f: C-f
-      Alt-g: C-g
-      Alt-h: C-h
-      Alt-i: C-i
-      Alt-j: C-j
-      Alt-k: C-k
-      Alt-l: C-l
-      Alt-m: C-m
-      Alt-n: C-n
-      Alt-o: C-o
-      Alt-p: C-p
-      Alt-q: C-q
-      Alt-r: C-r
-      Alt-s: C-s
-      Alt-t: C-t
-      Alt-u: C-u
-      Alt-v: C-v
-      Alt-w: C-w
-      Alt-x: C-x
-      Alt-y: C-y
+      WIN-a: C-a
+      WIN-b: C-b
+      WIN-c: C-c
+      WIN-d: C-d
+      WIN-e: C-e
+      WIN-f: C-f
+      WIN-g: C-g
+      WIN-h: C-h
+      WIN-i: C-i
+      WIN-j: C-j
+      WIN-k: C-k
+      WIN-l: C-l
+      WIN-m: C-m
+      WIN-n: C-n
+      WIN-o: C-o
+      WIN-p: C-p
+      WIN-q: C-q
+      WIN-r: C-r
+      WIN-s: C-s
+      WIN-t: C-t
+      WIN-u: C-u
+      WIN-v: C-v
+      WIN-w: C-w
+      WIN-x: C-x
+      WIN-y: C-y
       # Alt-z: C-z
-      Alt-z:
-        remap:
-          Alt-a: Alt-a
-          Alt-b: Alt-b
-          Alt-c: Alt-c
-          Alt-d: Alt-d
-          Alt-e: Alt-e
-          Alt-f: Alt-f
-          Alt-g: Alt-g
-          Alt-h: Alt-h
-          Alt-i: Alt-i
-          Alt-j: Alt-j
-          Alt-k: Alt-k
-          Alt-l: Alt-l
-          Alt-m: Alt-m
-          Alt-n: Alt-n
-          Alt-o: Alt-o
-          Alt-p: Alt-p
-          Alt-q: Alt-q
-          Alt-r: Alt-r
-          Alt-s: Alt-s
-          Alt-t: Alt-t
-          Alt-u: Alt-u
-          Alt-v: Alt-v
-          Alt-w: Alt-w
-          Alt-x: Alt-x
-          Alt-y: Alt-y
-          Alt-z: Alt-z
-
+      WIN-z: C-z
