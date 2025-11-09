@@ -71,6 +71,10 @@ case \$1/\$2 in
     ;;
   post/*)
     # for s in xremap denops-shared-server; do
+
+    if [ \$(ps aux | grep vim | grep -v grep | grep -v denops.vim | wc -l) -eq 0 ]; then
+      systemctl --user --quiet -M $USER@ restart denops-shared-server
+    fi
     for s in xremap ; do
       if systemctl --user --quiet -M $USER@ is-active \$s; then
         systemctl --user --quiet -M $USER@ restart \$s
