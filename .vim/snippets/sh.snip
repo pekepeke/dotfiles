@@ -17,7 +17,11 @@ snippet wh
 	while [[ ${1:condition} ]]; do
 		${2:#statements}
 	done
-snippet whf whilef
+snippet whr whiler
+	while read -r _LINE; do
+	  echo $_LINE
+	done < <(${1:command})
+snippet whf whilef whrf whilerf
 	while read _LINE ; do
 		echo "$_LINE"
 	done < ${1:file}

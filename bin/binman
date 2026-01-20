@@ -4,6 +4,41 @@ is_exec() {
   which $1 > /dev/null 2>&1
   return $?
 }
+mkurl() {
+  echo "github.com/"$1
+}
+
+mkdesktop() {
+  [ -z "$1" ] && return 1
+  local NAME=$1
+  local BIN=$(which $1)
+  local DESC=$2
+  [ -z "$DESC" ] && DESC="$NAME"
+
+  cat <<EOM
+[Desktop Entry]
+Version=1.0
+Name=$NAME
+GenericName=$DESC
+Comment=$DESC
+Exec=$BIN %F
+Terminal=false
+Type=Application
+Categories=Development;
+# Icon=$HOME/.local/share/icons/xxx.png
+EOM
+}
+install_after() {
+  local FULL_PACKAGE=$1
+  local PACKAGE=$(basename $FULL_PACKAGE)
+  case $PACKAGE in
+    goneovim)
+      mkdesktop $PACKAGE > ~/.local/share/applications/$PACKAGE.desktop
+
+      ;;
+  esac
+}
+
 if ! is_exec bin; then
 
   INSTALL_DIR=~/.local/bin
@@ -29,7 +64,15 @@ if ! is_exec fzf; then
   bin install github.com/junegunn/fzf
 fi
 
+ACTION="$1"
+if [ ! -z "$ACTION" ]; then
+  shift
+else
+  ACTION=install
+fi
+
 SELECTED=$(cat <<EOM | fzf -m
+akiyosi/goneovim
 extrawurst/gitui
 jesseduffield/lazydocker
 jesseduffield/lazygit
@@ -37,13 +80,29 @@ sharkdp/vivid
 zellij-org/zellij
 ducaale/xh
 starship/starship
+tldr-pages/tlrc
+denisidoro/navi
+EOM
+  cat <<EOM >/dev/null
+junegunn/fzf
+eza-community/eza
+dandavison/delta
+sharkdp/bat
 EOM
 )
 
-for p in $SELECTED ; do
-  if bin ensure $p >/dev/null 2>&1; then
-    bin update $p
-  else
-    bin install github.com/$p
-  fi
-done
+case $ACTION in
+  install)
+    for p in $SELECTED ; do
+      if bin ensure $p >/dev/null 2>&1; then
+        bin update $p
+      else
+        bin install $(mkurl $p)
+        install_after $p
+      fi
+    done
+    ;;
+  open)
+    xdg-open https://$(mkurl $p)
+    ;;
+esac

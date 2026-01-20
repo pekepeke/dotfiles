@@ -2,12 +2,25 @@
 
 GREP_CMD=""
 
-for cmd in jvgrep ag pt ack grep ; do
-  if which $cmd >/dev/null 2>&1; then
-    GREP_CMD="$cmd -i -r "
-    break
-  fi
-done
+if which fffrg >/dev/null 2>&1; then
+  GREP_CMD="rg -Hn"
+else
+  for cmd in jvgrep ag pt ack grep ; do
+    if which $cmd >/dev/null 2>&1; then
+      GREP_CMD="$cmd -i -r -n"
+      break
+    fi
+  done
+fi
 
-eval $GREP_CMD "$@" ~/.zsh/opt/cheat/
+if which fzf >/dev/null 2>&1; then
+  SELECTED="$(eval $GREP_CMD "$@" ~/.zsh/opt/cheat/ | fzf | awk -F: '{ print $1 " " $2 }')"
+  FILE=$(echo $SELECTED | cut -d" " -f 1)
+  LINE=$(echo $SELECTED | cut -d" " -f 2)
+  # eval $GREP_CMD "$@" ~/.zsh/opt/cheat/ | fzf | awk -F: '{ print $1 " " $2 }' | IFS=" " read FILE LINE
+  # [ -e "$FILE" ] && view $FILE +$LINE
+  [ -e "$FILE" ] && less $FILE -j $LINE
+else
+  eval $GREP_CMD "$@" ~/.zsh/opt/cheat/
+fi
 

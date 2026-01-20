@@ -25,8 +25,12 @@ update_for_deb() {
 }
 
 update_usual() {
-  if ! grep disable-gpu /usr/share/applications/brave-browser.desktop > /dev/null 2>&1 ; then
-    sudo perl -i.bak -plane 's/^(Exec=\S+)/$1 --disable-gpu/g' /usr/share/applications/brave-browser.desktop
+  if [ "$CHROMIUM_DISABLE_GPU" = "1" ]; then
+    for entry in google-chrome.desktop brave-browser.desktop; do
+      if ! grep disable-gpu /usr/share/applications/$entry > /dev/null 2>&1 ; then
+        sudo perl -i.bak -plane 's/^(Exec=\S+)/$1 --disable-gpu/g' /usr/share/applications/$entry
+      fi
+    done
   fi
   # gvim -c "DppCoreUpdate | DenopsCacheReload | DppUpdate"
   mise self-update -y

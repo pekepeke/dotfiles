@@ -98,6 +98,11 @@ exec_install() {
           ln -s "$CDIR/${fname}" "$HOME/${fname}"
         fi
       done
+      if [ -e $CDIR/.config/local/icons -a ! -e "$HOME/.local/share/icons" ]; then
+        mkdir -p $HOME/.local/share/
+        execfiles="$execfiles\n${YELLOW}ln -s $CDIR/.config/local/icons $HOME/.local/share/icons${DEFAULT}"
+        ln -s $CDIR/.config/local/icons $HOME/.local/share/icons
+      fi
 
     elif forematchin "$F" $OS_DIFFER_FILES ; then
       local base=${F%.*}
@@ -177,6 +182,10 @@ exec_uninstall() {
       rm $fpath
     fi
   done
+  if [ -L $HOME/.local/share/icons ]; then
+    echo rm $HOME/.local/share/icons
+    rm $HOME/.local/share/icons
+  fi
   for f in $(find ~/.rc-org -maxdepth 1 -mindepth 1); do
     fpath= ~/$(basename $f)
     echo "cp -p $f $fpath"

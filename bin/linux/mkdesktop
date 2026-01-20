@@ -31,13 +31,17 @@ make_desktop() {
   else
     desc="$1"
   fi
+  icon_path=$HOME/.local/share/icons/$1.svg
+  icon_path_prefix="# "
+  [ -e "$icon_path" ] && icon_path_prefix=""
   cat <<EOM
 [Desktop Entry]
 Version=1.0
 Name=$1
 GenericName=$desc
 Comment=$desc
-Exec=$exepath
+Exec=$exepath %F
+${icon_path_prefix}Icon=$icon_path
 Terminal=false
 Type=Application
 Categories=Development;

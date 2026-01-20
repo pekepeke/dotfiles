@@ -183,9 +183,21 @@ bindkey -a '^E' end-of-line
 bindkey -v '^[OH' beginning-of-line
 bindkey -v '^[OF' end-of-line
 bindkey -v "\e[1~" beginning-of-line   # Home
+bindkey -v "^[[1~" beginning-of-line
 bindkey -v "\e[4~" end-of-line          # End
+bindkey -v "^[[4~" end-of-line
 bindkey -v "^[[3~" delete-char          # Del
 bindkey -v "\e[Z" reverse-menu-complete # S-Tab
+
+# rxvt
+bindkey -v "\e[8~" end-of-line
+bindkey -v "\e[7~" beginning-of-line
+# non RH/Debian xterm
+bindkey -v "\eOH" beginning-of-line
+bindkey -v "\eOF" end-of-line
+# for freebsd console
+bindkey -v "\e[H" beginning-of-line
+bindkey -v "\e[F" end-of-line
 
 ## emacs like {{{3
 bindkey -v '^D' delete-char

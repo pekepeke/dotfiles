@@ -9,6 +9,11 @@ EOM
 }
 
 main() {
+
+  if which binman >/dev/null ; then
+    echo "you must use binman command."
+    return 0
+  fi
   TEMP=/tmp/
   AUTHOR=marcosnils
   PG=bin
@@ -30,6 +35,7 @@ main() {
   mv $TEMP/$PG $INSTALL_DIR/$PG
 
   rm -f $TEMP/$PG.json
+
 }
 
 OPTIND_OLD=$OPTIND

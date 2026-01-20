@@ -1,9 +1,38 @@
 ## エラーとかだす
 
 ```
+# -e=コマンド実行結果がエラーの場合ストップ
+# -u=未定義の変数呼び出しでストップ
+# -o pipefail=パイプでコマンドをつなげたときに、どれか１つでもエラーになった場合にストップ
 set -xe
 # 戻す
 set +xe
+```
+
+## trap
+
+```bash
+# !/bin/bash
+
+tmpfile=$(mktemp -d)
+
+function finally {
+    # 終了処理中に無視するシグナル（他に必要な場合は追加する）
+    trap '' HUP INT QUIT PIPE TERM
+    rm -rf $tmpfile
+
+    # 自分自身にシグナルを再送信することでシェルスクリプトを終了する
+    trap - EXIT "$1"
+    [ "$1" = EXIT ] || kill -s "$1" $$ || exit 1
+}
+
+# trap finally EXIT # trap -l で一覧表示(SIGは省略可能)
+for i in EXIT HUP INT QUIT PIPE TERM; do
+  trap 'finally '"$i" "$i"
+done
+
+echo 'start' > $tmpfile/file1
+cat $tmpfile/file1
 ```
 
 ## デフォルト値
@@ -23,10 +52,46 @@ FUGA=${HOGE-fuga}
 | ${変数/検索文字列/置換文字列}  | 最初にマッチしたもののみ文字列を置換 |                       |
 | ${変数//検索文字列/置換文字列} | 全ての文字列を置換                   | ${HOGE//foo/bar}      |
 
+```bash
+path=/hoge/hoge/fuga/FUGA/piyoのとき、
+# 文字数を取得
+echo ${#path} #> 25
+
+# 部分文字列を取得
+echo ${path:1:4} #> hoge
+
+# 置換
+echo ${path/hoge/hage} #> /hage/hoge/fuga/FUGA/piyo
+echo ${path//hoge/hage} #> /hage/hage/fuga/FUGA/piyo
+
+# 小文字を大文字に変換
+echo ${path^^} #> /HOGE/HOGE/FUGA/FUGA/PIYO
+
+# 大文字を小文字に変換
+echo ${path,,} #> /hoge/hoge/fuga/fuga/piyo
+
+# ファイル名取得
+echo ${path##*/} #> piyo
+
+# ディレクトリ取得
+echo ${path%/*} #> /hoge/hoge/fuga/FUGA
+```
+
+## <() / >()
+
+```bash
+diff <(sort https://file1.txt|uniq) <(sort https://file2.txt|uniq)
+
+# 標準出力
+exec 1> >(tee -a https://out.log)
+# 標準エラー出力
+exec 2> >(tee -a https://err.log >&2)
+```
+
 ## Bashで自身の関数名と呼び出し元の関数名を取得
 - https://qiita.com/koara-local/items/5e3fd1d0c9080ea61b5b
 
-```
+```bash
 local fn=${FUNCNAME[0]}
 local caller=${FUNCNAME[1]} # 呼び出し元の関数名
 ```
@@ -44,13 +109,13 @@ exec 2>&1
 
 ## 行を逆順に変換
 
-```
+```bash
 cat file | rev | tac | rev | command
 ```
 
 ## ROOTかどうかをチェックする
 
-```
+```bash
 if [ ${EUID:-${UID}} = 0 ]; then
     echo 'I am root.'
 fi
@@ -65,11 +130,37 @@ if [ $(id -u) = $(id -u root) ]; then
 fi
 ```
 
+## read
+
+```bash
+while IFS= read -r name; do
+  echo $name
+done < "$filename"
+
+while read -r f; do
+  files+=("$f")
+done < <(find -type f)
+```
+
+## regexp/正規表現
+
+```bash
+# regexp
+var='abc 123'
+[[ $var =~ [a-z]{3}[[:space:]][1-9]{3} ]] && echo 'ok'
+
+# pattern match
+[[ $var = abc* ]] && echo 'ok'
+
+ [[ $var = abc* || $var = *123 ]] && echo 'ok'
+```
 
 
 ## 配列・ハッシュ
 
 ```bash
+arr=(a b c)
+echo ${arr[2]}
 declare -a array=(1 2 3)
 declare -A H
 H["key1"]="value1"
