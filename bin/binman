@@ -15,6 +15,12 @@ mkdesktop() {
   local DESC=$2
   [ -z "$DESC" ] && DESC="$NAME"
 
+  ICON_PREFIX="# "
+  ICON_PATH=$HOME/.local/share/icons/xxx.png
+  for ext in png svg ; do
+    [ -e $HOME/.local/share/icons/$NAME.$ext ] && ICON_PATH=$HOME/.local/share/icons/$NAME.$ext
+  done
+
   cat <<EOM
 [Desktop Entry]
 Version=1.0
@@ -25,18 +31,43 @@ Exec=$BIN %F
 Terminal=false
 Type=Application
 Categories=Development;
-# Icon=$HOME/.local/share/icons/xxx.png
+${ICON_PREFIX}Icon=$HOME/.local/share/icons/xxx.png
+EOM
+}
+is_gui() {
+  local FLAG=$(print_repos | grep $1 | awk '{print $2}')
+  [ "$FLAG" = "" ] && return 1
+  return 0
+}
+print_repos() {
+  cat <<EOM
+akiyosi/goneovim [GUI]
+extrawurst/gitui
+jesseduffield/lazydocker
+jesseduffield/lazygit
+sharkdp/vivid
+zellij-org/zellij
+ducaale/xh
+starship/starship
+tldr-pages/tlrc
+denisidoro/navi
+EOM
+  cat <<EOM >/dev/null
+junegunn/fzf
+eza-community/eza
+dandavison/delta
+sharkdp/bat
 EOM
 }
 install_after() {
   local FULL_PACKAGE=$1
   local PACKAGE=$(basename $FULL_PACKAGE)
-  case $PACKAGE in
-    goneovim)
-      mkdesktop $PACKAGE > ~/.local/share/applications/$PACKAGE.desktop
-
-      ;;
-  esac
+  if is_gui $FULL_PACKAGE ; then
+    mkdesktop $PACKAGE > ~/.local/share/applications/$PACKAGE.desktop
+  fi
+  # case $PACKAGE in
+  #   *) ;;
+  # esac
 }
 
 if ! is_exec bin; then
@@ -71,25 +102,7 @@ else
   ACTION=install
 fi
 
-SELECTED=$(cat <<EOM | fzf -m
-akiyosi/goneovim
-extrawurst/gitui
-jesseduffield/lazydocker
-jesseduffield/lazygit
-sharkdp/vivid
-zellij-org/zellij
-ducaale/xh
-starship/starship
-tldr-pages/tlrc
-denisidoro/navi
-EOM
-  cat <<EOM >/dev/null
-junegunn/fzf
-eza-community/eza
-dandavison/delta
-sharkdp/bat
-EOM
-)
+SELECTED=$(print_repos | fzf -m | awk 'print $1')
 
 case $ACTION in
   install)

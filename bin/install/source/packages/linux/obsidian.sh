@@ -12,20 +12,24 @@ make_desktop() {
   BIN_DIR=$HOME/.local/bin
   SHARE_DIR=$HOME/.local/share
   [ ! -e $SHARE_DIR/icons ] && mkdir -p $SHARE_DIR/icons
-  if [ -e $SHARE_DIR/icons/obsidian.png ]; then
+  ICO_EXT=png
+  if [ -e $SHARE_DIR/icons/obsidian.svg ]; then
+    echo "# already exists: $SHARE_DIR/icons/obsidian.svg"
+    ICO_EXT=svg
+  elif [ -e $SHARE_DIR/icons/obsidian.png ]; then
     echo "# already exists: $SHARE_DIR/icons/obsidian.png"
   else
     curl -L "https://avatars.githubusercontent.com/u/65011256?s=200&v=4" -o $SHARE_DIR/icons/obsidian.png
   fi
 
-  if [ -e  ]; then
+  if [ -e $SHARE_DIR/applications/Obsidian.desktop ]; then
     echo "# already exists: $SHARE_DIR/applications/Obsidian.desktop "
   else
     cat <<EOM > $SHARE_DIR/applications/Obsidian.desktop
 [Desktop Entry]
 Name=Obsidian
 Exec=$BIN_DIR/obsidian.appimage --no-sandbox
-Icon=$SHARE_DIR/icons/obsidian.png
+Icon=$SHARE_DIR/icons/obsidian.$ICO_EXT
 Type=Application
 Categories=Utility;
 EOM

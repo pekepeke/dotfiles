@@ -6,19 +6,22 @@
 #   - CapsLock
 shared:
   terminals: &terminals
-    - gvim.Gvim
-    - gnome-terminal-server
-    - floorp
     - Gnome-terminal
-    - Emacs
-    - code.Code
+    - gnome-terminal-server
+    - gnome-terminal-server.Gnome-terminal
+    - org.gnome.Terminal.desktop
+    - Alacritty.Alacritty
+    - gvim.Gvim
     - gvim
     - goneovim.goneovim
-    - org.gnome.Terminal.desktop
-    - gnome-terminal-server.Gnome-terminal
-    - Alacritty.Alacritty
+    - Emacs
+    - code.Code
     - obsidian.obsidian
+    - firefox_firefox
     - Vivaldi-stable
+    - floorp
+    - brave-browser
+    - Siki
 modmap:
   - name: CapsLock to Ctrl_L
     remap:

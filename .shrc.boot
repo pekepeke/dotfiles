@@ -163,7 +163,11 @@ gvi () {
   if is_mac ;then
     command mvim --remote-silent "$@" || mvim "$@"
   else
-    command gvim --remote-silent "$@" || gvim "$@"
+    if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+      command gvim --clientserver socket --remote-silent "$@" || gvim "$@"
+    else
+      command gvim --remote-silent "$@" || gvim "$@"
+    fi
   fi
 }
 

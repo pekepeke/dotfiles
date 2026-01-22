@@ -26,7 +26,7 @@ update_for_deb() {
 
 update_usual() {
   if [ "$CHROMIUM_DISABLE_GPU" = "1" ]; then
-    for entry in google-chrome.desktop brave-browser.desktop; do
+    for entry in google-chrome.desktop brave-browser.desktop code.desktop; do
       if ! grep disable-gpu /usr/share/applications/$entry > /dev/null 2>&1 ; then
         sudo perl -i.bak -plane 's/^(Exec=\S+)/$1 --disable-gpu/g' /usr/share/applications/$entry
       fi
